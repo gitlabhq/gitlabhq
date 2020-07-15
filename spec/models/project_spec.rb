@@ -1042,32 +1042,6 @@ RSpec.describe Project do
     end
   end
 
-  describe '#has_confluence?' do
-    let_it_be(:project) { build_stubbed(:project) }
-
-    it 'returns false when project_setting.has_confluence property is false' do
-      project.project_setting.has_confluence = false
-
-      expect(project.has_confluence?).to be(false)
-    end
-
-    context 'when project_setting.has_confluence property is true' do
-      before do
-        project.project_setting.has_confluence = true
-      end
-
-      it 'returns true' do
-        expect(project.has_confluence?).to be(true)
-      end
-
-      it 'returns false when confluence integration feature flag is disabled' do
-        stub_feature_flags(ConfluenceService::FEATURE_FLAG => false)
-
-        expect(project.has_confluence?).to be(false)
-      end
-    end
-  end
-
   describe '#external_wiki' do
     let(:project) { create(:project) }
 
@@ -5411,20 +5385,6 @@ RSpec.describe Project do
 
       expect(services.count).to eq(2)
       expect(services.map(&:title)).to eq(['JetBrains TeamCity CI', 'Pushover'])
-    end
-
-    describe 'interaction with the confluence integration feature flag' do
-      it 'contains a ConfluenceService when feature flag is enabled' do
-        stub_feature_flags(ConfluenceService::FEATURE_FLAG => true)
-
-        expect(subject.find_or_initialize_services).to include(ConfluenceService)
-      end
-
-      it 'does not contain a ConfluenceService when the confluence integration feature flag is disabled' do
-        stub_feature_flags(ConfluenceService::FEATURE_FLAG => false)
-
-        expect(subject.find_or_initialize_services).not_to include(ConfluenceService)
-      end
     end
   end
 

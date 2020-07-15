@@ -583,6 +583,9 @@ Gitlab.ee do
   Settings.cron_jobs['network_policy_metrics_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['network_policy_metrics_worker']['cron'] ||= '0 3 * * 0'
   Settings.cron_jobs['network_policy_metrics_worker']['job_class'] = 'NetworkPolicyMetricsWorker'
+  Settings.cron_jobs['iterations_update_status_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['iterations_update_status_worker']['cron'] ||= '5 0 * * *'
+  Settings.cron_jobs['iterations_update_status_worker']['job_class'] = 'IterationsUpdateStatusWorker'
 end
 
 #

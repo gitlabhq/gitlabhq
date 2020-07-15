@@ -30,6 +30,10 @@ export default {
       required: false,
       default: '',
     },
+    viewDiffsFileByFile: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -154,6 +158,7 @@ export default {
       :collapsible="true"
       :expanded="!isCollapsed"
       :add-merge-request-buttons="true"
+      :view-diffs-file-by-file="viewDiffsFileByFile"
       class="js-file-title file-title"
       @toggleFile="handleToggle"
       @showForkMessage="showForkMessage"

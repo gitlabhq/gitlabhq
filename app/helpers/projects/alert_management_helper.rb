@@ -27,3 +27,5 @@ module Projects::AlertManagementHelper
     !!(project.alerts_service_activated? || project.prometheus_service_active?)
   end
 end
+
+Projects::AlertManagementHelper.prepend_if_ee('EE::Projects::AlertManagementHelper')

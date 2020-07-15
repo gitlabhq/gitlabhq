@@ -78,3 +78,5 @@ class AlertsService < Service
     Gitlab::Routing.url_helpers
   end
 end
+
+AlertsService.prepend_if_ee('EE::AlertsService')

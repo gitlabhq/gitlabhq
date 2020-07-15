@@ -34,16 +34,16 @@ module Banzai
         ref_pattern = issue_reference_pattern
         ref_start_pattern = /\A#{ref_pattern}\z/
 
-        each_node do |node|
+        nodes.each_with_index do |node, index|
           if text_node?(node)
-            replace_text_when_pattern_matches(node, ref_pattern) do |content|
+            replace_text_when_pattern_matches(node, index, ref_pattern) do |content|
               issue_link_filter(content)
             end
 
           elsif element_node?(node)
             yield_valid_link(node) do |link, inner_html|
               if link =~ ref_start_pattern
-                replace_link_node_with_href(node, link) do
+                replace_link_node_with_href(node, index, link) do
                   issue_link_filter(link, link_content: inner_html)
                 end
               end

@@ -146,6 +146,25 @@ RSpec.describe Iteration do
     end
   end
 
+  context 'time scopes' do
+    let_it_be(:project) { create(:project, :empty_repo) }
+    let_it_be(:iteration_1) { create(:iteration, :skip_future_date_validation, project: project, start_date: 3.days.ago, due_date: 1.day.from_now) }
+    let_it_be(:iteration_2) { create(:iteration, :skip_future_date_validation, project: project, start_date: 10.days.ago, due_date: 4.days.ago) }
+    let_it_be(:iteration_3) { create(:iteration, project: project, start_date: 4.days.from_now, due_date: 1.week.from_now) }
+
+    describe 'start_date_passed' do
+      it 'returns iterations where start_date is in the past but due_date is in the future' do
+        expect(described_class.start_date_passed).to contain_exactly(iteration_1)
+      end
+    end
+
+    describe 'due_date_passed' do
+      it 'returns iterations where due date is in the past' do
+        expect(described_class.due_date_passed).to contain_exactly(iteration_2)
+      end
+    end
+  end
+
   describe '.within_timeframe' do
     let_it_be(:now) { Time.current }
     let_it_be(:project) { create(:project, :empty_repo) }

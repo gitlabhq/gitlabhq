@@ -1069,12 +1069,11 @@ the `.template` job, and uses the `alpine` Docker image as defined in the local 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3.
 
-The `rules` keyword is a way to set job policies that determine whether or not jobs
-are added to pipelines.
+The `rules` keyword can be used to include or exclude jobs in pipelines.
 
-A list of individual rule clauses are evaluated *in order*, until one matches. When
-matched, the job is either included or excluded from the pipeline, depending
-on the configuration. If included, the job also has [certain attributes](#rules-attributes)
+Rules are evaluated *in order* until the first match. When matched, the job
+is either included or excluded from the pipeline, depending on the configuration.
+If included, the job also has [certain attributes](#rules-attributes)
 added to it.
 
 CAUTION: **Caution:**

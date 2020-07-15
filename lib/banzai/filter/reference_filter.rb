@@ -16,6 +16,23 @@ module Banzai
 
       class << self
         attr_accessor :reference_type
+
+        def call(doc, context = nil, result = nil)
+          new(doc, context, result).call_and_update_nodes
+        end
+      end
+
+      def initialize(doc, context = nil, result = nil)
+        super
+
+        if update_nodes_enabled?
+          @new_nodes = {}
+          @nodes = self.result[:reference_filter_nodes]
+        end
+      end
+
+      def call_and_update_nodes
+        update_nodes_enabled? ? with_update_nodes { call } : call
       end
 
       # Returns a data attribute String to attach to a reference link
@@ -89,11 +106,6 @@ module Banzai
       def each_node
         return to_enum(__method__) unless block_given?
 
-        query = %Q{descendant-or-self::text()[not(#{ignore_ancestor_query})]
-        | descendant-or-self::a[
-          not(contains(concat(" ", @class, " "), " gfm ")) and not(@href = "")
-        ]}
-
         doc.xpath(query).each do |node|
           yield node
         end
@@ -114,25 +126,25 @@ module Banzai
         yield link, inner_html
       end
 
-      def replace_text_when_pattern_matches(node, pattern)
+      def replace_text_when_pattern_matches(node, index, pattern)
         return unless node.text =~ pattern
 
         content = node.to_html
         html = yield content
 
-        node.replace(html) unless content == html
+        replace_text_with_html(node, index, html) unless html == content
       end
 
-      def replace_link_node_with_text(node, link)
+      def replace_link_node_with_text(node, index)
         html = yield
 
-        node.replace(html) unless html == node.text
+        replace_text_with_html(node, index, html) unless html == node.text
       end
 
-      def replace_link_node_with_href(node, link)
+      def replace_link_node_with_href(node, index, link)
         html = yield
 
-        node.replace(html) unless html == link
+        replace_text_with_html(node, index, html) unless html == link
       end
 
       def text_node?(node)
@@ -145,8 +157,61 @@ module Banzai
 
       private
 
+      def query
+        @query ||= %Q{descendant-or-self::text()[not(#{ignore_ancestor_query})]
+        | descendant-or-self::a[
+          not(contains(concat(" ", @class, " "), " gfm ")) and not(@href = "")
+        ]}
+      end
+
+      def replace_text_with_html(node, index, html)
+        if update_nodes_enabled?
+          replace_and_update_new_nodes(node, index, html)
+        else
+          node.replace(html)
+        end
+      end
+
+      def replace_and_update_new_nodes(node, index, html)
+        previous_node = node.previous
+        next_node = node.next
+        parent_node = node.parent
+        # Unfortunately node.replace(html) returns re-parented nodes, not the actual replaced nodes in the doc
+        # We need to find the actual nodes in the doc that were replaced
+        node.replace(html)
+        @new_nodes[index] = []
+
+        # We replaced node with new nodes, so we find first new node. If previous_node is nil, we take first parent child
+        new_node = previous_node ? previous_node.next : parent_node&.children&.first
+
+        # We iterate from first to last replaced node and store replaced nodes in @new_nodes
+        while new_node && new_node != next_node
+          @new_nodes[index] << new_node.xpath(query)
+          new_node = new_node.next
+        end
+
+        @new_nodes[index].flatten!
+      end
+
       def only_path?
         context[:only_path]
+      end
+
+      def with_update_nodes
+        @new_nodes = {}
+        yield.tap { update_nodes! }
+      end
+
+      # Once Filter completes replacing nodes, we update nodes with @new_nodes
+      def update_nodes!
+        @new_nodes.sort_by { |index, _new_nodes| -index }.each do |index, new_nodes|
+          nodes[index, 1] = new_nodes
+        end
+        result[:reference_filter_nodes] = nodes
+      end
+
+      def update_nodes_enabled?
+        Feature.enabled?(:update_nodes_for_banzai_reference_filter, project)
       end
     end
   end

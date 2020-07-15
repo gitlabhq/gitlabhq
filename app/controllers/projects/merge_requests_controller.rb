@@ -84,6 +84,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
         @current_user_data = UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json
         @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
+        @file_by_file_default = Feature.enabled?(:view_diffs_file_by_file) && current_user&.view_diffs_file_by_file
         @coverage_path = coverage_reports_project_merge_request_path(@project, @merge_request, format: :json) if @merge_request.has_coverage_reports?
 
         set_pipeline_variables

@@ -2060,6 +2060,9 @@ msgstr ""
 msgid "AlertManagement|Open"
 msgstr ""
 
+msgid "AlertManagement|Opsgenie is enabled"
+msgstr ""
+
 msgid "AlertManagement|Overview"
 msgstr ""
 
@@ -2117,13 +2120,22 @@ msgstr ""
 msgid "AlertManagement|Unknown"
 msgstr ""
 
+msgid "AlertManagement|View alerts in Opsgenie"
+msgstr ""
+
 msgid "AlertManagement|View issue"
+msgstr ""
+
+msgid "AlertManagement|You have enabled the Opsgenie integration. Your alerts will be visible directly in Opsgenie."
 msgstr ""
 
 msgid "AlertService|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
 msgstr ""
 
 msgid "AlertService|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page."
+msgstr ""
+
+msgid "AlertSettings|API URL"
 msgstr ""
 
 msgid "AlertSettings|Active"
@@ -2162,7 +2174,7 @@ msgstr ""
 msgid "AlertSettings|Learn more about our %{linkStart}upcoming integrations%{linkEnd}"
 msgstr ""
 
-msgid "AlertSettings|Prometheus API Base URL"
+msgid "AlertSettings|Opsgenie"
 msgstr ""
 
 msgid "AlertSettings|Reset key"
@@ -2205,9 +2217,6 @@ msgid "AlertSettings|You must provide this URL and authorization key to authoriz
 msgstr ""
 
 msgid "AlertSettings|Your changes were successfully updated."
-msgstr ""
-
-msgid "AlertSettings|http://prometheus.example.com/"
 msgstr ""
 
 msgid "Alerts"
@@ -2661,6 +2670,9 @@ msgid "An error occurred while rendering the editor"
 msgstr ""
 
 msgid "An error occurred while reordering issues."
+msgstr ""
+
+msgid "An error occurred while requesting data from the Jira service"
 msgstr ""
 
 msgid "An error occurred while retrieving calendar activity"
@@ -17313,6 +17325,9 @@ msgstr ""
 msgid "Preferences|For example: 30 mins ago."
 msgstr ""
 
+msgid "Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser."
+msgstr ""
+
 msgid "Preferences|Integrations"
 msgstr ""
 
@@ -17329,6 +17344,9 @@ msgid "Preferences|Project overview content"
 msgstr ""
 
 msgid "Preferences|Render whitespace characters in the Web IDE"
+msgstr ""
+
+msgid "Preferences|Show one file at a time on merge request's Changes tab"
 msgstr ""
 
 msgid "Preferences|Show whitespace changes in diffs"

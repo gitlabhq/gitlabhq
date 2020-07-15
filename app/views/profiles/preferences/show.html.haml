@@ -70,6 +70,13 @@
       = f.check_box :show_whitespace_in_diffs, class: 'form-check-input'
       = f.label :show_whitespace_in_diffs, class: 'form-check-label' do
         = s_('Preferences|Show whitespace changes in diffs')
+    - if Feature.enabled?(:view_diffs_file_by_file)
+      .form-group.form-check
+        = f.check_box :view_diffs_file_by_file, class: 'form-check-input'
+        = f.label :view_diffs_file_by_file, class: 'form-check-label' do
+          = s_("Preferences|Show one file at a time on merge request's Changes tab")
+        .form-text.text-muted
+          = s_("Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser.")
     .form-group
       = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
       = f.number_field :tab_width,

@@ -13,7 +13,8 @@ module Gitlab
         'postgres' => 'postgres',
         'gitaly' => 'gitaly',
         'prometheus' => 'prometheus',
-        'node' => 'node-exporter'
+        'node' => 'node-exporter',
+        'registry' => 'registry'
       }.freeze
 
       CollectionFailure = Struct.new(:query, :error) do
@@ -24,6 +25,7 @@ module Gitlab
 
       def topology_usage_data
         @failures = []
+        @instances = Set[]
         topology_data, duration = measure_duration { topology_fetch_all_data }
         {
           topology: topology_data
@@ -68,8 +70,7 @@ module Gitlab
         by_instance_by_job_process_count = topology_all_service_process_count(client)
         by_instance_by_job_server_types = topology_all_service_server_types(client)
 
-        instances = Set.new(by_instance_mem.keys + by_instance_cpus.keys)
-        instances.map do |instance|
+        @instances.map do |instance|
           {
             node_memory_total_bytes: by_instance_mem[instance],
             node_cpus: by_instance_cpus[instance],
@@ -203,8 +204,28 @@ module Gitlab
         all_instance_data.filter { |metric, _value| metric['instance'] == instance }
       end
 
-      def drop_port(instance)
-        instance.gsub(/:.+$/, '')
+      def normalize_instance_label(instance)
+        normalize_localhost_address(drop_port_number(instance))
+      end
+
+      def normalize_localhost_address(instance)
+        ip_addr = IPAddr.new(instance)
+        is_local_ip = ip_addr.loopback? || ip_addr.to_i.zero?
+
+        is_local_ip ? 'localhost' : instance
+      rescue IPAddr::InvalidAddressError
+        # This most likely means it was a host name, not an IP address
+        instance
+      end
+
+      def drop_port_number(instance)
+        instance.gsub(/:\d+$/, '')
+      end
+
+      def normalize_and_track_instance(instance)
+        normalize_instance_label(instance).tap do |normalized_instance|
+          @instances << normalized_instance
+        end
       end
 
       def one_week_average(query)
@@ -212,13 +233,13 @@ module Gitlab
       end
 
       def aggregate_by_instance(client, query)
-        client.aggregate(query) { |metric| drop_port(metric['instance']) }
+        client.aggregate(query) { |metric| normalize_and_track_instance(metric['instance']) }
       end
 
       # Will retain a composite key that values are mapped to
       def aggregate_by_labels(client, query)
         client.aggregate(query) do |metric|
-          metric['instance'] = drop_port(metric['instance'])
+          metric['instance'] = normalize_and_track_instance(metric['instance'])
           metric
         end
       end
@@ -227,7 +248,7 @@ module Gitlab
       # @return [Hash] mapping instance to a hash of target labels key/value, or the empty hash if input empty vector
       def map_instance_labels(query_result_vector, target_labels)
         query_result_vector.to_h do |result|
-          key = drop_port(result['metric']['instance'])
+          key = normalize_and_track_instance(result['metric']['instance'])
           value = result['metric'].slice(*target_labels).symbolize_keys
           [key, value]
         end

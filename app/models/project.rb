@@ -384,7 +384,9 @@ class Project < ApplicationRecord
   delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci
   delegate :forward_deployment_enabled, :forward_deployment_enabled=, :forward_deployment_enabled?, to: :ci_cd_settings
   delegate :actual_limits, :actual_plan_name, to: :namespace, allow_nil: true
-  delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?, :allow_merge_on_skipped_pipeline=, to: :project_setting
+  delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
+    :allow_merge_on_skipped_pipeline=, :has_confluence?,
+    to: :project_setting
   delegate :active?, to: :prometheus_service, allow_nil: true, prefix: true
 
   # Validations
@@ -1287,11 +1289,6 @@ class Project < ApplicationRecord
     update_column(:has_external_wiki, services.external_wikis.any?) if Gitlab::Database.read_write?
   end
 
-  def has_confluence?
-    ConfluenceService.feature_enabled?(self) && # rubocop:disable CodeReuse/ServiceClass
-      project_setting.has_confluence?
-  end
-
   def find_or_initialize_services
     available_services_names = Service.available_services_names - disabled_services
 
@@ -1301,11 +1298,7 @@ class Project < ApplicationRecord
   end
 
   def disabled_services
-    strong_memoize(:disabled_services) do
-      [].tap do |disabled_services|
-        disabled_services.push(ConfluenceService.to_param) unless ConfluenceService.feature_enabled?(self) # rubocop:disable CodeReuse/ServiceClass
-      end
-    end
+    []
   end
 
   def find_or_initialize_service(name)

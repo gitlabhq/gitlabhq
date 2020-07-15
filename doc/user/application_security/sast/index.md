@@ -318,17 +318,18 @@ The following are Docker image-related variables.
 
 Some analyzers make it possible to filter out vulnerabilities under a given threshold.
 
-| Environment variable    | Default value | Description |
-|-------------------------|---------------|-------------|
+| Environment variable          | Default value            | Description                                                                                                                                                                                                                 |
+|-------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `SAST_EXCLUDED_PATHS`         | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories will also match patterns. |
-| `SAST_BANDIT_EXCLUDED_PATHS`  |     | comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html); For example: `'*/tests/*'` |
-| `SAST_BRAKEMAN_LEVEL`   |         1 | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High. |
-| `SAST_FLAWFINDER_LEVEL` |         1 | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk. |
-| `SAST_GITLEAKS_ENTROPY_LEVEL` | 8.0 | Minimum entropy for secret detection. Float, 0.0 = low, 8.0 = high. |
-| `SAST_GOSEC_LEVEL`      |         0 | Ignore Gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High. |
-| `SAST_GITLEAKS_COMMIT_FROM` |       | The commit a Gitleaks scan starts at. |
-| `SAST_GITLEAKS_COMMIT_TO` |         | The commit a Gitleaks scan ends at. |
-| `SAST_GITLEAKS_HISTORIC_SCAN` | false | Flag to enable a historic Gitleaks scan. |
+| `SAST_BANDIT_EXCLUDED_PATHS`  |                          | comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html); For example: `'*/tests/*'`                                                            |
+| `SAST_BRAKEMAN_LEVEL`         | 1                        | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High.                                                                                                                                        |
+| `SAST_DISABLE_BABEL`          | `false`                  | Disable Babel processing for the NodeJsScan scanner. Set to `true` to disable Babel processing. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33065) in GitLab 13.2.                                           |
+| `SAST_FLAWFINDER_LEVEL`       | 1                        | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk.                                                                                                                                  |
+| `SAST_GITLEAKS_ENTROPY_LEVEL` | 8.0                      | Minimum entropy for secret detection. Float, 0.0 = low, 8.0 = high.                                                                                                                                                         |
+| `SAST_GOSEC_LEVEL`            | 0                        | Ignore Gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High.                                                                                                                   |
+| `SAST_GITLEAKS_COMMIT_FROM`   |                          | The commit a Gitleaks scan starts at.                                                                                                                                                                                       |
+| `SAST_GITLEAKS_COMMIT_TO`     |                          | The commit a Gitleaks scan ends at.                                                                                                                                                                                         |
+| `SAST_GITLEAKS_HISTORIC_SCAN` | `false`                  | Flag to enable a historic Gitleaks scan.                                                                                                                                                                                    |
 
 #### Docker-in-Docker orchestrator
 
@@ -346,12 +347,12 @@ The following variables configure the Docker-in-Docker orchestrator, and therefo
 
 Some analyzers can be customized with environment variables.
 
-| Environment variable        | Analyzer | Description |
-|-----------------------------|----------|-------------|
+| Environment variable                  | Analyzer             | Description |
+|---------------------------------------|----------------------|-------------|
 | `SCAN_KUBERNETES_MANIFESTS`           | Kubesec              | Set to `"true"` to scan Kubernetes manifests. |
 | `KUBESEC_HELM_CHARTS_PATH`            | Kubesec              | Optional path to Helm charts that `helm` will use to generate a Kubernetes manifest that `kubesec` will scan. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`                | Kubesec              | Additional arguments for the `helm` executable. |
-| `COMPILE`                             | SpotBugs             | Set to `"false"` to disable project compilation and dependency fetching |
+| `COMPILE`                             | SpotBugs             | Set to `false` to disable project compilation and dependency fetching. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195252) in GitLab 13.1. |
 | `ANT_HOME`                            | SpotBugs             | The `ANT_HOME` environment variable. |
 | `ANT_PATH`                            | SpotBugs             | Path to the `ant` executable. |
 | `GRADLE_PATH`                         | SpotBugs             | Path to the `gradle` executable. |

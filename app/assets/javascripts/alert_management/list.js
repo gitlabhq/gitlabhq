@@ -16,11 +16,13 @@ export default () => {
     enableAlertManagementPath,
     emptyAlertSvgPath,
     populatingAlertsHelpUrl,
+    opsgenieMvcTargetUrl,
   } = domEl.dataset;
-  let { alertManagementEnabled, userCanEnableAlertManagement } = domEl.dataset;
+  let { alertManagementEnabled, userCanEnableAlertManagement, opsgenieMvcEnabled } = domEl.dataset;
 
   alertManagementEnabled = parseBoolean(alertManagementEnabled);
   userCanEnableAlertManagement = parseBoolean(userCanEnableAlertManagement);
+  opsgenieMvcEnabled = parseBoolean(opsgenieMvcEnabled);
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(
@@ -54,6 +56,8 @@ export default () => {
           emptyAlertSvgPath,
           alertManagementEnabled,
           userCanEnableAlertManagement,
+          opsgenieMvcTargetUrl,
+          opsgenieMvcEnabled,
         },
       });
     },

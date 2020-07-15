@@ -83,6 +83,10 @@ RSpec.describe Gitlab::UsageData::Topology do
                     process_memory_rss: 402
                   },
                   {
+                    name: 'registry',
+                    process_count: 1
+                  },
+                  {
                     name: 'web',
                     server: 'unicorn'
                   }
@@ -133,6 +137,10 @@ RSpec.describe Gitlab::UsageData::Topology do
                   {
                     name: 'redis',
                     process_count: 1
+                  },
+                  {
+                    name: 'registry',
+                    process_count: 1
                   }
                 ]
               },
@@ -152,6 +160,173 @@ RSpec.describe Gitlab::UsageData::Topology do
                   {
                     name: 'sidekiq',
                     process_count: 5
+                  }
+                ]
+              }
+            ]
+          })
+        end
+      end
+
+      context 'and services run on the same node but report different instance values' do
+        let(:node_memory_response) do
+          [
+            {
+              'metric' => { 'instance' => 'localhost:9100' },
+              'value' =>  [1000, '512']
+            }
+          ]
+        end
+        let(:node_uname_info_response) do
+          [
+            {
+              "metric" => {
+                "__name__" => "node_uname_info",
+                "domainname" => "(none)",
+                "instance" => "127.0.0.1:9100",
+                "job" => "node_exporter",
+                "machine" => "x86_64",
+                "nodename" => "127.0.0.1",
+                "release" => "4.19.76-linuxkit",
+                "sysname" => "Linux"
+              },
+              "value" => [1592463033.359, "1"]
+            }
+          ]
+        end
+        # The services in this response should all be mapped to localhost i.e. the same node
+        let(:service_memory_response) do
+          [
+            {
+              'metric' => { 'instance' => 'localhost:8080', 'job' => 'gitlab-rails' },
+              'value' =>  [1000, '10']
+            },
+            {
+              'metric' => { 'instance' => '127.0.0.1:8090', 'job' => 'gitlab-sidekiq' },
+              'value' =>  [1000, '11']
+            },
+            {
+              'metric' => { 'instance' => '0.0.0.0:9090', 'job' => 'prometheus' },
+              'value' =>  [1000, '12']
+            },
+            {
+              'metric' => { 'instance' => '[::1]:1234', 'job' => 'redis' },
+              'value' =>  [1000, '13']
+            },
+            {
+              'metric' => { 'instance' => '[::]:1234', 'job' => 'postgres' },
+              'value' =>  [1000, '14']
+            }
+          ]
+        end
+
+        it 'normalizes equivalent instance values and maps them to the same node' do
+          expect_prometheus_api_to(
+            receive_app_request_volume_query(result: []),
+            receive_node_memory_query(result: node_memory_response),
+            receive_node_cpu_count_query(result: []),
+            receive_node_uname_info_query(result: node_uname_info_response),
+            receive_node_service_memory_rss_query(result: service_memory_response),
+            receive_node_service_memory_uss_query(result: []),
+            receive_node_service_memory_pss_query(result: []),
+            receive_node_service_process_count_query(result: []),
+            receive_node_service_app_server_workers_query(result: [])
+          )
+
+          expect(subject[:topology]).to eq({
+            duration_s: 0,
+            failures: [
+              { 'app_requests' => 'empty_result' },
+              { 'node_cpus' => 'empty_result' },
+              { 'service_uss' => 'empty_result' },
+              { 'service_pss' => 'empty_result' },
+              { 'service_process_count' => 'empty_result' },
+              { 'service_workers' => 'empty_result' }
+            ],
+            nodes: [
+              {
+                node_memory_total_bytes: 512,
+                node_uname_info: {
+                  machine: 'x86_64',
+                  sysname: 'Linux',
+                  release: '4.19.76-linuxkit'
+                },
+                node_services: [
+                  {
+                    name: 'web',
+                    process_memory_rss: 10
+                  },
+                  {
+                    name: 'sidekiq',
+                    process_memory_rss: 11
+                  },
+                  {
+                    name: 'prometheus',
+                    process_memory_rss: 12
+                  },
+                  {
+                    name: 'redis',
+                    process_memory_rss: 13
+                  },
+                  {
+                    name: 'postgres',
+                    process_memory_rss: 14
+                  }
+                ]
+              }
+            ]
+          })
+        end
+      end
+
+      context 'and node metrics are missing but service metrics exist' do
+        it 'still reports service metrics' do
+          expect_prometheus_api_to(
+            receive_app_request_volume_query(result: []),
+            receive_node_memory_query(result: []),
+            receive_node_cpu_count_query(result: []),
+            receive_node_uname_info_query(result: []),
+            receive_node_service_memory_rss_query,
+            receive_node_service_memory_uss_query(result: []),
+            receive_node_service_memory_pss_query(result: []),
+            receive_node_service_process_count_query(result: []),
+            receive_node_service_app_server_workers_query(result: [])
+          )
+
+          expect(subject[:topology]).to eq({
+            duration_s: 0,
+            failures: [
+              { 'app_requests' => 'empty_result' },
+              { 'node_memory' => 'empty_result' },
+              { 'node_cpus' => 'empty_result' },
+              { 'node_uname_info' => 'empty_result' },
+              { 'service_uss' => 'empty_result' },
+              { 'service_pss' => 'empty_result' },
+              { 'service_process_count' => 'empty_result' },
+              { 'service_workers' => 'empty_result' }
+            ],
+            nodes: [
+              {
+                node_services: [
+                  {
+                    name: 'web',
+                    process_memory_rss: 300
+                  },
+                  {
+                    name: 'sidekiq',
+                    process_memory_rss: 303
+                  }
+                ]
+              },
+              {
+                node_services: [
+                  {
+                    name: 'sidekiq',
+                    process_memory_rss: 400
+                  },
+                  {
+                    name: 'redis',
+                    process_memory_rss: 402
                   }
                 ]
               }
@@ -354,6 +529,10 @@ RSpec.describe Gitlab::UsageData::Topology do
         },
         {
           'metric' => { 'instance' => 'instance2:9121', 'job' => 'redis' },
+          'value' => [1000, '1']
+        },
+        {
+          'metric' => { 'instance' => 'instance2:8080', 'job' => 'registry' },
           'value' => [1000, '1']
         },
         # unknown service => should be stripped out

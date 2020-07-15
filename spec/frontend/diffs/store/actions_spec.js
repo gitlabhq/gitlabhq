@@ -46,6 +46,8 @@ import {
   setSuggestPopoverDismissed,
   changeCurrentCommit,
   moveToNeighboringCommit,
+  setCurrentDiffFileIdFromNote,
+  navigateToDiffFileIndex,
 } from '~/diffs/store/actions';
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
@@ -189,8 +191,8 @@ describe('DiffsStoreActions', () => {
 
     it('should fetch batch diff files', done => {
       const endpointBatch = '/fetch/diffs_batch';
-      const res1 = { diff_files: [], pagination: { next_page: 2 } };
-      const res2 = { diff_files: [], pagination: {} };
+      const res1 = { diff_files: [{ file_hash: 'test' }], pagination: { next_page: 2 } };
+      const res2 = { diff_files: [{ file_hash: 'test2' }], pagination: {} };
       mock
         .onGet(
           mergeUrlParams(
@@ -226,8 +228,10 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_RETRIEVING_BATCHES, payload: true },
           { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res1.diff_files } },
           { type: types.SET_BATCH_LOADING, payload: false },
-          { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: [] } },
+          { type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: 'test' },
+          { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res2.diff_files } },
           { type: types.SET_BATCH_LOADING, payload: false },
+          { type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: 'test2' },
           { type: types.SET_RETRIEVING_BATCHES, payload: false },
         ],
         [],
@@ -311,6 +315,7 @@ describe('DiffsStoreActions', () => {
             showWhitespace: false,
             diffViewType: 'inline',
             useSingleDiffStyle: false,
+            currentDiffFileId: null,
           },
           [
             { type: types.SET_LOADING, payload: true },
@@ -347,8 +352,8 @@ describe('DiffsStoreActions', () => {
 
       it('should fetch batch diff files', done => {
         const endpointBatch = '/fetch/diffs_batch';
-        const res1 = { diff_files: [], pagination: { next_page: 2 } };
-        const res2 = { diff_files: [], pagination: {} };
+        const res1 = { diff_files: [{ file_hash: 'test' }], pagination: { next_page: 2 } };
+        const res2 = { diff_files: [{ file_hash: 'test2' }], pagination: {} };
         mock
           .onGet(mergeUrlParams({ per_page: DIFFS_PER_PAGE, w: '1', page: 1 }, endpointBatch))
           .reply(200, res1)
@@ -358,14 +363,16 @@ describe('DiffsStoreActions', () => {
         testAction(
           fetchDiffFilesBatch,
           {},
-          { endpointBatch, useSingleDiffStyle: false },
+          { endpointBatch, useSingleDiffStyle: false, currentDiffFileId: null },
           [
             { type: types.SET_BATCH_LOADING, payload: true },
             { type: types.SET_RETRIEVING_BATCHES, payload: true },
             { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res1.diff_files } },
             { type: types.SET_BATCH_LOADING, payload: false },
-            { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: [] } },
+            { type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: 'test' },
+            { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res2.diff_files } },
             { type: types.SET_BATCH_LOADING, payload: false },
+            { type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: 'test2' },
             { type: types.SET_RETRIEVING_BATCHES, payload: false },
           ],
           [],
@@ -1564,5 +1571,32 @@ describe('DiffsStoreActions', () => {
         );
       },
     );
+  });
+
+  describe('setCurrentDiffFileIdFromNote', () => {
+    it('commits UPDATE_CURRENT_DIFF_FILE_ID', () => {
+      const commit = jest.fn();
+      const rootGetters = {
+        getDiscussion: () => ({ diff_file: { file_hash: '123' } }),
+        notesById: { '1': { discussion_id: '2' } },
+      };
+
+      setCurrentDiffFileIdFromNote({ commit, rootGetters }, '1');
+
+      expect(commit).toHaveBeenCalledWith(types.UPDATE_CURRENT_DIFF_FILE_ID, '123');
+    });
+  });
+
+  describe('navigateToDiffFileIndex', () => {
+    it('commits UPDATE_CURRENT_DIFF_FILE_ID', done => {
+      testAction(
+        navigateToDiffFileIndex,
+        0,
+        { diffFiles: [{ file_hash: '123' }] },
+        [{ type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: '123' }],
+        [],
+        done,
+      );
+    });
   });
 });

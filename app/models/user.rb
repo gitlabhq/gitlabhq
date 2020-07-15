@@ -271,6 +271,7 @@ class User < ApplicationRecord
             :time_display_relative, :time_display_relative=,
             :time_format_in_24h, :time_format_in_24h=,
             :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
+            :view_diffs_file_by_file, :view_diffs_file_by_file=,
             :tab_width, :tab_width=,
             :sourcegraph_enabled, :sourcegraph_enabled=,
             :setup_for_company, :setup_for_company=,

@@ -54,6 +54,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    viewDiffsFileByFile: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
@@ -166,7 +171,13 @@ export default {
         class="diff-toggle-caret gl-mr-2"
         @click.stop="handleToggleFile"
       />
-      <a v-once ref="titleWrapper" class="gl-mr-2" :href="titleLink" @click="handleFileNameClick">
+      <a
+        ref="titleWrapper"
+        :v-once="!viewDiffsFileByFile"
+        class="gl-mr-2"
+        :href="titleLink"
+        @click="handleFileNameClick"
+      >
         <file-icon :file-name="filePath" :size="18" aria-hidden="true" css-classes="gl-mr-2" />
         <span v-if="isFileRenamed">
           <strong

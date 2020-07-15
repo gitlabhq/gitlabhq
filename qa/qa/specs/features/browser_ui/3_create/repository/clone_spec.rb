@@ -3,14 +3,16 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Git clone over HTTP', :ldap_no_tls do
-      before(:all) do
-        @project = Resource::Project.fabricate_via_api! do |scenario|
+      let(:project) do
+        Resource::Project.fabricate_via_api! do |scenario|
           scenario.name = 'project-with-code'
           scenario.description = 'project for git clone tests'
         end
+      end
 
+      before do
         Git::Repository.perform do |repository|
-          repository.uri = @project.repository_http_location.uri
+          repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
 
           repository.act do
@@ -21,12 +23,12 @@ module QA
             push_changes
           end
         end
-        @project.wait_for_push_new_branch
+        project.wait_for_push_new_branch
       end
 
       it 'user performs a deep clone' do
         Git::Repository.perform do |repository|
-          repository.uri = @project.repository_http_location.uri
+          repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
 
           repository.clone
@@ -37,7 +39,7 @@ module QA
 
       it 'user performs a shallow clone' do
         Git::Repository.perform do |repository|
-          repository.uri = @project.repository_http_location.uri
+          repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
 
           repository.shallow_clone

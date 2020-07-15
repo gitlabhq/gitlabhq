@@ -73,4 +73,15 @@ describe('Diff File Row component', () => {
       expect(wrapper.find(FileRowStats).exists()).toEqual(value);
     });
   });
+
+  it('adds is-active class when currentDiffFileId matches file_hash', () => {
+    createComponent({
+      level: 0,
+      currentDiffFileId: '123',
+      file: { fileHash: '123' },
+      hideFileStats: false,
+    });
+
+    expect(wrapper.classes('is-active')).toBe(true);
+  });
 });

@@ -14,15 +14,24 @@ import {
   GlFormSelect,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 import csrf from '~/lib/utils/csrf';
 import service from '../services';
-import { i18n, serviceOptions, JSON_VALIDATE_DELAY } from '../constants';
+import {
+  i18n,
+  serviceOptions,
+  JSON_VALIDATE_DELAY,
+  targetPrometheusUrlPlaceholder,
+  targetOpsgenieUrlPlaceholder,
+} from '../constants';
 
 export default {
   i18n,
   csrf,
+  targetOpsgenieUrlPlaceholder,
+  targetPrometheusUrlPlaceholder,
   components: {
     GlAlert,
     GlButton,
@@ -41,12 +50,13 @@ export default {
   directives: {
     'gl-modal': GlModalDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     prometheus: {
       type: Object,
       required: true,
-      validator: ({ prometheusIsActivated }) => {
-        return prometheusIsActivated !== undefined;
+      validator: ({ activated }) => {
+        return activated !== undefined;
       },
     },
     generic: {
@@ -56,21 +66,26 @@ export default {
         return formPath !== undefined;
       },
     },
+    opsgenie: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       activated: {
-        generic: this.generic.initialActivated,
-        prometheus: this.prometheus.prometheusIsActivated,
+        generic: this.generic.activated,
+        prometheus: this.prometheus.activated,
+        opsgenie: this.opsgenie?.activated,
       },
       loading: false,
       authorizationKey: {
         generic: this.generic.initialAuthorizationKey,
         prometheus: this.prometheus.prometheusAuthorizationKey,
       },
-      selectedEndpoint: null,
+      selectedEndpoint: serviceOptions[0].value,
       options: serviceOptions,
-      prometheusApiKey: this.prometheus.prometheusApiUrl,
+      targetUrl: null,
       feedback: {
         variant: 'danger',
         feedbackMessage: null,
@@ -96,23 +111,41 @@ export default {
         },
       ];
     },
-    isGeneric() {
-      return this.selectedEndpoint === 'generic';
+    isPrometheus() {
+      return this.selectedEndpoint === 'prometheus';
+    },
+    isOpsgenie() {
+      return this.selectedEndpoint === 'opsgenie';
     },
     selectedService() {
-      return this.isGeneric
-        ? {
+      switch (this.selectedEndpoint) {
+        case 'generic': {
+          return {
             url: this.generic.url,
             authKey: this.authorizationKey.generic,
             active: this.activated.generic,
             resetKey: this.resetGenericKey.bind(this),
-          }
-        : {
-            authKey: this.authorizationKey.prometheus,
+          };
+        }
+        case 'prometheus': {
+          return {
             url: this.prometheus.prometheusUrl,
+            authKey: this.authorizationKey.prometheus,
             active: this.activated.prometheus,
             resetKey: this.resetPrometheusKey.bind(this),
+            targetUrl: this.prometheus.prometheusApiUrl,
           };
+        }
+        case 'opsgenie': {
+          return {
+            targetUrl: this.opsgenie.opsgenieMvcTargetUrl,
+            active: this.activated.opsgenie,
+          };
+        }
+        default: {
+          return {};
+        }
+      }
     },
     showFeedbackMsg() {
       return this.feedback.feedbackMessage && !this.isFeedbackDismissed;
@@ -124,10 +157,7 @@ export default {
       );
     },
     prometheusInfo() {
-      return !this.isGeneric ? this.$options.i18n.prometheusInfo : '';
-    },
-    prometheusFeatureEnabled() {
-      return !this.isGeneric;
+      return this.isPrometheus ? this.$options.i18n.prometheusInfo : '';
     },
     jsonIsValid() {
       return this.testAlert.error === null;
@@ -138,20 +168,58 @@ export default {
     canSaveConfig() {
       return !this.loading && this.canSaveForm;
     },
+    baseUrlPlaceholder() {
+      return this.isOpsgenie
+        ? this.$options.targetOpsgenieUrlPlaceholder
+        : this.$options.targetPrometheusUrlPlaceholder;
+    },
   },
   watch: {
     'testAlert.json': debounce(function debouncedJsonValidate() {
       this.validateJson();
     }, JSON_VALIDATE_DELAY),
+    targetUrl(oldVal, newVal) {
+      if (newVal && oldVal !== this.selectedService.targetUrl) {
+        this.canSaveForm = true;
+      }
+    },
   },
-  created() {
-    this.selectedEndpoint = this.prometheus.prometheusIsActivated
-      ? this.options[1].value
-      : this.options[0].value;
+  mounted() {
+    if (
+      this.activated.prometheus ||
+      this.activated.generic ||
+      !this.opsgenie.opsgenieMvcIsAvailable
+    ) {
+      this.removeOpsGenieOption();
+    } else if (this.activated.opsgenie) {
+      this.setOpsgenieAsDefault();
+    }
   },
   methods: {
-    clearJson() {
+    setOpsgenieAsDefault() {
+      this.options = this.options.map(el => {
+        if (el.value !== 'opsgenie') {
+          return { ...el, disabled: true };
+        }
+        return { ...el, disabled: false };
+      });
+      const [selected] = this.options;
+      this.selectedEndpoint = selected.value;
+      if (this.targetUrl === null) {
+        this.targetUrl = this.selectedService.targetUrl;
+      }
+    },
+    removeOpsGenieOption() {
+      this.options = this.options.map(el => {
+        if (el.value !== 'opsgenie') {
+          return { ...el, disabled: false };
+        }
+        return { ...el, disabled: true };
+      });
+    },
+    resetFormValues() {
       this.testAlert.json = null;
+      this.targetUrl = this.selectedService.targetUrl;
     },
     dismissFeedback() {
       this.feedback = { ...this.feedback, feedbackMessage: null };
@@ -181,28 +249,42 @@ export default {
     },
     toggleService(value) {
       this.canSaveForm = true;
-
-      if (this.isGeneric) {
-        this.activated.generic = value;
-      } else {
+      if (this.isPrometheus) {
         this.activated.prometheus = value;
+      } else {
+        this.activated[this.selectedEndpoint] = value;
       }
     },
-    toggleActivated(value) {
-      return this.isGeneric
-        ? this.toggleGenericActivated(value)
-        : this.togglePrometheusActive(value);
+    toggle(value) {
+      return this.isPrometheus ? this.togglePrometheusActive(value) : this.toggleActivated(value);
     },
-    toggleGenericActivated(value) {
+    toggleActivated(value) {
       this.loading = true;
       return service
         .updateGenericActive({
-          endpoint: this.generic.formPath,
-          params: { service: { active: value } },
+          endpoint: this[this.selectedEndpoint].formPath,
+          params: this.isOpsgenie
+            ? { service: { opsgenie_mvc_target_url: this.targetUrl, opsgenie_mvc_enabled: value } }
+            : { service: { active: value } },
         })
         .then(() => {
-          this.activated.generic = value;
+          this.activated[this.selectedEndpoint] = value;
           this.toggleSuccess(value);
+
+          if (!this.isOpsgenie && value) {
+            if (!this.selectedService.authKey) {
+              return window.location.reload();
+            }
+
+            return this.removeOpsGenieOption();
+          }
+
+          if (this.isOpsgenie && value) {
+            return this.setOpsgenieAsDefault();
+          }
+
+          // eslint-disable-next-line no-return-assign
+          return (this.options = serviceOptions);
         })
         .catch(() => {
           this.setFeedback({
@@ -212,6 +294,7 @@ export default {
         })
         .finally(() => {
           this.loading = false;
+          this.canSaveForm = false;
         });
     },
     togglePrometheusActive(value) {
@@ -221,14 +304,15 @@ export default {
           endpoint: this.prometheus.prometheusFormPath,
           params: {
             token: this.$options.csrf.token,
-            config: value ? 1 : 0,
-            url: this.prometheusApiKey,
+            config: value,
+            url: this.targetUrl,
             redirect: window.location,
           },
         })
         .then(() => {
           this.activated.prometheus = value;
           this.toggleSuccess(value);
+          this.removeOpsGenieOption();
         })
         .catch(() => {
           this.setFeedback({
@@ -238,6 +322,7 @@ export default {
         })
         .finally(() => {
           this.loading = false;
+          this.canSaveForm = false;
         });
     },
     toggleSuccess(value) {
@@ -290,11 +375,17 @@ export default {
         });
     },
     onSubmit() {
-      this.toggleActivated(this.selectedService.active);
+      this.toggle(this.selectedService.active);
     },
     onReset() {
       this.testAlert.json = null;
       this.dismissFeedback();
+      this.targetUrl = this.selectedService.targetUrl;
+
+      if (this.canSaveForm) {
+        this.canSaveForm = false;
+        this.activated[this.selectedEndpoint] = this[this.selectedEndpoint].activated;
+      }
     },
   },
 };
@@ -309,7 +400,7 @@ export default {
         variant="danger"
         category="primary"
         class="gl-display-block gl-mt-3"
-        @click="toggleActivated(selectedService.active)"
+        @click="toggle(selectedService.active)"
       >
         {{ __('Save anyway') }}
       </gl-button>
@@ -333,7 +424,7 @@ export default {
           v-model="selectedEndpoint"
           :options="options"
           data-testid="alert-settings-select"
-          @change="clearJson"
+          @change="resetFormValues"
         />
         <span class="gl-text-gray-400">
           <gl-sprintf :message="$options.i18n.integrationsInfo">
@@ -362,90 +453,99 @@ export default {
         />
       </gl-form-group>
       <gl-form-group
-        v-if="prometheusFeatureEnabled"
+        v-if="isOpsgenie || isPrometheus"
         :label="$options.i18n.apiBaseUrlLabel"
         label-for="api-url"
         label-class="label-bold"
       >
         <gl-form-input
           id="api-url"
-          v-model="prometheusApiKey"
+          v-model="targetUrl"
           type="url"
-          :value="prometheusApiKey"
-          :placeholder="$options.i18n.prometheusApiPlaceholder"
+          :placeholder="baseUrlPlaceholder"
+          :disabled="!selectedService.active"
         />
         <span class="gl-text-gray-400">
           {{ $options.i18n.apiBaseUrlHelpText }}
         </span>
       </gl-form-group>
-      <gl-form-group :label="$options.i18n.urlLabel" label-for="url" label-class="label-bold">
-        <gl-form-input-group id="url" :readonly="true" :value="selectedService.url">
-          <template #append>
-            <clipboard-button
-              :text="selectedService.url"
-              :title="$options.i18n.copyToClipboard"
-              class="gl-m-0!"
-            />
-          </template>
-        </gl-form-input-group>
-        <span class="gl-text-gray-400">
-          {{ prometheusInfo }}
-        </span>
-      </gl-form-group>
-      <gl-form-group
-        :label="$options.i18n.authKeyLabel"
-        label-for="authorization-key"
-        label-class="label-bold"
-      >
-        <gl-form-input-group
-          id="authorization-key"
-          class="gl-mb-2"
-          :readonly="true"
-          :value="selectedService.authKey"
+      <template v-if="!isOpsgenie">
+        <gl-form-group :label="$options.i18n.urlLabel" label-for="url" label-class="label-bold">
+          <gl-form-input-group id="url" readonly :value="selectedService.url">
+            <template #append>
+              <clipboard-button
+                :text="selectedService.url"
+                :title="$options.i18n.copyToClipboard"
+                class="gl-m-0!"
+              />
+            </template>
+          </gl-form-input-group>
+          <span class="gl-text-gray-400">
+            {{ prometheusInfo }}
+          </span>
+        </gl-form-group>
+        <gl-form-group
+          :label="$options.i18n.authKeyLabel"
+          label-for="authorization-key"
+          label-class="label-bold"
         >
-          <template #append>
-            <clipboard-button
-              :text="selectedService.authKey"
-              :title="$options.i18n.copyToClipboard"
-              class="gl-m-0!"
-            />
-          </template>
-        </gl-form-input-group>
-        <gl-button v-gl-modal.authKeyModal class="gl-mt-3">{{ $options.i18n.resetKey }}</gl-button>
-        <gl-modal
-          modal-id="authKeyModal"
-          :title="$options.i18n.resetKey"
-          :ok-title="$options.i18n.resetKey"
-          ok-variant="danger"
-          @ok="selectedService.resetKey"
+          <gl-form-input-group
+            id="authorization-key"
+            class="gl-mb-2"
+            readonly
+            :value="selectedService.authKey"
+          >
+            <template #append>
+              <clipboard-button
+                :text="selectedService.authKey"
+                :title="$options.i18n.copyToClipboard"
+                class="gl-m-0!"
+              />
+            </template>
+          </gl-form-input-group>
+          <gl-button v-gl-modal.authKeyModal :disabled="!selectedService.active" class="gl-mt-3">{{
+            $options.i18n.resetKey
+          }}</gl-button>
+          <gl-modal
+            modal-id="authKeyModal"
+            :title="$options.i18n.resetKey"
+            :ok-title="$options.i18n.resetKey"
+            ok-variant="danger"
+            @ok="selectedService.resetKey"
+          >
+            {{ $options.i18n.restKeyInfo }}
+          </gl-modal>
+        </gl-form-group>
+        <gl-form-group
+          :label="$options.i18n.alertJson"
+          label-for="alert-json"
+          label-class="label-bold"
+          :invalid-feedback="testAlert.error"
         >
-          {{ $options.i18n.restKeyInfo }}
-        </gl-modal>
-      </gl-form-group>
-      <gl-form-group
-        :label="$options.i18n.alertJson"
-        label-for="alert-json"
-        label-class="label-bold"
-        :invalid-feedback="testAlert.error"
-      >
-        <gl-form-textarea
-          id="alert-json"
-          v-model.trim="testAlert.json"
-          :disabled="!selectedService.active"
-          :state="jsonIsValid"
-          :placeholder="$options.i18n.alertJsonPlaceholder"
-          rows="6"
-          max-rows="10"
-        />
-      </gl-form-group>
-      <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
-        $options.i18n.testAlertInfo
-      }}</gl-button>
+          <gl-form-textarea
+            id="alert-json"
+            v-model.trim="testAlert.json"
+            :disabled="!selectedService.active"
+            :state="jsonIsValid"
+            :placeholder="$options.i18n.alertJsonPlaceholder"
+            rows="6"
+            max-rows="10"
+          />
+        </gl-form-group>
+        <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
+          $options.i18n.testAlertInfo
+        }}</gl-button>
+      </template>
       <div class="footer-block row-content-block gl-display-flex gl-justify-content-space-between">
-        <gl-button type="submit" variant="success" category="primary" :disabled="!canSaveConfig">
+        <gl-button
+          variant="success"
+          category="primary"
+          :disabled="!canSaveConfig"
+          @click="onSubmit"
+        >
           {{ __('Save changes') }}
         </gl-button>
-        <gl-button type="reset" variant="default" category="primary">
+        <gl-button variant="default" category="primary" :disabled="!canSaveConfig" @click="onReset">
           {{ __('Cancel') }}
         </gl-button>
       </div>

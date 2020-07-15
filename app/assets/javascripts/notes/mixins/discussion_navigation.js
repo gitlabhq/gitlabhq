@@ -78,8 +78,16 @@ function handleDiscussionJump(self, fn, discussionId = self.currentDiscussionId)
   const isDiffView = window.mrTabs.currentAction === 'diffs';
   const targetId = fn(discussionId, isDiffView);
   const discussion = self.getDiscussion(targetId);
-  jumpToDiscussion(self, discussion);
-  self.setCurrentDiscussionId(targetId);
+  const discussionFilePath = discussion.diff_file?.file_path;
+
+  if (discussionFilePath) {
+    self.scrollToFile(discussionFilePath);
+  }
+
+  self.$nextTick(() => {
+    jumpToDiscussion(self, discussion);
+    self.setCurrentDiscussionId(targetId);
+  });
 }
 
 export default {
@@ -95,6 +103,7 @@ export default {
   },
   methods: {
     ...mapActions(['expandDiscussion', 'setCurrentDiscussionId']),
+    ...mapActions('diffs', ['scrollToFile']),
 
     jumpToNextDiscussion() {
       handleDiscussionJump(this, this.nextUnresolvedDiscussionId);

@@ -34,6 +34,16 @@ export default {
       type: String,
       required: true,
     },
+    opsgenieMvcEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    opsgenieMvcTargetUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   mounted() {
     this.trackPageViews();
@@ -58,6 +68,8 @@ export default {
       :empty-alert-svg-path="emptyAlertSvgPath"
       :enable-alert-management-path="enableAlertManagementPath"
       :user-can-enable-alert-management="userCanEnableAlertManagement"
+      :opsgenie-mvc-enabled="opsgenieMvcEnabled"
+      :opsgenie-mvc-target-url="opsgenieMvcTargetUrl"
     />
   </div>
 </template>

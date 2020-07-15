@@ -78,6 +78,7 @@ export default function initDiffsApp(store) {
         dismissEndpoint: dataset.dismissEndpoint,
         showSuggestPopover: parseBoolean(dataset.showSuggestPopover),
         showWhitespaceDefault: parseBoolean(dataset.showWhitespaceDefault),
+        viewDiffsFileByFile: parseBoolean(dataset.fileByFileDefault),
       };
     },
     computed: {
@@ -115,6 +116,7 @@ export default function initDiffsApp(store) {
           isFluidLayout: this.isFluidLayout,
           dismissEndpoint: this.dismissEndpoint,
           showSuggestPopover: this.showSuggestPopover,
+          viewDiffsFileByFile: this.viewDiffsFileByFile,
         },
       });
     },

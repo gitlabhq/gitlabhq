@@ -7,18 +7,12 @@ class ConfluenceService < Service
   VALID_HOST_MATCH = %r{\A.+\.atlassian\.net\Z}.freeze
   VALID_PATH_MATCH = %r{\A/wiki(/|\Z)}.freeze
 
-  FEATURE_FLAG = :confluence_integration
-
   prop_accessor :confluence_url
 
   validates :confluence_url, presence: true, if: :activated?
   validate :validate_confluence_url_is_cloud, if: :activated?
 
   after_commit :cache_project_has_confluence
-
-  def self.feature_enabled?(actor)
-    ::Feature.enabled?(FEATURE_FLAG, actor)
-  end
 
   def self.to_param
     'confluence'

@@ -23,6 +23,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    currentDiffFileId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     showFileRowStats() {
@@ -33,7 +38,13 @@ export default {
 </script>
 
 <template>
-  <file-row :file="file" v-bind="$attrs" v-on="$listeners">
+  <file-row
+    :file="file"
+    v-bind="$attrs"
+    :class="{ 'is-active': currentDiffFileId === file.fileHash }"
+    class="diff-file-row"
+    v-on="$listeners"
+  >
     <file-row-stats v-if="showFileRowStats" :file="file" class="mr-1" />
     <changed-file-icon :file="file" :size="16" :show-tooltip="true" />
   </file-row>

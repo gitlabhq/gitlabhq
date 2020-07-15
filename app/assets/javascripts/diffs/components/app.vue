@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlButtonGroup, GlButton } from '@gitlab/ui';
 import Mousetrap from 'mousetrap';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
@@ -36,6 +36,8 @@ export default {
     TreeList,
     GlLoadingIcon,
     PanelResizer,
+    GlButtonGroup,
+    GlButton,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -94,6 +96,11 @@ export default {
       required: false,
       default: false,
     },
+    viewDiffsFileByFile: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     const treeWidth =
@@ -120,9 +127,18 @@ export default {
       emailPatchPath: state => state.diffs.emailPatchPath,
       retrievingBatches: state => state.diffs.retrievingBatches,
     }),
-    ...mapState('diffs', ['showTreeList', 'isLoading', 'startVersion']),
+    ...mapState('diffs', ['showTreeList', 'isLoading', 'startVersion', 'currentDiffFileId']),
     ...mapGetters('diffs', ['isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
+    diffs() {
+      if (!this.viewDiffsFileByFile) {
+        return this.diffFiles;
+      }
+
+      return this.diffFiles.filter((file, i) => {
+        return file.file_hash === this.currentDiffFileId || (i === 0 && !this.currentDiffFileId);
+      });
+    },
     canCurrentUserFork() {
       return this.currentUser.can_fork === true && this.currentUser.can_create_merge_request;
     },
@@ -183,16 +199,22 @@ export default {
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,
       useSingleDiffStyle: this.glFeatures.singleMrDiffView,
+      viewDiffsFileByFile: this.viewDiffsFileByFile,
     });
 
     if (this.shouldShow) {
       this.fetchData();
     }
 
-    const id = window && window.location && window.location.hash;
+    const id = window?.location?.hash;
 
-    if (id) {
-      this.setHighlightedRow(id.slice(1));
+    if (id && id.indexOf('#note') !== 0) {
+      this.setHighlightedRow(
+        id
+          .split('diff-content')
+          .pop()
+          .slice(1),
+      );
     }
   },
   created() {
@@ -236,6 +258,7 @@ export default {
       'cacheTreeListWidth',
       'scrollToFile',
       'toggleShowTreeList',
+      'navigateToDiffFileIndex',
     ]),
     refetchDiffData() {
       this.fetchData(false);
@@ -422,12 +445,31 @@ export default {
           <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
             <diff-file
-              v-for="file in diffFiles"
+              v-for="file in diffs"
               :key="file.newPath"
               :file="file"
               :help-page-path="helpPagePath"
               :can-current-user-fork="canCurrentUserFork"
+              :view-diffs-file-by-file="viewDiffsFileByFile"
             />
+            <div v-if="viewDiffsFileByFile" class="d-flex gl-justify-content-center">
+              <gl-button-group>
+                <gl-button
+                  :disabled="currentDiffIndex === 0"
+                  data-testid="singleFilePrevious"
+                  @click="navigateToDiffFileIndex(currentDiffIndex - 1)"
+                >
+                  {{ __('Prev') }}
+                </gl-button>
+                <gl-button
+                  :disabled="currentDiffIndex === diffFiles.length - 1"
+                  data-testid="singleFileNext"
+                  @click="navigateToDiffFileIndex(currentDiffIndex + 1)"
+                >
+                  {{ __('Next') }}
+                </gl-button>
+              </gl-button-group>
+            </div>
           </template>
           <no-changes v-else :changes-empty-state-illustration="changesEmptyStateIllustration" />
         </div>

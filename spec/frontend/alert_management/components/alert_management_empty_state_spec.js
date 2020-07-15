@@ -10,6 +10,7 @@ describe('AlertManagementEmptyState', () => {
       alertManagementEnabled: false,
       userCanEnableAlertManagement: false,
     },
+    stubs = {},
   } = {}) {
     wrapper = shallowMount(AlertManagementEmptyState, {
       propsData: {
@@ -17,6 +18,7 @@ describe('AlertManagementEmptyState', () => {
         emptyAlertSvgPath: 'illustration/path',
         ...props,
       },
+      stubs,
     });
   }
 
@@ -30,9 +32,23 @@ describe('AlertManagementEmptyState', () => {
     }
   });
 
+  const EmptyState = () => wrapper.find(GlEmptyState);
+
   describe('Empty state', () => {
     it('shows empty state', () => {
-      expect(wrapper.find(GlEmptyState).exists()).toBe(true);
+      expect(EmptyState().exists()).toBe(true);
+    });
+
+    it('show OpsGenie integration state when OpsGenie mcv is true', () => {
+      mountComponent({
+        props: {
+          alertManagementEnabled: false,
+          userCanEnableAlertManagement: false,
+          opsgenieMvcEnabled: true,
+          opsgenieMvcTargetUrl: 'https://opsgenie-url.com',
+        },
+      });
+      expect(EmptyState().props('title')).toBe('Opsgenie is enabled');
     });
   });
 });

@@ -87,6 +87,7 @@ describe('DiffFileHeader component', () => {
       propsData: {
         diffFile,
         canCurrentUserFork: false,
+        viewDiffsFileByFile: false,
         ...props,
       },
       localVue,

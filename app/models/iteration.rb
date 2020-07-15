@@ -34,6 +34,9 @@ class Iteration < ApplicationRecord
       .where('due_date is NULL or due_date >= ?', start_date)
   end
 
+  scope :start_date_passed, -> { where('start_date <= ?', Date.current).where('due_date > ?', Date.current) }
+  scope :due_date_passed, -> { where('due_date <= ?', Date.current) }
+
   state_machine :state_enum, initial: :upcoming do
     event :start do
       transition upcoming: :started
