@@ -45,6 +45,7 @@ query getFiles(
           edges {
             node {
               ...TreeEntry
+              mode
               webUrl
               lfsOid
             }

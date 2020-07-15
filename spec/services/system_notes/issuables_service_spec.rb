@@ -161,7 +161,9 @@ RSpec.describe ::SystemNotes::IssuablesService do
       let(:status) { 'reopened' }
       let(:source) { nil }
 
-      it { is_expected.to be_nil }
+      it 'does not change note count' do
+        expect { subject }.not_to change { Note.count }
+      end
     end
 
     context 'with status reopened' do
@@ -660,25 +662,67 @@ RSpec.describe ::SystemNotes::IssuablesService do
   describe '#close_after_error_tracking_resolve' do
     subject { service.close_after_error_tracking_resolve }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'closed' }
+    context 'when state tracking is enabled' do
+      before do
+        stub_feature_flags(track_resource_state_change_events: true)
+      end
+
+      it 'creates the expected state event' do
+        subject
+
+        event = ResourceStateEvent.last
+
+        expect(event.close_after_error_tracking_resolve).to eq(true)
+        expect(event.state).to eq('closed')
+      end
     end
 
-    it 'creates the expected system note' do
-      expect(subject.note)
+    context 'when state tracking is disabled' do
+      before do
+        stub_feature_flags(track_resource_state_change_events: false)
+      end
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'closed' }
+      end
+
+      it 'creates the expected system note' do
+        expect(subject.note)
           .to eq('resolved the corresponding error and closed the issue.')
+      end
     end
   end
 
   describe '#auto_resolve_prometheus_alert' do
     subject { service.auto_resolve_prometheus_alert }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'closed' }
+    context 'when state tracking is enabled' do
+      before do
+        stub_feature_flags(track_resource_state_change_events: true)
+      end
+
+      it 'creates the expected state event' do
+        subject
+
+        event = ResourceStateEvent.last
+
+        expect(event.close_auto_resolve_prometheus_alert).to eq(true)
+        expect(event.state).to eq('closed')
+      end
     end
 
-    it 'creates the expected system note' do
-      expect(subject.note).to eq('automatically closed this issue because the alert resolved.')
+    context 'when state tracking is disabled' do
+      before do
+        stub_feature_flags(track_resource_state_change_events: false)
+      end
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'closed' }
+      end
+
+      it 'creates the expected system note' do
+        expect(subject.note).to eq('automatically closed this issue because the alert resolved.')
+      end
     end
   end
 end

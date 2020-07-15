@@ -1,0 +1,6 @@
+---
+title: Default the feature flag to true to always show the default initial branch
+  name setting
+merge_request: 36889
+author:
+type: added

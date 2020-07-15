@@ -19,7 +19,15 @@ class AuditEvent < ApplicationRecord
   scope :by_entity_id, -> (entity_id) { where(entity_id: entity_id) }
   scope :by_author_id, -> (author_id) { where(author_id: author_id) }
 
+  PARALLEL_PERSISTENCE_COLUMNS = [:author_name].freeze
+
   after_initialize :initialize_details
+  # Note: The intention is to remove this once refactoring of AuditEvent
+  # has proceeded further.
+  #
+  # See further details in the epic:
+  # https://gitlab.com/groups/gitlab-org/-/epics/2765
+  after_validation :parallel_persist
 
   def self.order_by(method)
     case method.to_s
@@ -54,6 +62,10 @@ class AuditEvent < ApplicationRecord
 
   def default_author_value
     ::Gitlab::Audit::NullAuthor.for(author_id, (self[:author_name] || details[:author_name]))
+  end
+
+  def parallel_persist
+    PARALLEL_PERSISTENCE_COLUMNS.each { |col| self[col] = details[col] }
   end
 end
 

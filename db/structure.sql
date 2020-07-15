@@ -14502,7 +14502,8 @@ CREATE TABLE public.protected_branch_push_access_levels (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     user_id integer,
-    group_id integer
+    group_id integer,
+    deploy_key_id integer
 );
 
 CREATE SEQUENCE public.protected_branch_push_access_levels_id_seq
@@ -14854,6 +14855,11 @@ CREATE TABLE public.resource_state_events (
     created_at timestamp with time zone NOT NULL,
     state smallint NOT NULL,
     epic_id integer,
+    source_commit text,
+    close_after_error_tracking_resolve boolean DEFAULT false NOT NULL,
+    close_auto_resolve_prometheus_alert boolean DEFAULT false NOT NULL,
+    source_merge_request_id bigint,
+    CONSTRAINT check_f0bcfaa3a2 CHECK ((char_length(source_commit) <= 40)),
     CONSTRAINT state_events_must_belong_to_issue_or_merge_request_or_epic CHECK ((((issue_id <> NULL::bigint) AND (merge_request_id IS NULL) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id <> NULL::bigint) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id IS NULL) AND (epic_id <> NULL::integer))))
 );
 
@@ -19027,6 +19033,8 @@ CREATE INDEX index_dependency_proxy_blobs_on_group_id_and_file_name ON public.de
 
 CREATE INDEX index_dependency_proxy_group_settings_on_group_id ON public.dependency_proxy_group_settings USING btree (group_id);
 
+CREATE INDEX index_deploy_key_id_on_protected_branch_push_access_levels ON public.protected_branch_push_access_levels USING btree (deploy_key_id);
+
 CREATE INDEX index_deploy_keys_projects_on_deploy_key_id ON public.deploy_keys_projects USING btree (deploy_key_id);
 
 CREATE INDEX index_deploy_keys_projects_on_project_id ON public.deploy_keys_projects USING btree (project_id);
@@ -20151,6 +20159,8 @@ CREATE INDEX index_resource_state_events_on_issue_id_and_created_at ON public.re
 
 CREATE INDEX index_resource_state_events_on_merge_request_id ON public.resource_state_events USING btree (merge_request_id);
 
+CREATE INDEX index_resource_state_events_on_source_merge_request_id ON public.resource_state_events USING btree (source_merge_request_id);
+
 CREATE INDEX index_resource_state_events_on_user_id ON public.resource_state_events USING btree (user_id);
 
 CREATE INDEX index_resource_weight_events_on_issue_id_and_created_at ON public.resource_weight_events USING btree (issue_id, created_at);
@@ -20909,6 +20919,9 @@ ALTER TABLE ONLY public.vulnerabilities
 
 ALTER TABLE ONLY public.vulnerabilities
     ADD CONSTRAINT fk_131d289c65 FOREIGN KEY (milestone_id) REFERENCES public.milestones(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.protected_branch_push_access_levels
+    ADD CONSTRAINT fk_15d2a7a4ae FOREIGN KEY (deploy_key_id) REFERENCES public.keys(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.internal_ids
     ADD CONSTRAINT fk_162941d509 FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
@@ -22052,6 +22065,9 @@ ALTER TABLE ONLY public.operations_scopes
 
 ALTER TABLE ONLY public.milestone_releases
     ADD CONSTRAINT fk_rails_7ae0756a2d FOREIGN KEY (milestone_id) REFERENCES public.milestones(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT fk_rails_7ddc5f7457 FOREIGN KEY (source_merge_request_id) REFERENCES public.merge_requests(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.application_settings
     ADD CONSTRAINT fk_rails_7e112a9599 FOREIGN KEY (instance_administration_project_id) REFERENCES public.projects(id) ON DELETE SET NULL;
@@ -23618,6 +23634,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200521225346
 20200522205606
 20200522235146
+20200524104346
 20200525114553
 20200525121014
 20200525144525
@@ -23676,6 +23693,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200615111857
 20200615121217
 20200615123055
+20200615141554
 20200615193524
 20200615232735
 20200615234047
@@ -23688,6 +23706,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200617001848
 20200617002030
 20200617150041
+20200617205000
 20200618105638
 20200618134223
 20200618134723
@@ -23704,6 +23723,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200622235737
 20200623000148
 20200623000320
+20200623073431
 20200623090030
 20200623121135
 20200623141217

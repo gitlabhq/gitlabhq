@@ -253,13 +253,6 @@
 }
 
 .stage-cell {
-  &.table-section {
-    @include media-breakpoint-up(md) {
-      min-width: 160px; /* Hack alert: Without this the mini graph pipeline won't work properly*/
-      margin-right: -4px;
-    }
-  }
-
   .mini-pipeline-graph-dropdown-toggle {
     svg {
       height: $ci-action-icon-size;

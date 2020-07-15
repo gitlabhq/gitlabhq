@@ -78,7 +78,7 @@ module Gitlab
           end
 
           def metrics
-            @metrics ||= Chain::Metrics.new
+            @metrics ||= ::Gitlab::Ci::Pipeline::Metrics.new
           end
 
           def observe_creation_duration(duration)

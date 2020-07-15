@@ -794,6 +794,11 @@ type Blob implements Entry {
   lfsOid: String
 
   """
+  Blob mode in numeric format
+  """
+  mode: String
+
+  """
   Name of the entry
   """
   name: String!
@@ -5115,7 +5120,7 @@ type Group {
     iid: ID
 
     """
-    Whether to include ancestor Iterations. Defaults to true
+    Whether to include ancestor iterations. Defaults to true
     """
     includeAncestors: Boolean
 

@@ -13,6 +13,21 @@ RSpec.describe DeployKeysProject do
     it { is_expected.to validate_presence_of(:deploy_key) }
   end
 
+  describe '.with_deploy_keys' do
+    subject(:scoped_query) { described_class.with_deploy_keys.last }
+
+    it 'includes deploy_keys in query' do
+      project = create(:project)
+      create(:deploy_keys_project, project: project, deploy_key: create(:deploy_key))
+
+      includes_query_count = ActiveRecord::QueryRecorder.new { scoped_query }.count
+      deploy_key_query_count = ActiveRecord::QueryRecorder.new { scoped_query.deploy_key }.count
+
+      expect(includes_query_count).to eq(2)
+      expect(deploy_key_query_count).to eq(0)
+    end
+  end
+
   describe "Destroying" do
     let(:project)     { create(:project) }
     subject           { create(:deploy_keys_project, project: project) }

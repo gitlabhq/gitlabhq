@@ -97,6 +97,9 @@ export default {
     isJiraIssue() {
       return this.issuable.external_tracker === 'jira';
     },
+    linkTarget() {
+      return this.isJiraIssue ? '_blank' : null;
+    },
     issueCreatedToday() {
       return getDayDifference(new Date(this.issuable.created_at), new Date()) < 1;
     },
@@ -239,11 +242,7 @@ export default {
               :title="$options.confidentialTooltipText"
               :aria-label="$options.confidentialTooltipText"
             />
-            <gl-link
-              :href="issuable.web_url"
-              :target="isJiraIssue ? '_blank' : null"
-              data-testid="issuable-title"
-            >
+            <gl-link :href="issuable.web_url" :target="linkTarget" data-testid="issuable-title">
               {{ issuable.title }}
               <gl-icon
                 v-if="isJiraIssue"
@@ -281,6 +280,7 @@ export default {
                   ref="openedAgoByContainer"
                   v-bind="popoverDataAttrs"
                   :href="issuableAuthor.web_url"
+                  :target="linkTarget"
                 >
                   {{ issuableAuthor.name }}
                 </gl-link>
@@ -340,8 +340,8 @@ export default {
       <!-- Issuable meta -->
       <div class="flex-shrink-0 d-flex flex-column align-items-end justify-content-center">
         <div class="controls d-flex">
-          <span v-if="isJiraIssue">&nbsp;</span>
-          <span v-if="isClosed" class="issuable-status">{{ __('CLOSED') }}</span>
+          <span v-if="isJiraIssue" data-testid="issuable-status">{{ issuable.status }}</span>
+          <span v-else-if="isClosed" class="issuable-status">{{ __('CLOSED') }}</span>
 
           <issue-assignees
             :assignees="issuable.assignees"

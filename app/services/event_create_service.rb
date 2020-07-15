@@ -11,44 +11,30 @@ class EventCreateService
   IllegalActionError = Class.new(StandardError)
 
   def open_issue(issue, current_user)
-    create_resource_event(issue, current_user, :opened)
-
     create_record_event(issue, current_user, :created)
   end
 
   def close_issue(issue, current_user)
-    create_resource_event(issue, current_user, :closed)
-
     create_record_event(issue, current_user, :closed)
   end
 
   def reopen_issue(issue, current_user)
-    create_resource_event(issue, current_user, :reopened)
-
     create_record_event(issue, current_user, :reopened)
   end
 
   def open_mr(merge_request, current_user)
-    create_resource_event(merge_request, current_user, :opened)
-
     create_record_event(merge_request, current_user, :created)
   end
 
   def close_mr(merge_request, current_user)
-    create_resource_event(merge_request, current_user, :closed)
-
     create_record_event(merge_request, current_user, :closed)
   end
 
   def reopen_mr(merge_request, current_user)
-    create_resource_event(merge_request, current_user, :reopened)
-
     create_record_event(merge_request, current_user, :reopened)
   end
 
   def merge_mr(merge_request, current_user)
-    create_resource_event(merge_request, current_user, :merged)
-
     create_record_event(merge_request, current_user, :merged)
   end
 
@@ -219,18 +205,6 @@ class EventCreateService
     return {} unless resource_parent_attr
 
     { resource_parent_attr => resource_parent.id }
-  end
-
-  def create_resource_event(issuable, current_user, status)
-    return unless state_change_tracking_enabled?(issuable)
-
-    ResourceEvents::ChangeStateService.new(resource: issuable, user: current_user)
-      .execute(status)
-  end
-
-  def state_change_tracking_enabled?(issuable)
-    issuable&.respond_to?(:resource_state_events) &&
-      ::Feature.enabled?(:track_resource_state_change_events, issuable&.project)
   end
 end
 

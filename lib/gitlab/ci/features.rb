@@ -34,6 +34,10 @@ module Gitlab
         ::Feature.enabled?(:ci_pipeline_latest, default_enabled: true)
       end
 
+      def self.pipeline_status_omit_commit_sha_in_cache_key?(project)
+        Feature.enabled?(:ci_pipeline_status_omit_commit_sha_in_cache_key, project)
+      end
+
       def self.release_generation_enabled?
         ::Feature.enabled?(:ci_release_generation)
       end
@@ -60,6 +64,10 @@ module Gitlab
 
       def self.destroy_only_unlocked_expired_artifacts_enabled?
         ::Feature.enabled?(:destroy_only_unlocked_expired_artifacts, default_enabled: false)
+      end
+
+      def self.bulk_insert_on_create?(project)
+        ::Feature.enabled?(:ci_bulk_insert_on_create, project, default_enabled: true)
       end
     end
   end

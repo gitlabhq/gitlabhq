@@ -139,14 +139,6 @@ describe('FilteredSearchBarRoot', () => {
       });
     });
 
-    describe('getRecentSearches', () => {
-      it('returns array of strings representing recent searches', () => {
-        wrapper.vm.recentSearchesStore.setRecentSearches(['foo']);
-
-        expect(wrapper.vm.getRecentSearches()).toEqual(['foo']);
-      });
-    });
-
     describe('handleSortOptionClick', () => {
       it('emits component event `onSort` with selected sort by value', () => {
         wrapper.vm.handleSortOptionClick(mockSortOptions[1]);
@@ -178,6 +170,14 @@ describe('FilteredSearchBarRoot', () => {
       });
     });
 
+    describe('handleHistoryItemSelected', () => {
+      it('emits `onFilter` event with provided filters param', () => {
+        wrapper.vm.handleHistoryItemSelected(mockHistoryItems[0]);
+
+        expect(wrapper.emitted('onFilter')[0]).toEqual([mockHistoryItems[0]]);
+      });
+    });
+
     describe('handleClearHistory', () => {
       it('clears search history from recent searches store', () => {
         jest.spyOn(wrapper.vm.recentSearchesStore, 'setRecentSearches').mockReturnValue([]);
@@ -187,7 +187,7 @@ describe('FilteredSearchBarRoot', () => {
 
         expect(wrapper.vm.recentSearchesStore.setRecentSearches).toHaveBeenCalledWith([]);
         expect(wrapper.vm.recentSearchesService.save).toHaveBeenCalledWith([]);
-        expect(wrapper.vm.getRecentSearches()).toEqual([]);
+        expect(wrapper.vm.recentSearches).toEqual([]);
       });
     });
 
@@ -223,6 +223,16 @@ describe('FilteredSearchBarRoot', () => {
         });
       });
 
+      it('sets `recentSearches` data prop with array of searches', () => {
+        jest.spyOn(wrapper.vm.recentSearchesService, 'save');
+
+        wrapper.vm.handleFilterSubmit(mockFilters);
+
+        return wrapper.vm.recentSearchesPromise.then(() => {
+          expect(wrapper.vm.recentSearches).toEqual([mockFilters]);
+        });
+      });
+
       it('emits component event `onFilter` with provided filters param', () => {
         wrapper.vm.handleFilterSubmit(mockFilters);
 
@@ -236,9 +246,8 @@ describe('FilteredSearchBarRoot', () => {
       wrapper.setData({
         selectedSortOption: mockSortOptions[0],
         selectedSortDirection: SortDirection.descending,
+        recentSearches: mockHistoryItems,
       });
-
-      wrapper.vm.recentSearchesStore.setRecentSearches(mockHistoryItems);
 
       return wrapper.vm.$nextTick();
     });

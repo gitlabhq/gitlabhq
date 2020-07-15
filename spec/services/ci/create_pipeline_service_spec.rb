@@ -80,7 +80,7 @@ RSpec.describe Ci::CreatePipelineService do
       it 'records pipeline size in a prometheus histogram' do
         histogram = spy('pipeline size histogram')
 
-        allow(Gitlab::Ci::Pipeline::Chain::Metrics)
+        allow(Gitlab::Ci::Pipeline::Metrics)
           .to receive(:new).and_return(histogram)
 
         execute_service
@@ -1683,6 +1683,12 @@ RSpec.describe Ci::CreatePipelineService do
         it 'creates a pipeline with build_a and test_a' do
           expect(pipeline).to be_persisted
           expect(pipeline.builds.pluck(:name)).to contain_exactly("build_a", "test_a")
+        end
+
+        it 'bulk inserts all needs' do
+          expect(Ci::BuildNeed).to receive(:bulk_insert!).and_call_original
+
+          expect(pipeline).to be_persisted
         end
       end
 

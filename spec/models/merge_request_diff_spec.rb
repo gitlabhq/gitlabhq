@@ -162,7 +162,8 @@ RSpec.describe MergeRequestDiff do
     let(:uploader) { ExternalDiffUploader }
     let(:file_store) { uploader::Store::LOCAL }
     let(:remote_store) { uploader::Store::REMOTE }
-    let(:diff) { create(:merge_request).merge_request_diff }
+    let(:merge_request) { create(:merge_request) }
+    let(:diff) { merge_request.merge_request_diff }
 
     it 'converts from in-database to external file storage' do
       expect(diff).not_to be_stored_externally
@@ -232,6 +233,33 @@ RSpec.describe MergeRequestDiff do
       expect(diff).not_to receive(:save!)
 
       diff.migrate_files_to_external_storage!
+    end
+
+    context 'diff adds an empty file' do
+      let(:project) { create(:project, :test_repo) }
+      let(:merge_request) do
+        create(
+          :merge_request,
+          source_project: project,
+          target_project: project,
+          source_branch: 'empty-file',
+          target_branch: 'master'
+        )
+      end
+
+      it 'migrates the diff to object storage' do
+        create_file_in_repo(project, 'master', 'empty-file', 'empty-file', '')
+
+        expect(diff).not_to be_stored_externally
+
+        stub_external_diffs_setting(enabled: true)
+        stub_external_diffs_object_storage(uploader, direct_upload: true)
+
+        diff.migrate_files_to_external_storage!
+
+        expect(diff).to be_stored_externally
+        expect(diff.external_diff_store).to eq(remote_store)
+      end
     end
   end
 
@@ -500,12 +528,69 @@ RSpec.describe MergeRequestDiff do
     include_examples 'merge request diffs'
   end
 
-  describe 'external diffs always enabled' do
+  describe 'external diffs on disk always enabled' do
     before do
       stub_external_diffs_setting(enabled: true, when: 'always')
     end
 
     include_examples 'merge request diffs'
+  end
+
+  describe 'external diffs in object storage always enabled' do
+    let(:uploader) { ExternalDiffUploader }
+    let(:remote_store) { uploader::Store::REMOTE }
+
+    subject(:diff) { merge_request.merge_request_diff }
+
+    before do
+      stub_external_diffs_setting(enabled: true, when: 'always')
+      stub_external_diffs_object_storage(uploader, direct_upload: true)
+    end
+
+    # We can't use the full merge request diffs shared examples here because
+    # reading from the fake object store isn't implemented yet
+
+    context 'empty diff' do
+      let(:merge_request) { create(:merge_request, :without_diffs) }
+
+      it 'creates an empty diff' do
+        expect(diff.state).to eq('empty')
+        expect(diff).not_to be_stored_externally
+      end
+    end
+
+    context 'normal diff' do
+      let(:merge_request) { create(:merge_request) }
+
+      it 'creates a diff in object storage' do
+        expect(diff).to be_stored_externally
+        expect(diff.state).to eq('collected')
+        expect(diff.external_diff_store).to eq(remote_store)
+      end
+    end
+
+    context 'diff adding an empty file' do
+      let(:project) { create(:project, :test_repo) }
+      let(:merge_request) do
+        create(
+          :merge_request,
+          source_project: project,
+          target_project: project,
+          source_branch: 'empty-file',
+          target_branch: 'master'
+        )
+      end
+
+      it 'creates a diff in object storage' do
+        create_file_in_repo(project, 'master', 'empty-file', 'empty-file', '')
+
+        diff.reload
+
+        expect(diff).to be_stored_externally
+        expect(diff.state).to eq('collected')
+        expect(diff.external_diff_store).to eq(remote_store)
+      end
+    end
   end
 
   describe 'exernal diffs enabled for outdated diffs' do

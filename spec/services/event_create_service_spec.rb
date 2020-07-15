@@ -16,7 +16,6 @@ RSpec.describe EventCreateService do
 
       it "creates new event" do
         expect { service.open_issue(issue, issue.author) }.to change { Event.count }
-        expect { service.open_issue(issue, issue.author) }.to change { ResourceStateEvent.count }
       end
     end
 
@@ -27,7 +26,6 @@ RSpec.describe EventCreateService do
 
       it "creates new event" do
         expect { service.close_issue(issue, issue.author) }.to change { Event.count }
-        expect { service.close_issue(issue, issue.author) }.to change { ResourceStateEvent.count }
       end
     end
 
@@ -38,7 +36,6 @@ RSpec.describe EventCreateService do
 
       it "creates new event" do
         expect { service.reopen_issue(issue, issue.author) }.to change { Event.count }
-        expect { service.reopen_issue(issue, issue.author) }.to change { ResourceStateEvent.count }
       end
     end
   end
@@ -51,7 +48,6 @@ RSpec.describe EventCreateService do
 
       it "creates new event" do
         expect { service.open_mr(merge_request, merge_request.author) }.to change { Event.count }
-        expect { service.open_mr(merge_request, merge_request.author) }.to change { ResourceStateEvent.count }
       end
     end
 
@@ -62,7 +58,6 @@ RSpec.describe EventCreateService do
 
       it "creates new event" do
         expect { service.close_mr(merge_request, merge_request.author) }.to change { Event.count }
-        expect { service.close_mr(merge_request, merge_request.author) }.to change { ResourceStateEvent.count }
       end
     end
 
@@ -73,7 +68,6 @@ RSpec.describe EventCreateService do
 
       it "creates new event" do
         expect { service.merge_mr(merge_request, merge_request.author) }.to change { Event.count }
-        expect { service.merge_mr(merge_request, merge_request.author) }.to change { ResourceStateEvent.count }
       end
     end
 
@@ -84,7 +78,6 @@ RSpec.describe EventCreateService do
 
       it "creates new event" do
         expect { service.reopen_mr(merge_request, merge_request.author) }.to change { Event.count }
-        expect { service.reopen_mr(merge_request, merge_request.author) }.to change { ResourceStateEvent.count }
       end
     end
 

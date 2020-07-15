@@ -2,7 +2,7 @@
 - page_title _("Repository")
 - @content_class = "limit-container-width" unless fluid_layout
 
-- if Feature.enabled?(:global_default_branch_name)
+- if Feature.enabled?(:global_default_branch_name, default_enabled: true)
   %section.settings.as-default-branch-name.no-animate#js-default-branch-name{ class: ('expanded' if expanded_by_default?) }
     .settings-header
       %h4

@@ -278,6 +278,19 @@ RSpec.describe Ci::RetryBuildService do
           expect(new_build.metadata.expanded_environment_name).to eq('production')
         end
       end
+
+      context 'when build has needs' do
+        before do
+          create(:ci_build_need, build: build, name: 'build1')
+          create(:ci_build_need, build: build, name: 'build2')
+        end
+
+        it 'bulk inserts all needs' do
+          expect(Ci::BuildNeed).to receive(:bulk_insert!).and_call_original
+
+          new_build
+        end
+      end
     end
 
     context 'when user does not have ability to execute build' do

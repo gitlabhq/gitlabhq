@@ -228,7 +228,9 @@ module SystemNotes
       # A state event which results in a synthetic note will be
       # created by EventCreateService if change event tracking
       # is enabled.
-      unless state_change_tracking_enabled?
+      if state_change_tracking_enabled?
+        create_resource_state_event(status: status, mentionable_source: source)
+      else
         create_note(NoteSummary.new(noteable, project, author, body, action: action))
       end
     end
@@ -288,15 +290,23 @@ module SystemNotes
     end
 
     def close_after_error_tracking_resolve
-      body = _('resolved the corresponding error and closed the issue.')
+      if state_change_tracking_enabled?
+        create_resource_state_event(status: 'closed', close_after_error_tracking_resolve: true)
+      else
+        body = 'resolved the corresponding error and closed the issue.'
 
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'closed'))
+        create_note(NoteSummary.new(noteable, project, author, body, action: 'closed'))
+      end
     end
 
     def auto_resolve_prometheus_alert
-      body = 'automatically closed this issue because the alert resolved.'
+      if state_change_tracking_enabled?
+        create_resource_state_event(status: 'closed', close_auto_resolve_prometheus_alert: true)
+      else
+        body = 'automatically closed this issue because the alert resolved.'
 
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'closed'))
+        create_note(NoteSummary.new(noteable, project, author, body, action: 'closed'))
+      end
     end
 
     private
@@ -322,6 +332,11 @@ module SystemNotes
 
     def self.cross_reference?(note_text)
       note_text =~ /\A#{cross_reference_note_prefix}/i
+    end
+
+    def create_resource_state_event(params)
+      ResourceEvents::ChangeStateService.new(resource: noteable, user: author)
+        .execute(params)
     end
 
     def state_change_tracking_enabled?

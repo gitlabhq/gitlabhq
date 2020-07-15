@@ -16,12 +16,17 @@ class DeployKeyEntity < Grape::Entity
     end
   end
   expose :can_edit
+  expose :user, as: :owner, using: ::API::Entities::UserBasic, if: -> (_, opts) { can_read_owner?(opts) }
 
   private
 
   def can_edit
     Ability.allowed?(options[:user], :update_deploy_key, object) ||
       Ability.allowed?(options[:user], :update_deploy_keys_project, object.deploy_keys_project_for(options[:project]))
+  end
+
+  def can_read_owner?(opts)
+    opts[:with_owner] && Ability.allowed?(options[:user], :read_user, object.user)
   end
 
   def allowed_to_read_project?(project)

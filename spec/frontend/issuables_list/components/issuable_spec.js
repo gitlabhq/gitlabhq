@@ -80,6 +80,7 @@ describe('Issuable component', () => {
     wrapper.findAll(GlIcon).wrappers.some(iconWrapper => iconWrapper.props('name') === 'eye-slash');
   const findTaskStatus = () => wrapper.find('.task-status');
   const findOpenedAgoContainer = () => wrapper.find('[data-testid="openedByMessage"]');
+  const findAuthor = () => wrapper.find({ ref: 'openedAgoByContainer' });
   const findMilestone = () => wrapper.find('.js-milestone');
   const findMilestoneTooltip = () => findMilestone().attributes('title');
   const findDueDate = () => wrapper.find('.js-due-date');
@@ -94,6 +95,7 @@ describe('Issuable component', () => {
   const findScopedLabels = () => findLabels().filter(w => isScopedLabel({ title: w.text() }));
   const findUnscopedLabels = () => findLabels().filter(w => !isScopedLabel({ title: w.text() }));
   const findIssuableTitle = () => wrapper.find('[data-testid="issuable-title"]');
+  const findIssuableStatus = () => wrapper.find('[data-testid="issuable-status"]');
   const containsJiraLogo = () => wrapper.contains('[data-testid="jira-logo"]');
 
   describe('when mounted', () => {
@@ -234,6 +236,24 @@ describe('Issuable component', () => {
 
     it('opens issuable in a new tab', () => {
       expect(findIssuableTitle().props('target')).toBe('_blank');
+    });
+
+    it('opens author in a new tab', () => {
+      expect(findAuthor().props('target')).toBe('_blank');
+    });
+
+    describe('with Jira status', () => {
+      const expectedStatus = 'In Progress';
+
+      beforeEach(() => {
+        issuable.status = expectedStatus;
+
+        factory({ issuable });
+      });
+
+      it('renders the Jira status', () => {
+        expect(findIssuableStatus().text()).toBe(expectedStatus);
+      });
     });
   });
 

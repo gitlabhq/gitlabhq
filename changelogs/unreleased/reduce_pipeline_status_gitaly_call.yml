@@ -1,0 +1,5 @@
+---
+title: Remove need to call commit (gitaly call) in ProjectPipelineStatus
+merge_request: 33712
+author:
+type: performance

@@ -17,4 +17,22 @@ RSpec.describe Ci::BuildNeed, model: true do
 
     it { expect(described_class.artifacts).to contain_exactly(with_artifacts) }
   end
+
+  describe 'BulkInsertSafe' do
+    let(:ci_build) { build(:ci_build) }
+
+    it "bulk inserts from Ci::Build model" do
+      ci_build.needs_attributes = [
+        { name: "build", artifacts: true },
+        { name: "build2", artifacts: true },
+        { name: "build3", artifacts: true }
+      ]
+
+      expect(described_class).to receive(:bulk_insert!).and_call_original
+
+      BulkInsertableAssociations.with_bulk_insert do
+        ci_build.save!
+      end
+    end
+  end
 end

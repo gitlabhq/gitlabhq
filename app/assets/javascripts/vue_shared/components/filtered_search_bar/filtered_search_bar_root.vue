@@ -83,6 +83,7 @@ export default {
     return {
       initialRender: true,
       recentSearchesPromise: null,
+      recentSearches: [],
       filterValue: this.initialFilterValue,
       selectedSortOption,
       selectedSortDirection,
@@ -180,10 +181,8 @@ export default {
             this.recentSearchesStore.state.recentSearches.concat(searches),
           );
           this.recentSearchesService.save(resultantSearches);
+          this.recentSearches = resultantSearches;
         });
-    },
-    getRecentSearches() {
-      return this.recentSearchesStore?.state.recentSearches;
     },
     handleSortOptionClick(sortBy) {
       this.selectedSortOption = sortBy;
@@ -196,9 +195,13 @@ export default {
           : SortDirection.ascending;
       this.$emit('onSort', this.selectedSortOption.sortDirection[this.selectedSortDirection]);
     },
+    handleHistoryItemSelected(filters) {
+      this.$emit('onFilter', filters);
+    },
     handleClearHistory() {
       const resultantSearches = this.recentSearchesStore.setRecentSearches([]);
       this.recentSearchesService.save(resultantSearches);
+      this.recentSearches = [];
     },
     handleFilterSubmit(filters) {
       if (this.recentSearchesStorageKey) {
@@ -207,6 +210,7 @@ export default {
             if (filters.length) {
               const resultantSearches = this.recentSearchesStore.addRecentSearch(filters);
               this.recentSearchesService.save(resultantSearches);
+              this.recentSearches = resultantSearches;
             }
           })
           .catch(() => {
@@ -225,16 +229,15 @@ export default {
       v-model="filterValue"
       :placeholder="searchInputPlaceholder"
       :available-tokens="tokens"
-      :history-items="getRecentSearches()"
+      :history-items="recentSearches"
       class="flex-grow-1"
-      @history-item-selected="$emit('onFilter', filters)"
+      @history-item-selected="handleHistoryItemSelected"
       @clear-history="handleClearHistory"
       @submit="handleFilterSubmit"
-      @clear="$emit('onFilter', [])"
     >
       <template #history-item="{ historyItem }">
-        <template v-for="token in historyItem">
-          <span v-if="typeof token === 'string'" :key="token" class="gl-px-1">"{{ token }}"</span>
+        <template v-for="(token, index) in historyItem">
+          <span v-if="typeof token === 'string'" :key="index" class="gl-px-1">"{{ token }}"</span>
           <span v-else :key="`${token.type}-${token.value.data}`" class="gl-px-1">
             <span v-if="tokenTitles[token.type]"
               >{{ tokenTitles[token.type] }} :{{ token.value.operator }}</span

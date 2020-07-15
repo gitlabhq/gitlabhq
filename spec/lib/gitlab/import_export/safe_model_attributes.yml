@@ -588,6 +588,7 @@ ProtectedBranch::PushAccessLevel:
 - updated_at
 - user_id
 - group_id
+- deploy_key_id
 ProtectedBranch::UnprotectAccessLevel:
 - id
 - protected_branch_id

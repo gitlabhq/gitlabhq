@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module QA
   RSpec.describe 'Create' do
     describe 'File templates' do
@@ -54,12 +56,14 @@ module QA
 
             expect(form).to have_normalized_ws_text(content[0..100])
 
+            form.add_name("#{SecureRandom.hex(8)}/#{template[:file_name]}")
             form.commit_changes
 
-            expect(form).to have_content('The file has been successfully created.')
-            expect(form).to have_content(template[:file_name])
-            expect(form).to have_content('Add new file')
-            expect(form).to have_normalized_ws_text(content[0..100])
+            aggregate_failures "indications of file created" do
+              expect(form).to have_content(template[:file_name])
+              expect(form).to have_normalized_ws_text(content[0..100])
+              expect(form).to have_content('Add new file')
+            end
           end
         end
       end

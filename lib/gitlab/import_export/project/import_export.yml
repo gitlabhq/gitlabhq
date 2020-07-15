@@ -316,6 +316,7 @@ excluded_attributes:
     - :protected_branch_id
   push_access_levels:
     - :protected_branch_id
+    - :deploy_key_id
   unprotect_access_levels:
     - :protected_branch_id
   create_access_levels:

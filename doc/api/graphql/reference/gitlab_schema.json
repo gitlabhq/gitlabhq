@@ -2057,6 +2057,20 @@
               "deprecationReason": null
             },
             {
+              "name": "mode",
+              "description": "Blob mode in numeric format",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Name of the entry",
               "args": [
@@ -14142,7 +14156,7 @@
                 },
                 {
                   "name": "includeAncestors",
-                  "description": "Whether to include ancestor Iterations. Defaults to true",
+                  "description": "Whether to include ancestor iterations. Defaults to true",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",

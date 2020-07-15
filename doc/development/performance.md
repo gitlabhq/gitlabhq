@@ -173,9 +173,28 @@ dot -Tsvg project_policy_spec.dot > project_policy_spec.svg
 To load the profile in [kcachegrind](https://kcachegrind.github.io/):
 
 ```shell
-stackprof tmp/project_policy_spec.dump --callgrind > project_policy_spec.callgrind
+stackprof tmp/project_policy_spec.rb.dump --callgrind > project_policy_spec.callgrind
 kcachegrind project_policy_spec.callgrind # Linux
 qcachegrind project_policy_spec.callgrind # Mac
+```
+
+For flamegraphs, enable raw collection first. Note that raw
+collection can generate a very large file, so increase the `INTERVAL`, or
+run on a smaller number of specs for smaller file size:
+
+```shell
+RAW=true bin/rspec-stackprof spec/policies/group_member_policy_spec.rb
+```
+
+You can then generate, and view the resultant flamegraph. It might take a
+while to generate based on the output file size:
+
+```shell
+# Generate
+stackprof --flamegraph tmp/group_member_policy_spec.rb.dump > group_member_policy_spec.flame
+
+# View
+stackprof --flamegraph-viewer=group_member_policy_spec.flame
 ```
 
 It may be useful to zoom in on a specific method, for example:

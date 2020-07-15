@@ -8,32 +8,89 @@ RSpec.describe ResourceEvents::ChangeStateService do
 
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:source_commit) { create(:commit, project: project) }
+  let(:source_merge_request) { create(:merge_request, source_project: project, target_project: project, target_branch: 'foo') }
+
+  shared_examples 'a state event' do
+    %w[opened reopened closed locked].each do |state|
+      it "creates the expected event if resource has #{state} state" do
+        described_class.new(user: user, resource: resource).execute(status: state, mentionable_source: source)
+
+        event = resource.resource_state_events.last
+
+        if resource.is_a?(Issue)
+          expect(event.issue).to eq(resource)
+          expect(event.merge_request).to be_nil
+        elsif resource.is_a?(MergeRequest)
+          expect(event.issue).to be_nil
+          expect(event.merge_request).to eq(resource)
+        end
+
+        expect(event.state).to eq(state)
+
+        expect_event_source(event, source)
+      end
+    end
+  end
 
   describe '#execute' do
-    context 'when resource is an issue' do
-      %w[opened reopened closed locked].each do |state|
-        it "creates the expected event if issue has #{state} state" do
-          described_class.new(user: user, resource: issue).execute(state)
+    context 'when resource is an Issue' do
+      context 'when no source is given' do
+        it_behaves_like 'a state event' do
+          let(:resource) { issue }
+          let(:source) { nil }
+        end
+      end
 
-          event = issue.resource_state_events.last
-          expect(event.issue).to eq(issue)
-          expect(event.merge_request).to be_nil
-          expect(event.state).to eq(state)
+      context 'when source commit is given' do
+        it_behaves_like 'a state event' do
+          let(:resource) { issue }
+          let(:source) { source_commit }
+        end
+      end
+
+      context 'when source merge request is given' do
+        it_behaves_like 'a state event' do
+          let(:resource) { issue }
+          let(:source) { source_merge_request }
         end
       end
     end
 
-    context 'when resource is a merge request' do
-      %w[opened reopened closed locked merged].each do |state|
-        it "creates the expected event if merge request has #{state} state" do
-          described_class.new(user: user, resource: merge_request).execute(state)
-
-          event = merge_request.resource_state_events.last
-          expect(event.issue).to be_nil
-          expect(event.merge_request).to eq(merge_request)
-          expect(event.state).to eq(state)
+    context 'when resource is a MergeRequest' do
+      context 'when no source is given' do
+        it_behaves_like 'a state event' do
+          let(:resource) { merge_request }
+          let(:source) { nil }
         end
       end
+
+      context 'when source commit is given' do
+        it_behaves_like 'a state event' do
+          let(:resource) { merge_request }
+          let(:source) { source_commit }
+        end
+      end
+
+      context 'when source merge request is given' do
+        it_behaves_like 'a state event' do
+          let(:resource) { merge_request }
+          let(:source) { source_merge_request }
+        end
+      end
+    end
+  end
+
+  def expect_event_source(event, source)
+    if source.is_a?(MergeRequest)
+      expect(event.source_commit).to be_nil
+      expect(event.source_merge_request).to eq(source)
+    elsif source.is_a?(Commit)
+      expect(event.source_commit).to eq(source.id)
+      expect(event.source_merge_request).to be_nil
+    else
+      expect(event.source_merge_request).to be_nil
+      expect(event.source_commit).to be_nil
     end
   end
 end
