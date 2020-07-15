@@ -7500,6 +7500,9 @@ msgstr ""
 msgid "Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here."
 msgstr ""
 
+msgid "Delayed Project Deletion (%{adjourned_deletion})"
+msgstr ""
+
 msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after it's timer finishes."
 msgstr ""
 
@@ -11739,6 +11742,9 @@ msgstr ""
 msgid "GroupSettings|Disable group mentions"
 msgstr ""
 
+msgid "GroupSettings|Enable delayed project removal"
+msgstr ""
+
 msgid "GroupSettings|Export group"
 msgstr ""
 
@@ -11764,6 +11770,9 @@ msgid "GroupSettings|Please choose a group path with no special characters."
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day waiting period. This period can be %{customization_link} in instance settings"
 msgstr ""
 
 msgid "GroupSettings|Select a sub-group as the custom project template source for this group."
@@ -19504,10 +19513,13 @@ msgstr ""
 msgid "Removes time estimate."
 msgstr ""
 
-msgid "Removing a project places it into a read-only state until %{date}, at which point the project will be permanantly removed. Are you ABSOLUTELY sure?"
+msgid "Removing a project deletes it immediately, there will be no delay before the project is permanently removed."
 msgstr ""
 
 msgid "Removing a project places it into a read-only state until %{date}, at which point the project will be permanently removed."
+msgstr ""
+
+msgid "Removing a project places it into a read-only state until %{date}, at which point the project will be permanently removed. Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "Removing license…"

@@ -134,5 +134,37 @@ namespace :gitlab do
     Rake::Task['db:structure:load'].enhance do
       Rake::Task['gitlab:db:load_custom_structure'].invoke
     end
+
+    desc 'Create missing dynamic database partitions'
+    task :create_dynamic_partitions do
+      Gitlab::Database::Partitioning::PartitionCreator.new.create_partitions
+    end
+
+    # This is targeted towards deploys and upgrades of GitLab.
+    # Since we're running migrations already at this time,
+    # we also check and create partitions as needed here.
+    Rake::Task['db:migrate'].enhance do
+      Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+    end
+
+    # When we load the database schema from db/structure.sql
+    # we don't have any dynamic partitions created. We don't really need to
+    # because application initializers/sidekiq take care of that, too.
+    # However, the presence of partitions for a table has influence on their
+    # position in db/structure.sql (which is topologically sorted).
+    #
+    # Other than that it's helpful to create partitions early when bootstrapping
+    # a new installation.
+    Rake::Task['db:structure:load'].enhance do
+      Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+    end
+
+    # During testing, db:test:load restores the database schema from scratch
+    # which does not include dynamic partitions. We cannot rely on application
+    # initializers here as the application can continue to run while
+    # a rake task reloads the database schema.
+    Rake::Task['db:test:load'].enhance do
+      Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
+    end
   end
 end

@@ -5,15 +5,18 @@ require 'spec_helper'
 RSpec.describe OperationsHelper do
   include Gitlab::Routing
 
-  describe '#alerts_settings_data' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project) }
 
+  before do
+    helper.instance_variable_set(:@project, project)
+    allow(helper).to receive(:current_user) { user }
+  end
+
+  describe '#alerts_settings_data' do
     subject { helper.alerts_settings_data }
 
     before do
-      helper.instance_variable_set(:@project, project)
-      allow(helper).to receive(:current_user) { user }
       allow(helper).to receive(:can?).with(user, :admin_operations, project) { true }
     end
 
@@ -125,6 +128,33 @@ RSpec.describe OperationsHelper do
           )
         end
       end
+    end
+  end
+
+  describe '#operations_settings_data' do
+    let_it_be(:operations_settings) do
+      create(
+        :project_incident_management_setting,
+        project: project,
+        issue_template_key: 'template-key',
+        pagerduty_active: true
+      )
+    end
+
+    subject { helper.operations_settings_data }
+
+    it 'returns the correct set of data' do
+      is_expected.to eq(
+        operations_settings_endpoint: project_settings_operations_path(project),
+        templates: '[]',
+        create_issue: 'false',
+        issue_template_key: 'template-key',
+        send_email: 'false',
+        pagerduty_active: 'true',
+        pagerduty_token: operations_settings.pagerduty_token,
+        pagerduty_webhook_url: project_incidents_pagerduty_url(project, token: operations_settings.pagerduty_token),
+        pagerduty_reset_key_path: reset_pagerduty_token_project_settings_operations_path(project)
+      )
     end
   end
 end

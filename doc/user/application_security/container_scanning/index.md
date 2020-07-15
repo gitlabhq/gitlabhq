@@ -58,10 +58,10 @@ To enable Container Scanning in your pipeline, you need the following:
 
   ```yaml
   build:
-    image: docker:19.03.11
+    image: docker:19.03.12
     stage: build
     services:
-      - docker:19.03.11-dind
+      - docker:19.03.12-dind
     variables:
       IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
     script:
@@ -114,7 +114,7 @@ build:
   image: docker:stable
   stage: build
   services:
-    - docker:19.03.11-dind
+    - docker:19.03.12-dind
   variables:
     IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
   script:
@@ -283,7 +283,7 @@ stages:
 build_latest_vulnerabilities:
   stage: build
   services:
-    - docker:19.03.11-dind
+    - docker:19.03.12-dind
   script:
     - docker pull arminc/clair-db:latest
     - docker tag arminc/clair-db:latest $CI_REGISTRY/namespace/clair-vulnerabilities-db

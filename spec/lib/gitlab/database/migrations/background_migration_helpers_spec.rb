@@ -161,7 +161,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
         it 'creates a record for each job in the database' do
           Sidekiq::Testing.fake! do
             expect do
-              model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes,
+              model.queue_background_migration_jobs_by_range_at_intervals(User, '::FooJob', 10.minutes,
                 other_job_arguments: [1, 2], track_jobs: true)
             end.to change { Gitlab::Database::BackgroundMigrationJob.count }.from(0).to(1)
 

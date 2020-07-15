@@ -5,11 +5,8 @@ require 'airborne'
 module QA
   RSpec.describe 'Manage' do
     describe 'Users API' do
-      before(:context) do
-        @api_client = Runtime::API::Client.new(:gitlab)
-      end
-
-      let(:request) { Runtime::API::Request.new(@api_client, '/users') }
+      let(:api_client) { Runtime::API::Client.new(:gitlab) }
+      let(:request) { Runtime::API::Request.new(api_client, '/users') }
 
       it 'GET /users' do
         get request.url

@@ -13136,7 +13136,8 @@ CREATE TABLE public.namespaces (
     push_rule_id bigint,
     shared_runners_enabled boolean DEFAULT true NOT NULL,
     allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL,
-    traversal_ids integer[] DEFAULT '{}'::integer[] NOT NULL
+    traversal_ids integer[] DEFAULT '{}'::integer[] NOT NULL,
+    delayed_project_removal boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.namespaces_id_seq
@@ -23725,6 +23726,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200701070435
 20200701091253
 20200701093859
+20200701190523
 20200701205710
 20200702123805
 20200702201039

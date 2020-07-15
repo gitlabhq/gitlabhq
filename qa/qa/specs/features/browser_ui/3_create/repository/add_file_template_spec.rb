@@ -5,8 +5,8 @@ module QA
     describe 'File templates' do
       include Runtime::Fixtures
 
-      before(:all) do
-        @project = Resource::Project.fabricate_via_api! do |project|
+      let(:project) do
+        Resource::Project.fabricate_via_api! do |project|
           project.name = 'file-template-project'
           project.description = 'Add file templates via the Files view'
           project.initialize_with_readme = true
@@ -46,7 +46,7 @@ module QA
 
           Flow::Login.sign_in
 
-          @project.visit!
+          project.visit!
 
           Page::Project::Show.perform(&:create_new_file!)
           Page::File::Form.perform do |form|

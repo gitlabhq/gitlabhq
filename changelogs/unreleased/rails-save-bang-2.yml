@@ -1,0 +1,5 @@
+---
+title: Refactor group controllers specs to fix SaveBang Cop
+merge_request: 36853
+author: Rajendra Kadam
+type: fixed

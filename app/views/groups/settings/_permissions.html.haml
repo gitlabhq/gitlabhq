@@ -30,6 +30,7 @@
           %span.d-block= s_('GroupSettings|Disable group mentions')
           %span.text-muted= s_('GroupSettings|This setting will prevent group members from being notified if the group is mentioned.')
 
+    = render_if_exists 'groups/settings/delayed_project_removal', f: f, group: @group
     = render_if_exists 'groups/settings/ip_restriction', f: f, group: @group
     = render_if_exists 'groups/settings/allowed_email_domain', f: f, group: @group
     = render 'groups/settings/lfs', f: f

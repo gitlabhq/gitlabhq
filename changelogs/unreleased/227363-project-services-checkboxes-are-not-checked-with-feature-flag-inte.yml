@@ -1,0 +1,5 @@
+---
+title: Fix wrong value of checkbox in integration form
+merge_request: 36329
+author:
+type: fixed

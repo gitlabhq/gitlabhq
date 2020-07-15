@@ -82,6 +82,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :operations, only: [:show, :update] do
             member do
               post :reset_alerting_token
+              post :reset_pagerduty_token
             end
           end
 
@@ -406,7 +407,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       post 'alerts/notify', to: 'alerting/notifications#create'
 
-      post 'incident_management/pager_duty', to: 'incident_management/pager_duty_incidents#create'
+      post 'incidents/pagerduty', to: 'incident_management/pager_duty_incidents#create'
 
       draw :legacy_builds
 

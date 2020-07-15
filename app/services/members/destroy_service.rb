@@ -2,8 +2,8 @@
 
 module Members
   class DestroyService < Members::BaseService
-    def execute(member, skip_authorization: false, skip_subresources: false, unassign_issuables: false)
-      raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_destroy_member?(member)
+    def execute(member, skip_authorization: false, skip_subresources: false, unassign_issuables: false, destroy_bot: false)
+      raise Gitlab::Access::AccessDeniedError unless skip_authorization || authorized?(member, destroy_bot)
 
       @skip_auth = skip_authorization
 
@@ -27,6 +27,12 @@ module Members
     end
 
     private
+
+    def authorized?(member, destroy_bot)
+      return can_destroy_bot_member?(member) if destroy_bot
+
+      can_destroy_member?(member)
+    end
 
     def delete_subresources(member)
       return unless member.is_a?(GroupMember) && member.user && member.group
@@ -55,6 +61,10 @@ module Members
       can?(current_user, destroy_member_permission(member), member)
     end
 
+    def can_destroy_bot_member?(member)
+      can?(current_user, destroy_bot_member_permission(member), member)
+    end
+
     def destroy_member_permission(member)
       case member
       when GroupMember
@@ -64,6 +74,12 @@ module Members
       else
         raise "Unknown member type: #{member}!"
       end
+    end
+
+    def destroy_bot_member_permission(member)
+      raise "Unsupported bot member type: #{member}" unless member.is_a?(ProjectMember)
+
+      :destroy_project_bot_member
     end
 
     def enqueue_unassign_issuables(member)

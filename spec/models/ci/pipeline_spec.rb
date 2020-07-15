@@ -2684,7 +2684,7 @@ RSpec.describe Ci::Pipeline, :mailer do
 
     context 'when pipeline is not child nor parent' do
       it 'returns just the pipeline id' do
-        expect(same_family_pipeline_ids).to contain_exactly(pipeline)
+        expect(same_family_pipeline_ids).to contain_exactly(pipeline.id)
       end
     end
 
@@ -2707,7 +2707,7 @@ RSpec.describe Ci::Pipeline, :mailer do
       end
 
       it 'returns parent sibling and self ids' do
-        expect(same_family_pipeline_ids).to contain_exactly(parent, pipeline, sibling)
+        expect(same_family_pipeline_ids).to contain_exactly(parent.id, pipeline.id, sibling.id)
       end
     end
 
@@ -2723,7 +2723,7 @@ RSpec.describe Ci::Pipeline, :mailer do
       end
 
       it 'returns self and child ids' do
-        expect(same_family_pipeline_ids).to contain_exactly(pipeline, child)
+        expect(same_family_pipeline_ids).to contain_exactly(pipeline.id, child.id)
       end
     end
   end

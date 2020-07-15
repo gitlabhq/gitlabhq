@@ -35,7 +35,7 @@ module ResourceAccessTokens
     attr_reader :current_user, :access_token, :bot_user, :resource
 
     def remove_member
-      ::Members::DestroyService.new(current_user).execute(find_member)
+      ::Members::DestroyService.new(current_user).execute(find_member, destroy_bot: true)
     end
 
     def migrate_to_ghost_user

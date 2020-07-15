@@ -108,7 +108,18 @@ module Projects
       end
 
       def incident_management_setting_params
-        params.slice(:incident_management_setting_attributes)
+        attrs = params[:incident_management_setting_attributes]
+        return {} unless attrs
+
+        regenerate_token = attrs.delete(:regenerate_token)
+
+        if regenerate_token
+          attrs[:pagerduty_token] = nil
+        else
+          attrs = attrs.except(:pagerduty_token)
+        end
+
+        { incident_management_setting_attributes: attrs }
       end
     end
   end

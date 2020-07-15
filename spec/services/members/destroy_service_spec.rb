@@ -153,6 +153,25 @@ RSpec.describe Members::DestroyService do
         end
       end
 
+      context 'with a project bot member' do
+        let(:member) { group_project.members.find_by(user_id: member_user.id) }
+        let(:member_user) { create(:user, :project_bot) }
+
+        before do
+          group_project.add_maintainer(member_user)
+        end
+
+        context 'when the destroy_bot flag is true' do
+          it_behaves_like 'a service destroying a member with access' do
+            let(:opts) { { destroy_bot: true } }
+          end
+        end
+
+        context 'when the destroy_bot flag is not specified' do
+          it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+        end
+      end
+
       context 'with a group member' do
         let(:member) { group.members.find_by(user_id: member_user.id) }
 

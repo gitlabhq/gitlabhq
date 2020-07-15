@@ -3,17 +3,14 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Merge request creation from fork' do
-      it 'user forks a project, submits a merge request and maintainer merges it' do
-        Flow::Login.sign_in
-
-        merge_request = Resource::MergeRequestFromFork.fabricate_via_browser_ui! do |merge_request|
+      let(:merge_request) do
+        Resource::MergeRequestFromFork.fabricate_via_api! do |merge_request|
           merge_request.fork_branch = 'feature-branch'
         end
+      end
 
-        merge_request.project.api_put(auto_devops_enabled: false)
-
-        Page::Main::Menu.perform(&:sign_out)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+      it 'can merge feature branch fork to mainline' do
+        Flow::Login.sign_in
 
         merge_request.visit!
 

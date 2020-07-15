@@ -16,6 +16,13 @@ RSpec.describe Gitlab::Database::BackgroundMigrationJob do
       expect(relation.count).to eq(1)
       expect(relation.first).to have_attributes(class_name: 'TestJob', arguments: ['hi', 2])
     end
+
+    it 'normalizes class names by removing leading ::' do
+      relation = described_class.for_migration_execution('::TestJob', ['hi', 2])
+
+      expect(relation.count).to eq(1)
+      expect(relation.first).to have_attributes(class_name: 'TestJob', arguments: ['hi', 2])
+    end
   end
 
   describe '.mark_all_as_succeeded' do
@@ -26,6 +33,16 @@ RSpec.describe Gitlab::Database::BackgroundMigrationJob do
 
     it 'marks all matching jobs as succeeded' do
       expect { described_class.mark_all_as_succeeded('TestJob', [1, 100]) }
+        .to change { described_class.succeeded.count }.from(0).to(2)
+
+      expect(job1.reload).to be_succeeded
+      expect(job2.reload).to be_succeeded
+      expect(job3.reload).to be_pending
+      expect(job4.reload).to be_pending
+    end
+
+    it 'normalizes class_names by removing leading ::' do
+      expect { described_class.mark_all_as_succeeded('::TestJob', [1, 100]) }
         .to change { described_class.succeeded.count }.from(0).to(2)
 
       expect(job1.reload).to be_succeeded
@@ -48,6 +65,40 @@ RSpec.describe Gitlab::Database::BackgroundMigrationJob do
         expect(job2.reload).to be_succeeded
         expect(job3.reload).to be_pending
         expect(job4.reload).to be_pending
+      end
+    end
+  end
+
+  describe '#class_name=' do
+    context 'when the class_name is given without the leading ::' do
+      it 'sets the class_name to the given value' do
+        job = described_class.new(class_name: 'TestJob')
+
+        expect(job.class_name).to eq('TestJob')
+      end
+    end
+
+    context 'when the class_name is given with the leading ::' do
+      it 'removes the leading :: when setting the class_name' do
+        job = described_class.new(class_name: '::TestJob')
+
+        expect(job.class_name).to eq('TestJob')
+      end
+    end
+
+    context 'when the value is nil' do
+      it 'sets the class_name to nil' do
+        job = described_class.new(class_name: nil)
+
+        expect(job.class_name).to be_nil
+      end
+    end
+
+    context 'when the values is blank' do
+      it 'sets the class_name to the given value' do
+        job = described_class.new(class_name: '')
+
+        expect(job.class_name).to eq('')
       end
     end
   end

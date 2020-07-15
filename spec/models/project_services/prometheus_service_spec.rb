@@ -262,8 +262,6 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching do
         service.google_iap_audience_client_id = "IAP_CLIENT_ID.apps.googleusercontent.com"
 
         stub_request(:post, "https://oauth2.googleapis.com/token").to_return(status: 200, body: '{"id_token": "FOO"}', headers: { 'Content-Type': 'application/json; charset=UTF-8' })
-
-        stub_feature_flags(prometheus_service_iap_auth: true)
       end
 
       it 'includes the authorization header' do
@@ -474,11 +472,7 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching do
           title: 'API URL',
           placeholder: s_('PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/'),
           required: true
-        }
-      ]
-    end
-    let(:feature_flagged_fields) do
-      [
+        },
         {
           type: 'text',
           name: 'google_iap_audience_client_id',
@@ -498,13 +492,7 @@ RSpec.describe PrometheusService, :use_clean_rails_memory_store_caching do
     end
 
     it 'returns fields' do
-      stub_feature_flags(prometheus_service_iap_auth: false)
       expect(service.fields).to eq(expected_fields)
-    end
-
-    it 'returns fields with feature flag on' do
-      stub_feature_flags(prometheus_service_iap_auth: true)
-      expect(service.fields).to eq(expected_fields + feature_flagged_fields)
     end
   end
 end

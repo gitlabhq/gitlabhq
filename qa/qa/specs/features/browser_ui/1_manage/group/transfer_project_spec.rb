@@ -3,22 +3,30 @@
 module QA
   RSpec.describe 'Manage' do
     describe 'Project transfer between groups' do
-      it 'user transfers a project between groups' do
-        Flow::Login.sign_in
-
-        source_group = Resource::Group.fabricate_via_api! do |group|
+      let(:source_group) do
+        Resource::Group.fabricate_via_api! do |group|
           group.path = 'source-group'
         end
+      end
 
-        target_group = Resource::Group.fabricate_via_api! do |group|
+      let(:target_group) do
+        Resource::Group.fabricate_via_api! do |group|
           group.path = 'target-group'
         end
+      end
 
-        project = Resource::Project.fabricate_via_api! do |project|
+      let(:project) do
+        Resource::Project.fabricate_via_api! do |project|
           project.group = source_group
           project.name =  'transfer-project'
           project.initialize_with_readme = true
         end
+      end
+
+      let(:edited_readme_content) { 'Here is the edited content.' }
+
+      before do
+        Flow::Login.sign_in
 
         project.visit!
 
@@ -28,14 +36,14 @@ module QA
 
         Page::File::Show.perform(&:click_edit)
 
-        edited_readme_content = 'Here is the edited content.'
-
         Page::File::Edit.perform do |file|
           file.remove_content
           file.add_content(edited_readme_content)
           file.commit_changes
         end
+      end
 
+      it 'user transfers a project between groups' do
         Page::File::Show.perform(&:go_to_general_settings)
 
         Page::Project::Settings::Main.perform(&:expand_advanced_settings)

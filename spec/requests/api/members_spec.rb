@@ -495,4 +495,17 @@ RSpec.describe API::Members do
       end.to change { project.members.count }.by(0)
     end
   end
+
+  context 'remove bot from project' do
+    it 'returns a 403 forbidden' do
+      project_bot = create(:user, :project_bot)
+      create(:project_member, project: project, user: project_bot)
+
+      expect do
+        delete api("/projects/#{project.id}/members/#{project_bot.id}", maintainer)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end.to change { project.members.count }.by(0)
+    end
+  end
 end

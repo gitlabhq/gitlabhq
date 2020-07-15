@@ -5,7 +5,12 @@ module Projects
     class OperationsController < Projects::ApplicationController
       before_action :authorize_admin_operations!
       before_action :authorize_read_prometheus_alerts!, only: [:reset_alerting_token]
-      respond_to :json, only: [:reset_alerting_token]
+
+      before_action do
+        push_frontend_feature_flag(:pagerduty_webhook, project)
+      end
+
+      respond_to :json, only: [:reset_alerting_token, :reset_pagerduty_token]
 
       helper_method :error_tracking_setting
 
@@ -37,10 +42,29 @@ module Projects
         end
       end
 
+      def reset_pagerduty_token
+        result = ::Projects::Operations::UpdateService
+          .new(project, current_user, pagerduty_token_params)
+          .execute
+
+        if result[:status] == :success
+          pagerduty_token = project.incident_management_setting&.pagerduty_token
+          webhook_url = project_incidents_pagerduty_url(project, token: pagerduty_token)
+
+          render json: { pagerduty_webhook_url: webhook_url, pagerduty_token: pagerduty_token }
+        else
+          render json: {}, status: :unprocessable_entity
+        end
+      end
+
       private
 
       def alerting_params
         { alerting_setting_attributes: { regenerate_token: true } }
+      end
+
+      def pagerduty_token_params
+        { incident_management_setting_attributes: { regenerate_token: true } }
       end
 
       def render_update_response(result)

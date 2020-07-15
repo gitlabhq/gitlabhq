@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::BackfillPartition
     end
 
     it 'marks each job record as succeeded after processing' do
-      create(:background_migration_job, class_name: described_class.name,
+      create(:background_migration_job, class_name: "::#{described_class.name}",
         arguments: [source1.id, source3.id, source_table, destination_table, unique_key])
 
       expect(::Gitlab::Database::BackgroundMigrationJob).to receive(:mark_all_as_succeeded).and_call_original

@@ -503,6 +503,9 @@ Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker']['job
 Settings.cron_jobs['update_container_registry_info_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['update_container_registry_info_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['update_container_registry_info_worker']['job_class'] = 'UpdateContainerRegistryInfoWorker'
+Settings.cron_jobs['postgres_dynamic_partitions_creator'] ||= Settingslogic.new({})
+Settings.cron_jobs['postgres_dynamic_partitions_creator']['cron'] ||= '21 */6 * * *'
+Settings.cron_jobs['postgres_dynamic_partitions_creator']['job_class'] ||= 'PartitionCreationWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['adjourned_group_deletion_worker'] ||= Settingslogic.new({})

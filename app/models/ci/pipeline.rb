@@ -819,15 +819,8 @@ module Ci
     # If pipeline is a child of another pipeline, include the parent
     # and the siblings, otherwise return only itself and children.
     def same_family_pipeline_ids
-      if (parent = parent_pipeline)
-        Ci::Pipeline.where(id: parent.id)
-          .or(Ci::Pipeline.where(id: parent.child_pipelines.select(:id)))
-          .select(:id)
-      else
-        Ci::Pipeline.where(id: self.id)
-          .or(Ci::Pipeline.where(id: self.child_pipelines.select(:id)))
-          .select(:id)
-      end
+      parent = parent_pipeline || self
+      [parent.id] + parent.child_pipelines.pluck(:id)
     end
 
     def bridge_triggered?
