@@ -26435,10 +26435,16 @@ msgstr ""
 msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on."
 msgstr ""
 
+msgid "WikiEmpty|Confluence is enabled"
+msgstr ""
+
 msgid "WikiEmpty|Create your first page"
 msgstr ""
 
 msgid "WikiEmpty|Enable the Confluence Wiki integration"
+msgstr ""
+
+msgid "WikiEmpty|Go to Confluence"
 msgstr ""
 
 msgid "WikiEmpty|Suggest wiki improvement"
@@ -26460,6 +26466,9 @@ msgid "WikiEmpty|You must be a group member in order to add wiki pages."
 msgstr ""
 
 msgid "WikiEmpty|You must be a project member in order to add wiki pages."
+msgstr ""
+
+msgid "WikiEmpty|You've enabled the Confluence Workspace integration. Your wiki will be viewable directly within Confluence. We are hard at work integrating Confluence more seamlessly into GitLab. If you'd like to stay up to date, follow our %{wiki_confluence_epic_link_start}Confluence epic%{wiki_confluence_epic_link_end}."
 msgstr ""
 
 msgid "WikiHistoricalPage|This is an old version of this page."

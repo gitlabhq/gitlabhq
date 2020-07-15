@@ -984,21 +984,20 @@ Major upgrades might require additional setup steps, please consult
 the official [upgrade guide](https://docs.cilium.io/en/stable/install/upgrade/) for more
 information.
 
-By default, Cilium drops all disallowed packets upon policy
-deployment. In
-[auditmode](https://docs.cilium.io/en/v1.8/gettingstarted/policy-creation/?highlight=policy-audit#enable-policy-audit-mode),
-however, Cilium doesn't drop disallowed packets. You can use
-`policy-verdict` log to observe policy-related decisions. You can
-enable audit mode by adding the following to
+By default, Cilium's [audit
+mode](https://docs.cilium.io/en/v1.8/gettingstarted/policy-creation/?highlight=policy-audit#enable-policy-audit-mode)
+is enabled. In audit mode, Cilium doesn't drop disallowed packets. You
+can use `policy-verdict` log to observe policy-related decisions. You
+can disable audit mode by adding the following to
 `.gitlab/managed-apps/cilium/values.yaml`:
 
 ```yaml
 config:
-  policyAuditMode: true
+  policyAuditMode: false
 
 agent:
   monitor:
-    eventTypes: ["drop", "policy-verdict"]
+    eventTypes: ["drop"]
 ```
 
 The Cilium monitor log for traffic is logged out by the
@@ -1452,6 +1451,45 @@ podAnnotations:
 ```
 
 The only information to be changed here is the profile name which is `profile-one` in this example. Refer to the [AppArmor tutorial](https://kubernetes.io/docs/tutorials/clusters/apparmor/#securing-a-pod) for more information on how AppArmor is integrated in Kubernetes.
+
+#### Using PodSecurityPolicy in your deployments
+
+NOTE: **Note:**
+To enable AppArmor annotations on a Pod Security Policy you must first
+load the correspondingAppArmor profile.
+
+[Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/)are
+resources at the cluster level that control security-related
+properties of deployed pods. You can use such a policy to enable
+loaded AppArmor profiles and apply necessary pod restrictions across a
+cluster. You can deploy a new policy by adding the following
+to`.gitlab/managed-apps/apparmor/values.yaml`:
+
+```yaml
+securityPolicies:
+  example:
+    defaultProfile: profile-one
+    allowedProfiles:
+    - profile-one
+    - profile-two
+    spec:
+      privileged: false
+      seLinux:
+        rule: RunAsAny
+      supplementalGroups:
+        rule: RunAsAny
+      runAsUser:
+        rule: RunAsAny
+      fsGroup:
+        rule: RunAsAny
+      volumes:
+        - '*'
+```
+
+This example creates a single policy named `example` with the provided
+specification, and enables [AppArmor
+annotations](https://kubernetes.io/docs/tutorials/clusters/apparmor/#podsecuritypolicy-annotations)on
+it.
 
 NOTE: **Note:**
 Support for installing the AppArmor managed application is provided by the GitLab Container Security group.

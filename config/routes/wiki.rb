@@ -5,6 +5,9 @@ scope(controller: :wikis) do
     get :new
     get '/', to: redirect { |params, request| "#{request.path}/home" }
     post '/', to: 'wikis#create'
+    scope '-' do
+      resource :confluence, only: :show
+    end
   end
 
   scope(path: 'wikis/*id', as: :wiki, format: false) do
