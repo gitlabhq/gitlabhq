@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { getSelectedFragment } from '~/lib/utils/common_utils';
+import { getSelectedFragment, insertText } from '~/lib/utils/common_utils';
 
 export class CopyAsGFM {
   constructor() {
@@ -79,7 +79,7 @@ export class CopyAsGFM {
   }
 
   static insertPastedText(target, text, gfm) {
-    window.gl.utils.insertText(target, textBefore => {
+    insertText(target, textBefore => {
       // If the text before the cursor contains an odd number of backticks,
       // we are either inside an inline code span that starts with 1 backtick
       // or a code block that starts with 3 backticks.

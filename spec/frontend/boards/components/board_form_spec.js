@@ -3,14 +3,15 @@ import { mount } from '@vue/test-utils';
 import boardsStore from '~/boards/stores/boards_store';
 import boardForm from '~/boards/components/board_form.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('board_form.vue', () => {
   let wrapper;
 
   const propsData = {
     canAdminBoard: false,
-    labelsPath: `${gl.TEST_HOST}/labels/path`,
-    milestonePath: `${gl.TEST_HOST}/milestone/path`,
+    labelsPath: `${TEST_HOST}/labels/path`,
+    milestonePath: `${TEST_HOST}/milestone/path`,
   };
 
   const findModal = () => wrapper.find(DeprecatedModal);

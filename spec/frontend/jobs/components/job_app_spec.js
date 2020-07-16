@@ -6,6 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import JobApp from '~/jobs/components/job_app.vue';
 import createStore from '~/jobs/store';
 import job from '../mock_data';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('Job App', () => {
   const localVue = createLocalVue();
@@ -18,8 +19,8 @@ describe('Job App', () => {
   let mock;
 
   const initSettings = {
-    endpoint: `${gl.TEST_HOST}jobs/123.json`,
-    pagePath: `${gl.TEST_HOST}jobs/123`,
+    endpoint: `${TEST_HOST}jobs/123.json`,
+    pagePath: `${TEST_HOST}jobs/123`,
     logState:
       'eyJvZmZzZXQiOjE3NDUxLCJuX29wZW5fdGFncyI6MCwiZmdfY29sb3IiOm51bGwsImJnX2NvbG9yIjpudWxsLCJzdHlsZV9tYXNrIjowfQ%3D%3D',
   };

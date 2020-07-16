@@ -53,16 +53,6 @@ export const getCspNonceValue = () => {
   return metaTag && metaTag.content;
 };
 
-export const ajaxGet = url =>
-  axios
-    .get(url, {
-      params: { format: 'js' },
-      responseType: 'text',
-    })
-    .then(({ data }) => {
-      $.globalEval(data, { nonce: getCspNonceValue() });
-    });
-
 export const rstrip = val => {
   if (val) {
     return val.replace(/\s+$/, '');
@@ -375,34 +365,6 @@ export const insertText = (target, text) => {
   target.dispatchEvent(event);
 };
 
-export const nodeMatchesSelector = (node, selector) => {
-  const matches =
-    Element.prototype.matches ||
-    Element.prototype.matchesSelector ||
-    Element.prototype.mozMatchesSelector ||
-    Element.prototype.msMatchesSelector ||
-    Element.prototype.oMatchesSelector ||
-    Element.prototype.webkitMatchesSelector;
-
-  if (matches) {
-    return matches.call(node, selector);
-  }
-
-  // IE11 doesn't support `node.matches(selector)`
-
-  let { parentNode } = node;
-
-  if (!parentNode) {
-    parentNode = document.createElement('div');
-    // eslint-disable-next-line no-param-reassign
-    node = node.cloneNode(true);
-    parentNode.appendChild(node);
-  }
-
-  const matchingNodes = parentNode.querySelectorAll(selector);
-  return Array.prototype.indexOf.call(matchingNodes, node) !== -1;
-};
-
 /**
   this will take in the headers from an API response and normalize them
   this way we don't run into production issues when nginx gives us lowercased header keys
@@ -415,24 +377,6 @@ export const normalizeHeaders = headers => {
   });
 
   return upperCaseHeaders;
-};
-
-/**
-  this will take in the getAllResponseHeaders result and normalize them
-  this way we don't run into production issues when nginx gives us lowercased header keys
-*/
-export const normalizeCRLFHeaders = headers => {
-  const headersObject = {};
-  const headersArray = headers.split('\n');
-
-  headersArray.forEach(header => {
-    const keyValue = header.split(': ');
-
-    // eslint-disable-next-line prefer-destructuring
-    headersObject[keyValue[0]] = keyValue[1];
-  });
-
-  return normalizeHeaders(headersObject);
 };
 
 /**
@@ -641,13 +585,6 @@ export const setFaviconOverlay = overlayPath => {
   return createOverlayIcon(iconPath, overlayPath).then(faviconWithOverlayUrl =>
     faviconEl.setAttribute('href', faviconWithOverlayUrl),
   );
-};
-
-export const setFavicon = faviconPath => {
-  const faviconEl = document.getElementById('favicon');
-  if (faviconEl && faviconPath) {
-    faviconEl.setAttribute('href', faviconPath);
-  }
 };
 
 export const resetFavicon = () => {
@@ -887,35 +824,6 @@ export const searchBy = (query = '', searchSpace = {}) => {
  * @returns Boolean
  */
 export const isScopedLabel = ({ title = '' }) => title.indexOf('::') !== -1;
-
-window.gl = window.gl || {};
-window.gl.utils = {
-  ...(window.gl.utils || {}),
-  getPagePath,
-  isInGroupsPage,
-  isInProjectPage,
-  getProjectSlug,
-  getGroupSlug,
-  isInIssuePage,
-  ajaxGet,
-  rstrip,
-  updateTooltipTitle,
-  disableButtonIfEmptyField,
-  handleLocationHash,
-  isInViewport,
-  parseUrl,
-  parseUrlPathname,
-  getUrlParamsArray,
-  isMetaKey,
-  isMetaClick,
-  scrollToElement,
-  getParameterByName,
-  getSelectedFragment,
-  insertText,
-  nodeMatchesSelector,
-  spriteIcon,
-  imagePath,
-};
 
 // Methods to set and get Cookie
 export const setCookie = (name, value) => Cookies.set(name, value, { expires: 365 });

@@ -366,6 +366,7 @@ Some analyzers can be customized with environment variables.
 | `FAIL_NEVER`                          | SpotBugs             | Set to `1` to ignore compilation failure. |
 | `SAST_GOSEC_CONFIG`                   | Gosec                | Path to configuration for Gosec (optional). |
 | `PHPCS_SECURITY_AUDIT_PHP_EXTENSIONS` | phpcs-security-audit | Comma separated list of additional PHP Extensions. |
+| `SEARCH_MAX_DEPTH`                    | any                  | Maximum number of directories traversed when searching for source code files. Default: `4`. |
 
 #### Custom environment variables
 

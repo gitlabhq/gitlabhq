@@ -9,6 +9,8 @@ describe('GLForm', () => {
 
   describe('when instantiated', () => {
     beforeEach(done => {
+      window.gl = window.gl || {};
+
       testContext.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
       testContext.textarea = testContext.form.find('textarea');
       jest.spyOn($.prototype, 'off').mockReturnValue(testContext.textarea);

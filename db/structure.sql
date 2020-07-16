@@ -9170,7 +9170,10 @@ CREATE TABLE public.application_settings (
     group_import_limit integer DEFAULT 6 NOT NULL,
     group_export_limit integer DEFAULT 6 NOT NULL,
     group_download_export_limit integer DEFAULT 1 NOT NULL,
+    maintenance_mode boolean DEFAULT false NOT NULL,
+    maintenance_mode_message text,
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
+    CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))
@@ -23741,6 +23744,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200625190458
 20200626060151
 20200626130220
+20200628210938
 20200629192638
 20200630091656
 20200630110826

@@ -3,6 +3,7 @@ import { redirectTo } from '~/lib/utils/url_utility';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import stopJobsModal from '~/pages/admin/jobs/index/components/stop_jobs_modal.vue';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -11,7 +12,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 describe('stop_jobs_modal.vue', () => {
   const props = {
-    url: `${gl.TEST_HOST}/stop_jobs_modal.vue/stopAll`,
+    url: `${TEST_HOST}/stop_jobs_modal.vue/stopAll`,
   };
   let vm;
 
@@ -26,7 +27,7 @@ describe('stop_jobs_modal.vue', () => {
 
   describe('onSubmit', () => {
     it('stops jobs and redirects to overview page', done => {
-      const responseURL = `${gl.TEST_HOST}/stop_jobs_modal.vue/jobs`;
+      const responseURL = `${TEST_HOST}/stop_jobs_modal.vue/jobs`;
       jest.spyOn(axios, 'post').mockImplementation(url => {
         expect(url).toBe(props.url);
         return Promise.resolve({

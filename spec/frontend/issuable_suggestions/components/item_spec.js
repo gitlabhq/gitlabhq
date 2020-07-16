@@ -4,6 +4,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import Suggestion from '~/issuable_suggestions/components/item.vue';
 import mockData from '../mock_data';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('Issuable suggestions suggestion component', () => {
   let vm;
@@ -34,7 +35,7 @@ describe('Issuable suggestions suggestion component', () => {
 
     const link = vm.find(GlLink);
 
-    expect(link.attributes('href')).toBe(`${gl.TEST_HOST}/test/issue/1`);
+    expect(link.attributes('href')).toBe(`${TEST_HOST}/test/issue/1`);
   });
 
   it('renders IID', () => {
@@ -100,7 +101,7 @@ describe('Issuable suggestions suggestion component', () => {
 
       const image = vm.find(UserAvatarImage);
 
-      expect(image.props('imgSrc')).toBe(`${gl.TEST_HOST}/avatar`);
+      expect(image.props('imgSrc')).toBe(`${TEST_HOST}/avatar`);
     });
   });
 

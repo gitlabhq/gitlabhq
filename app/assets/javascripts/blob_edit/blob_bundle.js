@@ -5,7 +5,7 @@ import NewCommitForm from '../new_commit_form';
 import EditBlob from './edit_blob';
 import BlobFileDropzone from '../blob/blob_file_dropzone';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
-import { setCookie } from '~/lib/utils/common_utils';
+import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
 
 export default () => {
@@ -51,10 +51,7 @@ export default () => {
     new BlobFileDropzone(uploadBlobForm, method);
     new NewCommitForm(uploadBlobForm);
 
-    window.gl.utils.disableButtonIfEmptyField(
-      uploadBlobForm.find('.js-commit-message'),
-      '.btn-upload-file',
-    );
+    disableButtonIfEmptyField(uploadBlobForm.find('.js-commit-message'), '.btn-upload-file');
   }
 
   if (deleteBlobForm.length) {

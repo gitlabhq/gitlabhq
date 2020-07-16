@@ -3,6 +3,7 @@ import mountComponent from 'helpers/vue_mount_component_helper';
 import promoteLabelModal from '~/pages/projects/labels/components/promote_label_modal.vue';
 import eventHub from '~/pages/projects/labels/event_hub';
 import axios from '~/lib/utils/axios_utils';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('Promote label modal', () => {
   let vm;
@@ -11,7 +12,7 @@ describe('Promote label modal', () => {
     labelTitle: 'Documentation',
     labelColor: '#5cb85c',
     labelTextColor: '#ffffff',
-    url: `${gl.TEST_HOST}/dummy/promote/labels`,
+    url: `${TEST_HOST}/dummy/promote/labels`,
     groupName: 'group',
   };
 
@@ -51,7 +52,7 @@ describe('Promote label modal', () => {
     });
 
     it('redirects when a label is promoted', done => {
-      const responseURL = `${gl.TEST_HOST}/dummy/endpoint`;
+      const responseURL = `${TEST_HOST}/dummy/endpoint`;
       jest.spyOn(axios, 'post').mockImplementation(url => {
         expect(url).toBe(labelMockData.url);
         expect(eventHub.$emit).toHaveBeenCalledWith(

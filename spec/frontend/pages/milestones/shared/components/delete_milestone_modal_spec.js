@@ -4,6 +4,7 @@ import mountComponent from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import deleteMilestoneModal from '~/pages/milestones/shared/components/delete_milestone_modal.vue';
 import eventHub from '~/pages/milestones/shared/event_hub';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -17,7 +18,7 @@ describe('delete_milestone_modal.vue', () => {
     mergeRequestCount: 2,
     milestoneId: 3,
     milestoneTitle: 'my milestone title',
-    milestoneUrl: `${gl.TEST_HOST}/delete_milestone_modal.vue/milestone`,
+    milestoneUrl: `${TEST_HOST}/delete_milestone_modal.vue/milestone`,
   };
   let vm;
 
@@ -32,7 +33,7 @@ describe('delete_milestone_modal.vue', () => {
     });
 
     it('deletes milestone and redirects to overview page', done => {
-      const responseURL = `${gl.TEST_HOST}/delete_milestone_modal.vue/milestoneOverview`;
+      const responseURL = `${TEST_HOST}/delete_milestone_modal.vue/milestoneOverview`;
       jest.spyOn(axios, 'delete').mockImplementation(url => {
         expect(url).toBe(props.milestoneUrl);
         expect(eventHub.$emit).toHaveBeenCalledWith(

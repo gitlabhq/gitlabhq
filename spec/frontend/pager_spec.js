@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import Pager from '~/pager';
 import { removeParams } from '~/lib/utils/url_utility';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   removeParams: jest.fn().mockName('removeParams'),
@@ -32,7 +33,7 @@ describe('pager', () => {
     });
 
     it('should use data-href attribute from list element', () => {
-      const href = `${gl.TEST_HOST}/some_list.json`;
+      const href = `${TEST_HOST}/some_list.json`;
       setFixtures(`<div class="content_list" data-href="${href}"></div>`);
       Pager.init();
 
@@ -40,7 +41,7 @@ describe('pager', () => {
     });
 
     it('should use current url if data-href attribute not provided', () => {
-      const href = `${gl.TEST_HOST}/some_list`;
+      const href = `${TEST_HOST}/some_list`;
       removeParams.mockReturnValue(href);
       Pager.init();
 
@@ -56,7 +57,7 @@ describe('pager', () => {
 
     it('keeps extra query parameters from url', () => {
       window.history.replaceState({}, null, '?filter=test&offset=100');
-      const href = `${gl.TEST_HOST}/some_list?filter=test`;
+      const href = `${TEST_HOST}/some_list?filter=test`;
       removeParams.mockReturnValue(href);
       Pager.init();
 

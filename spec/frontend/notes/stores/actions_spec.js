@@ -492,7 +492,7 @@ describe('Actions Notes Store', () => {
       it('commits ADD_NEW_NOTE and dispatches updateMergeRequestWidget', done => {
         testAction(
           actions.createNewNote,
-          { endpoint: `${gl.TEST_HOST}`, data: {} },
+          { endpoint: `${TEST_HOST}`, data: {} },
           store.state,
           [
             {
@@ -528,7 +528,7 @@ describe('Actions Notes Store', () => {
       it('does not commit ADD_NEW_NOTE or dispatch updateMergeRequestWidget', done => {
         testAction(
           actions.createNewNote,
-          { endpoint: `${gl.TEST_HOST}`, data: {} },
+          { endpoint: `${TEST_HOST}`, data: {} },
           store.state,
           [],
           [],
@@ -551,7 +551,7 @@ describe('Actions Notes Store', () => {
       it('commits UPDATE_NOTE and dispatches updateMergeRequestWidget', done => {
         testAction(
           actions.toggleResolveNote,
-          { endpoint: `${gl.TEST_HOST}`, isResolved: true, discussion: false },
+          { endpoint: `${TEST_HOST}`, isResolved: true, discussion: false },
           store.state,
           [
             {
@@ -576,7 +576,7 @@ describe('Actions Notes Store', () => {
       it('commits UPDATE_DISCUSSION and dispatches updateMergeRequestWidget', done => {
         testAction(
           actions.toggleResolveNote,
-          { endpoint: `${gl.TEST_HOST}`, isResolved: true, discussion: true },
+          { endpoint: `${TEST_HOST}`, isResolved: true, discussion: true },
           store.state,
           [
             {

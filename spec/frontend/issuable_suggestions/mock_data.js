@@ -1,3 +1,5 @@
+import { TEST_HOST } from 'jest/helpers/test_constants';
+
 function getDate(daysMinus) {
   const today = new Date();
   today.setDate(today.getDate() - daysMinus);
@@ -15,12 +17,12 @@ export default () => ({
   createdAt: getDate(3),
   updatedAt: getDate(2),
   confidential: false,
-  webUrl: `${gl.TEST_HOST}/test/issue/1`,
+  webUrl: `${TEST_HOST}/test/issue/1`,
   title: 'Test issue',
   author: {
-    avatarUrl: `${gl.TEST_HOST}/avatar`,
+    avatarUrl: `${TEST_HOST}/avatar`,
     name: 'Author Name',
     username: 'author.username',
-    webUrl: `${gl.TEST_HOST}/author`,
+    webUrl: `${TEST_HOST}/author`,
   },
 });

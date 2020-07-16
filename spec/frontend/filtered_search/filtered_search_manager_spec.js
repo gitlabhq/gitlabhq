@@ -2,7 +2,6 @@ import RecentSearchesService from '~/filtered_search/services/recent_searches_se
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
-import '~/lib/utils/common_utils';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
 import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
@@ -10,6 +9,7 @@ import FilteredSearchManager from '~/filtered_search/filtered_search_manager';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 import { BACKSPACE_KEY_CODE, DELETE_KEY_CODE } from '~/lib/utils/keycodes';
 import { visitUrl } from '~/lib/utils/url_utility';
+import * as commonUtils from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -83,7 +83,7 @@ describe('Filtered Search Manager', () => {
     jest
       .spyOn(FilteredSearchDropdownManager.prototype, 'updateDropdownOffset')
       .mockImplementation();
-    jest.spyOn(gl.utils, 'getParameterByName').mockReturnValue(null);
+    jest.spyOn(commonUtils, 'getParameterByName').mockReturnValue(null);
     jest.spyOn(FilteredSearchVisualTokens, 'unselectTokens');
 
     input = document.querySelector('.filtered-search');

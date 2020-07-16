@@ -113,6 +113,7 @@ describe('Search autocomplete dropdown', () => {
     window.gon = {};
     window.gon.current_user_id = userId;
     window.gon.current_username = userName;
+    window.gl = window.gl || (window.gl = {});
 
     return (widget = initSearchAutocomplete({ autocompletePath }));
   });

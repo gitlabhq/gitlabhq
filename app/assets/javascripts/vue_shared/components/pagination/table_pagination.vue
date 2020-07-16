@@ -20,7 +20,7 @@ export default {
         Here is an example `change` method:
 
         change(pagenum) {
-          gl.utils.visitUrl(`?page=${pagenum}`);
+          visitUrl(`?page=${pagenum}`);
         },
       */
     change: {

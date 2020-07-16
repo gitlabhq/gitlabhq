@@ -59,6 +59,7 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { diffMetadata } from '../mock_data/diff_metadata';
 import createFlash from '~/flash';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 jest.mock('~/flash', () => jest.fn());
 
@@ -1259,12 +1260,12 @@ describe('DiffsStoreActions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(`${gl.TEST_HOST}/context`).replyOnce(200, ['test']);
+        mock.onGet(`${TEST_HOST}/context`).replyOnce(200, ['test']);
       });
 
       it('commits the success and dispatches an action to expand the new lines', done => {
         const file = {
-          context_lines_path: `${gl.TEST_HOST}/context`,
+          context_lines_path: `${TEST_HOST}/context`,
           file_path: 'test',
           file_hash: 'test',
         };
@@ -1281,13 +1282,13 @@ describe('DiffsStoreActions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${gl.TEST_HOST}/context`).replyOnce(500);
+        mock.onGet(`${TEST_HOST}/context`).replyOnce(500);
       });
 
       it('dispatches receiveFullDiffError', done => {
         testAction(
           fetchFullDiff,
-          { context_lines_path: `${gl.TEST_HOST}/context`, file_path: 'test', file_hash: 'test' },
+          { context_lines_path: `${TEST_HOST}/context`, file_path: 'test', file_hash: 'test' },
           null,
           [],
           [{ type: 'receiveFullDiffError', payload: 'test' }],
@@ -1451,7 +1452,7 @@ describe('DiffsStoreActions', () => {
 
   describe('setSuggestPopoverDismissed', () => {
     it('commits SET_SHOW_SUGGEST_POPOVER', done => {
-      const state = { dismissEndpoint: `${gl.TEST_HOST}/-/user_callouts` };
+      const state = { dismissEndpoint: `${TEST_HOST}/-/user_callouts` };
       const mock = new MockAdapter(axios);
       mock.onPost(state.dismissEndpoint).reply(200, {});
 

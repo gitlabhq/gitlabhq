@@ -427,7 +427,6 @@ export const dayInQuarter = (date, quarter) => {
 window.gl = window.gl || {};
 window.gl.utils = {
   ...(window.gl.utils || {}),
-  getTimeago,
   localTimeAgo,
 };
 

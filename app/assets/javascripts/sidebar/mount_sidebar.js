@@ -11,6 +11,7 @@ import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptio
 import Translate from '../vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 import { store } from '~/notes/stores';
+import { isInIssuePage } from '~/lib/utils/common_utils';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -43,7 +44,7 @@ function mountAssigneesComponent(mediator) {
           projectPath: fullPath,
           field: el.dataset.field,
           signedIn: el.hasAttribute('data-signed-in'),
-          issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
+          issuableType: isInIssuePage() ? 'issue' : 'merge_request',
         },
       }),
   });
@@ -93,7 +94,7 @@ function mountLockComponent(mediator) {
       isLocked: initialData.is_locked,
       isEditable: initialData.is_editable,
       mediator,
-      issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
+      issuableType: isInIssuePage() ? 'issue' : 'merge_request',
     },
   }).$mount(el);
 }

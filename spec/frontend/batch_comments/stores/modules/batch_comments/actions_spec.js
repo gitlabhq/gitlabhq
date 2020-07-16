@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/batch_comments/stores/modules/batch_comments/actions';
 import axios from '~/lib/utils/axios_utils';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('Batch comments store actions', () => {
   let res = {};
@@ -33,7 +34,7 @@ describe('Batch comments store actions', () => {
 
       testAction(
         actions.addDraftToDiscussion,
-        { endpoint: gl.TEST_HOST, data: 'test' },
+        { endpoint: TEST_HOST, data: 'test' },
         null,
         [{ type: 'ADD_NEW_DRAFT', payload: res }],
         [],
@@ -46,7 +47,7 @@ describe('Batch comments store actions', () => {
 
       testAction(
         actions.addDraftToDiscussion,
-        { endpoint: gl.TEST_HOST, data: 'test' },
+        { endpoint: TEST_HOST, data: 'test' },
         null,
         [],
         [],
@@ -62,7 +63,7 @@ describe('Batch comments store actions', () => {
 
       testAction(
         actions.createNewDraft,
-        { endpoint: gl.TEST_HOST, data: 'test' },
+        { endpoint: TEST_HOST, data: 'test' },
         null,
         [{ type: 'ADD_NEW_DRAFT', payload: res }],
         [],
@@ -73,14 +74,7 @@ describe('Batch comments store actions', () => {
     it('does not commit ADD_NEW_DRAFT if errors returned', done => {
       mock.onAny().reply(500);
 
-      testAction(
-        actions.createNewDraft,
-        { endpoint: gl.TEST_HOST, data: 'test' },
-        null,
-        [],
-        [],
-        done,
-      );
+      testAction(actions.createNewDraft, { endpoint: TEST_HOST, data: 'test' }, null, [], [], done);
     });
   });
 
@@ -90,7 +84,7 @@ describe('Batch comments store actions', () => {
     beforeEach(() => {
       getters = {
         getNotesData: {
-          draftsDiscardPath: gl.TEST_HOST,
+          draftsDiscardPath: TEST_HOST,
         },
       };
     });
@@ -137,7 +131,7 @@ describe('Batch comments store actions', () => {
     beforeEach(() => {
       getters = {
         getNotesData: {
-          draftsPath: gl.TEST_HOST,
+          draftsPath: TEST_HOST,
         },
       };
     });
@@ -171,7 +165,7 @@ describe('Batch comments store actions', () => {
       dispatch = jest.fn();
       commit = jest.fn();
       getters = {
-        getNotesData: { draftsPublishPath: gl.TEST_HOST, discussionsPath: gl.TEST_HOST },
+        getNotesData: { draftsPublishPath: TEST_HOST, discussionsPath: TEST_HOST },
       };
       rootGetters = { discussionsStructuredByLineCode: 'discussions' };
     });
@@ -208,7 +202,7 @@ describe('Batch comments store actions', () => {
   describe('discardReview', () => {
     it('commits mutations', done => {
       const getters = {
-        getNotesData: { draftsDiscardPath: gl.TEST_HOST },
+        getNotesData: { draftsDiscardPath: TEST_HOST },
       };
       const commit = jest.fn();
       mock.onAny().reply(200);
@@ -225,7 +219,7 @@ describe('Batch comments store actions', () => {
 
     it('commits error mutations', done => {
       const getters = {
-        getNotesData: { draftsDiscardPath: gl.TEST_HOST },
+        getNotesData: { draftsDiscardPath: TEST_HOST },
       };
       const commit = jest.fn();
       mock.onAny().reply(500);
@@ -247,7 +241,7 @@ describe('Batch comments store actions', () => {
     beforeEach(() => {
       getters = {
         getNotesData: {
-          draftsPath: gl.TEST_HOST,
+          draftsPath: TEST_HOST,
         },
       };
     });

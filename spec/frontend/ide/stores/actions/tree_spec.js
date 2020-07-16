@@ -7,6 +7,7 @@ import { createStore } from '~/ide/stores';
 import service from '~/ide/services';
 import { createRouter } from '~/ide/ide_router';
 import { file, createEntriesFromPaths } from '../../helpers';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('Multi-file store tree actions', () => {
   let projectTree;
@@ -97,7 +98,7 @@ describe('Multi-file store tree actions', () => {
 
         store.state.projects = {
           'abc/def': {
-            web_url: `${gl.TEST_HOST}/files`,
+            web_url: `${TEST_HOST}/files`,
             branches: {
               'master-testing': {
                 commit: {

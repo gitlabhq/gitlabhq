@@ -46,7 +46,7 @@ describe('ShortcutsIssuable', () => {
   });
 
   describe('replyWithSelectedText', () => {
-    // Stub window.gl.utils.getSelectedFragment to return a node with the provided HTML.
+    // Stub getSelectedFragment to return a node with the provided HTML.
     const stubSelection = (html, invalidNode) => {
       getSelectedFragment.mockImplementation(() => {
         const documentFragment = document.createDocumentFragment();
