@@ -287,6 +287,11 @@ The `period_field` is automatically set to:
 - `merged_at` if `query.issuable_state` is `merged`
 - `created_at` otherwise
 
+NOTE: **Note:**
+Until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/26911), is resolved, you may see `created_at`
+in place of `merged_at`.
+`created_at` will be used instead.
+
 ### `projects`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10904) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.4.

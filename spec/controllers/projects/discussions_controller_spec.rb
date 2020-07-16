@@ -182,7 +182,8 @@ RSpec.describe Projects::DiscussionsController do
         it "unresolves the discussion" do
           delete :unresolve, params: request_params
 
-          expect(note.reload.discussion.resolved?).to be false
+          # discussion is memoized and reload doesn't clear the memoization
+          expect(Note.find(note.id).discussion.resolved?).to be false
         end
 
         it "returns status 200" do

@@ -9785,7 +9785,8 @@ CREATE TABLE public.ci_builds (
     resource_group_id bigint,
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
-    scheduling_type smallint
+    scheduling_type smallint,
+    CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE SEQUENCE public.ci_builds_id_seq
@@ -10095,7 +10096,8 @@ CREATE TABLE public.ci_pipelines (
     target_sha bytea,
     external_pull_request_id bigint,
     ci_ref_id bigint,
-    locked smallint DEFAULT 0 NOT NULL
+    locked smallint DEFAULT 0 NOT NULL,
+    CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE TABLE public.ci_pipelines_config (
@@ -10280,7 +10282,8 @@ CREATE TABLE public.ci_stages (
     name character varying,
     status integer,
     lock_version integer DEFAULT 0,
-    "position" integer
+    "position" integer,
+    CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE SEQUENCE public.ci_stages_id_seq
@@ -10885,6 +10888,43 @@ CREATE SEQUENCE public.custom_emoji_id_seq
 
 ALTER SEQUENCE public.custom_emoji_id_seq OWNED BY public.custom_emoji.id;
 
+CREATE TABLE public.dast_site_profiles (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    dast_site_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_6cfab17b48 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE public.dast_site_profiles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.dast_site_profiles_id_seq OWNED BY public.dast_site_profiles.id;
+
+CREATE TABLE public.dast_sites (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    url text NOT NULL,
+    CONSTRAINT check_46df8b449c CHECK ((char_length(url) <= 255))
+);
+
+CREATE SEQUENCE public.dast_sites_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.dast_sites_id_seq OWNED BY public.dast_sites.id;
+
 CREATE TABLE public.dependency_proxy_blobs (
     id integer NOT NULL,
     group_id integer NOT NULL,
@@ -11304,7 +11344,8 @@ CREATE TABLE public.epics (
     start_date_sourcing_epic_id integer,
     due_date_sourcing_epic_id integer,
     confidential boolean DEFAULT false NOT NULL,
-    external_key character varying(255)
+    external_key character varying(255),
+    CONSTRAINT check_fcfb4a93ff CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE SEQUENCE public.epics_id_seq
@@ -12347,7 +12388,8 @@ CREATE TABLE public.issues (
     promoted_to_epic_id integer,
     health_status smallint,
     external_key character varying(255),
-    sprint_id bigint
+    sprint_id bigint,
+    CONSTRAINT check_fba63f706d CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE SEQUENCE public.issues_id_seq
@@ -12930,7 +12972,8 @@ CREATE TABLE public.merge_requests (
     state_id smallint DEFAULT 1 NOT NULL,
     rebase_jid character varying,
     squash_commit_sha bytea,
-    sprint_id bigint
+    sprint_id bigint,
+    CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE TABLE public.merge_requests_closing_issues (
@@ -16564,6 +16607,10 @@ ALTER TABLE ONLY public.conversational_development_index_metrics ALTER COLUMN id
 
 ALTER TABLE ONLY public.custom_emoji ALTER COLUMN id SET DEFAULT nextval('public.custom_emoji_id_seq'::regclass);
 
+ALTER TABLE ONLY public.dast_site_profiles ALTER COLUMN id SET DEFAULT nextval('public.dast_site_profiles_id_seq'::regclass);
+
+ALTER TABLE ONLY public.dast_sites ALTER COLUMN id SET DEFAULT nextval('public.dast_sites_id_seq'::regclass);
+
 ALTER TABLE ONLY public.dependency_proxy_blobs ALTER COLUMN id SET DEFAULT nextval('public.dependency_proxy_blobs_id_seq'::regclass);
 
 ALTER TABLE ONLY public.dependency_proxy_group_settings ALTER COLUMN id SET DEFAULT nextval('public.dependency_proxy_group_settings_id_seq'::regclass);
@@ -17531,6 +17578,12 @@ ALTER TABLE ONLY public.conversational_development_index_metrics
 
 ALTER TABLE ONLY public.custom_emoji
     ADD CONSTRAINT custom_emoji_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.dast_site_profiles
+    ADD CONSTRAINT dast_site_profiles_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.dast_sites
+    ADD CONSTRAINT dast_sites_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.dependency_proxy_blobs
     ADD CONSTRAINT dependency_proxy_blobs_pkey PRIMARY KEY (id);
@@ -18692,6 +18745,8 @@ CREATE UNIQUE INDEX index_aws_roles_on_role_external_id ON public.aws_roles USIN
 
 CREATE UNIQUE INDEX index_aws_roles_on_user_id ON public.aws_roles USING btree (user_id);
 
+CREATE INDEX index_background_migration_jobs_for_partitioning_migrations ON public.background_migration_jobs USING btree (((arguments ->> 2))) WHERE (class_name = 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable'::text);
+
 CREATE INDEX index_background_migration_jobs_on_class_name_and_arguments ON public.background_migration_jobs USING btree (class_name, arguments);
 
 CREATE INDEX index_background_migration_jobs_on_class_name_and_status_and_id ON public.background_migration_jobs USING btree (class_name, status, id);
@@ -19032,6 +19087,12 @@ CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON public.custom
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON public.ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
+CREATE INDEX index_dast_site_profiles_on_dast_site_id ON public.dast_site_profiles USING btree (dast_site_id);
+
+CREATE UNIQUE INDEX index_dast_site_profiles_on_project_id_and_name ON public.dast_site_profiles USING btree (project_id, name);
+
+CREATE UNIQUE INDEX index_dast_sites_on_project_id_and_url ON public.dast_sites USING btree (project_id, url);
+
 CREATE INDEX index_dependency_proxy_blobs_on_group_id_and_file_name ON public.dependency_proxy_blobs USING btree (group_id, file_name);
 
 CREATE INDEX index_dependency_proxy_group_settings_on_group_id ON public.dependency_proxy_group_settings USING btree (group_id);
@@ -19175,8 +19236,6 @@ CREATE INDEX index_epics_on_group_id_and_iid_varchar_pattern ON public.epics USI
 CREATE INDEX index_epics_on_iid ON public.epics USING btree (iid);
 
 CREATE INDEX index_epics_on_last_edited_by_id ON public.epics USING btree (last_edited_by_id);
-
-CREATE INDEX index_epics_on_lock_version ON public.epics USING btree (lock_version) WHERE (lock_version IS NULL);
 
 CREATE INDEX index_epics_on_parent_id ON public.epics USING btree (parent_id);
 
@@ -19424,8 +19483,6 @@ CREATE INDEX index_issues_on_duplicated_to_id ON public.issues USING btree (dupl
 
 CREATE INDEX index_issues_on_last_edited_by_id ON public.issues USING btree (last_edited_by_id);
 
-CREATE INDEX index_issues_on_lock_version ON public.issues USING btree (lock_version) WHERE (lock_version IS NULL);
-
 CREATE INDEX index_issues_on_milestone_id ON public.issues USING btree (milestone_id);
 
 CREATE INDEX index_issues_on_moved_to_id ON public.issues USING btree (moved_to_id) WHERE (moved_to_id IS NOT NULL);
@@ -19587,8 +19644,6 @@ CREATE INDEX index_merge_requests_on_description_trigram ON public.merge_request
 CREATE INDEX index_merge_requests_on_head_pipeline_id ON public.merge_requests USING btree (head_pipeline_id);
 
 CREATE INDEX index_merge_requests_on_latest_merge_request_diff_id ON public.merge_requests USING btree (latest_merge_request_diff_id);
-
-CREATE INDEX index_merge_requests_on_lock_version ON public.merge_requests USING btree (lock_version) WHERE (lock_version IS NULL);
 
 CREATE INDEX index_merge_requests_on_merge_user_id ON public.merge_requests USING btree (merge_user_id) WHERE (merge_user_id IS NOT NULL);
 
@@ -20611,12 +20666,6 @@ CREATE UNIQUE INDEX term_agreements_unique_index ON public.term_agreements USING
 CREATE INDEX tmp_build_stage_position_index ON public.ci_builds USING btree (stage_id, stage_idx) WHERE (stage_idx IS NOT NULL);
 
 CREATE INDEX tmp_idx_on_user_id_where_bio_is_filled ON public.users USING btree (id) WHERE ((COALESCE(bio, ''::character varying))::text IS DISTINCT FROM ''::text);
-
-CREATE INDEX tmp_index_ci_builds_lock_version ON public.ci_builds USING btree (id) WHERE (lock_version IS NULL);
-
-CREATE INDEX tmp_index_ci_pipelines_lock_version ON public.ci_pipelines USING btree (id) WHERE (lock_version IS NULL);
-
-CREATE INDEX tmp_index_ci_stages_lock_version ON public.ci_stages USING btree (id) WHERE (lock_version IS NULL);
 
 CREATE INDEX tmp_index_for_email_unconfirmation_migration ON public.emails USING btree (id) WHERE (confirmed_at IS NOT NULL);
 
@@ -22012,6 +22061,9 @@ ALTER TABLE ONLY public.project_compliance_framework_settings
 ALTER TABLE ONLY public.users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_6f6cf8e66e FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.dast_sites
+    ADD CONSTRAINT fk_rails_6febb6ea9c FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.ci_builds_runner_session
     ADD CONSTRAINT fk_rails_70707857d3 FOREIGN KEY (build_id) REFERENCES public.ci_builds(id) ON DELETE CASCADE;
 
@@ -22026,6 +22078,9 @@ ALTER TABLE ONLY public.slack_integrations
 
 ALTER TABLE ONLY public.custom_emoji
     ADD CONSTRAINT fk_rails_745925b412 FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.dast_site_profiles
+    ADD CONSTRAINT fk_rails_747dc64abc FOREIGN KEY (dast_site_id) REFERENCES public.dast_sites(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.merge_request_context_commit_diff_files
     ADD CONSTRAINT fk_rails_74a00a1787 FOREIGN KEY (merge_request_context_commit_id) REFERENCES public.merge_request_context_commits(id) ON DELETE CASCADE;
@@ -22080,6 +22135,9 @@ ALTER TABLE ONLY public.clusters_kubernetes_namespaces
 
 ALTER TABLE ONLY public.approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_80e6801803 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES public.approval_merge_request_rules(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.dast_site_profiles
+    ADD CONSTRAINT fk_rails_83e309d69e FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.deployment_merge_requests
     ADD CONSTRAINT fk_rails_86a6d8bf12 FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
@@ -23683,6 +23741,15 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200605160851
 20200608072931
 20200608075553
+20200608195222
+20200608203426
+20200608205813
+20200608212030
+20200608212435
+20200608212549
+20200608212652
+20200608212807
+20200608212824
 20200608214008
 20200609002841
 20200609012539
@@ -23769,9 +23836,13 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200707094341
 20200707095849
 20200708080631
+20200709101408
 20200710102846
 20200710105332
 20200710130234
+20200712084655
+20200712235622
 20200713071042
+20200713152443
 \.
 

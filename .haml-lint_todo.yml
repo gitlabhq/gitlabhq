@@ -47,7 +47,6 @@ linters:
       - "app/views/admin/hooks/edit.html.haml"
       - "app/views/admin/logs/show.html.haml"
       - "app/views/admin/projects/_projects.html.haml"
-      - "app/views/admin/projects/show.html.haml"
       - "app/views/admin/requests_profiles/index.html.haml"
       - "app/views/admin/runners/_runner.html.haml"
       - "app/views/admin/runners/index.html.haml"

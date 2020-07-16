@@ -39,7 +39,7 @@ module Gitlab
       end
 
       def self.release_generation_enabled?
-        ::Feature.enabled?(:ci_release_generation)
+        ::Feature.enabled?(:ci_release_generation, default_enabled: true)
       end
 
       # Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/224199

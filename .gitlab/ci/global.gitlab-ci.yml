@@ -18,7 +18,7 @@
 
 .rails-cache:
   cache:
-    key: "rails-v1"
+    key: "rails-v2"
     paths:
       - vendor/ruby/
       - vendor/gitaly-ruby/

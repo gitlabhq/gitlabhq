@@ -104,6 +104,34 @@ RSpec.describe Projects::LogsController do
         expect(response.headers['Poll-Interval']).to eq('3000')
       end
 
+      context 'with gitlab managed apps logs' do
+        it 'uses cluster finder services to select cluster', :aggregate_failures do
+          cluster_list = [cluster]
+          service_params = { params: ActionController::Parameters.new(pod_name: pod_name).permit! }
+          request_params = {
+            namespace_id: project.namespace,
+            project_id: project,
+            cluster_id: cluster.id,
+            pod_name: pod_name,
+            format: :json
+          }
+
+          expect_next_instance_of(ClusterAncestorsFinder, project, user) do |finder|
+            expect(finder).to receive(:execute).and_return(cluster_list)
+            expect(cluster_list).to receive(:find).and_call_original
+          end
+
+          expect_next_instance_of(service, cluster, Gitlab::Kubernetes::Helm::NAMESPACE, service_params) do |instance|
+            expect(instance).to receive(:execute).and_return(service_result)
+          end
+
+          get endpoint, params: request_params
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response).to eq(service_result_json)
+        end
+      end
+
       context 'when service is processing' do
         let(:service_result) { nil }
 

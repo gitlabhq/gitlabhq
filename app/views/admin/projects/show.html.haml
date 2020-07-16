@@ -5,10 +5,10 @@
 
 .js-remove-member-modal
 %h3.page-title
-  Project: #{@project.full_name}
+  = _('Project: %{name}') % { name: @project.full_name }
   = link_to edit_project_path(@project), class: "btn btn-nr float-right" do
     %i.fa.fa-pencil-square-o
-    Edit
+    = _('Edit')
 %hr
 - if @project.last_repository_check_failed?
   .row
@@ -22,57 +22,67 @@
   .col-md-6
     .card
       .card-header
-        Project info:
+        = _('Project info:')
       %ul.content-list
         %li
-          %span.light Name:
+          %span.light
+            = _('Name:')
           %strong
             = link_to @project.name, project_path(@project)
         %li
-          %span.light Namespace:
+          %span.light
+            = _('Namespace:')
           %strong
             - if @project.namespace
               = link_to @project.namespace.human_name, [:admin, @project.group || @project.owner]
             - else
-              Global
+              = s_('ProjectSettings|Global')
         %li
-          %span.light Owned by:
+          %span.light
+            = _('Owned by:')
           %strong
             - if @project.owner
               = link_to @project.owner_name, [:admin, @project.owner]
             - else
-              (deleted)
+              = _('(deleted)')
 
         %li
-          %span.light Created by:
+          %span.light
+            = _('Created by:')
           %strong
-            = @project.creator.try(:name) || '(deleted)'
+            = @project.creator.try(:name) || _('(deleted)')
 
         %li
-          %span.light Created on:
+          %span.light
+            = _('Created on:')
           %strong
             = @project.created_at.to_s(:medium)
 
         %li
-          %span.light ID:
+          %span.light
+            = _('ID:')
           %strong
             = @project.id
 
         %li
-          %span.light http:
+          %span.light
+            = _('http:')
           %strong
             = link_to @project.http_url_to_repo, project_path(@project)
         %li
-          %span.light ssh:
+          %span.light
+            = _('ssh:')
           %strong
             = link_to @project.ssh_url_to_repo, project_path(@project)
         - if @project.repository.exists?
           %li
-            %span.light Gitaly storage name:
+            %span.light
+              = _('Gitaly storage name:')
             %strong
               = @project.repository.storage
           %li
-            %span.light Gitaly relative path:
+            %span.light
+              = _('Gitaly relative path:')
             %strong
               = @project.repository.relative_path
 
@@ -80,30 +90,36 @@
             = render 'shared/storage_counter_statistics', storage_size: @project.statistics&.storage_size, storage_details: @project.statistics
 
           %li
-            %span.light last commit:
+            %span.light
+              = _('last commit:')
             %strong
               = last_commit(@project)
 
           %li
-            %span.light Git LFS status:
+            %span.light
+              = _('Git LFS status:')
             %strong
               = project_lfs_status(@project)
               = link_to icon('question-circle'), help_page_path('topics/git/lfs/index')
         - else
           %li
-            %span.light repository:
+            %span.light
+              = _('repository:')
             %strong.cred
-              does not exist
+              = _('does not exist')
 
         - if @project.archived?
           %li
-            %span.light archived:
-            %strong project is read-only
+            %span.light
+              = _('archived:')
+            %strong
+              = _('project is read-only')
 
         = render_if_exists "shared_runner_status", project: @project
 
         %li
-          %span.light access:
+          %span.light
+            = _('access:')
           %strong
             %span{ class: visibility_level_color(@project.visibility_level) }
               = visibility_level_icon(@project.visibility_level)
@@ -115,24 +131,24 @@
 
     .card
       .card-header
-        Transfer project
+        = s_('ProjectSettings|Transfer project')
       .card-body
         = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
           .form-group.row
             .col-sm-3.col-form-label
-              = f.label :new_namespace_id, "Namespace"
+              = f.label :new_namespace_id, _("Namespace")
             .col-sm-9
               .dropdown
-                = dropdown_toggle('Search for Namespace', { toggle: 'dropdown', field_name: 'new_namespace_id' }, { toggle_class: 'js-namespace-select large' })
+                = dropdown_toggle(_('Search for Namespace'), { toggle: 'dropdown', field_name: 'new_namespace_id' }, { toggle_class: 'js-namespace-select large' })
                 .dropdown-menu.dropdown-select
-                  = dropdown_title('Namespaces')
-                  = dropdown_filter("Search for Namespace")
+                  = dropdown_title(_('Namespaces'))
+                  = dropdown_filter(_('Search for Namespace'))
                   = dropdown_content
                   = dropdown_loading
 
           .form-group.row
             .offset-sm-3.col-sm-9
-              = f.submit 'Transfer', class: 'btn btn-primary'
+              = f.submit _('Transfer'), class: 'btn btn-primary'
 
     .card.repository-check
       .card-header
@@ -152,18 +168,18 @@
             = link_to icon('question-circle'), help_page_path('administration/repository_checks')
 
           .form-group
-            = f.submit 'Trigger repository check', class: 'btn btn-primary'
+            = f.submit _('Trigger repository check'), class: 'btn btn-primary'
 
   .col-md-6
     - if @group
       .card
         .card-header
           %strong= @group.name
-          group members
+          = _('group members')
           %span.badge.badge-pill= @group_members.size
           .float-right
             = link_to admin_group_path(@group), class: 'btn btn-sm' do
-              = icon('pencil-square-o', text: 'Manage access')
+              = icon('pencil-square-o', text: _('Manage access'))
         %ul.content-list.members-list
           = render partial: 'shared/members/member', collection: @group_members, as: :member, locals: { show_controls: false }
         .card-footer
@@ -174,10 +190,10 @@
     .card
       .card-header
         %strong= @project.name
-        project members
+        = _('project members')
         %span.badge.badge-pill= @project.users.size
         .float-right
-          = link_to icon('pencil-square-o', text: 'Manage access'), project_project_members_path(@project), class: "btn btn-sm"
+          = link_to icon('pencil-square-o', text: _('Manage access')), project_project_members_path(@project), class: "btn btn-sm"
       %ul.content-list.project_members.members-list
         = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
       .card-footer

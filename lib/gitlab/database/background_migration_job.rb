@@ -5,8 +5,13 @@ module Gitlab
     class BackgroundMigrationJob < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
       self.table_name = :background_migration_jobs
 
+      scope :for_migration_class, -> (class_name) { where(class_name: normalize_class_name(class_name)) }
       scope :for_migration_execution, -> (class_name, arguments) do
-        where('class_name = ? AND arguments = ?', normalize_class_name(class_name), arguments.to_json)
+        for_migration_class(class_name).where('arguments = ?', arguments.to_json)
+      end
+
+      scope :for_partitioning_migration, -> (class_name, table_name) do
+        for_migration_class(class_name).where('arguments ->> 2 = ?', table_name)
       end
 
       enum status: {

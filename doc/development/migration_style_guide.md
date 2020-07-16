@@ -88,7 +88,7 @@ body:
 For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[4.2]
+class MyMigration < ActiveRecord::Migration[6.0]
   DOWNTIME = true
   DOWNTIME_REASON = 'This migration requires downtime because ...'
 
@@ -411,7 +411,7 @@ migration. For this to work your migration needs to include the module
 `Gitlab::Database::MultiThreadedMigration`:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[4.2]
+class MyMigration < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
   include Gitlab::Database::MultiThreadedMigration
 end
@@ -421,7 +421,7 @@ You can then use the method `with_multiple_threads` to perform work in separate
 threads. For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[4.2]
+class MyMigration < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
   include Gitlab::Database::MultiThreadedMigration
 
@@ -455,7 +455,7 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[4.2]
+class MyMigration < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 
@@ -536,7 +536,7 @@ Here's an example where we add a new column with a foreign key
 constraint. Note it includes `index: true` to create an index for it.
 
 ```ruby
-class Migration < ActiveRecord::Migration[4.2]
+class Migration < ActiveRecord::Migration[6.0]
 
   def change
     add_reference :model, :other_model, index: true, foreign_key: { on_delete: :cascade }
@@ -855,15 +855,32 @@ If you need more complex logic, you can define and use models local to a
 migration. For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration[4.2]
+class MyMigration < ActiveRecord::Migration[6.0]
   class Project < ActiveRecord::Base
     self.table_name = 'projects'
+  end
+
+  def up
+    # Reset the column information of all the models that update the database
+    # to ensure the Active Record's knowledge of the table structure is current
+    Project.reset_column_information
+
+    # ... ...
   end
 end
 ```
 
 When doing so be sure to explicitly set the model's table name, so it's not
 derived from the class name or namespace.
+
+Finally, make sure that `reset_column_information` is run in the `up` method of
+the migration for all local Models that update the database.
+
+The reason for that is that all migration classes are loaded at the beginning
+(when `db:migrate` starts), so they can get out of sync with the table schema
+they map to in case another migration updates that schema. That makes the data
+migration fail when trying to insert or make updates to the underlying table,
+as the new columns are reported as `unknown attribute` by `ActiveRecord`.
 
 ### Renaming reserved paths
 

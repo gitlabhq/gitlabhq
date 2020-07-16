@@ -776,6 +776,9 @@ msgstr ""
 msgid "(check progress)"
 msgstr ""
 
+msgid "(deleted)"
+msgstr ""
+
 msgid "(external source)"
 msgstr ""
 
@@ -2202,10 +2205,7 @@ msgstr ""
 msgid "AlertSettings|Test failed. Do you still want to save your changes anyway?"
 msgstr ""
 
-msgid "AlertSettings|There was an error updating the the alert settings. Please refresh the page to try again."
-msgstr ""
-
-msgid "AlertSettings|There was an error while trying to enable the alert settings. Please ensure you are using a valid URL."
+msgid "AlertSettings|There was an error updating the alert settings"
 msgstr ""
 
 msgid "AlertSettings|There was an error while trying to reset the key. Please refresh the page to try again."
@@ -7004,6 +7004,9 @@ msgstr ""
 msgid "Created by me"
 msgstr ""
 
+msgid "Created by:"
+msgstr ""
+
 msgid "Created date"
 msgstr ""
 
@@ -9406,6 +9409,9 @@ msgstr ""
 msgid "Error loading viewer"
 msgstr ""
 
+msgid "Error message:"
+msgstr ""
+
 msgid "Error occurred when fetching sidebar data"
 msgstr ""
 
@@ -11053,6 +11059,9 @@ msgstr ""
 msgid "Git LFS objects will be synced in pull mirrors if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. They will <strong>not</strong> be synced in push mirrors."
 msgstr ""
 
+msgid "Git LFS status:"
+msgstr ""
+
 msgid "Git global setup"
 msgstr ""
 
@@ -11252,6 +11261,12 @@ msgid "Gitaly"
 msgstr ""
 
 msgid "Gitaly Servers"
+msgstr ""
+
+msgid "Gitaly relative path:"
+msgstr ""
+
+msgid "Gitaly storage name:"
 msgstr ""
 
 msgid "Gitaly|Address"
@@ -15351,7 +15366,16 @@ msgstr ""
 msgid "Name:"
 msgstr ""
 
+msgid "Namespace"
+msgstr ""
+
 msgid "Namespace is empty"
+msgstr ""
+
+msgid "Namespace:"
+msgstr ""
+
+msgid "Namespaces"
 msgstr ""
 
 msgid "Namespaces to index"
@@ -16421,6 +16445,9 @@ msgid "Owned by anyone"
 msgstr ""
 
 msgid "Owned by me"
+msgstr ""
+
+msgid "Owned by:"
 msgstr ""
 
 msgid "Owner"
@@ -18034,6 +18061,9 @@ msgstr ""
 msgid "Project has too many %{label_for_message} to search"
 msgstr ""
 
+msgid "Project info:"
+msgstr ""
+
 msgid "Project is required when cluster_type is :project"
 msgstr ""
 
@@ -18289,6 +18319,9 @@ msgstr ""
 msgid "ProjectSettings|Git Large File Storage (LFS)"
 msgstr ""
 
+msgid "ProjectSettings|Global"
+msgstr ""
+
 msgid "ProjectSettings|Internal"
 msgstr ""
 
@@ -18428,6 +18461,9 @@ msgid "ProjectSettings|This setting will override user notification preferences 
 msgstr ""
 
 msgid "ProjectSettings|This will dictate the commit history when you merge a merge request"
+msgstr ""
+
+msgid "ProjectSettings|Transfer project"
 msgstr ""
 
 msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
@@ -20441,6 +20477,9 @@ msgid "Search by name"
 msgstr ""
 
 msgid "Search files"
+msgstr ""
+
+msgid "Search for Namespace"
 msgstr ""
 
 msgid "Search for a LDAP group"
@@ -24876,6 +24915,9 @@ msgstr ""
 msgid "Track your project with Audit Events."
 msgstr ""
 
+msgid "Transfer"
+msgstr ""
+
 msgid "Transfer ownership"
 msgstr ""
 
@@ -24958,6 +25000,9 @@ msgid "Trigger pipelines when branches or tags are updated from the upstream rep
 msgstr ""
 
 msgid "Trigger removed."
+msgstr ""
+
+msgid "Trigger repository check"
 msgstr ""
 
 msgid "Trigger this manual action"
@@ -27440,6 +27485,9 @@ msgid_plural "about %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "access:"
+msgstr ""
+
 msgid "activated"
 msgstr ""
 
@@ -27480,6 +27528,9 @@ msgid "approved by: "
 msgstr ""
 
 msgid "archived"
+msgstr ""
+
+msgid "archived:"
 msgstr ""
 
 msgid "assign yourself"
@@ -27813,6 +27864,9 @@ msgstr ""
 msgid "disabled"
 msgstr ""
 
+msgid "does not exist"
+msgstr ""
+
 msgid "does not have a supported extension. Only %{extension_list} are supported"
 msgstr ""
 
@@ -27916,6 +27970,9 @@ msgstr ""
 msgid "group"
 msgstr ""
 
+msgid "group members"
+msgstr ""
+
 msgid "groups"
 msgstr ""
 
@@ -27929,6 +27986,9 @@ msgid "help"
 msgstr ""
 
 msgid "here"
+msgstr ""
+
+msgid "http:"
 msgstr ""
 
 msgid "https://your-bitbucket-server"
@@ -28045,6 +28105,9 @@ msgid "it is too large"
 msgstr ""
 
 msgid "jigsaw is not defined"
+msgstr ""
+
+msgid "last commit:"
 msgstr ""
 
 msgid "latest"
@@ -28546,6 +28609,12 @@ msgstr ""
 msgid "project avatar"
 msgstr ""
 
+msgid "project is read-only"
+msgstr ""
+
+msgid "project members"
+msgstr ""
+
 msgid "projects"
 msgstr ""
 
@@ -28586,6 +28655,9 @@ msgid "reply"
 msgid_plural "replies"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "repository:"
+msgstr ""
 
 msgid "reset it."
 msgstr ""
@@ -28657,6 +28729,9 @@ msgid "specified top is not part of the tree"
 msgstr ""
 
 msgid "spendCommand|%{slash_command} will update the sum of the time spent."
+msgstr ""
+
+msgid "ssh:"
 msgstr ""
 
 msgid "started"

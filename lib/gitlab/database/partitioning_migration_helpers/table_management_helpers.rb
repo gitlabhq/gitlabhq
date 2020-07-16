@@ -69,6 +69,8 @@ module Gitlab
           assert_table_is_allowed(table_name)
           assert_not_in_transaction_block(scope: ERROR_SCOPE)
 
+          cleanup_migration_jobs(table_name)
+
           with_lock_retries do
             trigger_name = make_sync_trigger_name(table_name)
             drop_trigger(table_name, trigger_name)
@@ -260,6 +262,10 @@ module Gitlab
             batch_size: BATCH_SIZE,
             other_job_arguments: [source_table_name.to_s, partitioned_table_name, source_key],
             track_jobs: true)
+        end
+
+        def cleanup_migration_jobs(table_name)
+          ::Gitlab::Database::BackgroundMigrationJob.for_partitioning_migration(MIGRATION_CLASS_NAME, table_name).delete_all
         end
       end
     end

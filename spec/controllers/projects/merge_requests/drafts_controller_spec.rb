@@ -331,8 +331,10 @@ RSpec.describe Projects::MergeRequests::DraftsController do
       notes = merge_request.notes.reload
 
       expect(notes.pluck(:note)).to include(*drafts.map(&:note))
-      expect(note.discussion.notes.last.note).to eq(draft_reply.note)
-      expect(diff_note.discussion.notes.last.note).to eq(diff_draft_reply.note)
+
+      # discussion is memoized and reload doesn't clear the memoization
+      expect(Note.find(note.id).discussion.notes.last.note).to eq(draft_reply.note)
+      expect(Note.find(diff_note.id).discussion.notes.last.note).to eq(diff_draft_reply.note)
     end
 
     it 'can publish just a single draft note' do
@@ -376,7 +378,8 @@ RSpec.describe Projects::MergeRequests::DraftsController do
 
         post :publish, params: params
 
-        discussion = note.discussion
+        # discussion is memoized and reload doesn't clear the memoization
+        discussion = Note.find(note.id).discussion
 
         expect(discussion.notes.last.note).to eq(draft_reply.note)
         expect(discussion.resolved?).to eq(false)

@@ -237,7 +237,8 @@ RSpec.describe DraftNotes::PublishService do
     it 'resolves the thread' do
       publish(draft: draft_note)
 
-      expect(note.discussion.resolved?).to be true
+      # discussion is memoized and reload doesn't clear the memoization
+      expect(Note.find(note.id).discussion.resolved?).to be true
     end
 
     it 'sends notifications if all threads are resolved' do

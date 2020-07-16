@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200427064130_cleanup_optimistic_locking_nulls_pt2_fixed.rb')
 
-RSpec.describe CleanupOptimisticLockingNullsPt2Fixed, :migration do
+RSpec.describe CleanupOptimisticLockingNullsPt2Fixed, :migration, schema: 20200219193117 do
   test_tables = %w(ci_stages ci_builds ci_pipelines).freeze
   test_tables.each do |table|
     let(table.to_sym) { table(table.to_sym) }

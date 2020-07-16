@@ -294,11 +294,11 @@ function base_config_changed() {
 function parse_gitaly_image_tag() {
   local gitaly_version="${GITALY_VERSION}"
 
-  # returns sha if gitaly_version uses a sha
-  if [[ ${#gitaly_version} -eq 40 ]]; then
-    echo "${gitaly_version}"
-  else
+  # prepend semver version with `v`
+  if [[ $gitaly_version =~  ^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?(-ee)?$ ]]; then
     echo "v${gitaly_version}"
+  else
+    echo "${gitaly_version}"
   fi
 }
 

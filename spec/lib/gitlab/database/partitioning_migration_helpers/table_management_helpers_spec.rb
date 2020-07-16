@@ -351,6 +351,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     let(:expected_tables) do
       %w[000000 201912 202001 202002].map { |suffix| "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partitioned_table}_#{suffix}" }.unshift(partitioned_table)
     end
+    let(:migration_class) { 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable' }
 
     context 'when the table is not allowed' do
       let(:source_table) { :this_table_is_not_allowed }
@@ -387,6 +388,22 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
       expected_tables.each do |table|
         expect(connection.table_exists?(table)).to be(false)
+      end
+    end
+
+    context 'cleaning up background migration tracking records' do
+      let!(:job1) { create(:background_migration_job, class_name: migration_class, arguments: [1, 10, source_table]) }
+      let!(:job2) { create(:background_migration_job, class_name: migration_class, arguments: [11, 20, source_table]) }
+      let!(:job3) { create(:background_migration_job, class_name: migration_class, arguments: [1, 10, 'other_table']) }
+
+      it 'deletes any tracking records from the background_migration_jobs table' do
+        migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+
+        expect { migration.drop_partitioned_table_for(source_table) }
+          .to change { ::Gitlab::Database::BackgroundMigrationJob.count }.from(3).to(1)
+
+        remaining_record = ::Gitlab::Database::BackgroundMigrationJob.first
+        expect(remaining_record).to have_attributes(class_name: migration_class, arguments: [1, 10, 'other_table'])
       end
     end
   end

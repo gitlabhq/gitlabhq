@@ -218,7 +218,9 @@ describe('AlertsSettingsForm', () => {
       it('should show a error alert if failed', () => {
         const formPath = 'some/path';
         const toggleService = true;
-        mockAxios.onPut(formPath).replyOnce(404);
+        mockAxios.onPut(formPath).replyOnce(422, {
+          errors: 'Error message to display',
+        });
 
         createComponent({ generic: { ...defaultProps.generic, formPath } });
 

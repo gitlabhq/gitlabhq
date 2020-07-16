@@ -306,7 +306,7 @@ gem 'sentry-raven', '~> 2.9'
 gem 'premailer-rails', '~> 1.10.3'
 
 # LabKit: Tracing and Correlation
-gem 'gitlab-labkit', '0.12.0'
+gem 'gitlab-labkit', '0.12.1'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false
@@ -337,7 +337,6 @@ group :development do
   gem 'danger', '~> 6.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.4'
-  gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
 
   # Better errors handler
   gem 'better_errors', '~> 2.5.0'
@@ -390,6 +389,8 @@ group :development, :test do
   gem 'png_quantizator', '~> 0.2.1', require: false
 
   gem 'parallel', '~> 1.19', require: false
+
+  gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
 end
 
 # Gems required in omnibus-gitlab pipeline
