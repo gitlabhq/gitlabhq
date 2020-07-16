@@ -384,7 +384,7 @@ RSpec.describe 'Pipeline', :js do
             find('.js-tests-tab-link').click
             wait_for_requests
 
-            expect(page).to have_content('Test suites')
+            expect(page).to have_content('Jobs')
             expect(page).to have_selector('.js-tests-detail', visible: :all)
           end
         end
@@ -412,7 +412,7 @@ RSpec.describe 'Pipeline', :js do
           it 'calls summary.json endpoint', :js do
             find('.js-tests-tab-link').click
 
-            expect(page).to have_content('Test suites')
+            expect(page).to have_content('Jobs')
             expect(page).to have_selector('.js-tests-detail', visible: :all)
           end
         end

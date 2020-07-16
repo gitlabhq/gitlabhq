@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import createFlash from '~/flash';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
@@ -21,6 +22,8 @@ import {
   stopJobsPolling,
 } from '~/import_projects/store/actions';
 import state from '~/import_projects/store/state';
+
+jest.mock('~/flash');
 
 describe('import_projects store actions', () => {
   let localState;
@@ -130,10 +133,10 @@ describe('import_projects store actions', () => {
       );
     });
 
-    it('commits REQUEST_IMPORT and RECEIVE_IMPORT_ERROR  on an unsuccessful request', () => {
+    it('commits REQUEST_IMPORT and RECEIVE_IMPORT_ERROR and shows generic error message on an unsuccessful request', async () => {
       mock.onPost(`${TEST_HOST}/endpoint.json`).reply(500);
 
-      return testAction(
+      await testAction(
         fetchImport,
         importPayload,
         localState,
@@ -143,6 +146,26 @@ describe('import_projects store actions', () => {
         ],
         [],
       );
+
+      expect(createFlash).toHaveBeenCalledWith('Importing the project failed');
+    });
+
+    it('commits REQUEST_IMPORT and RECEIVE_IMPORT_ERROR and shows detailed error message on an unsuccessful request with errors fields in response', async () => {
+      const ERROR_MESSAGE = 'dummy';
+      mock.onPost(`${TEST_HOST}/endpoint.json`).reply(500, { errors: ERROR_MESSAGE });
+
+      await testAction(
+        fetchImport,
+        importPayload,
+        localState,
+        [
+          { type: REQUEST_IMPORT, payload: importPayload.repo.id },
+          { type: RECEIVE_IMPORT_ERROR, payload: importPayload.repo.id },
+        ],
+        [],
+      );
+
+      expect(createFlash).toHaveBeenCalledWith(`Importing the project failed: ${ERROR_MESSAGE}`);
     });
   });
 

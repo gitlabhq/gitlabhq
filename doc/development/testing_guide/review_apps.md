@@ -9,7 +9,7 @@ pipeline](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6665).
 
 ```mermaid
 graph TD
-  A["build-qa-image, gitlab:assets:compile pull-cache<br/>(canonical default refs only)"];
+  A["build-qa-image, compile-production-assets<br/>(canonical default refs only)"];
   B[review-build-cng];
   C[review-deploy];
   D[CNG-mirror];
@@ -44,23 +44,25 @@ subgraph "CNG-mirror pipeline"
 
 ### Detailed explanation
 
-1. On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) during the `test` stage, the
-   [`gitlab:assets:compile`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724487) job is automatically started.
-   - Once it's done, it starts the [`review-build-cng`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808)
-     manual job since the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) pipeline triggered in the
+1. On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) during the `prepare` stage, the
+   [`compile-production-assets`](https://gitlab.com/gitlab-org/gitlab/-/jobs/641770154) job is automatically started.
+   - Once it's done, the [`review-build-cng`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808)
+     job starts since the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) pipeline triggered in the
      following step depends on it.
-1. The [`review-build-cng`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808) job [triggers a pipeline](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657)
+1. Once `compile-production-assets` is done, the [`review-build-cng`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808)
+   job [triggers a pipeline](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657)
    in the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project.
+   - The `review-build-cng` job automatically starts only if your MR includes
+     [CI or frontend changes](../pipelines.md#changes-patterns). In other cases, the job is manual.
    - The [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657) pipeline creates the Docker images of
      each component (e.g. `gitlab-rails-ee`, `gitlab-shell`, `gitaly` etc.)
      based on the commit from the [GitLab pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) and stores
      them in its [registry](https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry).
    - We use the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project so that the `CNG`, (Cloud
-     Native GitLab), project's registry is not overloaded with a
-     lot of transient Docker images.
+     Native GitLab), project's registry is not overloaded with a lot of transient Docker images.
    - Note that the official CNG images are built by the `cloud-native-image`
      job, which runs only for tags, and triggers itself a [`CNG`](https://gitlab.com/gitlab-org/build/CNG) pipeline.
-1. Once the `test` stage is done, the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job
+1. Once `review-build-cng` is done, the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job
    deploys the Review App using [the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/) to
    the [`review-apps`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps?project=gitlab-review-apps)
    Kubernetes cluster on GCP.
@@ -94,10 +96,9 @@ subgraph "CNG-mirror pipeline"
 - The manual `review-stop` can be used to
   stop a Review App manually, and is also started by GitLab once a merge
   request's branch is deleted after being merged.
-- The Kubernetes cluster is connected to the `gitlab-{ce,ee}` projects using
+- The Kubernetes cluster is connected to the `gitlab` projects using
   [GitLab's Kubernetes integration](../../user/project/clusters/index.md). This basically
-  allows to have a link to the Review App directly from the merge request
-  widget.
+  allows to have a link to the Review App directly from the merge request widget.
 
 ### Auto-stopping of Review Apps
 

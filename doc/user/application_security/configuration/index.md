@@ -26,6 +26,11 @@ all security features will be configured by default.
 
 ## Limitations
 
-It is not possible to enable or disable a feature using the configuration page.
-However, instructions on how to enable or disable a feature can be found through
-the links next to each feature on that page.
+It is not yet possible to enable or disable most features using the
+configuration page. However, instructions on how to enable or disable a feature
+can be found through the links next to each feature on that page.
+
+If a project does not have an existing CI configuration, then the SAST feature
+can be enabled by clicking on the "Enable with Merge Request" button under the
+"Manage" column. Future work will expand this to editing _existing_ CI
+configurations, and to other security features.

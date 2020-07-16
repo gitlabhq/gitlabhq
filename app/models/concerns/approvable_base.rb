@@ -8,7 +8,7 @@ module ApprovableBase
     has_many :approved_by_users, through: :approvals, source: :user
   end
 
-  def has_approved?(user)
+  def approved_by?(user)
     return false unless user
 
     approved_by_users.include?(user)

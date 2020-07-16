@@ -41,6 +41,9 @@ export default {
     onPipelineClick(downstreamNode, pipeline, index) {
       this.$emit('linkedPipelineClick', pipeline, index, downstreamNode);
     },
+    onDownstreamHovered(jobName) {
+      this.$emit('downstreamHovered', jobName);
+    },
   },
 };
 </script>
@@ -61,6 +64,7 @@ export default {
         :column-title="columnTitle"
         :project-id="projectId"
         @pipelineClicked="onPipelineClick($event, pipeline, index)"
+        @downstreamHovered="onDownstreamHovered"
       />
     </ul>
   </div>

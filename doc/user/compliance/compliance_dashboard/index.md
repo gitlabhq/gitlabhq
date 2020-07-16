@@ -17,7 +17,7 @@ for merging into production.
 
 To access the Compliance Dashboard for a group, navigate to **{shield}** **Security & Compliance > Compliance** on the group's menu.
 
-![Compliance Dashboard](img/compliance_dashboard_v12_10.png)
+![Compliance Dashboard](img/compliance_dashboard_v13_2.png)
 
 ## Use cases
 
@@ -27,6 +27,7 @@ You can use the dashboard to:
 
 - Get an overview of the latest Merge Request for each project.
 - See if Merge Requests were approved and by whom.
+- See Merge Request authors.
 - See the latest [CI Pipeline](../../../ci/pipelines/index.md) result for each Merge Request.
 
 ## Permissions

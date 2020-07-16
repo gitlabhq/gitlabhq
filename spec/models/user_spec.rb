@@ -3711,6 +3711,12 @@ RSpec.describe User do
 
         expect(user.namespace).not_to be_nil
       end
+
+      it 'creates the namespace setting' do
+        user.save!
+
+        expect(user.namespace.namespace_settings).to be_persisted
+      end
     end
 
     context 'for an existing user' do

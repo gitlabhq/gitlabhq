@@ -17,6 +17,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_many :children }
     it { is_expected.to have_one :root_storage_statistics }
     it { is_expected.to have_one :aggregation_schedule }
+    it { is_expected.to have_one :namespace_settings }
     it { is_expected.to have_many :custom_emoji }
   end
 

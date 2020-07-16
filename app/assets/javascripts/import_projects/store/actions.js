@@ -70,8 +70,19 @@ export const fetchImport = ({ state, commit }, { newName, targetNamespace, repo 
         repoId: repo.id,
       }),
     )
-    .catch(() => {
-      createFlash(s__('ImportProjects|Importing the project failed'));
+    .catch(e => {
+      const serverErrorMessage = e?.response?.data?.errors;
+      const flashMessage = serverErrorMessage
+        ? sprintf(
+            s__('ImportProjects|Importing the project failed: %{reason}'),
+            {
+              reason: serverErrorMessage,
+            },
+            false,
+          )
+        : s__('ImportProjects|Importing the project failed');
+
+      createFlash(flashMessage);
 
       commit(types.RECEIVE_IMPORT_ERROR, repo.id);
     });

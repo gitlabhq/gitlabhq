@@ -1,6 +1,8 @@
 <script>
 import { GlButton, GlTabs, GlTab } from '@gitlab/ui';
 import AlertsSettingsForm from './alerts_form.vue';
+import PagerDutySettingsForm from './pagerduty_form.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { INTEGRATION_TABS_CONFIG, I18N_INTEGRATION_TABS } from '../constants';
 
 export default {
@@ -9,9 +11,19 @@ export default {
     GlTabs,
     GlTab,
     AlertsSettingsForm,
+    PagerDutySettingsForm,
   },
+  mixins: [glFeatureFlagMixin()],
   tabs: INTEGRATION_TABS_CONFIG,
   i18n: I18N_INTEGRATION_TABS,
+  methods: {
+    isFeatureFlagEnabled(tab) {
+      if (tab.featureFlag) {
+        return this.glFeatures[tab.featureFlag];
+      }
+      return true;
+    },
+  },
 };
 </script>
 
@@ -37,7 +49,7 @@ export default {
       <gl-tabs>
         <gl-tab
           v-for="(tab, index) in $options.tabs"
-          v-if="tab.active"
+          v-if="tab.active && isFeatureFlagEnabled(tab)"
           :key="`${tab.title}_${index}`"
           :title="tab.title"
         >

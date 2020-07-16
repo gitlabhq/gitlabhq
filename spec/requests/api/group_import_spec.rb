@@ -122,6 +122,7 @@ RSpec.describe API::GroupImport do
           before do
             allow_next_instance_of(Group) do |group|
               allow(group).to receive(:persisted?).and_return(false)
+              allow(group).to receive(:save).and_return(false)
             end
           end
 

@@ -20,6 +20,8 @@ default:
     - gitlab-org
   # All jobs are interruptible by default
   interruptible: true
+  # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10520
+  timeout: 90m
 
 workflow:
   rules:

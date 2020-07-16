@@ -31,6 +31,7 @@ import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
  */
 
 export default {
+  hoverClass: 'gl-inset-border-1-blue-500',
   components: {
     ActionComponent,
     JobNameComponent,
@@ -54,6 +55,11 @@ export default {
       type: Number,
       required: false,
       default: Infinity,
+    },
+    jobHovered: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -95,6 +101,11 @@ export default {
     hasAction() {
       return this.job.status && this.job.status.action && this.job.status.action.path;
     },
+    jobClasses() {
+      return this.job.name === this.jobHovered
+        ? `${this.$options.hoverClass} ${this.cssClassJobName}`
+        : this.cssClassJobName;
+    },
   },
   methods: {
     pipelineActionRequestComplete() {
@@ -120,8 +131,9 @@ export default {
       v-else
       v-gl-tooltip="{ boundary, placement: 'bottom' }"
       :title="tooltipText"
-      :class="cssClassJobName"
+      :class="jobClasses"
       class="js-job-component-tooltip non-details-job-component"
+      data-testid="job-without-link"
     >
       <job-name-component :name="job.name" :status="job.status" />
     </div>

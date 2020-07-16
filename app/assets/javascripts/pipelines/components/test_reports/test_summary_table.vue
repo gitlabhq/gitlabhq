@@ -17,7 +17,7 @@ export default {
     heading: {
       type: String,
       required: false,
-      default: s__('TestReports|Test suites'),
+      default: s__('TestReports|Jobs'),
     },
   },
   computed: {
@@ -47,7 +47,7 @@ export default {
     <div v-if="hasSuites" class="test-reports-table gl-mb-3 js-test-suites-table">
       <div role="row" class="gl-responsive-table-row table-row-header font-weight-bold">
         <div role="rowheader" class="table-section section-25 pl-3">
-          {{ __('Suite') }}
+          {{ __('Job') }}
         </div>
         <div role="rowheader" class="table-section section-25">
           {{ __('Duration') }}

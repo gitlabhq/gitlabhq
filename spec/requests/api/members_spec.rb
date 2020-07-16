@@ -321,6 +321,26 @@ RSpec.describe API::Members do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
+
+    context 'adding project bot' do
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+
+      before do
+        unrelated_project = create(:project)
+        unrelated_project.add_maintainer(project_bot)
+      end
+
+      it 'returns 400' do
+        expect do
+          post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+               params: { user_id: project_bot.id, access_level: Member::DEVELOPER }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['user_id']).to(
+            include('project bots cannot be added to other groups / projects'))
+        end.not_to change { project.members.count }
+      end
+    end
   end
 
   shared_examples 'PUT /:source_type/:id/members/:user_id' do |source_type|
@@ -461,8 +481,34 @@ RSpec.describe API::Members do
     end
   end
 
-  it_behaves_like 'POST /:source_type/:id/members', 'project' do
-    let(:source) { project }
+  describe 'POST /projects/:id/members' do
+    it_behaves_like 'POST /:source_type/:id/members', 'project' do
+      let(:source) { project }
+    end
+
+    context 'adding owner to project' do
+      it 'returns 403' do
+        expect do
+          post api("/projects/#{project.id}/members", maintainer),
+               params: { user_id: stranger.id, access_level: Member::OWNER }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end.not_to change { project.members.count }
+      end
+    end
+
+    context 'remove bot from project' do
+      it 'returns a 403 forbidden' do
+        project_bot = create(:user, :project_bot)
+        create(:project_member, project: project, user: project_bot)
+
+        expect do
+          delete api("/projects/#{project.id}/members/#{project_bot.id}", maintainer)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end.not_to change { project.members.count }
+      end
+    end
   end
 
   it_behaves_like 'POST /:source_type/:id/members', 'group' do
@@ -483,29 +529,5 @@ RSpec.describe API::Members do
 
   it_behaves_like 'DELETE /:source_type/:id/members/:user_id', 'group' do
     let(:source) { group }
-  end
-
-  context 'Adding owner to project' do
-    it 'returns 403' do
-      expect do
-        post api("/projects/#{project.id}/members", maintainer),
-             params: { user_id: stranger.id, access_level: Member::OWNER }
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end.to change { project.members.count }.by(0)
-    end
-  end
-
-  context 'remove bot from project' do
-    it 'returns a 403 forbidden' do
-      project_bot = create(:user, :project_bot)
-      create(:project_member, project: project, user: project_bot)
-
-      expect do
-        delete api("/projects/#{project.id}/members/#{project_bot.id}", maintainer)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end.to change { project.members.count }.by(0)
-    end
   end
 end

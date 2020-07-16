@@ -6,7 +6,9 @@ describe('IncidentsSettingTabs', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(IncidentsSettingTabs);
+    wrapper = shallowMount(IncidentsSettingTabs, {
+      provide: { glFeatures: { pagerdutyWebhook: true } },
+    });
   });
 
   afterEach(() => {

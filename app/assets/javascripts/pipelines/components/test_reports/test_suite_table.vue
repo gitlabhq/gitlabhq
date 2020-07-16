@@ -43,7 +43,7 @@ export default {
     <div v-if="hasSuites" class="test-reports-table gl-mb-3 js-test-cases-table">
       <div role="row" class="gl-responsive-table-row table-row-header font-weight-bold fgray">
         <div role="rowheader" class="table-section section-20">
-          {{ __('Class') }}
+          {{ __('Suite') }}
         </div>
         <div role="rowheader" class="table-section section-20">
           {{ __('Name') }}
@@ -70,7 +70,7 @@ export default {
           class="gl-responsive-table-row rounded align-items-md-start mt-xs-3 js-case-row"
         >
           <div class="table-section section-20 section-wrap">
-            <div role="rowheader" class="table-mobile-header">{{ __('Class') }}</div>
+            <div role="rowheader" class="table-mobile-header">{{ __('Suite') }}</div>
             <div
               v-gl-tooltip
               :title="testCase.classname"

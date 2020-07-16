@@ -24,7 +24,15 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
                  confirmed_at: 1.day.ago)
   end
 
-  let(:migration_bot) { User.migration_bot }
+  let!(:migration_bot) do
+    users.create(id: 100,
+                 email:  "noreply+gitlab-migration-bot%s@#{Settings.gitlab.host}",
+                 user_type: HasUserType::USER_TYPES[:migration_bot],
+                 name: 'GitLab Migration Bot',
+                 projects_limit: 10,
+                 username: 'bot')
+  end
+
   let!(:snippet_with_repo) { snippets.create(id: 1, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
   let!(:snippet_with_empty_repo) { snippets.create(id: 2, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
   let!(:snippet_without_repo) { snippets.create(id: 3, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }

@@ -363,6 +363,11 @@ RSpec.describe Gitlab::Danger::Helper do
     where(:mr_title, :expected_mr_title) do
       'My MR title'      | 'My MR title'
       'WIP: My MR title' | 'My MR title'
+      'Draft: My MR title' | 'My MR title'
+      '(Draft) My MR title' | 'My MR title'
+      '[Draft] My MR title' | 'My MR title'
+      '[DRAFT] My MR title' | 'My MR title'
+      'DRAFT: My MR title' | 'My MR title'
     end
 
     with_them do

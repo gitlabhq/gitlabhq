@@ -22,7 +22,7 @@ module Members
       errors = []
 
       members.each do |member|
-        if member.errors.any?
+        if member.invalid?
           current_error =
             # Invited users may not have an associated user
             if member.user.present?

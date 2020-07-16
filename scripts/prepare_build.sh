@@ -2,7 +2,7 @@
 
 export SETUP_DB=${SETUP_DB:-true}
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
-export BUNDLE_INSTALL_FLAGS="--without=production --without=development --jobs=$(nproc) --path=vendor --retry=3 --quiet"
+export BUNDLE_INSTALL_FLAGS=${BUNDLE_INSTALL_FLAGS:-"--without=production --without=development --jobs=$(nproc) --path=vendor --retry=3 --quiet"}
 
 if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
   bundle --version

@@ -28,7 +28,11 @@ module Groups
         @group.build_chat_team(name: response['name'], team_id: response['id'])
       end
 
-      @group.add_owner(current_user) if @group.save
+      if @group.save
+        @group.add_owner(current_user)
+        add_settings_record
+      end
+
       @group
     end
 
@@ -78,6 +82,10 @@ module Groups
       return if visibility_level.present?
 
       params[:visibility_level] = Gitlab::CurrentSettings.current_application_settings.default_group_visibility
+    end
+
+    def add_settings_record
+      @group.create_namespace_settings
     end
   end
 end

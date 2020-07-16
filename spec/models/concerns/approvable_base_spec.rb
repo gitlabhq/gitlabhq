@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe ApprovableBase do
-  describe '#has_approved?' do
+  describe '#approved_by?' do
     let(:merge_request) { create(:merge_request) }
     let(:user) { create(:user) }
 
-    subject { merge_request.has_approved?(user) }
+    subject { merge_request.approved_by?(user) }
 
     context 'when a user has not approved' do
       it 'returns false' do

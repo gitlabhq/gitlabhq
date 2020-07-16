@@ -1,0 +1,5 @@
+---
+title: Add correlation between trigger job and child pipeline
+merge_request: 36750
+author:
+type: changed

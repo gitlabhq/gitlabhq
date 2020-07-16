@@ -129,4 +129,13 @@ RSpec.describe Groups::CreateService, '#execute' do
       expect { subject }.to change { ChatTeam.count }.from(0).to(1)
     end
   end
+
+  describe 'creating a setting record' do
+    let(:service) { described_class.new(user, group_params) }
+
+    it 'create the settings record connected to the group' do
+      group = subject
+      expect(group.namespace_settings).to be_persisted
+    end
+  end
 end

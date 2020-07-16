@@ -107,7 +107,7 @@ module API
 
           if !member
             not_allowed! # This currently can only be reached in EE
-          elsif member.persisted? && member.valid?
+          elsif member.valid? && member.persisted?
             present_members(member)
           else
             render_validation_error!(member)

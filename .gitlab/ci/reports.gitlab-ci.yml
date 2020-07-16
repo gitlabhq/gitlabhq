@@ -172,6 +172,7 @@ dependency_scanning:
 #    # - 'export DAST_AUTH_URL="${DAST_WEBSITE}/users/sign_in"'
 #    # - 'export DAST_PASSWORD="${REVIEW_APPS_ROOT_PASSWORD}"'
 #    - /analyze -t $DAST_WEBSITE
+#  timeout: 4h
 #  artifacts:
 #    paths:
 #      - gl-dast-report.json  # GitLab-specific

@@ -85,7 +85,7 @@ export default {
     <div class="row mt-2">
       <div class="col-4 col-md">
         <span class="js-total-tests">{{
-          sprintf(s__('TestReports|%{count} jobs'), { count: report.total_count })
+          sprintf(s__('TestReports|%{count} tests'), { count: report.total_count })
         }}</span>
       </div>
 

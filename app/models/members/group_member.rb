@@ -17,14 +17,7 @@ class GroupMember < Member
 
   scope :of_groups, ->(groups) { where(source_id: groups.select(:id)) }
   scope :of_ldap_type, -> { where(ldap: true) }
-
-  scope :count_users_by_group_id, -> do
-    if Feature.enabled?(:optimized_count_users_by_group_id)
-      group(:source_id).count
-    else
-      joins(:user).group(:source_id).count
-    end
-  end
+  scope :count_users_by_group_id, -> { group(:source_id).count }
 
   after_create :update_two_factor_requirement, unless: :invite?
   after_destroy :update_two_factor_requirement, unless: :invite?

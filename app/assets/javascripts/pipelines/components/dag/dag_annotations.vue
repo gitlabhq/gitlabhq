@@ -29,9 +29,9 @@ export default {
       return [
         'gl-display-flex',
         'gl-flex-direction-column',
-        'gl-absolute',
+        'gl-fixed',
         'gl-right-1',
-        'gl-top-0',
+        'gl-top-66vh',
         'gl-w-max-content',
         'gl-px-5',
         'gl-py-4',

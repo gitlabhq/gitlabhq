@@ -25,7 +25,7 @@ GitLab displays identified secrets as part of the SAST reports visibly in a few 
 - Pipelines' **Security** tab
 - Report in the merge request widget
 
-![Secret Detection in merge request widget](img/secret-detection-merge-request-ui.png)
+![Secret Detection in merge request widget](img/secret_detection_v13_2.png)
 
 ## Use cases
 

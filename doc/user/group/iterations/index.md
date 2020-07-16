@@ -8,11 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Iterations **(STARTER)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214713) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.1.
-> - It's deployed behind a feature flag, disabled by default.
-> - It's disabled on GitLab.com.
-> - It's able to be enabled or disabled per-group
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-iterations-core-only). **(CORE ONLY)**
+> - It was deployed behind a feature flag, disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) on GitLab 13.2.
+> - It's enabled on GitLab.com.
+> - It's able to be enabled or disabled per-group.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-iterations-core-only). **(CORE ONLY)**
 
 Iterations are a way to track issues over a period of time. This allows teams
 to track velocity and volatility metrics. Iterations can be used with [milestones](../../project/milestones/index.md)
@@ -56,12 +57,11 @@ You need Developer [permissions](../../permissions.md) or higher to edit an iter
 
 To edit an iteration, click the three-dot menu (**{ellipsis_v}**) > **Edit iteration**.
 
-## Enable Iterations **(CORE ONLY)**
+## Disable Iterations **(CORE ONLY)**
 
-GitLab Iterations feature is under development and not ready for production use.
-It is deployed behind a feature flag that is **disabled by default**.
+GitLab Iterations feature is deployed with a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it for your instance. `:group_iterations` can be enabled or disabled per-group.
+can disable it for your instance. `:group_iterations` can be enabled or disabled per-group.
 
 To enable it:
 

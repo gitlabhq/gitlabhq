@@ -9,15 +9,11 @@ import {
   GlNewDropdown,
   GlNewDropdownItem,
 } from '@gitlab/ui';
-import axios from '~/lib/utils/axios_utils';
-import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import createFlash from '~/flash';
 import {
   I18N_ALERT_SETTINGS_FORM,
   NO_ISSUE_TEMPLATE_SELECTED,
   TAKING_INCIDENT_ACTION_DOCS_LINK,
   ISSUE_TEMPLATES_DOCS_LINK,
-  ERROR_MSG,
 } from '../constants';
 
 export default {
@@ -31,7 +27,7 @@ export default {
     GlNewDropdown,
     GlNewDropdownItem,
   },
-  inject: ['alertSettings', 'operationsSettingsEndpoint'],
+  inject: ['service', 'alertSettings'],
   data() {
     return {
       templates: [NO_ISSUE_TEMPLATE_SELECTED, ...this.alertSettings.templates],
@@ -65,23 +61,10 @@ export default {
     },
     updateAlertsIntegrationSettings() {
       this.loading = true;
-      return axios
-        .patch(this.operationsSettingsEndpoint, {
-          project: {
-            incident_management_setting_attributes: this.formData,
-          },
-        })
-        .then(() => {
-          refreshCurrentPage();
-        })
-        .catch(({ response }) => {
-          const message = response?.data?.message || '';
 
-          createFlash(`${ERROR_MSG} ${message}`, 'alert');
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+      this.service.updateSettings(this.formData).catch(() => {
+        this.loading = false;
+      });
     },
   },
 };

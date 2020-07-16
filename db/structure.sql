@@ -13118,6 +13118,12 @@ CREATE TABLE public.namespace_root_storage_statistics (
     snippets_size bigint DEFAULT 0 NOT NULL
 );
 
+CREATE TABLE public.namespace_settings (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id integer NOT NULL
+);
+
 CREATE TABLE public.namespace_statistics (
     id integer NOT NULL,
     namespace_id integer NOT NULL,
@@ -17894,6 +17900,9 @@ ALTER TABLE ONLY public.namespace_limits
 ALTER TABLE ONLY public.namespace_root_storage_statistics
     ADD CONSTRAINT namespace_root_storage_statistics_pkey PRIMARY KEY (namespace_id);
 
+ALTER TABLE ONLY public.namespace_settings
+    ADD CONSTRAINT namespace_settings_pkey PRIMARY KEY (namespace_id);
+
 ALTER TABLE ONLY public.namespace_statistics
     ADD CONSTRAINT namespace_statistics_pkey PRIMARY KEY (id);
 
@@ -21776,6 +21785,9 @@ ALTER TABLE ONLY public.analytics_cycle_analytics_project_stages
 ALTER TABLE ONLY public.issue_user_mentions
     ADD CONSTRAINT fk_rails_3861d9fefa FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.namespace_settings
+    ADD CONSTRAINT fk_rails_3896d4fae5 FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_3936dadc62 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -23825,6 +23837,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200702201039
 20200703064117
 20200703121557
+20200703124823
+20200703125016
 20200703154822
 20200704143633
 20200704161600

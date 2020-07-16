@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlTooltipDirective, GlDeprecatedButton } from '@gitlab/ui';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 
 export default {
   directives: {
@@ -28,7 +28,8 @@ export default {
   },
   computed: {
     tooltipText() {
-      return `${this.projectName} - ${this.pipelineStatus.label}`;
+      return `${this.downstreamTitle} #${this.pipeline.id} - ${this.pipelineStatus.label}
+      ${this.sourceJobInfo}`;
     },
     buttonId() {
       return `js-linked-pipeline-${this.pipeline.id}`;
@@ -39,25 +40,32 @@ export default {
     projectName() {
       return this.pipeline.project.name;
     },
+    downstreamTitle() {
+      return this.childPipeline ? __('child-pipeline') : this.pipeline.project.name;
+    },
     parentPipeline() {
       // Refactor string match when BE returns Upstream/Downstream indicators
       return this.projectId === this.pipeline.project.id && this.columnTitle === __('Upstream');
     },
     childPipeline() {
       // Refactor string match when BE returns Upstream/Downstream indicators
-      return this.projectId === this.pipeline.project.id && this.columnTitle === __('Downstream');
+      return this.projectId === this.pipeline.project.id && this.isDownstream;
     },
     label() {
-      return this.parentPipeline ? __('Parent') : __('Child');
+      if (this.parentPipeline) {
+        return __('Parent');
+      } else if (this.childPipeline) {
+        return __('Child');
+      }
+      return __('Multi-project');
     },
-    childTooltipText() {
-      return __('This pipeline was triggered by a parent pipeline');
+    isDownstream() {
+      return this.columnTitle === __('Downstream');
     },
-    parentTooltipText() {
-      return __('This pipeline triggered a child pipeline');
-    },
-    labelToolTipText() {
-      return this.label === __('Parent') ? this.parentTooltipText : this.childTooltipText;
+    sourceJobInfo() {
+      return this.isDownstream
+        ? sprintf(__('Created by %{job}'), { job: this.pipeline.source_job.name })
+        : '';
     },
   },
   methods: {
@@ -68,6 +76,12 @@ export default {
     hideTooltips() {
       this.$root.$emit('bv::hide::tooltip');
     },
+    onDownstreamHovered() {
+      this.$emit('downstreamHovered', this.pipeline.source_job.name);
+    },
+    onDownstreamHoverLeave() {
+      this.$emit('downstreamHovered', '');
+    },
   },
 };
 </script>
@@ -76,8 +90,10 @@ export default {
   <li
     ref="linkedPipeline"
     class="linked-pipeline build"
-    :class="{ 'child-pipeline': childPipeline }"
+    :class="{ 'downstream-pipeline': isDownstream }"
     data-qa-selector="child_pipeline"
+    @mouseover="onDownstreamHovered"
+    @mouseleave="onDownstreamHoverLeave"
   >
     <gl-deprecated-button
       :id="buttonId"
@@ -95,15 +111,9 @@ export default {
         css-classes="position-top-0"
         class="js-linked-pipeline-status"
       />
-      <span class="str-truncated align-bottom"> {{ projectName }} &#8226; #{{ pipeline.id }} </span>
-      <div v-if="parentPipeline || childPipeline" class="parent-child-label-container">
-        <span
-          v-gl-tooltip.bottom
-          :title="labelToolTipText"
-          class="badge badge-primary"
-          @mouseover="hideTooltips"
-          >{{ label }}</span
-        >
+      <span class="str-truncated"> {{ downstreamTitle }} &#8226; #{{ pipeline.id }} </span>
+      <div class="gl-pt-2">
+        <span class="badge badge-primary" data-testid="downstream-pipeline-label">{{ label }}</span>
       </div>
     </gl-deprecated-button>
   </li>

@@ -48,7 +48,14 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
           data-testid="AlertsSettingsForm-tab"
         />
       </gl-tab-stub>
-      <!---->
+      <gl-tab-stub
+        title="PagerDuty integration"
+      >
+        <pagerdutysettingsform-stub
+          class="gl-pt-3"
+          data-testid="PagerDutySettingsForm-tab"
+        />
+      </gl-tab-stub>
       <!---->
     </gl-tabs-stub>
   </div>

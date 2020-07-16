@@ -43,6 +43,7 @@ export default {
   data() {
     return {
       downstreamMarginTop: null,
+      jobName: null,
     };
   },
   computed: {
@@ -91,13 +92,9 @@ export default {
       /**
        * Calculates the margin top of the clicked downstream pipeline by
        * subtracting the clicked downstream pipelines offsetTop by it's parent's
-       * offsetTop and then subtracting either 15 (if child) or 30 (if not a child)
-       * due to the height of node and stage name margin bottom.
+       * offsetTop and then subtracting 15
        */
-      this.downstreamMarginTop = this.calculateMarginTop(
-        downstreamNode,
-        downstreamNode.classList.contains('child-pipeline') ? 15 : 30,
-      );
+      this.downstreamMarginTop = this.calculateMarginTop(downstreamNode, 15);
 
       /**
        * If the expanded trigger is defined and the id is different than the
@@ -119,6 +116,9 @@ export default {
     },
     hasUpstream(index) {
       return index === 0 && this.hasTriggeredBy;
+    },
+    setJob(jobName) {
+      this.jobName = jobName;
     },
   },
 };
@@ -180,6 +180,7 @@ export default {
             :is-first-column="isFirstColumn(index)"
             :has-triggered-by="hasTriggeredBy"
             :action="stage.status.action"
+            :job-hovered="jobName"
             @refreshPipelineGraph="refreshPipelineGraph"
           />
         </ul>
@@ -191,6 +192,7 @@ export default {
           :project-id="pipelineProjectId"
           graph-position="right"
           @linkedPipelineClick="handleClickedDownstream"
+          @downstreamHovered="setJob"
         />
 
         <pipeline-graph

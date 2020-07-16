@@ -1,24 +1,16 @@
 import { shallowMount } from '@vue/test-utils';
-import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import AlertsSettingsForm from '~/incidents_settings/components/alerts_form.vue';
-import { ERROR_MSG } from '~/incidents_settings/constants';
-import createFlash from '~/flash';
-import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import waitForPromises from 'helpers/wait_for_promises';
-
-jest.mock('~/flash');
-jest.mock('~/lib/utils/url_utility');
 
 describe('Alert integration settings form', () => {
   let wrapper;
+  const service = { updateSettings: jest.fn().mockResolvedValue() };
 
   const findForm = () => wrapper.find({ ref: 'settingsForm' });
 
   beforeEach(() => {
     wrapper = shallowMount(AlertsSettingsForm, {
       provide: {
-        operationsSettingsEndpoint: 'operations/endpoint',
+        service,
         alertSettings: {
           issueTemplateKey: 'selecte_tmpl',
           createIssue: true,
@@ -32,6 +24,7 @@ describe('Alert integration settings form', () => {
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
+      wrapper = null;
     }
   });
 
@@ -42,30 +35,15 @@ describe('Alert integration settings form', () => {
   });
 
   describe('form', () => {
-    let mock;
-
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('should refresh the page on successful submit', () => {
-      mock.onPatch().reply(200);
+    it('should call service `updateSettings` on submit', () => {
       findForm().trigger('submit');
-      return waitForPromises().then(() => {
-        expect(refreshCurrentPage).toHaveBeenCalled();
-      });
-    });
-
-    it('should display a flah message on unsuccessful submit', () => {
-      mock.onPatch().reply(400);
-      findForm().trigger('submit');
-      return waitForPromises().then(() => {
-        expect(createFlash).toHaveBeenCalledWith(expect.stringContaining(ERROR_MSG), 'alert');
-      });
+      expect(service.updateSettings).toHaveBeenCalledWith(
+        expect.objectContaining({
+          create_issue: wrapper.vm.createIssueEnabled,
+          issue_template_key: wrapper.vm.issueTemplate,
+          send_email: wrapper.vm.sendEmailEnabled,
+        }),
+      );
     });
   });
 });

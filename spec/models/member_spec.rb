@@ -88,6 +88,28 @@ RSpec.describe Member do
         expect(child_member).to be_valid
       end
     end
+
+    context 'project bots' do
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let(:new_member) { build(:project_member, user_id: project_bot.id) }
+
+      context 'not a member of any group or project' do
+        it 'is valid' do
+          expect(new_member).to be_valid
+        end
+      end
+
+      context 'already member of a project' do
+        before do
+          unrelated_project = create(:project)
+          unrelated_project.add_maintainer(project_bot)
+        end
+
+        it 'is not valid' do
+          expect(new_member).not_to be_valid
+        end
+      end
+    end
   end
 
   describe 'Scopes & finders' do

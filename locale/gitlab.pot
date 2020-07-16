@@ -568,25 +568,25 @@ msgstr[1] ""
 msgid "%{remaining_approvals} left"
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{critical} critical and %{high} high severity vulnerabilities out of %{total}."
+msgid "%{reportType} %{status} detected %{criticalStart}%{critical} new critical%{criticalEnd} and %{highStart}%{high} new high%{highEnd} severity vulnerabilities out of %{total}."
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{critical} critical and %{high} high severity vulnerabilities."
+msgid "%{reportType} %{status} detected %{criticalStart}%{critical} new critical%{criticalEnd} and %{highStart}%{high} new high%{highEnd} severity vulnerabilities."
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{critical} critical severity vulnerabilities out of %{total}."
+msgid "%{reportType} %{status} detected %{criticalStart}%{critical} new critical%{criticalEnd} severity vulnerabilities out of %{total}."
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{critical} critical severity vulnerability."
-msgid_plural "%{reportType} %{status} detected %{critical} critical severity vulnerabilities."
+msgid "%{reportType} %{status} detected %{criticalStart}%{critical} new critical%{criticalEnd} severity vulnerability."
+msgid_plural "%{reportType} %{status} detected %{criticalStart}%{critical} new critical%{criticalEnd} severity vulnerabilities."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{reportType} %{status} detected %{high} high severity vulnerabilities out of %{total}."
+msgid "%{reportType} %{status} detected %{highStart}%{high} new high%{highEnd} severity vulnerabilities out of %{total}."
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{high} high severity vulnerability."
-msgid_plural "%{reportType} %{status} detected %{high} high severity vulnerabilities."
+msgid "%{reportType} %{status} detected %{highStart}%{high} new high%{highEnd} severity vulnerability."
+msgid_plural "%{reportType} %{status} detected %{highStart}%{high} new high%{highEnd} severity vulnerabilities."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4782,9 +4782,6 @@ msgstr ""
 msgid "CiVariable|Validation failed"
 msgstr ""
 
-msgid "Class"
-msgstr ""
-
 msgid "Classification Label (optional)"
 msgstr ""
 
@@ -6113,6 +6110,9 @@ msgstr ""
 msgid "Complete"
 msgstr ""
 
+msgid "Completed"
+msgstr ""
+
 msgid "Compliance"
 msgstr ""
 
@@ -6999,6 +6999,9 @@ msgid "Created a branch and a merge request to resolve this issue."
 msgstr ""
 
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
+msgstr ""
+
+msgid "Created by %{job}"
 msgstr ""
 
 msgid "Created by me"
@@ -12521,6 +12524,9 @@ msgstr ""
 msgid "ImportProjects|Importing the project failed"
 msgstr ""
 
+msgid "ImportProjects|Importing the project failed: %{reason}"
+msgstr ""
+
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr ""
 
@@ -14393,6 +14399,9 @@ msgstr ""
 msgid "Maximum job timeout has a value which could not be accepted"
 msgstr ""
 
+msgid "Maximum length 100 characters"
+msgstr ""
+
 msgid "Maximum lifetime allowable for Personal Access Tokens is active, your expire date must be set before %{maximum_allowable_date}."
 msgstr ""
 
@@ -15321,6 +15330,9 @@ msgstr ""
 msgid "MrDeploymentActions|Stop environment"
 msgstr ""
 
+msgid "Multi-project"
+msgstr ""
+
 msgid "Multiple IP address ranges are supported."
 msgstr ""
 
@@ -15358,6 +15370,9 @@ msgid "Name"
 msgstr ""
 
 msgid "Name has already been taken"
+msgstr ""
+
+msgid "Name is required"
 msgstr ""
 
 msgid "Name new label"
@@ -15752,10 +15767,10 @@ msgstr ""
 msgid "No grouping"
 msgstr ""
 
-msgid "No iteration"
+msgid "No issues found"
 msgstr ""
 
-msgid "No iterations found"
+msgid "No iteration"
 msgstr ""
 
 msgid "No iterations to show"
@@ -16691,6 +16706,33 @@ msgid "Page not found"
 msgstr ""
 
 msgid "Page was successfully deleted"
+msgstr ""
+
+msgid "PagerDutySettings|Active"
+msgstr ""
+
+msgid "PagerDutySettings|Create a GitLab issue for each PagerDuty incident by %{docsLink}"
+msgstr ""
+
+msgid "PagerDutySettings|Failed to update Webhook URL"
+msgstr ""
+
+msgid "PagerDutySettings|Reset webhook URL"
+msgstr ""
+
+msgid "PagerDutySettings|Resetting the webhook URL for this project will require updating this integration's settings in PagerDuty."
+msgstr ""
+
+msgid "PagerDutySettings|Setting up a webhook with PagerDuty will automatically create a GitLab issue for each PagerDuty incident."
+msgstr ""
+
+msgid "PagerDutySettings|Webhook URL"
+msgstr ""
+
+msgid "PagerDutySettings|Webhook URL update was successful"
+msgstr ""
+
+msgid "PagerDutySettings|configuring a webhook in PagerDuty"
 msgstr ""
 
 msgid "Pages"
@@ -23179,13 +23221,13 @@ msgstr ""
 msgid "TestReports|%{count} failures"
 msgstr ""
 
-msgid "TestReports|%{count} jobs"
+msgid "TestReports|%{count} tests"
 msgstr ""
 
 msgid "TestReports|%{rate}%{sign} success rate"
 msgstr ""
 
-msgid "TestReports|Test suites"
+msgid "TestReports|Jobs"
 msgstr ""
 
 msgid "TestReports|Tests"
@@ -24219,12 +24261,6 @@ msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>"
-msgstr ""
-
-msgid "This pipeline triggered a child pipeline"
-msgstr ""
-
-msgid "This pipeline was triggered by a parent pipeline"
 msgstr ""
 
 msgid "This pipeline was triggered by a schedule."
@@ -27581,6 +27617,9 @@ msgstr ""
 msgid "cannot merge"
 msgstr ""
 
+msgid "child-pipeline"
+msgstr ""
+
 msgid "ciReport|%{degradedNum} degraded"
 msgstr ""
 
@@ -28607,6 +28646,9 @@ msgid "project access tokens"
 msgstr ""
 
 msgid "project avatar"
+msgstr ""
+
+msgid "project bots cannot be added to other groups / projects"
 msgstr ""
 
 msgid "project is read-only"

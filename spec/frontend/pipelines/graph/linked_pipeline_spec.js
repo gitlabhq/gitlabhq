@@ -11,7 +11,10 @@ const invalidTriggeredPipelineId = mockPipeline.project.id + 5;
 
 describe('Linked pipeline', () => {
   let wrapper;
+
   const findButton = () => wrapper.find('button');
+  const findPipelineLabel = () => wrapper.find('[data-testid="downstream-pipeline-label"]');
+  const findLinkedPipeline = () => wrapper.find({ ref: 'linkedPipeline' });
 
   const createWrapper = propsData => {
     wrapper = mount(LinkedPipelineComponent, {
@@ -69,6 +72,8 @@ describe('Linked pipeline', () => {
     it('should correctly compute the tooltip text', () => {
       expect(wrapper.vm.tooltipText).toContain(mockPipeline.project.name);
       expect(wrapper.vm.tooltipText).toContain(mockPipeline.details.status.label);
+      expect(wrapper.vm.tooltipText).toContain(mockPipeline.source_job.name);
+      expect(wrapper.vm.tooltipText).toContain(mockPipeline.id);
     });
 
     it('should render the tooltip text as the title attribute', () => {
@@ -83,9 +88,8 @@ describe('Linked pipeline', () => {
       expect(wrapper.find('.js-linked-pipeline-loading').exists()).toBe(false);
     });
 
-    it('should not display child label when pipeline project id is not the same as triggered pipeline project id', () => {
-      const labelContainer = wrapper.find('.parent-child-label-container');
-      expect(labelContainer.exists()).toBe(false);
+    it('should display multi-project label when pipeline project id is not the same as triggered pipeline project id', () => {
+      expect(findPipelineLabel().text()).toBe('Multi-project');
     });
   });
 
@@ -103,17 +107,17 @@ describe('Linked pipeline', () => {
 
     it('parent/child label container should exist', () => {
       createWrapper(downstreamProps);
-      expect(wrapper.find('.parent-child-label-container').exists()).toBe(true);
+      expect(findPipelineLabel().exists()).toBe(true);
     });
 
     it('should display child label when pipeline project id is the same as triggered pipeline project id', () => {
       createWrapper(downstreamProps);
-      expect(wrapper.find('.parent-child-label-container').text()).toContain('Child');
+      expect(findPipelineLabel().exists()).toBe(true);
     });
 
     it('should display parent label when pipeline project id is the same as triggered_by pipeline project id', () => {
       createWrapper(upstreamProps);
-      expect(wrapper.find('.parent-child-label-container').text()).toContain('Parent');
+      expect(findPipelineLabel().exists()).toBe(true);
     });
   });
 
@@ -133,7 +137,7 @@ describe('Linked pipeline', () => {
     });
   });
 
-  describe('on click', () => {
+  describe('on click/hover', () => {
     const props = {
       pipeline: mockPipeline,
       projectId: validTriggeredPipelineId,
@@ -159,6 +163,16 @@ describe('Linked pipeline', () => {
         'bv::hide::tooltip',
         'js-linked-pipeline-34993051',
       ]);
+    });
+
+    it('should emit downstreamHovered with job name on mouseover', () => {
+      findLinkedPipeline().trigger('mouseover');
+      expect(wrapper.emitted().downstreamHovered).toStrictEqual([['trigger_job']]);
+    });
+
+    it('should emit downstreamHovered with empty string on mouseleave', () => {
+      findLinkedPipeline().trigger('mouseleave');
+      expect(wrapper.emitted().downstreamHovered).toStrictEqual([['']]);
     });
   });
 });

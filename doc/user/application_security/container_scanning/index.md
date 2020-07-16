@@ -32,7 +32,7 @@ You can enable container scanning by doing one of the following:
 GitLab compares the found vulnerabilities between the source and target branches, and shows the
 information directly in the merge request.
 
-![Container Scanning Widget](img/container_scanning_v13_1.png)
+![Container Scanning Widget](img/container_scanning_v13_2.png)
 
 <!-- NOTE: The container scanning tool references the following heading in the code, so if you
            make a change to this heading, make sure to update the documentation URLs used in the

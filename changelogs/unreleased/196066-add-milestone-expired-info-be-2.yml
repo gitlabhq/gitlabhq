@@ -1,0 +1,5 @@
+---
+title: Add include_parent_milestones param to milestones API
+merge_request: 36944
+author:
+type: added
