@@ -11,13 +11,13 @@ having an issue with GitLab, it is highly recommended that you check your
 [support options](https://about.gitlab.com/support/) first, before attempting to use
 this information.
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 Please note that some of these scripts could be damaging if not run correctly,
 or under the right conditions. We highly recommend running them under the
 guidance of a Support Engineer, or running them in a test environment with a
 backup of the instance ready to be restored, just in case.
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 Please also note that as GitLab changes, changes to the code are inevitable,
 and so some scripts may not work as they once used to. These are not kept
 up-to-date as these scripts/commands were added as they were found/needed. As

@@ -74,7 +74,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleDiscussion']),
+    ...mapActions(['toggleDiscussion', 'setSelectedCommentPositionHover']),
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === SYSTEM_NOTE) {
@@ -99,7 +99,11 @@ export default {
 
 <template>
   <div class="discussion-notes">
-    <ul class="notes">
+    <ul
+      class="notes"
+      @mouseenter="setSelectedCommentPositionHover(discussion.position.line_range)"
+      @mouseleave="setSelectedCommentPositionHover()"
+    >
       <template v-if="shouldGroupReplies">
         <component
           :is="componentName(firstNote)"

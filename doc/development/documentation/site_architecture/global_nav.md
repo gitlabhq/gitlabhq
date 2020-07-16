@@ -98,7 +98,7 @@ for clarity.
 To see the improvements planned, check the
 [global nav epic](https://gitlab.com/groups/gitlab-com/-/epics/21).
 
-CAUTION: **Attention!**
+NOTE: **Note:**
 **Do not** [add items](#adding-new-items) to the global nav without
 the consent of one of the technical writers.
 
@@ -275,7 +275,7 @@ and the following syntax rules.
   an "information" icon on the nav to make the user aware that the feature is
   EE-only.
 
-DANGER: **Important!**
+CAUTION: **Caution:**
 All links present on the data file must end in `.html`, not `.md`. Do not
 start any relative link with a forward slash `/`.
 

@@ -73,7 +73,7 @@ job output in the UI will be empty.
 
 For example, to delete all job logs older than 60 days, run the following from a shell in your GitLab instance:
 
-DANGER: **Warning:**
+DANGER: **Danger:**
 This command will permanently delete the log files and is irreversible.
 
 ```shell

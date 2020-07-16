@@ -23,6 +23,15 @@ const MOCK_BLOBS = [
     type: 'blob',
     webUrl: 'http://test.com',
   },
+  {
+    id: '125abc',
+    sha: '125abc',
+    flatPath: 'blob3',
+    name: 'blob3.md',
+    type: 'blob',
+    webUrl: 'http://test.com',
+    mode: '120000',
+  },
 ];
 
 function factory({ path, isLoading = false, entries = {} }) {
@@ -74,7 +83,9 @@ describe('Repository table component', () => {
       },
     });
 
-    expect(vm.find(TableRow).exists()).toBe(true);
-    expect(vm.findAll(TableRow).length).toBe(2);
+    const rows = vm.findAll(TableRow);
+
+    expect(rows.length).toEqual(3);
+    expect(rows.at(2).attributes().mode).toEqual('120000');
   });
 });

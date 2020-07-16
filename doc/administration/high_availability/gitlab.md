@@ -6,11 +6,13 @@ type: reference
 
 This section describes how to configure the GitLab application (Rails) component.
 
-NOTE: **Note:** There is some additional configuration near the bottom for
+NOTE: **Note:**
+There is some additional configuration near the bottom for
 additional GitLab application servers. It's important to read and understand
 these additional steps before proceeding with GitLab installation.
 
-NOTE: **Note:** [Cloud Object Storage service](object_storage.md) with [Gitaly](gitaly.md)
+NOTE: **Note:**
+[Cloud Object Storage service](object_storage.md) with [Gitaly](gitaly.md)
 is recommended over [NFS](nfs.md) wherever possible for improved performance.
 
 1. If necessary, install the NFS client utility packages using the following
@@ -79,19 +81,22 @@ is recommended over [NFS](nfs.md) wherever possible for improved performance.
 
 1. [Enable monitoring](#enable-monitoring)
 
-   NOTE: **Note:** To maintain uniformity of links across HA clusters, the `external_url`
+   NOTE: **Note:**
+   To maintain uniformity of links across HA clusters, the `external_url`
    on the first application server as well as the additional application
    servers should point to the external URL that users will use to access GitLab.
    In a typical HA setup, this will be the URL of the load balancer which will
    route traffic to all GitLab application servers in the HA cluster.
 
-   NOTE: **Note:** When you specify `https` in the `external_url`, as in the example
+   NOTE: **Note:**
+   When you specify `https` in the `external_url`, as in the example
    above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
    certificates are not present, NGINX will fail to start. See
    [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
    for more information.
 
-   NOTE: **Note:** It is best to set the `uid` and `gid`s prior to the initial reconfigure
+   NOTE: **Note:**
+   It is best to set the `uid` and `gid`s prior to the initial reconfigure
    of GitLab. Omnibus will not recursively `chown` directories if set after the initial reconfigure.
 
 ## First GitLab application server
@@ -133,7 +138,8 @@ need some extra configuration.
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
-NOTE: **Note:** You will need to restart the GitLab applications nodes after an update has occurred and database
+NOTE: **Note:**
+You will need to restart the GitLab applications nodes after an update has occurred and database
 migrations performed.
 
 ## Enable Monitoring

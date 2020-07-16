@@ -39,7 +39,8 @@ To run Secret Detection jobs, by default, you need GitLab Runner with the
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 If you're using the shared Runners on GitLab.com, this is enabled by default.
 
-CAUTION: **Caution:** Our Secret Detection jobs currently expect a Linux container type. Windows containers are not yet supported.
+CAUTION: **Caution:**
+Our Secret Detection jobs currently expect a Linux container type. Windows containers are not yet supported.
 
 CAUTION: **Caution:**
 If you use your own Runners, make sure the Docker version installed

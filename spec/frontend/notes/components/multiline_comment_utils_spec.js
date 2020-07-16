@@ -2,6 +2,7 @@ import {
   getSymbol,
   getStartLineNumber,
   getEndLineNumber,
+  getCommentedLines,
 } from '~/notes/components/multiline_comment_utils';
 
 describe('Multiline comment utilities', () => {
@@ -31,6 +32,32 @@ describe('Multiline comment utilities', () => {
       ${undefined} | ${''}
     `('`$type` returns `$result`', ({ type, result }) => {
       expect(getSymbol(type)).toEqual(result);
+    });
+  });
+  describe('getCommentedLines', () => {
+    const diffLines = [{ line_code: '1' }, { line_code: '2' }, { line_code: '3' }];
+    it('returns a default object when `selectedCommentPosition` is not provided', () => {
+      expect(getCommentedLines(undefined, diffLines)).toEqual({ startLine: 4, endLine: 4 });
+    });
+    it('returns an object with startLine and endLine equal to 0', () => {
+      const selectedCommentPosition = {
+        start: { line_code: '1' },
+        end: { line_code: '1' },
+      };
+      expect(getCommentedLines(selectedCommentPosition, diffLines)).toEqual({
+        startLine: 0,
+        endLine: 0,
+      });
+    });
+    it('returns an object with startLine and endLine equal to 0 and 1', () => {
+      const selectedCommentPosition = {
+        start: { line_code: '1' },
+        end: { line_code: '2' },
+      };
+      expect(getCommentedLines(selectedCommentPosition, diffLines)).toEqual({
+        startLine: 0,
+        endLine: 1,
+      });
     });
   });
 });

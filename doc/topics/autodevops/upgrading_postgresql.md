@@ -30,7 +30,8 @@ involves:
    any existing channel 1 database. For more information, see
    [Detected an existing PostgreSQL database](index.md#detected-an-existing-postgresql-database).
 
-TIP: **Tip:** If you have configured Auto DevOps to have staging,
+TIP: **Tip:**
+If you have configured Auto DevOps to have staging,
 consider trying out the backup and restore steps on staging first, or
 trying this out on a review app.
 
@@ -161,11 +162,13 @@ pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096   8Gi        RWO            Retain     
 
 ## Install new PostgreSQL
 
-CAUTION: **Caution:** Using the newer version of PostgreSQL will delete
+CAUTION: **Caution:**
+Using the newer version of PostgreSQL will delete
 the older 0.7.1 PostgreSQL. To prevent the underlying data from being
 deleted, you can choose to retain the [persistent volume](#retain-persistent-volumes).
 
-TIP: **Tip:** You can also
+TIP: **Tip:**
+You can also
 [scope](../../ci/environments/index.md#scoping-environments-with-specs) the
 `AUTO_DEVOPS_POSTGRES_CHANNEL`, `AUTO_DEVOPS_POSTGRES_DELETE_V1` and
 `POSTGRES_VERSION` variables to specific environments, e.g. `staging`.

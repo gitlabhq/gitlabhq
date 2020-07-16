@@ -51,6 +51,7 @@ export default {
       'scrollToDraft',
       'toggleResolveDiscussion',
     ]),
+    ...mapActions(['setSelectedCommentPositionHover']),
     update(data) {
       this.updateDraft(data);
     },
@@ -67,7 +68,11 @@ export default {
 };
 </script>
 <template>
-  <article class="draft-note-component note-wrapper">
+  <article
+    class="draft-note-component note-wrapper"
+    @mouseenter="setSelectedCommentPositionHover(draft.position.line_range)"
+    @mouseleave="setSelectedCommentPositionHover()"
+  >
     <ul class="notes draft-notes">
       <noteable-note
         :note="draft"

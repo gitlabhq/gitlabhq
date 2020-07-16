@@ -41,7 +41,8 @@ The Web IDE currently provides:
   [JSON Schema Store](https://www.schemastore.org/json/). This feature
   is only supported for the `.gitlab-ci.yml` file.
 
-  NOTE: **Note:** Validation support based on schemas is hidden behind
+  NOTE: **Note:**
+  Validation support based on schemas is hidden behind
   the feature flag `:schema_linting` on self-managed installations. To enable the
   feature, you can [turn on the feature flag in Rails console](../../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags).
 
@@ -232,7 +233,8 @@ terminal will block the job from finishing for the duration configured in
 [`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
 until you close the terminal window.
 
-NOTE: **Note:** Not all executors are
+NOTE: **Note:**
+Not all executors are
 [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
 The [File Sync](#file-syncing-to-web-terminal) feature is supported on Kubernetes runners only.
 

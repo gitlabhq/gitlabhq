@@ -357,7 +357,7 @@ GitLab syncs the `admin_group`.
 
 #### Sync all groups **(STARTER ONLY)**
 
-NOTE: **NOTE:**
+NOTE: **Note:**
 To sync all groups manually when debugging is unnecessary, [use the Rake
 task](../../raketasks/ldap.md#run-a-group-sync-starter-only) instead.
 
@@ -653,7 +653,7 @@ adfind -h ad.example.org:636 -ssl -u "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" -u
 
 ### Rails console
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 Please note that it is very easy to create, read, modify, and destroy data on the
 rails console, so please be sure to run commands exactly as listed.
 

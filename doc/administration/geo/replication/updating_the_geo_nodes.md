@@ -36,7 +36,8 @@ different steps.
 
 ## General update steps
 
-NOTE: **Note:** These general update steps are not intended for [high-availability deployments](https://docs.gitlab.com/omnibus/update/README.html#multi-node--ha-deployment), and will cause downtime. If you want to avoid downtime, consider using [zero downtime updates](https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates).
+NOTE: **Note:**
+These general update steps are not intended for [high-availability deployments](https://docs.gitlab.com/omnibus/update/README.html#multi-node--ha-deployment), and will cause downtime. If you want to avoid downtime, consider using [zero downtime updates](https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates).
 
 To update the Geo nodes when a new GitLab version is released, update **primary**
 and all **secondary** nodes:

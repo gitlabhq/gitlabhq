@@ -23,9 +23,14 @@ RSpec.describe ChangeVariableInterpolationFormatInCommonMetrics, :migration do
   end
 
   it 'updates query to use {{}}' do
-    expected_query = 'avg(sum(container_memory_usage_bytes{container_name!="POD",' \
-    'pod_name=~"^{{ci_environment_slug}}-(.*)",namespace="{{kube_namespace}}"})' \
-    ' by (job)) without (job)  /1024/1024/1024'
+    expected_query = <<~EOS.chomp
+    avg(sum(container_memory_usage_bytes{container!="POD",\
+    pod=~"^{{ci_environment_slug}}-(.*)",namespace="{{kube_namespace}}"}) \
+    by (job)) without (job)  /1024/1024/1024     OR      \
+    avg(sum(container_memory_usage_bytes{container_name!="POD",\
+    pod_name=~"^{{ci_environment_slug}}-(.*)",namespace="{{kube_namespace}}"}) \
+    by (job)) without (job)  /1024/1024/1024
+    EOS
 
     migrate!
 

@@ -44,13 +44,15 @@ Using the consolidated object storage configuration has a number of advantages:
 - It enables the use of [encrypted S3 buckets](#encrypted-s3-buckets).
 - It [uploads files to S3 with proper `Content-MD5` headers](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/222).
 
-NOTE: **Note:** Only AWS S3-compatible providers and Google are
+NOTE: **Note:**
+Only AWS S3-compatible providers and Google are
 supported at the moment since [direct upload
 mode](../development/uploads.md#direct-upload) must be used. Background
 upload is not supported in this mode. We recommend direct upload mode because
 it does not require a shared folder, and [this setting may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331).
 
-NOTE: **Note:** Consolidated object storage configuration cannot be used for
+NOTE: **Note:**
+Consolidated object storage configuration cannot be used for
 backups or Mattermost. See [the full table for a complete list](#storage-specific-configuration).
 
 Most types of objects, such as CI artifacts, LFS files, upload
@@ -253,7 +255,8 @@ gitlab_rails['object_store']['connection'] = {
 
 #### OpenStack-compatible connection settings
 
-NOTE: **Note:** This is not compatible with the consolidated object storage form.
+NOTE: **Note:**
+This is not compatible with the consolidated object storage form.
 OpenStack Swift is only supported with the storage-specific form. See the
 [S3 settings](#s3-compatible-connection-settings) if you want to use the consolidated form.
 
@@ -274,7 +277,8 @@ Here are the valid connection settings below for the Swift API, provided by
 
 #### Rackspace Cloud Files
 
-NOTE: **Note:** This is not compatible with the consolidated object
+NOTE: **Note:**
+This is not compatible with the consolidated object
 storage form. Rackspace Cloud is only supported with the storage-specific form.
 
 Here are the valid connection parameters for Rackspace Cloud, provided by
@@ -408,7 +412,8 @@ additional complexity and unnecessary redundancy. Since both GitLab
 Rails and Workhorse components need access to object storage, the
 consolidated form avoids excessive duplication of credentials.
 
-NOTE: **Note:** The consolidated object storage configuration is **only** used if all
+NOTE: **Note:**
+The consolidated object storage configuration is **only** used if all
 lines from the original form is omitted. To move to the consolidated form, remove the original configuration (for example, `artifacts_object_store_enabled`, `uploads_object_store_connection`, and so on.)
 
 ## Storage-specific configuration

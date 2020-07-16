@@ -10,7 +10,8 @@ There is a `Gitlab::Profiler.profile` method, and corresponding
 `bin/profile-url` script, that enable profiling a GET or POST request to a
 specific URL, either as an anonymous user (the default) or as a specific user.
 
-NOTE: **Note:** The first argument to the profiler is either a full URL
+NOTE: **Note:**
+The first argument to the profiler is either a full URL
 (including the instance hostname) or an absolute path, including the
 leading slash.
 

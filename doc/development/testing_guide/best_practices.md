@@ -110,7 +110,8 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 
 ### System / Feature tests
 
-NOTE: **Note:** Before writing a new system test, [please consider **not**
+NOTE: **Note:**
+Before writing a new system test, [please consider **not**
 writing one](testing_levels.md#consider-not-writing-a-system-test)!
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as

@@ -20,7 +20,8 @@ The page uses the project's latest default branch [CI pipeline](../../../ci/pipe
 state of each feature. If a job with the expected security report artifact exists in the pipeline,
 the feature is considered configured.
 
-NOTE: **Note:** if the latest pipeline used [Auto DevOps](../../../topics/autodevops/index.md),
+NOTE: **Note:**
+if the latest pipeline used [Auto DevOps](../../../topics/autodevops/index.md),
 all security features will be configured by default.
 
 ## Limitations

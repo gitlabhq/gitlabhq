@@ -1181,7 +1181,7 @@ job:
 - If the pipeline is a scheduled pipeline, the job is **not** be added to the pipeline.
 - In **all other cases**, the job is added to the pipeline, with `when: on_success`.
 
-CAUTION: **Caution**
+CAUTION: **Caution:**
 If you use `when: on_success`, `always`, or `delayed` as the final rule, two
 simultaneous pipelines may start. Both push pipelines and merge request pipelines can
 be triggered by the same event (a push to the source branch for an open merge request).
@@ -1569,7 +1569,7 @@ and must be surrounded by `/`.
 So `issue-/.*/` won't work to match all tag names or branch names
 that begin with `issue-`.
 
-TIP: **Tip**
+TIP: **Tip:**
 Use anchors `^` and `$` to avoid the regular expression
 matching only a substring of the tag name or branch name.
 For example, `/^issue-.*$/` is equivalent to `/^issue-/`,
@@ -3921,7 +3921,8 @@ variables:
   GIT_STRATEGY: none
 ```
 
-NOTE: **Note:** `GIT_STRATEGY` is not supported for
+NOTE: **Note:**
+`GIT_STRATEGY` is not supported for
 [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html),
 but may be in the future. See the [support Git strategy with Kubernetes executor feature proposal](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3847)
 for updates.

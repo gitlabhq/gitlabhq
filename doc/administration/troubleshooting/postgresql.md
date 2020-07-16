@@ -8,7 +8,8 @@ This page is useful information about PostgreSQL that the GitLab Support
 Team sometimes uses while troubleshooting. GitLab is making this public, so that anyone
 can make use of the Support team's collected knowledge.
 
-CAUTION: **Caution:** Some procedures documented here may break your GitLab instance. Use at your own risk.
+CAUTION: **Caution:**
+Some procedures documented here may break your GitLab instance. Use at your own risk.
 
 If you are on a [paid tier](https://about.gitlab.com/pricing/) and are not sure how
 to use these commands, it is best to [contact Support](https://about.gitlab.com/support/)
@@ -115,7 +116,8 @@ Quoting from issue [#1](https://gitlab.com/gitlab-org/gitlab/-/issues/30528):
 
 > "If a deadlock is hit, and we resolve it through aborting the transaction after a short period, then the retry mechanisms we already have will make the deadlocked piece of work try again, and it's unlikely we'll deadlock multiple times in a row."
 
-TIP: **Tip:** In support, our general approach to reconfiguring timeouts (applies also to the HTTP stack as well) is that it's acceptable to do it temporarily as a workaround. If it makes GitLab usable for the customer, then it buys time to understand the problem more completely, implement a hot fix, or make some other change that addresses the root cause. Generally, the timeouts should be put back to reasonable defaults once the root cause is resolved.
+TIP: **Tip:**
+In support, our general approach to reconfiguring timeouts (applies also to the HTTP stack as well) is that it's acceptable to do it temporarily as a workaround. If it makes GitLab usable for the customer, then it buys time to understand the problem more completely, implement a hot fix, or make some other change that addresses the root cause. Generally, the timeouts should be put back to reasonable defaults once the root cause is resolved.
 
 In this case, the guidance we had from development was to drop deadlock_timeout and/or statement_timeout but to leave the third setting at 60s. Setting idle_in_transaction protects the database from sessions potentially hanging for days. There's more discussion in [the issue relating to introducing this timeout on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1053).
 

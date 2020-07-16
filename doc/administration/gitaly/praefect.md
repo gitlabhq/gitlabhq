@@ -136,7 +136,8 @@ We will note in the instructions below where these secrets are required.
 
 ### PostgreSQL
 
-NOTE: **Note:** do not store the GitLab application database and the Praefect
+NOTE: **Note:**
+do not store the GitLab application database and the Praefect
 database on the same PostgreSQL server if using
 [Geo](../geo/replication/index.md). The replication state is internal to each instance
 of GitLab and should not be replicated.
@@ -286,7 +287,8 @@ application server, or a Gitaly node.
    so we use `default` here as well. This cluster has three Gitaly nodes `gitaly-1`,
    `gitaly-2`, and `gitaly-3`, which will be replicas of each other.
 
-   CAUTION: **CAUTION:** If you have data on an already existing storage called
+   CAUTION: **Caution:**
+   If you have data on an already existing storage called
    `default`, you should configure the virtual storage with another name and
    [migrate the data to the Praefect storage](#migrating-existing-repositories-to-praefect)
    afterwards.
@@ -300,7 +302,8 @@ application server, or a Gitaly node.
    More Gitaly nodes can be added to the cluster to increase the number of
    replicas. More clusters can also be added for very large GitLab instances.
 
-   NOTE: **Note:** The `gitaly-1` node is currently denoted the primary. This
+   NOTE: **Note:**
+   The `gitaly-1` node is currently denoted the primary. This
    can be used to manually fail from one node to another. This will be removed
    in the [future](https://gitlab.com/gitlab-org/gitaly/-/issues/2634).
 
@@ -493,7 +496,8 @@ To configure Praefect with TLS:
 
 ### Gitaly
 
-NOTE: **Note:** Complete these steps for **each** Gitaly node.
+NOTE: **Note:**
+Complete these steps for **each** Gitaly node.
 
 To complete this section you will need:
 
@@ -700,7 +704,8 @@ Particular attention should be shown to:
 1. Disable the default Gitaly service running on the GitLab host. It won't be needed
    as GitLab will connect to the configured cluster.
 
-   CAUTION: **CAUTION** If you have existing data stored on the default Gitaly storage,
+   CAUTION: **Caution:**
+   If you have existing data stored on the default Gitaly storage,
    you should [migrate the data your Praefect storage first](#migrating-existing-repositories-to-praefect).
 
    ```ruby
@@ -966,7 +971,8 @@ Virtual storage: default
 
 Currently `dataloss` only considers a repository up to date if it has been directly replicated to from the previous write-enabled primary. While reconciling from an up to date secondary can recover the data, this is not visible in the data loss report. This is due for improvement via [Gitaly#2866](https://gitlab.com/gitlab-org/gitaly/-/issues/2866).
 
-NOTE: **Note:** `dataloss` is still in beta and the output format is subject to change.
+NOTE: **Note:**
+`dataloss` is still in beta and the output format is subject to change.
 
 ### Checking repository checksums
 

@@ -92,7 +92,8 @@ You can then test the connection by clicking on **Test Connection**. If the conn
 
 1. Save your changes. For reference, you can view [an example configuration in the troubleshooting reference](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory).
 
-   NOTE: **Note:** If you used a unique identifier **other than** `objectId`, be sure to map it to `externalId`.
+   NOTE: **Note:**
+   If you used a unique identifier **other than** `objectId`, be sure to map it to `externalId`.
 
 1. Below the mapping list click on **Show advanced options > Edit attribute list for AppName**.
 
@@ -127,7 +128,8 @@ Before proceeding, be sure to complete the [GitLab configuration](#gitlab-config
 1. If you see an **Admin** button in the top right, click the button. This will
    ensure you are in the Admin area.
 
-   TIP: **Tip:** If you're using the Developer Console, click **Developer Console** in the top
+   TIP: **Tip:**
+   If you're using the Developer Console, click **Developer Console** in the top
    bar and select **Classic UI**. Otherwise, you may not see the buttons described
    in the following steps:
 

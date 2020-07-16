@@ -90,3 +90,22 @@ export function formatLineRange(start, end) {
     end: extractProps(end),
   };
 }
+
+export function getCommentedLines(selectedCommentPosition, diffLines) {
+  if (!selectedCommentPosition) {
+    // This structure simplifies the logic that consumes this result
+    // by keeping the returned shape the same and adjusting the bounds
+    // to something unreachable. This way our component logic stays:
+    // "if index between start and end"
+    return {
+      startLine: diffLines.length + 1,
+      endLine: diffLines.length + 1,
+    };
+  }
+
+  const { start, end } = selectedCommentPosition;
+  const startLine = diffLines.findIndex(l => l.line_code === start.line_code);
+  const endLine = diffLines.findIndex(l => l.line_code === end.line_code);
+
+  return { startLine, endLine };
+}

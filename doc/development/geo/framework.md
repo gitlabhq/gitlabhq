@@ -1,11 +1,13 @@
 # Geo self-service framework (alpha)
 
-NOTE: **Note:** This document might be subjected to change. It's a
+NOTE: **Note:**
+This document might be subjected to change. It's a
 proposal we're working on and once the implementation is complete this
 documentation will be updated. Follow progress in the
 [epic](https://gitlab.com/groups/gitlab-org/-/epics/2161).
 
-NOTE: **Note:** The Geo self-service framework is currently in
+NOTE: **Note:**
+The Geo self-service framework is currently in
 alpha. If you need to replicate a new data type, reach out to the Geo
 team to discuss the options. You can contact them in `#g_geo` on Slack
 or mention `@geo-team` in the issue or merge request.

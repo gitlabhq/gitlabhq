@@ -126,7 +126,7 @@ these epics/issues:
 - [Unreplicated Data Types](https://gitlab.com/groups/gitlab-org/-/epics/893)
 - [Verify all replicated data](https://gitlab.com/groups/gitlab-org/-/epics/1430)
 
-DANGER: **DANGER**
+DANGER: **Danger:**
 Features not on this list, or with **No** in the **Replicated** column,
 are not replicated on the **secondary** node. Failing over without manually
 replicating data from those features will cause the data to be **lost**.

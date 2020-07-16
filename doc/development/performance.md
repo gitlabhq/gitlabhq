@@ -272,7 +272,8 @@ Currently supported profiling targets are:
 - Puma worker
 - Sidekiq
 
-NOTE: **Note:** The Puma master process is not supported. Neither is Unicorn.
+NOTE: **Note:**
+The Puma master process is not supported. Neither is Unicorn.
 Sending SIGUSR2 to either of those will trigger restarts. In the case of Puma,
 take care to only send the signal to Puma workers.
 

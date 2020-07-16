@@ -113,14 +113,14 @@ Nodes running GitLab-bundled Consul should be:
 - Members of a healthy cluster prior to upgrading the Omnibus GitLab package.
 - Upgraded one node at a time.
 
-NOTE: **NOTE:**
+NOTE: **Note:**
 Running `curl http://127.0.0.1:8500/v1/health/state/critical` from any Consul node will identify existing health issues in the cluster. The command will return an empty array if the cluster is healthy.
 
 Consul clusters communicate using the raft protocol. If the current leader goes offline, there needs to be a leader election. A leader node must exist to facilitate synchronization across the cluster. If too many nodes go offline at the same time, the cluster will lose quorum and not elect a leader due to [broken consensus](https://www.consul.io/docs/internals/consensus.html).
 
 Consult the [troubleshooting section](#troubleshooting) if the cluster is not able to recover after the upgrade. The [outage recovery](#outage-recovery) may be of particular interest.
 
-NOTE: **NOTE:**
+NOTE: **Note:**
 GitLab only uses Consul to store transient data that is easily regenerated. If the bundled Consul was not used by any process other than GitLab itself, then [rebuilding the cluster from scratch](#recreate-from-scratch) is fine.
 
 ## Troubleshooting

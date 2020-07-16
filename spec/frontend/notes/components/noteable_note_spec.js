@@ -175,6 +175,7 @@ describe('issue_note', () => {
     store.hotUpdate({
       actions: {
         updateNote() {},
+        setSelectedCommentPositionHover() {},
       },
     });
     const noteBodyComponent = wrapper.find(NoteBody);

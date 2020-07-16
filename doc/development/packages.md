@@ -68,7 +68,8 @@ The current state of existing package registries availability is:
 | Go              | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213900) | No - [open-issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213902) |
 | Composer | Yes | Yes | No |
 
-NOTE: **Note:** NPM is currently a hybrid of the instance level and group level.
+NOTE: **Note:**
+NPM is currently a hybrid of the instance level and group level.
 It is using the top-level group or namespace as the defining portion of the name
 (for example, `@my-group-name/my-package-name`).
 

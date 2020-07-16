@@ -339,7 +339,8 @@ the same Sentinels.
 
 ### Step 3. Configuring the Redis Sentinel instances
 
-NOTE: **Note:** If you are using an external Redis Sentinel instance, be sure
+NOTE: **Note:**
+If you are using an external Redis Sentinel instance, be sure
 to exclude the `requirepass` parameter from the Sentinel
 configuration. This parameter will cause clients to report `NOAUTH
 Authentication required.`. [Redis Sentinel 3.2.x does not support

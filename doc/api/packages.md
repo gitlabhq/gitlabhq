@@ -80,7 +80,7 @@ GET /groups/:id/packages
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true"
 ```
 
-CAUTION: **Deprecation**
+CAUTION: **Deprecation:**
 > The `build_info` attribute in the response is deprecated in favour of `pipeline`.
 > Introduced [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28040).
 
@@ -165,7 +165,7 @@ GET /projects/:id/packages/:package_id
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id"
 ```
 
-CAUTION: **Deprecation**
+CAUTION: **Deprecation:**
 > The `build_info` attribute in the response is deprecated in favour of `pipeline`.
 > Introduced [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28040).
 

@@ -308,6 +308,14 @@ export default {
     state.discussionSortOrder = sort;
   },
 
+  [types.SET_SELECTED_COMMENT_POSITION](state, position) {
+    state.selectedCommentPosition = position;
+  },
+
+  [types.SET_SELECTED_COMMENT_POSITION_HOVER](state, position) {
+    state.selectedCommentPositionHover = position;
+  },
+
   [types.DISABLE_COMMENTS](state, value) {
     state.commentsDisabled = value;
   },

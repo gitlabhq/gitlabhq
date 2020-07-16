@@ -99,6 +99,14 @@ export const setDiscussionSortDirection = ({ commit }, direction) => {
   commit(types.SET_DISCUSSIONS_SORT, direction);
 };
 
+export const setSelectedCommentPosition = ({ commit }, position) => {
+  commit(types.SET_SELECTED_COMMENT_POSITION, position);
+};
+
+export const setSelectedCommentPositionHover = ({ commit }, position) => {
+  commit(types.SET_SELECTED_COMMENT_POSITION_HOVER, position);
+};
+
 export const removeNote = ({ commit, dispatch, state }, note) => {
   const discussion = state.discussions.find(({ id }) => id === note.discussion_id);
 

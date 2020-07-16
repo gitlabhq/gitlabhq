@@ -40,6 +40,11 @@ export default {
       required: false,
       default: false,
     },
+    isCommented: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -51,6 +56,8 @@ export default {
     ...mapGetters('diffs', ['fileLineCoverage']),
     ...mapState({
       isHighlighted(state) {
+        if (this.isCommented) return true;
+
         const lineCode =
           (this.line.left && this.line.left.line_code) ||
           (this.line.right && this.line.right.line_code);

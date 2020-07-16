@@ -58,7 +58,8 @@ If you're using the shared Runners on GitLab.com, this is enabled by default.
 
 Beginning with GitLab 13.0, Docker privileged mode is necessary only if you've [enabled Docker-in-Docker for SAST](#enabling-docker-in-docker).
 
-CAUTION: **Caution:** Our SAST jobs currently expect a Linux container type. Windows containers are not yet supported.
+CAUTION: **Caution:**
+Our SAST jobs currently expect a Linux container type. Windows containers are not yet supported.
 
 CAUTION: **Caution:**
 If you use your own Runners, make sure the Docker version installed

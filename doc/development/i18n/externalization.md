@@ -95,7 +95,8 @@ Active Record's `:message` option accepts a `Proc`, so we can do this instead:
 validates :group_id, uniqueness: { scope: [:project_id], message: -> (object, data) { _("already shared with this group") } }
 ```
 
-NOTE: **Note:** Messages in the API (`lib/api/` or `app/graphql`) do
+NOTE: **Note:**
+Messages in the API (`lib/api/` or `app/graphql`) do
 not need to be externalised.
 
 ### HAML files

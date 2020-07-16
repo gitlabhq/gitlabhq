@@ -604,7 +604,8 @@ In this particular case, the default value exists and we're just changing the me
 `request_access_enabled` column, which does not imply a rewrite of all the existing records
 in the `namespaces` table. Only when creating a new column with a default, all the records are going be rewritten.
 
-NOTE: **Note:**  A faster [ALTER TABLE ADD COLUMN with a non-null default](https://www.depesz.com/2018/04/04/waiting-for-postgresql-11-fast-alter-table-add-column-with-a-non-null-default/)
+NOTE: **Note:**
+A faster [ALTER TABLE ADD COLUMN with a non-null default](https://www.depesz.com/2018/04/04/waiting-for-postgresql-11-fast-alter-table-add-column-with-a-non-null-default/)
 was introduced on PostgresSQL 11.0, removing the need of rewriting the table when a new column with a default value is added.
 
 For the reasons mentioned above, it's safe to use `change_column_default` in a single-transaction migration

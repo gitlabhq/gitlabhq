@@ -524,6 +524,26 @@ describe('Notes Store mutations', () => {
     });
   });
 
+  describe('SET_SELECTED_COMMENT_POSITION', () => {
+    it('should set comment position state', () => {
+      const state = {};
+
+      mutations.SET_SELECTED_COMMENT_POSITION(state, {});
+
+      expect(state.selectedCommentPosition).toEqual({});
+    });
+  });
+
+  describe('SET_SELECTED_COMMENT_POSITION_HOVER', () => {
+    it('should set comment hover position state', () => {
+      const state = {};
+
+      mutations.SET_SELECTED_COMMENT_POSITION_HOVER(state, {});
+
+      expect(state.selectedCommentPositionHover).toEqual({});
+    });
+  });
+
   describe('DISABLE_COMMENTS', () => {
     it('should set comments disabled state', () => {
       const state = {};

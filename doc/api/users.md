@@ -318,7 +318,8 @@ Example Responses:
 }
 ```
 
-NOTE: **Note:** The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
+NOTE: **Note:**
+The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
 Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
 the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` parameters.
@@ -1412,7 +1413,8 @@ Parameters:
 
 ### Get user activities (admin only)
 
-NOTE: **Note:** This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
+NOTE: **Note:**
+This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
 
 Get the last activity date for all users, sorted from oldest to newest.
 

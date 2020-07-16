@@ -10,7 +10,7 @@
   }
 
   .design-pin {
-    transition: opacity 0.5s ease;
+    transition: opacity $gl-transition-duration-medium $general-hover-transition-curve;
 
     &.inactive {
       @include gl-opacity-5;
@@ -108,6 +108,7 @@
     .design-note {
       padding: $gl-padding;
       list-style: none;
+      transition: background $gl-transition-duration-medium $general-hover-transition-curve;
 
       a {
         color: inherit;
@@ -150,7 +151,7 @@
 }
 
 .design-dropzone-card {
-  transition: border $general-hover-transition-duration $general-hover-transition-curve;
+  transition: border $gl-transition-duration-medium $general-hover-transition-curve;
   color: $gl-text-color;
 
   &:focus,

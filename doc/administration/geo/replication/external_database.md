@@ -270,7 +270,8 @@ the tracking database on port 5432.
    query_exec "GRANT USAGE ON FOREIGN SERVER gitlab_secondary TO ${GEO_DB_USER};"
    ```
 
-   NOTE: **Note:** The script template above uses `gitlab-psql` as it's intended to be executed from the Geo machine,
+   NOTE: **Note:**
+   The script template above uses `gitlab-psql` as it's intended to be executed from the Geo machine,
    but you can change it to `psql` and run it from any machine that has access to the database. We also recommend using
    `psql` for AWS RDS.
 

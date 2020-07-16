@@ -72,7 +72,8 @@ be configured already.
 
 ## Object Storage Settings
 
-NOTE: **Note:** In GitLab 13.2 and later, we recommend using the
+NOTE: **Note:**
+In GitLab 13.2 and later, we recommend using the
 [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
 This section describes the earlier configuration format.
 

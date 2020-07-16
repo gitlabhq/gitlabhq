@@ -112,7 +112,8 @@ The ActionCable connection or channel class is used as the `controller`.
 }
 ```
 
-NOTE: **Note:** Starting with GitLab 12.5, if an error occurs, an
+NOTE: **Note:**
+Starting with GitLab 12.5, if an error occurs, an
 `exception` field is included with `class`, `message`, and
 `backtrace`. Previous versions included an `error` field instead of
 `exception.class` and `exception.message`. For example:

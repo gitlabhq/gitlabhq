@@ -1,4 +1,5 @@
 <script>
+import { mapActions } from 'vuex';
 import { GlFormSelect, GlSprintf } from '@gitlab/ui';
 import { getSymbol, getLineClasses } from './multiline_comment_utils';
 
@@ -39,8 +40,13 @@ export default {
       old_line: line.old_line,
       new_line: line.new_line,
     };
+    this.highlightSelection();
+  },
+  destroyed() {
+    this.setSelectedCommentPosition();
   },
   methods: {
+    ...mapActions(['setSelectedCommentPosition']),
     getSymbol({ type }) {
       return getSymbol(type);
     },
@@ -50,6 +56,16 @@ export default {
     updateCommentLineStart(value) {
       this.commentLineStart = value;
       this.$emit('input', value);
+      this.highlightSelection();
+    },
+    highlightSelection() {
+      const { line_code, new_line, old_line, type } = this.line;
+      const updatedLineRange = {
+        start: { ...this.commentLineStart },
+        end: { line_code, new_line, old_line, type },
+      };
+
+      this.setSelectedCommentPosition(updatedLineRange);
     },
   },
 };

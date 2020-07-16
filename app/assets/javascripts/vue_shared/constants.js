@@ -6,6 +6,8 @@ const INTERVALS = {
   day: 'day',
 };
 
+export const FILE_SYMLINK_MODE = '120000';
+
 export const timeRanges = [
   {
     label: __('30 minutes'),

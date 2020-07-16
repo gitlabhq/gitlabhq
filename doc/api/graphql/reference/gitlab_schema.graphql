@@ -4371,6 +4371,11 @@ The connection type for EpicIssue.
 """
 type EpicIssueConnection {
   """
+  Total count of collection
+  """
+  count: Int!
+
+  """
   A list of edges.
   """
   edges: [EpicIssueEdge]
@@ -5042,6 +5047,11 @@ type Group {
     List of IIDs of issues. For example, [1, 2]
     """
     iids: [String!]
+
+    """
+    Iterations applied to the issue
+    """
+    iterationId: [ID]
 
     """
     Labels applied to this issue
@@ -5967,6 +5977,11 @@ type Issue implements Noteable {
 The connection type for Issue.
 """
 type IssueConnection {
+  """
+  Total count of collection
+  """
+  count: Int!
+
   """
   A list of edges.
   """
@@ -9200,6 +9215,11 @@ type Project {
     iids: [String!]
 
     """
+    Iterations applied to the issue
+    """
+    iterationId: [ID]
+
+    """
     Labels applied to this issue
     """
     labelName: [String]
@@ -9293,6 +9313,11 @@ type Project {
     List of IIDs of issues. For example, [1, 2]
     """
     iids: [String!]
+
+    """
+    Iterations applied to the issue
+    """
+    iterationId: [ID]
 
     """
     Labels applied to this issue

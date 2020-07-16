@@ -14,7 +14,8 @@ website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitl
 Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
 for a complete Kramdown reference.
 
-NOTE: **Note:** We encourage you to view this document as [rendered by GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
+NOTE: **Note:**
+We encourage you to view this document as [rendered by GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
 
 ## GitLab Flavored Markdown (GFM)
 
@@ -76,7 +77,8 @@ character of the top list item (`C` in this case):
    - dark
    - milk
 
-NOTE: **Note:** We will flag any significant differences between Redcarpet and CommonMark
+NOTE: **Note:**
+We will flag any significant differences between Redcarpet and CommonMark
   Markdown in this document.
 
 If you have a large volume of Markdown files, it can be tedious to determine
@@ -261,7 +263,8 @@ when rendered within GitLab, may appear different depending on the OS and browse
 
 Most emoji are natively supported on macOS, Windows, iOS, Android, and will fall back on image-based emoji where there is no support.
 
-NOTE: **Note:** On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/)
+NOTE: **Note:**
+On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/)
 to get full native emoji support. Ubuntu 18.04 (like many modern Linux distributions) has
 this font installed by default.
 
@@ -402,7 +405,8 @@ a^2+b^2=c^2
 
 _Be advised that KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
 
-NOTE: **Note:** This also works for the Asciidoctor `:stem: latexmath`. For details see
+NOTE: **Note:**
+This also works for the Asciidoctor `:stem: latexmath`. For details see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
 ### Special GitLab references
@@ -779,7 +783,8 @@ Combined emphasis with **asterisks and _underscores_**.
 
 Strikethrough uses two tildes. ~~Scratch this.~~
 
-NOTE: **Note:** Strikethrough is not part of the core Markdown standard, but is part of GFM.
+NOTE: **Note:**
+Strikethrough is not part of the core Markdown standard, but is part of GFM.
 
 #### Multiple underscores in words and mid-word emphasis
 
@@ -1246,7 +1251,8 @@ Do not change to reference style links.
 
 Some text to show that the reference links can follow later.
 
-NOTE: **Note:** Relative links do not allow the referencing of project files in a wiki
+NOTE: **Note:**
+Relative links do not allow the referencing of project files in a wiki
 page, or a wiki page in a project file. The reason for this is that a wiki is always
 in a separate Git repository in GitLab. For example, `[I'm a reference-style link](style)`
 will point the link to `wikis/style` only when the link is inside of a wiki Markdown file.

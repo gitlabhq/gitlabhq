@@ -83,7 +83,8 @@ Plan.default.actual_limits.update!(project_hooks: 100)
 Plan.default.actual_limits.update!(group_hooks: 100)
 ```
 
-NOTE: **Note:** Set the limit to `0` to disable it.
+NOTE: **Note:**
+Set the limit to `0` to disable it.
 
 ## Incoming emails from auto-responders
 
@@ -120,7 +121,8 @@ Plan.default.actual_limits.update!(offset_pagination_limit: 10000)
 
 - **Default offset pagination limit:** 50000
 
-NOTE: **Note:** Set the limit to `0` to disable it.
+NOTE: **Note:**
+Set the limit to `0` to disable it.
 
 ## CI/CD limits
 
@@ -152,7 +154,8 @@ To set this limit on a self-managed installation, run the following in the
 Plan.default.actual_limits.update!(ci_active_jobs: 500)
 ```
 
-NOTE: **Note:** Set the limit to `0` to disable it.
+NOTE: **Note:**
+Set the limit to `0` to disable it.
 
 ### Number of CI/CD subscriptions to a project
 
@@ -174,7 +177,8 @@ To set this limit on a self-managed installation, run the following in the
 Plan.default.actual_limits.update!(ci_project_subscriptions: 500)
 ```
 
-NOTE: **Note:** Set the limit to `0` to disable it.
+NOTE: **Note:**
+Set the limit to `0` to disable it.
 
 ### Number of pipeline schedules
 
@@ -306,7 +310,8 @@ characters and the rest will not be indexed and hence will not be searchable.
 This limit can be configured for self-managed installations when [enabling
 Elasticsearch](../integration/elasticsearch.md#enabling-elasticsearch).
 
-NOTE: **Note:** Set the limit to `0` to disable it.
+NOTE: **Note:**
+Set the limit to `0` to disable it.
 
 ## Wiki limits
 

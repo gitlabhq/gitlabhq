@@ -4,7 +4,8 @@ This page describes GitLab reference architecture for up to 3,000 users.
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
-NOTE: **Note:** The 3,000-user reference architecture documented below is
+NOTE: **Note:**
+The 3,000-user reference architecture documented below is
 designed to help your organization achieve a highly-available GitLab deployment.
 If you do not have the expertise or need to maintain a highly-available
 environment, you can have a simpler and less costly-to-operate environment by

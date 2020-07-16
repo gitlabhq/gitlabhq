@@ -124,7 +124,7 @@ describe QA::Specs::Helpers::Quarantine do
     end
   end
 
-  describe '.skip_or_run_quarantined_tests' do
+  describe '.skip_or_run_quarantined_tests_or_contexts' do
     context 'with no tag focused' do
       before do
         described_class.configure_rspec
@@ -146,6 +146,37 @@ describe QA::Specs::Helpers::Quarantine do
         end
 
         expect(group.examples.first.execution_result.status).to eq(:passed)
+      end
+
+      context 'with environment set' do
+        before do
+          QA::Runtime::Scenario.define(:gitlab_address, 'https://staging.gitlab.com')
+          described_class.configure_rspec
+        end
+
+        it 'is skipped when set on contexts or descriptions' do
+          group = describe_successfully 'Quarantined in staging', quarantine: { only: { subdomain: :staging } } do
+            it('runs in staging') {}
+          end
+
+          expect(group.examples.first.execution_result.status).to eq(:pending)
+          expect(group.examples.first.execution_result.pending_message)
+            .to eq('In quarantine')
+        end
+
+        it 'is skipped only in staging' do
+          group = describe_successfully do
+            it('skipped in staging', quarantine: { only: { subdomain: :staging } }) {}
+            it('runs in staging', quarantine: { only: :production }) {}
+            it('skipped in staging also', quarantine: { only: { subdomain: %i[release staging] } }) {}
+            it('runs in any env') {}
+          end
+
+          expect(group.examples[0].execution_result.status).to eq(:pending)
+          expect(group.examples[1].execution_result.status).to eq(:passed)
+          expect(group.examples[2].execution_result.status).to eq(:pending)
+          expect(group.examples[3].execution_result.status).to eq(:passed)
+        end
       end
 
       context 'quarantine message' do

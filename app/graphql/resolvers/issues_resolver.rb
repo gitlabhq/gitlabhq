@@ -92,3 +92,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::IssuesResolver.prepend_if_ee('::EE::Resolvers::IssuesResolver')

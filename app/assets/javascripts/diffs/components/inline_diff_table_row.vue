@@ -37,6 +37,11 @@ export default {
       required: false,
       default: false,
     },
+    isCommented: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -47,7 +52,10 @@ export default {
     ...mapGetters('diffs', ['fileLineCoverage']),
     ...mapState({
       isHighlighted(state) {
-        return this.line.line_code !== null && this.line.line_code === state.diffs.highlightedRow;
+        if (this.isCommented) return true;
+
+        const lineCode = this.line.line_code;
+        return lineCode ? lineCode === state.diffs.highlightedRow : false;
       },
     }),
     isContextLine() {

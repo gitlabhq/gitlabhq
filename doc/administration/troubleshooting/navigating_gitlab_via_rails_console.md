@@ -6,7 +6,7 @@ Thanks to this, we also get access to the amazing tools built right into Rails.
 In this guide, we'll introduce the [Rails console](debug.md#starting-a-rails-console-session)
 and the basics of interacting with your GitLab instance from the command line.
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 The Rails console interacts directly with your GitLab instance. In many cases,
 there are no handrails to prevent you from permanently modifying, corrupting
 or destroying production data. If you would like to explore the Rails console

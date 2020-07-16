@@ -186,6 +186,7 @@ export default {
     eventHub.$on('enterEditMode', ({ noteId }) => {
       if (noteId === this.note.id) {
         this.isEditing = true;
+        this.setSelectedCommentPositionHover();
         this.scrollToNoteIfNeeded($(this.$el));
       }
     });
@@ -205,9 +206,11 @@ export default {
       'toggleResolveNote',
       'scrollToNoteIfNeeded',
       'updateAssignees',
+      'setSelectedCommentPositionHover',
     ]),
     editHandler() {
       this.isEditing = true;
+      this.setSelectedCommentPositionHover();
       this.$emit('handleEdit');
     },
     deleteHandler() {
@@ -284,6 +287,7 @@ export default {
           } else {
             this.isRequesting = false;
             this.isEditing = true;
+            this.setSelectedCommentPositionHover();
             this.$nextTick(() => {
               const msg = __('Something went wrong while editing your comment. Please try again.');
               Flash(msg, 'alert', this.$el);
@@ -340,7 +344,7 @@ export default {
         :line="line"
         :comment-line-options="commentLineOptions"
         :line-range="note.position.line_range"
-        class="gl-mb-3 gl-text-gray-700 gl-border-gray-100 gl-border-b-solid gl-border-b-1 gl-pb-3"
+        class="gl-mb-3 gl-text-gray-700 gl-pb-3"
       />
       <div
         v-else

@@ -344,7 +344,8 @@ This path is accessible to:
 - The user running the Container Registry daemon.
 - The user running GitLab.
 
-CAUTION: **Warning:** You should confirm that all GitLab, Registry and web server users
+CAUTION: **Warning:**
+You should confirm that all GitLab, Registry and web server users
 have access to this directory.
 
 **Omnibus GitLab installations**
@@ -382,7 +383,8 @@ driver for the Container Registry.
 
 [Read more about using object storage with GitLab](../object_storage.md).
 
-CAUTION: **Warning:** GitLab will not backup Docker images that are not stored on the
+CAUTION: **Warning:**
+GitLab will not backup Docker images that are not stored on the
 filesystem. Remember to enable backups with your object storage provider if
 desired.
 

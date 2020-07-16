@@ -238,7 +238,8 @@ The regex that is used for naming is validating all package names from all packa
 It allows for capital letters, while NPM does not, and allows for almost all of the
 characters NPM allows with a few exceptions (`~` is not allowed).
 
-NOTE: **Note:** Capital letters are needed because the scope is required to be
+NOTE: **Note:**
+Capital letters are needed because the scope is required to be
 identical to the top level namespace of the project. So, for example, if your
 project path is `My-Group/project-foo`, your package must be named `@My-Group/any-package-name`.
 `@my-group/any-package-name` will not work.

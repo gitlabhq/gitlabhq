@@ -2,7 +2,7 @@
 
 Every API call to merge requests must be authenticated.
 
-CAUTION: **Deprecation**
+CAUTION: **Deprecation:**
 > `reference` attribute in response is deprecated in favour of `references`.
 > Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
 

@@ -601,6 +601,16 @@ msgstr ""
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}"
 msgstr ""
 
+msgid "%{securityScanner} is not enabled for this project. %{linkStart}More information%{linkEnd}"
+msgid_plural "%{securityScanner} are not enabled for this project. %{linkStart}More information%{linkEnd}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{securityScanner} result is not available because a pipeline has not been run since it was enabled. %{linkStart}Run a pipeline%{linkEnd}"
+msgid_plural "%{securityScanner} results are not available because a pipeline has not been run since it was enabled. %{linkStart}Run a pipeline%{linkEnd}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{service_title} %{message}."
 msgstr ""
 
@@ -3227,6 +3237,9 @@ msgid "Assigned Issues"
 msgstr ""
 
 msgid "Assigned Merge Requests"
+msgstr ""
+
+msgid "Assigned to %{assigneeName}"
 msgstr ""
 
 msgid "Assigned to %{assignee_name}"
@@ -9364,6 +9377,9 @@ msgid "Error loading countries data."
 msgstr ""
 
 msgid "Error loading file viewer."
+msgstr ""
+
+msgid "Error loading issues"
 msgstr ""
 
 msgid "Error loading last commit."
@@ -15713,6 +15729,9 @@ msgid "No grouping"
 msgstr ""
 
 msgid "No iteration"
+msgstr ""
+
+msgid "No iterations found"
 msgstr ""
 
 msgid "No iterations to show"

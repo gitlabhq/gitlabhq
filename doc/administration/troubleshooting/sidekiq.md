@@ -283,7 +283,8 @@ queue = Sidekiq::Queue.new('<queue name>')
 queue.each { |job| job.delete if <condition>}
 ```
 
-NOTE: **Note:** This will remove jobs that are queued but not started, running jobs will not be killed. Have a look at the section below for cancelling running jobs.
+NOTE: **Note:**
+This will remove jobs that are queued but not started, running jobs will not be killed. Have a look at the section below for cancelling running jobs.
 
 In the method above, `<queue-name>` is the name of the queue that contains the job(s) you want to delete and `<condition>` will decide which jobs get deleted.
 

@@ -94,7 +94,7 @@ also be merged.
 All issues, merge requests, issue board lists, issue board filters, and label subscriptions
 with the old labels will be assigned to the new group label.
 
-WARNING: **Caution:**
+CAUTION: **Caution:**
 Promoting a label is a permanent action, and cannot be reversed.
 
 To promote a project label to a group label:

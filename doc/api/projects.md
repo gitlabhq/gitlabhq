@@ -1087,7 +1087,8 @@ POST /projects
 | `group_with_project_templates_id` | integer | no | **(PREMIUM)** For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true |
 | `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
 
-NOTE: **Note:** If your HTTP repository is not publicly accessible,
+NOTE: **Note:**
+If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
 where `password` is a public access key with the `api` scope enabled.
 
@@ -1157,7 +1158,8 @@ POST /projects/user/:user_id
 | `group_with_project_templates_id` | integer | no | **(PREMIUM)** For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true |
 | `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
 
-NOTE: **Note:** If your HTTP repository is not publicly accessible,
+NOTE: **Note:**
+If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
 where `password` is a public access key with the `api` scope enabled.
 
@@ -1228,7 +1230,8 @@ PUT /projects/:id
 | `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
 | `service_desk_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable service desk feature |
 
-NOTE: **Note:** If your HTTP repository is not publicly accessible,
+NOTE: **Note:**
+If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
 where `password` is a public access key with the `api` scope enabled.
 

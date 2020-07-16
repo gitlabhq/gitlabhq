@@ -966,7 +966,8 @@ after it has been restored to service.
   gitlab-ctl restart repmgrd
   ```
 
-  CAUTION: **Warning:** When the server is brought back online, and before
+  CAUTION: **Warning:**
+  When the server is brought back online, and before
   you switch it to a standby node, repmgr will report that there are two masters.
   If there are any clients that are still attempting to write to the old master,
   this will cause a split, and the old master will need to be resynced from
@@ -1129,7 +1130,8 @@ If you're running into an issue with a component not outlined here, be sure to c
 
 ## Patroni
 
-NOTE: **Note:** Starting from GitLab 13.1, Patroni is available for **experimental** use to replace repmgr. Due to its
+NOTE: **Note:**
+Starting from GitLab 13.1, Patroni is available for **experimental** use to replace repmgr. Due to its
 experimental nature, Patroni support is **subject to change without notice.**
 
 Patroni is an opinionated solution for PostgreSQL high-availability. It takes the control of PostgreSQL, overrides its
@@ -1320,7 +1322,8 @@ You can switch an exiting database cluster to use Patroni instead of repmgr with
    sudo gitlab-ctl stop postgresql
    ```
 
-   NOTE: **Note:**  Ensure that there is no `walsender` process running on the primary node.
+   NOTE: **Note:**
+   Ensure that there is no `walsender` process running on the primary node.
    `ps aux | grep walsender` must not show any running process.  
 
 1. On the primary node, [configure Patroni](#configuring-patroni-cluster). Remove `repmgr` and any other

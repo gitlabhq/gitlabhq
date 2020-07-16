@@ -38,10 +38,12 @@ but support [is planned](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/is
 
 ## Debugging a running job
 
-NOTE: **Note:** Not all executors are
+NOTE: **Note:**
+Not all executors are
 [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
 
-NOTE: **Note:** The `docker` executor does not keep running
+NOTE: **Note:**
+The `docker` executor does not keep running
 after the build script is finished. At that point, the terminal will automatically
 disconnect and will not wait for the user to finish. Please follow [this
 issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on

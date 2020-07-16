@@ -90,7 +90,8 @@ The following steps enable a GitLab cluster to serve as the **primary** node.
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 
-NOTE: **Note:** PostgreSQL and Redis should have already been disabled on the
+NOTE: **Note:**
+PostgreSQL and Redis should have already been disabled on the
 application servers, and connections from the application servers to those
 services on the backend servers configured, during normal GitLab multi-node set up. See
 multi-node configuration documentation for
@@ -141,7 +142,8 @@ recommended.
 
 ### Step 2: Configure the main read-only replica PostgreSQL database on the **secondary** node
 
-NOTE: **Note:** The following documentation assumes the database will be run on
+NOTE: **Note:**
+The following documentation assumes the database will be run on
 a single node only. Multi-node PostgreSQL on **secondary** nodes is
 [not currently supported](https://gitlab.com/groups/gitlab-org/-/epics/2536).
 
@@ -206,7 +208,8 @@ If using an external PostgreSQL instance, refer also to
 
 ### Step 3: Configure the tracking database on the **secondary** node
 
-NOTE: **Note:** This documentation assumes the tracking database will be run on
+NOTE: **Note:**
+This documentation assumes the tracking database will be run on
 only a single machine, rather than as a PostgreSQL cluster.
 
 Configure the tracking database.

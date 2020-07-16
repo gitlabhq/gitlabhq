@@ -106,7 +106,8 @@ If you configure GitLab to store CI logs and artifacts on object storage, you mu
 
 #### Object Storage Settings
 
-NOTE: **Note:** In GitLab 13.2 and later, we recommend using the
+NOTE: **Note:**
+In GitLab 13.2 and later, we recommend using the
 [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
 This section describes the earlier configuration format.
 
@@ -163,7 +164,7 @@ _The artifacts are stored by default in
    gitlab-rake gitlab:artifacts:migrate
    ```
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 JUnit test report artifact (`junit.xml.gz`) migration
 [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/27698)
 by the `gitlab:artifacts:migrate` script.
@@ -196,7 +197,7 @@ _The artifacts are stored by default in
    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
    ```
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 JUnit test report artifact (`junit.xml.gz`) migration
 [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/27698)
 by the `gitlab:artifacts:migrate` script.
@@ -434,7 +435,7 @@ the number you want.
 
 #### Delete job artifacts from jobs completed before a specific date
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 These commands remove data permanently from the database and from disk. We
 highly recommend running them only under the guidance of a Support Engineer, or
 running them in a test environment with a backup of the instance ready to be
@@ -460,7 +461,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
 1. Delete job artifacts older than a specific date:
 
-   NOTE: **NOTE:**
+   NOTE: **Note:**
    This step will also erase artifacts that users have chosen to
    ["keep"](../ci/pipelines/job_artifacts.md#browsing-artifacts).
 
@@ -481,7 +482,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
 #### Delete job artifacts and logs from jobs completed before a specific date
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 These commands remove data permanently from the database and from disk. We
 highly recommend running them only under the guidance of a Support Engineer, or
 running them in a test environment with a backup of the instance ready to be

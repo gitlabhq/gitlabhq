@@ -12,7 +12,8 @@ From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
 support for NFS for Git repositories is scheduled to be removed. Upgrade to
 [Gitaly Cluster](../gitaly/praefect.md) as soon as possible.
 
-NOTE: **Note:** Filesystem performance has a big impact on overall GitLab
+NOTE: **Note:**
+Filesystem performance has a big impact on overall GitLab
 performance, especially for actions that read or write to Git repositories. See
 [Filesystem Performance Benchmarking](../operations/filesystem_benchmarking.md)
 for steps to test filesystem performance.
@@ -105,7 +106,8 @@ administrators to keep NFS server delegation disabled.
 
 #### Improving NFS performance with Unicorn
 
-NOTE: **Note:** From GitLab 12.1, it will automatically be detected if Rugged can and should be used per storage.
+NOTE: **Note:**
+From GitLab 12.1, it will automatically be detected if Rugged can and should be used per storage.
 
 If you previously enabled Rugged using the feature flag, you will need to unset the feature flag by using:
 
@@ -117,7 +119,8 @@ If the Rugged feature flag is explicitly set to either true or false, GitLab wil
 
 #### Improving NFS performance with Puma
 
-NOTE: **Note:** From GitLab 12.7, Rugged auto-detection is disabled if Puma thread count is greater than 1.
+NOTE: **Note:**
+From GitLab 12.7, Rugged auto-detection is disabled if Puma thread count is greater than 1.
 
 If you want to use Rugged with Puma, it is recommended to [set Puma thread count to 1](https://docs.gitlab.com/omnibus/settings/puma.html#puma-settings).
 

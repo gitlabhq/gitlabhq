@@ -681,11 +681,13 @@ To add `DOCKER_AUTH_CONFIG` to a Runner:
 
 1. Restart the Runner service.
 
-NOTE: **Note:** The double quotes included in the `DOCKER_AUTH_CONFIG`
+NOTE: **Note:**
+The double quotes included in the `DOCKER_AUTH_CONFIG`
 data must be escaped with backslashes. This prevents them from being
 interpreted as TOML.
 
-NOTE: **Note:** The `environment` option is a list. So your Runner may
+NOTE: **Note:**
+The `environment` option is a list. So your Runner may
 have existing entries and you should add this to the list, not replace
 it.
 
@@ -715,7 +717,8 @@ To configure credentials store, follow these steps:
      `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner will read this configuration file
      and will use the needed helper for this specific repository.
 
-NOTE: **Note:** `credsStore` is used to access ALL the registries.
+NOTE: **Note:**
+`credsStore` is used to access ALL the registries.
 If you will want to use both images from private registry and public images from DockerHub,
 pulling from DockerHub will fail, because Docker daemon will try to use the same credentials for **ALL** the registries.
 

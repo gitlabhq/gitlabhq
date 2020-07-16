@@ -466,7 +466,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_INCLUDE_ALPHA_VULNERABILITIES` | boolean | Set to `true` to include alpha passive and active scan rules. Default: `false` |
 | `DAST_USE_AJAX_SPIDER` | boolean | Set to `true` to use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Default: `false` |
 | `DAST_ZAP_CLI_OPTIONS` | string | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. |
-| `DAST_ZAP_LOG_CONFIGURATION` | string | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG` |
+| `DAST_ZAP_LOG_CONFIGURATION` | string | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG` |
 
 ### DAST command-line options
 
@@ -533,13 +533,14 @@ Debug mode of the ZAP server can be enabled using the `DAST_ZAP_LOG_CONFIGURATIO
 The following table outlines examples of values that can be set and the effect that they have on the output that is logged.
 Multiple values can be specified, separated by semicolons.
 
-| Log configuration value                            | Effect                                                            |
-|--------------------------------------------------  | ----------------------------------------------------------------- |
-| `log4j.rootLogger=DEBUG`                           | Enable all debug logging statements.                              |
-| `log4j.logger.org.apache.commons.httpclient=DEBUG` | Log every HTTP request and response made by the ZAP server.       |
-| `log4j.logger.com.crawljax=DEBUG`                  | Enable Ajax Crawler debug logging statements.                     |
-| `log4j.logger.org.parosproxy.paros=DEBUG`          | Enable ZAP server proxy debug logging statements.                 |
-| `log4j.logger.org.zaproxy.zap=DEBUG`               | Enable debug logging statements of the general ZAP server code.   |
+| Log configuration value                                      | Effect                                                            |
+|--------------------------------------------------            | ----------------------------------------------------------------- |
+| `log4j.rootLogger=DEBUG`                                     | Enable all debug logging statements.                              |
+| `log4j.logger.org.apache.commons.httpclient=DEBUG`           | Log every HTTP request and response made by the ZAP server.       |
+| `log4j.logger.org.zaproxy.zap.spider.SpiderController=DEBUG` | Log URLs found during the spider scan of the target.              |
+| `log4j.logger.com.crawljax=DEBUG`                            | Enable Ajax Crawler debug logging statements.                     |
+| `log4j.logger.org.parosproxy.paros=DEBUG`                    | Enable ZAP server proxy debug logging statements.                 |
+| `log4j.logger.org.zaproxy.zap=DEBUG`                         | Enable debug logging statements of the general ZAP server code.   |
 
 ## Running DAST in an offline environment
 

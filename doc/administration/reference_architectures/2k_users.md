@@ -658,7 +658,8 @@ On each node perform the following:
    sudo gitlab-ctl tail gitaly
    ```
 
-NOTE: **Note:** When you specify `https` in the `external_url`, as in the example
+NOTE: **Note:**
+When you specify `https` in the `external_url`, as in the example
 above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
 certificates are not present, NGINX will fail to start. See the
 [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)

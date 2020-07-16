@@ -33,7 +33,7 @@ RSpec.describe 'Area' do
   it 'runs in any environment' do; end
 
   it 'runs only in production', only: :production do; end
-  
+
   it 'runs only in staging', only: { subdomain: :staging } do; end
 
   it 'runs in dev', only: { tld: '.org', domain: 'gitlab', subdomain: 'dev' } do; end
@@ -45,3 +45,10 @@ end
 NOTE: **Note:**
 If the test has a `before` or `after`, you must add the `only` metadata
 to the outer `RSpec.describe`.
+
+## Quarantining a test for a specific environment
+
+Similarly to specifying that a test should only run against a specific environment, it's also possible to quarantine a
+test only when it runs against a specific environment. The syntax is exactly the same, except that the `only: { ... }`
+hash is nested in the [`quarantine: { ... }`](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#quarantining-tests) hash.
+For instance, `quarantine: { only: { subdomain: :staging } }` will only quarantine the test when run against staging.

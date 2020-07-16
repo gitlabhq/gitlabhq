@@ -25,7 +25,8 @@ For a video demonstration on installing GitLab on OpenShift, check the article [
 
 ## Prerequisites
 
-CAUTION: **Caution:** This information is no longer up to date, as the current versions
+CAUTION: **Caution:**
+This information is no longer up to date, as the current versions
 have changed and products have been renamed.
 
 OpenShift 3 is not yet deployed on RedHat's offered [Online platform](https://www.openshift.com/),

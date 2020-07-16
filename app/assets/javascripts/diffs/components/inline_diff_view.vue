@@ -1,10 +1,11 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import InlineDraftCommentRow from '~/batch_comments/components/inline_draft_comment_row.vue';
 import inlineDiffTableRow from './inline_diff_table_row.vue';
 import inlineDiffCommentRow from './inline_diff_comment_row.vue';
 import inlineDiffExpansionRow from './inline_diff_expansion_row.vue';
+import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
 
 export default {
   components: {
@@ -31,8 +32,18 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', ['commitId']),
+    ...mapState({
+      selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
+      selectedCommentPositionHover: ({ notes }) => notes.selectedCommentPositionHover,
+    }),
     diffLinesLength() {
       return this.diffLines.length;
+    },
+    commentedLines() {
+      return getCommentedLines(
+        this.selectedCommentPosition || this.selectedCommentPositionHover,
+        this.diffLines,
+      );
     },
   },
   userColorScheme: window.gon.user_color_scheme,
@@ -67,6 +78,7 @@ export default {
           :file-path="diffFile.file_path"
           :line="line"
           :is-bottom="index + 1 === diffLinesLength"
+          :is-commented="index >= commentedLines.startLine && index <= commentedLines.endLine"
         />
         <inline-diff-comment-row
           :key="`icr-${line.line_code || index}`"

@@ -10,7 +10,7 @@ and it may be useful for users with experience with Linux. If you are currently
 having an issue with GitLab, you may want to check your [support options](https://about.gitlab.com/support/)
 first, before attempting to use this information.
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 If you are administering GitLab you are expected to know these commands for your distribution
 of choice. If you are a GitLab Support Engineer, consider this a cross-reference to
 translate `yum` -> `apt-get` and the like.

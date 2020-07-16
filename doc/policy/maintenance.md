@@ -70,7 +70,8 @@ one major version. For example, it is safe to:
   - `9.5.5` -> `9.5.9`
   - `8.9.2` -> `8.9.6`
 
-NOTE: **Note:** Version specific changes in Omnibus GitLab Linux packages can be found in [the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/update/README.html#version-specific-changes).
+NOTE: **Note:**
+Version specific changes in Omnibus GitLab Linux packages can be found in [the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/update/README.html#version-specific-changes).
 
 NOTE: **Note:**
 Instructions are available for downloading an Omnibus GitLab Linux package locally and [manually installing](https://docs.gitlab.com/omnibus/manual_install.html) it.

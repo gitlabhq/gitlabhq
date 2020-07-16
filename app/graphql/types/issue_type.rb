@@ -4,6 +4,8 @@ module Types
   class IssueType < BaseObject
     graphql_name 'Issue'
 
+    connection_type_class(Types::IssueConnectionType)
+
     implements(Types::Notes::NoteableType)
 
     authorize :read_issue

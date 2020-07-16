@@ -88,7 +88,8 @@ To disallow users to contribute outside of the top-level group, please see [Grou
 
 ## Providers
 
-NOTE: **Note:** GitLab is unable to provide support for IdPs that are not listed here.
+NOTE: **Note:**
+GitLab is unable to provide support for IdPs that are not listed here.
 
 | Provider | Documentation |
 |----------|---------------|

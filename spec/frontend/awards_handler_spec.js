@@ -3,64 +3,51 @@ import Cookies from 'js-cookie';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import loadAwardsHandler from '~/awards_handler';
-import '~/lib/utils/common_utils';
-import waitForPromises from './helpers/wait_for_promises';
+import { setTestTimeout } from './helpers/timeout';
 import { EMOJI_VERSION } from '~/emoji';
+import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 
 window.gl = window.gl || {};
 window.gon = window.gon || {};
 
-let openAndWaitForEmojiMenu;
 let mock;
 let awardsHandler = null;
 const urlRoot = gon.relative_url_root;
 
-const lazyAssert = (done, assertFn) => {
-  jest.runOnlyPendingTimers();
-  waitForPromises()
-    .then(() => {
-      assertFn();
-      done();
-    })
-    .catch(e => {
-      throw e;
-    });
-};
-
 describe('AwardsHandler', () => {
+  useFakeRequestAnimationFrame();
+
   const emojiData = getJSONFixture('emojis/emojis.json');
   preloadFixtures('snippets/show.html');
 
-  beforeEach(done => {
+  const openAndWaitForEmojiMenu = (sel = '.js-add-award') => {
+    $(sel)
+      .eq(0)
+      .click();
+
+    jest.advanceTimersByTime(200);
+
+    const $menu = $('.emoji-menu');
+
+    return new Promise(resolve => {
+      $menu.one('build-emoji-menu-finish', () => {
+        resolve();
+      });
+    });
+  };
+
+  beforeEach(async () => {
+    // These tests have had some timeout issues
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/221086
+    setTestTimeout(6000);
+
     mock = new MockAdapter(axios);
     mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200, emojiData);
 
     loadFixtures('snippets/show.html');
-    loadAwardsHandler(true)
-      .then(obj => {
-        awardsHandler = obj;
-        jest.spyOn(awardsHandler, 'postEmoji').mockImplementation((button, url, emoji, cb) => cb());
-        done();
-      })
-      .catch(done.fail);
 
-    let isEmojiMenuBuilt = false;
-    openAndWaitForEmojiMenu = () => {
-      return new Promise(resolve => {
-        if (isEmojiMenuBuilt) {
-          resolve();
-        } else {
-          $('.js-add-award')
-            .eq(0)
-            .click();
-          const $menu = $('.emoji-menu');
-          $menu.one('build-emoji-menu-finish', () => {
-            isEmojiMenuBuilt = true;
-            resolve();
-          });
-        }
-      });
-    };
+    awardsHandler = await loadAwardsHandler(true);
+    jest.spyOn(awardsHandler, 'postEmoji').mockImplementation((button, url, emoji, cb) => cb());
   });
 
   afterEach(() => {
@@ -76,55 +63,45 @@ describe('AwardsHandler', () => {
   });
 
   describe('::showEmojiMenu', () => {
-    it('should show emoji menu when Add emoji button clicked', done => {
-      $('.js-add-award')
-        .eq(0)
-        .click();
-      lazyAssert(done, () => {
-        const $emojiMenu = $('.emoji-menu');
+    it('should show emoji menu when Add emoji button clicked', async () => {
+      await openAndWaitForEmojiMenu();
 
-        expect($emojiMenu.length).toBe(1);
-        expect($emojiMenu.hasClass('is-visible')).toBe(true);
-        expect($emojiMenu.find('.js-emoji-menu-search').length).toBe(1);
-        expect($('.js-awards-block.current').length).toBe(1);
-      });
+      const $emojiMenu = $('.emoji-menu');
+
+      expect($emojiMenu.length).toBe(1);
+      expect($emojiMenu.hasClass('is-visible')).toBe(true);
+      expect($emojiMenu.find('.js-emoji-menu-search').length).toBe(1);
+      expect($('.js-awards-block.current').length).toBe(1);
     });
 
-    it('should also show emoji menu for the smiley icon in notes', done => {
-      $('.js-add-award.note-action-button').click();
-      lazyAssert(done, () => {
-        const $emojiMenu = $('.emoji-menu');
+    it('should also show emoji menu for the smiley icon in notes', async () => {
+      await openAndWaitForEmojiMenu('.js-add-award.note-action-button');
 
-        expect($emojiMenu.length).toBe(1);
-      });
+      const $emojiMenu = $('.emoji-menu');
+
+      expect($emojiMenu.length).toBe(1);
     });
 
-    it('should remove emoji menu when body is clicked', done => {
-      $('.js-add-award')
-        .eq(0)
-        .click();
-      lazyAssert(done, () => {
-        const $emojiMenu = $('.emoji-menu');
-        $('body').click();
+    it('should remove emoji menu when body is clicked', async () => {
+      await openAndWaitForEmojiMenu();
 
-        expect($emojiMenu.length).toBe(1);
-        expect($emojiMenu.hasClass('is-visible')).toBe(false);
-        expect($('.js-awards-block.current').length).toBe(0);
-      });
+      const $emojiMenu = $('.emoji-menu');
+      $('body').click();
+
+      expect($emojiMenu.length).toBe(1);
+      expect($emojiMenu.hasClass('is-visible')).toBe(false);
+      expect($('.js-awards-block.current').length).toBe(0);
     });
 
-    it('should not remove emoji menu when search is clicked', done => {
-      $('.js-add-award')
-        .eq(0)
-        .click();
-      lazyAssert(done, () => {
-        const $emojiMenu = $('.emoji-menu');
-        $('.emoji-search').click();
+    it('should not remove emoji menu when search is clicked', async () => {
+      await openAndWaitForEmojiMenu();
 
-        expect($emojiMenu.length).toBe(1);
-        expect($emojiMenu.hasClass('is-visible')).toBe(true);
-        expect($('.js-awards-block.current').length).toBe(1);
-      });
+      const $emojiMenu = $('.emoji-menu');
+      $('.emoji-search').click();
+
+      expect($emojiMenu.length).toBe(1);
+      expect($emojiMenu.hasClass('is-visible')).toBe(true);
+      expect($('.js-awards-block.current').length).toBe(1);
     });
   });
 
@@ -272,48 +249,39 @@ describe('AwardsHandler', () => {
   });
 
   describe('::searchEmojis', () => {
-    it('should filter the emoji', done => {
-      openAndWaitForEmojiMenu()
-        .then(() => {
-          expect($('[data-name=angel]').is(':visible')).toBe(true);
-          expect($('[data-name=anger]').is(':visible')).toBe(true);
-          awardsHandler.searchEmojis('ali');
+    it('should filter the emoji', async () => {
+      await openAndWaitForEmojiMenu();
 
-          expect($('[data-name=angel]').is(':visible')).toBe(false);
-          expect($('[data-name=anger]').is(':visible')).toBe(false);
-          expect($('[data-name=alien]').is(':visible')).toBe(true);
-          expect($('.js-emoji-menu-search').val()).toBe('ali');
-        })
-        .then(done)
-        .catch(err => {
-          done.fail(`Failed to open and build emoji menu: ${err.message}`);
-        });
+      expect($('[data-name=angel]').is(':visible')).toBe(true);
+      expect($('[data-name=anger]').is(':visible')).toBe(true);
+      awardsHandler.searchEmojis('ali');
+
+      expect($('[data-name=angel]').is(':visible')).toBe(false);
+      expect($('[data-name=anger]').is(':visible')).toBe(false);
+      expect($('[data-name=alien]').is(':visible')).toBe(true);
+      expect($('.js-emoji-menu-search').val()).toBe('ali');
     });
 
-    it('should clear the search when searching for nothing', done => {
-      openAndWaitForEmojiMenu()
-        .then(() => {
-          awardsHandler.searchEmojis('ali');
+    it('should clear the search when searching for nothing', async () => {
+      await openAndWaitForEmojiMenu();
 
-          expect($('[data-name=angel]').is(':visible')).toBe(false);
-          expect($('[data-name=anger]').is(':visible')).toBe(false);
-          expect($('[data-name=alien]').is(':visible')).toBe(true);
-          awardsHandler.searchEmojis('');
+      awardsHandler.searchEmojis('ali');
 
-          expect($('[data-name=angel]').is(':visible')).toBe(true);
-          expect($('[data-name=anger]').is(':visible')).toBe(true);
-          expect($('[data-name=alien]').is(':visible')).toBe(true);
-          expect($('.js-emoji-menu-search').val()).toBe('');
-        })
-        .then(done)
-        .catch(err => {
-          done.fail(`Failed to open and build emoji menu: ${err.message}`);
-        });
+      expect($('[data-name=angel]').is(':visible')).toBe(false);
+      expect($('[data-name=anger]').is(':visible')).toBe(false);
+      expect($('[data-name=alien]').is(':visible')).toBe(true);
+      awardsHandler.searchEmojis('');
+
+      expect($('[data-name=angel]').is(':visible')).toBe(true);
+      expect($('[data-name=anger]').is(':visible')).toBe(true);
+      expect($('[data-name=alien]').is(':visible')).toBe(true);
+      expect($('.js-emoji-menu-search').val()).toBe('');
     });
   });
 
   describe('emoji menu', () => {
     const emojiSelector = '[data-name="sunglasses"]';
+
     const openEmojiMenuAndAddEmoji = () => {
       return openAndWaitForEmojiMenu().then(() => {
         const $menu = $('.emoji-menu');
@@ -329,32 +297,23 @@ describe('AwardsHandler', () => {
       });
     };
 
-    it('should add selected emoji to awards block', done => {
-      openEmojiMenuAndAddEmoji()
-        .then(done)
-        .catch(err => {
-          done.fail(`Failed to open and build emoji menu: ${err.message}`);
-        });
+    it('should add selected emoji to awards block', async () => {
+      await openEmojiMenuAndAddEmoji();
     });
 
-    it('should remove already selected emoji', done => {
-      openEmojiMenuAndAddEmoji()
-        .then(() => {
-          $('.js-add-award')
-            .eq(0)
-            .click();
-          const $block = $('.js-awards-block');
-          const $emoji = $('.emoji-menu').find(
-            `.emoji-menu-list:not(.frequent-emojis) ${emojiSelector}`,
-          );
-          $emoji.click();
+    it('should remove already selected emoji', async () => {
+      await openEmojiMenuAndAddEmoji();
 
-          expect($block.find(emojiSelector).length).toBe(0);
-        })
-        .then(done)
-        .catch(err => {
-          done.fail(`Failed to open and build emoji menu: ${err.message}`);
-        });
+      $('.js-add-award')
+        .eq(0)
+        .click();
+      const $block = $('.js-awards-block');
+      const $emoji = $('.emoji-menu').find(
+        `.emoji-menu-list:not(.frequent-emojis) ${emojiSelector}`,
+      );
+      $emoji.click();
+
+      expect($block.find(emojiSelector).length).toBe(0);
     });
   });
 
@@ -364,37 +323,27 @@ describe('AwardsHandler', () => {
       Cookies.set('frequently_used_emojis', '');
     });
 
-    it('shouldn\'t have any "Frequently used" heading if no frequently used emojis', done => {
-      return openAndWaitForEmojiMenu()
-        .then(() => {
-          const emojiMenu = document.querySelector('.emoji-menu');
-          Array.prototype.forEach.call(emojiMenu.querySelectorAll('.emoji-menu-title'), title => {
-            expect(title.textContent.trim().toLowerCase()).not.toBe('frequently used');
-          });
-        })
-        .then(done)
-        .catch(err => {
-          done.fail(`Failed to open and build emoji menu: ${err.message}`);
-        });
+    it('shouldn\'t have any "Frequently used" heading if no frequently used emojis', async () => {
+      await openAndWaitForEmojiMenu();
+
+      const emojiMenu = document.querySelector('.emoji-menu');
+      Array.prototype.forEach.call(emojiMenu.querySelectorAll('.emoji-menu-title'), title => {
+        expect(title.textContent.trim().toLowerCase()).not.toBe('frequently used');
+      });
     });
 
-    it('should have any frequently used section when there are frequently used emojis', done => {
+    it('should have any frequently used section when there are frequently used emojis', async () => {
       awardsHandler.addEmojiToFrequentlyUsedList('8ball');
 
-      return openAndWaitForEmojiMenu()
-        .then(() => {
-          const emojiMenu = document.querySelector('.emoji-menu');
-          const hasFrequentlyUsedHeading = Array.prototype.some.call(
-            emojiMenu.querySelectorAll('.emoji-menu-title'),
-            title => title.textContent.trim().toLowerCase() === 'frequently used',
-          );
+      await openAndWaitForEmojiMenu();
 
-          expect(hasFrequentlyUsedHeading).toBe(true);
-        })
-        .then(done)
-        .catch(err => {
-          done.fail(`Failed to open and build emoji menu: ${err.message}`);
-        });
+      const emojiMenu = document.querySelector('.emoji-menu');
+      const hasFrequentlyUsedHeading = Array.prototype.some.call(
+        emojiMenu.querySelectorAll('.emoji-menu-title'),
+        title => title.textContent.trim().toLowerCase() === 'frequently used',
+      );
+
+      expect(hasFrequentlyUsedHeading).toBe(true);
     });
 
     it('should disregard invalid frequently used emoji that are being attempted to be added', () => {

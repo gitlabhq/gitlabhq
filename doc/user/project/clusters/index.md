@@ -275,7 +275,8 @@ For **non**-GitLab-managed clusters, the namespace can be customized using
 [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configuring-kubernetes-deployments)
 in `.gitlab-ci.yml`.
 
-NOTE: **Note:** When using a [GitLab-managed cluster](#gitlab-managed-clusters), the
+NOTE: **Note:**
+When using a [GitLab-managed cluster](#gitlab-managed-clusters), the
 namespaces are created automatically prior to deployment and [can not be
 customized](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
 
@@ -351,7 +352,7 @@ Reasons for failure include:
   [`environment:name`](../../../ci/environments/index.md#defining-environments). If your job has no
   `environment:name` set, it will not be passed the Kubernetes credentials.
 
-NOTE: **NOTE:**
+NOTE: **Note:**
 Project-level clusters upgraded from GitLab 12.0 or older may be configured
 in a way that causes this error. Ensure you deselect the
 [GitLab-managed cluster](#gitlab-managed-clusters) option if you want to manage

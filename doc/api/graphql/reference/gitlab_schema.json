@@ -12217,6 +12217,24 @@
           "description": "The connection type for EpicIssue.",
           "fields": [
             {
+              "name": "count",
+              "description": "Total count of collection",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "edges",
               "description": "A list of edges.",
               "args": [
@@ -14040,6 +14058,20 @@
                     "ofType": null
                   },
                   "defaultValue": "created_desc"
+                },
+                {
+                  "name": "iterationId",
+                  "description": "Iterations applied to the issue",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
                 },
                 {
                   "name": "after",
@@ -16428,6 +16460,24 @@
           "name": "IssueConnection",
           "description": "The connection type for Issue.",
           "fields": [
+            {
+              "name": "count",
+              "description": "Total count of collection",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "edges",
               "description": "A list of edges.",
@@ -27439,6 +27489,20 @@
                     "ofType": null
                   },
                   "defaultValue": "created_desc"
+                },
+                {
+                  "name": "iterationId",
+                  "description": "Iterations applied to the issue",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -27618,6 +27682,20 @@
                     "ofType": null
                   },
                   "defaultValue": "created_desc"
+                },
+                {
+                  "name": "iterationId",
+                  "description": "Iterations applied to the issue",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
                 },
                 {
                   "name": "after",

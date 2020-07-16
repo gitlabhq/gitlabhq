@@ -218,7 +218,7 @@ include:
 
 See the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) for information on available jobs.
 
-CAUTION: **Deprecation**
+CAUTION: **Deprecation:**
 Auto DevOps templates using the [`only`](../../ci/yaml/README.md#onlyexcept-basic) or
 [`except`](../../ci/yaml/README.md#onlyexcept-basic) syntax will switch
 to the [`rules`](../../ci/yaml/README.md#rules) syntax, starting in
@@ -243,7 +243,7 @@ postgres://user:password@postgres-host:postgres-port/postgres-database
 
 ### Upgrading PostgresSQL
 
-CAUTION: **Deprecation**
+CAUTION: **Deprecation:**
 The variable `AUTO_DEVOPS_POSTGRES_CHANNEL` that controls default provisioned
 PostgreSQL was changed to `2` in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/210499).
 To keep using the old PostgreSQL, set the `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to

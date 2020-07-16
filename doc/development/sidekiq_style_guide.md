@@ -303,7 +303,8 @@ class ExternalDependencyWorker
 end
 ```
 
-NOTE: **Note:** Note that a job cannot be both high urgency and have
+NOTE: **Note:**
+Note that a job cannot be both high urgency and have
 external dependencies.
 
 ## CPU-bound and Memory-bound Workers

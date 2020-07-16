@@ -419,7 +419,7 @@ information in the UI.
 
 ## Erasing artifacts
 
-DANGER: **Warning:**
+DANGER: **Danger:**
 This is a destructive action that leads to data loss. Use with caution.
 
 You can erase a single job via the UI, which will also remove the job's

@@ -38,7 +38,8 @@ When scaling GitLab, there are several factors to consider:
 - A load balancer is added in front to distribute traffic across the application nodes.
 - The application nodes connects to a shared file server and PostgreSQL and Redis services on the backend.
 
-NOTE: **Note:** Depending on your workflow, the following recommended
+NOTE: **Note:**
+Depending on your workflow, the following recommended
 reference architectures may need to be adapted accordingly. Your workload
 is influenced by factors including how active your users are,
 how much automation you use, mirroring, and repository/change size. Additionally the

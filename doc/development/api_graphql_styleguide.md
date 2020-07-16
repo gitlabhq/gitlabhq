@@ -571,7 +571,8 @@ module Types
 end
 ```
 
-NOTE: **Note:** If the field's type already [has a particular
+NOTE: **Note:**
+If the field's type already [has a particular
 authorization](#type-authorization) then there is no need to add that
 same authorization to the field.
 

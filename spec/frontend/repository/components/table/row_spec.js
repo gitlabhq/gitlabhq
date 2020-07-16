@@ -2,6 +2,7 @@ import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import { GlBadge, GlLink, GlIcon } from '@gitlab/ui';
 import TableRow from '~/repository/components/table/row.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import { FILE_SYMLINK_MODE } from '~/vue_shared/constants';
 
 let vm;
 let $router;
@@ -41,6 +42,21 @@ describe('Repository table row component', () => {
       path: 'test',
       type: 'file',
       currentPath: '/',
+    });
+
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.element).toMatchSnapshot();
+    });
+  });
+
+  it('renders a symlink table row', () => {
+    factory({
+      id: '1',
+      sha: '123',
+      path: 'test',
+      type: 'blob',
+      currentPath: '/',
+      mode: FILE_SYMLINK_MODE,
     });
 
     return vm.vm.$nextTick().then(() => {

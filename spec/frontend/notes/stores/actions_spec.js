@@ -1127,6 +1127,19 @@ describe('Actions Notes Store', () => {
     });
   });
 
+  describe('setSelectedCommentPosition', () => {
+    it('calls the correct mutation with the correct args', done => {
+      testAction(
+        actions.setSelectedCommentPosition,
+        {},
+        {},
+        [{ type: mutationTypes.SET_SELECTED_COMMENT_POSITION, payload: {} }],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('softDeleteDescriptionVersion', () => {
     const endpoint = '/path/to/diff/1';
     const payload = {
