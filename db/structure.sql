@@ -9149,7 +9149,7 @@ CREATE TABLE public.application_settings (
     namespace_storage_size_limit bigint DEFAULT 0 NOT NULL,
     seat_link_enabled boolean DEFAULT true NOT NULL,
     container_expiration_policies_enable_historic_entries boolean DEFAULT false NOT NULL,
-    issues_create_limit integer DEFAULT 300 NOT NULL,
+    issues_create_limit integer DEFAULT 0 NOT NULL,
     push_rule_id bigint,
     group_owners_can_manage_default_branch_protection boolean DEFAULT true NOT NULL,
     container_registry_vendor text DEFAULT ''::text NOT NULL,
@@ -23766,6 +23766,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200707095849
 20200708080631
 20200710102846
+20200710105332
 20200710130234
 \.
 

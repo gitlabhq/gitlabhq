@@ -339,7 +339,7 @@ export default {
         data-testid="alert-error"
         @dismiss="dismissError"
       >
-        {{ errorMessage || $options.i18n.errorMsg }}
+        <p v-html="errorMessage || $options.i18n.errorMsg"></p>
       </gl-alert>
 
       <gl-tabs content-class="gl-p-0" @input="filterAlertsByStatus">

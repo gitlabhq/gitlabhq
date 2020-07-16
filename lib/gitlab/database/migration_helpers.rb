@@ -136,6 +136,10 @@ module Gitlab
             'in the body of your migration class'
         end
 
+        index_name = index_name[:name] if index_name.is_a?(Hash)
+
+        raise 'remove_concurrent_index_by_name must get an index name as the second argument' if index_name.blank?
+
         options = options.merge({ algorithm: :concurrently })
 
         unless index_exists_by_name?(table_name, index_name)

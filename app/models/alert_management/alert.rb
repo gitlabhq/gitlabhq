@@ -26,6 +26,11 @@ module AlertManagement
       ignored: :ignore
     }.freeze
 
+    OPEN_STATUSES = [
+      :triggered,
+      :acknowledged
+    ].freeze
+
     DETAILS_IGNORED_PARAMS = %w(start_time).freeze
 
     belongs_to :project
@@ -119,7 +124,7 @@ module AlertManagement
     scope :for_fingerprint, -> (project, fingerprint) { where(project: project, fingerprint: fingerprint) }
     scope :for_environment, -> (environment) { where(environment: environment) }
     scope :search, -> (query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
-    scope :open, -> { with_status(:triggered, :acknowledged) }
+    scope :open, -> { with_status(OPEN_STATUSES) }
     scope :not_resolved, -> { where.not(status: STATUSES[:resolved]) }
     scope :with_prometheus_alert, -> { includes(:prometheus_alert) }
 

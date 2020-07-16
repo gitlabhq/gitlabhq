@@ -178,6 +178,19 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
             model.remove_concurrent_index_by_name(:users, "index_x_by_y")
           end
+
+          it 'removes the index with keyword arguments' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+
+            model.remove_concurrent_index_by_name(:users, name: "index_x_by_y")
+          end
+
+          it 'raises an error if the index is blank' do
+            expect do
+              model.remove_concurrent_index_by_name(:users, wrong_key: "index_x_by_y")
+            end.to raise_error 'remove_concurrent_index_by_name must get an index name as the second argument'
+          end
         end
       end
     end

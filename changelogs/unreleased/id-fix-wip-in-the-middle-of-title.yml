@@ -1,0 +1,5 @@
+---
+title: Fix incorrect marking MR as Draft
+merge_request: 36869
+author:
+type: fixed

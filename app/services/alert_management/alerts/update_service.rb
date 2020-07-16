@@ -73,6 +73,7 @@ module AlertManagement
 
         filter_status
         filter_assignees
+        filter_duplicate
       end
 
       def handle_changes(old_assignees:)
@@ -109,9 +110,8 @@ module AlertManagement
 
       # ------ Status-related behavior -------
       def filter_status
-        return unless status = params.delete(:status)
+        return unless params[:status]
 
-        status_key = AlertManagement::Alert::STATUSES.key(status)
         status_event = AlertManagement::Alert::STATUS_EVENTS[status_key]
 
         unless status_event
@@ -120,6 +120,13 @@ module AlertManagement
         end
 
         params[:status_event] = status_event
+      end
+
+      def status_key
+        strong_memoize(:status_key) do
+          status = params.delete(:status)
+          AlertManagement::Alert::STATUSES.key(status)
+        end
       end
 
       def handle_status_change
@@ -133,6 +140,39 @@ module AlertManagement
 
       def resolve_todos
         todo_service.resolve_todos_for_target(alert, current_user)
+      end
+
+      def filter_duplicate
+        # Only need to check if changing to an open status
+        return unless params[:status_event] && AlertManagement::Alert::OPEN_STATUSES.include?(status_key)
+
+        param_errors << unresolved_alert_error if duplicate_alert?
+      end
+
+      def duplicate_alert?
+        open_alerts.any? && open_alerts.exclude?(alert)
+      end
+
+      def open_alerts
+        strong_memoize(:open_alerts) do
+          AlertManagement::Alert.for_fingerprint(alert.project, alert.fingerprint).open
+        end
+      end
+
+      def unresolved_alert_error
+        _('An %{link_start}alert%{link_end} with the same fingerprint is already open. ' \
+          'To change the status of this alert, resolve the linked alert.'
+         ) % open_alert_url_params
+      end
+
+      def open_alert_url_params
+        open_alert = open_alerts.first
+        alert_path = Gitlab::Routing.url_helpers.details_project_alert_management_path(alert.project, open_alert)
+
+        {
+          link_start: '<a href="%{url}">'.html_safe % { url: alert_path },
+          link_end: '</a>'.html_safe
+        }
       end
     end
   end

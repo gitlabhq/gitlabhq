@@ -187,7 +187,7 @@ export default {
 <template>
   <div>
     <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="dismissError">
-      {{ sidebarErrorMessage || $options.i18n.errorMsg }}
+      <p v-html="sidebarErrorMessage || $options.i18n.errorMsg"></p>
     </gl-alert>
     <gl-alert
       v-if="createIssueError"

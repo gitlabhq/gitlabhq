@@ -455,8 +455,31 @@ describe('AlertManagementTable', () => {
         errored: true,
       });
 
-      wrapper.vm.$nextTick(() => {
+      return wrapper.vm.$nextTick(() => {
         expect(wrapper.find('[data-testid="alert-error"]').exists()).toBe(true);
+      });
+    });
+
+    it('shows an error when response includes HTML errors', () => {
+      const mockUpdatedMutationErrorResult = {
+        data: {
+          updateAlertStatus: {
+            errors: ['<span data-testid="htmlError" />'],
+            alert: {
+              iid,
+              status: 'acknowledged',
+            },
+          },
+        },
+      };
+
+      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationErrorResult);
+      findFirstStatusOption().vm.$emit('click');
+      wrapper.setData({ errored: true });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.contains('[data-testid="alert-error"]')).toBe(true);
+        expect(wrapper.contains('[data-testid="htmlError"]')).toBe(true);
       });
     });
   });
@@ -494,14 +517,14 @@ describe('AlertManagementTable', () => {
 
     it('does NOT show pagination control when list is smaller than default page size', () => {
       findStatusTabs().vm.$emit('input', 3);
-      wrapper.vm.$nextTick(() => {
+      return wrapper.vm.$nextTick(() => {
         expect(findPagination().exists()).toBe(false);
       });
     });
 
     it('shows pagination control when list is larger than default page size', () => {
       findStatusTabs().vm.$emit('input', 0);
-      wrapper.vm.$nextTick(() => {
+      return wrapper.vm.$nextTick(() => {
         expect(findPagination().exists()).toBe(true);
       });
     });

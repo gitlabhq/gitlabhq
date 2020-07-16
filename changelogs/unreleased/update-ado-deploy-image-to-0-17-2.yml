@@ -1,0 +1,5 @@
+---
+title: Uses --set-string to avoid Helm confusion over short SHA vs Scientific Notation
+merge_request: 37004
+author: Bryan H. @galador
+type: fixed

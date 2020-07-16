@@ -6,8 +6,8 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
   let_it_be(:user_with_permissions) { create(:user) }
   let_it_be(:other_user_with_permissions) { create(:user) }
   let_it_be(:user_without_permissions) { create(:user) }
-  let_it_be(:alert, reload: true) { create(:alert_management_alert, :triggered) }
-  let_it_be(:project) { alert.project }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:alert, reload: true) { create(:alert_management_alert, :triggered, project: project) }
 
   let(:current_user) { user_with_permissions }
   let(:params) { {} }
@@ -66,18 +66,33 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
       it_behaves_like 'error response', "Title can't be blank"
     end
 
-    context 'when a model attribute is included without assignees' do
-      let(:params) { { title: 'This is an updated alert.' } }
-
+    shared_examples 'title update' do
       it_behaves_like 'does not add a todo'
       it_behaves_like 'does not add a system note'
 
       it 'updates the attribute' do
         original_title = alert.title
 
-        expect { response }.to change { alert.title }.from(original_title).to(params[:title])
+        expect { response }.to change { alert.title }.from(original_title).to(expected_title)
         expect(response).to be_success
       end
+    end
+
+    context 'when a model attribute is included without assignees' do
+      let(:params) { { title: 'This is an updated alert.' } }
+      let(:expected_title) { params[:title] }
+
+      it_behaves_like 'title update'
+    end
+
+    context 'when alert is resolved and another existing open alert' do
+      let!(:alert) { create(:alert_management_alert, :resolved, project: project) }
+      let!(:existing_alert) { create(:alert_management_alert, :triggered, project: project) }
+
+      let(:params) { { title: 'This is an updated alert.' } }
+      let(:expected_title) { params[:title] }
+
+      it_behaves_like 'title update'
     end
 
     context 'when assignees are included' do
@@ -174,6 +189,39 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
 
           expect { response }.to change { todo.reload.state }.from('pending').to('done')
         end
+      end
+
+      context 'with an opening status and existing open alert' do
+        let_it_be(:alert) { create(:alert_management_alert, :resolved, :with_fingerprint, project: project) }
+        let_it_be(:existing_alert) { create(:alert_management_alert, :triggered, fingerprint: alert.fingerprint, project: project) }
+        let_it_be(:url) { Gitlab::Routing.url_helpers.details_project_alert_management_path(project, existing_alert) }
+        let_it_be(:link) { ActionController::Base.helpers.link_to(_('alert'), url) }
+
+        let(:message) do
+          "An #{link} with the same fingerprint is already open. " \
+          'To change the status of this alert, resolve the linked alert.'
+        end
+
+        it_behaves_like 'does not add a todo'
+        it_behaves_like 'does not add a system note'
+
+        it 'has an informative message' do
+          expect(response).to be_error
+          expect(response.message).to eq(message)
+        end
+      end
+
+      context 'two existing closed alerts' do
+        let_it_be(:alert) { create(:alert_management_alert, :resolved, :with_fingerprint, project: project) }
+        let_it_be(:existing_alert) { create(:alert_management_alert, :resolved, fingerprint: alert.fingerprint, project: project) }
+
+        it 'successfully changes the status' do
+          expect { response }.to change { alert.acknowledged? }.to(true)
+          expect(response).to be_success
+          expect(response.payload[:alert]).to eq(alert)
+        end
+
+        it_behaves_like 'adds a system note'
       end
     end
   end

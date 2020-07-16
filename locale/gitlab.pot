@@ -2060,6 +2060,9 @@ msgstr ""
 msgid "AlertManagement|Overview"
 msgstr ""
 
+msgid "AlertManagement|Please try again."
+msgstr ""
+
 msgid "AlertManagement|Reported %{when}"
 msgstr ""
 
@@ -2096,7 +2099,7 @@ msgstr ""
 msgid "AlertManagement|There was an error while updating the assignee(s) of the alert. Please try again."
 msgstr ""
 
-msgid "AlertManagement|There was an error while updating the status of the alert. Please try again."
+msgid "AlertManagement|There was an error while updating the status of the alert."
 msgstr ""
 
 msgid "AlertManagement|This assignee cannot be assigned to this alert."
@@ -2391,6 +2394,9 @@ msgid "Amazon authentication is not %{link_start}correctly configured%{link_end}
 msgstr ""
 
 msgid "Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication"
+msgstr ""
+
+msgid "An %{link_start}alert%{link_end} with the same fingerprint is already open. To change the status of this alert, resolve the linked alert."
 msgstr ""
 
 msgid "An alert has been triggered in %{project_path}."

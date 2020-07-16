@@ -6,11 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Package Registry
 
-GitLab Packages allows organizations to utilize GitLab as a private repository
-for a variety of common package managers. Users are able to build and publish
+With the GitLab Package Registry, you can use GitLab as a private or public repository
+for a variety of common package managers. You can build and publish
 packages, which can be easily consumed as a dependency in downstream projects.
 
-The Packages feature allows GitLab to act as a repository for the following:
+GitLab acts as a repository for the following:
 
 | Software repository | Description | Available in GitLab version |
 | ------------------- | ----------- | --------------------------- |
@@ -24,85 +24,86 @@ The Packages feature allows GitLab to act as a repository for the following:
 | [Go Proxy](go_proxy/index.md) **(PREMIUM)** | The Go proxy for GitLab enables every project in GitLab to be fetched with the [Go proxy protocol](https://proxy.golang.org/). | 13.1+ |
 | [Composer Repository](composer_repository/index.md) **(PREMIUM)**  | The GitLab Composer Repository will enable every project in GitLab to have its own space to store [Composer](https://getcomposer.org/) packages. | 13.2+ |
 
-## Enable the Package Registry for your project
+## View packages
 
-If you cannot find the **{package}** **Packages & Registries > Package
-Registry** entry under your project's sidebar, ensure that:
+You can view packages for your project or group.
 
-1. The GitLab Package Registry has been enabled by your administrator (following
-   [this documentation](../../administration/packages/index.md)); and
-1. The Package Registry has been enabled for your project.
+1. Go to the project or group.
+1. Go to **{package}** **Packages & Registries > Package Registry**.
 
-Once an administrator has enabled the GitLab Package Registry for your GitLab
-instance, to enable Package Registry for your project:
+You can search, sort, and filter packages on this page.
 
-1. Go to your project's **Settings > General** page.
-1. Expand the **Visibility, project features, permissions** section and enable the
-**Packages** feature on your project.
-1. Press **Save changes** for the changes to take effect. You should now be able to
-see the **Packages & Registries > Package Registry** link in the sidebar.
+For information on how to create and upload a package, view the GitLab documentation for your package type.
 
-### View Packages for your project
+## Use GitLab CI/CD to build packages
 
-Navigating to your project's **{package}** **Packages & Registries > Package Registry** will show a list
-of all packages that have been added to your project.
+You can use [GitLab CI/CD](./../../ci/README.md) to build packages.
+For Maven and NPM packages, and Composer dependencies, you can
+authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
-![Project Packages list](img/project_packages_list_v13_0.png)
+CI/CD templates, which you can use to get started, are in [this repo](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-On this page, you can:
+Learn more about [using CI/CD to build Maven packages](maven_repository/index.md#creating-maven-packages-with-gitlab-cicd)
+and [NPM packages](npm_registry/index.md#publishing-a-package-with-cicd).
 
-- View all the packages that have been uploaded to the project.
-- Sort the packages list by created date, version or name.
-- Filter the list by package name.
-- Change tabs to display packages of a certain type.
-- Remove a package (if you have suitable [permissions](../permissions.md)).
-- Navigate to specific package detail page.
-
-### View Packages for your group
-
-You can view all packages belonging to a group by navigating to **{package}**
-**Packages & Registries > Package Registry** from the group sidebar.
-
-![Group Packages list](img/group_packages_list_v13_0.png)
-
-On this page, you can:
-
-- View all the packages that have been uploaded to each of the groups projects.
-- Sort the packages list by created date, version, name or project.
-- Filter the list by package name.
-- Change tabs to display packages of a certain type.
-- Navigate to specific package detail page.
-
-### View additional package information
-
-Additional package information can be viewed by browsing to the package details
-page from the either the project or group list.
-
-![Package detail](img/package_detail_v13_0.png)
-
-On this page you can:
-
-- See the extended package information, including metadata. This is unique to
-each package type and will display different information for different types.
-- View quick installation and registry setup instructions. These are a shortcut
-for users who have already set up the Package Registry and just want quick
-installation instructions.
-- View the package activity, including when and how a package was published.
-- View and download the contents of the package. Outside of installing a
-package via a manager, you can also download the files individually.
-- Delete the package (if you have suitable [permissions](../permissions.md)).
-
-### Build packages via GitLab CI/CD
-
-Some of the supported packages can be built via [GitLab CI/CD](./../../ci/README.md)
-using the `CI_JOB_TOKEN`. If a package is built this way, then extended activity
-information is displayed on the package details page:
+If you use CI/CD to build a package, extended activity
+information is displayed when you view the package details:
 
 ![Package CI/CD activity](img/package_activity_v12_10.png)
 
 You can view which pipeline published the package, as well as the commit and
-user who triggered it. To see if a package type supports being built via CI/CD,
-check the specific documentation for your package type.
+user who triggered it.
+
+## Download a package
+
+To download a package:
+
+1. Go to **{package}** **Packages & Registries > Package Registry**.
+1. Click the name of the package you want to download.
+1. In the **Activity** section, click the name of the package you want to download.
+
+## Delete a package
+
+You cannot edit a package after you publish it in the Package Registry. Instead, you
+must delete and recreate it.
+
+- You cannot delete packages from the group view. You must delete them from the project view instead.
+  See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/227714) for details.
+- You must have suitable [permissions](../permissions.md).
+
+You can delete packages by using [the API](../../api/packages.md#delete-a-project-package) or the UI.
+
+To delete a package in the UI:
+
+1. Go to **{package}** **Packages & Registries > Package Registry**.
+1. Find the name of the package you want to delete.
+1. Click **Delete**.
+
+The package is permanently deleted.
+
+## Disable the Package Registry
+
+The Package Registry is automatically enabled.
+
+If you are using a self-managed instance of GitLab, your administrator can remove
+the menu item, **{package}** **Packages & Registries**, from the GitLab sidebar. For more information,
+see the [administration documentation](../../administration/packages/index.md).
+
+You can also remove the Package Registry for your project specifically:
+
+1. In your project, go to **{settings}** **Settings > General**.
+1. Expand the **Visibility, project features, permissions** section and disable the
+   **Packages** feature.
+1. Click **Save changes**.
+
+The **{package}** **Packages & Registries > Package Registry** entry is removed from the sidebar.
+
+## Package workflows
+
+Learn how to use the GitLab Package Registry to build your own custom package workflow.
+
+- [Use a project as a package registry](./workflows/project_registry.md) to publish all of your packages to one project.
+- Publish multiple different packages from one [monorepo project](./workflows/monorepo.md).
 
 ## Suggested contributions
 
@@ -125,10 +126,3 @@ are adding support for [PHP](https://gitlab.com/gitlab-org/gitlab/-/merge_reques
 | [RubyGems](https://gitlab.com/gitlab-org/gitlab/-/issues/803) | Use GitLab to host your own gems. |
 | [SBT](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) | Resolve dependencies from and deploy build output to SBT repositories when running SBT builds. |
 | [Vagrant](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) | Securely host your Vagrant boxes in local repositories. |
-
-## Package workflows
-
-Learning how to use the GitLab Package Registry will help you build your own custom package workflow.
-
-- [Use a project as a package registry](./workflows/project_registry.md) to publish all of your packages to one project.
-- [Working with a monorepo](./workflows/monorepo.md): Learn how to publish multiple different packages from one monorepo project.

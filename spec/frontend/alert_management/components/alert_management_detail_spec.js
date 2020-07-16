@@ -212,6 +212,13 @@ describe('AlertDetails', () => {
         expect(wrapper.find(GlAlert).exists()).toBe(true);
       });
 
+      it('renders html-errors correctly', () => {
+        mountComponent({
+          data: { errored: true, sidebarErrorMessage: '<span data-testid="htmlError" />' },
+        });
+        expect(wrapper.find('[data-testid="htmlError"]').exists()).toBe(true);
+      });
+
       it('does not display an error when dismissed', () => {
         mountComponent({ data: { errored: true, isErrorDismissed: true } });
         expect(wrapper.find(GlAlert).exists()).toBe(false);

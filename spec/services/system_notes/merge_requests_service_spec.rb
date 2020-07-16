@@ -52,8 +52,8 @@ RSpec.describe ::SystemNotes::MergeRequestsService do
   end
 
   describe '.handle_merge_request_wip' do
-    context 'adding wip note' do
-      let(:noteable) { create(:merge_request, source_project: project, title: 'WIP Lorem ipsum') }
+    context 'adding draft note' do
+      let(:noteable) { create(:merge_request, source_project: project, title: 'Draft: Lorem ipsum') }
 
       subject { service.handle_merge_request_wip }
 

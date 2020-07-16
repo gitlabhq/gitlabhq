@@ -6,6 +6,12 @@ import { trackAlertStatusUpdateOptions } from '../constants';
 import updateAlertStatus from '../graphql/mutations/update_alert_status.mutation.graphql';
 
 export default {
+  i18n: {
+    UPDATE_ALERT_STATUS_ERROR: s__(
+      'AlertManagement|There was an error while updating the status of the alert.',
+    ),
+    UPDATE_ALERT_STATUS_INSTRUCTION: s__('AlertManagement|Please try again.'),
+  },
   statuses: {
     TRIGGERED: s__('AlertManagement|Triggered'),
     ACKNOWLEDGED: s__('AlertManagement|Acknowledged'),
@@ -52,16 +58,23 @@ export default {
             projectPath: this.projectPath,
           },
         })
-        .then(() => {
+        .then(resp => {
           this.trackStatusUpdate(status);
           this.$emit('hide-dropdown');
+
+          const errors = resp.data?.updateAlertStatus?.errors || [];
+
+          if (errors[0]) {
+            this.$emit(
+              'alert-error',
+              `${this.$options.i18n.UPDATE_ALERT_STATUS_ERROR} ${errors[0]}`,
+            );
+          }
         })
         .catch(() => {
           this.$emit(
             'alert-error',
-            s__(
-              'AlertManagement|There was an error while updating the status of the alert. Please try again.',
-            ),
+            `${this.$options.i18n.UPDATE_ALERT_STATUS_ERROR} ${this.$options.i18n.UPDATE_ALERT_STATUS_INSTRUCTION}`,
           );
         })
         .finally(() => {
