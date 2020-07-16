@@ -2,7 +2,7 @@
 
 exports[`Expiration Policy Form renders 1`] = `
 <div
-  class="lh-2"
+  class="gl-line-height-20"
 >
   <gl-form-group-stub
     id="expiration-policy-toggle-group"
@@ -12,7 +12,7 @@ exports[`Expiration Policy Form renders 1`] = `
     label-for="expiration-policy-toggle"
   >
     <div
-      class="d-flex align-items-start"
+      class="gl-display-flex"
     >
       <gl-toggle-stub
         id="expiration-policy-toggle"
@@ -20,7 +20,7 @@ exports[`Expiration Policy Form renders 1`] = `
       />
        
       <span
-        class="mb-2 ml-2 lh-2"
+        class="gl-mb-3 gl-ml-3 gl-line-height-20"
       >
         <strong>
           Disabled

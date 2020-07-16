@@ -46,6 +46,77 @@ describe('Api', () => {
     });
   });
 
+  describe('packages', () => {
+    const projectId = 'project_a';
+    const packageId = 'package_b';
+    const apiResponse = [{ id: 1, name: 'foo' }];
+
+    describe('groupPackages', () => {
+      const groupId = 'group_a';
+
+      it('fetch all group packages', () => {
+        const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/packages`;
+        jest.spyOn(axios, 'get');
+        mock.onGet(expectedUrl).replyOnce(200, apiResponse);
+
+        return Api.groupPackages(groupId).then(({ data }) => {
+          expect(data).toEqual(apiResponse);
+          expect(axios.get).toHaveBeenCalledWith(expectedUrl, {});
+        });
+      });
+    });
+
+    describe('projectPackages', () => {
+      it('fetch all project packages', () => {
+        const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/packages`;
+        jest.spyOn(axios, 'get');
+        mock.onGet(expectedUrl).replyOnce(200, apiResponse);
+
+        return Api.projectPackages(projectId).then(({ data }) => {
+          expect(data).toEqual(apiResponse);
+          expect(axios.get).toHaveBeenCalledWith(expectedUrl, {});
+        });
+      });
+    });
+
+    describe('buildProjectPackageUrl', () => {
+      it('returns the right url', () => {
+        const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/packages/${packageId}`;
+        const url = Api.buildProjectPackageUrl(projectId, packageId);
+        expect(url).toEqual(expectedUrl);
+      });
+    });
+
+    describe('projectPackage', () => {
+      it('fetch package details', () => {
+        const expectedUrl = `foo`;
+        jest.spyOn(Api, 'buildProjectPackageUrl').mockReturnValue(expectedUrl);
+        jest.spyOn(axios, 'get');
+        mock.onGet(expectedUrl).replyOnce(200, apiResponse);
+
+        return Api.projectPackage(projectId, packageId).then(({ data }) => {
+          expect(data).toEqual(apiResponse);
+          expect(axios.get).toHaveBeenCalledWith(expectedUrl);
+        });
+      });
+    });
+
+    describe('deleteProjectPackage', () => {
+      it('delete a package', () => {
+        const expectedUrl = `foo`;
+
+        jest.spyOn(Api, 'buildProjectPackageUrl').mockReturnValue(expectedUrl);
+        jest.spyOn(axios, 'delete');
+        mock.onDelete(expectedUrl).replyOnce(200, true);
+
+        return Api.deleteProjectPackage(projectId, packageId).then(({ data }) => {
+          expect(data).toEqual(true);
+          expect(axios.delete).toHaveBeenCalledWith(expectedUrl);
+        });
+      });
+    });
+  });
+
   describe('group', () => {
     it('fetches a group', done => {
       const groupId = '123456';

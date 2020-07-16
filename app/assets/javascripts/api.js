@@ -11,6 +11,9 @@ const Api = {
   groupMembersPath: '/api/:version/groups/:id/members',
   subgroupsPath: '/api/:version/groups/:id/subgroups',
   namespacesPath: '/api/:version/namespaces.json',
+  groupPackagesPath: '/api/:version/groups/:id/packages',
+  projectPackagesPath: '/api/:version/projects/:id/packages',
+  projectPackagePath: '/api/:version/projects/:id/packages/:package_id',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
   projectPath: '/api/:version/projects/:id',
@@ -64,6 +67,32 @@ const Api = {
 
       return data;
     });
+  },
+
+  groupPackages(id, options = {}) {
+    const url = Api.buildUrl(this.groupPackagesPath).replace(':id', id);
+    return axios.get(url, options);
+  },
+
+  projectPackages(id, options = {}) {
+    const url = Api.buildUrl(this.projectPackagesPath).replace(':id', id);
+    return axios.get(url, options);
+  },
+
+  buildProjectPackageUrl(projectId, packageId) {
+    return Api.buildUrl(this.projectPackagePath)
+      .replace(':id', projectId)
+      .replace(':package_id', packageId);
+  },
+
+  projectPackage(projectId, packageId) {
+    const url = this.buildProjectPackageUrl(projectId, packageId);
+    return axios.get(url);
+  },
+
+  deleteProjectPackage(projectId, packageId) {
+    const url = this.buildProjectPackageUrl(projectId, packageId);
+    return axios.delete(url);
   },
 
   groupMembers(id, options) {

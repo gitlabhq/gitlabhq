@@ -203,8 +203,7 @@ export default {
         }
         return { ...el, disabled: false };
       });
-      const [selected] = this.options;
-      this.selectedEndpoint = selected.value;
+      this.selectedEndpoint = this.options.find(({ value }) => value === 'opsgenie').value;
       if (this.targetUrl === null) {
         this.targetUrl = this.selectedService.targetUrl;
       }
@@ -497,7 +496,7 @@ export default {
           >
             <template #append>
               <clipboard-button
-                :text="selectedService.authKey"
+                :text="selectedService.authKey || ''"
                 :title="$options.i18n.copyToClipboard"
                 class="gl-m-0!"
               />

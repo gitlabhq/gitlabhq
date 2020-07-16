@@ -177,7 +177,7 @@ export default {
 </script>
 
 <template>
-  <div ref="form-elements" class="lh-2">
+  <div ref="form-elements" class="gl-line-height-20">
     <gl-form-group
       :id="idGenerator('expiration-policy-toggle-group')"
       :label-cols="labelCols"
@@ -185,13 +185,13 @@ export default {
       :label-for="idGenerator('expiration-policy-toggle')"
       :label="$options.i18n.ENABLE_TOGGLE_LABEL"
     >
-      <div class="d-flex align-items-start">
+      <div class="gl-display-flex">
         <gl-toggle
           :id="idGenerator('expiration-policy-toggle')"
           v-model="enabled"
           :disabled="isLoading"
         />
-        <span class="mb-2 ml-2 lh-2">
+        <span class="gl-mb-3 gl-ml-3 gl-line-height-20">
           <gl-sprintf :message="$options.i18n.ENABLE_TOGGLE_DESCRIPTION">
             <template #toggleStatus>
               <strong>{{ policyEnabledText }}</strong>

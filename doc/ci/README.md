@@ -126,7 +126,8 @@ Its feature set is listed on the table below according to DevOps stages.
 | [ChatOps](chatops/README.md) | Trigger CI jobs from chat, with results sent back to the channel. |
 |---+---|
 | **Verify** ||
-| [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md) | Quickly determine the performance impact of pending code changes. |
+| [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md) | Quickly determine the browser performance impact of pending code changes. |
+| [Load Performance Testing](../user/project/merge_requests/load_performance_testing.md) | Quickly determine the server performance impact of pending code changes. |
 | [CI services](services/README.md) | Link Docker containers with your base image.|
 | [Code Quality](../user/project/merge_requests/code_quality.md) **(STARTER)** | Analyze your source code quality. |
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |

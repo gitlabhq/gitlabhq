@@ -177,6 +177,7 @@ describe('AlertsSettingsForm', () => {
 
     it('shows a input for the opsgenie target URL', () => {
       expect(findApiUrl().exists()).toBe(true);
+      expect(findSelect().attributes('value')).toBe('opsgenie');
     });
   });
 

@@ -103,11 +103,11 @@ export default {
         />
       </template>
       <template #footer>
-        <div class="d-flex justify-content-end">
+        <div class="gl-display-flex gl-justify-content-end">
           <gl-deprecated-button
             ref="cancel-button"
             type="reset"
-            class="mr-2 d-block"
+            class="gl-mr-3 gl-display-block"
             :disabled="isCancelButtonDisabled"
           >
             {{ __('Cancel') }}
@@ -117,10 +117,10 @@ export default {
             type="submit"
             :disabled="isSubmitButtonDisabled"
             variant="success"
-            class="d-flex justify-content-center align-items-center js-no-auto-disable"
+            class="gl-display-flex gl-justify-content-center gl-align-items-center js-no-auto-disable"
           >
             {{ $options.i18n.SET_CLEANUP_POLICY_BUTTON }}
-            <gl-loading-icon v-if="isLoading" class="ml-2" />
+            <gl-loading-icon v-if="isLoading" class="gl-ml-3" />
           </gl-deprecated-button>
         </div>
       </template>

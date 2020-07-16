@@ -25,6 +25,7 @@ The following table lists examples with step-by-step tutorials that are containe
 | Use case                      | Resource                                                                                                                   |
 |:------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
 | Browser performance testing   | [Browser Performance Testing with the Sitespeed.io container](../../user/project/merge_requests/browser_performance_testing.md). |
+| Load performance testing      | [Load Performance Testing with the k6 container](../../user/project/merge_requests/load_performance_testing.md). |
 | Clojure                       | [Test a Clojure application with GitLab CI/CD](test-clojure-application.md).                                               |
 | Deployment with Dpl           | [Using `dpl` as deployment tool](deployment/README.md).                                                                    |
 | Elixir                        | [Testing a Phoenix application with GitLab CI/CD](test_phoenix_app_with_gitlab_ci_cd/index.md).                            |

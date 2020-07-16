@@ -295,7 +295,8 @@ You can disable DAST:
 
 > Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
 
-Auto Browser Performance Testing measures the performance of a web page with the
+Auto [Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md)
+measures the browser performance of a web page with the
 [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/),
 creates a JSON report including the overall performance score for each page, and
 uploads the report as an artifact. By default, it tests the root page of your Review and
@@ -308,8 +309,25 @@ file named `.gitlab-urls.txt` in the root directory, one file per line. For exam
 /direction
 ```
 
-Any performance differences between the source and target branches are also
+Any browser performance differences between the source and target branches are also
 [shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
+
+## Auto Load Performance Testing **(PREMIUM)**
+
+> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+Auto [Load Performance Testing](../../user/project/merge_requests/load_performance_testing.md)
+measures the server performance of an application with the
+[k6 container](https://hub.docker.com/r/loadimpact/k6/),
+creates a JSON report including several key result metrics, and
+uploads the report as an artifact.
+
+Some initial setup is required. A [k6](https://k6.io/) test needs to be
+written that's tailored to your specific application. The test also needs to be
+configured so it can pick up the environment's dynamic URL via an environment variable.
+
+Any load performance test result differences between the source and target branches are also
+[shown in the merge request widget](../../user/project/merge_requests/load_performance_testing.md).
 
 ## Auto Deploy
 

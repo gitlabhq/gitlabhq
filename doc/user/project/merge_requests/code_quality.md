@@ -26,7 +26,7 @@ Code Quality:
 - Can be extended through [Analysis Plugins](https://docs.codeclimate.com/docs/list-of-engines) or a [custom tool](#implementing-a-custom-tool).
 
 Going a step further, GitLab can show the Code Quality report right
-in the merge request widget area:
+in the merge request widget area if a report from the target branch is available to compare to:
 
 ![Code Quality Widget](img/code_quality.png)
 
@@ -333,6 +333,7 @@ This can be due to multiple reasons:
 - You just added the Code Quality job in your `.gitlab-ci.yml`. The report does not
   have anything to compare to yet, so no information can be displayed. Future merge
   requests will have something to compare to.
+- Your pipeline is not set to run the code quality job on your default branch. If there is no report generated from the default branch, your MR branch reports will not have anything to compare to.
 - If no [degradation or error is detected](https://docs.codeclimate.com/docs/maintainability#section-checks),
   nothing will be displayed.
 - The [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in) CI/CD

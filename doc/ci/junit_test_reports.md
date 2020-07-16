@@ -264,7 +264,7 @@ following command:
 ```ruby
 Feature.enable(:junit_pipeline_view)
 
-# Enable the feature for a specific project
+# Enable the feature for a specific project, GitLab 13.0 and above only.
 Feature.enable(:junit_pipeline_view, Project.find(<your-project-id-here>))
 ```
 
