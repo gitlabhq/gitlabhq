@@ -5,11 +5,12 @@ require 'spec_helper'
 RSpec.describe 'Issues > Labels bulk assignment' do
   let(:user)      { create(:user) }
   let!(:project)  { create(:project) }
-  let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }
-  let!(:issue2)   { create(:issue, project: project, title: "Issue 2") }
   let!(:bug)      { create(:label, project: project, title: 'bug') }
   let!(:feature)  { create(:label, project: project, title: 'feature') }
+  let!(:frontend) { create(:label, project: project, title: 'frontend') }
   let!(:wontfix)  { create(:label, project: project, title: 'wontfix') }
+  let!(:issue1)   { create(:issue, project: project, title: "Issue 1", labels: [frontend]) }
+  let!(:issue2)   { create(:issue, project: project, title: "Issue 2") }
 
   context 'as an allowed user', :js do
     before do
@@ -51,11 +52,29 @@ RSpec.describe 'Issues > Labels bulk assignment' do
 
           it do
             expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+            expect(find("#issue_#{issue1.id}")).to have_content 'frontend'
             expect(find("#issue_#{issue2.id}")).to have_content 'bug'
+            expect(find("#issue_#{issue2.id}")).not_to have_content 'frontend'
           end
         end
 
-        context 'to a issue' do
+        context 'to some issues' do
+          before do
+            check "selected_issue_#{issue1.id}"
+            check "selected_issue_#{issue2.id}"
+            open_labels_dropdown ['bug']
+            update_issues
+          end
+
+          it do
+            expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+            expect(find("#issue_#{issue1.id}")).to have_content 'frontend'
+            expect(find("#issue_#{issue2.id}")).to have_content 'bug'
+            expect(find("#issue_#{issue2.id}")).not_to have_content 'frontend'
+          end
+        end
+
+        context 'to an issue' do
           before do
             check "selected_issue_#{issue1.id}"
             open_labels_dropdown ['bug']
@@ -64,7 +83,24 @@ RSpec.describe 'Issues > Labels bulk assignment' do
 
           it do
             expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+            expect(find("#issue_#{issue1.id}")).to have_content 'frontend'
             expect(find("#issue_#{issue2.id}")).not_to have_content 'bug'
+            expect(find("#issue_#{issue2.id}")).not_to have_content 'frontend'
+          end
+        end
+
+        context 'to an issue by selecting the label first' do
+          before do
+            open_labels_dropdown ['bug']
+            check "selected_issue_#{issue1.id}"
+            update_issues
+          end
+
+          it do
+            expect(find("#issue_#{issue1.id}")).to have_content 'bug'
+            expect(find("#issue_#{issue1.id}")).to have_content 'frontend'
+            expect(find("#issue_#{issue2.id}")).not_to have_content 'bug'
+            expect(find("#issue_#{issue2.id}")).not_to have_content 'frontend'
           end
         end
       end

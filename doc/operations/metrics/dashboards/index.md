@@ -206,6 +206,12 @@ NOTE: **Note:**
 Configuration files nested under subdirectories of `.gitlab/dashboards` are not
 supported and will not be available in the UI.
 
+### Navigating to a custom dashboard
+
+Custom dashboards are uniquely identified by their filenames. In order to quickly view the custom dashboard,
+just use the dashboard filename in the URL this way:
+`https://gitlab-instance.example.com/project/-/metrics/custom_dashboard_name.yml`.
+
 ### Duplicating a GitLab-defined dashboard
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37238) in GitLab 12.7.

@@ -110,6 +110,7 @@ module API
     end
 
     format :json
+    formatter :json, Gitlab::Json::GrapeFormatter
     content_type :txt, "text/plain"
 
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
@@ -178,6 +179,7 @@ module API
       mount ::API::Discussions
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceMilestoneEvents
+      mount ::API::ResourceStateEvents
       mount ::API::NotificationSettings
       mount ::API::Pages
       mount ::API::PagesDomains

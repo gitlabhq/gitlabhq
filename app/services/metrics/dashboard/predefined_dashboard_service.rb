@@ -32,8 +32,12 @@ module Metrics
 
       private
 
+      def dashboard_version
+        raise NotImplementedError
+      end
+
       def cache_key
-        "metrics_dashboard_#{dashboard_path}"
+        "metrics_dashboard_#{dashboard_path}_#{dashboard_version}"
       end
 
       def dashboard_path

@@ -234,18 +234,6 @@ module API
               name: :project_url,
               type: String,
               desc: 'Project URL'
-            },
-            {
-              required: false,
-              name: :description,
-              type: String,
-              desc: 'Description'
-            },
-            {
-              required: false,
-              name: :title,
-              type: String,
-              desc: 'Title'
             }
           ],
           'buildkite' => [
@@ -314,18 +302,6 @@ module API
               name: :project_url,
               type: String,
               desc: 'Project URL'
-            },
-            {
-              required: false,
-              name: :description,
-              type: String,
-              desc: 'Description'
-            },
-            {
-              required: false,
-              name: :title,
-              type: String,
-              desc: 'Title'
             }
           ],
           'discord' => [

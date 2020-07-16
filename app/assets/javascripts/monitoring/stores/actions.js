@@ -360,14 +360,14 @@ export const receiveAnnotationsSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_ANNOTATIONS_SUCCESS, data);
 export const receiveAnnotationsFailure = ({ commit }) => commit(types.RECEIVE_ANNOTATIONS_FAILURE);
 
-export const fetchDashboardValidationWarnings = ({ state, dispatch }) => {
+export const fetchDashboardValidationWarnings = ({ state, dispatch, getters }) => {
   /**
    * Normally, the default dashboard won't throw any validation warnings.
    *
    * However, if a bug sneaks into the default dashboard making it invalid,
    * this might come handy for our clients
    */
-  const dashboardPath = state.currentDashboard || DEFAULT_DASHBOARD_PATH;
+  const dashboardPath = getters.fullDashboardPath || DEFAULT_DASHBOARD_PATH;
   return gqClient
     .mutate({
       mutation: getDashboardValidationWarnings,

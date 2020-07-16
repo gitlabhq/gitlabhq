@@ -20,14 +20,10 @@ RSpec.describe 'Filter issues', :js do
   let!(:milestone) { create(:milestone, title: "8", project: project, start_date: 2.days.ago) }
 
   def expect_no_issues_list
-    page.within '.issues-list' do
-      expect(page).to have_no_selector('.issue')
-    end
+    expect(page).to have_no_selector('.issue')
   end
 
   before do
-    stub_feature_flags(vue_issuables_list: false)
-
     project.add_maintainer(user)
 
     create(:issue, project: project, author: user2, title: "Bug report 1")
@@ -90,7 +86,7 @@ RSpec.describe 'Filter issues', :js do
     end
 
     it 'does not have the != option' do
-      input_filtered_search("label:", submit: false)
+      input_filtered_search("label:", submit: false, extra_space: false)
 
       wait_for_requests
       within('#js-dropdown-operator') do
@@ -346,7 +342,7 @@ RSpec.describe 'Filter issues', :js do
 
     context 'issue label clicked' do
       it 'filters and displays in search bar' do
-        find('.issues-list .issue .issuable-main-info .issuable-info a .gl-label-text', text: multiple_words_label.title).click
+        find('[data-qa-selector="issuable-label"]', text: multiple_words_label.title).click
 
         expect_issues_list_count(1)
         expect_tokens([label_token("\"#{multiple_words_label.title}\"")])

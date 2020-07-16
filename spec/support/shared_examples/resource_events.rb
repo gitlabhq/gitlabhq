@@ -101,6 +101,16 @@ RSpec.shared_examples 'a resource event for issues' do
       expect(events).to be_empty
     end
   end
+
+  if described_class.method_defined?(:issuable)
+    describe '#issuable' do
+      let_it_be(:event1) { create(described_class.name.underscore.to_sym, issue: issue2) }
+
+      it 'returns the expected issuable' do
+        expect(event1.issuable).to eq(issue2)
+      end
+    end
+  end
 end
 
 RSpec.shared_examples 'a resource event for merge requests' do
@@ -130,6 +140,16 @@ RSpec.shared_examples 'a resource event for merge requests' do
       events = described_class.by_merge_request(merge_request3)
 
       expect(events).to be_empty
+    end
+  end
+
+  if described_class.method_defined?(:issuable)
+    describe '#issuable' do
+      let_it_be(:event1) { create(described_class.name.underscore.to_sym, merge_request: merge_request2) }
+
+      it 'returns the expected issuable' do
+        expect(event1.issuable).to eq(merge_request2)
+      end
     end
   end
 end

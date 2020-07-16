@@ -676,10 +676,6 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
 
     it 'updates authorization for current_user' do
-      expect(Users::RefreshAuthorizedProjectsService).to(
-        receive(:new).with(user).and_call_original
-      )
-
       project = create_project(user, opts)
 
       expect(
@@ -711,10 +707,6 @@ RSpec.describe Projects::CreateService, '#execute' do
       end
 
       it 'updates authorization for current_user' do
-        expect(Users::RefreshAuthorizedProjectsService).to(
-          receive(:new).with(user).and_call_original
-        )
-
         project = create_project(user, opts)
 
         expect(

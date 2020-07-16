@@ -872,6 +872,11 @@ describe('Monitoring store actions', () => {
       state.projectPath = 'gitlab-org/gitlab-test';
       state.currentEnvironmentName = 'production';
       state.currentDashboard = '.gitlab/dashboards/dashboard_with_warnings.yml';
+      // testAction doesn't have access to getters. The state is passed in as getters
+      // instead of the actual getters inside the testAction method implementation.
+      // All methods downstream that needs access to getters will throw and error.
+      // For that reason, the result of the getter is set as a state variable.
+      state.fullDashboardPath = store.getters['monitoringDashboard/fullDashboardPath'];
 
       mockMutate = jest.spyOn(gqClient, 'mutate');
       mutationVariables = {
@@ -879,7 +884,7 @@ describe('Monitoring store actions', () => {
         variables: {
           projectPath: state.projectPath,
           environmentName: state.currentEnvironmentName,
-          dashboardPath: state.currentDashboard,
+          dashboardPath: state.fullDashboardPath,
         },
       };
     });

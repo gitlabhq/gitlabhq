@@ -49,6 +49,29 @@ These emails contain details of the alert, and a link for more information.
 To send separate email notifications to users with
 [Developer permissions](../permissions.md), see [Configure incidents](#configure-incidents-ultimate).
 
+## Configure PagerDuty integration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/119018) in GitLab 13.2.
+
+You can set up a webhook with PagerDuty to automatically create a GitLab issue
+for each PagerDuty incident. This configuration requires you to make changes
+in both PagerDuty and GitLab:
+
+1. Sign in as a user with Maintainer [permissions](../permissions.md).
+1. Navigate to **{settings}** **Settings > Operations > Incidents** and expand **Incidents**.
+1. Select the **PagerDuty integration** tab:
+
+   ![PagerDuty incidents integration](img/pagerduty_incidents_integration_13_2.png)
+
+1. Activate the integration, and save the changes in GitLab.
+1. Copy the value of **Webhook URL**, as you'll need it in a later step.
+1. Follow the steps described in the
+   [PagerDuty documentation](https://support.pagerduty.com/docs/webhooks)
+   to add the webhook URL to a PagerDuty webhook integration.
+
+To confirm the integration is successful, trigger a test incident from PagerDuty to
+confirm that a GitLab issue is created from the incident.
+
 ## Configure Prometheus alerts
 
 You can set up Prometheus alerts in:

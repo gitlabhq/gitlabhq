@@ -303,7 +303,7 @@ describe('Issuables list component', () => {
 
     describe('when page is not present in params', () => {
       const query =
-        '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&utf8=%E2%9C%93&weight=0';
+        '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&utf8=%E2%9C%93&weight=0&not[label_name][]=Afterpod&not[milestone_title][]=13';
 
       beforeEach(() => {
         setUrl(query);
@@ -320,7 +320,11 @@ describe('Issuables list component', () => {
 
       it('applies filters and sorts', () => {
         expect(wrapper.vm.hasFilters).toBe(true);
-        expect(wrapper.vm.filters).toEqual(expectedFilters);
+        expect(wrapper.vm.filters).toEqual({
+          ...expectedFilters,
+          'not[milestone]': ['13'],
+          'not[labels]': ['Afterpod'],
+        });
 
         expect(apiSpy).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -329,6 +333,8 @@ describe('Issuables list component', () => {
               with_labels_details: true,
               page: 1,
               per_page: PAGE_SIZE,
+              'not[milestone]': ['13'],
+              'not[labels]': ['Afterpod'],
             },
           }),
         );

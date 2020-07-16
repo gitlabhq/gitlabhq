@@ -67,6 +67,15 @@ module Gitlab
         ::JSON.pretty_generate(object, opts)
       end
 
+      # Feature detection for using Oj instead of the `json` gem.
+      #
+      # @return [Boolean]
+      def enable_oj?
+        return false unless feature_table_exists?
+
+        Feature.enabled?(:oj_json, default_enabled: true)
+      end
+
       private
 
       # Convert JSON string into Ruby through toggleable adapters.
@@ -176,13 +185,6 @@ module Gitlab
         raise parser_error if INVALID_LEGACY_TYPES.any? { |type| data.is_a?(type) }
       end
 
-      # @return [Boolean]
-      def enable_oj?
-        return false unless feature_table_exists?
-
-        Feature.enabled?(:oj_json, default_enabled: true)
-      end
-
       # There are a variety of database errors possible when checking the feature
       # flags at the wrong time during boot, e.g. during migrations. We don't care
       # about these errors, we just need to ensure that we skip feature detection
@@ -193,6 +195,29 @@ module Gitlab
         Feature::FlipperFeature.table_exists?
       rescue
         false
+      end
+    end
+
+    # GrapeFormatter is a JSON formatter for the Grape API.
+    # This is set in lib/api/api.rb
+
+    class GrapeFormatter
+      # Convert an object to JSON.
+      #
+      # This will default to the built-in Grape formatter if either :oj_json or :grape_gitlab_json
+      # flags are disabled.
+      #
+      # The `env` param is ignored because it's not needed in either our formatter or Grape's,
+      # but it is passed through for consistency.
+      #
+      # @param object [Object]
+      # @return [String]
+      def self.call(object, env = nil)
+        if Gitlab::Json.enable_oj? && Feature.enabled?(:grape_gitlab_json, default_enabled: true)
+          Gitlab::Json.dump(object)
+        else
+          Grape::Formatter::Json.call(object, env)
+        end
       end
     end
   end

@@ -324,6 +324,12 @@ RSpec.describe Gitlab::Json do
     end
 
     it_behaves_like "json"
+
+    describe "#enable_oj?" do
+      it "returns true" do
+        expect(subject.enable_oj?).to be(true)
+      end
+    end
   end
 
   context "json gem" do
@@ -332,5 +338,73 @@ RSpec.describe Gitlab::Json do
     end
 
     it_behaves_like "json"
+
+    describe "#enable_oj?" do
+      it "returns false" do
+        expect(subject.enable_oj?).to be(false)
+      end
+    end
+  end
+
+  describe Gitlab::Json::GrapeFormatter do
+    subject { described_class.call(obj, env) }
+
+    let(:obj) { { test: true } }
+    let(:env) { {} }
+    let(:result) { "{\"test\":true}" }
+
+    context "oj is enabled" do
+      before do
+        stub_feature_flags(oj_json: true)
+      end
+
+      context "grape_gitlab_json flag is enabled" do
+        before do
+          stub_feature_flags(grape_gitlab_json: true)
+        end
+
+        it "generates JSON" do
+          expect(subject).to eq(result)
+        end
+
+        it "uses Gitlab::Json" do
+          expect(Gitlab::Json).to receive(:dump).with(obj)
+
+          subject
+        end
+      end
+
+      context "grape_gitlab_json flag is disabled" do
+        before do
+          stub_feature_flags(grape_gitlab_json: false)
+        end
+
+        it "generates JSON" do
+          expect(subject).to eq(result)
+        end
+
+        it "uses Grape::Formatter::Json" do
+          expect(Grape::Formatter::Json).to receive(:call).with(obj, env)
+
+          subject
+        end
+      end
+    end
+
+    context "oj is disabled" do
+      before do
+        stub_feature_flags(oj_json: false)
+      end
+
+      it "generates JSON" do
+        expect(subject).to eq(result)
+      end
+
+      it "uses Grape::Formatter::Json" do
+        expect(Grape::Formatter::Json).to receive(:call).with(obj, env)
+
+        subject
+      end
+    end
   end
 end

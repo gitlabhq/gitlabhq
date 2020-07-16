@@ -1,7 +1,5 @@
-/* eslint-disable consistent-return, func-names, array-callback-return */
-
 import $ from 'jquery';
-import { intersection } from 'lodash';
+import { difference, intersection, union } from 'lodash';
 import axios from './lib/utils/axios_utils';
 import Flash from './flash';
 import { __ } from './locale';
@@ -36,43 +34,6 @@ export default {
     return new Flash(__('Issue update failed'));
   },
 
-  getSelectedIssues() {
-    return this.issues.has('.selected-issuable:checked');
-  },
-
-  getLabelsFromSelection() {
-    const labels = [];
-    this.getSelectedIssues().map(function() {
-      const labelsData = $(this).data('labels');
-      if (labelsData) {
-        return labelsData.map(labelId => {
-          if (labels.indexOf(labelId) === -1) {
-            return labels.push(labelId);
-          }
-        });
-      }
-    });
-    return labels;
-  },
-
-  /**
-   * Will return only labels that were marked previously and the user has unmarked
-   * @return {Array} Label IDs
-   */
-
-  getUnmarkedIndeterminedLabels() {
-    const result = [];
-    const labelsToKeep = this.$labelDropdown.data('indeterminate');
-
-    this.getLabelsFromSelection().forEach(id => {
-      if (labelsToKeep.indexOf(id) === -1) {
-        result.push(id);
-      }
-    });
-
-    return result;
-  },
-
   /**
    * Simple form serialization, it will return just what we need
    * Returns key/value pairs from form data
@@ -93,34 +54,36 @@ export default {
       },
     };
     if (this.willUpdateLabels) {
-      formData.update.add_label_ids = this.$labelDropdown.data('marked');
-      formData.update.remove_label_ids = this.$labelDropdown.data('unmarked');
+      formData.update.add_label_ids = this.$labelDropdown.data('user-checked');
+      formData.update.remove_label_ids = this.$labelDropdown.data('user-unchecked');
     }
     return formData;
   },
 
   setOriginalDropdownData() {
     const $labelSelect = $('.bulk-update .js-label-select');
-    const dirtyLabelIds = $labelSelect.data('marked') || [];
-    const chosenLabelIds = [...this.getOriginalMarkedIds(), ...dirtyLabelIds];
+    const userCheckedIds = $labelSelect.data('user-checked') || [];
+    const userUncheckedIds = $labelSelect.data('user-unchecked') || [];
 
-    $labelSelect.data('common', this.getOriginalCommonIds());
-    $labelSelect.data('marked', chosenLabelIds);
-    $labelSelect.data('indeterminate', this.getOriginalIndeterminateIds());
+    // Common labels plus user checked labels minus user unchecked labels
+    const checkedIdsToShow = difference(
+      union(this.getOriginalCommonIds(), userCheckedIds),
+      userUncheckedIds,
+    );
+
+    // Indeterminate labels minus user checked labels minus user unchecked labels
+    const indeterminateIdsToShow = difference(
+      this.getOriginalIndeterminateIds(),
+      userCheckedIds,
+      userUncheckedIds,
+    );
+
+    $labelSelect.data('marked', checkedIdsToShow);
+    $labelSelect.data('indeterminate', indeterminateIdsToShow);
   },
 
   // From issuable's initial bulk selection
   getOriginalCommonIds() {
-    const labelIds = [];
-
-    this.getElement('.selected-issuable:checked').each((i, el) => {
-      labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
-    });
-    return intersection.apply(this, labelIds);
-  },
-
-  // From issuable's initial bulk selection
-  getOriginalMarkedIds() {
     const labelIds = [];
     this.getElement('.selected-issuable:checked').each((i, el) => {
       labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));

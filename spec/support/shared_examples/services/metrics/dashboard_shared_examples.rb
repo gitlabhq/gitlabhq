@@ -39,6 +39,33 @@ RSpec.shared_examples 'caches the unprocessed dashboard for subsequent calls' do
   end
 end
 
+# This spec is applicable for predefined/out-of-the-box dashboard services.
+RSpec.shared_examples 'refreshes cache when dashboard_version is changed' do
+  specify do
+    allow_next_instance_of(described_class) do |service|
+      allow(service).to receive(:dashboard_version).and_return('1', '2')
+    end
+
+    expect(File).to receive(:read).twice.and_call_original
+
+    service = described_class.new(*service_params)
+
+    service.get_dashboard
+    service.get_dashboard
+  end
+end
+
+# This spec is applicable for predefined/out-of-the-box dashboard services.
+# This shared_example requires the following variables to be defined:
+# dashboard_path: Relative path to the dashboard, ex: 'config/prometheus/common_metrics.yml'
+# dashboard_version: The version string used in the cache_key.
+RSpec.shared_examples 'dashboard_version contains SHA256 hash of dashboard file content' do
+  specify do
+    dashboard = File.read(Rails.root.join(dashboard_path))
+    expect(Digest::SHA256.hexdigest(dashboard)).to eq(dashboard_version)
+  end
+end
+
 RSpec.shared_examples 'valid embedded dashboard service response' do
   let(:dashboard_schema) { Gitlab::Json.parse(fixture_file('lib/gitlab/metrics/dashboard/schemas/embedded_dashboard.json')) }
 

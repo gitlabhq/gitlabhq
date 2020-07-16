@@ -23,6 +23,7 @@ variables:
     paths:
       - corpus
       - crashes
+      - gl-coverage-fuzzing-report.json
     reports:
       coverage_fuzzing: gl-coverage-fuzzing-report.json
     when: always

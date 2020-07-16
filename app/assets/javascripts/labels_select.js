@@ -3,7 +3,7 @@
 /* global ListLabel */
 
 import $ from 'jquery';
-import { isEqual, escape, sortBy, template } from 'lodash';
+import { difference, isEqual, escape, sortBy, template } from 'lodash';
 import { sprintf, s__, __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
@@ -560,45 +560,20 @@ export default class LabelsSelect {
     IssuableBulkUpdateActions.willUpdateLabels = true;
   }
   // eslint-disable-next-line class-methods-use-this
-  setDropdownData($dropdown, isMarking, value) {
-    const markedIds = $dropdown.data('marked') || [];
-    const unmarkedIds = $dropdown.data('unmarked') || [];
-    const indeterminateIds = $dropdown.data('indeterminate') || [];
+  setDropdownData($dropdown, isChecking, labelId) {
+    let userCheckedIds = $dropdown.data('user-checked') || [];
+    let userUncheckedIds = $dropdown.data('user-unchecked') || [];
 
-    if (isMarking) {
-      markedIds.push(value);
-
-      let i = indeterminateIds.indexOf(value);
-      if (i > -1) {
-        indeterminateIds.splice(i, 1);
-      }
-
-      i = unmarkedIds.indexOf(value);
-      if (i > -1) {
-        unmarkedIds.splice(i, 1);
-      }
+    if (isChecking) {
+      userCheckedIds = userCheckedIds.concat(labelId);
+      userUncheckedIds = difference(userUncheckedIds, [labelId]);
     } else {
-      // If marked item (not common) is unmarked
-      const i = markedIds.indexOf(value);
-      if (i > -1) {
-        markedIds.splice(i, 1);
-      }
-
-      // If an indeterminate item is being unmarked
-      if (IssuableBulkUpdateActions.getOriginalIndeterminateIds().indexOf(value) > -1) {
-        unmarkedIds.push(value);
-      }
-
-      // If a marked item is being unmarked
-      // (a marked item could also be a label that is present in all selection)
-      if (IssuableBulkUpdateActions.getOriginalCommonIds().indexOf(value) > -1) {
-        unmarkedIds.push(value);
-      }
+      userUncheckedIds = userUncheckedIds.concat(labelId);
+      userCheckedIds = difference(userCheckedIds, [labelId]);
     }
 
-    $dropdown.data('marked', markedIds);
-    $dropdown.data('unmarked', unmarkedIds);
-    $dropdown.data('indeterminate', indeterminateIds);
+    $dropdown.data('user-checked', userCheckedIds);
+    $dropdown.data('user-unchecked', userUncheckedIds);
   }
   // eslint-disable-next-line class-methods-use-this
   setOriginalDropdownData($container, $dropdown) {

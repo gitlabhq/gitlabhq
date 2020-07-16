@@ -36,10 +36,18 @@ RSpec.describe Metrics::Dashboard::ClusterDashboardService, :use_clean_rails_mem
 
   describe '#get_dashboard' do
     let(:service_params) { [project, user, { cluster: cluster, cluster_type: :project }] }
-    let(:service_call) { described_class.new(*service_params).get_dashboard }
+    let(:service_call) { subject.get_dashboard }
+
+    subject { described_class.new(*service_params) }
 
     it_behaves_like 'valid dashboard service response'
     it_behaves_like 'caches the unprocessed dashboard for subsequent calls'
+    it_behaves_like 'refreshes cache when dashboard_version is changed'
+
+    it_behaves_like 'dashboard_version contains SHA256 hash of dashboard file content' do
+      let(:dashboard_path) { described_class::DASHBOARD_PATH }
+      let(:dashboard_version) { subject.send(:dashboard_version) }
+    end
 
     context 'when called with a non-system dashboard' do
       let(:dashboard_path) { 'garbage/dashboard/path' }

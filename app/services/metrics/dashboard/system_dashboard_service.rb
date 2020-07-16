@@ -8,6 +8,9 @@ module Metrics
       DASHBOARD_PATH = 'config/prometheus/common_metrics.yml'
       DASHBOARD_NAME = N_('Default dashboard')
 
+      # SHA256 hash of dashboard content
+      DASHBOARD_VERSION = '4685fe386c25b1a786b3be18f79bb2ee9828019003e003816284cdb634fa3e13'
+
       SEQUENCE = [
         STAGES::CommonMetricsInserter,
         STAGES::CustomMetricsInserter,
@@ -29,6 +32,12 @@ module Metrics
             out_of_the_box_dashboard: out_of_the_box_dashboard?
           }]
         end
+      end
+
+      private
+
+      def dashboard_version
+        DASHBOARD_VERSION
       end
     end
   end

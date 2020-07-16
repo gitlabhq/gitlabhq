@@ -73,15 +73,23 @@ export default {
     },
   },
   beforeDestroy() {
-    removeCustomEventListener(
-      this.editorApi,
-      CUSTOM_EVENTS.openAddImageModal,
-      this.onOpenAddImageModal,
-    );
-
-    this.editorApi.eventManager.removeEventHandler('changeMode', this.onChangeMode);
+    this.removeListeners();
   },
   methods: {
+    addListeners(editorApi) {
+      addCustomEventListener(editorApi, CUSTOM_EVENTS.openAddImageModal, this.onOpenAddImageModal);
+
+      editorApi.eventManager.listen('changeMode', this.onChangeMode);
+    },
+    removeListeners() {
+      removeCustomEventListener(
+        this.editorApi,
+        CUSTOM_EVENTS.openAddImageModal,
+        this.onOpenAddImageModal,
+      );
+
+      this.editorApi.eventManager.removeEventHandler('changeMode', this.onChangeMode);
+    },
     resetInitialValue(newVal) {
       this.editorInstance.invoke('setMarkdown', newVal);
     },
@@ -92,13 +100,8 @@ export default {
       this.editorApi = editorApi;
 
       registerHTMLToMarkdownRenderer(editorApi);
-      addCustomEventListener(
-        this.editorApi,
-        CUSTOM_EVENTS.openAddImageModal,
-        this.onOpenAddImageModal,
-      );
 
-      this.editorApi.eventManager.listen('changeMode', this.onChangeMode);
+      this.addListeners(editorApi);
     },
     onOpenAddImageModal() {
       this.$refs.addImageModal.show();

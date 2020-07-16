@@ -313,6 +313,7 @@ export default {
           <gl-label
             v-for="label in issuable.labels"
             :key="label.id"
+            data-qa-selector="issuable-label"
             :target="labelHref(label)"
             :background-color="label.color"
             :description="label.description"

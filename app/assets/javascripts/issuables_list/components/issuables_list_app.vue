@@ -275,8 +275,12 @@ export default {
       const {
         label_name: labels,
         milestone_title: milestoneTitle,
+        'not[label_name]': excludedLabels,
+        'not[milestone_title]': excludedMilestone,
         ...filters
       } = this.getQueryObject();
+
+      // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/227880
 
       if (milestoneTitle) {
         filters.milestone = milestoneTitle;
@@ -286,6 +290,14 @@ export default {
       }
       if (!filters.state) {
         filters.state = 'opened';
+      }
+
+      if (excludedLabels) {
+        filters['not[labels]'] = excludedLabels;
+      }
+
+      if (excludedMilestone) {
+        filters['not[milestone]'] = excludedMilestone;
       }
 
       Object.assign(filters, sortOrderMap[this.sortKey]);

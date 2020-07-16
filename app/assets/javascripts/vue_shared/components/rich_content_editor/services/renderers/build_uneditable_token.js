@@ -13,7 +13,7 @@ const buildUneditableOpenToken = (tagType = TAG_TYPES.block) =>
   buildToken('openTag', tagType, {
     attributes: { contenteditable: false },
     classNames: [
-      'gl-px-4 gl-py-2 gl-opacity-5 gl-bg-gray-100 gl-user-select-none gl-cursor-not-allowed',
+      'gl-px-4 gl-py-2 gl-my-5 gl-opacity-5 gl-bg-gray-100 gl-user-select-none gl-cursor-not-allowed',
     ],
   });
 

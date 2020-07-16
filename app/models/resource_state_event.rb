@@ -14,4 +14,8 @@ class ResourceStateEvent < ResourceEvent
   def self.issuable_attrs
     %i(issue merge_request).freeze
   end
+
+  def issuable
+    issue || merge_request
+  end
 end
