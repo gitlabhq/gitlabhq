@@ -18,11 +18,12 @@ RSpec.describe Gitlab::SidekiqLogging::DeduplicationLogger do
       expected_payload = {
         'job_status' => 'deduplicated',
         'message' => "#{job['class']} JID-#{job['jid']}: deduplicated: a fancy strategy",
-        'deduplication_type' => 'a fancy strategy'
+        'deduplication.type' => 'a fancy strategy',
+        'deduplication.options.foo' => :bar
       }
       expect(Sidekiq.logger).to receive(:info).with(a_hash_including(expected_payload)).and_call_original
 
-      described_class.instance.log(job, "a fancy strategy")
+      described_class.instance.log(job, "a fancy strategy", { foo: :bar })
     end
 
     it "does not modify the job" do

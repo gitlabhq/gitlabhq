@@ -51,6 +51,12 @@ Run this command to list out all preflight checks and automatically check if rep
 gitlab-ctl promotion-preflight-checks
 ```
 
+You can run this command in `force` mode to promote to primary even if preflight checks fail:
+
+```shell
+sudo gitlab-ctl promotion-preflight-checks --force
+```
+
 Each step is described in more detail below.
 
 ### Object storage

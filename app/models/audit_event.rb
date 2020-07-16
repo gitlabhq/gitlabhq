@@ -5,6 +5,8 @@ class AuditEvent < ApplicationRecord
   include IgnorableColumns
   include BulkInsertSafe
 
+  PARALLEL_PERSISTENCE_COLUMNS = [:author_name, :entity_path].freeze
+
   ignore_column :updated_at, remove_with: '13.4', remove_after: '2020-09-22'
 
   serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
@@ -18,8 +20,6 @@ class AuditEvent < ApplicationRecord
   scope :by_entity_type, -> (entity_type) { where(entity_type: entity_type) }
   scope :by_entity_id, -> (entity_id) { where(entity_id: entity_id) }
   scope :by_author_id, -> (author_id) { where(author_id: author_id) }
-
-  PARALLEL_PERSISTENCE_COLUMNS = [:author_name].freeze
 
   after_initialize :initialize_details
   # Note: The intention is to remove this once refactoring of AuditEvent

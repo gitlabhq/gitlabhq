@@ -1303,7 +1303,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Merge changes submitted with MR using this API.
 
-If merge request is unable to be accepted (ie: Work in Progress, Closed, Pipeline Pending Completion, or Failed while requiring Success) - you'll get a `405` and the error message 'Method Not Allowed'
+If merge request is unable to be accepted (ie: Draft, Closed, Pipeline Pending Completion, or Failed while requiring Success) - you'll get a `405` and the error message 'Method Not Allowed'
 
 If it has some conflicts and can not be merged - you'll get a `406` and the error message 'Branch cannot be merged'
 

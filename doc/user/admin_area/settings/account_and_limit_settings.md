@@ -30,11 +30,12 @@ details.
 
 This sets a maximum size limit on each namespace. The following are included in the namespace size:
 
-- repository
-- wiki
+- Repository
+- Wiki
 - LFS objects
-- build artifacts
-- packages
+- Build artifacts
+- Packages
+- Snippets
 
 NOTE: **Note:**
 This limit is not currently enforced but will be in a future release.

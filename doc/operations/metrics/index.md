@@ -4,14 +4,81 @@ group: APM
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Monitor CI/CD Environment metrics
+# Monitor metrics for your CI/CD environment
 
-Once [configured](../../user/project/integrations/prometheus.md), GitLab will attempt to retrieve performance metrics for any
-environment which has had a successful deployment.
+After [configuring Prometheus for a cluster](../../user/project/integrations/prometheus.md),
+GitLab attempts to retrieve performance metrics for any [environment](../../ci/environments/index.md) with
+a successful deployment.
 
-GitLab will automatically scan the Prometheus server for metrics from known servers like Kubernetes and NGINX, and attempt to identify individual environments. The supported metrics and scan process is detailed in our [Prometheus Metrics Library documentation](../../user/project/integrations/prometheus_library/index.md).
+GitLab scans the Prometheus server for metrics from known servers like Kubernetes
+and NGINX, and attempts to identify individual environments. To learn more about
+the supported metrics and scan processes, see the
+[Prometheus Metrics Library documentation](../../user/project/integrations/prometheus_library/index.md).
 
-You can view the performance dashboard for an environment by [clicking on the monitoring button](../../ci/environments/index.md#monitoring-environments).
+To view the metrics dashboard for an environment that has
+[completed at least one deployment](#populate-your-metrics-dashboard):
+
+1. *If the metrics dashboard is only visible to project members,* sign in to
+   GitLab as a member of a project. Learn more about [metrics dashboard visibility](#metrics-dashboard-visibility).
+1. In your project, navigate to **{cloud-gear}** **Operations > Metrics**.
+
+GitLab displays the default metrics dashboard for the environment, like the
+following example:
+
+![Example of metrics dashboard](img/example-dashboard_v13_1.png)
+
+The top of the dashboard contains a navigation bar. From left to right, the
+navigation bar contains:
+
+- **Dashboard** - A dropdown list of all dashboards available for the project,
+  with starred dashboards listed first.
+- **Environment** - A dropdown list of all [environments](../index.md) that searches
+  through all environments as you type.
+- **Range** - The time period of data to display.
+- **Refresh dashboard** **{retry}** - Reload the dashboard with current data.
+- **Set refresh rate** - Set a time frame for refreshing the data displayed.
+- **Star dashboard** **{star-o}** - Click to mark a dashboard as a favorite.
+  Starred dashboards display a solid star **{star}** button, and display first
+  in the **Dashboard** dropdown list.
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214582) in GitLab 13.0.)
+- **Create dashboard** **{file-addition-solid}** - Create a
+  [new custom dashboard for your project](dashboards/index.md#adding-a-new-dashboard-to-your-project).
+- **Metrics settings** **{settings}** - Configure the
+  [settings for this dashboard](dashboards/index.md#manage-the-metrics-dashboard-settings).
+
+## Populate your metrics dashboard
+
+After [configuring Prometheus for a cluster](../../user/project/integrations/prometheus.md),
+you must also deploy code for the **{cloud-gear}** **Operations > Metrics** page
+to contain data. Setting up [Auto DevOps](../../topics/autodevops/index.md)
+helps quickly create a deployment:
+
+1. Navigate to your project's **{cloud-gear}** **Operations > Kubernetes** page.
+1. Ensure that, in addition to Prometheus, you also have Runner and Ingress
+   installed.
+1. After installing Ingress, copy its endpoint.
+1. Navigate to your project's **{settings}** **Settings > CI/CD** page. In the
+   **Auto DevOps** section, select a deployment strategy and save your changes.
+1. On the same page, in the **Variables** section, add a variable named
+   `KUBE_INGRESS_BASE_DOMAIN` with the value of the Ingress endpoint you
+   copied previously. Leave the type as **Variable**.
+1. Navigate to your project's **{rocket}** **CI/CD > Pipelines** page, and run a
+   pipeline on any branch.
+1. When the pipeline has run successfully, graphs are available on the
+   **{cloud-gear}** **Operations > Metrics** page.
+
+![Monitoring Dashboard](../../user/project/integrations/img/prometheus_monitoring_dashboard_v13_1.png)
+
+## Customize your metrics dashboard
+
+After creating your dashboard, you can customize it to meet your needs:
+
+- **Add custom metrics**: In addition to the GitLab default metrics, you can
+  [create custom metrics](#adding-custom-metrics) and display them on your metrics dashboard.
+- **Configure alerts for metrics**: [Configure custom alerts](alerts.md) for your team when
+  environment performance falls outside of the boundaries you set.
+- **Trigger actions from alerts**: [Open new issues for your team](alerts.md#trigger-actions-from-alerts-ultimate) **(ULTIMATE)**
+  when environment performance falls outside of the boundaries you set.
 
 ## Metrics dashboard visibility
 
@@ -26,9 +93,12 @@ dashboard is visible to authenticated and non-authenticated users.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3799) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28527) to [GitLab Core](https://about.gitlab.com/pricing/) 12.10.
 
-Custom metrics can be monitored by adding them on the monitoring dashboard page. Once saved, they will be displayed on the environment performance dashboard provided that either:
+Custom metrics can be monitored by adding them on the monitoring dashboard page.
+After saving them, they display on the environment metrics dashboard provided that either:
 
-- A [connected Kubernetes cluster](../../user/project/clusters/add_remove_clusters.md) with the environment scope of `*` is used and [Prometheus installed on the cluster](../../user/project/integrations/prometheus.md#enabling-prometheus-integration)
+- A [connected Kubernetes cluster](../../user/project/clusters/add_remove_clusters.md)
+  with the matching [environment scope](../../ci/environments/index.md#scoping-environments-with-specs) is used and
+  [Prometheus installed on the cluster](../../user/project/integrations/prometheus.md#enabling-prometheus-integration).
 - Prometheus is [manually configured](../../user/project/integrations/prometheus.md#manual-configuration-of-prometheus).
 
 ![Add New Metric](../../user/project/integrations/img/prometheus_add_metric.png)
@@ -41,98 +111,29 @@ A few fields are required:
 - **Y-axis label**: Y axis title to display on the dashboard.
 - **Unit label**: Query units, for example `req / sec`. Shown next to the value.
 
-Multiple metrics can be displayed on the same chart if the fields **Name**, **Type**, and **Y-axis label** match between metrics. For example, a metric with **Name** `Requests Rate`, **Type** `Business`, and **Y-axis label** `rec / sec` would display on the same chart as a second metric with the same values. A **Legend label** is suggested if this feature is used.
+Multiple metrics can be displayed on the same chart if the fields **Name**, **Type**,
+and **Y-axis label** match between metrics. For example, a metric with **Name**
+`Requests Rate`, **Type** `Business`, and **Y-axis label** `rec / sec` would display
+on the same chart as a second metric with the same values. A **Legend label** is
+suggested if this feature is used.
 
 ## Editing additional metrics from the dashboard
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208976) in GitLab 12.9.
 
-You can edit existing additional custom metrics by clicking the **{ellipsis_v}** **More actions** dropdown and selecting **Edit metric**.
+You can edit existing additional custom metrics for your dashboard by clicking the
+**{ellipsis_v}** **More actions** dropdown and selecting **Edit metric**.
 
 ![Edit metric](../../user/project/integrations/img/prometheus_dashboard_edit_metric_link_v_12_9.png)
-
-## Setting up alerts for Prometheus metrics
-
-### Managed Prometheus instances
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](#adding-custom-metrics), and 11.3 for [library metrics](../../user/project/integrations/prometheus_library/metrics.md).
-
-For managed Prometheus instances using auto configuration, alerts for metrics [can be configured](#adding-custom-metrics) directly in the performance dashboard.
-
-To set an alert:
-
-1. Click on the ellipsis icon in the top right corner of the metric you want to create the alert for.
-1. Choose **Alerts**
-1. Set threshold and operator.
-1. Click **Add** to save and activate the alert.
-
-![Adding an alert](../../user/project/integrations/img/prometheus_alert.png)
-
-To remove the alert, click back on the alert icon for the desired metric, and click **Delete**.
-
-### External Prometheus instances
-
->- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9258) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.8.
->- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to [GitLab Core](https://about.gitlab.com/pricing/) in 12.10.
-
-For manually configured Prometheus servers, a notify endpoint is provided to use with Prometheus webhooks. If you have manual configuration enabled, an **Alerts** section is added to **Settings > Integrations > Prometheus**. This contains the *URL* and *Authorization Key*. The **Reset Key** button will invalidate the key and generate a new one.
-
-![Prometheus service configuration of Alerts](../../user/project/integrations/img/prometheus_service_alerts.png)
-
-To send GitLab alert notifications, copy the *URL* and *Authorization Key* into the [`webhook_configs`](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config) section of your Prometheus Alertmanager configuration:
-
-```yaml
-receivers:
-  name: gitlab
-  webhook_configs:
-    - http_config:
-        bearer_token: 9e1cbfcd546896a9ea8be557caf13a76
-      send_resolved: true
-      url: http://192.168.178.31:3001/root/manual_prometheus/prometheus/alerts/notify.json
-  ...
-```
-
-In order for GitLab to associate your alerts with an [environment](../../ci/environments/index.md), you need to configure a `gitlab_environment_name` label on the alerts you set up in Prometheus. The value of this should match the name of your Environment in GitLab.
-
-NOTE: **Note:**
-In GitLab versions 13.1 and greater, you can configure your manually configured Prometheus server to use the [Generic alerts integration](../../user/project/integrations/generic_alerts.md).
-
-## Taking action on incidents **(ULTIMATE)**
-
->- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
->- [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it will automatically close the associated issue.
-
-Alerts can be used to trigger actions, like opening an issue automatically (disabled by default since `13.1`). To configure the actions:
-
-1. Navigate to your project's **Settings > Operations > Incidents**.
-1. Enable the option to create issues.
-1. Choose the [issue template](../../user/project/description_templates.md) to create the issue from.
-1. Optionally, select whether to send an email notification to the developers of the project.
-1. Click **Save changes**.
-
-Once enabled, an issue will be opened automatically when an alert is triggered which contains values extracted from [alert's payload](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config):
-
-- Issue author: `GitLab Alert Bot`
-- Issue title: Extract from `annotations/title`, `annotations/summary` or `labels/alertname`
-- Alert `Summary`: A list of properties
-  - `starts_at`: Alert start time via `startsAt`
-  - `full_query`: Alert query extracted from `generatorURL`
-  - Optional list of attached annotations extracted from `annotations/*`
-- Alert [GFM](../../user/markdown.md): GitLab Flavored Markdown from `annotations/gitlab_incident_markdown`
-
-When GitLab receives a **Recovery Alert**, it will automatically close the associated issue. This action will be recorded as a system message on the issue indicating that it was closed automatically by the GitLab Alert bot.
-
-To further customize the issue, you can add labels, mentions, or any other supported [quick action](../../user/project/quick_actions.md) in the selected issue template, which will apply to all incidents. To limit quick actions or other information to only specific types of alerts, use the `annotations/gitlab_incident_markdown` field.
-
-Since [version 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63373), GitLab will tag each incident issue with the `incident` label automatically. If the label does not yet exist, it will be created automatically as well.
-
-If the metric exceeds the threshold of the alert for over 5 minutes, an email will be sent to all [Maintainers and Owners](../../user/permissions.md#project-members-permissions) of the project.
 
 ## Keyboard shortcuts for charts
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202146) in GitLab 13.2.
 
-You can use keyboard shortcuts to interact more quickly with your currently-focused chartpanel. To activate keyboard shortcuts, use keyboard tabs to highlight the**{ellipsis_v}** **More actions** dropdown menu, or hover over the dropdown menu with your mouse, then press the key corresponding to your desired action:
+You can use keyboard shortcuts to interact more quickly with your currently-focused
+chart panel. To activate keyboard shortcuts, use keyboard tabs to highlight the
+**{ellipsis_v}** **More actions** dropdown menu, or hover over the dropdown menu
+with your mouse, then press the key corresponding to your desired action:
 
 - **Expand panel** - <kbd>e</kbd>
 - **View logs** - <kbd>l</kbd> (lowercase 'L')

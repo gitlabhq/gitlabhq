@@ -58,7 +58,7 @@ It is also possible to embed either the default dashboard metrics or individual 
 
 ## Embedding metrics based on alerts in incident issues
 
-For [GitLab-managed alerting rules](index.md#setting-up-alerts-for-prometheus-metrics), the issue will include an embedded chart for the query corresponding to the alert. The chart displays an hour of data surrounding the starting point of the incident, 30 minutes before and after.
+For [GitLab-managed alerting rules](alerts.md), the issue will include an embedded chart for the query corresponding to the alert. The chart displays an hour of data surrounding the starting point of the incident, 30 minutes before and after.
 
 For [manually configured Prometheus instances](../../user/project/integrations/prometheus.md#manual-configuration-of-prometheus), a chart corresponding to the query can be included if these requirements are met:
 

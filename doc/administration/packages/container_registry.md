@@ -454,7 +454,7 @@ you can pull from the Container Registry, but you cannot push.
    aws s3 sync registry s3://mybucket
    ```
 
-1. For the changes to take effect,
+1. To perform the final data sync,
    [put the Container Registry in `read-only` mode](#performing-garbage-collection-without-downtime) and
    [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. Sync any changes since the initial data load to your S3 bucket and delete files that exist in the destination bucket but not in the source:
@@ -467,7 +467,7 @@ you can pull from the Container Registry, but you cannot push.
    The `--delete` flag will delete files that exist in the destination but not in the source.
    Make sure not to swap the source and destination, or you will delete all data in the Registry.
 
-1. Configure your registry to use the S3 bucket for storage.
+1. Configure your registry to [use the S3 bucket for storage](#use-object-storage).
 1. For the changes to take effect, set the Registry back to `read-write` mode and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 ### Disable redirect for storage driver

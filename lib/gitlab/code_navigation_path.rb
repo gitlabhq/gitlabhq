@@ -28,11 +28,11 @@ module Gitlab
         latest_commits_shas =
           project.repository.commits(commit_sha, limit: LATEST_COMMITS_LIMIT).map(&:sha)
 
-        artifact =
-          ::Ci::JobArtifact
-            .with_file_types(['lsif'])
-            .for_sha(latest_commits_shas, project.id)
-            .last
+        pipeline = @project.ci_pipelines.for_sha(latest_commits_shas).last
+
+        next unless pipeline
+
+        artifact = pipeline.job_artifacts.with_file_types(['lsif']).last
 
         artifact&.job
       end

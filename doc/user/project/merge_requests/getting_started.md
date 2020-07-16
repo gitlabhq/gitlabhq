@@ -57,7 +57,7 @@ request's page at the top-right side:
 - [Close issues automatically](#merge-requests-to-close-issues) when they are merged.
 - Enable the [delete source branch when merge request is accepted](#deleting-the-source-branch) option to keep your repository clean.
 - Enable the [squash commits when merge request is accepted](squash_and_merge.md) option to combine all the commits into one before merging, thus keep a clean commit history in your repository.
-- Set the merge request as a [Work In Progress (WIP)](work_in_progress_merge_requests.md) to avoid accidental merges before it is ready.
+- Set the merge request as a [**Draft**](work_in_progress_merge_requests.md) to avoid accidental merges before it is ready.
 
 Once you have created the merge request, you can also:
 

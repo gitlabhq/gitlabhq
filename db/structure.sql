@@ -9396,6 +9396,8 @@ CREATE TABLE public.audit_events (
     updated_at timestamp without time zone,
     ip_address inet,
     author_name text,
+    entity_path text,
+    CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
     CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255))
 );
 
@@ -23851,6 +23853,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200707095849
 20200708080631
 20200709101408
+20200710102418
 20200710102846
 20200710105332
 20200710130234
@@ -23858,5 +23861,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200712235622
 20200713071042
 20200713152443
+20200716044023
+20200716120419
 \.
 

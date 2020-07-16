@@ -200,7 +200,7 @@ The following documentation relates to the DevOps **Create** stage:
 | [Cherry-picking](user/project/merge_requests/cherry_pick_changes.md)                                                                        | Use GitLab for cherry-picking changes.                                                                                                |
 | [Merge request thread resolution](user/discussions/index.md#moving-a-single-thread-to-a-new-issue)                                          | Resolve threads, move threads in a merge request to an issue, and only allow merge requests to be merged if all threads are resolved. |
 | [Merge requests](user/project/merge_requests/index.md)                                                                                      | Merge request management.                                                                                                             |
-| [Work In Progress "WIP" merge requests](user/project/merge_requests/work_in_progress_merge_requests.md)                                     | Prevent merges of work-in-progress merge requests.                                                                                    |
+| [**Draft** merge requests](user/project/merge_requests/work_in_progress_merge_requests.md)                                                      | Prevent merges of draft merge requests.                                                                                               |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">

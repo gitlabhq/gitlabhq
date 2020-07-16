@@ -123,6 +123,9 @@
 
       = render 'layouts/nav/sidebar/analytics_links', links: group_analytics_navbar_links(@group, current_user)
 
+      - if group_sidebar_link?(:wiki)
+        = render 'layouts/nav/sidebar/wiki_link', wiki_url: @group.wiki.web_url
+
       - if group_sidebar_link?(:group_members)
         = nav_link(path: 'group_members#index') do
           = link_to group_group_members_path(@group) do

@@ -65,16 +65,16 @@ When GitLab-managed Prometheus is installed, the [Alerts list](#alert-management
 is also enabled.
 
 To populate the alerts with data, see
-[GitLab-Managed Prometheus instances](../../../operations/metrics/index.md#managed-prometheus-instances).
+[GitLab-Managed Prometheus instances](../../../operations/metrics/alerts.md#managed-prometheus-instances).
 
 ### Enable external Prometheus alerts
 
 You can configure an externally-managed Prometheus instance to send alerts
-to GitLab. To set up this configuration, see the [configuring Prometheus](../../../operations/metrics/index.md#external-prometheus-instances) documentation. Activating the external Prometheus
+to GitLab. To set up this configuration, see the [configuring Prometheus](../../../operations/metrics/alerts.md#external-prometheus-instances) documentation. Activating the external Prometheus
 configuration also enables the [Alerts list](#alert-management-list).
 
 To populate the alerts with data, see
-[External Prometheus instances](../../../operations/metrics/index.md#external-prometheus-instances).
+[External Prometheus instances](../../../operations/metrics/alerts.md#external-prometheus-instances).
 
 ## Alert Management severity
 
@@ -240,14 +240,14 @@ To view the metrics for an alert:
 
 For GitLab-managed Prometheus instances, metrics data is automatically available
 for the alert, making it easy to see surrounding behavior. See
-[Managed Prometheus instances](../../../operations/metrics/index.md#managed-prometheus-instances)
+[Managed Prometheus instances](../../../operations/metrics/alerts.md#managed-prometheus-instances)
 for information on setting up alerts.
 
 For externally-managed Prometheus instances, you can configure your alerting rules to
 display a chart in the alert. See
 [Embedding metrics based on alerts in incident issues](../../../operations/metrics/embed.md#embedding-metrics-based-on-alerts-in-incident-issues)
 for information on how to appropriately configure your alerting rules. See
-[External Prometheus instances](../../../operations/metrics/index.md#external-prometheus-instances)
+[External Prometheus instances](../../../operations/metrics/alerts.md#external-prometheus-instances)
 for information on setting up alerts for your self-managed Prometheus instance.
 
 ## Use cases for assigning alerts

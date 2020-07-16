@@ -1,9 +1,8 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlDeprecatedButton, GlFormCombobox } from '@gitlab/ui';
 import { AWS_ACCESS_KEY_ID } from '~/ci_variable_list/constants';
 import CiVariableModal from '~/ci_variable_list/components/ci_variable_modal.vue';
-import CiKeyField from '~/ci_variable_list/components/ci_key_field.vue';
 import createStore from '~/ci_variable_list/store';
 import mockData from '../services/mock_data';
 import ModalStub from '../stubs';
@@ -50,7 +49,7 @@ describe('Ci variable modal', () => {
       });
 
       it('does not render the autocomplete dropdown', () => {
-        expect(wrapper.contains(CiKeyField)).toBe(false);
+        expect(wrapper.contains(GlFormCombobox)).toBe(false);
       });
     });
 
@@ -59,7 +58,7 @@ describe('Ci variable modal', () => {
         createComponent(shallowMount);
       });
       it('renders the autocomplete dropdown', () => {
-        expect(wrapper.find(CiKeyField).exists()).toBe(true);
+        expect(wrapper.find(GlFormCombobox).exists()).toBe(true);
       });
     });
   });

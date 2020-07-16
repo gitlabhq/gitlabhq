@@ -176,6 +176,10 @@ module GroupsHelper
       links << :settings
     end
 
+    if can?(current_user, :read_wiki, @group)
+      links << :wiki
+    end
+
     links
   end
 

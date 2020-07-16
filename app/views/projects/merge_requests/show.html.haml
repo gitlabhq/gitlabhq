@@ -7,8 +7,9 @@
 - page_card_attributes @merge_request.card_attributes
 - suggest_changes_help_path = help_page_path('user/discussions/index.md', anchor: 'suggest-changes')
 - number_of_pipelines = @pipelines.size
+- mr_action = j(params[:tab].presence || 'show')
 
-.merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
+.merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
   = render "projects/merge_requests/mr_title"
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
@@ -76,9 +77,11 @@
       = render "projects/merge_requests/tabs/pane", name: "pipelines", id: "pipelines", class: "pipelines" do
         - if number_of_pipelines.nonzero?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
+      - if mr_action === "diffs"
+        - add_page_startup_api_call @endpoint_metadata_url
       = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: { "is-locked": @merge_request.discussion_locked?,
         endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
-        endpoint_metadata: diffs_metadata_project_json_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
+        endpoint_metadata: @endpoint_metadata_url,
         endpoint_batch: diffs_batch_project_json_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
         endpoint_coverage: @coverage_path,
         help_page_path: suggest_changes_help_path,

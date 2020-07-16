@@ -1,0 +1,11 @@
+= nav_link(controller: :wikis) do
+  = link_to wiki_url, class: 'shortcuts-wiki', data: { qa_selector: 'wiki_link' } do
+    .nav-icon-container
+      = sprite_icon('book')
+    %span.nav-item-name
+      = _('Wiki')
+  %ul.sidebar-sub-level-items.is-fly-out-only
+    = nav_link(controller: :wikis, html_options: { class: "fly-out-top-item" } ) do
+      = link_to wiki_url do
+        %strong.fly-out-top-item-name
+          = _('Wiki')

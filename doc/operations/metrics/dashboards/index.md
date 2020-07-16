@@ -6,32 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Using the Metrics Dashboard
 
-## Select an environment
-
-The **Environment** dropdown box above the dashboard displays the list of all [environments](../index.md).
-It enables you to search as you type through all environments and select the one you're looking for.
-
-![Monitoring Dashboard Environments](../../../user/project/integrations/img/prometheus_dashboard_environments_v12_8.png)
-
-## Select a dashboard
-
-The **dashboard** dropdown box above the dashboard displays the list of all dashboards available for the project.
-It enables you to search as you type through all dashboards and select the one you're looking for.
-
-![Monitoring Dashboard select](../../../user/project/integrations/img/prometheus_dashboard_select_v_13_0.png)
-
-## Mark a dashboard as favorite
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214582) in GitLab 13.0.
-
-When viewing a dashboard, click the empty **Star dashboard** **{star-o}** button to mark a
-dashboard as a favorite. Starred dashboards display a solid star **{star}** button,
-and appear at the top of the dashboard select list.
-
-To remove dashboard from the favorites list, click the solid **Unstar Dashboard** **{star}** button.
-
-![Monitoring Dashboard favorite state toggle](../../../user/project/integrations/img/toggle_metrics_user_starred_dashboard_v13_0.png)
-
 ## Manage the metrics dashboard settings
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223204) in GitLab 13.2.
@@ -57,7 +31,7 @@ The options are:
 - [View logs](#view-logs-ultimate)
 - [Download CSV](#downloading-data-as-csv)
 - [Copy link to chart](../embed.md#embedding-gitlab-managed-kubernetes-metrics)
-- [Alerts](../index.md#setting-up-alerts-for-prometheus-metrics)
+- [Alerts](../alerts.md)
 
 ### View and edit the source file of a custom dashboard
 

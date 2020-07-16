@@ -253,7 +253,7 @@ Also:
 
 ### Create Merge Request
 
-Create a new branch and [WIP merge request](../merge_requests/work_in_progress_merge_requests.md)
+Create a new branch and [**Draft** merge request](../merge_requests/work_in_progress_merge_requests.md)
 in one action. The branch will be named `issuenumber-title` by default, but you can
 choose any name, and GitLab will verify that it is not already in use. The merge request
 will automatically inherit the milestone and labels of the issue, and will be set to

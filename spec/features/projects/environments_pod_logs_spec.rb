@@ -12,11 +12,12 @@ RSpec.describe 'Environment > Pod Logs', :js, :kubeclient do
   let(:service) { create(:cluster_platform_kubernetes, :configured) }
 
   before do
-    create(:cluster, :provided_by_gcp, environment_scope: '*', projects: [project])
+    cluster = create(:cluster, :provided_by_gcp, environment_scope: '*', projects: [project])
     create(:deployment, :success, environment: environment)
 
     stub_kubeclient_pods(environment.deployment_namespace)
     stub_kubeclient_logs(pod_name, environment.deployment_namespace, container: 'container-0')
+    stub_kubeclient_nodes_and_nodes_metrics(cluster.platform.api_url)
 
     sign_in(project.owner)
   end
@@ -37,7 +38,7 @@ RSpec.describe 'Environment > Pod Logs', :js, :kubeclient do
 
       dropdown_items = find(".dropdown-menu").all(".dropdown-item")
       expect(dropdown_items.first).to have_content(environment.name)
-      expect(dropdown_items.size).to eq(2)
+      expect(dropdown_items.size).to eq(3)
     end
   end
 

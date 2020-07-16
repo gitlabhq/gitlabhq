@@ -151,10 +151,12 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
             // eslint-disable-next-line promise/catch-or-return,promise/no-nesting
             import('~/code_navigation').then(m =>
               m.default({
-                blobs: state.diffFiles.map(f => ({
-                  path: f.new_path,
-                  codeNavigationPath: f.code_navigation_path,
-                })),
+                blobs: state.diffFiles
+                  .filter(f => f.code_navigation_path)
+                  .map(f => ({
+                    path: f.new_path,
+                    codeNavigationPath: f.code_navigation_path,
+                  })),
                 definitionPathPrefix: state.definitionPathPrefix,
               }),
             );

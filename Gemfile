@@ -339,7 +339,7 @@ group :development do
   gem 'letter_opener_web', '~> 1.3.4'
 
   # Better errors handler
-  gem 'better_errors', '~> 2.5.0'
+  gem 'better_errors', '~> 2.7.1'
   gem 'binding_of_caller', '~> 0.8.0'
 
   # thin instead webrick

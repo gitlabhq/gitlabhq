@@ -1,0 +1,5 @@
+---
+title: Add entity_path column to audit_events table
+merge_request: 37041
+author:
+type: changed

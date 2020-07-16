@@ -154,6 +154,12 @@ module QA
           end
         end
 
+        def has_syntax_highlighting?(language)
+          within_element(:file_content) do
+            find('.line')['lang'].to_s == language
+          end
+        end
+
         def edit_comment(comment)
           finished_loading?
           click_element(:edit_comment_button)

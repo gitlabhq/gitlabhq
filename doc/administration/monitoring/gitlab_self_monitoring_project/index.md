@@ -73,11 +73,11 @@ you should
 
 ## Taking action on Prometheus alerts **(ULTIMATE)**
 
-You can [add a webhook](../../../operations/metrics/index.md#external-prometheus-instances)
+You can [add a webhook](../../../operations/metrics/alerts.md#external-prometheus-instances)
 to the Prometheus configuration in order for GitLab to receive notifications of any alerts.
 
 Once the webhook is setup, you can
-[take action on incoming alerts](../../../operations/metrics/index.md#taking-action-on-incidents-ultimate).
+[take action on incoming alerts](../../../operations/metrics/alerts.md#trigger-actions-from-alerts-ultimate).
 
 ## Adding custom metrics to the self monitoring project
 

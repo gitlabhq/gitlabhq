@@ -67,26 +67,6 @@ RSpec.describe UserCalloutsHelper do
     end
   end
 
-  describe '.show_alerts_moved_alert?' do
-    subject { helper.show_alerts_moved_alert? }
-
-    context 'when user has not dismissed' do
-      before do
-        allow(helper).to receive(:user_dismissed?).with(described_class::ALERTS_MOVED) { false }
-      end
-
-      it { is_expected.to be true }
-    end
-
-    context 'when user dismissed' do
-      before do
-        allow(helper).to receive(:user_dismissed?).with(described_class::ALERTS_MOVED) { true }
-      end
-
-      it { is_expected.to be false }
-    end
-  end
-
   describe '.render_flash_user_callout' do
     it 'renders the flash_user_callout partial' do
       expect(helper).to receive(:render)

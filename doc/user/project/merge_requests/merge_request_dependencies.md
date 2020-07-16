@@ -38,15 +38,15 @@ the `awesome-project` merge request before the `awesome-lib` one would
 break the `master`branch.
 
 The `awesome-project` merge request could be [marked as
-WIP](work_in_progress_merge_requests.md),
-and the reason for the WIP stated included in the comments. However, this
+**Draft**](work_in_progress_merge_requests.md),
+and the reason for the draft stated included in the comments. However, this
 requires the state of the `awesome-lib` merge request to be manually
 tracked, and doesn't scale well if the `awesome-project` merge request
 depends on changes to **several** other projects.
 
 By making the `awesome-project` merge request depend on the
 `awesome-lib` merge request instead, this relationship is
-automatically tracked by GitLab, and the WIP state can be used to
+automatically tracked by GitLab, and the draft state can be used to
 communicate the readiness of the code in each individual merge request
 instead.
 

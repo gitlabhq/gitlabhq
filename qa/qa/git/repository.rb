@@ -118,6 +118,10 @@ module QA
         run("git push #{uri} #{branch}", max_attempts: 3).to_s
       end
 
+      def push_all_branches
+        run("git push --all").to_s
+      end
+
       def merge(branch)
         run("git merge #{branch}")
       end

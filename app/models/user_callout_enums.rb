@@ -18,7 +18,6 @@ module UserCalloutEnums
       tabs_position_highlight: 10,
       webhooks_moved: 13,
       admin_integrations_moved: 15,
-      alerts_moved: 20,
       personal_access_token_expiry: 21 # EE-only
     }
   end

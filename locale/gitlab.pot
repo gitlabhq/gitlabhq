@@ -9112,6 +9112,9 @@ msgstr ""
 msgid "Environments|Logs from %{start} to %{end}."
 msgstr ""
 
+msgid "Environments|Managed apps"
+msgstr ""
+
 msgid "Environments|More information"
 msgstr ""
 
@@ -9164,9 +9167,6 @@ msgid "Environments|Rollback environment %{environment_name}?"
 msgstr ""
 
 msgid "Environments|Rollback environment %{name}?"
-msgstr ""
-
-msgid "Environments|Select environment"
 msgstr ""
 
 msgid "Environments|Select pod"

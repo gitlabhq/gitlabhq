@@ -25,7 +25,7 @@ to create issues when alerts are triggered:
    checkbox to create an issue based on your own
    [issue templates](../project/description_templates.md#creating-issue-templates).
    For more information, see
-   [Taking Action on Incidents](../../operations/metrics/index.md#taking-action-on-incidents-ultimate) **(ULTIMATE)**.
+   [Trigger actions from alerts](../../operations/metrics/alerts.md#trigger-actions-from-alerts-ultimate) **(ULTIMATE)**.
 1. To create issues from alerts, select the template in the **Issue Template**
    select box.
 1. To send [separate email notifications](#notify-developers-of-alerts) to users
@@ -36,7 +36,7 @@ to create issues when alerts are triggered:
 Appropriately configured alerts include an
 [embedded chart](../../operations/metrics/embed.md#embedding-metrics-based-on-alerts-in-incident-issues)
 for the query corresponding to the alert. You can also configure GitLab to
-[close issues](../../operations/metrics/index.md#taking-action-on-incidents-ultimate)
+[close issues](../../operations/metrics/alerts.md#trigger-actions-from-alerts-ultimate)
 when you receive notification that the alert is resolved.
 
 ### Notify developers of alerts
@@ -53,8 +53,8 @@ To send separate email notifications to users with
 
 You can set up Prometheus alerts in:
 
-- [GitLab-managed Prometheus](../../operations/metrics/index.md#setting-up-alerts-for-prometheus-metrics) installations.
-- [Self-managed Prometheus](../../operations/metrics/index.md#external-prometheus-instances) installations.
+- [GitLab-managed Prometheus](../../operations/metrics/alerts.md) installations.
+- [Self-managed Prometheus](../../operations/metrics/alerts.md#external-prometheus-instances) installations.
 
 Prometheus alerts are created by the special Alert Bot user. You can't remove this
 user, but it does not count toward your license limit.
