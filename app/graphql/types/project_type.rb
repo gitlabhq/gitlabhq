@@ -169,6 +169,10 @@ module Types
           description: 'A single issue of the project',
           resolver: Resolvers::IssuesResolver.single
 
+    field :packages, Types::PackageType.connection_type, null: true,
+         description: 'Packages of the project',
+         resolver: Resolvers::PackagesResolver
+
     field :pipelines,
           Types::Ci::PipelineType.connection_type,
           null: true,

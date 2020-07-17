@@ -45,7 +45,7 @@ class Packages::PackageFile < ApplicationRecord
   end
 
   def download_path
-    Gitlab::Routing.url_helpers.download_project_package_file_path(project, self)
+    Gitlab::Routing.url_helpers.download_project_package_file_path(project, self) if ::Gitlab.ee?
   end
 
   def local?

@@ -53,7 +53,7 @@ module Labels
       @group_labels_applied_to_issues ||= Label.joins(:issues)
         .where(
           issues: { project_id: project.id },
-          labels: { type: 'GroupLabel', group_id: old_group.self_and_ancestors }
+          labels: { group_id: old_group.self_and_ancestors }
         )
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -63,7 +63,7 @@ module Labels
       @group_labels_applied_to_merge_requests ||= Label.joins(:merge_requests)
         .where(
           merge_requests: { target_project_id: project.id },
-          labels: { type: 'GroupLabel', group_id: old_group.self_and_ancestors }
+          labels: { group_id: old_group.self_and_ancestors }
         )
     end
     # rubocop: enable CodeReuse/ActiveRecord

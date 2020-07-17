@@ -245,6 +245,12 @@ module Ci
       self.update_column(:file_store, file.object_store)
     end
 
+    def self.associated_file_types_for(file_type)
+      return unless file_types.include?(file_type)
+
+      [file_type]
+    end
+
     def self.total_size
       self.sum(:size)
     end

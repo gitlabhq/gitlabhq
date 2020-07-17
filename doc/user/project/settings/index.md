@@ -68,7 +68,7 @@ Some features depend on others:
 - If you disable the **Issues** option, GitLab also removes the following
   features:
   - **Issue Boards**
-  - [**Service Desk**](#service-desk-starter) **(STARTER)**
+  - [**Service Desk**](#service-desk-starter)
 
   NOTE: **Note:**
   When the **Issues** option is disabled, you can still access **Milestones**

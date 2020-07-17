@@ -1,0 +1,13 @@
+- merge_request = local_assigns.fetch(:merge_request)
+- self_approved = merge_request.approved_by?(current_user)
+- total = merge_request.approvals.size
+
+- if total > 0
+  - final_text = n_("%d approver", "%d approvers", total) % total
+  - final_self_text = n_("%d approver (you've approved)", "%d approvers (you've approved)", total) % total
+
+  - approval_icon = sprite_icon((self_approved ? 'approval-solid' : 'approval'), size: 16, css_class: 'align-middle')
+
+  %li.d-none.d-sm-inline-block.has-tooltip.text-success{ title: self_approved ? final_self_text : final_text }
+    = approval_icon
+    = _("Approved")

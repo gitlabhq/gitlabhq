@@ -14,8 +14,15 @@ Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
 milestones.
 
-<!-- Possibly swap this file with one of a single epic -->
-![epics list view](img/epics_list_view_v12.5.png)
+An epic's page contains the following tabs:
+
+- **Epics and Issues**: epics and issues added to this epic. Child epics, and their issues, are
+  shown in a tree view.
+  - Click the chevron (**>**) next to a parent epic to reveal the child epics and issues.
+  - Hover over the total counts to see a breakdown of open and closed items.
+- **Roadmap**: a roadmap view of child epics which have start and due dates.
+
+![epic view](img/epic_view_v13.0.png)
 
 ## Use cases
 
@@ -28,6 +35,7 @@ milestones.
 To learn what you can do with an epic, see [Manage epics](manage_epics.md). Possible actions include:
 
 - [Create an epic](manage_epics.md#create-an-epic)
+- [Edit an epic](manage_epics.md#edit-an-epic)
 - [Bulk-edit epics](../bulk_editing/index.md#bulk-edit-epics)
 - [Delete an epic](manage_epics.md#delete-an-epic)
 - [Close an epic](manage_epics.md#close-an-epic)

@@ -150,6 +150,8 @@ module AlertManagement
       end
 
       def duplicate_alert?
+        return if alert.fingerprint.blank?
+
         open_alerts.any? && open_alerts.exclude?(alert)
       end
 

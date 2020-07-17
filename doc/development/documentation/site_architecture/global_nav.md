@@ -306,7 +306,7 @@ Examples:
   docs:
     - doc_title: Service Desk
       doc_url: 'user/project/service_desk.html'
-      ee_only: true
+      ee_only: false
       # note that the URL above ends in html and, as the
       # document is EE-only, the attribute ee_only is set to true.
 ```

@@ -13,7 +13,9 @@ module API
 
       expose :_links do
         expose :web_path do |package|
-          ::Gitlab::Routing.url_helpers.project_package_path(package.project, package)
+          if ::Gitlab.ee?
+            ::Gitlab::Routing.url_helpers.project_package_path(package.project, package)
+          end
         end
 
         expose :delete_api_path, if: can_destroy(:package, &:project) do |package|

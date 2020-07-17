@@ -2995,6 +2995,16 @@ RSpec.describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#batch_lookup_report_artifact_for_file_type' do
+    context 'with code quality report artifact' do
+      let(:pipeline) { create(:ci_pipeline, :with_codequality_report, project: project) }
+
+      it "returns the code quality artifact" do
+        expect(pipeline.batch_lookup_report_artifact_for_file_type(:codequality)).to eq(pipeline.job_artifacts.sample)
+      end
+    end
+  end
+
   describe '#latest_report_builds' do
     it 'returns build with test artifacts' do
       test_build = create(:ci_build, :test_reports, pipeline: pipeline, project: project)

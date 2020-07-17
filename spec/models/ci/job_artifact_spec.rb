@@ -110,6 +110,21 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
+  describe '.associated_file_types_for' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { Ci::JobArtifact.associated_file_types_for(file_type) }
+
+    where(:file_type, :result) do
+      'codequality'         | %w(codequality)
+      'quality'             | nil
+    end
+
+    with_them do
+      it { is_expected.to eq result }
+    end
+  end
+
   describe '.erasable' do
     subject { described_class.erasable }
 

@@ -45,8 +45,7 @@ There are many ways to get to the New Issue form from within a project:
 
 ### Elements of the New Issue form
 
-> Ability to add the new issue to an epic [was introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847)
-> in [GitLab Premium](https://about.gitlab.com/pricing/) 13.1.
+> Ability to add the new issue to an epic [was introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.1.
 
 ![New issue from the issues list](img/new_issue_v13_1.png)
 
@@ -76,7 +75,7 @@ create issues for the same project.
 
 ![Create issue from group-level issue tracker](img/create_issue_from_group_level_issue_tracker.png)
 
-### New issue via Service Desk **(STARTER)**
+### New issue via Service Desk
 
 Enable [Service Desk](../service_desk.md) for your project and offer email support.
 By doing so, when your customer sends a new email, a new issue can be created in

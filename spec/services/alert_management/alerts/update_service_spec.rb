@@ -209,6 +209,19 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
           expect(response).to be_error
           expect(response.message).to eq(message)
         end
+
+        context 'fingerprints are blank' do
+          let_it_be(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: nil) }
+          let_it_be(:existing_alert) { create(:alert_management_alert, :triggered, fingerprint: alert.fingerprint, project: project) }
+
+          it 'successfully changes the status' do
+            expect { response }.to change { alert.acknowledged? }.to(true)
+            expect(response).to be_success
+            expect(response.payload[:alert]).to eq(alert)
+          end
+
+          it_behaves_like 'adds a system note'
+        end
       end
 
       context 'two existing closed alerts' do

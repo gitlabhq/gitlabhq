@@ -1228,7 +1228,7 @@ PUT /projects/:id
 | `only_mirror_protected_branches` | boolean | no | **(STARTER)** Only mirror protected branches |
 | `mirror_overwrites_diverged_branches` | boolean | no | **(STARTER)** Pull mirror overwrites diverged branches |
 | `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
-| `service_desk_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable service desk feature |
+| `service_desk_enabled` | boolean | no | Enable or disable service desk feature |
 
 NOTE: **Note:**
 If your HTTP repository is not publicly accessible,

@@ -89,8 +89,6 @@ When you have configured all settings, click **Test settings and save changes**.
 
 Your GitLab project can now interact with all Jira projects in your instance and the project now displays a Jira link that opens the Jira project.
 
-![Jira service page](img/jira_service_page_v12_2.png)
-
 #### Obtaining a transition ID
 
 In the most recent Jira user interface, you can no longer see transition IDs in the workflow

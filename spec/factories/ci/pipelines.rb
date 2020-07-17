@@ -73,6 +73,14 @@ FactoryBot.define do
         end
       end
 
+      trait :with_codequality_report do
+        status { :success }
+
+        after(:build) do |pipeline, evaluator|
+          pipeline.builds << build(:ci_build, :codequality_report, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
       trait :with_test_reports do
         status { :success }
 

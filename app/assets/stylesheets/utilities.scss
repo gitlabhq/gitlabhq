@@ -113,3 +113,11 @@
 .gl-top-66vh {
   top: 66vh;
 }
+
+// Remove when https://gitlab.com/gitlab-org/gitlab-ui/-/issues/871
+// gets fixed on GitLab UI
+.gl-sm-w-auto\! {
+  @media (min-width: $breakpoint-sm) {
+    width: auto !important;
+  }
+}

@@ -85,6 +85,26 @@ class MergeRequestWidgetEntity < Grape::Entity
     end
   end
 
+  expose :blob_path do
+    expose :head_path, if: -> (mr, _) { mr.source_branch_sha } do |merge_request|
+      project_blob_path(merge_request.project, merge_request.source_branch_sha)
+    end
+
+    expose :base_path, if: -> (mr, _) { mr.diff_base_sha } do |merge_request|
+      project_blob_path(merge_request.project, merge_request.diff_base_sha)
+    end
+  end
+
+  expose :codeclimate, if: -> (mr, _) { head_pipeline_downloadable_path_for_report_type(:codequality) } do
+    expose :head_path do |merge_request|
+      head_pipeline_downloadable_path_for_report_type(:codequality)
+    end
+
+    expose :base_path do |merge_request|
+      base_pipeline_downloadable_path_for_report_type(:codequality)
+    end
+  end
+
   private
 
   delegate :current_user, to: :request
@@ -102,6 +122,16 @@ class MergeRequestWidgetEntity < Grape::Entity
       merge_request.commits_count.positive? &&
       can?(current_user, :read_build, merge_request.source_project) &&
       can?(current_user, :create_pipeline, merge_request.source_project)
+  end
+
+  def head_pipeline_downloadable_path_for_report_type(file_type)
+    object.head_pipeline&.present(current_user: current_user)
+      &.downloadable_path_for_report_type(file_type)
+  end
+
+  def base_pipeline_downloadable_path_for_report_type(file_type)
+    object.base_pipeline&.present(current_user: current_user)
+      &.downloadable_path_for_report_type(file_type)
   end
 end
 

@@ -117,6 +117,10 @@ module StubConfiguration
     allow(::Gitlab.config.service_desk_email).to receive_messages(to_settings(messages))
   end
 
+  def stub_packages_setting(messages)
+    allow(::Gitlab.config.packages).to receive_messages(to_settings(messages))
+  end
+
   private
 
   # Modifies stubbed messages to also stub possible predicate versions

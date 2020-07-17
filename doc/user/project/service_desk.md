@@ -4,10 +4,11 @@ group: Certify
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Service Desk **(STARTER)**
+# Service Desk
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/149) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.1.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/214839) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215364) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.2.
 
 ## Overview
 
@@ -61,10 +62,10 @@ users will only see the thread through email.
 ## Configuring Service Desk
 
 NOTE: **Note:**
-Service Desk is enabled on GitLab.com. If you're a [Silver subscriber](https://about.gitlab.com/pricing/#gitlab-com),
-you can skip step 1 below; you only need to enable it per project.
+Service Desk is enabled on GitLab.com.
+You can skip step 1 below; you only need to enable it per project.
 
-If you have the correct access and a Premium license, you have the option to set up Service Desk.
+If you have project maintainer access you have the option to set up Service Desk.
 Follow these steps to do so:
 
 1. [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance.

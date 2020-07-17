@@ -28,7 +28,7 @@ linters:
     max_consecutive: 2
 
   DocumentationLinks:
-    enabled: false
+    enabled: true
     include:
       - 'app/views/**/*.haml'
       - 'ee/app/views/**/*.haml'

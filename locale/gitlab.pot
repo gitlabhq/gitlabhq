@@ -2742,6 +2742,9 @@ msgstr ""
 msgid "An example project for managing Kubernetes clusters integrated with GitLab."
 msgstr ""
 
+msgid "An example showing how to use Jsonnet with GitLab dynamic child pipelines"
+msgstr ""
+
 msgid "An instance-level serverless domain already exists."
 msgstr ""
 

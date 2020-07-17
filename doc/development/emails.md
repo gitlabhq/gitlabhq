@@ -115,7 +115,7 @@ Examples of valid email keys:
 - `1234567890abcdef1234567890abcdef-unsubscribe` (unsubscribe from a conversation)
 - `1234567890abcdef1234567890abcdef` (reply to a conversation)
 
-Please note that the action `-issue-` is used in GitLab Premium as the handler for the Service Desk feature.
+Please note that the action `-issue-` is used in GitLab as the handler for the Service Desk feature.
 
 ### Legacy format
 
@@ -127,7 +127,7 @@ These are the only valid legacy formats for an email handler:
 - `namespace`
 - `namespace+action`
 
-Please note that `path/to/project` is used in GitLab Premium as handler for the Service Desk feature.
+Please note that `path/to/project` is used in GitLab as the handler for the Service Desk feature.
 
 ---
 

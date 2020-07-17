@@ -59,6 +59,15 @@ docs lint:
     # Check the internal anchor links
     - bundle exec nanoc check internal_anchors
 
+ui-docs-links lint:
+  extends:
+    - .docs:rules:docs-lint
+    - .static-analysis-base
+  stage: test
+  needs: []
+  script:
+    - bundle exec haml-lint -i DocumentationLinks
+
 graphql-reference-verify:
   extends:
     - .default-retry

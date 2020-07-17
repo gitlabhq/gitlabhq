@@ -1,0 +1,5 @@
+---
+title: Remove unindexed condition on label transfer
+merge_request: 37060
+author:
+type: performance
