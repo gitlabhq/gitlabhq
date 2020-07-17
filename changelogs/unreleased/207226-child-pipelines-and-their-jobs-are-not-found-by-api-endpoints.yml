@@ -1,0 +1,5 @@
+---
+title: 'Bug Fix: Child pipelines are not found by API endpoints'
+merge_request: 36494
+author:
+type: fixed

@@ -269,6 +269,9 @@ Example of response
 ]
 ```
 
+Since GitLab 13.2, this endpoint [returns data for any pipeline](pipelines.md#single-pipeline-requests)
+including [child pipelines](../ci/parent_child_pipelines.md).
+
 ## List pipeline bridges
 
 Get a list of bridge jobs for a pipeline.

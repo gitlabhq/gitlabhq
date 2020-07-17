@@ -174,7 +174,7 @@ module API
       helpers do
         def pipeline
           strong_memoize(:pipeline) do
-            user_project.ci_pipelines.find(params[:pipeline_id])
+            user_project.all_pipelines.find(params[:pipeline_id])
           end
         end
 

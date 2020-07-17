@@ -43,9 +43,12 @@ A To Do appears on your To-Do List when:
   - Commit
   - Design
 - The CI/CD pipeline for your merge request failed
-- An open merge request becomes unmergeable due to conflict, and you are either:
-  - The author
-  - Have set it to automatically merge once the pipeline succeeds
+- An open merge request becomes unmergeable due to conflict, and one of the following is true:
+  - You are the author
+  - You are the user that set it to automatically merge once the pipeline succeeds
+- [Since GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12136), a merge request
+  is removed from a [merge train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+  and you are the user that added it. **(PREMIUM)**
 
 To-do triggers are not affected by [GitLab Notification Email settings](profile/notifications.md).
 

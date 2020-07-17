@@ -2,11 +2,11 @@
 
 module Types
   module Snippets
-    class FileInputType < BaseInputObject # rubocop:disable Graphql/AuthorizeTypes
-      graphql_name 'SnippetFileInputType'
+    class BlobActionInputType < BaseInputObject # rubocop:disable Graphql/AuthorizeTypes
+      graphql_name 'SnippetBlobActionInputType'
       description 'Represents an action to perform over a snippet file'
 
-      argument :action, Types::Snippets::FileInputActionEnum,
+      argument :action, Types::Snippets::BlobActionEnum,
                description: 'Type of input action',
                required: true
 

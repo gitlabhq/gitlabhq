@@ -40,23 +40,24 @@ The following example shows an application that lists and adds users to the stat
 This is the entry point for our store. You can use the following as a guide:
 
 ```javascript
-import Vue from 'vue';
 import Vuex from 'vuex';
 import * as actions from './actions';
 import * as getters from './getters';
 import mutations from './mutations';
 import state from './state';
 
-Vue.use(Vuex);
-
-export const createStore = () => new Vuex.Store({
-  actions,
-  getters,
-  mutations,
-  state,
-});
-export default createStore();
+export const createStore = () =>
+  new Vuex.Store({
+    actions,
+    getters,
+    mutations,
+    state,
+  });
 ```
+
+_Note:_ Until this
+[RFC](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/20) is implemented,
+the above will need to disable the `import/prefer-default-export` ESLint rule.
 
 ### `state.js`
 
@@ -316,8 +317,11 @@ function when mounting your Vue component:
 // in the Vue app's initialization script (e.g. mount_show.js)
 
 import Vue from 'vue';
-import createStore from './stores';
+import Vuex from 'vuex';
+import { createStore } from './stores';
 import AwesomeVueApp from './components/awesome_vue_app.vue'
+
+Vue.use(Vuex);
 
 export default () => {
   const el = document.getElementById('js-awesome-vue-app');
@@ -398,10 +402,8 @@ discussion](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/56#note_3025148
 ```javascript
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import store from './store';
 
 export default {
-  store,
   computed: {
     ...mapGetters([
       'getUsersWithPets'
@@ -417,12 +419,10 @@ export default {
       'fetchUsers',
       'addUser',
     ]),
-
     onClickAddUser(data) {
       this.addUser(data);
     }
   },
-
   created() {
     this.fetchUsers()
   }
@@ -485,53 +485,48 @@ In order to write unit tests for those components, we need to include the store 
 ```javascript
 //component_spec.js
 import Vue from 'vue';
+import Vuex from 'vuex';
+import { mount, createLocalVue } from '@vue/test-utils';
 import { createStore } from './store';
-import component from './component.vue'
+import Component from './component.vue'
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 describe('component', () => {
   let store;
-  let vm;
-  let Component;
+  let wrapper;
+
+  const createComponent = () => {
+    store = createStore();
+
+    wrapper = mount(Component, {
+      localVue,
+      store,
+    });
+  };
 
   beforeEach(() => {
-    Component = Vue.extend(issueActions);
+    createComponent();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  it('should show a user', () => {
+  it('should show a user', async () => {
     const user = {
       name: 'Foo',
       age: '30',
     };
 
-    store = createStore();
-
     // populate the store
-    store.dispatch('addUser', user);
+    await store.dispatch('addUser', user);
 
-    vm = new Component({
-      store,
-      propsData: props,
-    }).$mount();
+    expect(wrapper.text()).toContain(user.name);
   });
 });
-```
-
-#### Testing Vuex actions and getters
-
-Because we're currently using [`babel-plugin-rewire`](https://github.com/speedskater/babel-plugin-rewire), you may encounter the following error when testing your Vuex actions and getters:
-`[vuex] actions should be function or object with "handler" function`
-
-To prevent this error from happening, you need to export an empty function as `default`:
-
-```javascript
-// getters.js or actions.js
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};
 ```
 
 ### Two way data binding

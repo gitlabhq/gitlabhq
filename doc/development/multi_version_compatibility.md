@@ -60,3 +60,18 @@ We added a `NOT NULL` constraint to a column and marked it as a `NOT VALID` cons
 But even with that, this was still a problem because the old servers were still inserting new rows with null values.
 
 For more information, see [the relevant issue](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1944).
+
+### Downtime on release features between canary and production deployment
+
+To address the issue, we added a new column to an existing table with a `NOT NULL` constraint without
+specifying a default value. In other words, this requires the application to set a value to the column.
+
+The older version of the application didn't set the `NOT NULL` constraint since the entity/concept didn't
+exist before.
+
+The problem starts right after the canary deployment is complete. At that moment,
+the database migration (to add the column) has successfully run and canary instance starts using
+the new application code, hence QA was successful. Unfortunately, the production
+instance still uses the older code, so it started failing to insert a new release entry.
+
+For more information, see [this issue related to the Releases API](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64151).

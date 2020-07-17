@@ -2427,8 +2427,13 @@ Read the `environment:action` section for an example.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/22191) in GitLab 8.13.
 
-The `action` keyword is to be used in conjunction with `on_stop` and is defined
-in the job that is called to close the environment.
+The `action` keyword can be used to specify jobs that prepare, start, or stop environments.
+
+| **Value** | **Description**                                                                                                                                               |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| start     | Default value. Indicates that job starts the environment. Deployment will be created after job starts.                                                          |
+| prepare   | Indicates that job is only preparing the environment. Does not affect deployments. [Read more about environments](../environments/index.md#prepare-an-environment) |
+| stop      | Indicates that job stops deployment. See the example below.                                                                                                   |
 
 Take for instance:
 

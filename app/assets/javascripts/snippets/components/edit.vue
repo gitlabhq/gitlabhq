@@ -84,7 +84,7 @@ export default {
         title: this.snippet.title,
         description: this.snippet.description,
         visibilityLevel: this.snippet.visibilityLevel,
-        files: this.getActionsEntries.filter(entry => entry.action !== ''),
+        blobActions: this.getActionsEntries.filter(entry => entry.action !== ''),
       };
     },
     saveButtonLabel() {

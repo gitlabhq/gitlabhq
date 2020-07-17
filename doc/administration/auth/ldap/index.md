@@ -596,6 +596,8 @@ group, as opposed to the full DN.
 
 ### Global group memberships lock **(STARTER ONLY)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1793) in GitLab 12.0.
+
 "Lock memberships to LDAP synchronization" setting allows instance administrators
 to lock down user abilities to invite new members to a group.
 

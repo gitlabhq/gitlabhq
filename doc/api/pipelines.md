@@ -1,5 +1,13 @@
 # Pipelines API
 
+## Single Pipeline Requests
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36494) in GitLab 13.2.
+
+Endpoints that request information about a single pipeline return data for any pipeline.
+Before 13.2, requests for [child pipelines](../ci/parent_child_pipelines.md) returned
+a 404 error.
+
 ## Pipelines pagination
 
 By default, `GET` requests return 20 results at a time because the API results

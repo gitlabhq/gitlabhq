@@ -159,9 +159,9 @@ To create a group Runner:
 1. Note the URL and token.
 1. [Register the Runner](https://docs.gitlab.com/runner/register/).
 
-<!-- #### View and manage group Runners
+#### View and manage group Runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37366/) in GitLab 13.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37366/) in GitLab 13.2.
 
 You can view and manage all Runners for a group, its subgroups, and projects.
 You can do this for your self-managed GitLab instance or for GitLab.com.
@@ -183,7 +183,7 @@ You must have [Owner permissions](../../user/permissions.md#group-members-permis
    | Tags         | Tags associated with the Runner |
    | Last contact | Timestamp indicating when the GitLab instance last contacted the Runner |
 
-From this page, you can edit, pause, and remove Runners from the group, its subgroups, and projects. -->
+From this page, you can edit, pause, and remove Runners from the group, its subgroups, and projects.
 
 #### Pause or remove a group Runner
 
@@ -193,9 +193,9 @@ You must have [Owner permissions](../../user/permissions.md#group-members-permis
 1. Go to the group you want to remove or pause the Runner for.
 1. Go to **{settings}** **Settings > CI/CD** and expand the **Runners** section.
 1. Click **Pause** or **Remove Runner**.
-<!--   - If you pause a group Runner that is used by multiple projects, the Runner pauses for all projects. -->
-<!--   - From the group view, you cannot remove a Runner that is assigned to more than one project. -->
-<!--     You must remove it from each project first. -->
+   - If you pause a group Runner that is used by multiple projects, the Runner pauses for all projects.
+   - From the group view, you cannot remove a Runner that is assigned to more than one project.
+     You must remove it from each project first.
 1. On the confirmation dialog, click **OK**.
 
 ### Specific Runners

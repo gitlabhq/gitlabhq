@@ -366,7 +366,8 @@
   margin-top: 1em;
 }
 
-.ci-variable-table {
+.ci-variable-table,
+.deploy-freeze-table {
   table {
     thead {
       border-bottom: 1px solid $white-normal;

@@ -67,4 +67,6 @@ RSpec.describe Projects::CycleAnalyticsController do
       end
     end
   end
+
+  include_examples GracefulTimeoutHandling
 end

@@ -5623,8 +5623,8 @@
               "defaultValue": null
             },
             {
-              "name": "files",
-              "description": "The snippet files to create",
+              "name": "blobActions",
+              "description": "Actions to perform over the snippet repository and blobs",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -5633,7 +5633,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SnippetFileInputType",
+                    "name": "SnippetBlobActionInputType",
                     "ofType": null
                   }
                 }
@@ -37841,6 +37841,100 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "SnippetBlobActionEnum",
+          "description": "Type of a snippet blob input action",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "create",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "update",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "delete",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "move",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SnippetBlobActionInputType",
+          "description": "Represents an action to perform over a snippet file",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "action",
+              "description": "Type of input action",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SnippetBlobActionEnum",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "previousPath",
+              "description": "Previous path of the snippet file",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "filePath",
+              "description": "Path of the snippet file",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "content",
+              "description": "Snippet file content",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "SnippetBlobViewer",
           "description": "Represents how the blob content should be displayed",
@@ -38084,100 +38178,6 @@
           "interfaces": [
 
           ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "SnippetFileInputActionEnum",
-          "description": "Type of a snippet file input action",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "create",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "update",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "delete",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "move",
-              "description": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "SnippetFileInputType",
-          "description": "Represents an action to perform over a snippet file",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "action",
-              "description": "Type of input action",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "SnippetFileInputActionEnum",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "previousPath",
-              "description": "Previous path of the snippet file",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "filePath",
-              "description": "Path of the snippet file",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "content",
-              "description": "Snippet file content",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -41968,8 +41968,8 @@
               "defaultValue": null
             },
             {
-              "name": "files",
-              "description": "The snippet files to update",
+              "name": "blobActions",
+              "description": "Actions to perform over the snippet repository and blobs",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -41978,7 +41978,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SnippetFileInputType",
+                    "name": "SnippetBlobActionInputType",
                     "ofType": null
                   }
                 }

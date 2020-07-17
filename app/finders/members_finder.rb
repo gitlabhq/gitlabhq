@@ -29,7 +29,12 @@ class MembersFinder
 
   def find_members(include_relations)
     project_members = project.project_members
-    project_members = project_members.non_invite unless can?(current_user, :admin_project, project)
+
+    if params[:active_without_invites_and_requests].present?
+      project_members = project_members.active_without_invites_and_requests
+    else
+      project_members = project_members.non_invite unless can?(current_user, :admin_project, project)
+    end
 
     return project_members if include_relations == [:direct]
 
@@ -44,6 +49,7 @@ class MembersFinder
   def filter_members(members)
     members = members.search(params[:search]) if params[:search].present?
     members = members.sort_by_attribute(params[:sort]) if params[:sort].present?
+    members = members.owners_and_maintainers if params[:owners_and_maintainers].present?
     members
   end
 

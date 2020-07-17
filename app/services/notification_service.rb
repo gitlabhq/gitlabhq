@@ -424,7 +424,7 @@ class NotificationService
   end
 
   def project_was_moved(project, old_path_with_namespace)
-    recipients = project.private? ? project.team.members_in_project_and_ancestors : project.team.members
+    recipients = project_moved_recipients(project)
     recipients = notifiable_users(recipients, :mention, project: project)
 
     recipients.each do |recipient|
@@ -703,6 +703,14 @@ class NotificationService
     end
 
     recipients
+  end
+
+  def project_moved_recipients(project)
+    finder = MembersFinder.new(project, nil, params: {
+      active_without_invites_and_requests: true,
+      owners_and_maintainers: true
+    })
+    finder.execute.preload_user_and_notification_settings.map(&:user)
   end
 
   def project_maintainers_recipients(target, action:)

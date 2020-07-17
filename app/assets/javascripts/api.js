@@ -59,6 +59,7 @@ const Api = {
   rawFilePath: '/api/:version/projects/:id/repository/files/:path/raw',
   issuePath: '/api/:version/projects/:id/issues/:issue_iid',
   tagsPath: '/api/:version/projects/:id/repository/tags',
+  freezePeriodsPath: '/api/:version/projects/:id/freeze_periods',
 
   group(groupId, callback = () => {}) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -614,6 +615,18 @@ const Api = {
         ...options,
       },
     });
+  },
+
+  freezePeriods(id) {
+    const url = Api.buildUrl(this.freezePeriodsPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url);
+  },
+
+  createFreezePeriod(id, freezePeriod = {}) {
+    const url = Api.buildUrl(this.freezePeriodsPath).replace(':id', encodeURIComponent(id));
+
+    return axios.post(url, freezePeriod);
   },
 
   buildUrl(url) {

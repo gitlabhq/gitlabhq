@@ -2054,16 +2054,54 @@ RSpec.describe NotificationService, :mailer do
     end
 
     describe '#project_was_moved' do
-      it 'notifies the expected users' do
-        notification.project_was_moved(project, "gitlab/gitlab")
+      context 'with users at both project and group level' do
+        let(:maintainer) { create(:user) }
+        let(:developer) { create(:user) }
+        let(:group_owner) { create(:user) }
+        let(:group_maintainer) { create(:user) }
+        let(:group_developer) { create(:user) }
+        let(:blocked_user) { create(:user, :blocked) }
+        let(:invited_user) { create(:user) }
 
-        should_email(@u_watcher)
-        should_email(@u_participating)
-        should_email(@u_lazy_participant)
-        should_email(@u_custom_global)
-        should_not_email(@u_guest_watcher)
-        should_not_email(@u_guest_custom)
-        should_not_email(@u_disabled)
+        let!(:group) do
+          create(:group, :public) do |group|
+            project.group = group
+            project.save!
+
+            group.add_owner(group_owner)
+            group.add_maintainer(group_maintainer)
+            group.add_developer(group_developer)
+            # This is to check for dupes
+            group.add_maintainer(maintainer)
+            group.add_maintainer(blocked_user)
+          end
+        end
+
+        before do
+          project.add_maintainer(maintainer)
+          project.add_developer(developer)
+          project.add_maintainer(blocked_user)
+          reset_delivered_emails!
+        end
+
+        it 'notifies the expected users' do
+          notification.project_was_moved(project, "gitlab/gitlab")
+
+          should_email(@u_watcher)
+          should_email(@u_participating)
+          should_email(@u_lazy_participant)
+          should_email(@u_custom_global)
+          should_not_email(@u_guest_watcher)
+          should_not_email(@u_guest_custom)
+          should_not_email(@u_disabled)
+
+          should_email(maintainer)
+          should_email(group_owner)
+          should_email(group_maintainer)
+          should_not_email(group_developer)
+          should_not_email(developer)
+          should_not_email(blocked_user)
+        end
       end
 
       it_behaves_like 'project emails are disabled' do

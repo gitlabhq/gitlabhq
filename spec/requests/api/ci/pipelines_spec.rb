@@ -438,7 +438,7 @@ RSpec.describe API::Ci::Pipelines do
         expect(response).to match_response_schema('public_api/v4/pipeline/detail')
       end
 
-      it 'returns project pipelines' do
+      it 'returns project pipeline' do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -473,6 +473,20 @@ RSpec.describe API::Ci::Pipelines do
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Project Not Found'
         expect(json_response['id']).to be nil
+      end
+    end
+
+    context 'when config source is not ci' do
+      let(:non_ci_config_source) { ::Ci::PipelineEnums.non_ci_config_source_values.first }
+      let(:pipeline_not_ci) do
+        create(:ci_pipeline, config_source: non_ci_config_source, project: project)
+      end
+
+      it 'returns the specified pipeline' do
+        get api("/projects/#{project.id}/pipelines/#{pipeline_not_ci.id}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['sha']).to eq(pipeline_not_ci.sha)
       end
     end
   end

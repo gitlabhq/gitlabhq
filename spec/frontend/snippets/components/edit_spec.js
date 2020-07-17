@@ -218,7 +218,7 @@ describe('Snippet Edit app', () => {
 
         return waitForPromises().then(() => {
           expect(resolveMutate).toHaveBeenCalledWith(
-            expect.objectContaining({ variables: { input: { files: [bar] } } }),
+            expect.objectContaining({ variables: { input: { blobActions: [bar] } } }),
           );
         });
       });

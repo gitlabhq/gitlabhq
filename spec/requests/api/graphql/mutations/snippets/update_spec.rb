@@ -157,7 +157,7 @@ RSpec.describe 'Updating a Snippet' do
     let(:mutation_vars) do
       {
         id: snippet_gid,
-        files: [
+        blob_actions: [
           { action: :update, filePath: updated_file, content: updated_content },
           { action: :delete, filePath: deleted_file }
         ]

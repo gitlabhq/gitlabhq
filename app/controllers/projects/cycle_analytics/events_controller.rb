@@ -4,6 +4,7 @@ module Projects
   module CycleAnalytics
     class EventsController < Projects::ApplicationController
       include CycleAnalyticsParams
+      include GracefulTimeoutHandling
 
       before_action :authorize_read_cycle_analytics!
       before_action :authorize_read_build!, only: [:test, :staging]

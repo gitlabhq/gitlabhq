@@ -40,6 +40,10 @@ Minimum requirements (depending on the GitLab Manage Application you want to ins
 
 ### Understanding how GitLab Managed Apps are installed
 
+NOTE: **Note:**
+These diagrams use the term _Kubernetes_ for simplicity. In practice, Sidekiq connects to a Helm
+Tiller daemon running in a pod in the cluster.
+
 You install GitLab Managed Apps from the GitLab web interface with a one-click setup process. GitLab
 uses Sidekiq (a background processing service) to facilitate this.
 
@@ -51,10 +55,6 @@ uses Sidekiq (a background processing service) to facilitate this.
     Kubernetes-->>-Sidekiq: Installation complete
     Sidekiq-->>-GitLab: Refresh UI
 ```
-
-NOTE: **Note:**
-This diagram uses the term _Kubernetes_ for simplicity. In practice, Sidekiq connects to a Helm
-Tiller daemon running in a pod in the cluster.
 
 Although this installation method is easier because it's a point-and-click action in the user
 interface, it's inflexible and hard to debug. When something goes wrong, you can't see the
@@ -151,4 +151,5 @@ falco:
   installed: true
 ```
 
-[Read more] about configuring Container Host Security.
+[Read more](../../clusters/applications.md#install-falco-using-gitlab-cicd)
+about configuring Container Host Security.

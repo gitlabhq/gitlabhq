@@ -63,6 +63,10 @@ module Ci
     def self.ci_config_sources_values
       ci_config_sources.values
     end
+
+    def self.non_ci_config_source_values
+      config_sources.values - ci_config_sources.values
+    end
   end
 end
 

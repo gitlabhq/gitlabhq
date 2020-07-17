@@ -2,9 +2,9 @@
 
 module Types
   module Snippets
-    class FileInputActionEnum < BaseEnum
-      graphql_name 'SnippetFileInputActionEnum'
-      description 'Type of a snippet file input action'
+    class BlobActionEnum < BaseEnum
+      graphql_name 'SnippetBlobActionEnum'
+      description 'Type of a snippet blob input action'
 
       value 'create', value: :create
       value 'update', value: :update

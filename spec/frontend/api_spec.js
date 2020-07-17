@@ -842,4 +842,53 @@ describe('Api', () => {
         .catch(done.fail);
     });
   });
+
+  describe('freezePeriods', () => {
+    it('fetches freezePeriods', () => {
+      const projectId = 8;
+      const freezePeriod = {
+        id: 3,
+        freeze_start: '5 4 * * *',
+        freeze_end: '5 9 * 8 *',
+        cron_timezone: 'America/New_York',
+        created_at: '2020-07-10T05:10:35.122Z',
+        updated_at: '2020-07-10T05:10:35.122Z',
+      };
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/freeze_periods`;
+      mock.onGet(expectedUrl).reply(200, [freezePeriod]);
+
+      return Api.freezePeriods(projectId).then(({ data }) => {
+        expect(data[0]).toStrictEqual(freezePeriod);
+      });
+    });
+  });
+
+  describe('createFreezePeriod', () => {
+    const projectId = 8;
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/freeze_periods`;
+    const options = {
+      freeze_start: '* * * * *',
+      freeze_end: '* * * * *',
+      cron_timezone: 'America/Juneau',
+    };
+
+    const expectedResult = {
+      id: 10,
+      freeze_start: '* * * * *',
+      freeze_end: '* * * * *',
+      cron_timezone: 'America/Juneau',
+      created_at: '2020-07-11T07:04:50.153Z',
+      updated_at: '2020-07-11T07:04:50.153Z',
+    };
+
+    describe('when the freeze period is successfully created', () => {
+      it('resolves the Promise', () => {
+        mock.onPost(expectedUrl, options).replyOnce(201, expectedResult);
+
+        return Api.createFreezePeriod(projectId, options).then(({ data }) => {
+          expect(data).toStrictEqual(expectedResult);
+        });
+      });
+    });
+  });
 });

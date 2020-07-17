@@ -791,6 +791,9 @@ msgstr ""
 msgid "(revoked)"
 msgstr ""
 
+msgid "* * * * *"
+msgstr ""
+
 msgid "+ %{amount} more"
 msgstr ""
 
@@ -1454,6 +1457,9 @@ msgid "Add child epic to an epic"
 msgstr ""
 
 msgid "Add comment now"
+msgstr ""
+
+msgid "Add deploy freeze"
 msgstr ""
 
 msgid "Add domain"
@@ -7079,6 +7085,9 @@ msgstr ""
 msgid "Cron Timezone"
 msgstr ""
 
+msgid "Cron time zone"
+msgstr ""
+
 msgid "Crossplane"
 msgstr ""
 
@@ -7555,6 +7564,9 @@ msgstr ""
 msgid "DefaultBranchLabel|default"
 msgstr ""
 
+msgid "Define a custom deploy freeze pattern with %{cronSyntaxStart}cron syntax%{cronSyntaxEnd}"
+msgstr ""
+
 msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
@@ -7802,6 +7814,9 @@ msgstr[1] ""
 msgid "Deploy Keys"
 msgstr ""
 
+msgid "Deploy freezes"
+msgstr ""
+
 msgid "Deploy key was successfully updated."
 msgstr ""
 
@@ -7815,6 +7830,24 @@ msgid "Deploy to..."
 msgstr ""
 
 msgid "DeployBoard|Matching on the %{appLabel} label has been removed for deploy boards. To see all instances on your board, you must update your chart and redeploy."
+msgstr ""
+
+msgid "DeployFreeze|Freeze end"
+msgstr ""
+
+msgid "DeployFreeze|Freeze start"
+msgstr ""
+
+msgid "DeployFreeze|No deploy freezes exist for this project. To add one, click %{strongStart}Add deploy freeze%{strongEnd}"
+msgstr ""
+
+msgid "DeployFreeze|Specify times when deployments are not allowed for an environment. The <code>gitlab-ci.yml</code> file must be updated to make deployment jobs aware of the %{freeze_period_link_start}freeze period%{freeze_period_link_end}."
+msgstr ""
+
+msgid "DeployFreeze|Time zone"
+msgstr ""
+
+msgid "DeployFreeze|You can specify deploy freezes using only %{cron_syntax_link_start}cron syntax%{cron_syntax_link_end}."
 msgstr ""
 
 msgid "DeployKeys|+%{count} others"
@@ -9505,6 +9538,9 @@ msgstr ""
 msgid "Error: %{error_message}"
 msgstr ""
 
+msgid "Error: Unable to create deploy freeze"
+msgstr ""
+
 msgid "ErrorTracking|Active"
 msgstr ""
 
@@ -10562,6 +10598,12 @@ msgid "Free Trial"
 msgstr ""
 
 msgid "Free Trial of GitLab.com Gold"
+msgstr ""
+
+msgid "Freeze end"
+msgstr ""
+
+msgid "Freeze start"
 msgstr ""
 
 msgid "Frequency"
@@ -11654,6 +11696,9 @@ msgid "GroupRoadmap|%{dateWord} – No end date"
 msgstr ""
 
 msgid "GroupRoadmap|%{startDateInWords} – %{endDateInWords}"
+msgstr ""
+
+msgid "GroupRoadmap|No start and end date"
 msgstr ""
 
 msgid "GroupRoadmap|No start date – %{dateWord}"
@@ -21165,6 +21210,9 @@ msgstr ""
 msgid "Select timeframe"
 msgstr ""
 
+msgid "Select timezone"
+msgstr ""
+
 msgid "Select user"
 msgstr ""
 
@@ -23744,6 +23792,9 @@ msgstr ""
 msgid "There is no data available. Please change your selection."
 msgstr ""
 
+msgid "There is too much data to calculate. Please change your selection."
+msgstr ""
+
 msgid "There was a problem communicating with your device."
 msgstr ""
 
@@ -23811,6 +23862,9 @@ msgid "There was an error fetching the Geo Settings"
 msgstr ""
 
 msgid "There was an error fetching the Node's Groups"
+msgstr ""
+
+msgid "There was an error fetching the deploy freezes."
 msgstr ""
 
 msgid "There was an error fetching the environments information."
@@ -23946,6 +24000,9 @@ msgid "This %{noteableTypeText} is locked."
 msgstr ""
 
 msgid "This %{viewer} could not be displayed because %{reason}. You can %{options} instead."
+msgstr ""
+
+msgid "This Cron pattern is invalid"
 msgstr ""
 
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."

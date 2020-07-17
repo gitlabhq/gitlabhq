@@ -176,7 +176,7 @@ Prevent unintended production releases during a period of time you specify by
 setting a [*deploy freeze* period](../../../ci/environments/deployment_safety.md).
 Deploy freezes help reduce uncertainty and risk when automating deployments.
 
-Use the [Freeze Periods API](../../../api/freeze_periods.md) to set a `freeze_start` and a `freeze_end`, which
+A maintainer can set a deploy freeze window in the user interface or by using the [Freeze Periods API](../../../api/freeze_periods.md) to set a `freeze_start` and a `freeze_end`, which
 are defined as [crontab](https://crontab.guru/) entries.
 
 If the job that's executing is within a freeze period, GitLab CI/CD creates an environment
@@ -192,6 +192,22 @@ deploy_to_production:
   rules:
     - if: $CI_DEPLOY_FREEZE == null
 ```
+
+To set a deploy freeze window in the UI, complete these steps:
+
+1. Sign in to GitLab as a user with project Maintainer [permissions](../../permissions.md).
+1. Navigate to **Project overview**.
+1. In the left navigation menu, navigate to **{settings}** **Settings > CI / CD**.
+1. Scroll to **Deploy freezes**.
+1. Click **Expand** to see the deploy freeze table.
+1. Click **Add deploy freeze** to open the deploy freeze modal.
+1. Enter the start time, end time, and timezone of the desired deploy freeze period.
+1. Click **Add deploy freeze** in the modal.
+
+![Deploy freeze modal for setting a deploy freeze period](img/deploy_freeze_v13_2.png)
+
+CAUTION: **Caution:**
+To edit or delete a deploy freeze, use the [Freeze Periods API](../../../api/freeze_periods.md).
 
 If a project contains multiple freeze periods, all periods apply. If they overlap, the freeze covers the
 complete overlapping period.
