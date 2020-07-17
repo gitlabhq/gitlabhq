@@ -12748,6 +12748,15 @@ msgstr ""
 msgid "Integrations|Standard"
 msgstr ""
 
+msgid "Integrations|This integration has multiple settings available."
+msgstr ""
+
+msgid "Integrations|Use custom settings"
+msgstr ""
+
+msgid "Integrations|Use instance level settings"
+msgstr ""
+
 msgid "Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) will be created."
 msgstr ""
 

@@ -5,6 +5,10 @@ module Gitlab
     def self.install!
       Sidekiq::Manager.prepend SidekiqVersioning::Manager
 
+      Sidekiq.server_middleware do |chain|
+        chain.add SidekiqVersioning::Middleware
+      end
+
       # The Sidekiq client API always adds the queue to the Sidekiq queue
       # list, but mail_room and gitlab-shell do not. This is only necessary
       # for monitoring.

@@ -49,14 +49,18 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('unresolvedDiscussions');
 
+    data.work_in_progress = true;
+
+    expect(bound()).toEqual('workInProgress');
+
     context.onlyAllowMergeIfPipelineSucceeds = true;
     context.isPipelineFailed = true;
 
     expect(bound()).toEqual('pipelineFailed');
 
-    data.work_in_progress = true;
+    context.shouldBeRebased = true;
 
-    expect(bound()).toEqual('workInProgress');
+    expect(bound()).toEqual('rebase');
 
     data.has_conflicts = true;
 

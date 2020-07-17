@@ -1434,6 +1434,7 @@ Information about pagination in a connection.
 | `requirement` | Requirement | Find a single requirement. Available only when feature flag `requirements_management` is enabled. |
 | `requirementStatesCount` | RequirementStatesCount | Number of requirements for the project by their state |
 | `sastCiConfiguration` | SastCiConfiguration | SAST CI configuration for the project |
+| `securityScanners` | SecurityScanners | Information about security analyzers used in the project |
 | `sentryDetailedError` | SentryDetailedError | Detailed version of a Sentry error on the project |
 | `sentryErrors` | SentryErrorCollection | Paginated collection of Sentry errors on the project |
 | `serviceDeskAddress` | String | E-mail address of the service desk. |
@@ -1745,6 +1746,16 @@ Represents a section of a summary of a security report
 | `scannedResourcesCount` | Int | Total number of scanned resources |
 | `scannedResourcesCsvPath` | String | Path to download all the scanned resources in CSV format |
 | `vulnerabilitiesCount` | Int | Total number of vulnerabilities |
+
+## SecurityScanners
+
+Represents a list of security scanners
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `available` | SecurityScannerType! => Array | List of analyzers which are available for the project. |
+| `enabled` | SecurityScannerType! => Array | List of analyzers which are enabled for the project. |
+| `pipelineRun` | SecurityScannerType! => Array | List of analyzers which ran successfully in the latest pipeline. |
 
 ## SentryDetailedError
 

@@ -211,6 +211,15 @@ export default {
     can_revert_on_current_merge_request: true,
     can_cherry_pick_on_current_merge_request: true,
   },
+  codeclimate: {
+    head_path: 'head.json',
+    base_path: 'base.json',
+  },
+  blob_path: {
+    base_path: 'blob_path',
+    head_path: 'blob_path',
+  },
+  codequality_help_path: 'code_quality.html',
   target_branch_path: '/root/acets-app/branches/master',
   source_branch_path: '/root/acets-app/branches/daaaa',
   conflict_resolution_ui_path: '/root/acets-app/-/merge_requests/22/conflicts',

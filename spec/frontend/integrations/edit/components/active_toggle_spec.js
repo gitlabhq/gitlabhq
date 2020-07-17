@@ -1,8 +1,10 @@
 import { mount } from '@vue/test-utils';
-import ActiveToggle from '~/integrations/edit/components/active_toggle.vue';
 import { GlToggle } from '@gitlab/ui';
 
+import ActiveToggle from '~/integrations/edit/components/active_toggle.vue';
+
 const GL_TOGGLE_ACTIVE_CLASS = 'is-checked';
+const GL_TOGGLE_DISABLED_CLASS = 'is-disabled';
 
 describe('ActiveToggle', () => {
   let wrapper;
@@ -11,9 +13,12 @@ describe('ActiveToggle', () => {
     initialActivated: true,
   };
 
-  const createComponent = props => {
+  const createComponent = (props = {}, isInheriting = false) => {
     wrapper = mount(ActiveToggle, {
       propsData: { ...defaultProps, ...props },
+      computed: {
+        isInheriting: () => isInheriting,
+      },
     });
   };
 
@@ -29,6 +34,15 @@ describe('ActiveToggle', () => {
   const findInputInToggle = () => findGlToggle().find('input');
 
   describe('template', () => {
+    describe('is inheriting adminSettings', () => {
+      it('renders GlToggle as disabled', () => {
+        createComponent({}, true);
+
+        expect(findGlToggle().exists()).toBe(true);
+        expect(findButtonInToggle().classes()).toContain(GL_TOGGLE_DISABLED_CLASS);
+      });
+    });
+
     describe('initialActivated is false', () => {
       it('renders GlToggle as inactive', () => {
         createComponent({

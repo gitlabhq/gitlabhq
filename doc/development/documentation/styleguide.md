@@ -1346,6 +1346,11 @@ Tagged and released versions of GitLab documentation are available:
 The version introducing a new feature is added to the top of the topic in the documentation to provide
 a helpful link back to how the feature was developed.
 
+TIP: **Tip:**
+Whenever you have documentation related to the `gitlab.rb` file, you're working with a self-managed installation.
+The section or page is therefore likely to apply only to self-managed instances.
+If so, the relevant "`TIER` ONLY" [Product badge](#product-badges) should be included at the highest applicable heading level.
+
 ### Text for documentation requiring version text
 
 - For features that need to declare the GitLab version that the feature was introduced. Text similar

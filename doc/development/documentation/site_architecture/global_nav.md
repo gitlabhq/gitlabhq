@@ -16,6 +16,22 @@ Global navigation (the left-most pane in our three pane documentation) provides:
 - The ability to refine landing pages, so they don't have to do all the work of surfacing
   every page contained within the documentation.
 
+## Quick start
+
+To add a topic to the global nav, go to the directory that contains
+[navigation files](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/)
+and edit the `yaml` file for your product area. You can copy an existing nav entry and
+edit it to point to your topic.
+
+The files are:
+
+| File                  | Document                                                           | Location                                              |
+|-----------------------|--------------------------------------------------------------------|-------------------------------------------------------|
+| `charts-nav.yaml`     | GitLab cloud native Helm Chart                                     | `https://docs.gitlab.com/charts/`                     |
+| `default-nav.yaml`    | GitLab Docs                                                        | `https://docs.gitlab.com/ee/`              |
+| `omnibus-nav.yaml`    | Omnibus GitLab Docs                                                | `https://docs.gitlab.com/omnibus/`         |
+| `runner-nav.yaml`     | GitLab Runner Docs                                                 | `https://docs.gitlab.com/runner/`                     |
+
 ## Adding new items
 
 All new pages need a new navigation item. Without a navigation, the page becomes "orphaned". That

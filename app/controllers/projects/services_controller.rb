@@ -21,10 +21,12 @@ class Projects::ServicesController < Projects::ApplicationController
   layout "project_settings"
 
   def edit
+    @admin_integration = Service.instance_for(service.type)
   end
 
   def update
     @service.attributes = service_params[:service]
+    @service.inherit_from_id = nil if service_params[:service][:inherit_from_id].blank?
 
     saved = @service.save(context: :manual_change)
 

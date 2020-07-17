@@ -19,7 +19,7 @@ A. Consider you're a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
-1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md) **(STARTER)**
+1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md)
 1. You verify your changes with [JUnit test reports](../../../ci/junit_test_reports.md) in GitLab CI/CD
 1. You avoid using dependencies whose license is not compatible with your project with [License Compliance reports](../../compliance/license_compliance/index.md) **(ULTIMATE)**
 1. You request the [approval](merge_request_approvals.md) from your manager **(STARTER)**

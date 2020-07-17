@@ -1,0 +1,146 @@
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+import GroupedCodequalityReportsApp from '~/reports/codequality_report/grouped_codequality_reports_app.vue';
+import CodequalityIssueBody from '~/reports/codequality_report/components/codequality_issue_body.vue';
+import store from '~/reports/codequality_report/store';
+import { mockParsedHeadIssues, mockParsedBaseIssues } from './mock_data';
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
+describe('Grouped code quality reports app', () => {
+  const Component = localVue.extend(GroupedCodequalityReportsApp);
+  let wrapper;
+  let mockStore;
+
+  const mountComponent = (props = {}) => {
+    wrapper = mount(Component, {
+      store: mockStore,
+      localVue,
+      propsData: {
+        basePath: 'base.json',
+        headPath: 'head.json',
+        baseBlobPath: 'base/blob/path/',
+        headBlobPath: 'head/blob/path/',
+        codequalityHelpPath: 'codequality_help.html',
+        ...props,
+      },
+      methods: {
+        fetchReports: () => {},
+      },
+    });
+  };
+
+  const findWidget = () => wrapper.find('.js-codequality-widget');
+  const findIssueBody = () => wrapper.find(CodequalityIssueBody);
+
+  beforeEach(() => {
+    mockStore = store();
+    mountComponent();
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  describe('when it is loading reports', () => {
+    beforeEach(() => {
+      mockStore.state.isLoading = true;
+    });
+
+    it('should render loading text', () => {
+      expect(findWidget().text()).toEqual('Loading codeclimate report');
+    });
+  });
+
+  describe('when base and head reports are loaded and compared', () => {
+    describe('with no issues', () => {
+      beforeEach(() => {
+        mockStore.state.newIssues = [];
+        mockStore.state.resolvedIssues = [];
+      });
+
+      it('renders no changes text', () => {
+        expect(findWidget().text()).toEqual('No changes to code quality');
+      });
+    });
+
+    describe('with issues', () => {
+      describe('with new issues', () => {
+        beforeEach(() => {
+          mockStore.state.newIssues = [mockParsedHeadIssues[0]];
+          mockStore.state.resolvedIssues = [];
+        });
+
+        it('renders summary text', () => {
+          expect(findWidget().text()).toContain('Code quality degraded on 1 point');
+        });
+
+        it('renders custom codequality issue body', () => {
+          expect(findIssueBody().props('issue')).toEqual(mockParsedHeadIssues[0]);
+        });
+      });
+
+      describe('with resolved issues', () => {
+        beforeEach(() => {
+          mockStore.state.newIssues = [];
+          mockStore.state.resolvedIssues = [mockParsedBaseIssues[0]];
+        });
+
+        it('renders summary text', () => {
+          expect(findWidget().text()).toContain('Code quality improved on 1 point');
+        });
+
+        it('renders custom codequality issue body', () => {
+          expect(findIssueBody().props('issue')).toEqual(mockParsedBaseIssues[0]);
+        });
+      });
+
+      describe('with new and resolved issues', () => {
+        beforeEach(() => {
+          mockStore.state.newIssues = [mockParsedHeadIssues[0]];
+          mockStore.state.resolvedIssues = [mockParsedBaseIssues[0]];
+        });
+
+        it('renders summary text', () => {
+          expect(findWidget().text()).toContain(
+            'Code quality improved on 1 point and degraded on 1 point',
+          );
+        });
+
+        it('renders custom codequality issue body', () => {
+          expect(findIssueBody().props('issue')).toEqual(mockParsedHeadIssues[0]);
+        });
+      });
+    });
+  });
+
+  describe('when there is a head report but no base report', () => {
+    beforeEach(() => {
+      mockStore.state.basePath = null;
+      mockStore.state.hasError = true;
+    });
+
+    it('renders error text', () => {
+      expect(findWidget().text()).toEqual('Failed to load codeclimate report');
+    });
+
+    it('renders a help icon with more information', () => {
+      expect(findWidget().html()).toContain('ic-question');
+    });
+  });
+
+  describe('on error', () => {
+    beforeEach(() => {
+      mockStore.state.hasError = true;
+    });
+
+    it('renders error text', () => {
+      expect(findWidget().text()).toContain('Failed to load codeclimate report');
+    });
+
+    it('does not render a help icon', () => {
+      expect(findWidget().html()).not.toContain('ic-question');
+    });
+  });
+});

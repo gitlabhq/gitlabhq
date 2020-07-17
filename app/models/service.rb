@@ -364,6 +364,10 @@ class Service < ApplicationRecord
     exists?(instance: true, type: type)
   end
 
+  def self.instance_for(type)
+    find_by(instance: true, type: type)
+  end
+
   # override if needed
   def supports_data_fields?
     false

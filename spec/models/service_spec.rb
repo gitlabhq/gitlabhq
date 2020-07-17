@@ -386,6 +386,33 @@ RSpec.describe Service do
     end
   end
 
+  describe 'instance' do
+    describe '.instance_for' do
+      let_it_be(:jira_service) { create(:jira_service, :instance) }
+      let_it_be(:slack_service) { create(:slack_service, :instance) }
+
+      subject { described_class.instance_for(type) }
+
+      context 'Hipchat serivce' do
+        let(:type) { 'HipchatService' }
+
+        it { is_expected.to eq(nil) }
+      end
+
+      context 'Jira serivce' do
+        let(:type) { 'JiraService' }
+
+        it { is_expected.to eq(jira_service) }
+      end
+
+      context 'Slack serivce' do
+        let(:type) { 'SlackService' }
+
+        it { is_expected.to eq(slack_service) }
+      end
+    end
+  end
+
   describe "{property}_changed?" do
     let(:service) do
       BambooService.create(

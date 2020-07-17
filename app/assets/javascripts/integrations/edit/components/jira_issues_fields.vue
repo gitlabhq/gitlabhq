@@ -89,8 +89,8 @@ export default {
           }}
         </p>
         <template v-if="showJiraIssuesIntegration">
-          <input name="service[issues_enabled]" type="hidden" value="false" />
-          <gl-form-checkbox v-model="enableJiraIssues" name="service[issues_enabled]">
+          <input name="service[issues_enabled]" type="hidden" :value="enableJiraIssues || false" />
+          <gl-form-checkbox v-model="enableJiraIssues">
             {{ s__('JiraService|Enable Jira issues') }}
             <template #help>
               {{

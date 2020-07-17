@@ -37,6 +37,7 @@ import eventHub from './event_hub';
 import notify from '~/lib/utils/notify';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import TerraformPlan from './components/terraform/mr_widget_terraform_container.vue';
+import GroupedCodequalityReportsApp from '../reports/codequality_report/grouped_codequality_reports_app.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
 import { setFaviconOverlay } from '../lib/utils/common_utils';
 import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
@@ -75,6 +76,7 @@ export default {
     'mr-widget-auto-merge-failed': AutoMergeFailed,
     'mr-widget-rebase': RebaseState,
     SourceBranchRemovalStatus,
+    GroupedCodequalityReportsApp,
     GroupedTestReportsApp,
     TerraformPlan,
     GroupedAccessibilityReportsApp,
@@ -110,6 +112,9 @@ export default {
     },
     shouldSuggestPipelines() {
       return gon.features?.suggestPipeline && !this.mr.hasCI && this.mr.mergeRequestAddCiConfigPath;
+    },
+    shouldRenderCodeQuality() {
+      return this.mr?.codeclimate?.head_path;
     },
     shouldRenderRelatedLinks() {
       return Boolean(this.mr.relatedLinks) && !this.mr.isNothingToMergeState;
@@ -380,6 +385,15 @@ export default {
       :mr="mr"
     />
     <div class="mr-section-container mr-widget-workflow">
+      <grouped-codequality-reports-app
+        v-if="shouldRenderCodeQuality"
+        :base-path="mr.codeclimate.base_path"
+        :head-path="mr.codeclimate.head_path"
+        :head-blob-path="mr.headBlobPath"
+        :base-blob-path="mr.baseBlobPath"
+        :codequality-help-path="mr.codequalityHelpPath"
+      />
+
       <grouped-test-reports-app
         v-if="mr.testResultsPath"
         class="js-reports-container"

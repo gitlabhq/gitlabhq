@@ -9885,6 +9885,11 @@ type Project {
   sastCiConfiguration: SastCiConfiguration
 
   """
+  Information about security analyzers used in the project
+  """
+  securityScanners: SecurityScanners
+
+  """
   Detailed version of a Sentry error on the project
   """
   sentryDetailedError(
@@ -12051,6 +12056,37 @@ type SecurityReportSummarySection {
   Total number of vulnerabilities
   """
   vulnerabilitiesCount: Int
+}
+
+"""
+The type of the security scanner.
+"""
+enum SecurityScannerType {
+  CONTAINER_SCANNING
+  DAST
+  DEPENDENCY_SCANNING
+  SAST
+  SECRET_DETECTION
+}
+
+"""
+Represents a list of security scanners
+"""
+type SecurityScanners {
+  """
+  List of analyzers which are available for the project.
+  """
+  available: [SecurityScannerType!]
+
+  """
+  List of analyzers which are enabled for the project.
+  """
+  enabled: [SecurityScannerType!]
+
+  """
+  List of analyzers which ran successfully in the latest pipeline.
+  """
+  pipelineRun: [SecurityScannerType!]
 }
 
 """

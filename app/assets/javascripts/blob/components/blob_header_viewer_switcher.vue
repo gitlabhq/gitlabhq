@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import {
   RICH_BLOB_VIEWER,
   RICH_BLOB_VIEWER_TITLE,
@@ -11,7 +11,7 @@ export default {
   components: {
     GlIcon,
     GlButtonGroup,
-    GlDeprecatedButton,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -46,7 +46,7 @@ export default {
 </script>
 <template>
   <gl-button-group class="js-blob-viewer-switcher mx-2">
-    <gl-deprecated-button
+    <gl-button
       v-gl-tooltip.hover
       :aria-label="$options.SIMPLE_BLOB_VIEWER_TITLE"
       :title="$options.SIMPLE_BLOB_VIEWER_TITLE"
@@ -55,8 +55,8 @@ export default {
       @click="switchToViewer($options.SIMPLE_BLOB_VIEWER)"
     >
       <gl-icon name="code" :size="14" />
-    </gl-deprecated-button>
-    <gl-deprecated-button
+    </gl-button>
+    <gl-button
       v-gl-tooltip.hover
       :aria-label="$options.RICH_BLOB_VIEWER_TITLE"
       :title="$options.RICH_BLOB_VIEWER_TITLE"
@@ -65,6 +65,6 @@ export default {
       @click="switchToViewer($options.RICH_BLOB_VIEWER)"
     >
       <gl-icon name="document" :size="14" />
-    </gl-deprecated-button>
+    </gl-button>
   </gl-button-group>
 </template>

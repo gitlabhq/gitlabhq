@@ -1,4 +1,4 @@
-import { insertMarkdownText, keypressNoteText } from '~/lib/utils/text_markdown';
+import { insertMarkdownText } from '~/lib/utils/text_markdown';
 
 describe('init markdown', () => {
   let textArea;
@@ -115,15 +115,14 @@ describe('init markdown', () => {
     describe('with selection', () => {
       const text = 'initial selected value';
       const selected = 'selected';
-      let selectedIndex;
-
       beforeEach(() => {
         textArea.value = text;
-        selectedIndex = text.indexOf(selected);
+        const selectedIndex = text.indexOf(selected);
         textArea.setSelectionRange(selectedIndex, selectedIndex + selected.length);
       });
 
       it('applies the tag to the selected value', () => {
+        const selectedIndex = text.indexOf(selected);
         const tag = '*';
 
         insertMarkdownText({
@@ -154,29 +153,6 @@ describe('init markdown', () => {
         expect(textArea.value).toEqual(text.replace(selected, `[${selected}](url)`));
       });
 
-      it.each`
-        key    | expected
-        ${'['} | ${`[${selected}]`}
-        ${'*'} | ${`**${selected}**`}
-        ${"'"} | ${`'${selected}'`}
-        ${'_'} | ${`_${selected}_`}
-        ${'`'} | ${`\`${selected}\``}
-        ${'"'} | ${`"${selected}"`}
-        ${'{'} | ${`{${selected}}`}
-        ${'('} | ${`(${selected})`}
-        ${'<'} | ${`<${selected}>`}
-      `('generates $expected when $key is pressed', ({ key, expected }) => {
-        const event = new KeyboardEvent('keydown', { key });
-
-        textArea.addEventListener('keydown', keypressNoteText);
-        textArea.dispatchEvent(event);
-
-        expect(textArea.value).toEqual(text.replace(selected, expected));
-
-        // cursor placement should be after selection + 2 tag lengths
-        expect(textArea.selectionStart).toBe(selectedIndex + expected.length);
-      });
-
       describe('and text to be selected', () => {
         const tag = '[{text}](url)';
         const select = 'url';
@@ -202,7 +178,7 @@ describe('init markdown', () => {
         it('selects the right text when multiple tags are present', () => {
           const initialValue = `${tag} ${tag} ${selected}`;
           textArea.value = initialValue;
-          selectedIndex = initialValue.indexOf(selected);
+          const selectedIndex = initialValue.indexOf(selected);
           textArea.setSelectionRange(selectedIndex, selectedIndex + selected.length);
           insertMarkdownText({
             textArea,
@@ -228,7 +204,7 @@ describe('init markdown', () => {
           const initialValue = `text ${expectedUrl} text`;
 
           textArea.value = initialValue;
-          selectedIndex = initialValue.indexOf(expectedUrl);
+          const selectedIndex = initialValue.indexOf(expectedUrl);
           textArea.setSelectionRange(selectedIndex, selectedIndex + expectedUrl.length);
 
           insertMarkdownText({

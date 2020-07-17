@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils';
-import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
+
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
+
+import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 
 describe('JiraIssuesFields', () => {
   let wrapper;

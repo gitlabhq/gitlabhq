@@ -10,6 +10,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
     let_it_be(:other_project_label) { create(:label, project: project, title: 'feature') }
     let_it_be(:group_label) { create(:group_label, group: group, title: 'dev') }
     let_it_be(:current_user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     let(:iid) { 5 }
     let(:key) { 'PROJECT-5' }
@@ -17,8 +18,8 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
     let(:description) { 'basic description' }
     let(:created_at) { '2020-01-01 20:00:00' }
     let(:updated_at) { '2020-01-10 20:00:00' }
-    let(:assignee) { double(attrs: { 'displayName' => 'Solver', 'emailAddress' => 'assignee@example.com' }) }
-    let(:reporter) { double(attrs: { 'displayName' => 'Reporter', 'emailAddress' => 'reporter@example.com' }) }
+    let(:assignee) { nil }
+    let(:reporter) { nil }
     let(:jira_status) { 'new' }
 
     let(:parent_field) do
@@ -109,11 +110,12 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
       end
 
       context 'author' do
-        context 'when reporter maps to a valid GitLab user' do
-          let!(:user) { create(:user, email: 'reporter@example.com') }
+        let(:reporter) { double(attrs: { 'displayName' => 'Solver', 'accountId' => 'abcd' }) }
 
+        context 'when reporter maps to a valid GitLab user' do
           it 'sets the issue author to the mapped user' do
-            project.add_developer(user)
+            expect(Gitlab::JiraImport).to receive(:get_user_mapping).with(project.id, 'abcd')
+              .and_return(user.id)
 
             expect(subject[:author_id]).to eq(user.id)
           end
@@ -121,6 +123,9 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
 
         context 'when reporter does not map to a valid Gitlab user' do
           it 'defaults the issue author to project creator' do
+            expect(Gitlab::JiraImport).to receive(:get_user_mapping).with(project.id, 'abcd')
+              .and_return(nil)
+
             expect(subject[:author_id]).to eq(current_user.id)
           end
         end
@@ -129,25 +134,30 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
           let(:reporter) { nil }
 
           it 'defaults the issue author to project creator' do
+            expect(Gitlab::JiraImport).not_to receive(:get_user_mapping)
+
             expect(subject[:author_id]).to eq(current_user.id)
           end
         end
 
-        context 'when reporter field is missing email address' do
+        context 'when reporter field is missing accountId' do
           let(:reporter) { double(attrs: { 'displayName' => 'Reporter' }) }
 
           it 'defaults the issue author to project creator' do
+            expect(Gitlab::JiraImport).not_to receive(:get_user_mapping)
+
             expect(subject[:author_id]).to eq(current_user.id)
           end
         end
       end
 
       context 'assignee' do
-        context 'when assignee maps to a valid GitLab user' do
-          let!(:user) { create(:user, email: 'assignee@example.com') }
+        let(:assignee) { double(attrs: { 'displayName' => 'Solver', 'accountId' => '1234' }) }
 
+        context 'when assignee maps to a valid GitLab user' do
           it 'sets the issue assignees to the mapped user' do
-            project.add_developer(user)
+            expect(Gitlab::JiraImport).to receive(:get_user_mapping).with(project.id, '1234')
+              .and_return(user.id)
 
             expect(subject[:assignee_ids]).to eq([user.id])
           end
@@ -155,6 +165,9 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
 
         context 'when assignee does not map to a valid GitLab user' do
           it 'leaves the assignee empty' do
+            expect(Gitlab::JiraImport).to receive(:get_user_mapping).with(project.id, '1234')
+              .and_return(nil)
+
             expect(subject[:assignee_ids]).to be_nil
           end
         end
@@ -163,14 +176,18 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
           let(:assignee) { nil }
 
           it 'leaves the assignee empty' do
+            expect(Gitlab::JiraImport).not_to receive(:get_user_mapping)
+
             expect(subject[:assignee_ids]).to be_nil
           end
         end
 
-        context 'when assginee field is missing email address' do
-          let(:assignee) { double(attrs: { 'displayName' => 'Reporter' }) }
+        context 'when assginee field is missing accountId' do
+          let(:assignee) { double(attrs: { 'displayName' => 'Solver' }) }
 
           it 'leaves the assignee empty' do
+            expect(Gitlab::JiraImport).not_to receive(:get_user_mapping)
+
             expect(subject[:assignee_ids]).to be_nil
           end
         end

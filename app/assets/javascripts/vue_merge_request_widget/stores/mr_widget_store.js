@@ -185,6 +185,13 @@ export default class MergeRequestStore {
     this.pipelinesEmptySvgPath = data.pipelines_empty_svg_path;
     this.humanAccess = data.human_access;
     this.newPipelinePath = data.new_project_pipeline_path;
+
+    // codeclimate
+    const blobPath = data.blob_path || {};
+    this.headBlobPath = blobPath.head_path || '';
+    this.baseBlobPath = blobPath.base_path || '';
+    this.codequalityHelpPath = data.codequality_help_path;
+    this.codeclimate = data.codeclimate;
   }
 
   get isNothingToMergeState() {

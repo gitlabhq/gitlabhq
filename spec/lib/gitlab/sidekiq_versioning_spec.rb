@@ -35,6 +35,12 @@ RSpec.describe Gitlab::SidekiqVersioning, :redis do
       expect(Sidekiq::Manager).to include(Gitlab::SidekiqVersioning::Manager)
     end
 
+    it 'adds the SidekiqVersioning::Middleware Sidekiq server middleware' do
+      described_class.install!
+
+      expect(Sidekiq.server_middleware.entries.map(&:klass)).to include(Gitlab::SidekiqVersioning::Middleware)
+    end
+
     it 'registers all versionless and versioned queues with Redis' do
       described_class.install!
 

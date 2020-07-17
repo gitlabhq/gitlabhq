@@ -1,34 +1,29 @@
 import { shallowMount } from '@vue/test-utils';
+import { createStore } from '~/integrations/edit/store';
 import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
+import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
 import ActiveToggle from '~/integrations/edit/components/active_toggle.vue';
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
+import { mockIntegrationProps } from 'jest/integrations/edit/mock_data';
 
 describe('IntegrationForm', () => {
   let wrapper;
 
-  const defaultProps = {
-    activeToggleProps: {
-      initialActivated: true,
-    },
-    showActive: true,
-    triggerFieldsProps: {
-      initialTriggerCommit: false,
-      initialTriggerMergeRequest: false,
-      initialEnableComments: false,
-    },
-    jiraIssuesProps: {},
-    type: '',
-  };
-
-  const createComponent = (props, featureFlags = {}) => {
+  const createComponent = (customStateProps = {}, featureFlags = {}, initialState = {}) => {
     wrapper = shallowMount(IntegrationForm, {
-      propsData: { ...defaultProps, ...props },
+      propsData: {},
+      store: createStore({
+        customState: { ...mockIntegrationProps, ...customStateProps },
+        ...initialState,
+      }),
       stubs: {
+        OverrideDropdown,
         ActiveToggle,
         JiraTriggerFields,
+        TriggerFields,
       },
       provide: {
         glFeatures: featureFlags,
@@ -43,6 +38,7 @@ describe('IntegrationForm', () => {
     }
   });
 
+  const findOverrideDropdown = () => wrapper.find(OverrideDropdown);
   const findActiveToggle = () => wrapper.find(ActiveToggle);
   const findJiraTriggerFields = () => wrapper.find(JiraTriggerFields);
   const findJiraIssuesFields = () => wrapper.find(JiraIssuesFields);
@@ -138,6 +134,36 @@ describe('IntegrationForm', () => {
         dynamicFields.wrappers.forEach((field, index) => {
           expect(field.props()).toMatchObject(fields[index]);
         });
+      });
+    });
+
+    describe('adminState state is null', () => {
+      it('does not render OverrideDropdown', () => {
+        createComponent(
+          {},
+          {},
+          {
+            adminState: null,
+          },
+        );
+
+        expect(findOverrideDropdown().exists()).toBe(false);
+      });
+    });
+
+    describe('adminState state is an object', () => {
+      it('renders OverrideDropdown', () => {
+        createComponent(
+          {},
+          {},
+          {
+            adminState: {
+              ...mockIntegrationProps,
+            },
+          },
+        );
+
+        expect(findOverrideDropdown().exists()).toBe(true);
       });
     });
   });

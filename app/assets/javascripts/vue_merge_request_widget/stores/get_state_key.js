@@ -11,12 +11,12 @@ export default function deviseState(data) {
     return stateKey.checking;
   } else if (data.has_conflicts) {
     return stateKey.conflicts;
-  } else if (data.work_in_progress) {
-    return stateKey.workInProgress;
   } else if (this.shouldBeRebased) {
     return stateKey.rebase;
   } else if (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed) {
     return stateKey.pipelineFailed;
+  } else if (data.work_in_progress) {
+    return stateKey.workInProgress;
   } else if (this.hasMergeableDiscussionsState) {
     return stateKey.unresolvedDiscussions;
   } else if (this.isPipelineBlocked) {

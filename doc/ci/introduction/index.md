@@ -188,7 +188,7 @@ according to each stage (Verify, Package, Release).
 
 1. **Verify**:
    - Automatically build and test your application with Continuous Integration.
-   - Analyze your source code quality with [GitLab Code Quality](../../user/project/merge_requests/code_quality.md). **(STARTER)**
+   - Analyze your source code quality with [GitLab Code Quality](../../user/project/merge_requests/code_quality.md).
    - Determine the browser performance impact of code changes with [Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md). **(PREMIUM)**
    - Determine the server performance impact of code changes with [Load Performance Testing](../../user/project/merge_requests/load_performance_testing.md). **(PREMIUM)**
    - Perform a series of tests, such as [Container Scanning](../../user/application_security/container_scanning/index.md) **(ULTIMATE)**, [Dependency Scanning](../../user/application_security/dependency_scanning/index.md) **(ULTIMATE)**, and [JUnit tests](../junit_test_reports.md).
