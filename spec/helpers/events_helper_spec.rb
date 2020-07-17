@@ -255,14 +255,6 @@ RSpec.describe EventsHelper do
         it { is_expected.to be(true) }
       end
 
-      context 'the feature flag is off' do
-        before do
-          stub_feature_flags(design_activity_events: false)
-        end
-
-        it { is_expected.to be(false) }
-      end
-
       context 'a project has been assigned' do
         before do
           assign(:project, project)
@@ -273,14 +265,6 @@ RSpec.describe EventsHelper do
         context 'the current user cannot read design activity' do
           before do
             disable_read_design_activity(project)
-          end
-
-          it { is_expected.to be(false) }
-        end
-
-        context 'the feature flag is off' do
-          before do
-            stub_feature_flags(design_activity_events: false)
           end
 
           it { is_expected.to be(false) }
@@ -309,14 +293,6 @@ RSpec.describe EventsHelper do
 
           it { is_expected.to be(false) }
         end
-
-        context 'the feature flag is off' do
-          before do
-            stub_feature_flags(design_activity_events: false)
-          end
-
-          it { is_expected.to be(false) }
-        end
       end
 
       context 'a group has been assigned' do
@@ -340,14 +316,6 @@ RSpec.describe EventsHelper do
           context 'the current user cannot read design activity' do
             before do
               disable_read_design_activity(group)
-            end
-
-            it { is_expected.to be(false) }
-          end
-
-          context 'the feature flag is off' do
-            before do
-              stub_feature_flags(design_activity_events: false)
             end
 
             it { is_expected.to be(false) }

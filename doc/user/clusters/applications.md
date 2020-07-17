@@ -1495,6 +1495,12 @@ NOTE: **Note:**
 Support for installing the AppArmor managed application is provided by the GitLab Container Security group.
 If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Container Security group](https://about.gitlab.com/handbook/product/product-categories/#container-security-group).
 
+## Browse applications logs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36769) in GitLab 13.2.
+
+Logs produced by pods running **GitLab Managed Apps** can be browsed using [**Log Explorer**](../project/clusters/kubernetes_pod_logs.md).
+
 ## Upgrading applications
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24789) in GitLab 11.8.

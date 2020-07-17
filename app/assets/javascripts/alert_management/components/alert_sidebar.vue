@@ -51,9 +51,18 @@ export default {
     <div class="issuable-sidebar js-issuable-update">
       <sidebar-header
         :sidebar-collapsed="sidebarStatus"
+        :project-path="projectPath"
+        :alert="alert"
         @toggle-sidebar="$emit('toggle-sidebar')"
+        @alert-error="$emit('alert-error', $event)"
       />
-      <sidebar-todo v-if="sidebarStatus" :sidebar-collapsed="sidebarStatus" />
+      <sidebar-todo
+        v-if="sidebarStatus"
+        :project-path="projectPath"
+        :alert="alert"
+        :sidebar-collapsed="sidebarStatus"
+        @alert-error="$emit('alert-error', $event)"
+      />
       <sidebar-status
         :project-path="projectPath"
         :alert="alert"

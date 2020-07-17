@@ -130,18 +130,6 @@ RSpec.describe ProjectsController do
 
           expect(json_response['count']).to eq(1)
         end
-
-        context 'the feature flag is disabled' do
-          before do
-            stub_feature_flags(design_activity_events: false)
-          end
-
-          it 'returns correct count' do
-            get_activity(project)
-
-            expect(json_response['count']).to eq(0)
-          end
-        end
       end
     end
 

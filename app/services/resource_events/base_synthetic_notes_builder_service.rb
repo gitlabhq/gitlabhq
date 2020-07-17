@@ -23,11 +23,25 @@ module ResourceEvents
 
     private
 
-    def since_fetch_at(events)
+    def apply_common_filters(events)
+      events = apply_last_fetched_at(events)
+      events = apply_fetch_until(events)
+
+      events
+    end
+
+    def apply_last_fetched_at(events)
       return events unless params[:last_fetched_at].present?
 
-      last_fetched_at = Time.zone.at(params.fetch(:last_fetched_at).to_i)
-      events.created_after(last_fetched_at - NotesFinder::FETCH_OVERLAP)
+      last_fetched_at = params[:last_fetched_at] - NotesFinder::FETCH_OVERLAP
+
+      events.created_after(last_fetched_at)
+    end
+
+    def apply_fetch_until(events)
+      return events unless params[:fetch_until].present?
+
+      events.created_on_or_before(params[:fetch_until])
     end
 
     def resource_parent

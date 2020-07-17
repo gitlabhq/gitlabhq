@@ -1,0 +1,11 @@
+mutation($projectPath: ID!, $iid: String!) {
+  alertTodoCreate(input: { iid: $iid, projectPath: $projectPath }) {
+    errors
+    alert {
+      iid
+    }
+    todo {
+      id
+    }
+  }
+}

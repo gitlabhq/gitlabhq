@@ -14,8 +14,6 @@ want to configure.
 
 ![Integrations list](img/project_services.png)
 
-Below, you will find a list of the currently supported ones accompanied with comprehensive documentation.
-
 ## Integrations listing
 
 Click on the service links to see further configuration instructions and details.
@@ -69,16 +67,16 @@ supported by `push_hooks` and `tag_push_hooks` events won't be executed.
 The number of branches or tags supported can be changed via
 [`push_event_hooks_limit` application setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
-## Services templates
+## Service templates
 
-Services templates is a way to set some predefined values in the Service of
-your liking which will then be pre-filled on each project's Service.
+Service templates are a way to set predefined values for an integration across
+all new projects on the instance.
 
-Read more about [Services templates in this document](services_templates.md).
+Read more about [Service templates in this document](services_templates.md).
 
 ## Troubleshooting integrations
 
-Some integrations use service hooks for integration with external applications. To confirm which ones use service hooks, see the [integrations listing](#integrations-listing). GitLab stores details of service hook requests made within the last 2 days. To view details of the requests, go to the service's configuration page.
+Some integrations use service hooks for integration with external applications. To confirm which ones use service hooks, see the [integrations listing](#integrations-listing) above. GitLab stores details of service hook requests made within the last 2 days. To view details of the requests, go to that integration's configuration page.
 
 The **Recent Deliveries** section lists the details of each request made within the last 2 days:
 
@@ -89,17 +87,17 @@ The **Recent Deliveries** section lists the details of each request made within 
 - Relative time in which the request was made
 
 To view more information about the request's execution, click the respective **View details** link.
-On the details page, you can see the data sent by GitLab (request headers and body) and the data received by GitLab (response headers and body).
+On the details page, you can see the request headers and body sent and received by GitLab.
 
-From this page, you can repeat delivery with the same data by clicking **Resend Request**.
+To repeat a delivery using the same data, click **Resend Request**.
 
 ![Recent deliveries](img/webhook_logs.png)
 
 ### Uninitialized repositories
 
 Some integrations fail with an error `Test Failed. Save Anyway` when you attempt to set them up on
-uninitialized repositories. This is because the default service test uses push data to build the
-payload for the test request, and it fails, because there are no push events for the project.
+uninitialized repositories. Some integrations use push data to build the test payload,
+and this error occurs when no push events exist in the project yet.
 
 To resolve this error, initialize the repository by pushing a test file to the project and set up
 the integration again.

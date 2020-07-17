@@ -26,8 +26,6 @@ class EventFilter
 
   # rubocop: disable CodeReuse/ActiveRecord
   def apply_filter(events)
-    events = apply_feature_flags(events)
-
     case filter
     when PUSH
       events.pushed_action
@@ -51,28 +49,16 @@ class EventFilter
 
   private
 
-  def apply_feature_flags(events)
-    events = events.not_design unless can_view_design_activity?
-
-    events
-  end
-
   def wiki_events(events)
     events.for_wiki_page
   end
 
   def design_events(events)
-    return events.for_design if can_view_design_activity?
-
-    events
+    events.for_design
   end
 
   def filters
     [ALL, PUSH, MERGED, ISSUE, COMMENTS, TEAM, WIKI, DESIGNS]
-  end
-
-  def can_view_design_activity?
-    Feature.enabled?(:design_activity_events)
   end
 end
 

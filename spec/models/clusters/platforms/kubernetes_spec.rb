@@ -204,6 +204,52 @@ RSpec.describe Clusters::Platforms::Kubernetes do
     end
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::KubeClient) }
+
+    context 'ca_pem is a single certificate' do
+      let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/ca_certificate.pem')) }
+      let(:kubernetes) do
+        build(:cluster_platform_kubernetes,
+              :configured,
+              namespace: 'a-namespace',
+              cluster: cluster,
+              ca_pem: ca_pem)
+      end
+
+      it 'adds it to cert_store' do
+        cert = OpenSSL::X509::Certificate.new(ca_pem)
+        cert_store = kubernetes.kubeclient.kubeclient_options[:ssl_options][:cert_store]
+
+        expect(cert_store.verify(cert)).to be true
+      end
+    end
+
+    context 'ca_pem is a chain' do
+      let(:cert_chain) { File.read(Rails.root.join('spec/fixtures/clusters/chain_certificates.pem')) }
+      let(:kubernetes) do
+        build(:cluster_platform_kubernetes,
+              :configured,
+              namespace: 'a-namespace',
+              cluster: cluster,
+              ca_pem: cert_chain)
+      end
+
+      it 'includes chain of certificates' do
+        cert1_file = File.read(Rails.root.join('spec/fixtures/clusters/root_certificate.pem'))
+        cert1 = OpenSSL::X509::Certificate.new(cert1_file)
+
+        cert2_file = File.read(Rails.root.join('spec/fixtures/clusters/intermediate_certificate.pem'))
+        cert2 = OpenSSL::X509::Certificate.new(cert2_file)
+
+        cert3_file = File.read(Rails.root.join('spec/fixtures/clusters/ca_certificate.pem'))
+        cert3 = OpenSSL::X509::Certificate.new(cert3_file)
+
+        cert_store = kubernetes.kubeclient.kubeclient_options[:ssl_options][:cert_store]
+
+        expect(cert_store.verify(cert1)).to be true
+        expect(cert_store.verify(cert2)).to be true
+        expect(cert_store.verify(cert3)).to be true
+      end
+    end
   end
 
   describe '#rbac?' do

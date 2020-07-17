@@ -2023,6 +2023,26 @@ RSpec.describe NotificationService, :mailer do
         let(:notification_trigger) { notification.resolve_all_discussions(merge_request, @u_disabled) }
       end
     end
+
+    describe '#merge_when_pipeline_succeeds' do
+      it 'send notification that merge will happen when pipeline succeeds' do
+        notification.merge_when_pipeline_succeeds(merge_request, assignee)
+        should_email(merge_request.author)
+        should_email(@u_watcher)
+        should_email(@subscriber)
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.merge_when_pipeline_succeeds(merge_request, @u_disabled) }
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.merge_when_pipeline_succeeds(merge_request, @u_disabled) }
+      end
+    end
   end
 
   describe 'Projects', :deliver_mails_inline do

@@ -71,15 +71,15 @@ The following table shows which languages, package managers and frameworks are s
 
 | Language (package managers) / framework                                     | Scan tool                                                                              | Introduced in GitLab Version |
 |-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|------------------------------|
-| .NET Core                                                                   | [Security Code Scan](https://security-code-scan.github.io)                             | 11.0                         |
-| .NET Framework                                                              | [Security Code Scan](https://security-code-scan.github.io)                             | 13.0                         |
-| Any                                                                         | [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) | 11.9    |
-| Apex (Salesforce)                                                           | [PMD](https://pmd.github.io/pmd/index.html)                                            | 12.1                         |
-| C/C++                                                                       | [Flawfinder](https://github.com/david-a-wheeler/flawfinder)                            | 10.7                         |
-| Elixir (Phoenix)                                                            | [Sobelow](https://github.com/nccgroup/sobelow)                                         | 11.10                        |
-| Go                                                                          | [Gosec](https://github.com/securego/gosec)                                             | 10.7                         |
-| Groovy ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Ant, Maven, SBT) |
-| Helm Charts                                                                 | [Kubesec](https://github.com/controlplaneio/kubesec)                                   | 13.1                         |
+| .NET Core                                                                   | [Security Code Scan](https://security-code-scan.github.io)                             | 11.0                             |
+| .NET Framework                                                              | [Security Code Scan](https://security-code-scan.github.io)                             | 13.0                             |
+| Any                                                                         | [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) | 11.9        |
+| Apex (Salesforce)                                                           | [PMD](https://pmd.github.io/pmd/index.html)                                            | 12.1                             |
+| C/C++                                                                       | [Flawfinder](https://github.com/david-a-wheeler/flawfinder)                            | 10.7                             |
+| Elixir (Phoenix)                                                            | [Sobelow](https://github.com/nccgroup/sobelow)                                         | 11.10                            |
+| Go                                                                          | [Gosec](https://github.com/securego/gosec)                                             | 10.7                             |
+| Groovy ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the     [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Ant, Maven, SBT) |
+| Helm Charts                                                                 | [Kubesec](https://github.com/controlplaneio/kubesec)                                   | 13.1                             |
 | Java ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (Ant, SBT) |
 | JavaScript                                                                  | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)       | 11.8, moved to [GitLab Core](https://about.gitlab.com/pricing/) in 13.2  |
 | Kubernetes manifests                                                        | [Kubesec](https://github.com/controlplaneio/kubesec)                                   | 12.6                         |
@@ -89,7 +89,7 @@ The following table shows which languages, package managers and frameworks are s
 | React                                                                       | [ESLint react plugin](https://github.com/yannickcr/eslint-plugin-react)                | 12.5                         |
 | Ruby on Rails                                                               | [brakeman](https://brakemanscanner.org)                                                | 10.3, moved to [GitLab Core](https://about.gitlab.com/pricing/) in 13.1  |
 | Scala ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.0 (SBT) & 11.9 (Ant, Gradle, Maven) |
-| TypeScript                                                                  | [`tslint-config-security`](https://github.com/webschik/tslint-config-security/) | 11.9 |
+| TypeScript                                                                  | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)       | 11.9, merged with ESLint in 13.2 |
 
 NOTE: **Note:**
 The Java analyzers can also be used for variants like the
@@ -529,7 +529,6 @@ registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/security-code-scan:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/sobelow:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/spotbugs:2
-registry.gitlab.com/gitlab-org/security-products/analyzers/tslint:2
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on

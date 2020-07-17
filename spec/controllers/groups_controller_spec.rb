@@ -1164,18 +1164,6 @@ RSpec.describe GroupsController do
 
         expect(json_response['count']).to eq(3)
       end
-
-      context 'the design_activity_events feature flag is disabled' do
-        before do
-          stub_feature_flags(design_activity_events: false)
-        end
-
-        it 'does not include the design activity' do
-          get_activity
-
-          expect(json_response['count']).to eq(1)
-        end
-      end
     end
 
     describe 'GET #issues' do

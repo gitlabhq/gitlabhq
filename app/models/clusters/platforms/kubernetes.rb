@@ -159,7 +159,16 @@ module Clusters
 
         if ca_pem.present?
           opts[:cert_store] = OpenSSL::X509::Store.new
-          opts[:cert_store].add_cert(OpenSSL::X509::Certificate.new(ca_pem))
+
+          file = Tempfile.new('cluster_ca_pem_temp')
+          begin
+            file.write(ca_pem)
+            file.rewind
+            opts[:cert_store].add_file(file.path)
+          ensure
+            file.close
+            file.unlink # deletes the temp file
+          end
         end
 
         opts

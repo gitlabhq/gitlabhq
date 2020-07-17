@@ -46,7 +46,7 @@ class UserRecentEventsFinder
     SQL
 
     # Workaround for https://github.com/rails/rails/issues/24193
-    ensure_design_visibility(Event.from([Arel.sql(sql)]))
+    Event.from([Arel.sql(sql)])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -58,12 +58,5 @@ class UserRecentEventsFinder
 
   def projects
     target_user.project_interactions.to_sql
-  end
-
-  # TODO: remove when the :design_activity_events feature flag is removed.
-  def ensure_design_visibility(events)
-    return events if Feature.enabled?(:design_activity_events)
-
-    events.not_design
   end
 end

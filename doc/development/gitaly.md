@@ -1,7 +1,14 @@
-# GitLab Developers Guide to Working with Gitaly
+---
+stage: Create
+group: Gitaly
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: reference
+---
 
-[Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab CE/EE,
-Workhorse and GitLab-Shell.
+# Gitaly developers guide
+
+[Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab Rails,
+Workhorse and GitLab Shell.
 
 ## Deep Dive
 

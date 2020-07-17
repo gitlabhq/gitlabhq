@@ -125,6 +125,7 @@ module API
       # Keep in alphabetical order
       mount ::API::AccessRequests
       mount ::API::Admin::Ci::Variables
+      mount ::API::Admin::InstanceClusters
       mount ::API::Admin::Sidekiq
       mount ::API::Appearance
       mount ::API::Applications

@@ -9,7 +9,7 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
 
-  SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, tslint, secrets, sobelow, pmd-apex, kubesec"
+  SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec"
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SAST_ANALYZER_IMAGE_TAG: 2
   SAST_DISABLE_DIND: "true"
@@ -95,6 +95,8 @@ eslint-sast:
         - '**/*.html'
         - '**/*.js'
         - '**/*.jsx'
+        - '**/*.ts'
+        - '**/*.tsx'
 
 flawfinder-sast:
   extends: .sast-analyzer
@@ -226,16 +228,3 @@ spotbugs-sast:
         - '**/*.groovy'
         - '**/*.java'
         - '**/*.scala'
-
-tslint-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SECURE_ANALYZERS_PREFIX/tslint:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
-          $SAST_DEFAULT_ANALYZERS =~ /tslint/
-      exists:
-        - '**/*.ts'

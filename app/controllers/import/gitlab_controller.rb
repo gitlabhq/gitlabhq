@@ -16,21 +16,8 @@ class Import::GitlabController < Import::BaseController
     redirect_to status_import_gitlab_url
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def status
-    return super if Feature.enabled?(:new_import_ui)
-
-    @repos = client.projects(starting_page: 1, page_limit: MAX_PROJECT_PAGES, per_page: PER_PAGE_PROJECTS)
-
-    @already_added_projects = find_already_added_projects('gitlab')
-    already_added_projects_names = @already_added_projects.pluck(:import_source)
-
-    @repos = @repos.to_a.reject { |repo| already_added_projects_names.include? repo["path_with_namespace"] }
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  def jobs
-    render json: find_jobs('gitlab')
+    super
   end
 
   def create
@@ -62,6 +49,11 @@ class Import::GitlabController < Import::BaseController
     repos.reject { |repo| already_added_projects_names.include? repo["path_with_namespace"] }
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  override :incompatible_repos
+  def incompatible_repos
+    []
+  end
 
   override :provider_name
   def provider_name

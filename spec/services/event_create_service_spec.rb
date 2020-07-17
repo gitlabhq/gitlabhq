@@ -290,18 +290,6 @@ RSpec.describe EventCreateService do
     let_it_be(:design) { create(:design, project: project) }
     let_it_be(:author) { user }
 
-    shared_examples 'feature flag gated multiple event creation' do
-      context 'the feature flag is off' do
-        before do
-          stub_feature_flags(design_activity_events: false)
-        end
-
-        specify { expect(result).to be_empty }
-        specify { expect { result }.not_to change { Event.count } }
-        specify { expect { result }.not_to exceed_query_limit(0) }
-      end
-    end
-
     describe '#save_designs' do
       let_it_be(:updated) { create_list(:design, 5) }
       let_it_be(:created) { create_list(:design, 3) }
@@ -325,8 +313,6 @@ RSpec.describe EventCreateService do
 
         expect(events.map(&:design)).to match_array(updated)
       end
-
-      it_behaves_like 'feature flag gated multiple event creation'
 
       it 'records the event in the event counter' do
         stub_feature_flags(Gitlab::UsageDataCounters::TrackUniqueActions::FEATURE_FLAG => true)
@@ -355,8 +341,6 @@ RSpec.describe EventCreateService do
 
         expect(events.map(&:design)).to match_array(designs)
       end
-
-      it_behaves_like 'feature flag gated multiple event creation'
 
       it 'records the event in the event counter' do
         stub_feature_flags(Gitlab::UsageDataCounters::TrackUniqueActions::FEATURE_FLAG => true)

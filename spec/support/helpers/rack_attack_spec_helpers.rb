@@ -30,4 +30,16 @@ module RackAttackSpecHelpers
 
     expect(response).to have_gitlab_http_status(:too_many_requests)
   end
+
+  def expect_ok(&block)
+    yield
+
+    expect(response).to have_gitlab_http_status(:ok)
+  end
+
+  def random_next_ip
+    allow_next_instance_of(Rack::Attack::Request) do |instance|
+      allow(instance).to receive(:ip).and_return(FFaker::Internet.ip_v4_address)
+    end
+  end
 end

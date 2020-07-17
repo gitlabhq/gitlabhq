@@ -117,19 +117,21 @@ and the CI YAML file:
    ```
 
 1. In the `.gitlab-ci.yaml` file, define some environment variables to ease
-   development. In this example, `TF_STATE` is the name of the Terraform state
-   (projects may have multiple states), `TF_ADDRESS` is the URL to the state on
-   the GitLab instance where this pipeline runs, and `TF_ROOT` is the directory
-   where the Terraform commands must be executed:
+   development. In this example, `TF_ROOT` is the directory where the Terraform
+   commands must be executed, `TF_ADDRESS` is the URL to the state on the GitLab
+   instance where this pipeline runs, and the final path segment in `TF_ADDRESS`
+   is the name of the Terraform state. Projects may have multiple states, and
+   this name is arbitrary, so in this example we will set it to the name of the
+   project, and we will ensure that the `.terraform` directory is cached between
+   jobs in the pipeline using a cache key based on the state name:
 
    ```yaml
    variables:
-     TF_STATE: ${CI_PROJECT_NAME}
-     TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE}
      TF_ROOT: ${CI_PROJECT_DIR}/environments/cloudflare/production
+     TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
 
    cache:
-     key: ${TF_STATE}
+     key: ${CI_PROJECT_NAME}
      paths:
        - ${TF_ROOT}/.terraform
    ```
@@ -273,12 +275,11 @@ can configure this manually as follows:
 image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
 
 variables:
-  TF_STATE: ${CI_PROJECT_NAME}
-  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE}
   TF_ROOT: ${CI_PROJECT_DIR}/environments/cloudflare/production
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
 
 cache:
-  key: ${TF_STATE}
+  key: ${CI_PROJECT_NAME}
   paths:
     - ${TF_ROOT}/.terraform
 

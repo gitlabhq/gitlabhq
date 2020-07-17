@@ -37,28 +37,15 @@ RSpec.describe UserRecentEventsFinder do
       expect(finder.execute).to be_empty
     end
 
-    describe 'design_activity_events feature flag' do
+    describe 'design activity events' do
       let_it_be(:event_a) { create(:design_event, author: project_owner) }
       let_it_be(:event_b) { create(:design_event, author: project_owner) }
 
-      context 'the design_activity_events feature-flag is enabled' do
-        it 'only includes design events in enabled projects', :aggregate_failures do
-          events = finder.execute
+      it 'only includes design events', :aggregate_failures do
+        events = finder.execute
 
-          expect(events).to include(event_a)
-          expect(events).to include(event_b)
-        end
-      end
-
-      context 'the design_activity_events feature-flag is disabled' do
-        it 'excludes design events', :aggregate_failures do
-          stub_feature_flags(design_activity_events: false)
-
-          events = finder.execute
-
-          expect(events).not_to include(event_a)
-          expect(events).not_to include(event_b)
-        end
+        expect(events).to include(event_a)
+        expect(events).to include(event_b)
       end
     end
   end

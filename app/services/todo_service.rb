@@ -162,9 +162,9 @@ class TodoService
     create_assignment_todo(alert, current_user, [])
   end
 
-  # When user marks an issue as todo
-  def mark_todo(issuable, current_user)
-    attributes = attributes_for_todo(issuable.project, issuable, current_user, Todo::MARKED)
+  # When user marks a target as todo
+  def mark_todo(target, current_user)
+    attributes = attributes_for_todo(target.project, target, current_user, Todo::MARKED)
     create_todos(current_user, attributes)
   end
 

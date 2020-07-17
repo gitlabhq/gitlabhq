@@ -1,5 +1,6 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
+require 'product_analytics/collector_app'
 
 Rails.application.routes.draw do
   concern :access_requestable do
@@ -176,6 +177,9 @@ Rails.application.routes.draw do
     # Used by third parties to verify CI_JOB_JWT, placeholder route
     # in case we decide to move away from doorkeeper-openid_connect
     get 'jwks' => 'doorkeeper/openid_connect/discovery#keys'
+
+    # Product analytics collector
+    match '/collector/i', to: ProductAnalytics::CollectorApp.new, via: :all
   end
   # End of the /-/ scope.
 

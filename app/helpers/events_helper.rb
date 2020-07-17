@@ -69,8 +69,6 @@ module EventsHelper
   end
 
   def designs_visible?
-    return false unless Feature.enabled?(:design_activity_events)
-
     if @project
       design_activity_enabled?(@project)
     elsif @group

@@ -55,20 +55,6 @@ RSpec.describe DashboardController do
 
         expect(json_response['count']).to eq(6)
       end
-
-      describe 'design_activity_events feature flag' do
-        context 'it is off' do
-          before do
-            stub_feature_flags(design_activity_events: false)
-          end
-
-          it 'excludes design activity' do
-            get :activity, params: { format: :json }
-
-            expect(json_response['count']).to eq(4)
-          end
-        end
-      end
     end
 
     context 'when user has no permission to see the event' do

@@ -24,14 +24,12 @@ namespace :import do
   resource :gitlab, only: [:create], controller: :gitlab do
     get :status
     get :callback
-    get :jobs
     get :realtime_changes
   end
 
   resource :bitbucket, only: [:create], controller: :bitbucket do
     get :status
     get :callback
-    get :jobs
     get :realtime_changes
   end
 
@@ -39,7 +37,6 @@ namespace :import do
     post :configure
     get :status
     get :callback
-    get :jobs
     get :realtime_changes
   end
 
@@ -55,7 +52,6 @@ namespace :import do
   resource :fogbugz, only: [:create, :new], controller: :fogbugz do
     get :status
     post :callback
-    get :jobs
     get :realtime_changes
 
     get   :new_user_map,    path: :user_map

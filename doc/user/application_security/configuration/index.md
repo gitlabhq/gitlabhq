@@ -21,7 +21,7 @@ state of each feature. If a job with the expected security report artifact exist
 the feature is considered configured.
 
 NOTE: **Note:**
-if the latest pipeline used [Auto DevOps](../../../topics/autodevops/index.md),
+If the latest pipeline used [Auto DevOps](../../../topics/autodevops/index.md),
 all security features will be configured by default.
 
 ## Limitations

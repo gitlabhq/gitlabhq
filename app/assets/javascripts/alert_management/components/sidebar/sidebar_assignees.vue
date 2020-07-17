@@ -167,7 +167,7 @@ export default {
 
           if (errors[0]) {
             this.$emit(
-              'alert-sidebar-error',
+              'alert-error',
               `${this.$options.i18n.UPDATE_ALERT_ASSIGNEES_GRAPHQL_ERROR} ${errors[0]}.`,
             );
           }

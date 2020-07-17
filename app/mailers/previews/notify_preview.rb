@@ -177,6 +177,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.service_desk_thank_you_email(issue.id).message
   end
 
+  def merge_when_pipeline_succeeds_email
+    Notify.merge_when_pipeline_succeeds_email(user.id, merge_request.id, user.id).message
+  end
+
   private
 
   def project

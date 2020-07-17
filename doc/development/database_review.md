@@ -19,6 +19,10 @@ A database review is required for:
   generally up to the author of a merge request to decide whether or
   not complex queries are being introduced and if they require a
   database review.
+- Changes in usage data metrics that use `count` and `distinct_count`.
+  These metrics could have complex queries over large tables.
+  See the [Telemetry Guide](telemetry/usage_ping.md#implementing-usage-ping)
+  for implementation details.
 
 A database reviewer is expected to look out for obviously complex
 queries in the change and review those closer. If the author does not

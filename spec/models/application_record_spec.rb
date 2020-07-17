@@ -58,4 +58,11 @@ RSpec.describe ApplicationRecord do
       expect(MergeRequest.underscore).to eq('merge_request')
     end
   end
+
+  describe '.at_most' do
+    it 'limits the number of records returned' do
+      create_list(:user, 3)
+      expect(User.at_most(2).count).to eq(2)
+    end
+  end
 end

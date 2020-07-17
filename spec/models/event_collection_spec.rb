@@ -50,24 +50,6 @@ RSpec.describe EventCollection do
         expect(events).to include(wiki_page_event)
       end
 
-      context 'the design_activity_events feature flag is disabled' do
-        before do
-          stub_feature_flags(design_activity_events: false)
-        end
-
-        it 'omits the design events when using to_a' do
-          events = described_class.new(projects).to_a
-
-          expect(events).not_to include(design_event)
-        end
-
-        it 'omits the wiki page events when using all_project_events' do
-          events = described_class.new(projects).all_project_events
-
-          expect(events).not_to include(design_event)
-        end
-      end
-
       it 'includes the design events' do
         collection = described_class.new(projects)
 

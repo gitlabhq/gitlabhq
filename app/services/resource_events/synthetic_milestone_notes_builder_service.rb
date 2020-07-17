@@ -19,7 +19,7 @@ module ResourceEvents
       return [] unless resource.respond_to?(:resource_milestone_events)
 
       events = resource.resource_milestone_events.includes(user: :status) # rubocop: disable CodeReuse/ActiveRecord
-      since_fetch_at(events)
+      apply_common_filters(events)
     end
   end
 end

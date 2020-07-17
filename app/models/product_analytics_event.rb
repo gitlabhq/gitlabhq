@@ -8,6 +8,8 @@ class ProductAnalyticsEvent < ApplicationRecord
 
   belongs_to :project
 
+  validates :event_id, :project_id, :v_collector, :v_etl, presence: true
+
   # There is no default Rails timestamps in the table.
   # collector_tstamp is a timestamp when a collector recorded an event.
   scope :order_by_time, -> { order(collector_tstamp: :desc) }

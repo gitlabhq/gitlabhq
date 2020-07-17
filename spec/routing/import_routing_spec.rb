@@ -90,25 +90,39 @@ RSpec.describe Import::GiteaController, 'routing' do
   end
 end
 
-#   status_import_gitlab GET      /import/gitlab/status(.:format)                                                               import/gitlab#status
-# callback_import_gitlab GET      /import/gitlab/callback(.:format)                                                             import/gitlab#callback
-#     jobs_import_gitlab GET      /import/gitlab/jobs(.:format)                                                                 import/gitlab#jobs
-#          import_gitlab POST     /import/gitlab(.:format)                                                                      import/gitlab#create
+#           status_import_gitlab GET      /import/gitlab/status(.:format)                                                                   import/gitlab#status
+#         callback_import_gitlab GET      /import/gitlab/callback(.:format)                                                                 import/gitlab#callback
+# realtime_changes_import_gitlab GET      /import/gitlab/realtime_changes(.:format)                                                         import/gitlab#realtime_changes
+#                  import_gitlab POST     /import/gitlab(.:format)                                                                          import/gitlab#create
 RSpec.describe Import::GitlabController, 'routing' do
   it_behaves_like 'importer routing' do
     let(:except_actions) { [:new] }
     let(:provider) { 'gitlab' }
+    let(:is_realtime) { true }
   end
 end
 
-#   status_import_bitbucket GET      /import/bitbucket/status(.:format)                                                            import/bitbucket#status
-# callback_import_bitbucket GET      /import/bitbucket/callback(.:format)                                                          import/bitbucket#callback
-#     jobs_import_bitbucket GET      /import/bitbucket/jobs(.:format)                                                              import/bitbucket#jobs
-#          import_bitbucket POST     /import/bitbucket(.:format)                                                                   import/bitbucket#create
+#           status_import_bitbucket GET      /import/bitbucket/status(.:format)                                                             import/bitbucket#status
+#         callback_import_bitbucket GET      /import/bitbucket/callback(.:format)                                                           import/bitbucket#callback
+# realtime_changes_import_bitbucket GET      /import/bitbucket/realtime_changes(.:format)                                                   import/bitbucket#realtime_changes
+#                  import_bitbucket POST     /import/bitbucket(.:format)                                                                    import/bitbucket#create
 RSpec.describe Import::BitbucketController, 'routing' do
   it_behaves_like 'importer routing' do
     let(:except_actions) { [:new] }
     let(:provider) { 'bitbucket' }
+    let(:is_realtime) { true }
+  end
+end
+
+#           status_import_bitbucket_server GET      /import/bitbucket_server/status(.:format)                                               import/bitbucket_server#status
+#         callback_import_bitbucket_server GET      /import/bitbucket_server/callback(.:format)                                             import/bitbucket_server#callback
+# realtime_changes_import_bitbucket_server GET      /import/bitbucket_server/realtime_changes(.:format)                                     import/bitbucket_server#realtime_changes
+#              new_import_bitbucket_server GET      /import/bitbucket_server/new(.:format)                                                  import/bitbucket_server#new
+#                  import_bitbucket_server POST     /import/bitbucket_server(.:format)                                                      import/bitbucket_server#create
+RSpec.describe Import::BitbucketServerController, 'routing' do
+  it_behaves_like 'importer routing' do
+    let(:provider) { 'bitbucket_server' }
+    let(:is_realtime) { true }
   end
 end
 
@@ -138,17 +152,18 @@ RSpec.describe Import::GoogleCodeController, 'routing' do
   end
 end
 
-#          status_import_fogbugz GET      /import/fogbugz/status(.:format)                                                              import/fogbugz#status
-#        callback_import_fogbugz POST     /import/fogbugz/callback(.:format)                                                            import/fogbugz#callback
-#            jobs_import_fogbugz GET      /import/fogbugz/jobs(.:format)                                                                import/fogbugz#jobs
-#    new_user_map_import_fogbugz GET      /import/fogbugz/user_map(.:format)                                                            import/fogbugz#new_user_map
-# create_user_map_import_fogbugz POST     /import/fogbugz/user_map(.:format)                                                            import/fogbugz#create_user_map
-#                 import_fogbugz POST     /import/fogbugz(.:format)                                                                     import/fogbugz#create
-#             new_import_fogbugz GET      /import/fogbugz/new(.:format)                                                                 import/fogbugz#new
+#           status_import_fogbugz GET      /import/fogbugz/status(.:format)                                                             import/fogbugz#status
+#         callback_import_fogbugz POST     /import/fogbugz/callback(.:format)                                                           import/fogbugz#callback
+# realtime_changes_import_fogbugz GET      /import/fogbugz/realtime_changes(.:format)                                                   import/fogbugz#realtime_changes
+#     new_user_map_import_fogbugz GET      /import/fogbugz/user_map(.:format)                                                           import/fogbugz#new_user_map
+#  create_user_map_import_fogbugz POST     /import/fogbugz/user_map(.:format)                                                           import/fogbugz#create_user_map
+#                  import_fogbugz POST     /import/fogbugz(.:format)                                                                    import/fogbugz#create
+#              new_import_fogbugz GET      /import/fogbugz/new(.:format)                                                                import/fogbugz#new
 RSpec.describe Import::FogbugzController, 'routing' do
   it_behaves_like 'importer routing' do
     let(:except_actions) { [:callback] }
     let(:provider) { 'fogbugz' }
+    let(:is_realtime) { true }
   end
 
   it 'to #callback' do

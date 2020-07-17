@@ -83,8 +83,6 @@ class EventCreateService
   end
 
   def save_designs(current_user, create: [], update: [])
-    return [] unless Feature.enabled?(:design_activity_events)
-
     records = create.zip([:created].cycle) + update.zip([:updated].cycle)
     return [] if records.empty?
 
@@ -92,7 +90,6 @@ class EventCreateService
   end
 
   def destroy_designs(designs, current_user)
-    return [] unless Feature.enabled?(:design_activity_events)
     return [] unless designs.present?
 
     create_record_events(designs.zip([:destroyed].cycle), current_user)

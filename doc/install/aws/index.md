@@ -546,7 +546,8 @@ gitlab=# \q
 #### Set up Gitaly
 
 CAUTION: **Caution:**
-In this architecture, having a single Gitaly server creates a single point of failure. This limitation will be removed once [Gitaly Cluster](https://gitlab.com/groups/gitlab-org/-/epics/1489) is released.
+In this architecture, having a single Gitaly server creates a single point of failure. Use
+[Gitaly Cluster](../../administration/gitaly/praefect.md) to remove this limitation.
 
 Gitaly is a service that provides high-level RPC access to Git repositories.
 It should be enabled and configured on a separate EC2 instance in one of the

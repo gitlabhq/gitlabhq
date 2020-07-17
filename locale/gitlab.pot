@@ -2106,6 +2106,9 @@ msgstr ""
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
 msgstr ""
 
+msgid "AlertManagement|There was an error while updating the To Do of the alert."
+msgstr ""
+
 msgid "AlertManagement|There was an error while updating the assignee(s) list. Please try again."
 msgstr ""
 
@@ -10357,9 +10360,6 @@ msgstr ""
 msgid "Filter pipelines"
 msgstr ""
 
-msgid "Filter projects"
-msgstr ""
-
 msgid "Filter results"
 msgstr ""
 
@@ -10565,18 +10565,6 @@ msgid "From %{providerTitle}"
 msgstr ""
 
 msgid "From <code>%{source_title}</code> into"
-msgstr ""
-
-msgid "From Bitbucket"
-msgstr ""
-
-msgid "From Bitbucket Server"
-msgstr ""
-
-msgid "From FogBugz"
-msgstr ""
-
-msgid "From GitLab.com"
 msgstr ""
 
 msgid "From Google Code"
@@ -11051,9 +11039,6 @@ msgid "Get started!"
 msgstr ""
 
 msgid "Getting started with releases"
-msgstr ""
-
-msgid "Git"
 msgstr ""
 
 msgid "Git LFS is not enabled on this GitLab server, contact your admin."
@@ -14546,6 +14531,9 @@ msgstr ""
 msgid "Merge request dependencies"
 msgstr ""
 
+msgid "Merge request was scheduled to merge after pipeline succeeds"
+msgstr ""
+
 msgid "Merge requests"
 msgstr ""
 
@@ -16249,9 +16237,6 @@ msgstr ""
 msgid "One or more of your %{provider} projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr ""
 
-msgid "One or more of your Bitbucket projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
-msgstr ""
-
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr ""
 
@@ -17303,9 +17288,6 @@ msgid "Please contact your administrator."
 msgstr ""
 
 msgid "Please convert %{linkStart}them to Git%{linkEnd}, and go through the %{linkToImportFlow} again."
-msgstr ""
-
-msgid "Please convert them to %{link_to_git}, and go through the %{link_to_import_flow} again."
 msgstr ""
 
 msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
@@ -19234,9 +19216,6 @@ msgstr ""
 msgid "Queued"
 msgstr ""
 
-msgid "Quick actions"
-msgstr ""
-
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
@@ -20483,9 +20462,6 @@ msgid "Scroll up"
 msgstr ""
 
 msgid "Search"
-msgstr ""
-
-msgid "Search Button"
 msgstr ""
 
 msgid "Search Jira issues"
@@ -24801,9 +24777,6 @@ msgstr ""
 msgid "To start serving your jobs you can either add specific Runners to your project or use shared Runners"
 msgstr ""
 
-msgid "To this GitLab instance"
-msgstr ""
-
 msgid "To view all %{scannedResourcesCount} scanned URLs, please download the CSV file"
 msgstr ""
 
@@ -26826,6 +26799,9 @@ msgstr ""
 msgid "You"
 msgstr ""
 
+msgid "You already have pending todo for this alert"
+msgstr ""
+
 msgid "You are about to delete %{domain} from your instance. This domain will no longer be available to any Knative application."
 msgstr ""
 
@@ -27103,6 +27079,9 @@ msgid "You have declined the invitation to join %{label}."
 msgstr ""
 
 msgid "You have imported from this project %{numberOfPreviousImports} times before. Each new import will create duplicate issues."
+msgstr ""
+
+msgid "You have insufficient permissions to create a Todo for this alert"
 msgstr ""
 
 msgid "You have no permissions"
@@ -28912,6 +28891,9 @@ msgid "vulnerability|Undo dismiss"
 msgstr ""
 
 msgid "vulnerability|dismissed"
+msgstr ""
+
+msgid "was scheduled to merge after pipeline succeeds by"
 msgstr ""
 
 msgid "wiki page"

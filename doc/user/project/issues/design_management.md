@@ -60,6 +60,15 @@ and [PDFs](https://gitlab.com/gitlab-org/gitlab/-/issues/32811) is planned for a
 - Only the latest version of the designs can be deleted.
 - Deleted designs cannot be recovered but you can see them on previous designs versions.
 
+## GitLab-Figma plugin
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-figma-plugin/-/issues/2) in GitLab 13.2.
+
+Connect your design environment with your source code management in a seamless workflow. The GitLab-Figma plugin makes it quick and easy to collaborate in GitLab by bringing the work of product designers directly from Figma to GitLab Issues as uploaded Designs.
+
+To use the plugin, install it from the [Figma Directory](https://www.figma.com/community/plugin/860845891704482356)
+and connect to GitLab through a personal access token. The details are explained in the [plugin documentation](https://gitlab.com/gitlab-org/gitlab-figma-plugin/-/wikis/home).
+
 ## The Design Management section
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223193) in GitLab 13.2, Designs are displayed directly on the issue description rather than on a separate tab.
@@ -250,32 +259,10 @@ Feature.disable(:design_management_reference_filter_gfm_pipeline)
 
 ## Design activity records
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33051) in GitLab 13.1
-> - It's deployed behind a feature flag, disabled by default.
-> - It's enabled on GitLab.com.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-design-events-core-only). **(CORE ONLY)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33051) in GitLab 13.1.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/225205) in GitLab 13.2.
 
 User activity events on designs (creation, deletion, and updates) are tracked by GitLab and
 displayed on the [user profile](../../profile/index.md#user-profile),
 [group](../../group/index.md#view-group-activity),
 and [project](../index.md#project-activity) activity pages.
-
-### Enable or disable Design Events **(CORE ONLY)**
-
-User activity for designs is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session)
-can enable it for your instance. You're welcome to test it, but use it at your
-own risk.
-
-To enable it:
-
-```ruby
-Feature.enable(:design_activity_events)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:design_activity_events)
-```

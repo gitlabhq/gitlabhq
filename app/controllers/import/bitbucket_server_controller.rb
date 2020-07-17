@@ -52,23 +52,8 @@ class Import::BitbucketServerController < Import::BaseController
     redirect_to status_import_bitbucket_server_path
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def status
-    return super if Feature.enabled?(:new_import_ui)
-
-    @collection = client.repos(page_offset: page_offset, limit: limit_per_page, filter: sanitized_filter_param)
-    @repos, @incompatible_repos = @collection.partition { |repo| repo.valid? }
-
-    # Use the import URL to filter beyond what BaseService#find_already_added_projects
-    @already_added_projects = filter_added_projects('bitbucket_server', @repos.map(&:browse_url))
-    already_added_projects_names = @already_added_projects.pluck(:import_source)
-
-    @repos.reject! { |repo| already_added_projects_names.include?(repo.browse_url) }
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  def jobs
-    render json: find_jobs('bitbucket_server')
+    super
   end
 
   def realtime_changes

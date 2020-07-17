@@ -88,16 +88,6 @@ RSpec.describe EventFilter do
       it 'returns only design events' do
         expect(filtered_events).to contain_exactly(design_event)
       end
-
-      context 'the :design_activity_events feature is disabled' do
-        before do
-          stub_feature_flags(design_activity_events: false)
-        end
-
-        it 'does not return design events' do
-          expect(filtered_events).to match_array(Event.not_design)
-        end
-      end
     end
 
     context 'with the "wiki" filter' do

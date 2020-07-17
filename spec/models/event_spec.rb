@@ -643,15 +643,6 @@ RSpec.describe Event do
       end
     end
 
-    describe '.not_design' do
-      it 'does not contain the design events' do
-        non_design_events = events.reject(&:design?)
-
-        expect(events).not_to match_array(non_design_events)
-        expect(described_class.not_design).to match_array(non_design_events)
-      end
-    end
-
     describe '.for_wiki_page' do
       it 'only contains the wiki page events' do
         wiki_events = events.select(&:wiki_page?)

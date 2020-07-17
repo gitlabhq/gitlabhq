@@ -38,6 +38,10 @@ class ApplicationRecord < ActiveRecord::Base
     false
   end
 
+  def self.at_most(count)
+    limit(count)
+  end
+
   def self.safe_find_or_create_by!(*args)
     safe_find_or_create_by(*args).tap do |record|
       record.validate! unless record.persisted?

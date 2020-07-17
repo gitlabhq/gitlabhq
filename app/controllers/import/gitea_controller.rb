@@ -21,15 +21,17 @@ class Import::GiteaController < Import::GithubController
     super
   end
 
+  protected
+
+  override :provider_name
+  def provider_name
+    :gitea
+  end
+
   private
 
   def host_key
-    :"#{provider}_host_url"
-  end
-
-  override :provider
-  def provider
-    :gitea
+    :"#{provider_name}_host_url"
   end
 
   override :provider_url

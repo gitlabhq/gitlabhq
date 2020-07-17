@@ -11,7 +11,7 @@ module AutoMerge
         yield if block_given?
       end
 
-      # Notify the event that auto merge is enabled or merge param is updated
+      notify(merge_request)
       AutoMergeProcessWorker.perform_async(merge_request.id)
 
       strategy.to_sym
@@ -61,6 +61,10 @@ module AutoMerge
     end
 
     private
+
+    # Overridden in child classes
+    def notify(merge_request)
+    end
 
     def strategy
       strong_memoize(:strategy) do

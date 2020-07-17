@@ -145,11 +145,6 @@
             "enabled" : true
         },
         {
-            "name": "tslint",
-            "label": "TSLint",
-            "enabled" : true
-        },
-        {
             "name": "secrets",
             "label": "Secrets",
             "enabled" : true

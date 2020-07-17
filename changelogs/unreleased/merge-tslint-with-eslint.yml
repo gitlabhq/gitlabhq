@@ -1,0 +1,5 @@
+---
+title: Merge tslint secure analyzer with eslint secure analyzer
+merge_request: 36400
+author:
+type: changed

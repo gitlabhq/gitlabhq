@@ -18,6 +18,11 @@ module Mutations
             null: true,
             description: "The alert after mutation"
 
+      field :todo,
+            Types::TodoType,
+            null: true,
+            description: "The todo after mutation"
+
       field :issue,
             Types::IssueType,
             null: true,

@@ -69,6 +69,7 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService do
       before do
         allow(merge_request)
           .to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
+        expect(MailScheduler::NotificationServiceWorker).to receive(:perform_async).with('merge_when_pipeline_succeeds', merge_request, user).once
 
         service.execute(merge_request)
       end
@@ -90,6 +91,18 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService do
       end
     end
 
+    context 'without feature enabled' do
+      it 'does not send notification' do
+        stub_feature_flags(mwps_notification: false)
+
+        allow(merge_request)
+          .to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
+        expect(MailScheduler::NotificationServiceWorker).not_to receive(:perform_async)
+
+        service.execute(merge_request)
+      end
+    end
+
     context 'already approved' do
       let(:service) { described_class.new(project, user, should_remove_source_branch: true) }
       let(:build)   { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch) }
@@ -106,6 +119,7 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService do
 
       it 'updates the merge params' do
         expect(SystemNoteService).not_to receive(:merge_when_pipeline_succeeds)
+        expect(MailScheduler::NotificationServiceWorker).not_to receive(:perform_async).with('merge_when_pipeline_succeeds', any_args)
 
         service.execute(mr_merge_if_green_enabled)
         expect(mr_merge_if_green_enabled.merge_params).to have_key('should_remove_source_branch')

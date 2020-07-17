@@ -83,9 +83,6 @@ class Event < ApplicationRecord
   scope :for_wiki_page, -> { where(target_type: 'WikiPage::Meta') }
   scope :for_design, -> { where(target_type: 'DesignManagement::Design') }
 
-  # Needed to implement feature flag: can be removed when feature flag is removed
-  scope :not_design, -> { where('target_type IS NULL or target_type <> ?', 'DesignManagement::Design') }
-
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
     # is not always available (depending on the query being built).

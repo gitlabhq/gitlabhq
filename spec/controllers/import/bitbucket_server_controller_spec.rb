@@ -148,28 +148,21 @@ RSpec.describe Import::BitbucketServerController do
       @invalid_repo = double(slug: 'invalid', project_key: 'foobar', full_name: 'asd/foobar', "valid?" => false, browse_url: 'http://bad-repo', name: 'invalid')
       @created_repo = double(slug: 'created', project_key: 'existing', full_name: 'group/created', "valid?" => true, browse_url: 'http://existing')
       assign_session_tokens
-      stub_feature_flags(new_import_ui: false)
     end
 
-    context 'with new_import_ui feature flag enabled' do
-      before do
-        stub_feature_flags(new_import_ui: true)
-      end
+    it 'returns invalid repos' do
+      allow(client).to receive(:repos).with(filter: nil, limit: 25, page_offset: 0).and_return([@repo, @invalid_repo])
 
-      it 'returns invalid repos' do
-        allow(client).to receive(:repos).with(filter: nil, limit: 25, page_offset: 0).and_return([@repo, @invalid_repo])
+      get :status, format: :json
 
-        get :status, format: :json
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['incompatible_repos'].length).to eq(1)
-        expect(json_response.dig("incompatible_repos", 0, "id")).to eq(@invalid_repo.full_name)
-        expect(json_response['provider_repos'].length).to eq(1)
-        expect(json_response.dig("provider_repos", 0, "id")).to eq(@repo.full_name)
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['incompatible_repos'].length).to eq(1)
+      expect(json_response.dig("incompatible_repos", 0, "id")).to eq(@invalid_repo.full_name)
+      expect(json_response['provider_repos'].length).to eq(1)
+      expect(json_response.dig("provider_repos", 0, "id")).to eq(@repo.full_name)
     end
 
-    it_behaves_like 'import controller with new_import_ui feature flag' do
+    it_behaves_like 'import controller status' do
       let(:repo) { @repo }
       let(:repo_id) { @repo.full_name }
       let(:import_source) { @repo.browse_url }
@@ -177,47 +170,14 @@ RSpec.describe Import::BitbucketServerController do
       let(:client_repos_field) { :repos }
     end
 
-    it 'assigns repository categories' do
-      created_project = create(:project, :import_finished, import_type: 'bitbucket_server', creator_id: user.id, import_source: @created_repo.browse_url)
-
-      expect(repos).to receive(:partition).and_return([[@repo, @created_repo], [@invalid_repo]])
-      expect(repos).to receive(:current_page).and_return(1)
-      expect(repos).to receive(:next_page).and_return(2)
-      expect(repos).to receive(:prev_page).and_return(nil)
-      expect(client).to receive(:repos).and_return(repos)
-
-      get :status
-
-      expect(assigns(:already_added_projects)).to eq([created_project])
-      expect(assigns(:repos)).to eq([@repo])
-      expect(assigns(:incompatible_repos)).to eq([@invalid_repo])
-    end
-
     context 'when filtering' do
       let(:filter) { 'test' }
 
       it 'passes filter param to bitbucket client' do
-        expect(repos).to receive(:partition).and_return([[@repo, @created_repo], [@invalid_repo]])
-        expect(client).to receive(:repos).with(filter: filter, limit: 25, page_offset: 0).and_return(repos)
+        expect(client).to receive(:repos).with(filter: filter, limit: 25, page_offset: 0).and_return([@repo])
 
         get :status, params: { filter: filter }, as: :json
       end
-    end
-  end
-
-  describe 'GET jobs' do
-    before do
-      assign_session_tokens
-    end
-
-    it 'returns a list of imported projects' do
-      created_project = create(:project, import_type: 'bitbucket_server', creator_id: user.id)
-
-      get :jobs
-
-      expect(json_response.count).to eq(1)
-      expect(json_response.first['id']).to eq(created_project.id)
-      expect(json_response.first['import_status']).to eq('none')
     end
   end
 end

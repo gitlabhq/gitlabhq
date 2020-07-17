@@ -6,6 +6,8 @@ type: reference
 ---
 
 # Configuring GitLab Runners
+<!-- This topic contains several commented-out sections that were accidentally added in 13.2.-->
+<!-- The commented-out sections will be added back in 13.3.-->
 
 In GitLab CI/CD, Runners run the code defined in [`.gitlab-ci.yml`](../yaml/README.md).
 A GitLab Runner is a lightweight, highly-scalable agent that picks up a CI job through
@@ -37,9 +39,11 @@ multiple projects.
 
 If you are using a self-managed instance of GitLab:
 
-- Your administrator can install and register shared Runners by going to your project's
-  **Settings > CI / CD**, expanding the **Runners** section, and clicking **Show Runner installation instructions**.
-  These instructions are also available [here](https://docs.gitlab.com/runner/install/index.html).
+- Your administrator can install and register shared Runners by viewing the instructions
+  [here](https://docs.gitlab.com/runner/install/index.html).
+  <!-- going to your project's
+  <!-- **Settings > CI / CD**, expanding the **Runners** section, and clicking **Show Runner installation instructions**.-->
+  <!-- These instructions are also available [here](https://docs.gitlab.com/runner/install/index.html).-->
 - The administrator can also configure a maximum number of shared Runner [pipeline minutes for
   each group](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only).
 
@@ -119,22 +123,21 @@ To enable shared Runners:
 
 #### Disable shared Runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23123) for groups in GitLab 13.2.
-
-You can disable shared Runners for individual projects or for groups.
-You must have Owner permissions for the project or group.
+You can disable shared Runners for individual projects<!-- or for groups-->.
+You must have Owner permissions for the project<!-- or group-->.
 
 To disable shared Runners for a project:
 
 1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
 1. In the **Shared Runners** area, click **Disable shared Runners**.
 
-To disable shared Runners for a group:
+<!--To disable shared Runners for a group:
 
 1. Go to the group's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
 1. In the **Shared Runners** area, click **Disable shared Runners globally**.
 1. Optionally, to allow shared Runners to be enabled for individual projects or subgroups,
    click **Allow projects/subgroups to override the global setting**.
+-->
 
 ### Group Runners
 
@@ -156,9 +159,9 @@ To create a group Runner:
 1. Note the URL and token.
 1. [Register the Runner](https://docs.gitlab.com/runner/register/).
 
-#### View and manage group Runners
+<!-- #### View and manage group Runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37366/) in GitLab 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37366/) in GitLab 13.3.
 
 You can view and manage all Runners for a group, its subgroups, and projects.
 You can do this for your self-managed GitLab instance or for GitLab.com.
@@ -180,7 +183,7 @@ You must have [Owner permissions](../../user/permissions.md#group-members-permis
    | Tags         | Tags associated with the Runner |
    | Last contact | Timestamp indicating when the GitLab instance last contacted the Runner |
 
-From this page, you can edit, pause, and remove Runners from the group, its subgroups, and projects.
+From this page, you can edit, pause, and remove Runners from the group, its subgroups, and projects. -->
 
 #### Pause or remove a group Runner
 
@@ -190,9 +193,9 @@ You must have [Owner permissions](../../user/permissions.md#group-members-permis
 1. Go to the group you want to remove or pause the Runner for.
 1. Go to **{settings}** **Settings > CI/CD** and expand the **Runners** section.
 1. Click **Pause** or **Remove Runner**.
-   - If you pause a group Runner that is used by multiple projects, the Runner pauses for all projects.
-   - From the group view, you cannot remove a Runner that is assigned to more than one project.
-     You must remove it from each project first.
+<!--   - If you pause a group Runner that is used by multiple projects, the Runner pauses for all projects. -->
+<!--   - From the group view, you cannot remove a Runner that is assigned to more than one project. -->
+<!--     You must remove it from each project first. -->
 1. On the confirmation dialog, click **OK**.
 
 ### Specific Runners
