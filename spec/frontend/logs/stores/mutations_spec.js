@@ -272,7 +272,8 @@ describe('Logs Store Mutations', () => {
 
       mutations[types.RECEIVE_MANAGED_APPS_DATA_SUCCESS](state, mockManagedApps);
 
-      expect(state.managedApps.options).toEqual(mockManagedApps);
+      expect(state.managedApps.options.length).toEqual(1);
+      expect(state.managedApps.options).toEqual([mockManagedApps[0]]);
       expect(state.managedApps.isLoading).toBe(false);
     });
   });

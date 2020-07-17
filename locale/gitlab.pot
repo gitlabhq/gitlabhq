@@ -474,6 +474,12 @@ msgstr ""
 msgid "%{link_start}Read more%{link_end} about role permissions"
 msgstr ""
 
+msgid "%{link_start}Remove the %{draft_or_wip_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it's ready."
+msgstr ""
+
+msgid "%{link_start}Start the title with %{draft_snippet} or %{wip_snippet}%{link_end} to prevent a merge request that is a work in progress from being merged before it's ready."
+msgstr ""
+
 msgid "%{listToShow}, and %{awardsListLength} more."
 msgstr ""
 
@@ -8500,6 +8506,9 @@ msgstr ""
 msgid "Downvotes"
 msgstr ""
 
+msgid "Draft merge requests can't be merged."
+msgstr ""
+
 msgid "Drop or %{linkStart}upload%{linkEnd} Designs to attach"
 msgstr ""
 
@@ -13139,6 +13148,9 @@ msgid "IssuesAnalytics|Total:"
 msgstr ""
 
 msgid "Issue|Title"
+msgstr ""
+
+msgid "It looks like you have some draft commits in this branch."
 msgstr ""
 
 msgid "It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected."
@@ -24155,9 +24167,6 @@ msgstr ""
 msgid "This is a Premium feature"
 msgstr ""
 
-msgid "This is a Work in Progress"
-msgstr ""
-
 msgid "This is a confidential %{noteableTypeText}."
 msgstr ""
 
@@ -24309,6 +24318,9 @@ msgid "This merge request is closed. To apply this suggestion, edit this file di
 msgstr ""
 
 msgid "This merge request is locked."
+msgstr ""
+
+msgid "This merge request is still a work in progress."
 msgstr ""
 
 msgid "This merge request was merged. To apply this suggestion, edit this file directly."
@@ -28412,6 +28424,9 @@ msgstr ""
 msgid "mrWidget|Loading deployment statistics"
 msgstr ""
 
+msgid "mrWidget|Mark as ready"
+msgstr ""
+
 msgid "mrWidget|Mentions"
 msgstr ""
 
@@ -28467,9 +28482,6 @@ msgid "mrWidget|Remove from merge train"
 msgstr ""
 
 msgid "mrWidget|Request to merge"
-msgstr ""
-
-msgid "mrWidget|Resolve WIP status"
 msgstr ""
 
 msgid "mrWidget|Resolve conflicts"
@@ -28548,9 +28560,6 @@ msgid "mrWidget|To approve this merge request, please enter your password. This 
 msgstr ""
 
 msgid "mrWidget|Use %{linkStart}CI pipelines to test your code%{linkEnd} by simply adding a GitLab CI configuration file to your project. It only takes a minute to make your code more secure and robust."
-msgstr ""
-
-msgid "mrWidget|When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged"
 msgstr ""
 
 msgid "mrWidget|You are not allowed to edit this project directly. Please fork to make changes."

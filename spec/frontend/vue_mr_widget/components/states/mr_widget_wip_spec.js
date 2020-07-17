@@ -84,11 +84,11 @@ describe('Wip', () => {
 
     it('should have correct elements', () => {
       expect(el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(el.innerText).toContain('This is a Work in Progress');
+      expect(el.innerText).toContain('This merge request is still a work in progress.');
       expect(el.querySelector('button').getAttribute('disabled')).toBeTruthy();
       expect(el.querySelector('button').innerText).toContain('Merge');
       expect(el.querySelector('.js-remove-wip').innerText.replace(/\s\s+/g, ' ')).toContain(
-        'Resolve WIP status',
+        'Mark as ready',
       );
     });
 

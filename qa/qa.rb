@@ -376,6 +376,10 @@ module QA
       autoload :Emails, 'qa/page/profile/emails'
       autoload :Password, 'qa/page/profile/password'
       autoload :TwoFactorAuth, 'qa/page/profile/two_factor_auth'
+
+      module Accounts
+        autoload :Show, 'qa/page/profile/accounts/show'
+      end
     end
 
     module Issuable

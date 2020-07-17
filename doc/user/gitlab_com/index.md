@@ -29,7 +29,10 @@ gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
 ## Mail configuration
 
 GitLab.com sends emails from the `mg.gitlab.com` domain via [Mailgun](https://www.mailgun.com/) and has
-its own dedicated IP address (`198.61.254.240`).
+its own dedicated IP address (`192.237.158.143`).  
+
+NOTE: **Note:**
+The IP address for `mg.gitlab.com` is subject to change at any time.
 
 ## Backups
 

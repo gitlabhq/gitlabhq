@@ -56,7 +56,7 @@
       = render 'users/deletion_guidance', user: current_user
 
       %button#delete-account-button.btn.btn-danger.disabled{ data: { toggle: 'modal',
-        target: '#delete-account-modal' } }
+        target: '#delete-account-modal', qa_selector: 'delete_account_button' } }
         = s_('Profiles|Delete account')
 
       #delete-account-modal{ data: { action_url: user_registration_path,

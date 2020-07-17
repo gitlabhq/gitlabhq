@@ -575,6 +575,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       it 'gathers basic components usage data' do
         stub_runtime(:puma)
+        stub_application_setting(container_registry_vendor: 'gitlab', container_registry_version: 'x.y.z')
 
         expect(subject[:app_server][:type]).to eq('puma')
         expect(subject[:gitlab_pages][:enabled]).to eq(Gitlab.config.pages.enabled)
@@ -587,6 +588,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:gitaly][:clusters]).to be >= 0
         expect(subject[:gitaly][:filesystems]).to be_an(Array)
         expect(subject[:gitaly][:filesystems].first).to be_a(String)
+        expect(subject[:container_registry][:vendor]).to eq('gitlab')
+        expect(subject[:container_registry][:version]).to eq('x.y.z')
       end
 
       def stub_runtime(runtime)

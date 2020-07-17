@@ -11,6 +11,7 @@ module QA
           element :ssh_keys, 'SSH Keys' # rubocop:disable QA/ElementWithPattern
           element :profile_emails_link
           element :profile_password_link
+          element :profile_account_link
         end
 
         def click_access_tokens
@@ -22,6 +23,12 @@ module QA
         def click_ssh_keys
           within_sidebar do
             click_link('SSH Keys')
+          end
+        end
+
+        def click_account
+          within_sidebar do
+            click_element(:profile_account_link)
           end
         end
 

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
+import Visibility from 'visibilityjs';
 import { createStore } from '~/monitoring/stores';
 import { GlNewDropdown, GlNewDropdownItem, GlButton } from '@gitlab/ui';
-
 import RefreshButton from '~/monitoring/components/refresh_button.vue';
 
 describe('RefreshButton', () => {
@@ -31,14 +31,8 @@ describe('RefreshButton', () => {
     jest.spyOn(store, 'dispatch').mockResolvedValue();
     dispatch = store.dispatch;
 
-    // Document can be mock hidden by overriding the `hidden` property
     documentHidden = false;
-    Object.defineProperty(document, 'hidden', {
-      configurable: true,
-      get() {
-        return documentHidden;
-      },
-    });
+    jest.spyOn(Visibility, 'hidden').mockImplementation(() => documentHidden);
 
     createWrapper();
   });

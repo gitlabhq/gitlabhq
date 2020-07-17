@@ -1,6 +1,7 @@
 <script>
-import { n__, __ } from '~/locale';
+import Visibility from 'visibilityjs';
 import { mapActions } from 'vuex';
+import { n__, __ } from '~/locale';
 
 import {
   GlButtonGroup,
@@ -98,7 +99,8 @@ export default {
       };
 
       this.stopAutoRefresh();
-      if (document.hidden) {
+
+      if (Visibility.hidden()) {
         // Inactive tab? Skip fetch and schedule again
         schedule();
       } else {

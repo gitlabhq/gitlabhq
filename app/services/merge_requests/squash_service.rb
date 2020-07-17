@@ -7,9 +7,7 @@ module MergeRequests
     def execute
       # If performing a squash would result in no change, then
       # immediately return a success message without performing a squash
-      if merge_request.commits_count < 2 && message.nil?
-        return success(squash_sha: merge_request.diff_head_sha)
-      end
+      return success(squash_sha: merge_request.diff_head_sha) if squash_redundant?
 
       return error(s_('MergeRequests|This project does not allow squashing commits when merge requests are accepted.')) if squash_forbidden?
 
@@ -24,6 +22,12 @@ module MergeRequests
     end
 
     private
+
+    def squash_redundant?
+      return true if merge_request.merged?
+
+      merge_request.commits_count < 2 && message.nil?
+    end
 
     def squash!
       squash_sha = repository.squash(current_user, merge_request, message || merge_request.default_squash_commit_message)

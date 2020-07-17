@@ -32,9 +32,9 @@ RSpec.describe 'Merge request > User resolves Work in Progress', :js do
 
     it 'retains merge request data after clicking Resolve WIP status' do
       expect(page.find('.ci-widget-content')).to have_content("Pipeline ##{pipeline.id}")
-      expect(page).to have_content "This is a Work in Progress"
+      expect(page).to have_content "This merge request is still a work in progress."
 
-      click_button('Resolve WIP status')
+      click_button('Mark as ready')
 
       wait_for_requests
 
@@ -42,7 +42,7 @@ RSpec.describe 'Merge request > User resolves Work in Progress', :js do
       # merge request widget refreshes, which masks missing elements
       # that should already be present.
       expect(page.find('.ci-widget-content', wait: 0)).to have_content("Pipeline ##{pipeline.id}")
-      expect(page).not_to have_content('This is a Work in Progress')
+      expect(page).not_to have_content('This merge request is still a work in progress.')
     end
   end
 end

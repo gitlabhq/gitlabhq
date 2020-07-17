@@ -64,6 +64,23 @@ RSpec.describe MergeRequests::MergeService do
         end
       end
 
+      it 'is idempotent' do
+        repository = project.repository
+        commit_count = repository.commit_count
+        merge_commit = merge_request.merge_commit.id
+
+        # a first invocation of execute is performed on the before block
+        service.execute(merge_request)
+
+        expect(merge_request.merge_error).to be_falsey
+        expect(merge_request).to be_valid
+        expect(merge_request).to be_merged
+
+        expect(repository.commits_by(oids: [merge_commit]).size).to eq(1)
+        expect(repository.commit_count).to eq(commit_count)
+        expect(merge_request.in_progress_merge_commit_sha).to be_nil
+      end
+
       context 'when squashing' do
         let(:merge_params) do
           { commit_message: 'Merge commit message',
@@ -287,6 +304,27 @@ RSpec.describe MergeRequests::MergeService do
               .with(merge_request.source_project, user)
               .and_call_original
             service.execute(merge_request)
+          end
+
+          it 'does not fail to be idempotent when there is a Gitaly error' do
+            # This arose from an issue where Gitaly failed at a certain point
+            # and MergeService kept running PostMergeService and creating
+            # additional notifications. This spec makes sure if a Gitaly error
+            # does happen, MergeService will just quietly keep trying until
+            # the branch is removed.
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/213620#note_331782036
+
+            # This simulates a Gitaly error when trying to delete a branch
+            expect_any_instance_of(Gitlab::GitalyClient::OperationService)
+              .to receive(:user_delete_branch).exactly(4).times
+              .and_raise(GRPC::FailedPrecondition)
+
+            # Only one notification should be sent out:
+            expect(NotificationRecipients::BuildService)
+              .to receive(:build_recipients)
+              .exactly(:once).and_call_original
+
+            4.times { expect { service.execute(merge_request) }.to raise_error(Gitlab::Git::CommandError) }
           end
         end
       end

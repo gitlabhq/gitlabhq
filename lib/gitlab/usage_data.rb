@@ -254,6 +254,10 @@ module Gitlab
             enabled: alt_usage_data(fallback: nil) { Gitlab.config.pages.enabled },
             version: alt_usage_data { Gitlab::Pages::VERSION }
           },
+          container_registry: {
+            vendor: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.container_registry_vendor },
+            version: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.container_registry_version }
+          },
           database: {
             adapter: alt_usage_data { Gitlab::Database.adapter_name },
             version: alt_usage_data { Gitlab::Database.version }

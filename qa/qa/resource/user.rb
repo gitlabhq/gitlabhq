@@ -87,6 +87,8 @@ module QA
 
       def api_delete_path
         "/users/#{id}"
+      rescue NoValueError
+        "/users/#{fetch_id(username)}"
       end
 
       def api_get_path

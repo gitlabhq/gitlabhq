@@ -8,5 +8,6 @@
       %div{ class: "flash-#{key} mb-2" }
         = sprite_icon(icons[key], size: 16, css_class: 'align-middle mr-1') unless icons[key].nil?
         %span= value
-        %div{ class: "close-icon-wrapper js-close-icon" }
-          = sprite_icon('close', size: 16, css_class: 'close-icon')
+        - if %w(alert notice success).include?(key)
+          %div{ class: "close-icon-wrapper js-close-icon" }
+            = sprite_icon('close', size: 16, css_class: 'close-icon')
