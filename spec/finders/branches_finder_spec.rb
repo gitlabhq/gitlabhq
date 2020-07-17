@@ -7,142 +7,255 @@ RSpec.describe BranchesFinder do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 
+  let(:branch_finder) { described_class.new(repository, params) }
+  let(:params) { {} }
+
   describe '#execute' do
+    subject { branch_finder.execute }
+
     context 'sort only' do
-      it 'sorts by name' do
-        branches_finder = described_class.new(repository, {})
+      context 'by name' do
+        let(:params) { {} }
 
-        result = branches_finder.execute
+        it 'sorts' do
+          result = subject
 
-        expect(result.first.name).to eq("'test'")
-      end
-
-      it 'sorts by recently_updated' do
-        branches_finder = described_class.new(repository, { sort: 'updated_desc' })
-
-        result = branches_finder.execute
-
-        recently_updated_branch = repository.branches.max do |a, b|
-          repository.commit(a.dereferenced_target).committed_date <=> repository.commit(b.dereferenced_target).committed_date
+          expect(result.first.name).to eq("'test'")
         end
-
-        expect(result.first.name).to eq(recently_updated_branch.name)
       end
 
-      it 'sorts by last_updated' do
-        branches_finder = described_class.new(repository, { sort: 'updated_asc' })
+      context 'by recently_updated' do
+        let(:params) { { sort: 'updated_desc' } }
 
-        result = branches_finder.execute
+        it 'sorts' do
+          result = subject
 
-        expect(result.first.name).to eq('feature')
+          recently_updated_branch = repository.branches.max do |a, b|
+            repository.commit(a.dereferenced_target).committed_date <=> repository.commit(b.dereferenced_target).committed_date
+          end
+
+          expect(result.first.name).to eq(recently_updated_branch.name)
+        end
+      end
+
+      context 'by last_updated' do
+        let(:params) { { sort: 'updated_asc' } }
+
+        it 'sorts' do
+          result = subject
+
+          expect(result.first.name).to eq('feature')
+        end
       end
     end
 
     context 'filter only' do
-      it 'filters branches by name' do
-        branches_finder = described_class.new(repository, { search: 'fix' })
+      context 'by name' do
+        let(:params) { { search: 'fix' } }
 
-        result = branches_finder.execute
+        it 'filters branches' do
+          result = subject
 
-        expect(result.first.name).to eq('fix')
-        expect(result.count).to eq(1)
+          expect(result.first.name).to eq('fix')
+          expect(result.count).to eq(1)
+        end
       end
 
-      it 'filters branches by name ignoring letter case' do
-        branches_finder = described_class.new(repository, { search: 'FiX' })
+      context 'by name ignoring letter case' do
+        let(:params) { { search: 'FiX' } }
 
-        result = branches_finder.execute
+        it 'filters branches' do
+          result = subject
 
-        expect(result.first.name).to eq('fix')
-        expect(result.count).to eq(1)
+          expect(result.first.name).to eq('fix')
+          expect(result.count).to eq(1)
+        end
       end
 
-      it 'does not find any branch with that name' do
-        branches_finder = described_class.new(repository, { search: 'random' })
+      context 'with an unknown name' do
+        let(:params) { { search: 'random' } }
 
-        result = branches_finder.execute
+        it 'does not find any branch' do
+          result = subject
 
-        expect(result.count).to eq(0)
+          expect(result.count).to eq(0)
+        end
       end
 
-      it 'filters branches by provided names' do
-        branches_finder = described_class.new(repository, { names: %w[fix csv lfs does-not-exist] })
+      context 'by provided names' do
+        let(:params) { { names: %w[fix csv lfs does-not-exist] } }
 
-        result = branches_finder.execute
+        it 'filters branches' do
+          result = subject
 
-        expect(result.count).to eq(3)
-        expect(result.map(&:name)).to eq(%w{csv fix lfs})
+          expect(result.count).to eq(3)
+          expect(result.map(&:name)).to eq(%w{csv fix lfs})
+        end
       end
 
-      it 'filters branches by name that begins with' do
-        params = { search: '^feature_' }
-        branches_finder = described_class.new(repository, params)
+      context 'by name that begins with' do
+        let(:params) { { search: '^feature_' } }
 
-        result = branches_finder.execute
+        it 'filters branches' do
+          result = subject
 
-        expect(result.first.name).to eq('feature_conflict')
-        expect(result.count).to eq(1)
+          expect(result.first.name).to eq('feature_conflict')
+          expect(result.count).to eq(1)
+        end
       end
 
-      it 'filters branches by name that ends with' do
-        params = { search: 'feature$' }
-        branches_finder = described_class.new(repository, params)
+      context 'by name that ends with' do
+        let(:params) { { search: 'feature$' } }
 
-        result = branches_finder.execute
+        it 'filters branches' do
+          result = subject
 
-        expect(result.first.name).to eq('feature')
-        expect(result.count).to eq(1)
+          expect(result.first.name).to eq('feature')
+          expect(result.count).to eq(1)
+        end
       end
 
-      it 'filters branches by nonexistent name that begins with' do
-        params = { search: '^nope' }
-        branches_finder = described_class.new(repository, params)
+      context 'by nonexistent name that begins with' do
+        let(:params) { { search: '^nope' } }
 
-        result = branches_finder.execute
+        it 'filters branches' do
+          result = subject
 
-        expect(result.count).to eq(0)
+          expect(result.count).to eq(0)
+        end
       end
 
-      it 'filters branches by nonexistent name that ends with' do
-        params = { search: 'nope$' }
-        branches_finder = described_class.new(repository, params)
+      context 'by nonexistent name that ends with' do
+        let(:params) { { search: 'nope$' } }
 
-        result = branches_finder.execute
+        it 'filters branches' do
+          result = subject
 
-        expect(result.count).to eq(0)
+          expect(result.count).to eq(0)
+        end
       end
     end
 
     context 'filter and sort' do
-      it 'filters branches by name and sorts by recently_updated' do
-        params = { sort: 'updated_desc', search: 'feat' }
-        branches_finder = described_class.new(repository, params)
+      context 'by name and sorts by recently_updated' do
+        let(:params) { { sort: 'updated_desc', search: 'feat' } }
 
-        result = branches_finder.execute
+        it 'filters branches' do
+          result = subject
 
-        expect(result.first.name).to eq('feature_conflict')
-        expect(result.count).to eq(2)
+          expect(result.first.name).to eq('feature_conflict')
+          expect(result.count).to eq(2)
+        end
       end
 
-      it 'filters branches by name and sorts by recently_updated, with exact matches first' do
-        params = { sort: 'updated_desc', search: 'feature' }
-        branches_finder = described_class.new(repository, params)
+      context 'by name and sorts by recently_updated, with exact matches first' do
+        let(:params) { { sort: 'updated_desc', search: 'feature' } }
 
-        result = branches_finder.execute
+        it 'filters branches' do
+          result = subject
 
-        expect(result.first.name).to eq('feature')
-        expect(result.second.name).to eq('feature_conflict')
-        expect(result.count).to eq(2)
+          expect(result.first.name).to eq('feature')
+          expect(result.second.name).to eq('feature_conflict')
+          expect(result.count).to eq(2)
+        end
       end
 
-      it 'filters branches by name and sorts by last_updated' do
-        params = { sort: 'updated_asc', search: 'feature' }
-        branches_finder = described_class.new(repository, params)
+      context 'by name and sorts by last_updated' do
+        let(:params) { { sort: 'updated_asc', search: 'feature' } }
 
-        result = branches_finder.execute
+        it 'filters branches' do
+          result = subject
 
-        expect(result.first.name).to eq('feature')
-        expect(result.count).to eq(2)
+          expect(result.first.name).to eq('feature')
+          expect(result.count).to eq(2)
+        end
+      end
+    end
+
+    context 'with gitaly pagination' do
+      subject { branch_finder.execute(gitaly_pagination: true) }
+
+      context 'by page_token and per_page' do
+        let(:params) { { page_token: 'feature', per_page: 2 } }
+
+        it 'filters branches' do
+          result = subject
+
+          expect(result.map(&:name)).to eq(%w(feature_conflict fix))
+        end
+      end
+
+      context 'by next page_token and per_page' do
+        let(:params) { { page_token: 'fix', per_page: 2 } }
+
+        it 'filters branches' do
+          result = subject
+
+          expect(result.map(&:name)).to eq(%w(flatten-dir gitattributes))
+        end
+      end
+
+      context 'by per_page only' do
+        let(:params) { { per_page: 2 } }
+
+        it 'filters branches' do
+          result = subject
+
+          expect(result.map(&:name)).to eq(["'test'", '2-mb-file'])
+        end
+      end
+
+      context 'by page_token only' do
+        let(:params) { { page_token: 'feature' } }
+
+        it 'returns nothing' do
+          result = subject
+
+          expect(result.count).to eq(0)
+        end
+      end
+
+      context 'pagination and sort' do
+        context 'by per_page' do
+          let(:params) { { sort: 'updated_asc', per_page: 5 } }
+
+          it 'filters branches' do
+            result = subject
+
+            expect(result.map(&:name)).to eq(%w(feature improve/awesome merge-test markdown feature_conflict))
+          end
+        end
+
+        context 'by page_token and per_page' do
+          let(:params) { { sort: 'updated_asc', page_token: 'improve/awesome', per_page: 2 } }
+
+          it 'filters branches' do
+            result = subject
+
+            expect(result.map(&:name)).to eq(%w(merge-test markdown))
+          end
+        end
+      end
+
+      context 'pagination and names' do
+        let(:params) { { page_token: 'fix', per_page: 2, names: %w[fix csv lfs does-not-exist] } }
+
+        it 'falls back to default execute and ignore paginations' do
+          result = subject
+
+          expect(result.count).to eq(3)
+          expect(result.map(&:name)).to eq(%w{csv fix lfs})
+        end
+      end
+
+      context 'pagination and search' do
+        let(:params) { { page_token: 'feature', per_page: 2, search: '^f' } }
+
+        it 'falls back to default execute and ignore paginations' do
+          result = subject
+
+          expect(result.map(&:name)).to eq(%w(feature feature_conflict fix flatten-dir))
+        end
       end
     end
   end

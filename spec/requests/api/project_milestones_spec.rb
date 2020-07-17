@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe API::ProjectMilestones do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, namespace: user.namespace ) }
-  let_it_be(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
-  let_it_be(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
+  let(:user) { create(:user) }
+  let!(:project) { create(:project, namespace: user.namespace ) }
+  let!(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
+  let!(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
 
   before do
     project.add_developer(user)
@@ -14,65 +14,6 @@ RSpec.describe API::ProjectMilestones do
 
   it_behaves_like 'group and project milestones', "/projects/:id/milestones" do
     let(:route) { "/projects/#{project.id}/milestones" }
-  end
-
-  describe 'GET /projects/:id/milestones' do
-    context 'when include_parent_milestones is true' do
-      let_it_be(:group) { create(:group, :public) }
-      let_it_be(:child_group) { create(:group, :public, parent: group) }
-      let_it_be(:child_project) { create(:project, group: child_group) }
-      let_it_be(:project_milestone) { create(:milestone, project: child_project) }
-      let_it_be(:group_milestone) { create(:milestone, group: group) }
-      let_it_be(:child_group_milestone) { create(:milestone, group: child_group) }
-
-      before do
-        child_project.add_developer(user)
-      end
-
-      it 'includes parent groups milestones' do
-        milestones = [child_group_milestone, group_milestone, project_milestone]
-
-        get api("/projects/#{child_project.id}/milestones", user),
-            params: { include_parent_milestones: true }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to eq(3)
-        expect(json_response.map { |entry| entry["id"] }).to eq(milestones.map(&:id))
-      end
-
-      context 'when user has no access to an ancestor group' do
-        before do
-          [child_group, group].each do |group|
-            group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-          end
-        end
-
-        it 'does not show ancestor group milestones' do
-          milestones = [child_group_milestone, project_milestone]
-
-          get api("/projects/#{child_project.id}/milestones", user),
-              params: { include_parent_milestones: true }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.size).to eq(2)
-          expect(json_response.map { |entry| entry["id"] }).to eq(milestones.map(&:id))
-        end
-      end
-
-      context 'when filtering by iids' do
-        it 'does not filter by iids' do
-          milestones = [child_group_milestone, group_milestone, project_milestone]
-
-          get api("/projects/#{child_project.id}/milestones", user),
-              params: { include_parent_milestones: true, iids: [group_milestone.iid] }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.size).to eq(3)
-
-          expect(json_response.map { |entry| entry["id"] }).to eq(milestones.map(&:id))
-        end
-      end
-    end
   end
 
   describe 'DELETE /projects/:id/milestones/:milestone_id' do

@@ -41,7 +41,7 @@
 
     - if branch.name != @repository.root_ref
       = link_to project_compare_index_path(@project, from: @repository.root_ref, to: branch.name),
-        class: "btn btn-default js-onboarding-compare-branches #{'prepend-left-10' unless merge_project}",
+        class: "btn btn-default js-onboarding-compare-branches #{'gl-ml-3' unless merge_project}",
         method: :post,
         title: s_('Branches|Compare') do
         = s_('Branches|Compare')

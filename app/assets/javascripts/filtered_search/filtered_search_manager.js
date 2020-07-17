@@ -32,6 +32,7 @@ export default class FilteredSearchManager {
     filteredSearchTokenKeys = IssuableFilteredSearchTokenKeys,
     stateFiltersSelector = '.issues-state-filters',
     placeholder = __('Search or filter results...'),
+    anchor = null,
   }) {
     this.isGroup = isGroup;
     this.isGroupAncestor = isGroupAncestor;
@@ -47,6 +48,7 @@ export default class FilteredSearchManager {
     this.filteredSearchTokenKeys = filteredSearchTokenKeys;
     this.stateFiltersSelector = stateFiltersSelector;
     this.placeholder = placeholder;
+    this.anchor = anchor;
 
     const { multipleAssignees } = this.filteredSearchInput.dataset;
     if (multipleAssignees && this.filteredSearchTokenKeys.enableMultipleAssignees) {
@@ -779,7 +781,11 @@ export default class FilteredSearchManager {
       paths.push(`search=${sanitized}`);
     }
 
-    const parameterizedUrl = `?scope=all&utf8=%E2%9C%93&${paths.join('&')}`;
+    let parameterizedUrl = `?scope=all&utf8=%E2%9C%93&${paths.join('&')}`;
+
+    if (this.anchor) {
+      parameterizedUrl += `#${this.anchor}`;
+    }
 
     if (this.updateObject) {
       this.updateObject(parameterizedUrl);

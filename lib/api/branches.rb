@@ -32,14 +32,21 @@ module API
       params do
         use :pagination
         use :filter_params
+
+        optional :page_token, type: String, desc: 'Name of branch to start the paginaition from'
       end
       get ':id/repository/branches' do
         user_project.preload_protected_branches
 
         repository = user_project.repository
 
-        branches = BranchesFinder.new(repository, declared_params(include_missing: false)).execute
-        branches = paginate(::Kaminari.paginate_array(branches))
+        if Feature.enabled?(:branch_list_keyset_pagination, user_project)
+          branches = BranchesFinder.new(repository, declared_params(include_missing: false)).execute(gitaly_pagination: true)
+        else
+          branches = BranchesFinder.new(repository, declared_params(include_missing: false)).execute
+          branches = paginate(::Kaminari.paginate_array(branches))
+        end
+
         merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
         present(

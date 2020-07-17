@@ -7,6 +7,7 @@ export default ({
   isGroupAncestor,
   isGroupDecendent,
   stateFiltersSelector,
+  anchor,
 }) => {
   const filteredSearchEnabled = FilteredSearchManager && document.querySelector('.filtered-search');
   if (filteredSearchEnabled) {
@@ -17,6 +18,7 @@ export default ({
       isGroupDecendent,
       filteredSearchTokenKeys,
       stateFiltersSelector,
+      anchor,
     });
     filteredSearchManager.setup();
   }

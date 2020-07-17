@@ -3507,6 +3507,9 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
+msgid "Available Runners: %{runners}"
+msgstr ""
+
 msgid "Available for dependency and container scanning"
 msgstr ""
 
@@ -4135,6 +4138,9 @@ msgid "Can't create snippet: %{err}"
 msgstr ""
 
 msgid "Can't edit as source branch was deleted"
+msgstr ""
+
+msgid "Can't fetch content for the blob: %{err}"
 msgstr ""
 
 msgid "Can't find HEAD commit for this branch"
@@ -15333,6 +15339,9 @@ msgstr ""
 msgid "Multi-project"
 msgstr ""
 
+msgid "Multi-project Runners cannot be removed"
+msgstr ""
+
 msgid "Multiple IP address ranges are supported."
 msgstr ""
 
@@ -20276,6 +20285,9 @@ msgid "Runner token"
 msgstr ""
 
 msgid "Runner tokens"
+msgstr ""
+
+msgid "Runner was not deleted because it is assigned to multiple projects."
 msgstr ""
 
 msgid "Runner was not updated."
@@ -28167,6 +28179,9 @@ msgstr ""
 msgid "loading"
 msgstr ""
 
+msgid "locked"
+msgstr ""
+
 msgid "locked by %{path_lock_user_name} %{created_at}"
 msgstr ""
 
@@ -28587,6 +28602,9 @@ msgstr[1] ""
 msgid "password"
 msgstr ""
 
+msgid "paused"
+msgstr ""
+
 msgid "pending comment"
 msgstr ""
 
@@ -28756,6 +28774,9 @@ msgid "source"
 msgstr ""
 
 msgid "source diff"
+msgstr ""
+
+msgid "specific"
 msgstr ""
 
 msgid "specified top is not part of the tree"

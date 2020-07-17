@@ -147,10 +147,10 @@ export default {
       return getEndLineNumber(this.lineRange);
     },
     showMultiLineComment() {
-      if (!this.glFeatures.multilineComments) return false;
+      if (!this.glFeatures.multilineComments || !this.discussionRoot) return false;
       if (this.isEditing) return true;
 
-      return this.line && this.discussionRoot && this.startLineNumber !== this.endLineNumber;
+      return this.line && this.startLineNumber !== this.endLineNumber;
     },
     commentLineOptions() {
       if (!this.diffFile || !this.line) return [];

@@ -31,13 +31,11 @@ module API
         end
 
         def list_milestones_for(parent)
-          finder_params = params.merge(milestones_finder_params(parent))
-          milestones = MilestonesFinder.new(finder_params).execute
+          milestones = parent.milestones.order_id_desc
+          milestones = Milestone.filter_by_state(milestones, params[:state])
+          milestones = filter_by_iid(milestones, params[:iids]) if params[:iids].present?
+          milestones = filter_by_title(milestones, params[:title]) if params[:title]
           milestones = filter_by_search(milestones, params[:search]) if params[:search]
-
-          if params[:iids].present? && !params[:include_parent_milestones]
-            milestones = filter_by_iid(milestones, params[:iids])
-          end
 
           present paginate(milestones), with: Entities::Milestone
         end
@@ -97,25 +95,6 @@ module API
           else
             [MergeRequestsFinder, Entities::MergeRequestBasic]
           end
-        end
-
-        def milestones_finder_params(parent)
-          if parent.is_a?(Group)
-            { group_ids: parent.id }
-          else
-            {
-              project_ids: parent.id,
-              group_ids: parent_group_ids(parent)
-            }
-          end
-        end
-
-        def parent_group_ids(parent)
-          return unless params[:include_parent_milestones].present?
-
-          parent.group.self_and_ancestors
-                      .public_or_visible_to_user(current_user)
-                      .select(:id)
         end
       end
     end

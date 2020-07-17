@@ -7,6 +7,6 @@
     %h4.gl-mt-0
       Request details
   .col-lg-9
-    = link_to 'Resend Request', @hook_log.present.retry_path, method: :post, class: "btn btn-default float-right prepend-left-10"
+    = link_to 'Resend Request', @hook_log.present.retry_path, method: :post, class: "btn btn-default float-right gl-ml-3"
 
     = render partial: 'shared/hook_logs/content', locals: { hook_log: @hook_log }

@@ -36,7 +36,7 @@
           %span.hide.js-ci-variables-save-loading-icon
             .spinner.spinner-light.mr-1
           = _('Save variables')
-        %button.btn.btn-info.btn-inverted.prepend-left-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@variables.size == 0}" } }
+        %button.btn.btn-info.btn-inverted.gl-ml-3.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@variables.size == 0}" } }
           - if @variables.size == 0
             = n_('Hide value', 'Hide values', @variables.size)
           - else

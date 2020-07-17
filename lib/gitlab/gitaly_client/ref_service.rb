@@ -110,8 +110,8 @@ module Gitlab
         branch_names.count
       end
 
-      def local_branches(sort_by: nil)
-        request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
+      def local_branches(sort_by: nil, pagination_params: nil)
+        request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo, pagination_params: pagination_params)
         request.sort_by = sort_by_param(sort_by) if sort_by
         response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request, timeout: GitalyClient.fast_timeout)
         consume_find_local_branches_response(response)

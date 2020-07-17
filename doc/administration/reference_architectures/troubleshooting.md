@@ -1,4 +1,4 @@
-# Troubleshooting a reference architecture set up
+# Troubleshooting a reference architecture setup
 
 This page serves as the troubleshooting documentation if you followed one of
 the [reference architectures](index.md#reference-architectures).
@@ -86,8 +86,117 @@ a workaround, in the mean time, to
 
 ## Troubleshooting Redis
 
-If the application node cannot connect to the Redis node, check your firewall rules and
-make sure Redis can accept TCP connections under port `6379`.
+There are a lot of moving parts that needs to be taken care carefully
+in order for the HA setup to work as expected.
+
+Before proceeding with the troubleshooting below, check your firewall rules:
+
+- Redis machines
+  - Accept TCP connection in `6379`
+  - Connect to the other Redis machines via TCP in `6379`
+- Sentinel machines
+  - Accept TCP connection in `26379`
+  - Connect to other Sentinel machines via TCP in `26379`
+  - Connect to the Redis machines via TCP in `6379`
+
+### Troubleshooting Redis replication
+
+You can check if everything is correct by connecting to each server using
+`redis-cli` application, and sending the `info replication` command as below.
+
+```shell
+/opt/gitlab/embedded/bin/redis-cli -h <redis-host-or-ip> -a '<redis-password>' info replication
+```
+
+When connected to a `Primary` Redis, you will see the number of connected
+`replicas`, and a list of each with connection details:
+
+```plaintext
+# Replication
+role:master
+connected_replicas:1
+replica0:ip=10.133.5.21,port=6379,state=online,offset=208037514,lag=1
+master_repl_offset:208037658
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:206989083
+repl_backlog_histlen:1048576
+```
+
+When it's a `replica`, you will see details of the primary connection and if
+its `up` or `down`:
+
+```plaintext
+# Replication
+role:replica
+master_host:10.133.1.58
+master_port:6379
+master_link_status:up
+master_last_io_seconds_ago:1
+master_sync_in_progress:0
+replica_repl_offset:208096498
+replica_priority:100
+replica_read_only:1
+connected_replicas:0
+master_repl_offset:0
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+```
+
+### Troubleshooting Sentinel
+
+If you get an error like: `Redis::CannotConnectError: No sentinels available.`,
+there may be something wrong with your configuration files or it can be related
+to [this issue](https://github.com/redis/redis-rb/issues/531).
+
+You must make sure you are defining the same value in `redis['master_name']`
+and `redis['master_pasword']` as you defined for your sentinel node.
+
+The way the Redis connector `redis-rb` works with sentinel is a bit
+non-intuitive. We try to hide the complexity in omnibus, but it still requires
+a few extra configurations.
+
+---
+
+To make sure your configuration is correct:
+
+1. SSH into your GitLab application server
+1. Enter the Rails console:
+
+   ```shell
+   # For Omnibus installations
+   sudo gitlab-rails console
+
+   # For source installations
+   sudo -u git rails console -e production
+   ```
+
+1. Run in the console:
+
+   ```ruby
+   redis = Redis.new(Gitlab::Redis::SharedState.params)
+   redis.info
+   ```
+
+   Keep this screen open and try to simulate a failover below.
+
+1. To simulate a failover on primary Redis, SSH into the Redis server and run:
+
+   ```shell
+   # port must match your primary redis port, and the sleep time must be a few seconds bigger than defined one
+    redis-cli -h localhost -p 6379 DEBUG sleep 20
+   ```
+
+1. Then back in the Rails console from the first step, run:
+
+   ```ruby
+   redis.info
+   ```
+
+   You should see a different port after a few seconds delay
+   (the failover/reconnect time).
 
 ## Troubleshooting Gitaly
 
@@ -327,3 +436,135 @@ or
 ```shell
 curl http[s]://localhost:<EXPORTER LISTENING PORT>/-/metric
 ```
+
+## Troubleshooting PgBouncer
+
+In case you are experiencing any issues connecting through PgBouncer, the first place to check is always the logs:
+
+```shell
+sudo gitlab-ctl tail pgbouncer
+```
+
+Additionally, you can check the output from `show databases` in the [administrative console](#pgbouncer-administrative-console). In the output, you would expect to see values in the `host` field for the `gitlabhq_production` database. Additionally, `current_connections` should be greater than 1.
+
+### PgBouncer administrative console
+
+As part of Omnibus GitLab, the `gitlab-ctl pgb-console` command is provided to automatically connect to the PgBouncer administrative console. See the [PgBouncer documentation](https://www.pgbouncer.org/usage.html#admin-console) for detailed instructions on how to interact with the console.
+
+To start a session:
+
+```shell
+sudo gitlab-ctl pgb-console
+```
+
+The password you will be prompted for is the `pgbouncer_user_password`
+
+To get some basic information about the instance, run
+
+```shell
+pgbouncer=# show databases; show clients; show servers;
+        name         |   host    | port |      database       | force_user | pool_size | reserve_pool | pool_mode | max_connections | current_connections
+---------------------+-----------+------+---------------------+------------+-----------+--------------+-----------+-----------------+---------------------
+ gitlabhq_production | 127.0.0.1 | 5432 | gitlabhq_production |            |       100 |            5 |           |               0 |                   1
+ pgbouncer           |           | 6432 | pgbouncer           | pgbouncer  |         2 |            0 | statement |               0 |                   0
+(2 rows)
+
+ type |   user    |      database       | state  |   addr    | port  | local_addr | local_port |    connect_time     |    request_time     |    ptr    | link
+| remote_pid | tls
+------+-----------+---------------------+--------+-----------+-------+------------+------------+---------------------+---------------------+-----------+------
++------------+-----
+ C    | gitlab    | gitlabhq_production | active | 127.0.0.1 | 44590 | 127.0.0.1  |       6432 | 2018-04-24 22:13:10 | 2018-04-24 22:17:10 | 0x12444c0 |
+|          0 |
+ C    | gitlab    | gitlabhq_production | active | 127.0.0.1 | 44592 | 127.0.0.1  |       6432 | 2018-04-24 22:13:10 | 2018-04-24 22:17:10 | 0x12447c0 |
+|          0 |
+ C    | gitlab    | gitlabhq_production | active | 127.0.0.1 | 44594 | 127.0.0.1  |       6432 | 2018-04-24 22:13:10 | 2018-04-24 22:17:10 | 0x1244940 |
+|          0 |
+ C    | gitlab    | gitlabhq_production | active | 127.0.0.1 | 44706 | 127.0.0.1  |       6432 | 2018-04-24 22:14:22 | 2018-04-24 22:16:31 | 0x1244ac0 |
+|          0 |
+ C    | gitlab    | gitlabhq_production | active | 127.0.0.1 | 44708 | 127.0.0.1  |       6432 | 2018-04-24 22:14:22 | 2018-04-24 22:15:15 | 0x1244c40 |
+|          0 |
+ C    | gitlab    | gitlabhq_production | active | 127.0.0.1 | 44794 | 127.0.0.1  |       6432 | 2018-04-24 22:15:15 | 2018-04-24 22:15:15 | 0x1244dc0 |
+|          0 |
+ C    | gitlab    | gitlabhq_production | active | 127.0.0.1 | 44798 | 127.0.0.1  |       6432 | 2018-04-24 22:15:15 | 2018-04-24 22:16:31 | 0x1244f40 |
+|          0 |
+ C    | pgbouncer | pgbouncer           | active | 127.0.0.1 | 44660 | 127.0.0.1  |       6432 | 2018-04-24 22:13:51 | 2018-04-24 22:17:12 | 0x1244640 |
+|          0 |
+(8 rows)
+
+ type |  user  |      database       | state |   addr    | port | local_addr | local_port |    connect_time     |    request_time     |    ptr    | link | rem
+ote_pid | tls
+------+--------+---------------------+-------+-----------+------+------------+------------+---------------------+---------------------+-----------+------+----
+--------+-----
+ S    | gitlab | gitlabhq_production | idle  | 127.0.0.1 | 5432 | 127.0.0.1  |      35646 | 2018-04-24 22:15:15 | 2018-04-24 22:17:10 | 0x124dca0 |      |
+  19980 |
+(1 row)
+```
+
+### Message: `LOG:  invalid CIDR mask in address`
+
+See the suggested fix [in Geo documentation](../geo/replication/troubleshooting.md#message-log--invalid-cidr-mask-in-address).
+
+### Message: `LOG:  invalid IP mask "md5": Name or service not known`
+
+See the suggested fix [in Geo documentation](../geo/replication/troubleshooting.md#message-log--invalid-ip-mask-md5-name-or-service-not-known).
+
+## Troubleshooting PostgreSQL
+
+In case you are experiencing any issues connecting through PgBouncer, the first place to check is always the logs:
+
+```shell
+sudo gitlab-ctl tail postgresql
+```
+
+### Consul and PostgreSQL changes not taking effect
+
+Due to the potential impacts, `gitlab-ctl reconfigure` only reloads Consul and PostgreSQL, it will not restart the services. However, not all changes can be activated by reloading.
+
+To restart either service, run `gitlab-ctl restart SERVICE`
+
+For PostgreSQL, it is usually safe to restart the master node by default. Automatic failover defaults to a 1 minute timeout. Provided the database returns before then, nothing else needs to be done. To be safe, you can stop `repmgrd` on the standby nodes first with `gitlab-ctl stop repmgrd`, then start afterwards with `gitlab-ctl start repmgrd`.
+
+On the Consul server nodes, it is important to restart the Consul service in a controlled fashion. Read our [Consul documentation](../high_availability/consul.md#restarting-the-server-cluster) for instructions on how to restart the service.
+
+### `gitlab-ctl repmgr-check-master` command produces errors
+
+If this command displays errors about database permissions it is likely that something failed during
+install, resulting in the `gitlab-consul` database user getting incorrect permissions. Follow these
+steps to fix the problem:
+
+1. On the master database node, connect to the database prompt - `gitlab-psql -d template1`
+1. Delete the `gitlab-consul` user - `DROP USER "gitlab-consul";`
+1. Exit the database prompt - `\q`
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) and the user will be re-added with the proper permissions.
+1. Change to the `gitlab-consul` user - `su - gitlab-consul`
+1. Try the check command again - `gitlab-ctl repmgr-check-master`.
+
+Now there should not be errors. If errors still occur then there is another problem.
+
+### PgBouncer error `ERROR: pgbouncer cannot connect to server`
+
+You may get this error when running `gitlab-rake gitlab:db:configure` or you
+may see the error in the PgBouncer log file.
+
+```plaintext
+PG::ConnectionBad: ERROR:  pgbouncer cannot connect to server
+```
+
+The problem may be that your PgBouncer node's IP address is not included in the
+`trust_auth_cidr_addresses` setting in `/etc/gitlab/gitlab.rb` on the database nodes.
+
+You can confirm that this is the issue by checking the PostgreSQL log on the master
+database node. If you see the following error then `trust_auth_cidr_addresses`
+is the problem.
+
+```plaintext
+2018-03-29_13:59:12.11776 FATAL:  no pg_hba.conf entry for host "123.123.123.123", user "pgbouncer", database "gitlabhq_production", SSL off
+```
+
+To fix the problem, add the IP address to `/etc/gitlab/gitlab.rb`.
+
+```ruby
+postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
+```
+
+[Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.

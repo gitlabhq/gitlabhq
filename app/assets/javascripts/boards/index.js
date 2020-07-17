@@ -352,7 +352,7 @@ export default () => {
       template: `
         <div class="board-extra-actions">
           <button
-            class="btn btn-success prepend-left-10"
+            class="btn btn-success gl-ml-3"
             type="button"
             data-placement="bottom"
             ref="addIssuesButton"

@@ -239,6 +239,10 @@ module Ci
       runner_projects.count == 1
     end
 
+    def belongs_to_more_than_one_project?
+      self.projects.limit(2).count(:all) > 1
+    end
+
     def assigned_to_group?
       runner_namespaces.any?
     end

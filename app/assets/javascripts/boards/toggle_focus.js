@@ -25,7 +25,7 @@ export default (ModalStore, boardsStore) => {
       <div class="board-extra-actions">
         <a
           href="#"
-          class="btn btn-default has-tooltip prepend-left-10 js-focus-mode-btn"
+          class="btn btn-default has-tooltip gl-ml-3 js-focus-mode-btn"
           data-qa-selector="focus_mode_button"
           role="button"
           aria-label="Toggle focus mode"

@@ -7,3 +7,97 @@
 .row
   .col-sm-6
     = render 'groups/runners/group_runners'
+
+%h4.underlined-title
+  = _('Available Runners: %{runners}').html_safe % { runners: limited_counter_with_delimiter(@all_group_runners) }
+
+-# haml-lint:disable NoPlainNodes
+.row
+  .col-sm-9
+    = form_tag group_settings_ci_cd_path, id: 'runners-search', method: :get, class: 'filter-form js-filter-form' do
+      .filtered-search-wrapper.d-flex
+        .filtered-search-box
+          = dropdown_tag(_('Recent searches'),
+            options: { wrapper_class: 'filtered-search-history-dropdown-wrapper',
+            toggle_class: 'btn filtered-search-history-dropdown-toggle-button',
+            dropdown_class: 'filtered-search-history-dropdown',
+            content_class: 'filtered-search-history-dropdown-content' }) do
+            .js-filtered-search-history-dropdown{ data: { full_path: group_settings_ci_cd_path } }
+          .filtered-search-box-input-container.droplab-dropdown
+            .scroll-container
+              %ul.tokens-container.list-unstyled
+                %li.input-token
+                  %input.form-control.filtered-search{ search_filter_input_options('runners') }
+            #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item{ data: {hint: "#{'{{hint}}'}", tag: "#{'{{tag}}'}", action: "#{'{{hint === \'search\' ? \'submit\' : \'\' }}'}" } }
+                  = button_tag class: 'btn btn-link' do
+                    -# Encapsulate static class name `{{icon}}` inside #{} to bypass
+                    -# haml lint's ClassAttributeWithStaticValue
+                    %svg
+                      %use{ 'xlink:href': "#{'{{icon}}'}" }
+                    %span.js-filter-hint
+                      {{formattedKey}}
+            #js-dropdown-operator.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul.filter-dropdown{ data: { dropdown: true, dynamic: true } }
+                %li.filter-dropdown-item{ data: { value: "{{ title }}" } }
+                  = button_tag class: 'btn btn-link' do
+                    {{ title }}
+                    %span.btn-helptext
+                      {{ help }}
+            #js-dropdown-admin-runner-status.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                - Ci::Runner::AVAILABLE_STATUSES.each do |status|
+                  %li.filter-dropdown-item{ data: { value: status } }
+                    = button_tag class: 'btn btn-link' do
+                      = status.titleize
+
+            #js-dropdown-admin-runner-type.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                - Ci::Runner::AVAILABLE_TYPES.each do |runner_type|
+                  - next if runner_type == 'instance_type'
+                  %li.filter-dropdown-item{ data: { value: runner_type } }
+                    = button_tag class: 'btn btn-link' do
+                      = runner_type.titleize
+
+          #js-dropdown-runner-tag.filtered-search-input-dropdown-menu.dropdown-menu
+            %ul{ data: { dropdown: true } }
+              %li.filter-dropdown-item{ data: { value: 'none' } }
+                = button_tag class: 'btn btn-link' do
+                  = _('No Tag')
+              %li.divider.droplab-item-ignore
+            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+              %li.filter-dropdown-item
+                = button_tag class: 'btn btn-link js-data-value' do
+                  %span.dropdown-light-content
+                    {{name}}
+
+          = button_tag class: 'clear-search hidden' do
+            = icon('times')
+        .filter-dropdown-container
+          = render 'admin/runners/sort_dropdown'
+
+  .col-sm-3.text-right-lg
+    = _('Runners currently online: %{active_runners_count}') % { active_runners_count: limited_counter_with_delimiter(@all_group_runners.online) }
+
+
+- if @group_runners.any?
+  .runners-content.content-list
+    .table-holder
+      .gl-responsive-table-row.table-row-header{ role: 'row' }
+        .table-section.section-10{ role: 'rowheader' }= _('Type/State')
+        .table-section.section-10{ role: 'rowheader' }= _('Runner token')
+        .table-section.section-20{ role: 'rowheader' }= _('Description')
+        .table-section.section-10{ role: 'rowheader' }= _('Version')
+        .table-section.section-10{ role: 'rowheader' }= _('IP Address')
+        .table-section.section-5{ role: 'rowheader' }= _('Projects')
+        .table-section.section-5{ role: 'rowheader' }= _('Jobs')
+        .table-section.section-10{ role: 'rowheader' }= _('Tags')
+        .table-section.section-10{ role: 'rowheader' }= _('Last contact')
+        .table-section.section-10{ role: 'rowheader' }
+
+      - @group_runners.each do |runner|
+        = render 'groups/runners/runner', runner: runner
+    = paginate @group_runners, theme: 'gitlab', :params => { :anchor => 'runners-settings' }
+- else
+  .nothing-here-block= _('No runners found')

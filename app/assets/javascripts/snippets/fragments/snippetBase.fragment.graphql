@@ -26,21 +26,6 @@ fragment SnippetBase on Snippet {
       ...BlobViewer
     }
   }
-  blob {
-    binary
-    name
-    path
-    rawPath
-    size
-    externalStorage
-    renderedAsText
-    simpleViewer {
-      ...BlobViewer
-    }
-    richViewer {
-      ...BlobViewer
-    }
-  }
   userPermissions {
     adminSnippet
     updateSnippet

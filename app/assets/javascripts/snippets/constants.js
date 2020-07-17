@@ -25,3 +25,8 @@ export const SNIPPET_VISIBILITY = {
 
 export const SNIPPET_CREATE_MUTATION_ERROR = __("Can't create snippet: %{err}");
 export const SNIPPET_UPDATE_MUTATION_ERROR = __("Can't update snippet: %{err}");
+export const SNIPPET_BLOB_CONTENT_FETCH_ERROR = __("Can't fetch content for the blob: %{err}");
+
+export const SNIPPET_BLOB_ACTION_CREATE = 'create';
+export const SNIPPET_BLOB_ACTION_UPDATE = 'update';
+export const SNIPPET_BLOB_ACTION_MOVE = 'move';

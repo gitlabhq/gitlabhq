@@ -26,6 +26,6 @@
   &nbsp;
   = button_tag s_("CompareBranches|Compare"), class: "btn btn-success commits-compare-btn"
   - if @merge_request.present?
-    = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'prepend-left-10 btn'
+    = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'gl-ml-3 btn'
   - elsif create_mr_button?
-    = link_to _("Create merge request"), create_mr_path, class: 'prepend-left-10 btn'
+    = link_to _("Create merge request"), create_mr_path, class: 'gl-ml-3 btn'

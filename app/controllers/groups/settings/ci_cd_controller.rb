@@ -11,7 +11,15 @@ module Groups
       end
       before_action :define_variables, only: [:show]
 
+      NUMBER_OF_RUNNERS_PER_PAGE = 4
+
       def show
+        runners_finder = Ci::RunnersFinder.new(current_user: current_user, group: @group, params: params)
+        # We need all runners for count
+        @all_group_runners = runners_finder.execute.except(:limit, :offset)
+        @group_runners = runners_finder.execute.page(params[:page]).per(NUMBER_OF_RUNNERS_PER_PAGE)
+
+        @sort = runners_finder.sort_key
       end
 
       def update

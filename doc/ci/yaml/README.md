@@ -3412,6 +3412,10 @@ This keyword allows the creation of two different types of downstream pipelines:
 - [Multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml)
 - [Child pipelines](../parent_child_pipelines.md)
 
+[Since GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/), you can
+see which job triggered a downstream pipeline by hovering your mouse cursor over
+the downstream pipeline job in the [pipeline graph](../pipelines/index.md#visualize-pipelines).
+
 NOTE: **Note:**
 Using a `trigger` with `when:manual` together results in the error `jobs:#{job-name}
 when should be on_success, on_failure or always`, because `when:manual` prevents

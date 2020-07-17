@@ -38,10 +38,10 @@ In this setup we will share the home directory on the host with the client. Edit
 
 ```plaintext
 #/etc/exports for one client
-/home <client-ip-address>(rw,sync,no_root_squash,no_subtree_check)
+/home <client_ip_address>(rw,sync,no_root_squash,no_subtree_check)
 
 #/etc/exports for three clients
-/home <client-ip-address>(rw,sync,no_root_squash,no_subtree_check) <client-2-ip-address>(rw,sync,no_root_squash,no_subtree_check) <client-3-ip-address>(rw,sync,no_root_squash,no_subtree_check)
+/home <client_ip_address>(rw,sync,no_root_squash,no_subtree_check) <client_2_ip_address>(rw,sync,no_root_squash,no_subtree_check) <client_3_ip_address>(rw,sync,no_root_squash,no_subtree_check)
 ```
 
 Restart the NFS server after making changes to the `exports` file for the changes
@@ -54,7 +54,7 @@ systemctl restart nfs-kernel-server
 NOTE: **Note:**
 You may need to update your server's firewall. See the [firewall section](#nfs-in-a-firewalled-environment) at the end of this guide.
 
-## Client/ GitLab application node Setup
+## Client / GitLab application node Setup
 
 > Follow the instructions below to connect any GitLab Rails application node running
 inside your HA environment to the NFS server configured above.
@@ -90,7 +90,7 @@ df -h
 
 ### Step 3 - Set up Automatic Mounts on Boot
 
-Edit `/etc/fstab` on client as below to mount the remote shares automatically at boot.
+Edit `/etc/fstab` on the client as below to mount the remote shares automatically at boot.
 Note that GitLab requires advisory file locking, which is only supported natively in
 NFS version 4. NFSv3 also supports locking as long as Linux Kernel 2.6.5+ is used.
 We recommend using version 4 and do not specifically test NFSv3.
@@ -98,14 +98,19 @@ See [NFS documentation](nfs.md#nfs-client-mount-options) for guidance on mount o
 
 ```plaintext
 #/etc/fstab
-10.0.0.1:/nfs/home  /nfs/home  nfs4 defaults,hard,vers=4.1,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+<host_ip_address>:/home  /nfs/home  nfs4 defaults,hard,vers=4.1,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
 ```
 
 Reboot the client and confirm that the mount point is mounted automatically.
 
+NOTE: **Note:**
+If you followed our guide to [GitLab Pages on a separate server](../pages/index.md#running-gitlab-pages-on-a-separate-server)
+here, please continue there with the pages-specific NFS mounts.
+The step below is for broader use-cases than only sharing pages data.
+
 ### Step 4 - Set up GitLab to Use NFS mounts
 
-When using the default Omnibus configuration you will need to share 5 data locations
+When using the default Omnibus configuration you will need to share 4 data locations
 between all GitLab cluster nodes. No other locations should be shared. Changing the
 default file locations in `gitlab.rb` on the client allows you to have one main mount
 point and have all the required locations as subdirectories to use the NFS mount for
@@ -136,7 +141,7 @@ the command: `sudo ufw status`. If it's being blocked, then you can allow traffi
 client with the command below.
 
 ```shell
-sudo ufw allow from <client-ip-address> to any port nfs
+sudo ufw allow from <client_ip_address> to any port nfs
 ```
 
 <!-- ## Troubleshooting

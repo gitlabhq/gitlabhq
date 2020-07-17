@@ -8,7 +8,7 @@
 - if defined? warn_before_close
   - add_blocked_class = !issuable.closed? && warn_before_close
 
-.float-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
+.float-left.btn-group.gl-ml-3.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
   %button{ class: "#{button_class} btn-#{button_action} #{(add_blocked_class ? 'btn-issue-blocked' : '')}", data: { qa_selector: 'close_issue_button', endpoint: close_reopen_issuable_path(issuable) } }
     #{display_button_action} #{display_issuable_type}
 

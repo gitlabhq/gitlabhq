@@ -12,4 +12,4 @@
       = submit_tag "Authorize", class: "btn btn-success wide float-left"
     = form_tag deny_profile_chat_names_path, method: :delete do
       = hidden_field_tag :token, @chat_name_token.token
-      = submit_tag "Deny", class: "btn btn-danger prepend-left-10"
+      = submit_tag "Deny", class: "btn btn-danger gl-ml-3"

@@ -20,6 +20,6 @@
           = link_to_label(label, type: :merge_request) { _('Merge requests') }
       - if force_priority
         &middot;
-        %li.label-link-item.priority-badge.js-priority-badge.inline.prepend-left-10
+        %li.label-link-item.priority-badge.js-priority-badge.inline.gl-ml-3
           .label-badge.label-badge-blue= _('Prioritized label')
       = render_if_exists 'shared/label_row_epics_link', label: label

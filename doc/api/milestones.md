@@ -25,14 +25,13 @@ GET /projects/:id/milestones?search=version
 
 Parameters:
 
-| Attribute                    | Type   | Required | Description |
-| ---------------------------- | ------ | -------- | ----------- |
-| `id`                         | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `iids[]`                     | integer array | optional | Return only the milestones having the given `iid`. Will be ignored if `include_parent_milestones` is set to `true` |
-| `state`                      | string | optional | Return only `active` or `closed` milestones |
-| `title`                      | string | optional | Return only the milestones having the given `title` |
-| `search`                     | string | optional | Return only milestones with a title or description matching the provided string |
-| `include_parent_milestones`  | boolean | optional | Include milestones from parent group and ancestors. Introduced in [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36944) |
+| Attribute | Type   | Required | Description |
+| --------- | ------ | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `iids[]`  | integer array | optional | Return only the milestones having the given `iid` |
+| `state`   | string | optional | Return only `active` or `closed` milestones |
+| `title`   | string | optional | Return only the milestones having the given `title` |
+| `search`  | string | optional | Return only milestones with a title or description matching the provided string |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/milestones"

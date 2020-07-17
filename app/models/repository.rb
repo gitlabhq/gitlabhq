@@ -713,8 +713,8 @@ class Repository
     "#{name}-#{highest_branch_id + 1}"
   end
 
-  def branches_sorted_by(value)
-    raw_repository.local_branches(sort_by: value)
+  def branches_sorted_by(sort_by, pagination_params = nil)
+    raw_repository.local_branches(sort_by: sort_by, pagination_params: pagination_params)
   end
 
   def tags_sorted_by(value)

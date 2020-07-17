@@ -8,11 +8,7 @@ import { truncateNamespace } from '~/lib/utils/text_utility';
 
 export default {
   name: 'ProjectListItem',
-  components: {
-    Icon,
-    ProjectAvatar,
-    GlDeprecatedButton,
-  },
+  components: { Icon, ProjectAvatar, GlDeprecatedButton },
   props: {
     project: {
       type: Object,
@@ -22,15 +18,8 @@ export default {
         isString(p.name) &&
         (isString(p.name_with_namespace) || isString(p.nameWithNamespace)),
     },
-    selected: {
-      type: Boolean,
-      required: true,
-    },
-    matcher: {
-      type: String,
-      required: false,
-      default: '',
-    },
+    selected: { type: Boolean, required: true },
+    matcher: { type: String, required: false, default: '' },
   },
   computed: {
     projectNameWithNamespace() {
@@ -56,7 +45,7 @@ export default {
     @click="onClick"
   >
     <icon
-      class="prepend-left-10 gl-mr-3 flex-shrink-0 position-top-0 js-selected-icon"
+      class="gl-ml-3 gl-mr-3 flex-shrink-0 position-top-0 js-selected-icon"
       :class="{ 'js-selected visible': selected, 'js-unselected invisible': !selected }"
       name="mobile-issue-close"
     />

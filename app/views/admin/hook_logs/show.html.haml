@@ -4,6 +4,6 @@
 
 %hr
 
-= link_to 'Resend Request', retry_admin_hook_hook_log_path(@hook, @hook_log), method: :post, class: "btn btn-default float-right prepend-left-10"
+= link_to 'Resend Request', retry_admin_hook_hook_log_path(@hook, @hook_log), method: :post, class: "btn btn-default float-right gl-ml-3"
 
 = render partial: 'shared/hook_logs/content', locals: { hook_log: @hook_log }

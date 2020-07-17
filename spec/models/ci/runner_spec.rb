@@ -713,6 +713,46 @@ RSpec.describe Ci::Runner do
     end
   end
 
+  describe '#belongs_to_more_than_one_project?' do
+    context 'project runner' do
+      let(:project1) { create(:project) }
+      let(:project2) { create(:project) }
+
+      context 'two projects assigned to runner' do
+        let(:runner) { create(:ci_runner, :project, projects: [project1, project2]) }
+
+        it 'returns true' do
+          expect(runner.belongs_to_more_than_one_project?).to be_truthy
+        end
+      end
+
+      context 'one project assigned to runner' do
+        let(:runner) { create(:ci_runner, :project, projects: [project1]) }
+
+        it 'returns false' do
+          expect(runner.belongs_to_more_than_one_project?).to be_falsey
+        end
+      end
+    end
+
+    context 'group runner' do
+      let(:group) { create(:group) }
+      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it 'returns false' do
+        expect(runner.belongs_to_more_than_one_project?).to be_falsey
+      end
+    end
+
+    context 'shared runner' do
+      let(:runner) { create(:ci_runner, :instance) }
+
+      it 'returns false' do
+        expect(runner.belongs_to_more_than_one_project?).to be_falsey
+      end
+    end
+  end
+
   describe '#has_tags?' do
     context 'when runner has tags' do
       subject { create(:ci_runner, tag_list: ['tag']) }

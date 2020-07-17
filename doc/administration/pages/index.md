@@ -511,10 +511,17 @@ The following procedure includes steps to back up and edit the
 `gitlab-secrets.json` file. This file contains secrets that control
 database encryption. Proceed with caution.
 
+1. Create a backup of the secrets file on the **GitLab server**:
+
+   ```shell
+   cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.bak
+   ```
+
 1. On the **GitLab server**, to enable Pages, add the following to `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitlab_pages['enable'] = true
+   pages_external_url "http://<pages_server_URL>"
    ```
 
 1. Optionally, to enable [access control](#access-control), add the following to `/etc/gitlab/gitlab.rb`:
@@ -527,26 +534,25 @@ database encryption. Proceed with caution.
    changes to take effect. The `gitlab-secrets.json` file is now updated with the
    new configuration.
 
-1. Create a backup of the secrets file on the **GitLab server**:
-
-   ```shell
-   cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.bak
-   ```
-
 1. Set up a new server. This will become the **Pages server**.
 
-1. Create an [NFS share](../high_availability/nfs_host_client_setup.md) on the new server and configure this share to
-   allow access from your main **GitLab server**. For this example, we use the
+1. Create an [NFS share](../high_availability/nfs_host_client_setup.md)
+   on the **Pages server** and configure this share to
+   allow access from your main **GitLab server**.
+   Note that the example there is more general and
+   shares several sub-directories from `/home` to several `/nfs/home` mountpoints.
+   For our Pages-specific example here, we instead share only the
    default GitLab Pages folder `/var/opt/gitlab/gitlab-rails/shared/pages`
-   as the shared folder on the new server and we will mount it to `/mnt/pages`
+   from the **Pages server** and we mount it to `/mnt/pages`
    on the **GitLab server**.
+   Therefore, omit "Step 4" there.
 
 1. On the **Pages server**, install Omnibus GitLab and modify `/etc/gitlab/gitlab.rb`
    to include:
 
    ```ruby
-   external_url 'http://<ip-address-of-the-server>'
-   pages_external_url "http://<your-pages-server-URL>"
+   external_url 'http://<gitlab_server_IP_or_URL>'
+   pages_external_url "http://<pages_server_URL>"
    postgresql['enable'] = false
    redis['enable'] = false
    prometheus['enable'] = false
@@ -566,7 +572,15 @@ database encryption. Proceed with caution.
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the **GitLab server**
-   to the **Pages server**.
+   to the **Pages server**, for example via the NFS share.
+
+   ```shell
+   # On the GitLab server
+   cp /etc/gitlab/gitlab-secrets.json /mnt/pages/gitlab-secrets.json
+
+   # On the Pages server
+   mv /var/opt/gitlab/gitlab-rails/shared/pages/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json
+   ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
@@ -574,13 +588,13 @@ database encryption. Proceed with caution.
 
    ```ruby
    gitlab_pages['enable'] = false
-   pages_external_url "http://<your-pages-server-URL>"
+   pages_external_url "http://<pages_server_URL>"
    gitlab_rails['pages_path'] = "/mnt/pages"
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-It is possible to run GitLab Pages on multiple servers if you wish to distribute
+It's possible to run GitLab Pages on multiple servers if you wish to distribute
 the load. You can do this through standard load balancing practices such as
 configuring your DNS server to return multiple IPs for your Pages server,
 configuring a load balancer to work at the IP level, and so on. If you wish to

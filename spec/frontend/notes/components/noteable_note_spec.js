@@ -34,7 +34,13 @@ describe('issue_note', () => {
         note,
       },
       localVue,
-      stubs: ['note-header', 'user-avatar-link', 'note-actions', 'note-body'],
+      stubs: [
+        'note-header',
+        'user-avatar-link',
+        'note-actions',
+        'note-body',
+        'multiline-comment-form',
+      ],
     });
   });
 
@@ -74,6 +80,24 @@ describe('issue_note', () => {
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findMultilineComment().text()).toEqual('Comment on lines 1 to 2');
+      });
+    });
+
+    it('should render multiline comment if editing discussion root', () => {
+      wrapper.setProps({ discussionRoot: true });
+      wrapper.vm.isEditing = true;
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findMultilineComment().exists()).toBe(true);
+      });
+    });
+
+    it('should not render multiline comment form unless it is the discussion root', () => {
+      wrapper.setProps({ discussionRoot: false });
+      wrapper.vm.isEditing = true;
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findMultilineComment().exists()).toBe(false);
       });
     });
 

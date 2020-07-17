@@ -135,7 +135,7 @@
                   %li.filter-dropdown-item
                     %button.btn.btn-link{ type: 'button' }
                       %gl-emoji
-                      %span.js-data-value.prepend-left-10
+                      %span.js-data-value.gl-ml-3
                         {{name}}
               #js-dropdown-wip.filtered-search-input-dropdown-menu.dropdown-menu
                 %ul.filter-dropdown{ data: { dropdown: true } }
@@ -172,7 +172,7 @@
         - if user_can_admin_list
           = render 'shared/issuable/board_create_list_dropdown', board: board
           - if @project
-            #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
+            #js-add-issues-btn.gl-ml-3{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
         - if Feature.enabled?(:boards_with_swimlanes, @group)
           #js-board-epics-swimlanes-toggle
         #js-toggle-focus-btn

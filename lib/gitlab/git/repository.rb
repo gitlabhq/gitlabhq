@@ -127,9 +127,9 @@ module Gitlab
         end
       end
 
-      def local_branches(sort_by: nil)
+      def local_branches(sort_by: nil, pagination_params: nil)
         wrapped_gitaly_errors do
-          gitaly_ref_client.local_branches(sort_by: sort_by)
+          gitaly_ref_client.local_branches(sort_by: sort_by, pagination_params: pagination_params)
         end
       end
 
