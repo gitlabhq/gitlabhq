@@ -35,7 +35,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_commit_neighbor_nav, @project, default_enabled: true)
     push_frontend_feature_flag(:multiline_comments, @project)
     push_frontend_feature_flag(:file_identifier_hash)
-    push_frontend_feature_flag(:batch_suggestions, @project)
+    push_frontend_feature_flag(:batch_suggestions, @project, default_enabled: true)
   end
 
   before_action do

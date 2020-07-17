@@ -10,17 +10,10 @@
 
   .form-group
     %h5= s_('ClusterIntegration|Environment scope')
-    - if has_multiple_clusters?
-      = field.text_field :environment_scope, class: 'col-md-6 form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Environment scope')
-      .form-text.text-muted= s_("ClusterIntegration|Choose which of your environments will use this cluster.")
-    - else
-      = text_field_tag :environment_scope, '*', class: 'col-md-6 form-control disabled', placeholder: s_('ClusterIntegration|Environment scope'), disabled: true
-      - environment_scope_url = help_page_path('user/project/clusters/index', anchor: 'base-domain')
-      - environment_scope_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: environment_scope_url }
-      .form-text.text-muted
-        %code
-          = _('*')
-        = s_("ClusterIntegration| is the default environment scope for this cluster. This means that all jobs, regardless of their environment, will use this cluster. %{environment_scope_start}More information%{environment_scope_end}").html_safe % { environment_scope_start: environment_scope_start, environment_scope_end: '</a>'.html_safe }
+    = field.text_field :environment_scope, class: 'col-md-6 form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Environment scope')
+    - environment_scope_url = help_page_path('user/project/clusters/index', anchor: 'base-domain')
+    - environment_scope_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: environment_scope_url }
+    .form-text.text-muted= s_("ClusterIntegration|Choose which of your environments will use this cluster. %{environment_scope_start}More information%{environment_scope_end}").html_safe % { environment_scope_start: environment_scope_start, environment_scope_end: '</a>'.html_safe }
 
   .form-group
     %h5= s_('ClusterIntegration|Base domain')

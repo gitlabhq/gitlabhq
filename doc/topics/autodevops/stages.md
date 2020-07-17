@@ -457,6 +457,10 @@ Herokuish, and you must prefix commands run in these images with
 `/bin/herokuish procfile exec` to replicate the environment where your application
 will run.
 
+### Upgrade auto-deploy-app Chart
+
+You can upgrade auto-deploy-app chart by following the [upgrade guide](upgrading_chart.md).
+
 ### Workers
 
 Some web applications must run extra deployments for "worker processes". For

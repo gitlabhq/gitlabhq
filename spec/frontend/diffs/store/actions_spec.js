@@ -485,6 +485,10 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('assignDiscussionsToDiff', () => {
+    afterEach(() => {
+      window.location.hash = '';
+    });
+
     it('should merge discussions into diffs', done => {
       window.location.hash = 'ABC_123';
 
@@ -575,6 +579,19 @@ describe('DiffsStoreActions', () => {
           },
         ],
         [],
+        done,
+      );
+    });
+
+    it('dispatches setCurrentDiffFileIdFromNote with note ID', done => {
+      window.location.hash = 'note_123';
+
+      testAction(
+        assignDiscussionsToDiff,
+        [],
+        { diffFiles: [], useSingleDiffStyle: true },
+        [],
+        [{ type: 'setCurrentDiffFileIdFromNote', payload: '123' }],
         done,
       );
     });

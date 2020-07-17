@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 module ClustersHelper
-  def has_multiple_clusters?
-    true
-  end
-
   def create_new_cluster_label(provider: nil)
     case provider
     when 'aws'

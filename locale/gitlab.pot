@@ -791,9 +791,6 @@ msgstr ""
 msgid "(revoked)"
 msgstr ""
 
-msgid "*"
-msgstr ""
-
 msgid "+ %{amount} more"
 msgstr ""
 
@@ -4959,9 +4956,6 @@ msgstr ""
 msgid "ClusterIntegration| can be used instead of a custom domain."
 msgstr ""
 
-msgid "ClusterIntegration| is the default environment scope for this cluster. This means that all jobs, regardless of their environment, will use this cluster. %{environment_scope_start}More information%{environment_scope_end}"
-msgstr ""
-
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
@@ -5080,6 +5074,9 @@ msgid "ClusterIntegration|Choose which applications to install on your Kubernete
 msgstr ""
 
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
+msgstr ""
+
+msgid "ClusterIntegration|Choose which of your environments will use this cluster. %{environment_scope_start}More information%{environment_scope_end}"
 msgstr ""
 
 msgid "ClusterIntegration|Clear cluster cache"
@@ -5212,6 +5209,9 @@ msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Environment scope"
+msgstr ""
+
+msgid "ClusterIntegration|Environment scope is required."
 msgstr ""
 
 msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for both new and existing GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
@@ -9398,6 +9398,9 @@ msgid "Error loading file viewer."
 msgstr ""
 
 msgid "Error loading issues"
+msgstr ""
+
+msgid "Error loading iterations"
 msgstr ""
 
 msgid "Error loading last commit."
@@ -15560,6 +15563,12 @@ msgstr ""
 msgid "New changes were added. %{linkStart}Reload the page to review them%{linkEnd}"
 msgstr ""
 
+msgid "New confidential epic title "
+msgstr ""
+
+msgid "New confidential issue title"
+msgstr ""
+
 msgid "New deploy key"
 msgstr ""
 
@@ -16838,6 +16847,12 @@ msgid "Paste a machine public key here. Read more about how to generate it"
 msgstr ""
 
 msgid "Paste a machine public key here. Read more about how to generate it %{link_start}here%{link_end}"
+msgstr ""
+
+msgid "Paste confidential epic link"
+msgstr ""
+
+msgid "Paste confidential issue link"
 msgstr ""
 
 msgid "Paste epic link"
@@ -20805,6 +20820,9 @@ msgstr ""
 msgid "SecurityReports|Dismissed '%{vulnerabilityName}'. Turn off the hide dismissed toggle to view."
 msgstr ""
 
+msgid "SecurityReports|Download Report"
+msgstr ""
+
 msgid "SecurityReports|Each vulnerability now has a unique page that can be directly linked to, shared, referenced, and tracked as the single source of truth. Vulnerability occurrences also persist across scanner runs, which improves tracking and visibility and reduces duplicates between scans."
 msgstr ""
 
@@ -20821,6 +20839,9 @@ msgid "SecurityReports|Error fetching the vulnerability list. Please check your 
 msgstr ""
 
 msgid "SecurityReports|False positive"
+msgstr ""
+
+msgid "SecurityReports|Fuzzing artifacts"
 msgstr ""
 
 msgid "SecurityReports|Group Security Dashboard"
@@ -28283,7 +28304,7 @@ msgstr ""
 msgid "mrWidget|Check out branch"
 msgstr ""
 
-msgid "mrWidget|Checking ability to merge automatically…"
+msgid "mrWidget|Checking if merge request can be merged…"
 msgstr ""
 
 msgid "mrWidget|Cherry-pick"

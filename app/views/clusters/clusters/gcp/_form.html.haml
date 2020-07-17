@@ -16,12 +16,11 @@
   data: { token: token_in_session } }, url: clusterable.create_gcp_clusters_path, as: :cluster do |field|
   = field.text_field :name, required: true, title: s_('ClusterIntegration|Cluster name is required.'),
     label: s_('ClusterIntegration|Kubernetes cluster name'), label_class: 'label-bold'
-  - if has_multiple_clusters?
-    = field.form_group :environment_scope, label: { text: s_('ClusterIntegration|Environment scope'),
-      class: 'label-bold' } do
-      = field.text_field :environment_scope, required: true, class: 'form-control',
-        title: 'Environment scope is required.', wrapper: false
-      .form-text.text-muted= s_("ClusterIntegration|Choose which of your environments will use this cluster.")
+  = field.form_group :environment_scope, label: { text: s_('ClusterIntegration|Environment scope'),
+    class: 'label-bold' } do
+    = field.text_field :environment_scope, required: true, class: 'form-control',
+      title: 'Environment scope is required.', wrapper: false
+    .form-text.text-muted= s_("ClusterIntegration|Choose which of your environments will use this cluster.")
 
   = field.fields_for :provider_gcp, @gcp_cluster.provider_gcp do |provider_gcp_field|
     .form-group

@@ -235,9 +235,11 @@ export const setHighlightedRow = ({ commit }, lineCode) => {
 // This is adding line discussions to the actual lines in the diff tree
 // once for parallel and once for inline mode
 export const assignDiscussionsToDiff = (
-  { commit, state, rootState },
+  { commit, state, rootState, dispatch },
   discussions = rootState.notes.discussions,
 ) => {
+  const id = window?.location?.hash;
+  const isNoteLink = id.indexOf('#note') === 0;
   const diffPositionByLineCode = getDiffPositionByLineCode(
     state.diffFiles,
     state.useSingleDiffStyle,
@@ -253,6 +255,10 @@ export const assignDiscussionsToDiff = (
         hash,
       });
     });
+
+  if (isNoteLink) {
+    dispatch('setCurrentDiffFileIdFromNote', id.split('_').pop());
+  }
 
   Vue.nextTick(() => {
     eventHub.$emit('scrollToDiscussion');
@@ -738,8 +744,11 @@ export function moveToNeighboringCommit({ dispatch, state }, { direction }) {
 }
 
 export const setCurrentDiffFileIdFromNote = ({ commit, rootGetters }, noteId) => {
-  const fileHash = rootGetters.getDiscussion(rootGetters.notesById[noteId].discussion_id).diff_file
-    .file_hash;
+  const note = rootGetters.notesById[noteId];
+
+  if (!note) return;
+
+  const fileHash = rootGetters.getDiscussion(note.discussion_id).diff_file.file_hash;
 
   commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
 };

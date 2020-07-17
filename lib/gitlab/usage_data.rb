@@ -66,8 +66,8 @@ module Gitlab
       # rubocop: disable Metrics/AbcSize
       # rubocop: disable CodeReuse/ActiveRecord
       def system_usage_data
-        alert_bot_incident_count = count(::Issue.authored(::User.alert_bot))
-        issues_created_manually_from_alerts = count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot))
+        alert_bot_incident_count = count(::Issue.authored(::User.alert_bot), start: issue_minimum_id, finish: issue_maximum_id)
+        issues_created_manually_from_alerts = count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: issue_minimum_id, finish: issue_maximum_id)
 
         {
           counts: {
@@ -114,7 +114,7 @@ module Gitlab
             in_review_folder: count(::Environment.in_review_folder),
             grafana_integrated_projects: count(GrafanaIntegration.enabled),
             groups: count(Group),
-            issues: count(Issue),
+            issues: count(Issue, start: issue_minimum_id, finish: issue_maximum_id),
             issues_created_from_gitlab_error_tracking_ui: count(SentryIssue),
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
@@ -124,7 +124,7 @@ module Gitlab
             issues_created_manually_from_alerts: issues_created_manually_from_alerts,
             incident_issues: alert_bot_incident_count,
             alert_bot_incident_issues: alert_bot_incident_count,
-            incident_labeled_issues: count(::Issue.with_label_attributes(::IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES)),
+            incident_labeled_issues: count(::Issue.with_label_attributes(::IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES), start: issue_minimum_id, finish: issue_maximum_id),
             keys: count(Key),
             label_lists: count(List.label),
             lfs_objects: count(LfsObject),
@@ -630,9 +630,9 @@ module Gitlab
         # Remove prometheus table queries once they are deprecated
         # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/217407.
         [
-          count(Issue.with_alert_management_alerts),
-          count(::Issue.with_self_managed_prometheus_alert_events),
-          count(::Issue.with_prometheus_alert_events)
+          count(Issue.with_alert_management_alerts, start: issue_minimum_id, finish: issue_maximum_id),
+          count(::Issue.with_self_managed_prometheus_alert_events, start: issue_minimum_id, finish: issue_maximum_id),
+          count(::Issue.with_prometheus_alert_events, start: issue_minimum_id, finish: issue_maximum_id)
         ].reduce(:+)
       end
 
