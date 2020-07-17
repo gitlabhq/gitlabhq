@@ -40,8 +40,7 @@ module IncidentManagement
       end
 
       def webhook_available?
-        Feature.enabled?(:pagerduty_webhook, project) &&
-          incident_management_setting.pagerduty_active?
+        incident_management_setting.pagerduty_active?
       end
 
       def forbidden

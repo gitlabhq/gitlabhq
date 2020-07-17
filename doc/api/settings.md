@@ -71,8 +71,10 @@ Example response:
    "asset_proxy_url": "https://assets.example.com",
    "asset_proxy_whitelist": ["example.com", "*.example.com", "your-instance.com"],
    "npm_package_requests_forwarding": true,
+   "snippet_size_limit": 52428800,
    "issues_create_limit": 300,
-   "raw_blob_request_limit": 300
+   "raw_blob_request_limit": 300,
+   "wiki_page_max_content_bytes": 52428800
 }
 ```
 
@@ -161,8 +163,10 @@ Example response:
   "allow_local_requests_from_web_hooks_and_services": true,
   "allow_local_requests_from_system_hooks": false,
   "npm_package_requests_forwarding": true,
+  "snippet_size_limit": 52428800,
   "issues_create_limit": 300,
-  "raw_blob_request_limit": 300
+  "raw_blob_request_limit": 300,
+  "wiki_page_max_content_bytes": 52428800
 }
 ```
 
@@ -369,3 +373,4 @@ are listed in the descriptions of the relevant settings.
 | `snippet_size_limit`                     | integer          | no                                   | Max snippet content size in **bytes**. Default: 52428800 Bytes (50MB).|
 | `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Default: 300. To disable throttling set to 0.|
 | `raw_blob_request_limit`                 | integer          | no                                   | Max number of requests per minute for each raw path. Default: 300. To disable throttling set to 0.|
+| `wiki_page_max_content_bytes`            | integer          | no                                   | Max wiki page content size in **bytes**. Default: 52428800 Bytes (50MB).|

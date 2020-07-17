@@ -15713,9 +15713,6 @@ msgstr ""
 msgid "No available groups to fork the project."
 msgstr ""
 
-msgid "No available namespaces to fork the project."
-msgstr ""
-
 msgid "No branches found"
 msgstr ""
 

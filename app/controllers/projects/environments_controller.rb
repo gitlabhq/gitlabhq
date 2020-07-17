@@ -13,6 +13,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     authorize_metrics_dashboard!
 
     push_frontend_feature_flag(:prometheus_computed_alerts)
+    push_frontend_feature_flag(:disable_metric_dashboard_refresh_rate)
   end
   before_action :authorize_read_environment!, except: [:metrics, :additional_metrics, :metrics_dashboard, :metrics_redirect]
   before_action :authorize_create_environment!, only: [:new, :create]

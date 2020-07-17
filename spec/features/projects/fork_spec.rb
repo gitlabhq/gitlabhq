@@ -15,7 +15,7 @@ RSpec.describe 'Project fork' do
   it 'allows user to fork project' do
     visit project_path(project)
 
-    expect(page).not_to have_css('a.disabled', text: 'Fork')
+    expect(page).not_to have_css('a.disabled', text: 'Select')
   end
 
   it 'disables fork button when user has exceeded project limit' do
@@ -40,7 +40,7 @@ RSpec.describe 'Project fork' do
         visit project_path(project)
 
         expect(page).to have_css('a', text: 'Fork')
-        expect(page).not_to have_css('a.disabled', text: 'Fork')
+        expect(page).not_to have_css('a.disabled', text: 'Select')
       end
 
       it 'renders new project fork page' do
@@ -116,7 +116,7 @@ RSpec.describe 'Project fork' do
     click_link 'Fork'
 
     page.within '.fork-thumbnail-container' do
-      click_link user.name
+      click_link 'Select'
     end
 
     expect(page).to have_content 'Forked from'
@@ -156,7 +156,7 @@ RSpec.describe 'Project fork' do
     click_link 'Fork'
 
     page.within '.fork-thumbnail-container' do
-      click_link user.name
+      click_link 'Select'
     end
 
     visit project_forks_path(project)
@@ -193,7 +193,7 @@ RSpec.describe 'Project fork' do
       click_link 'Fork'
 
       page.within '.fork-thumbnail-container' do
-        click_link user.name
+        click_link 'Select'
       end
 
       visit project_forks_path(project)
@@ -218,7 +218,7 @@ RSpec.describe 'Project fork' do
       click_link 'Fork'
 
       page.within '.fork-thumbnail-container' do
-        click_link user.name
+        click_link 'Select'
       end
 
       expect(page).to have_content "Name has already been taken"
@@ -232,39 +232,43 @@ RSpec.describe 'Project fork' do
       group.add_maintainer(user)
     end
 
-    it 'allows user to fork project to group or to user namespace' do
+    it 'allows user to fork project to group or to user namespace', :js do
       visit project_path(project)
+      wait_for_requests
 
       expect(page).not_to have_css('a.disabled', text: 'Fork')
 
       click_link 'Fork'
 
-      expect(page).to have_css('.fork-thumbnail', count: 2)
+      expect(page).to have_css('.fork-thumbnail')
+      expect(page).to have_css('.group-row')
       expect(page).not_to have_css('.fork-thumbnail.disabled')
     end
 
-    it 'allows user to fork project to group and not user when exceeded project limit' do
+    it 'allows user to fork project to group and not user when exceeded project limit', :js do
       user.projects_limit = 0
       user.save!
 
       visit project_path(project)
+      wait_for_requests
 
       expect(page).not_to have_css('a.disabled', text: 'Fork')
 
       click_link 'Fork'
 
-      expect(page).to have_css('.fork-thumbnail', count: 2)
       expect(page).to have_css('.fork-thumbnail.disabled')
+      expect(page).to have_css('.group-row')
     end
 
-    it 'links to the fork if the project was already forked within that namespace', :sidekiq_might_not_need_inline do
+    it 'links to the fork if the project was already forked within that namespace', :sidekiq_might_not_need_inline, :js do
       forked_project = fork_project(project, user, namespace: group, repository: true)
 
       visit new_project_fork_path(project)
+      wait_for_requests
 
-      expect(page).to have_css('div.forked', text: group.full_name)
+      expect(page).to have_css('.group-row a.btn', text: 'Go to fork')
 
-      click_link group.full_name
+      click_link 'Go to fork'
 
       expect(current_path).to eq(project_path(forked_project))
     end

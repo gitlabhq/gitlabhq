@@ -11,7 +11,6 @@ export const INTEGRATION_TABS_CONFIG = [
     title: s__('IncidentSettings|PagerDuty integration'),
     component: 'PagerDutySettingsForm',
     active: true,
-    featureFlag: 'pagerdutyWebhook',
   },
   {
     title: s__('IncidentSettings|Grafana integration'),

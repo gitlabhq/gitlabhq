@@ -10,8 +10,8 @@ describe('RefreshButton', () => {
   let dispatch;
   let documentHidden;
 
-  const createWrapper = () => {
-    wrapper = shallowMount(RefreshButton, { store });
+  const createWrapper = (options = {}) => {
+    wrapper = shallowMount(RefreshButton, { store, ...options });
   };
 
   const findRefreshBtn = () => wrapper.find(GlButton);
@@ -55,6 +55,20 @@ describe('RefreshButton', () => {
 
   it('refresh rate is "Off" in the dropdown', () => {
     expect(findDropdown().props('text')).toBe('Off');
+  });
+
+  describe('when feature flag disable_metric_dashboard_refresh_rate is on', () => {
+    beforeEach(() => {
+      createWrapper({
+        provide: {
+          glFeatures: { disableMetricDashboardRefreshRate: true },
+        },
+      });
+    });
+
+    it('refresh rate is not available', () => {
+      expect(findDropdown().exists()).toBe(false);
+    });
   });
 
   describe('refresh rate options', () => {

@@ -26,7 +26,7 @@ Forking a project is, in most cases, a two-step process.
    NOTE: **Note:**
    The project path must be unique within the namespace.
 
-   ![Choose namespace](img/forking_workflow_choose_namespace.png)
+   ![Choose namespace](img/forking_workflow_choose_namespace_v13_2.png)
 
 The fork is created. The permissions you have in the namespace are the permissions you will have in the fork.
 

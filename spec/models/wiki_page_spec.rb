@@ -267,6 +267,53 @@ RSpec.describe WikiPage do
       expect(subject.errors.keys).to contain_exactly(:content)
     end
 
+    describe 'content size validation' do
+      let(:limit) { 10 }
+
+      before do
+        stub_application_setting(wiki_page_max_content_bytes: limit)
+      end
+
+      it 'accepts content below the limit' do
+        subject.attributes[:content] = 'a' * 10
+
+        expect(subject).to be_valid
+      end
+
+      it 'rejects content exceeding the limit' do
+        subject.attributes[:content] = 'a' * 11
+
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages).to eq(
+          content: ['is too long (11 Bytes). The maximum size is 10 Bytes.']
+        )
+      end
+
+      it 'counts content size in bytes rather than characters' do
+        subject.attributes[:content] = '💩💩💩'
+
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages).to eq(
+          content: ['is too long (12 Bytes). The maximum size is 10 Bytes.']
+        )
+      end
+
+      context 'with an existing page exceeding the limit' do
+        let(:limit) { existing_page.content.bytesize - 1 }
+
+        it 'accepts content when it has not changed' do
+          expect(existing_page).to be_valid
+        end
+
+        it 'rejects content when it has changed' do
+          existing_page.attributes[:content] = 'a' * (limit + 1)
+
+          expect(existing_page).not_to be_valid
+          expect(existing_page.errors.keys).to contain_exactly(:content)
+        end
+      end
+    end
+
     describe '#validate_path_limits' do
       let(:max_title) { Gitlab::WikiPages::MAX_TITLE_BYTES }
       let(:max_directory) { Gitlab::WikiPages::MAX_DIRECTORY_BYTES }
@@ -698,6 +745,50 @@ RSpec.describe WikiPage do
         subject.title = title if title
 
         expect(subject.title_changed?).to be(changed)
+      end
+    end
+  end
+
+  describe '#content_changed?' do
+    context 'with a new page' do
+      subject { new_page }
+
+      it 'returns false if content is nil' do
+        subject.attributes[:content] = nil
+
+        expect(subject.content_changed?).to be(false)
+      end
+
+      it 'returns true if content is set' do
+        subject.attributes[:content] = 'new'
+
+        expect(subject.content_changed?).to be(true)
+      end
+
+      it 'returns true if content is blank' do
+        subject.attributes[:content] = ''
+
+        expect(subject.content_changed?).to be(true)
+      end
+    end
+
+    context 'with an existing page' do
+      subject { existing_page }
+
+      it 'returns false' do
+        expect(subject.content_changed?).to be(false)
+      end
+
+      it 'returns false if content is set to the same value' do
+        subject.attributes[:content] = 'test content'
+
+        expect(subject.content_changed?).to be(false)
+      end
+
+      it 'returns true if content is changed' do
+        subject.attributes[:content] = 'new'
+
+        expect(subject.content_changed?).to be(true)
       end
     end
   end

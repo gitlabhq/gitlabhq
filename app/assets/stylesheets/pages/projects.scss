@@ -472,17 +472,9 @@
     margin-right: auto;
   }
 
-  a {
-    display: block;
-    width: 100%;
-    height: 100%;
-    padding-top: $gl-padding;
-    text-decoration: none;
-
-    &.disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
+  a.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 }
 
@@ -1536,5 +1528,12 @@ pre.light-well {
     .filtered-search-dropdown {
       width: 100%;
     }
+  }
+}
+
+@include media-breakpoint-down(xs) {
+  .fork-filtered-search {
+    width: 100%;
+    margin: $gl-spacing-scale-2 0;
   }
 }

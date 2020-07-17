@@ -91,7 +91,7 @@ module Gitlab
 
       def topology_node_cpus(client)
         query_safely('gitlab_usage_ping:node_cpus:count', 'node_cpus', fallback: {}) do |query|
-          aggregate_by_instance(client, one_week_average(query))
+          aggregate_by_instance(client, one_week_average(query, aggregation: :max))
         end
       end
 
@@ -228,8 +228,8 @@ module Gitlab
         end
       end
 
-      def one_week_average(query)
-        "avg_over_time (#{query}[1w])"
+      def one_week_average(query, aggregation: :avg)
+        "#{aggregation}_over_time (#{query}[1w])"
       end
 
       def aggregate_by_instance(client, query)

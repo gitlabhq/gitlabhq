@@ -23,7 +23,7 @@ dast_environment_deploy:
       when: never
     - if: $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
       when: never
-    - if: $DAST_WEBSITE # we don't need to create a review app if a URL is already given
+    - if: $DAST_WEBSITE  # we don't need to create a review app if a URL is already given
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $CI_KUBERNETES_ACTIVE &&
@@ -46,7 +46,7 @@ stop_dast_environment:
       when: never
     - if: $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
       when: never
-    - if: $DAST_WEBSITE # we don't need to create a review app if a URL is already given
+    - if: $DAST_WEBSITE  # we don't need to create a review app if a URL is already given
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $CI_KUBERNETES_ACTIVE &&

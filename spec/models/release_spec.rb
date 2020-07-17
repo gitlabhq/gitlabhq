@@ -73,6 +73,22 @@ RSpec.describe Release do
     end
   end
 
+  describe '.create' do
+    it "fills released_at using created_at if it's not set" do
+      release = described_class.create(project: project, author: user)
+
+      expect(release.released_at).to eq(release.created_at)
+    end
+
+    it "does not change released_at if it's set explicitly" do
+      released_at = Time.zone.parse('2018-10-20T18:00:00Z')
+
+      release = described_class.create(project: project, author: user, released_at: released_at)
+
+      expect(release.released_at).to eq(released_at)
+    end
+  end
+
   describe '#sources' do
     subject { release.sources }
 

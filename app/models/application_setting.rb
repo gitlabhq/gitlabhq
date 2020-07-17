@@ -272,6 +272,7 @@ class ApplicationSetting < ApplicationRecord
             numericality: { greater_than_or_equal_to: 0 }
 
   validates :snippet_size_limit, numericality: { only_integer: true, greater_than: 0 }
+  validates :wiki_page_max_content_bytes, numericality: { only_integer: true, greater_than: 0 }
 
   validates :email_restrictions, untrusted_regexp: true
 

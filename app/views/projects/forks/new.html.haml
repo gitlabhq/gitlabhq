@@ -7,15 +7,10 @@
     %p
       = _("A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project.").html_safe
   .col-lg-9
-    - if @namespaces.present?
+    - if @own_namespace.present?
       .fork-thumbnail-container.js-fork-content
         %h5.gl-mt-0.gl-mb-0.gl-ml-3.gl-mr-3
           = _("Select a namespace to fork the project")
-        - @namespaces.each do |namespace|
-          = render 'fork_button', namespace: namespace
-    - else
-      %strong
-        = _("No available namespaces to fork the project.")
-      %p.gl-mt-3
-        = _("You must have permission to create a project in a namespace before forking.")
+        = render 'fork_button', namespace: @own_namespace
+    #fork-groups-mount-element{ data: { endpoint: new_project_fork_path(@project, format: :json), can_create_project: current_user.can_create_project?.to_s } }
 

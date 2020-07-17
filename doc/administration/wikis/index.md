@@ -1,29 +1,30 @@
 ---
 type: reference, howto
 stage: Create
-group: Editor
+group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Snippets settings **(CORE ONLY)**
+# Wiki settings **(CORE ONLY)**
 
-Adjust the snippets' settings of your GitLab instance.
+Adjust the wiki settings of your GitLab instance.
 
-## Snippets content size limit
+## Wiki page content size limit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31133) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31176) in GitLab 13.2.
 
-You can set a maximum content size limit for snippets. This limit can prevent
+You can set a maximum content size limit for wiki pages. This limit can prevent
 abuse of the feature. The default value is **52428800 Bytes** (50 MB).
 
 ### How does it work?
 
-The content size limit will be applied when a snippet is created or updated.
+The content size limit will be applied when a wiki page is created or updated
+through the GitLab UI or API. Local changes pushed via Git will not be validated.
 
-In order not to break any existing snippets, the limit doesn't have any
-effect on them until a snippet is edited again and the content changes.
+In order not to break any existing wiki pages, the limit doesn't have any
+effect on them until a wiki page is edited again and the content changes.
 
-### Snippets size limit configuration
+### Wiki page content size limit configuration
 
 This setting is not available through the [Admin Area settings](../../user/admin_area/settings/index.md).
 In order to configure this setting, use either the Rails console
@@ -46,25 +47,25 @@ The steps to configure this setting through the Rails console are:
    sudo -u git -H bundle exec rails console -e production
    ```
 
-1. Update the snippets maximum file size:
+1. Update the wiki page maximum content size:
 
    ```ruby
-   ApplicationSetting.first.update!(snippet_size_limit: 50.megabytes)
+   ApplicationSetting.first.update!(wiki_page_max_content_bytes: 50.megabytes)
    ```
 
 To retrieve the current value, start the Rails console and run:
 
   ```ruby
-  Gitlab::CurrentSettings.snippet_size_limit
+  Gitlab::CurrentSettings.wiki_page_max_content_bytes
   ```
 
 #### Through the API
 
-The process to set the snippets size limit through the Application Settings API is
+The process to set the wiki page size limit through the Application Settings API is
 exactly the same as you would do to [update any other setting](../../api/settings.md#change-application-settings).
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings?snippet_size_limit=52428800
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings?wiki_page_max_content_bytes=52428800
 ```
 
 You can also use the API to [retrieve the current value](../../api/settings.md#get-current-application-settings).

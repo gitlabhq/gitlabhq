@@ -162,9 +162,25 @@ RSpec.describe Projects::ForksController do
     end
 
     context 'when user is signed in' do
-      it 'responds with status 200' do
+      before do
         sign_in(user)
+      end
 
+      context 'when JSON requested' do
+        it 'responds with available groups' do
+          get :new,
+              format: :json,
+              params: {
+                namespace_id: project.namespace,
+                project_id: project
+              }
+
+          expect(json_response['namespaces'].length).to eq(1)
+          expect(json_response['namespaces'].first['id']).to eq(group.id)
+        end
+      end
+
+      it 'responds with status 200' do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)

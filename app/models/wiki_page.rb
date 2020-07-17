@@ -65,6 +65,7 @@ class WikiPage
   validates :title, presence: true
   validates :content, presence: true
   validate :validate_path_limits, if: :title_changed?
+  validate :validate_content_size_limit, if: :content_changed?
 
   # The GitLab Wiki instance.
   attr_reader :wiki
@@ -282,6 +283,10 @@ class WikiPage
     end
   end
 
+  def content_changed?
+    attributes[:content] != page&.text_data
+  end
+
   # Updates the current @attributes hash by merging a hash of params
   def update_attributes(attrs)
     attrs[:title] = process_title(attrs[:title]) if attrs[:title].present?
@@ -390,5 +395,16 @@ class WikiPage
         dirname: dirname
       })
     end
+  end
+
+  def validate_content_size_limit
+    current_value = raw_content.to_s.bytesize
+    max_size = Gitlab::CurrentSettings.wiki_page_max_content_bytes
+    return if current_value <= max_size
+
+    errors.add(:content, _('is too long (%{current_value}). The maximum size is %{max_size}.') % {
+      current_value: ActiveSupport::NumberHelper.number_to_human_size(current_value),
+      max_size: ActiveSupport::NumberHelper.number_to_human_size(max_size)
+    })
   end
 end

@@ -9,6 +9,7 @@ module Projects
     before_action :authorize_metrics_dashboard!
     before_action do
       push_frontend_feature_flag(:prometheus_computed_alerts)
+      push_frontend_feature_flag(:disable_metric_dashboard_refresh_rate)
     end
 
     def show

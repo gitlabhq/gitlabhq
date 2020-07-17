@@ -163,7 +163,11 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Snippet settings
 
-- [Setting snippet content size limit](snippets/index.md): Set a maximum size limit for snippets' content.
+- [Setting snippet content size limit](snippets/index.md): Set a maximum content size limit for snippets.
+
+## Wiki settings
+
+- [Setting wiki page content size limit](wikis/index.md): Set a maximum content size limit for wiki pages.
 
 ## Git configuration options
 

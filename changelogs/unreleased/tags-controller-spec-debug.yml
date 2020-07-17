@@ -1,0 +1,5 @@
+---
+title: Fix release evidence sometimes not being collected
+merge_request: 37184
+author:
+type: fixed

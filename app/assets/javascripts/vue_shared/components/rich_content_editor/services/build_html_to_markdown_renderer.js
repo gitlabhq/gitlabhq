@@ -1,7 +1,9 @@
+/* eslint-disable @gitlab/require-i18n-strings */
 import { defaults, repeat } from 'lodash';
 
 const DEFAULTS = {
   subListIndentSpaces: 4,
+  unorderedListBulletChar: '-',
 };
 
 const countIndentSpaces = text => {
@@ -11,9 +13,12 @@ const countIndentSpaces = text => {
 };
 
 const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => {
-  const { subListIndentSpaces } = defaults(formattingPreferences, DEFAULTS);
-  // eslint-disable-next-line @gitlab/require-i18n-strings
+  const { subListIndentSpaces, unorderedListBulletChar } = defaults(
+    formattingPreferences,
+    DEFAULTS,
+  );
   const sublistNode = 'LI OL, LI UL';
+  const unorderedListItemNode = 'UL LI';
 
   return {
     TEXT_NODE(node) {
@@ -46,6 +51,11 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
         .join('\n');
 
       return reindentedList;
+    },
+    [unorderedListItemNode](node, subContent) {
+      const baseResult = baseRenderer.convert(node, subContent);
+
+      return baseResult.replace(/^(\s*)([*|-])/, `$1${unorderedListBulletChar}`);
     },
   };
 };

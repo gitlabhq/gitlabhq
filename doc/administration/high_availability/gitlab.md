@@ -170,7 +170,7 @@ If you enable Monitoring, it must be enabled on **all** GitLab servers.
    sidekiq['listen_address'] = "0.0.0.0"
    puma['listen'] = '0.0.0.0'
 
-   # Add the monitoring node's IP address to the monitoring whitelist and allow it to
+   # Add the monitoring node's IP address to the monitoring list that allows it to
    # scrape the NGINX metrics. Replace placeholder `monitoring.gitlab.example.com` with
    # the address and/or subnets gathered from the monitoring node(s).
    gitlab_rails['monitoring_whitelist'] = ['monitoring.gitlab.example.com', '127.0.0.0/8']

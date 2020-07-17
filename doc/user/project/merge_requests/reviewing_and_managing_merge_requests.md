@@ -64,6 +64,44 @@ list.
 
 ![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
 
+### File-by-file diff navigation
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222790) in GitLab 13.2.
+> - It's deployed behind a feature flag, enabled by default.
+> - It's recommended for production use.
+> - It's enabled on GitLab.com.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-file-by-file-diff-navigation-core-only).
+
+For larger merge requests it might sometimes be useful to review single files at a time. To enable,
+from your avatar on the top-right navbar, click **Settings**, and go to **Preferences** on the left
+sidebar. Scroll down to the **Behavior** section and select **Show one file at a time on merge request's Changes tab**.
+Click **Save changes** to apply.
+
+From there, when reviewing merge requests' **Changes** tab, you will see only one file at a time. You can then click the buttons **Prev** and **Next** to view the other files changed.
+
+![File-by-file diff navigation](img/file_by_file_v13_2.png)
+
+#### Enable or disable file-by-file diff navigation **(CORE ONLY)**
+
+File-by-file diff navigation is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable it for your instance.
+
+To enable it:
+
+```ruby
+# Instance-wide
+Feature.enable(:view_diffs_file_by_file)
+```
+
+To disable it:
+
+```ruby
+# Instance-wide
+Feature.disable(:view_diffs_file_by_file>)
+```
+
 ### Merge requests commit navigation
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18140) in GitLab 13.0.

@@ -47,4 +47,24 @@ describe('HTMLToMarkdownRenderer', () => {
       expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, list);
     });
   });
+
+  describe('UL LI visitor', () => {
+    it.each`
+      listItem           | unorderedListBulletChar | result             | bulletChar
+      ${'* list item'}   | ${undefined}            | ${'- list item'}   | ${'default'}
+      ${'  - list item'} | ${'*'}                  | ${'  * list item'} | ${'*'}
+      ${'  * list item'} | ${'-'}                  | ${'  - list item'} | ${'-'}
+    `(
+      'uses $bulletChar bullet char in unordered list items when $unorderedListBulletChar is set in config',
+      ({ listItem, unorderedListBulletChar, result }) => {
+        htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer, {
+          unorderedListBulletChar,
+        });
+        baseRenderer.convert.mockReturnValueOnce(listItem);
+
+        expect(htmlToMarkdownRenderer['UL LI'](NODE, listItem)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, listItem);
+      },
+    );
+  });
 });

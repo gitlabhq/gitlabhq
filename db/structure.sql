@@ -9172,6 +9172,7 @@ CREATE TABLE public.application_settings (
     group_download_export_limit integer DEFAULT 1 NOT NULL,
     maintenance_mode boolean DEFAULT false NOT NULL,
     maintenance_mode_message text,
+    wiki_page_max_content_bytes bigint DEFAULT 52428800 NOT NULL,
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
@@ -23861,6 +23862,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200712084655
 20200712235622
 20200713071042
+20200713141854
 20200713152443
 20200716044023
 20200716120419

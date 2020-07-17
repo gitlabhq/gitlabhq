@@ -408,6 +408,7 @@ Set the limit to `0` to disable it.
 
 ## Wiki limits
 
+- [Wiki page content size limit](wikis/index.md#wiki-page-content-size-limit).
 - [Length restrictions for file and directory names](../user/project/wiki/index.md#length-restrictions-for-file-and-directory-names).
 
 ## Snippets limits

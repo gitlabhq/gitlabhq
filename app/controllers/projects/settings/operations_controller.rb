@@ -6,10 +6,6 @@ module Projects
       before_action :authorize_admin_operations!
       before_action :authorize_read_prometheus_alerts!, only: [:reset_alerting_token]
 
-      before_action do
-        push_frontend_feature_flag(:pagerduty_webhook, project)
-      end
-
       respond_to :json, only: [:reset_alerting_token, :reset_pagerduty_token]
 
       helper_method :error_tracking_setting

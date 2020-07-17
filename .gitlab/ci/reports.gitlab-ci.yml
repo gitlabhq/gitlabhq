@@ -150,35 +150,35 @@ dependency_scanning:
 ## We need to duplicate this job's definition because it seems it's impossible to
 ## override an included `only.refs`.
 ## See https://gitlab.com/gitlab-org/gitlab/issues/31371.
-#dast:
-#  extends:
-#    - .default-retry
-#    - .reports:rules:dast
-#  # This is needed so that manual jobs with needs don't block the pipeline.
-#  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
-#  dependencies: ["review-deploy"]
-#  stage: qa  # GitLab-specific
-#  image:
-#    name: "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION"
-#  variables:
-#    # To be done in a later iteration
-#    # DAST_USERNAME: "root"
-#    # DAST_USERNAME_FIELD: "user[login]"
-#    # DAST_PASSWORD_FIELD: "user[passowrd]"
-#    DAST_VERSION: 1
-#  script:
-#    - 'export DAST_WEBSITE="${DAST_WEBSITE:-$(cat environment_url.txt)}"'
-#    # To be done in a later iteration
-#    # - 'export DAST_AUTH_URL="${DAST_WEBSITE}/users/sign_in"'
-#    # - 'export DAST_PASSWORD="${REVIEW_APPS_ROOT_PASSWORD}"'
-#    - /analyze -t $DAST_WEBSITE
-#  timeout: 4h
-#  artifacts:
-#    paths:
-#      - gl-dast-report.json  # GitLab-specific
-#    reports:
-#      dast: gl-dast-report.json
-#    expire_in: 1 week  # GitLab-specific
+# dast:
+#   extends:
+#     - .default-retry
+#     - .reports:rules:dast
+#   # This is needed so that manual jobs with needs don't block the pipeline.
+#   # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
+#   dependencies: ["review-deploy"]
+#   stage: qa  # GitLab-specific
+#   image:
+#     name: "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION"
+#   variables:
+#     # To be done in a later iteration
+#     # DAST_USERNAME: "root"
+#     # DAST_USERNAME_FIELD: "user[login]"
+#     # DAST_PASSWORD_FIELD: "user[passowrd]"
+#     DAST_VERSION: 1
+#   script:
+#     - 'export DAST_WEBSITE="${DAST_WEBSITE:-$(cat environment_url.txt)}"'
+#     # To be done in a later iteration
+#     # - 'export DAST_AUTH_URL="${DAST_WEBSITE}/users/sign_in"'
+#     # - 'export DAST_PASSWORD="${REVIEW_APPS_ROOT_PASSWORD}"'
+#     - /analyze -t $DAST_WEBSITE
+#   timeout: 4h
+#   artifacts:
+#     paths:
+#       - gl-dast-report.json  # GitLab-specific
+#     reports:
+#       dast: gl-dast-report.json
+#     expire_in: 1 week  # GitLab-specific
 
 # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
 # schedule:dast:
