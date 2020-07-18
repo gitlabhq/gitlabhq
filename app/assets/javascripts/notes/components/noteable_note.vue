@@ -152,9 +152,10 @@ export default {
 
       return this.line && this.startLineNumber !== this.endLineNumber;
     },
+    showMultilineCommentForm() {
+      return Boolean(this.isEditing && this.note.position && this.diffFile && this.line);
+    },
     commentLineOptions() {
-      if (!this.diffFile || !this.line) return [];
-
       const sideA = this.line.type === 'new' ? 'right' : 'left';
       const sideB = sideA === 'left' ? 'right' : 'left';
       const lines = this.diffFile.highlighted_diff_lines.length
@@ -339,7 +340,7 @@ export default {
   >
     <div v-if="showMultiLineComment" data-testid="multiline-comment">
       <multiline-comment-form
-        v-if="isEditing && note.position"
+        v-if="showMultilineCommentForm"
         v-model="commentLineStart"
         :line="line"
         :comment-line-options="commentLineOptions"

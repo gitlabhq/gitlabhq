@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { getByRole } from '@testing-library/dom';
 import '~/behaviors/markdown/render_gfm';
 import { SYSTEM_NOTE } from '~/notes/constants';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
@@ -9,14 +10,20 @@ import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import createStore from '~/notes/stores';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
+const LINE_RANGE = {};
+const DISCUSSION_WITH_LINE_RANGE = {
+  ...discussionMock,
+  position: {
+    line_range: LINE_RANGE,
+  },
+};
+
 describe('DiscussionNotes', () => {
+  let store;
   let wrapper;
 
-  const createComponent = props => {
-    const store = createStore();
-    store.dispatch('setNoteableData', noteableDataMock);
-    store.dispatch('setNotesData', notesDataMock);
-
+  const getList = () => getByRole(wrapper.element, 'list');
+  const createComponent = (props, features = {}) => {
     wrapper = shallowMount(DiscussionNotes, {
       store,
       propsData: {
@@ -31,11 +38,21 @@ describe('DiscussionNotes', () => {
       slots: {
         'avatar-badge': '<span class="avatar-badge-slot-content" />',
       },
+      provide: {
+        glFeatures: { multilineComments: true, ...features },
+      },
     });
   };
 
+  beforeEach(() => {
+    store = createStore();
+    store.dispatch('setNoteableData', noteableDataMock);
+    store.dispatch('setNotesData', notesDataMock);
+  });
+
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('rendering', () => {
@@ -157,6 +174,26 @@ describe('DiscussionNotes', () => {
           expect(wrapper.emitted().deleteNote).toBeTruthy();
         });
       });
+    });
+  });
+
+  describe.each`
+    desc                               | props                                         | features                        | event           | expectedCalls
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{}}                           | ${'mouseenter'} | ${[['setSelectedCommentPositionHover', LINE_RANGE]]}
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{}}                           | ${'mouseleave'} | ${[['setSelectedCommentPositionHover']]}
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{ multilineComments: false }} | ${'mouseenter'} | ${[]}
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${{ multilineComments: false }} | ${'mouseleave'} | ${[]}
+    ${'without `discussion.position`'} | ${{}}                                         | ${{}}                           | ${'mouseenter'} | ${[]}
+    ${'without `discussion.position`'} | ${{}}                                         | ${{}}                           | ${'mouseleave'} | ${[]}
+  `('$desc and features $features', ({ props, event, features, expectedCalls }) => {
+    beforeEach(() => {
+      createComponent(props, features);
+      jest.spyOn(store, 'dispatch');
+    });
+
+    it(`calls store ${expectedCalls.length} times on ${event}`, () => {
+      getList().dispatchEvent(new MouseEvent(event));
+      expect(store.dispatch.mock.calls).toEqual(expectedCalls);
     });
   });
 

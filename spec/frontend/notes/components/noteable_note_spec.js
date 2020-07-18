@@ -92,8 +92,8 @@ describe('issue_note', () => {
       });
     });
 
-    it('should not render multiline comment form unless it is the discussion root', () => {
-      wrapper.setProps({ discussionRoot: false });
+    it('should only render multiline comment form if it has everything it needs', () => {
+      wrapper.setProps({ line: { line_code: '' } });
       wrapper.vm.isEditing = true;
 
       return wrapper.vm.$nextTick().then(() => {

@@ -251,17 +251,12 @@ class MergeRequest < ApplicationRecord
   end
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
-
-  PROJECT_ROUTE_AND_NAMESPACE_ROUTE = [
-    target_project: [:route, { namespace: :route }],
-    source_project: [:route, { namespace: :route }]
-  ].freeze
-
   scope :with_api_entity_associations, -> {
-    preload(:assignees, :author, :unresolved_notes, :labels, :milestone,
-            :timelogs, :latest_merge_request_diff,
-            *PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
-            metrics: [:latest_closed_by, :merged_by])
+    preload_routables
+      .preload(:assignees, :author, :unresolved_notes, :labels, :milestone,
+               :timelogs, :latest_merge_request_diff,
+               target_project: :project_feature,
+               metrics: [:latest_closed_by, :merged_by])
   }
 
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
@@ -269,6 +264,10 @@ class MergeRequest < ApplicationRecord
   end
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
   scope :preload_source_project, -> { preload(:source_project) }
+  scope :preload_routables, -> do
+    preload(target_project: [:route, { namespace: :route }],
+            source_project: [:route, { namespace: :route }])
+  end
 
   scope :with_auto_merge_enabled, -> do
     with_state(:opened).where(auto_merge_enabled: true)

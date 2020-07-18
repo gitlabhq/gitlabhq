@@ -1,0 +1,5 @@
+---
+title: Fix editing note throws js error
+merge_request: 37216
+author:
+type: fixed
