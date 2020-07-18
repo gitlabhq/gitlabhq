@@ -16,6 +16,7 @@ gem 'faker', '~> 1.6', '>= 1.6.6'
 gem 'knapsack', '~> 1.17'
 gem 'parallel_tests', '~> 2.29'
 gem 'rotp', '~> 3.1.0'
+gem 'rspec-parameterized', '~> 0.4.2'
 
 group :test do
   gem 'pry-byebug', '~> 3.5.1', platform: :mri

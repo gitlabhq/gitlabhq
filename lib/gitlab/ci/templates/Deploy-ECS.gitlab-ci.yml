@@ -1,4 +1,4 @@
-# This template is deprecated and will be removed as part of GitLab 13.2!
+# This template is deprecated.
 #
 # If you have referenced this template in your CI pipeline, please
 # update your CI configuration by replacing the following occurrence(s):
@@ -20,12 +20,8 @@ stages:
   - deploy
   - production
 
-before_script:
-  - printf '\nWARNING!\nThis job includes "Deploy-ECS.gitlab-ci.yml". Please rename this to "AWS/Deploy-ECS.gitlab-ci.yml".\n'
-
-variables:
-  AUTO_DEVOPS_PLATFORM_TARGET: ECS
-
-include:
-  - template: Jobs/Build.gitlab-ci.yml
-  - template: Jobs/Deploy/ECS.gitlab-ci.yml
+"error: Template has moved":
+  stage: deploy
+  script:
+    - echo "Deploy-ECS.gitlab-ci.yml has been moved to AWS/Deploy-ECS.gitlab-ci.yml, see https://docs.gitlab.com/ee/ci/cloud_deployment/#deploy-your-application-to-the-aws-elastic-container-service-ecs for more details."
+    - exit 1
