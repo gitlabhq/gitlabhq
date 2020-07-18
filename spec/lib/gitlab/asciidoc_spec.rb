@@ -418,6 +418,50 @@ module Gitlab
           expect(output).to include("a href=\"README.adoc\"")
         end
       end
+
+      context 'with mermaid diagrams' do
+        it 'adds class js-render-mermaid to the output' do
+          input = <<~MD
+            [mermaid]
+            ....
+            graph LR
+                A[Square Rect] -- Link text --> B((Circle))
+                A --> C(Round Rect)
+                B --> D{Rhombus}
+                C --> D
+            ....
+          MD
+
+          output = <<~HTML
+            <pre data-mermaid-style="display" class="js-render-mermaid">graph LR
+                A[Square Rect] -- Link text --&gt; B((Circle))
+                A --&gt; C(Round Rect)
+                B --&gt; D{Rhombus}
+                C --&gt; D</pre>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+
+        it 'applies subs in diagram block' do
+          input = <<~MD
+            :class-name: AveryLongClass
+
+            [mermaid,subs=+attributes]
+            ....
+            classDiagram
+            Class01 <|-- {class-name} : Cool
+            ....
+          MD
+
+          output = <<~HTML
+            <pre data-mermaid-style="display" class="js-render-mermaid">classDiagram
+            Class01 &lt;|-- AveryLongClass : Cool</pre>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+      end
     end
 
     context 'with project' do

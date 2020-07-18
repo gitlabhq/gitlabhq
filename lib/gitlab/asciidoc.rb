@@ -4,6 +4,7 @@ require 'asciidoctor'
 require 'asciidoctor-plantuml'
 require 'asciidoctor/extensions'
 require 'gitlab/asciidoc/html5_converter'
+require 'gitlab/asciidoc/mermaid_block_processor'
 require 'gitlab/asciidoc/syntax_highlighter/html_pipeline_adapter'
 
 module Gitlab
@@ -46,6 +47,7 @@ module Gitlab
     def self.render(input, context)
       extensions = proc do
         include_processor ::Gitlab::Asciidoc::IncludeProcessor.new(context)
+        block ::Gitlab::Asciidoc::MermaidBlockProcessor
       end
 
       extra_attrs = path_attrs(context[:requested_path])
