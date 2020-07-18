@@ -1,7 +1,7 @@
 import pipelineTourSuccess from '~/blob/pipeline_tour_success_modal.vue';
 import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
-import { GlSprintf, GlModal } from '@gitlab/ui';
+import { GlSprintf, GlModal, GlLink } from '@gitlab/ui';
 import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
 import modalProps from './pipeline_tour_success_mock_data';
 
@@ -18,6 +18,7 @@ describe('PipelineTourSuccessModal', () => {
       propsData: modalProps,
       stubs: {
         GlModal,
+        GlSprintf,
       },
     });
 
@@ -35,6 +36,10 @@ describe('PipelineTourSuccessModal', () => {
 
     expect(modal.attributes('title')).toContain("That's it, well done!");
     expect(sprintf.exists()).toBe(true);
+  });
+
+  it('renders the link for codeQualityLink', () => {
+    expect(wrapper.find(GlLink).attributes('href')).toBe(wrapper.vm.$options.codeQualityLink);
   });
 
   it('calls to remove cookie', () => {

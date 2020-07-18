@@ -64,7 +64,7 @@ in both PagerDuty and GitLab:
    ![PagerDuty incidents integration](img/pagerduty_incidents_integration_13_2.png)
 
 1. Activate the integration, and save the changes in GitLab.
-1. Copy the value of **Webhook URL**, as you'll need it in a later step.
+1. Copy the value of **Webhook URL** for use in a later step.
 1. Follow the steps described in the
    [PagerDuty documentation](https://support.pagerduty.com/docs/webhooks)
    to add the webhook URL to a PagerDuty webhook integration.

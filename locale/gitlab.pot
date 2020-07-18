@@ -11368,9 +11368,6 @@ msgstr ""
 msgid "Go to <strong>Issues</strong> > <strong>Boards</strong> to access your personalized learning issue board."
 msgstr ""
 
-msgid "Go to Pipelines"
-msgstr ""
-
 msgid "Go to Webhooks"
 msgstr ""
 
@@ -14183,10 +14180,10 @@ msgstr ""
 msgid "MERGED"
 msgstr ""
 
-msgid "MR widget|Take a look at our %{beginnerLinkStart}Beginner's Guide to Continuous Integration%{beginnerLinkEnd} and our %{exampleLinkStart}examples of GitLab CI/CD%{exampleLinkEnd} to see all the cool stuff you can do with it."
+msgid "MR widget|Take a look at our %{beginnerLinkStart}Beginner's Guide to Continuous Integration%{beginnerLinkEnd} and our %{exampleLinkStart}examples of GitLab CI/CD%{exampleLinkEnd} to learn more."
 msgstr ""
 
-msgid "MR widget|The pipeline will now run automatically every time you commit code. Pipelines are useful for deploying static web pages, detecting vulnerabilities in dependencies, static or dynamic application security testing (SAST and DAST), and so much more!"
+msgid "MR widget|The pipeline will test your code on every commit. A %{codeQualityLinkStart}code quality report%{codeQualityLinkEnd} will appear in your merge requests to warn you about potential code degradations."
 msgstr ""
 
 msgid "MRApprovals|Approvals"
@@ -21070,6 +21067,9 @@ msgid "See the affected projects in the GitLab admin panel"
 msgstr ""
 
 msgid "See what's new at GitLab"
+msgstr ""
+
+msgid "See your pipeline in action"
 msgstr ""
 
 msgid "Select"

@@ -1,9 +1,14 @@
+- is_project_overview = local_assigns.fetch(:is_project_overview, false)
+
 %div{ class: container_class }
-  .nav-block.d-none.d-sm-flex.activities
+  .nav-block.d-none.d-sm-flex.activities.gl-static
     = render 'shared/event_filter'
-    .controls
+    .controls.gl-display-flex
       = link_to project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: 'btn d-none d-sm-inline-block has-tooltip' do
         = icon('rss')
+      - if is_project_overview && can?(current_user, :download_code, @project)
+        .project-clone-holder.d-none.d-md-inline-flex.gl-ml-2
+          = render "projects/buttons/clone", dropdown_class: 'dropdown-menu-right'
 
   .content_list.project-activity{ :"data-href" => activity_project_path(@project) }
   .loading

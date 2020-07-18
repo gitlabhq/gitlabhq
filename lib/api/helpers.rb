@@ -404,6 +404,10 @@ module API
       render_api_error!(message || '409 Conflict', 409)
     end
 
+    def unprocessable_entity!(message = nil)
+      render_api_error!(message || '422 Unprocessable Entity', :unprocessable_entity)
+    end
+
     def file_too_large!
       render_api_error!('413 Request Entity Too Large', 413)
     end

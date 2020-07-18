@@ -314,6 +314,57 @@ To update this limit to a new value on a self-managed installation, run the foll
 Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
 ```
 
+### Maximum file size per type of artifact
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216097) in GitLab 13.3.
+
+Artifacts that are uploaded by the Runner will be rejected if the file size exceeds the
+maximum file size limit. The limit is determined by picking the smaller value between the project's
+[maximum artifact size setting](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only)
+and the plan limit for the given artifact type.
+
+Values are interpreted as megabytes thus the smallest possible value that can be defined is `1 MB`.
+
+Each type of artifact has its corresponding maximum size limit. For now, only the `lsif` type's plan limit
+is enabled and has a default value defined. The rest of the values and defaults are going to be determined and updated
+in future releases.
+
+| Limit Name                                | Default Value |
+| ----------------------------------------- | ------------- |
+| ci_max_artifact_size_lsif                 | 20            |
+| ci_max_artifact_size_archive              | 0             |
+| ci_max_artifact_size_metadata             | 0             |
+| ci_max_artifact_size_trace                | 0             |
+| ci_max_artifact_size_junit                | 0             |
+| ci_max_artifact_size_sast                 | 0             |
+| ci_max_artifact_size_dependency_scanning  | 0             |
+| ci_max_artifact_size_container_scanning   | 0             |
+| ci_max_artifact_size_dast                 | 0             |
+| ci_max_artifact_size_codequality          | 0             |
+| ci_max_artifact_size_license_management   | 0             |
+| ci_max_artifact_size_license_scanning     | 0             |
+| ci_max_artifact_size_performance          | 0             |
+| ci_max_artifact_size_metrics              | 0             |
+| ci_max_artifact_size_metrics_referee      | 0             |
+| ci_max_artifact_size_network_referee      | 0             |
+| ci_max_artifact_size_dotenv               | 0             |
+| ci_max_artifact_size_cobertura            | 0             |
+| ci_max_artifact_size_terraform            | 0             |
+| ci_max_artifact_size_accessibility        | 0             |
+| ci_max_artifact_size_cluster_applications | 0             |
+| ci_max_artifact_size_secret_detection     | 0             |
+| ci_max_artifact_size_requirements         | 0             |
+| ci_max_artifact_size_coverage_fuzzing     | 0             |
+| ci_max_artifact_size_browser_performance  | 0             |
+| ci_max_artifact_size_load_performance     | 0             |
+
+To update the limit on a self-managed installation, run the following in the
+[GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
+```
+
 ## Instance monitoring and metrics
 
 ### Incident Management inbound alert limits

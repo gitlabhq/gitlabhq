@@ -153,22 +153,6 @@ module API
       include TimeTrackingEndpoints
 
       helpers do
-        def handle_merge_request_errors!(errors)
-          if errors[:project_access].any?
-            error!(errors[:project_access], 422)
-          elsif errors[:branch_conflict].any?
-            error!(errors[:branch_conflict], 422)
-          elsif errors[:validate_fork].any?
-            error!(errors[:validate_fork], 422)
-          elsif errors[:validate_branches].any?
-            conflict!(errors[:validate_branches])
-          elsif errors[:base].any?
-            error!(errors[:base], 422)
-          end
-
-          render_api_error!(errors, 400)
-        end
-
         params :optional_params do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
@@ -226,11 +210,9 @@ module API
 
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
-        if merge_request.valid?
-          present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
-        else
-          handle_merge_request_errors! merge_request.errors
-        end
+        handle_merge_request_errors!(merge_request)
+
+        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
       desc 'Delete a merge request'
@@ -420,11 +402,9 @@ module API
 
         merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
-        if merge_request.valid?
-          present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
-        else
-          handle_merge_request_errors! merge_request.errors
-        end
+        handle_merge_request_errors!(merge_request)
+
+        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
       desc 'Merge a merge request' do

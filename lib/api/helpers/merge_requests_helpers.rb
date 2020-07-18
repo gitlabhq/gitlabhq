@@ -4,6 +4,9 @@ module API
   module Helpers
     module MergeRequestsHelpers
       extend Grape::API::Helpers
+      extend ActiveSupport::Concern
+
+      UNPROCESSABLE_ERROR_KEYS = [:project_access, :branch_conflict, :validate_fork, :base].freeze
 
       params :merge_requests_negatable_params do
         optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
@@ -78,6 +81,20 @@ module API
                  values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
                  default: 'created_by_me',
                  desc: 'Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+      end
+
+      def handle_merge_request_errors!(merge_request)
+        return if merge_request.valid?
+
+        errors = merge_request.errors
+
+        UNPROCESSABLE_ERROR_KEYS.each do |error|
+          unprocessable_entity!(errors[error]) if errors.has_key?(error)
+        end
+
+        conflict!(errors[:validate_branches]) if errors.has_key?(:validate_branches)
+
+        render_validation_error!(merge_request)
       end
     end
   end

@@ -330,6 +330,7 @@ profiler
 Prometheus
 proxied
 proxies
+proxyable
 proxying
 pseudonymized
 pseudonymizer

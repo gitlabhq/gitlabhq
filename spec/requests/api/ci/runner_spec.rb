@@ -1632,25 +1632,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             stub_application_setting(max_artifacts_size: application_max_size)
           end
 
-          context 'and feature flag ci_max_artifact_size_per_type is enabled' do
-            before do
-              stub_feature_flags(ci_max_artifact_size_per_type: true)
-            end
-
-            it_behaves_like 'failed request'
-          end
-
-          context 'and feature flag ci_max_artifact_size_per_type is disabled' do
-            before do
-              stub_feature_flags(ci_max_artifact_size_per_type: false)
-            end
-
-            it 'bases of project closest setting' do
-              send_request
-
-              expect(response).to have_gitlab_http_status(success_code)
-            end
-          end
+          it_behaves_like 'failed request'
         end
 
         context 'based on application setting' do
