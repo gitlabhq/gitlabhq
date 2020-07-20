@@ -759,6 +759,3 @@ export const navigateToDiffFileIndex = ({ commit, state }, index) => {
 
   commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

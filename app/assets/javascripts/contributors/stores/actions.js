@@ -3,6 +3,7 @@ import { __ } from '~/locale';
 import service from '../services/contributors_service';
 import * as types from './mutation_types';
 
+// eslint-disable-next-line import/prefer-default-export
 export const fetchChartData = ({ commit }, endpoint) => {
   commit(types.SET_LOADING_STATE, true);
 
@@ -15,6 +16,3 @@ export const fetchChartData = ({ commit }, endpoint) => {
     })
     .catch(() => flash(__('An error occurred while loading chart data')));
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

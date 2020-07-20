@@ -32,5 +32,3 @@ export const fetchBranches = ({ dispatch, rootGetters }, { search = '' }) => {
 };
 
 export const resetBranches = ({ commit }) => commit(types.RESET_BRANCHES);
-
-export default () => {};

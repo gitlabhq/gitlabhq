@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/prefer-default-export
 export const mockReport = {
   status: 'failed',
   summary: {
@@ -51,5 +52,3 @@ export const mockReport = {
   existing_notes: [],
   existing_warnings: [],
 };
-
-export default () => {};

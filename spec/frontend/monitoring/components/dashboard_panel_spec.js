@@ -14,11 +14,10 @@ import {
   mockNamespace,
   mockNamespacedData,
   mockTimeRange,
-  graphDataPrometheusQueryRangeMultiTrack,
   barMockData,
 } from '../mock_data';
 import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
-import { anomalyGraphData, singleStatGraphData } from '../graph_data';
+import { anomalyGraphData, singleStatGraphData, heatmapGraphData } from '../graph_data';
 
 import { panelTypes } from '~/monitoring/constants';
 
@@ -235,7 +234,7 @@ describe('Dashboard Panel', () => {
         ${anomalyGraphData()}                      | ${MonitorAnomalyChart}       | ${false}
         ${dataWithType(panelTypes.COLUMN)}         | ${MonitorColumnChart}        | ${false}
         ${dataWithType(panelTypes.STACKED_COLUMN)} | ${MonitorStackedColumnChart} | ${false}
-        ${graphDataPrometheusQueryRangeMultiTrack} | ${MonitorHeatmapChart}       | ${false}
+        ${heatmapGraphData()}                      | ${MonitorHeatmapChart}       | ${false}
         ${barMockData}                             | ${MonitorBarChart}           | ${false}
       `('when $data.type data is provided', ({ data, component, hasCtxMenu }) => {
         const attrs = { attr1: 'attr1Value', attr2: 'attr2Value' };
@@ -444,7 +443,7 @@ describe('Dashboard Panel', () => {
 
     describe('csvText', () => {
       it('converts metrics data from json to csv', () => {
-        const header = `timestamp,${graphData.y_label}`;
+        const header = `timestamp,"${graphData.y_label} > ${graphData.metrics[0].label}"`;
         const data = graphData.metrics[0].result[0].values;
         const firstRow = `${data[0][0]},${data[0][1]}`;
         const secondRow = `${data[1][0]},${data[1][1]}`;
@@ -523,7 +522,7 @@ describe('Dashboard Panel', () => {
     });
 
     it('displays a heatmap in local timezone', () => {
-      createWrapper({ graphData: graphDataPrometheusQueryRangeMultiTrack });
+      createWrapper({ graphData: heatmapGraphData() });
       expect(wrapper.find(MonitorHeatmapChart).props('timezone')).toBe('LOCAL');
     });
 
@@ -538,7 +537,7 @@ describe('Dashboard Panel', () => {
       });
 
       it('displays a heatmap with UTC', () => {
-        createWrapper({ graphData: graphDataPrometheusQueryRangeMultiTrack });
+        createWrapper({ graphData: heatmapGraphData() });
         expect(wrapper.find(MonitorHeatmapChart).props('timezone')).toBe('UTC');
       });
     });

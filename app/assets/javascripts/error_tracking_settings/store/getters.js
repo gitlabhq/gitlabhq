@@ -39,6 +39,3 @@ export const projectSelectionLabel = state => {
   }
   return s__('ErrorTracking|To enable project selection, enter a valid Auth Token');
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

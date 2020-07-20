@@ -16,24 +16,8 @@ class SuggestionEntity < API::Entities::Suggestion
 
   expose :inapplicable_reason do |suggestion|
     next _("You don't have write access to the source branch.") unless can_apply?(suggestion)
-    next if suggestion.appliable?
 
-    case suggestion.inapplicable_reason
-    when :merge_request_merged
-      _("This merge request was merged. To apply this suggestion, edit this file directly.")
-    when :merge_request_closed
-      _("This merge request is closed. To apply this suggestion, edit this file directly.")
-    when :source_branch_deleted
-      _("Can't apply as the source branch was deleted.")
-    when :outdated
-      phrase = suggestion.single_line? ? 'this line was' : 'these lines were'
-
-      _("Can't apply as %{phrase} changed in a more recent version.") % { phrase: phrase }
-    when :same_content
-      _("This suggestion already matches its content.")
-    else
-      _("Can't apply this suggestion.")
-    end
+    suggestion.inapplicable_reason
   end
 
   private

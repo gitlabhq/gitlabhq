@@ -3,6 +3,7 @@
  * and returns an array of the following form:
  * [{ key: "forks", label: "Forks", value: 50 }]
  */
+// eslint-disable-next-line import/prefer-default-export
 export const getStatistics = state => labels =>
   Object.keys(labels).map(key => {
     const result = {
@@ -12,6 +13,3 @@ export const getStatistics = state => labels =>
     };
     return result;
   });
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

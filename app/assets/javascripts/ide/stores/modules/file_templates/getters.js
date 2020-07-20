@@ -23,5 +23,3 @@ export const templateTypes = () => [
 export const showFileTemplatesBar = (_, getters, rootState) => name =>
   getters.templateTypes.find(t => t.name === name) &&
   rootState.currentActivityView === leftSidebarViews.edit.name;
-
-export default () => {};

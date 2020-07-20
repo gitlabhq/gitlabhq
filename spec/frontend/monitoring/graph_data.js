@@ -1,10 +1,11 @@
 import { mapPanelToViewModel, normalizeQueryResponseData } from '~/monitoring/stores/utils';
 import { panelTypes, metricStates } from '~/monitoring/constants';
 
-const initTime = 1435781451.781;
+const initTime = 1435781450; // "Wed, 01 Jul 2015 20:10:50 GMT"
+const intervalSeconds = 120;
 
 const makeValue = val => [initTime, val];
-const makeValues = vals => vals.map((val, i) => [initTime + 15 * i, val]);
+const makeValues = vals => vals.map((val, i) => [initTime + intervalSeconds * i, val]);
 
 // Normalized Prometheus Responses
 
@@ -82,7 +83,7 @@ const matrixMultiResult = ({ values1 = ['1', '2', '3'], values2 = ['4', '5', '6'
  * @param {Object} dataOptions.isMultiSeries
  */
 export const timeSeriesGraphData = (panelOptions = {}, dataOptions = {}) => {
-  const { metricCount = 1, isMultiSeries = false } = dataOptions;
+  const { metricCount = 1, isMultiSeries = false, withLabels = true } = dataOptions;
 
   return mapPanelToViewModel({
     title: 'Time Series Panel',
@@ -90,7 +91,7 @@ export const timeSeriesGraphData = (panelOptions = {}, dataOptions = {}) => {
     x_label: 'X Axis',
     y_label: 'Y Axis',
     metrics: Array.from(Array(metricCount), (_, i) => ({
-      label: `Metric ${i + 1}`,
+      label: withLabels ? `Metric ${i + 1}` : undefined,
       state: metricStates.OK,
       result: isMultiSeries ? matrixMultiResult() : matrixSingleResult(),
     })),
@@ -159,6 +160,26 @@ export const anomalyGraphData = (panelOptions = {}, dataOptions = {}) => {
         result: matrixSingleResult({ values: lower }),
       },
     ],
+    ...panelOptions,
+  });
+};
+
+/**
+ * Generate mock graph data for heatmaps according to options
+ */
+export const heatmapGraphData = (panelOptions = {}, dataOptions = {}) => {
+  const { metricCount = 1 } = dataOptions;
+
+  return mapPanelToViewModel({
+    title: 'Heatmap Panel',
+    type: panelTypes.HEATMAP,
+    x_label: 'X Axis',
+    y_label: 'Y Axis',
+    metrics: Array.from(Array(metricCount), (_, i) => ({
+      label: `Metric ${i + 1}`,
+      state: metricStates.OK,
+      result: matrixMultiResult(),
+    })),
     ...panelOptions,
   });
 };

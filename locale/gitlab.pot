@@ -3777,6 +3777,9 @@ msgstr ""
 msgid "Blocked issue"
 msgstr ""
 
+msgid "Blocking issues"
+msgstr ""
+
 msgid "Blocks"
 msgstr ""
 
@@ -4146,10 +4149,13 @@ msgstr ""
 msgid "Can override approvers and approvals required per merge request"
 msgstr ""
 
-msgid "Can't apply as %{phrase} changed in a more recent version."
+msgid "Can't apply as the source branch was deleted."
 msgstr ""
 
-msgid "Can't apply as the source branch was deleted."
+msgid "Can't apply as these lines were changed in a more recent version."
+msgstr ""
+
+msgid "Can't apply as this line was changed in a more recent version."
 msgstr ""
 
 msgid "Can't apply this suggestion."

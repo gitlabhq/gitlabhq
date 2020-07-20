@@ -93,6 +93,10 @@ Example response:
     "name": "Ruby-alpine"
   },
   {
+    "key": "Rust",
+    "name": "Rust"
+  },
+  {
     "key": "Swift",
     "name": "Swift"
   }

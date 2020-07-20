@@ -206,7 +206,7 @@ RSpec.describe Projects::Settings::OperationsController do
           reset_pagerduty_token
 
           new_token = incident_management_setting.reload.pagerduty_token
-          new_webhook_url = project_incidents_pagerduty_url(project, token: new_token)
+          new_webhook_url = project_incidents_integrations_pagerduty_url(project, token: new_token)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['pagerduty_webhook_url']).to eq(new_webhook_url)
@@ -219,7 +219,7 @@ RSpec.describe Projects::Settings::OperationsController do
         it 'does not reset a token' do
           reset_pagerduty_token
 
-          new_webhook_url = project_incidents_pagerduty_url(project, token: nil)
+          new_webhook_url = project_incidents_integrations_pagerduty_url(project, token: nil)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['pagerduty_webhook_url']).to eq(new_webhook_url)

@@ -41,8 +41,11 @@ navigation bar contains:
   Starred dashboards display a solid star **{star}** button, and display first
   in the **Dashboard** dropdown list.
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214582) in GitLab 13.0.)
+- **Edit dashboard** - Edit the source YAML file of a custom dashboard. Only available on
+  [custom dashboards](dashboards/index.md).
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34779) in GitLab 12.5.)
 - **Create dashboard** **{file-addition-solid}** - Create a
-  [new custom dashboard for your project](dashboards/index.md#adding-a-new-dashboard-to-your-project).
+  [new custom dashboard for your project](dashboards/index.md#add-a-new-dashboard-to-your-project).
 - **Metrics settings** **{settings}** - Configure the
   [settings for this dashboard](dashboards/index.md#manage-the-metrics-dashboard-settings).
 

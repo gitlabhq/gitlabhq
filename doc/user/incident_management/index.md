@@ -105,11 +105,8 @@ in incidents and issue templates.
 
 You can view more details about an embedded metrics panel from the context menu.
 To access the context menu, click the **{ellipsis_v}** **More actions** dropdown box
-above the upper right corner of the panel. The options are:
-
-- [View logs](#view-logs-from-metrics-panel).
-- **Download CSV** - Data from embedded charts can be
-  [downloaded as CSV](../../operations/metrics/dashboards/index.md#downloading-data-as-csv).
+above the upper right corner of the panel. For a list of options, see
+[Chart context menu](../../operations/metrics/dashboards/index.md#chart-context-menu).
 
 #### View logs from metrics panel
 
@@ -117,7 +114,7 @@ above the upper right corner of the panel. The options are:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to [GitLab Core](https://about.gitlab.com/pricing/) 12.9.
 
 Viewing logs from a metrics panel can be useful if you're triaging an application
-incident and need to [explore logs](../../operations/metrics/dashboards/index.md#view-logs-ultimate)
+incident and need to [explore logs](../../operations/metrics/dashboards/index.md#chart-context-menu)
 from across your application. These logs help you understand what is affecting
 your application's performance and resolve any problems.
 

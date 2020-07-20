@@ -1,0 +1,5 @@
+---
+title: Disable application_settings_tokens_optional_encryption feature flag.
+merge_request: 31798
+author: Gilang Gumilar
+type: changed

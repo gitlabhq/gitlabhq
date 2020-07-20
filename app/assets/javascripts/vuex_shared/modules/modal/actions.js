@@ -15,6 +15,3 @@ export const show = ({ commit }) => {
 export const hide = ({ commit }) => {
   commit(types.HIDE);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

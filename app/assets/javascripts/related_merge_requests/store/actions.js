@@ -32,6 +32,3 @@ export const fetchMergeRequests = ({ state, dispatch }) => {
       createFlash(s__('Something went wrong while fetching related merge requests.'));
     });
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

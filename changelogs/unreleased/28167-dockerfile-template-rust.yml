@@ -1,0 +1,5 @@
+---
+title: "Add Rust Dockerfile to GitLab templates"
+merge_request: 28167
+author:
+type: added

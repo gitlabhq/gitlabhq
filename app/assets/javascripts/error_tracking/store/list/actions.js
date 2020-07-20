@@ -102,5 +102,3 @@ export const fetchPaginatedResults = ({ commit, dispatch }, cursor) => {
 export const removeIgnoredResolvedErrors = ({ commit }, error) => {
   commit(types.REMOVE_IGNORED_RESOLVED_ERRORS, error);
 };
-
-export default () => {};

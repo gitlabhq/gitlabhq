@@ -43,12 +43,12 @@ class Suggestion < ApplicationRecord
 
   def inapplicable_reason(cached: true)
     strong_memoize("inapplicable_reason_#{cached}") do
-      next :applied if applied?
-      next :merge_request_merged if noteable.merged?
-      next :merge_request_closed if noteable.closed?
-      next :source_branch_deleted unless noteable.source_branch_exists?
-      next :outdated if outdated?(cached: cached) || !note.active?
-      next :same_content unless different_content?
+      next _("Can't apply this suggestion.") if applied?
+      next _("This merge request was merged. To apply this suggestion, edit this file directly.") if noteable.merged?
+      next _("This merge request is closed. To apply this suggestion, edit this file directly.") if noteable.closed?
+      next _("Can't apply as the source branch was deleted.") unless noteable.source_branch_exists?
+      next outdated_reason if outdated?(cached: cached) || !note.active?
+      next _("This suggestion already matches its content.") unless different_content?
     end
   end
 
@@ -72,5 +72,13 @@ class Suggestion < ApplicationRecord
 
   def different_content?
     from_content != to_content
+  end
+
+  def outdated_reason
+    if single_line?
+      _("Can't apply as this line was changed in a more recent version.")
+    else
+      _("Can't apply as these lines were changed in a more recent version.")
+    end
   end
 end

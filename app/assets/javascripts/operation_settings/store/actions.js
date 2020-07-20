@@ -37,6 +37,3 @@ export const receiveSaveChangesError = (_, error) => {
 
   createFlash(`${__('There was an error saving your changes.')} ${message}`, 'alert');
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

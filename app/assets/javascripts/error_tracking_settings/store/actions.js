@@ -89,6 +89,3 @@ export const updateSelectedProject = ({ commit }, selectedProject) => {
 export const setInitialState = ({ commit }, data) => {
   commit(types.SET_INITIAL_STATE, data);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

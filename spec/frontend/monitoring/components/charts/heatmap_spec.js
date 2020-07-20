@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlHeatmap } from '@gitlab/ui/dist/charts';
 import timezoneMock from 'timezone-mock';
 import Heatmap from '~/monitoring/components/charts/heatmap.vue';
-import { graphDataPrometheusQueryRangeMultiTrack } from '../../mock_data';
+import { heatmapGraphData } from '../../graph_data';
 
 describe('Heatmap component', () => {
   let wrapper;
@@ -10,10 +10,12 @@ describe('Heatmap component', () => {
 
   const findChart = () => wrapper.find(GlHeatmap);
 
+  const graphData = heatmapGraphData();
+
   const createWrapper = (props = {}) => {
     wrapper = shallowMount(Heatmap, {
       propsData: {
-        graphData: graphDataPrometheusQueryRangeMultiTrack,
+        graphData: heatmapGraphData(),
         containerWidth: 100,
         ...props,
       },
@@ -38,11 +40,11 @@ describe('Heatmap component', () => {
     });
 
     it('should display a label on the x axis', () => {
-      expect(wrapper.vm.xAxisName).toBe(graphDataPrometheusQueryRangeMultiTrack.x_label);
+      expect(wrapper.vm.xAxisName).toBe(graphData.xLabel);
     });
 
     it('should display a label on the y axis', () => {
-      expect(wrapper.vm.yAxisName).toBe(graphDataPrometheusQueryRangeMultiTrack.y_label);
+      expect(wrapper.vm.yAxisName).toBe(graphData.y_label);
     });
 
     // According to the echarts docs https://echarts.apache.org/en/option.html#series-heatmap.data
@@ -54,24 +56,24 @@ describe('Heatmap component', () => {
       const row = wrapper.vm.chartData[0];
 
       expect(row.length).toBe(3);
-      expect(wrapper.vm.chartData.length).toBe(30);
+      expect(wrapper.vm.chartData.length).toBe(6);
     });
 
     it('returns a series of labels for the x axis', () => {
       const { xAxisLabels } = wrapper.vm;
 
-      expect(xAxisLabels.length).toBe(5);
+      expect(xAxisLabels.length).toBe(2);
     });
 
     describe('y axis labels', () => {
-      const gmtLabels = ['3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM'];
+      const gmtLabels = ['8:10 PM', '8:12 PM', '8:14 PM'];
 
       it('y-axis labels are formatted in AM/PM format', () => {
         expect(findChart().props('yAxisLabels')).toEqual(gmtLabels);
       });
 
       describe('when in PT timezone', () => {
-        const ptLabels = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM'];
+        const ptLabels = ['1:10 PM', '1:12 PM', '1:14 PM'];
         const utcLabels = gmtLabels; // Identical in this case
 
         beforeAll(() => {

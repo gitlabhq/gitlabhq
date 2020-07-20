@@ -128,6 +128,3 @@ export const fetchJobs = ({ state, commit, dispatch }) => {
     }
   });
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

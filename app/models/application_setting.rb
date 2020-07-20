@@ -9,7 +9,7 @@ class ApplicationSetting < ApplicationRecord
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
 
-  add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
+  add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
   add_authentication_token_field :static_objects_external_storage_auth_token
 

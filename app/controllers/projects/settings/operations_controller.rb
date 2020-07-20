@@ -45,7 +45,7 @@ module Projects
 
         if result[:status] == :success
           pagerduty_token = project.incident_management_setting&.pagerduty_token
-          webhook_url = project_incidents_pagerduty_url(project, token: pagerduty_token)
+          webhook_url = project_incidents_integrations_pagerduty_url(project, token: pagerduty_token)
 
           render json: { pagerduty_webhook_url: webhook_url, pagerduty_token: pagerduty_token }
         else

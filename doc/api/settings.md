@@ -371,6 +371,6 @@ are listed in the descriptions of the relevant settings.
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
 | `web_ide_clientside_preview_enabled`     | boolean          | no                                   | Live Preview (allow live previews of JavaScript projects in the Web IDE using CodeSandbox Live Preview). |
 | `snippet_size_limit`                     | integer          | no                                   | Max snippet content size in **bytes**. Default: 52428800 Bytes (50MB).|
-| `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Default: 300. To disable throttling set to 0.|
+| `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Disabled by default.|
 | `raw_blob_request_limit`                 | integer          | no                                   | Max number of requests per minute for each raw path. Default: 300. To disable throttling set to 0.|
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Max wiki page content size in **bytes**. Default: 52428800 Bytes (50MB).|

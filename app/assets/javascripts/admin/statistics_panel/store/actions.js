@@ -23,6 +23,3 @@ export const receiveStatisticsError = ({ commit }, error) => {
   commit(types.RECEIVE_STATISTICS_ERROR, error);
   createFlash(s__('AdminDashboard|Error loading the statistics. Please try again'));
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

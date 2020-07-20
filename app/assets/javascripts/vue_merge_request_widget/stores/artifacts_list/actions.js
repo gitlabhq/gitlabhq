@@ -69,6 +69,3 @@ export const receiveArtifactsSuccess = ({ commit }, response) => {
 };
 
 export const receiveArtifactsError = ({ commit }) => commit(types.RECEIVE_ARTIFACTS_ERROR);
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

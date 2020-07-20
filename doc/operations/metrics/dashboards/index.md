@@ -4,7 +4,96 @@ group: APM
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Using the Metrics Dashboard
+# Custom dashboards
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59974) in GitLab 12.1.
+
+By default, all projects include a GitLab-defined Prometheus dashboard, which
+includes a few key metrics, but you can also define your own custom dashboards.
+
+You may create a [new dashboard from scratch](#add-a-new-dashboard-to-your-project)
+or [duplicate a GitLab-defined Prometheus dashboard](#duplicate-a-gitlab-defined-dashboard).
+
+NOTE: **Note:**
+The metrics as defined below do not support alerts, unlike
+[custom metrics](../index.md#adding-custom-metrics).
+
+## Add a new dashboard to your project
+
+> UI option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223204) in GitLab 13.2.
+
+You can configure a custom dashboard by adding a new YAML file into your project's
+`.gitlab/dashboards/` directory. For the dashboard to display on your project's
+**{cloud-gear}** **Operations > Metrics** page, the files must have a `.yml`
+extension and be present in your project's **default** branch.
+
+To create a new dashboard from the GitLab user interface:
+
+1. Sign in to GitLab as a user with Maintainer or Owner
+   [permissions](../../../user/permissions.md#project-members-permissions).
+1. Navigate to your dashboard at **{cloud-gear}** **Operations > Metrics**.
+1. In the top-right corner of your dashboard, click the **{file-addition-solid}** **Actions** menu,
+   and select **Create new**:
+   ![Monitoring Dashboard actions menu with create new item](../../../user/project/integrations/img/actions_menu_create_new_dashboard_v13_2.png)
+1. In the modal window, click **Open Repository**, then follow the instructions
+   for creating a new dashboard from the command line.
+
+To create a new dashboard from the command line:
+
+1. Create `.gitlab/dashboards/prom_alerts.yml` under your repository's root
+   directory. Each YAML file should define the layout of the dashboard and the
+   Prometheus queries used to populate data. This example dashboard displays a
+   single area chart:
+
+   ```yaml
+   dashboard: 'Dashboard Title'
+   panel_groups:
+     - group: 'Group Title'
+       panels:
+         - type: area-chart
+           title: "Chart Title"
+           y_label: "Y-Axis"
+           y_axis:
+             format: number
+             precision: 0
+           metrics:
+             - id: my_metric_id
+               query_range: 'http_requests_total'
+               label: "Instance: {{instance}}, method: {{method}}"
+               unit: "count"
+   ```
+
+1. Save the file, commit, and push to your repository. The file must be present in your **default** branch.
+1. Navigate to your project's **Operations > Metrics** and choose the custom
+   dashboard from the dropdown.
+
+Your custom dashboard is available at `https://example.com/project/-/metrics/custom_dashboard_name.yml`.
+
+NOTE: **Note:**
+Configuration files nested under subdirectories of `.gitlab/dashboards` are not
+supported and won't be available in the UI.
+
+## Duplicate a GitLab-defined dashboard
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37238) in GitLab 12.7.
+> - From [GitLab 12.8 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/39505), custom metrics are also duplicated when you duplicate a dashboard.
+
+You can save a complete copy of a GitLab defined dashboard along with all custom metrics added to it.
+The resulting `.yml` file can be customized and adapted to your project.
+You can decide to save the dashboard `.yml` file in the project's **default** branch or in a
+new branch.
+
+1. Click **Duplicate dashboard** in the dashboard dropdown or in the actions menu.
+
+   NOTE: **Note:**
+   You can duplicate only GitLab-defined dashboards.
+
+1. Enter the filename and other information, such as the new commit's message, and click **Duplicate**.
+1. Select a branch to add your dashboard to:
+   - *If you select your **default** branch,* the new dashboard becomes immediately available.
+   - *If you select another branch,* this branch should be merged to your **default** branch first.
+
+Your custom dashboard is available at `https://example.com/project/-/metrics/custom_dashboard_name.yml`.
 
 ## Manage the metrics dashboard settings
 
@@ -21,44 +110,23 @@ To manage the settings for your metrics dashboard:
 
 ## Chart Context Menu
 
-From each of the panels in the dashboard, you can access the context menu by clicking the **{ellipsis_v}** **More actions** dropdown box above the upper right corner of the panel to take actions related to the chart's data.
+You can take action related to a chart's data by clicking the
+**{ellipsis_v}** **More actions** dropdown box above the upper right corner of
+any chart on a dashboard:
 
 ![Context Menu](../../../user/project/integrations/img/panel_context_menu_v13_0.png)
 
 The options are:
 
-- [Expand panel](#expand-panel)
-- [View logs](#view-logs-ultimate)
-- [Download CSV](#downloading-data-as-csv)
+- **Expand panel** - Displays a larger version of a visualization. To return to
+  the dashboard, click the **Back** button in your browser, or press the <kbd>Esc</kbd> key.
+  ([Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3100) in GitLab 13.0.)
+- **View logs** **(ULTIMATE)** - Displays [Logs](../../../user/project/clusters/kubernetes_pod_logs.md),
+  if they are enabled. If used in conjunction with the [timeline zoom](#timeline-zoom-and-url-sharing)
+  feature, logs narrow down to the selected time range. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/122013) in GitLab 12.8.)
+- **Download CSV** - Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.
 - [Copy link to chart](../embed.md#embedding-gitlab-managed-kubernetes-metrics)
 - [Alerts](../alerts.md)
-
-### View and edit the source file of a custom dashboard
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34779) in GitLab 12.5.
-
-When viewing a custom dashboard of a project, you can view the original
-`.yml` file by clicking on the **Edit dashboard** button.
-
-### Expand panel
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3100) in GitLab 13.0.
-
-To view a larger version of a visualization, expand the panel by clicking the
-**{ellipsis_v}** **More actions** icon and selecting **Expand panel**.
-
-To return to the metrics dashboard, click the **Back** button in your
-browser, or pressing the <kbd>Esc</kbd> key.
-
-### View Logs **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/122013) in GitLab 12.8.
-
-If you have [Logs](../../../user/project/clusters/kubernetes_pod_logs.md) enabled,
-you can navigate from the charts in the dashboard to view Logs by
-clicking on the context menu in the upper-right corner.
-
-If you use the **Timeline zoom** function at the bottom of the chart, logs will narrow down to the time range you selected.
 
 ### Timeline zoom and URL sharing
 
@@ -68,10 +136,6 @@ You can use the **Timeline zoom** function at the bottom of a chart to zoom in
 on a date and time of your choice. When you click and drag the sliders to select
 a different beginning or end date of data to display, GitLab adds your selected start
 and end times to the URL, enabling you to share specific timeframes more easily.
-
-### Downloading data as CSV
-
-Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.
 
 ## Dashboard Annotations
 
@@ -90,7 +154,7 @@ You can create annotations by making requests to the
 
 ![Annotations UI](../../../user/project/integrations/img/metrics_dashboard_annotations_ui_v13.0.png)
 
-### Retention policy
+### Annotation retention policy
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211433) in GitLab 13.01.
 
@@ -138,99 +202,6 @@ links:
     url: https://play.grafana.org/d/000000012/grafana-play-home?orgId=1
     type: grafana
 ```
-
-## Defining custom dashboards per project
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59974) in GitLab 12.1.
-
-By default, all projects include a GitLab-defined Prometheus dashboard, which
-includes a few key metrics, but you can also define your own custom dashboards.
-
-You may create a new file from scratch or duplicate a GitLab-defined Prometheus
-dashboard.
-
-NOTE: **Note:**
-The metrics as defined below do not support alerts, unlike
-[custom metrics](../index.md#adding-custom-metrics).
-
-### Adding a new dashboard to your project
-
-> UI option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223204) in GitLab 13.2.
-
-You can configure a custom dashboard by adding a new YAML file into your project's
-`.gitlab/dashboards/` directory. In order for the dashboards to be displayed on
-the project's **{cloud-gear}** **Operations > Metrics** page, the files must have a `.yml`
-extension and should be present in the project's **default** branch.
-
-To create a new dashboard from the GitLab user interface:
-
-1. Sign in to GitLab as a user with Maintainer or Owner
-   [permissions](../../../user/permissions.md#project-members-permissions).
-1. Navigate to your dashboard at **{cloud-gear}** **Operations > Metrics**.
-1. In the top-right corner of your dashboard, click the **{file-addition-solid}** **Actions** menu,
-   and select **Create new**:
-   ![Monitoring Dashboard actions menu with create new item](../../../user/project/integrations/img/actions_menu_create_new_dashboard_v13_2.png)
-1. In the modal window, click **Open Repository**, then follow the instructions
-   for creating a new dashboard from the command line.
-
-To create a new dashboard from the command line:
-
-1. Create `.gitlab/dashboards/prom_alerts.yml` under your repository's root
-   directory. Each YAML file should define the layout of the dashboard and the
-   Prometheus queries used to populate data. This example dashboard displays a
-   single area chart:
-
-   ```yaml
-   dashboard: 'Dashboard Title'
-   panel_groups:
-     - group: 'Group Title'
-       panels:
-         - type: area-chart
-           title: "Chart Title"
-           y_label: "Y-Axis"
-           y_axis:
-             format: number
-             precision: 0
-           metrics:
-             - id: my_metric_id
-               query_range: 'http_requests_total'
-               label: "Instance: {{instance}}, method: {{method}}"
-               unit: "count"
-   ```
-
-1. Save the file, commit, and push to your repository. The file must be present in your **default** branch.
-1. Navigate to your project's **Operations > Metrics** and choose the custom
-   dashboard from the dropdown.
-
-NOTE: **Note:**
-Configuration files nested under subdirectories of `.gitlab/dashboards` are not
-supported and will not be available in the UI.
-
-### Navigating to a custom dashboard
-
-Custom dashboards are uniquely identified by their filenames. In order to quickly view the custom dashboard,
-just use the dashboard filename in the URL this way:
-`https://gitlab-instance.example.com/project/-/metrics/custom_dashboard_name.yml`.
-
-### Duplicating a GitLab-defined dashboard
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37238) in GitLab 12.7.
-> - From [GitLab 12.8 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/39505), custom metrics are also duplicated when you duplicate a dashboard.
-
-You can save a complete copy of a GitLab defined dashboard along with all custom metrics added to it.
-Resulting `.yml` file can be customized and adapted to your project.
-You can decide to save the dashboard `.yml` file in the project's **default** branch or in a
-new branch.
-
-1. Click **Duplicate dashboard** in the dashboard dropdown or in the actions menu.
-
-   NOTE: **Note:**
-   You can duplicate only GitLab-defined dashboards.
-
-1. Enter the file name and other information, such as the new commit's message, and click **Duplicate**.
-
-If you select your **default** branch, the new dashboard becomes immediately available.
-If you select another branch, this branch should be merged to your **default** branch first.
 
 ## Troubleshooting
 

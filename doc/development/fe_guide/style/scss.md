@@ -23,6 +23,14 @@ Classes in [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/a
 
 Avoid [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/).
 
+NOTE: **Note:**
+While migrating [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
+to the [GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/master/doc/css.md#utilities)
+utility classes, note both the classes for margin and padding differ. The size scale used at
+GitLab differs from the scale used in the Bootstrap library. For a Bootstrap padding or margin
+utility, you may need to double the size of the applied utility to achieve the same visual
+result (such as `ml-1` becoming `gl-ml-2`).
+
 #### Where should I put new utility classes?
 
 If a class you need has not been added to GitLab UI, you get to add it! Follow the naming patterns documented in the [utility files](https://gitlab.com/gitlab-org/gitlab-ui/-/tree/master/src/scss/utility-mixins) and refer to [GitLab UI's CSS documentation](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/master/doc/contributing/adding_css.md#adding-utility-mixins) for more details, especially about adding responsive and stateful rules.

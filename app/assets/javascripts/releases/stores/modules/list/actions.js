@@ -43,6 +43,3 @@ export const receiveReleasesError = ({ commit }) => {
   commit(types.RECEIVE_RELEASES_ERROR);
   createFlash(__('An error occurred while fetching the releases. Please try again.'));
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

@@ -10,6 +10,7 @@ const stopPolling = poll => {
   if (poll) poll.stop();
 };
 
+// eslint-disable-next-line import/prefer-default-export
 export function startPollingStacktrace({ commit }, endpoint) {
   stackTracePoll = new Poll({
     resource: service,
@@ -32,5 +33,3 @@ export function startPollingStacktrace({ commit }, endpoint) {
 
   stackTracePoll.makeRequest();
 }
-
-export default () => {};

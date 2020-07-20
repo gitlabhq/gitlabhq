@@ -771,13 +771,37 @@ yarn karma -f 'spec/javascripts/ide/**/file_spec.js'
 
 ## Frontend test fixtures
 
-Code that is added to HAML templates (in `app/views/`) or makes Ajax requests to the backend has tests that require HTML or JSON from the backend.
-Fixtures for these tests are located at:
+Frontend fixtures are files containing responses from backend controllers. These responses can be either HTML
+generated from haml templates or JSON payloads. Frontend tests that rely on these responses are
+often using fixtures to validate correct integration with the backend code.
+
+### Generate fixtures
+
+You can find code to generate test fixtures in:
 
 - `spec/frontend/fixtures/`, for running tests in CE.
 - `ee/spec/frontend/fixtures/`, for running tests in EE.
 
-Fixture files in:
+You can generate fixtures by running:
+
+- `bin/rake frontend:fixtures` to generate all fixtures
+- `bin/rspec spec/frontend/fixtures/merge_requests.rb` to generate specific fixtures (in this case for `merge_request.rb`)
+
+You can find generated fixtures are in `tmp/tests/frontend/fixtures-ee`.
+
+#### Creating new fixtures
+
+For each fixture, you can find the content of the `response` variable in the output file.
+For example, test named `"merge_requests/diff_discussion.json"` in `spec/frontend/fixtures/merge_requests.rb`
+will produce output file `tmp/tests/frontend/fixtures-ee/merge_requests/diff_discussion.json`.
+The `response` variable gets automatically set if the test is marked as `type: :request` or `type: :controller`.
+
+When creating a new fixture, it often makes sense to take a look at the corresponding tests for the
+endpoint in `(ee/)spec/controllers/` or `(ee/)spec/requests/`.
+
+### Use fixtures
+
+Jest and Karma test suites import fixtures in different ways:
 
 - The Karma test suite are served by [jasmine-jquery](https://github.com/velesin/jasmine-jquery).
 - Jest use `spec/frontend/helpers/fixtures.js`.
@@ -802,14 +826,6 @@ it('uses some HTML element', () => {
   // ...
 });
 ```
-
-HTML and JSON fixtures are generated from backend views and controllers using RSpec (see `spec/frontend/fixtures/*.rb`).
-
-For each fixture, the content of the `response` variable is stored in the output file.
-This variable gets automatically set if the test is marked as `type: :request` or `type: :controller`.
-Fixtures are regenerated using the `bin/rake frontend:fixtures` command but you can also generate them individually,
-for example `bin/rspec spec/frontend/fixtures/merge_requests.rb`.
-When creating a new fixture, it often makes sense to take a look at the corresponding tests for the endpoint in `(ee/)spec/controllers/` or `(ee/)spec/requests/`.
 
 ## Data-driven tests
 

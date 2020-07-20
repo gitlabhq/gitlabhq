@@ -102,5 +102,3 @@ export const requestDeleteImage = ({ commit }, image) => {
       commit(types.SET_MAIN_LOADING, false);
     });
 };
-
-export default () => {};

@@ -38,5 +38,3 @@ export const SnippetShowInit = () => {
 export const SnippetEditInit = () => {
   appFactory(document.getElementById('js-snippet-edit'), SnippetsEdit);
 };
-
-export default () => {};

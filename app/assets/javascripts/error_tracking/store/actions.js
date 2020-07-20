@@ -34,5 +34,3 @@ export const updateIgnoreStatus = ({ commit, dispatch }, params) => {
     commit(types.SET_UPDATING_IGNORE_STATUS, false);
   });
 };
-
-export default () => {};

@@ -146,6 +146,3 @@ export const expandAllDiscussions = ({ dispatch, state }) =>
 export const toggleResolveDiscussion = ({ commit }, draftId) => {
   commit(types.TOGGLE_RESOLVE_DISCUSSION, draftId);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

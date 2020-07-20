@@ -85,12 +85,13 @@ describe('Issuable component', () => {
   const findMilestoneTooltip = () => findMilestone().attributes('title');
   const findDueDate = () => wrapper.find('.js-due-date');
   const findLabels = () => wrapper.findAll(GlLabel);
-  const findWeight = () => wrapper.find('.js-weight');
+  const findWeight = () => wrapper.find('[data-testid="weight"]');
   const findAssignees = () => wrapper.find(IssueAssignees);
-  const findMergeRequestsCount = () => wrapper.find('.js-merge-requests');
-  const findUpvotes = () => wrapper.find('.js-upvotes');
-  const findDownvotes = () => wrapper.find('.js-downvotes');
-  const findNotes = () => wrapper.find('.js-notes');
+  const findBlockingIssuesCount = () => wrapper.find('[data-testid="blocking-issues"]');
+  const findMergeRequestsCount = () => wrapper.find('[data-testid="merge-requests"]');
+  const findUpvotes = () => wrapper.find('[data-testid="upvotes"]');
+  const findDownvotes = () => wrapper.find('[data-testid="downvotes"]');
+  const findNotes = () => wrapper.find('[data-testid="notes-count"]');
   const findBulkCheckbox = () => wrapper.find('input.selected-issuable');
   const findScopedLabels = () => findLabels().filter(w => isScopedLabel({ title: w.text() }));
   const findUnscopedLabels = () => findLabels().filter(w => !isScopedLabel({ title: w.text() }));
@@ -181,6 +182,7 @@ describe('Issuable component', () => {
       ${'due date'}              | ${checkExists(findDueDate)}
       ${'labels'}                | ${checkExists(findLabels)}
       ${'weight'}                | ${checkExists(findWeight)}
+      ${'blocking issues count'} | ${checkExists(findBlockingIssuesCount)}
       ${'merge request count'}   | ${checkExists(findMergeRequestsCount)}
       ${'upvotes'}               | ${checkExists(findUpvotes)}
       ${'downvotes'}             | ${checkExists(findDownvotes)}
@@ -430,11 +432,12 @@ describe('Issuable component', () => {
   });
 
   describe.each`
-    desc                           | key                       | finder
-    ${'with merge requests count'} | ${'merge_requests_count'} | ${findMergeRequestsCount}
-    ${'with upvote count'}         | ${'upvotes'}              | ${findUpvotes}
-    ${'with downvote count'}       | ${'downvotes'}            | ${findDownvotes}
-    ${'with notes count'}          | ${'user_notes_count'}     | ${findNotes}
+    desc                            | key                        | finder
+    ${'with blocking issues count'} | ${'blocking_issues_count'} | ${findBlockingIssuesCount}
+    ${'with merge requests count'}  | ${'merge_requests_count'}  | ${findMergeRequestsCount}
+    ${'with upvote count'}          | ${'upvotes'}               | ${findUpvotes}
+    ${'with downvote count'}        | ${'downvotes'}             | ${findDownvotes}
+    ${'with notes count'}           | ${'user_notes_count'}      | ${findNotes}
   `('$desc', ({ key, finder }) => {
     beforeEach(() => {
       issuable[key] = TEST_META_COUNT;
@@ -442,7 +445,7 @@ describe('Issuable component', () => {
       factory({ issuable });
     });
 
-    it('renders merge requests count', () => {
+    it('renders correct count', () => {
       expect(finder().exists()).toBe(true);
       expect(finder().text()).toBe(TEST_META_COUNT.toString());
       expect(finder().classes('no-comments')).toBe(false);

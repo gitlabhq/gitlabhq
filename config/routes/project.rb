@@ -291,6 +291,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get 'details', on: :member
         end
 
+        post 'incidents/integrations/pagerduty', to: 'incident_management/pager_duty_incidents#create'
+
         namespace :error_tracking do
           resources :projects, only: :index
         end
@@ -406,8 +408,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       post 'alerts/notify', to: 'alerting/notifications#create'
-
-      post 'incidents/pagerduty', to: 'incident_management/pager_duty_incidents#create'
 
       draw :legacy_builds
 

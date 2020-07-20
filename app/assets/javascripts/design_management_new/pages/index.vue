@@ -246,28 +246,28 @@ export default {
         this.onUploadDesign([newFile]);
       }
     },
-    toggleOnPasteListener(route) {
-      if (route === DESIGNS_ROUTE_NAME) {
-        document.addEventListener('paste', this.onDesignPaste);
-      } else {
-        document.removeEventListener('paste', this.onDesignPaste);
-      }
+    toggleOnPasteListener() {
+      document.addEventListener('paste', this.onDesignPaste);
+    },
+    toggleOffPasteListener() {
+      document.removeEventListener('paste', this.onDesignPaste);
     },
   },
   beforeRouteUpdate(to, from, next) {
-    this.toggleOnPasteListener(to.name);
     this.selectedDesigns = [];
-    next();
-  },
-  beforeRouteLeave(to, from, next) {
-    this.toggleOnPasteListener(to.name);
     next();
   },
 };
 </script>
 
 <template>
-  <div data-testid="designs-root" class="gl-mt-5">
+  <div
+    data-testid="designs-root"
+    class="gl-mt-5"
+    :class="{ 'designs-root': !isDesignListEmpty }"
+    @mouseenter="toggleOnPasteListener"
+    @mouseleave="toggleOffPasteListener"
+  >
     <header v-if="showToolbar" class="row-content-block border-top-0 p-2 d-flex">
       <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full">
         <div>

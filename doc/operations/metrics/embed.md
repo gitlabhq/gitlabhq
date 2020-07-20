@@ -53,7 +53,7 @@ Metric charts may also be hidden:
 ![Show Hide](../../user/project/integrations/img/hide_embedded_metrics_v12_10.png)
 
 You can open the link directly into your browser for a
-[detailed view of the data](dashboards/index.md#expand-panel).
+[detailed view of the data](dashboards/index.md#chart-context-menu).
 
 ## Embedding metrics in issue templates
 

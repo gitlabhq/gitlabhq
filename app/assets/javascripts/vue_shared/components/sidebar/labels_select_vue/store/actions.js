@@ -56,6 +56,3 @@ export const createLabel = ({ state, dispatch }, label) => {
 
 export const updateSelectedLabels = ({ commit }, labels) =>
   commit(types.UPDATE_SELECTED_LABELS, { labels });
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

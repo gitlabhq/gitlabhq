@@ -17,7 +17,7 @@ for merging into production.
 
 To access the Compliance Dashboard for a group, navigate to **{shield}** **Security & Compliance > Compliance** on the group's menu.
 
-![Compliance Dashboard](img/compliance_dashboard_v13_2.png)
+![Compliance Dashboard](img/compliance_dashboard_v13_3.png)
 
 ## Use cases
 
@@ -34,3 +34,28 @@ You can use the dashboard to:
 
 - On [GitLab Ultimate](https://about.gitlab.com/pricing/) tier.
 - By **Administrators** and **Group Owners**.
+
+## Approval status and separation of duties
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217939) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
+
+We support a separation of duties policy between users who create and approve Merge Requests.
+The approval status column can help you identify violations of this policy.
+Our criteria for the separation of duties is as follows:
+
+- [A Merge Request author is **not** allowed to approve their Merge Request](../../project/merge_requests/merge_request_approvals.md#allowing-merge-request-authors-to-approve-their-own-merge-requests)
+- [A Merge Request committer is **not** allowed to approve a Merge Request they have added commits to](../../project/merge_requests/merge_request_approvals.md#prevent-approval-of-merge-requests-by-their-committers)
+- [The minimum number of approvals required to merge a Merge Request is **at least** two](../../project/merge_requests/merge_request_approvals.md#approval-rules)
+
+The "Approval status" column shows you, at a glance, whether a Merge Request is complying with the above.
+This column has four states:
+
+| State | Description |
+|:------|:------------|
+| Empty | The Merge Request approval status is unknown |
+| ![Failed](img/failed_icon_v13_3.png) | The Merge Request **does not** comply with any of the above criteria |
+| ![Warning](img/warning_icon_v13_3.png) | The Merge Request complies with **some** of the above criteria |
+| ![Success](img/success_icon_v13_3.png) | The Merge Request complies with **all** of the above criteria |
+
+If you do not see the success icon in your Compliance dashboard; please review the above criteria for the Merge Requests
+project to make sure it complies with the separation of duties described above.

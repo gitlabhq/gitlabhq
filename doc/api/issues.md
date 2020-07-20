@@ -755,11 +755,8 @@ the `weight` parameter:
 
 ## Rate limits
 
-To help avoid abuse, users are limited to:
-
-| Request Type     | Limit                       |
-| ---------------- | --------------------------- |
-| Create           | 300 issues per minute       |
+To help avoid abuse, users can be limited to a specific number of `Create` requests per minute.
+See [Issues rate limits](../user/admin_area/settings/rate_limit_on_issues_creation.md).
 
 ## Edit issue
 

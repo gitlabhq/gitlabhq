@@ -180,6 +180,11 @@ For example, to add support for files referenced by a `Widget` model with a
 
      mount_uploader :file, WidgetUploader
 
+     def local?
+       # Must to be implemented, Check the uploader's storage types
+       file_store == ObjectStorage::Store::LOCAL
+     end
+
      def self.replicables_for_geo_node
        # Should be implemented. The idea of the method is to restrict
        # the set of synced items depending on synchronization settings
@@ -227,7 +232,7 @@ For example, to add support for files referenced by a `Widget` model with a
    ```
 
 1. Create the `widget_registry` table so Geo secondaries can track the sync and
-   verification state of each Widget's file:
+   verification state of each Widget's file. This migration belongs in `ee/db/geo/migrate`:
 
    ```ruby
    # frozen_string_literal: true
@@ -285,6 +290,8 @@ For example, to add support for files referenced by a `Widget` model with a
    method at all.
 
 1. Update `REGISTRY_CLASSES` in `ee/app/workers/geo/secondary/registry_consistency_worker.rb`.
+
+1. Add `widget_registry` to `ActiveSupport::Inflector.inflections` in `config/initializers_before_autoloader/000_inflections.rb`.
 
 1. Create `ee/spec/factories/geo/widget_registry.rb`:
 

@@ -149,5 +149,3 @@ export const resetLatestPipeline = ({ commit }) => {
   commit(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, null);
   commit(types.SET_DETAIL_JOB, null);
 };
-
-export default () => {};

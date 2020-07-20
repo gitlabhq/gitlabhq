@@ -76,6 +76,3 @@ export const fetchClusters = ({ state, commit, dispatch }) => {
 export const setPage = ({ commit }, page) => {
   commit(types.SET_PAGE, page);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

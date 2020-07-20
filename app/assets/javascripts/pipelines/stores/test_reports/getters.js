@@ -16,6 +16,3 @@ export const getSuiteTests = state => {
   const { test_cases: testCases = [] } = getSelectedSuite(state);
   return testCases.sort(sortTestCases).map(addIconStatus);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

@@ -50,6 +50,3 @@ export const isDropdownVariantStandalone = state => state.variant === DropdownVa
  * @param {object} state
  */
 export const isDropdownVariantEmbedded = state => state.variant === DropdownVariant.Embedded;
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};
