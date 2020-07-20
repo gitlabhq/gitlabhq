@@ -67,4 +67,44 @@ describe('HTMLToMarkdownRenderer', () => {
       },
     );
   });
+
+  describe('STRONG, B visitor', () => {
+    it.each`
+      input                | strongCharacter | result
+      ${'**strong text**'} | ${'_'}          | ${'__strong text__'}
+      ${'__strong text__'} | ${'*'}          | ${'**strong text**'}
+    `(
+      'converts $input to $result when strong character is $strongCharacter',
+      ({ input, strongCharacter, result }) => {
+        htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer, {
+          strong: strongCharacter,
+        });
+
+        baseRenderer.convert.mockReturnValueOnce(input);
+
+        expect(htmlToMarkdownRenderer['STRONG, B'](NODE, input)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, input);
+      },
+    );
+  });
+
+  describe('EM, I visitor', () => {
+    it.each`
+      input              | emphasisCharacter | result
+      ${'*strong text*'} | ${'_'}            | ${'_strong text_'}
+      ${'_strong text_'} | ${'*'}            | ${'*strong text*'}
+    `(
+      'converts $input to $result when emphasis character is $emphasisCharacter',
+      ({ input, emphasisCharacter, result }) => {
+        htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer, {
+          emphasis: emphasisCharacter,
+        });
+
+        baseRenderer.convert.mockReturnValueOnce(input);
+
+        expect(htmlToMarkdownRenderer['EM, I'](NODE, input)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, input);
+      },
+    );
+  });
 });

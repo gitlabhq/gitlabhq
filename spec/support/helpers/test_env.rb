@@ -6,8 +6,6 @@ module TestEnv
 
   ComponentFailedToInstallError = Class.new(StandardError)
 
-  SHA_REGEX = /\A[0-9a-f]{5,40}\z/i.freeze
-
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
     'signed-commits'                     => '6101e87',
@@ -524,7 +522,7 @@ module TestEnv
 
   def component_matches_git_sha?(component_folder, expected_version)
     # Not a git SHA, so return early
-    return false unless expected_version =~ SHA_REGEX
+    return false unless expected_version =~ ::Gitlab::Git::COMMIT_ID
 
     sha, exit_status = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} rev-parse HEAD), component_folder)
     return false if exit_status != 0

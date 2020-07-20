@@ -1269,27 +1269,104 @@ module Gitlab
       end
 
       describe 'Parallel' do
+        let(:config) do
+          YAML.dump(rspec: { script: 'rspec',
+                             parallel: parallel,
+                             variables: { 'VAR1' => 1 } })
+        end
+
+        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
+        let(:builds) { config_processor.stage_builds_attributes('test') }
+
         context 'when job is parallelized' do
           let(:parallel) { 5 }
 
-          let(:config) do
-            YAML.dump(rspec: { script: 'rspec',
-                               parallel: parallel })
-          end
-
           it 'returns parallelized jobs' do
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-            builds = config_processor.stage_builds_attributes('test')
             build_options = builds.map { |build| build[:options] }
 
             expect(builds.size).to eq(5)
-            expect(build_options).to all(include(:instance, parallel: parallel))
+            expect(build_options).to all(include(:instance, parallel: { number: parallel, total: parallel }))
           end
 
           it 'does not have the original job' do
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-            builds = config_processor.stage_builds_attributes('test')
+            expect(builds).not_to include(:rspec)
+          end
+        end
 
+        context 'with build matrix' do
+          let(:parallel) do
+            {
+              matrix: [
+                { 'PROVIDER' => 'aws', 'STACK' => %w[monitoring app1 app2] },
+                { 'PROVIDER' => 'ovh', 'STACK' => %w[monitoring backup app] },
+                { 'PROVIDER' => 'gcp', 'STACK' => %w[data processing] }
+              ]
+            }
+          end
+
+          it 'returns the number of parallelized jobs' do
+            expect(builds.size).to eq(8)
+          end
+
+          it 'returns the parallel config' do
+            build_options = builds.map { |build| build[:options] }
+            parallel_config = {
+              matrix: parallel[:matrix].map { |var| var.transform_values { |v| Array(v).flatten }},
+              total: build_options.size
+            }
+
+            expect(build_options).to all(include(:instance, parallel: parallel_config))
+          end
+
+          it 'sets matrix variables' do
+            build_variables = builds.map { |build| build[:yaml_variables] }
+            expected_variables = [
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'aws' },
+                { key: 'STACK', value: 'monitoring' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'aws' },
+                { key: 'STACK', value: 'app1' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'aws' },
+                { key: 'STACK', value: 'app2' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'ovh' },
+                { key: 'STACK', value: 'monitoring' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'ovh' },
+                { key: 'STACK', value: 'backup' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'ovh' },
+                { key: 'STACK', value: 'app' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'gcp' },
+                { key: 'STACK', value: 'data' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'gcp' },
+                { key: 'STACK', value: 'processing' }
+              ]
+            ].map { |vars| vars.map { |var| a_hash_including(var) } }
+
+            expect(build_variables).to match(expected_variables)
+          end
+
+          it 'does not have the original job' do
             expect(builds).not_to include(:rspec)
           end
         end
@@ -2618,6 +2695,14 @@ module Gitlab
           expect { Gitlab::Ci::YamlProcessor.new(config) }
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
                             'rspec: unknown keys in `extends` (something)')
+        end
+
+        it 'returns errors if parallel is invalid' do
+          config = YAML.dump({ rspec: { parallel: 'test', script: 'test' } })
+
+          expect { Gitlab::Ci::YamlProcessor.new(config) }
+            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                            'jobs:rspec:parallel should be an integer or a hash')
         end
       end
 

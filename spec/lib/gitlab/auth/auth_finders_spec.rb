@@ -744,6 +744,56 @@ RSpec.describe Gitlab::Auth::AuthFinders do
     end
   end
 
+  describe '#cluster_agent_token_from_authorization_token' do
+    let_it_be(:agent_token) { create(:cluster_agent_token) }
+
+    context 'when route_setting is empty' do
+      it 'returns nil' do
+        expect(cluster_agent_token_from_authorization_token).to be_nil
+      end
+    end
+
+    context 'when route_setting allows cluster agent token' do
+      let(:route_authentication_setting) { { cluster_agent_token_allowed: true } }
+
+      context 'Authorization header is empty' do
+        it 'returns nil' do
+          expect(cluster_agent_token_from_authorization_token).to be_nil
+        end
+      end
+
+      context 'Authorization header is incorrect' do
+        before do
+          request.headers['Authorization'] = 'Bearer ABCD'
+        end
+
+        it 'returns nil' do
+          expect(cluster_agent_token_from_authorization_token).to be_nil
+        end
+      end
+
+      context 'Authorization header is malformed' do
+        before do
+          request.headers['Authorization'] = 'Bearer'
+        end
+
+        it 'returns nil' do
+          expect(cluster_agent_token_from_authorization_token).to be_nil
+        end
+      end
+
+      context 'Authorization header matches agent token' do
+        before do
+          request.headers['Authorization'] = "Bearer #{agent_token.token}"
+        end
+
+        it 'returns the agent token' do
+          expect(cluster_agent_token_from_authorization_token).to eq(agent_token)
+        end
+      end
+    end
+  end
+
   describe '#find_runner_from_token' do
     let(:runner) { create(:ci_runner) }
 

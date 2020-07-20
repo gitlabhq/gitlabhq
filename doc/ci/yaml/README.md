@@ -3403,6 +3403,48 @@ Please be aware that semaphore_test_boosters reports usages statistics to the au
 You can then navigate to the **Jobs** tab of a new pipeline build and see your RSpec
 job split into three separate jobs.
 
+#### Parallel `matrix` jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15356) in GitLab 13.2.
+
+`matrix:` allows you to configure different variables for jobs that are running in parallel.
+There can be from 2 to 50 jobs.
+
+Every job gets the same `CI_NODE_TOTAL` [environment variable](../variables/README.md#predefined-environment-variables) value, and a unique `CI_NODE_INDEX` value.
+
+```yaml
+deploystacks:
+  stage: deploy
+  script:
+    - bin/deploy
+  parallel:
+    matrix:
+      - PROVIDER: aws
+        STACK:
+          - monitoring
+          - app1
+          - app2
+      - PROVIDER: ovh
+        STACK: [monitoring, backup, app]
+      - PROVIDER: [gcp, vultr]
+        STACK: [data, processing]
+```
+
+This generates 10 parallel `deploystacks` jobs, each with different values for `PROVIDER` and `STACK`:
+
+```plaintext
+deploystacks 1/10 with PROVIDER=aws and STACK=monitoring
+deploystacks 2/10 with PROVIDER=aws and STACK=app1
+deploystacks 3/10 with PROVIDER=aws and STACK=app2
+deploystacks 4/10 with PROVIDER=ovh and STACK=monitoring
+deploystacks 5/10 with PROVIDER=ovh and STACK=backup
+deploystacks 6/10 with PROVIDER=ovh and STACK=app
+deploystacks 7/10 with PROVIDER=gcp and STACK=data
+deploystacks 8/10 with PROVIDER=gcp and STACK=processing
+deploystacks 9/10 with PROVIDER=vultr and STACK=data
+deploystacks 10/10 with PROVIDER=vultr and STACK=processing
+```
+
 ### `trigger`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.

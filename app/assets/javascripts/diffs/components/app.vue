@@ -441,7 +441,7 @@ export default {
             [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
           }"
         >
-          <commit-widget v-if="commit" :commit="commit" />
+          <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
           <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
             <diff-file

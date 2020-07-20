@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         %i[before_script script stage type after_script cache
            image services only except rules needs variables artifacts
            environment coverage retry interruptible timeout release tags
-           inherit]
+           inherit parallel]
       end
 
       it { is_expected.to include(*result) }
@@ -202,56 +202,47 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
 
       context 'when parallel value is not correct' do
         context 'when it is not a numeric value' do
-          let(:config) { { parallel: true } }
+          let(:config) { { script: 'echo', parallel: true } }
 
           it 'returns error about invalid type' do
             expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job parallel is not a number'
+            expect(entry.errors).to include 'parallel should be an integer or a hash'
           end
         end
 
         context 'when it is lower than two' do
-          let(:config) { { parallel: 1 } }
+          let(:config) { { script: 'echo', parallel: 1 } }
 
           it 'returns error about value too low' do
             expect(entry).not_to be_valid
             expect(entry.errors)
-              .to include 'job parallel must be greater than or equal to 2'
+              .to include 'parallel config must be greater than or equal to 2'
           end
         end
 
-        context 'when it is bigger than 50' do
-          let(:config) { { parallel: 51 } }
+        context 'when it is an empty hash' do
+          let(:config) { { script: 'echo', parallel: {} } }
 
-          it 'returns error about value too high' do
+          it 'returns error about missing matrix' do
             expect(entry).not_to be_valid
             expect(entry.errors)
-              .to include 'job parallel must be less than or equal to 50'
+              .to include 'parallel config missing required keys: matrix'
           end
         end
+      end
 
-        context 'when it is not an integer' do
-          let(:config) { { parallel: 1.5 } }
-
-          it 'returns error about wrong value' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job parallel must be an integer'
-          end
+      context 'when it uses both "when:" and "rules:"' do
+        let(:config) do
+          {
+            script: 'echo',
+            when: 'on_failure',
+            rules: [{ if: '$VARIABLE', when: 'on_success' }]
+          }
         end
 
-        context 'when it uses both "when:" and "rules:"' do
-          let(:config) do
-            {
-              script: 'echo',
-              when: 'on_failure',
-              rules: [{ if: '$VARIABLE', when: 'on_success' }]
-            }
-          end
-
-          it 'returns an error about when: being combined with rules' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job config key may not be used with `rules`: when'
-          end
+        it 'returns an error about when: being combined with rules' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include 'job config key may not be used with `rules`: when'
         end
       end
 

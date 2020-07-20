@@ -10374,6 +10374,42 @@ CREATE SEQUENCE public.ci_variables_id_seq
 
 ALTER SEQUENCE public.ci_variables_id_seq OWNED BY public.ci_variables.id;
 
+CREATE TABLE public.cluster_agent_tokens (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    agent_id bigint NOT NULL,
+    token_encrypted text NOT NULL,
+    CONSTRAINT check_c60daed227 CHECK ((char_length(token_encrypted) <= 255))
+);
+
+CREATE SEQUENCE public.cluster_agent_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.cluster_agent_tokens_id_seq OWNED BY public.cluster_agent_tokens.id;
+
+CREATE TABLE public.cluster_agents (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_3498369510 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE public.cluster_agents_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.cluster_agents_id_seq OWNED BY public.cluster_agents.id;
+
 CREATE TABLE public.cluster_groups (
     id integer NOT NULL,
     cluster_id integer NOT NULL,
@@ -16572,6 +16608,10 @@ ALTER TABLE ONLY public.ci_triggers ALTER COLUMN id SET DEFAULT nextval('public.
 
 ALTER TABLE ONLY public.ci_variables ALTER COLUMN id SET DEFAULT nextval('public.ci_variables_id_seq'::regclass);
 
+ALTER TABLE ONLY public.cluster_agent_tokens ALTER COLUMN id SET DEFAULT nextval('public.cluster_agent_tokens_id_seq'::regclass);
+
+ALTER TABLE ONLY public.cluster_agents ALTER COLUMN id SET DEFAULT nextval('public.cluster_agents_id_seq'::regclass);
+
 ALTER TABLE ONLY public.cluster_groups ALTER COLUMN id SET DEFAULT nextval('public.cluster_groups_id_seq'::regclass);
 
 ALTER TABLE ONLY public.cluster_platforms_kubernetes ALTER COLUMN id SET DEFAULT nextval('public.cluster_platforms_kubernetes_id_seq'::regclass);
@@ -17518,6 +17558,12 @@ ALTER TABLE ONLY public.ci_triggers
 
 ALTER TABLE ONLY public.ci_variables
     ADD CONSTRAINT ci_variables_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.cluster_agent_tokens
+    ADD CONSTRAINT cluster_agent_tokens_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.cluster_agents
+    ADD CONSTRAINT cluster_agents_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.cluster_groups
     ADD CONSTRAINT cluster_groups_pkey PRIMARY KEY (id);
@@ -19020,6 +19066,14 @@ CREATE INDEX index_ci_triggers_on_owner_id ON public.ci_triggers USING btree (ow
 CREATE INDEX index_ci_triggers_on_project_id ON public.ci_triggers USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_variables_on_project_id_and_key_and_environment_scope ON public.ci_variables USING btree (project_id, key, environment_scope);
+
+CREATE INDEX index_cluster_agent_tokens_on_agent_id ON public.cluster_agent_tokens USING btree (agent_id);
+
+CREATE UNIQUE INDEX index_cluster_agent_tokens_on_token_encrypted ON public.cluster_agent_tokens USING btree (token_encrypted);
+
+CREATE INDEX index_cluster_agents_on_project_id ON public.cluster_agents USING btree (project_id);
+
+CREATE UNIQUE INDEX index_cluster_agents_on_project_id_and_name ON public.cluster_agents USING btree (project_id, name);
 
 CREATE UNIQUE INDEX index_cluster_groups_on_cluster_id_and_group_id ON public.cluster_groups USING btree (cluster_id, group_id);
 
@@ -21712,6 +21766,9 @@ ALTER TABLE ONLY public.group_custom_attributes
 ALTER TABLE ONLY public.requirements_management_test_reports
     ADD CONSTRAINT fk_rails_24cecc1e68 FOREIGN KEY (pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.cluster_agents
+    ADD CONSTRAINT fk_rails_25e9fc2d5d FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.group_wiki_repositories
     ADD CONSTRAINT fk_rails_26f867598c FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
@@ -22509,6 +22566,9 @@ ALTER TABLE ONLY public.subscriptions
 
 ALTER TABLE ONLY public.operations_strategies
     ADD CONSTRAINT fk_rails_d183b6e6dd FOREIGN KEY (feature_flag_id) REFERENCES public.operations_feature_flags(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.cluster_agent_tokens
+    ADD CONSTRAINT fk_rails_d1d26abc25 FOREIGN KEY (agent_id) REFERENCES public.cluster_agents(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.requirements_management_test_reports
     ADD CONSTRAINT fk_rails_d1e8b498bf FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE SET NULL;
@@ -23756,6 +23816,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200605160806
 20200605160836
 20200605160851
+20200607223047
+20200607235435
 20200608072931
 20200608075553
 20200608195222

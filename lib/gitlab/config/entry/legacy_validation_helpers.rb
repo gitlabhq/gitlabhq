@@ -30,10 +30,18 @@ module Gitlab
         end
 
         def validate_variables(variables)
+          variables.is_a?(Hash) && variables.flatten.all?(&method(:validate_alphanumeric))
+        end
+
+        def validate_array_value_variables(variables)
           variables.is_a?(Hash) &&
-            variables.flatten.all? do |value|
-              validate_string(value) || validate_integer(value)
-            end
+            variables.keys.all?(&method(:validate_alphanumeric)) &&
+            variables.values.all?(&:present?) &&
+            variables.values.flatten(1).all?(&method(:validate_alphanumeric))
+        end
+
+        def validate_alphanumeric(value)
+          validate_string(value) || validate_integer(value)
         end
 
         def validate_integer(value)

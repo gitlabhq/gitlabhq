@@ -20,6 +20,7 @@ module Gitlab
     module AuthFinders
       include Gitlab::Utils::StrongMemoize
       include ActionController::HttpAuthentication::Basic
+      include ActionController::HttpAuthentication::Token
 
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'
       PRIVATE_TOKEN_PARAM = :private_token
@@ -129,6 +130,15 @@ module Gitlab
         @current_authenticated_deploy_token = deploy_token # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         deploy_token
+      end
+
+      def cluster_agent_token_from_authorization_token
+        return unless route_authentication_setting[:cluster_agent_token_allowed]
+        return unless current_request.authorization.present?
+
+        authorization_token, _options = token_and_options(current_request)
+
+        ::Clusters::AgentToken.find_by_token(authorization_token)
       end
 
       def find_runner_from_token

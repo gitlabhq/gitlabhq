@@ -237,6 +237,7 @@ module API
 
     mount ::API::Internal::Base
     mount ::API::Internal::Pages
+    mount ::API::Internal::Kubernetes
 
     route :any, '*path' do
       error!('404 Not Found', 404)

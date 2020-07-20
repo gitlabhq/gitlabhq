@@ -66,6 +66,10 @@ module Gitlab
         ::Feature.enabled?(:destroy_only_unlocked_expired_artifacts, default_enabled: false)
       end
 
+      def self.parallel_matrix_enabled?
+        ::Feature.enabled?(:ci_parallel_matrix_enabled, default_enabled: true)
+      end
+
       def self.bulk_insert_on_create?(project)
         ::Feature.enabled?(:ci_bulk_insert_on_create, project, default_enabled: true)
       end

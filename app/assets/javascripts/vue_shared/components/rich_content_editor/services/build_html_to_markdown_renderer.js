@@ -4,6 +4,8 @@ import { defaults, repeat } from 'lodash';
 const DEFAULTS = {
   subListIndentSpaces: 4,
   unorderedListBulletChar: '-',
+  strong: '*',
+  emphasis: '_',
 };
 
 const countIndentSpaces = text => {
@@ -13,12 +15,14 @@ const countIndentSpaces = text => {
 };
 
 const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => {
-  const { subListIndentSpaces, unorderedListBulletChar } = defaults(
+  const { subListIndentSpaces, unorderedListBulletChar, strong, emphasis } = defaults(
     formattingPreferences,
     DEFAULTS,
   );
   const sublistNode = 'LI OL, LI UL';
   const unorderedListItemNode = 'UL LI';
+  const emphasisNode = 'EM, I';
+  const strongNode = 'STRONG, B';
 
   return {
     TEXT_NODE(node) {
@@ -56,6 +60,17 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
       const baseResult = baseRenderer.convert(node, subContent);
 
       return baseResult.replace(/^(\s*)([*|-])/, `$1${unorderedListBulletChar}`);
+    },
+    [emphasisNode](node, subContent) {
+      const result = baseRenderer.convert(node, subContent);
+
+      return result.replace(/(^[*_]{1}|[*_]{1}$)/g, emphasis);
+    },
+    [strongNode](node, subContent) {
+      const result = baseRenderer.convert(node, subContent);
+      const strongSyntax = repeat(strong, 2);
+
+      return result.replace(/^[*_]{2}/, strongSyntax).replace(/[*_]{2}$/, strongSyntax);
     },
   };
 };

@@ -32,9 +32,6 @@ module Gitlab
 
             with_options allow_nil: true do
               validates :allow_failure, boolean: true
-              validates :parallel, numericality: { only_integer: true,
-                                                   greater_than_or_equal_to: 2,
-                                                   less_than_or_equal_to: 50 }
               validates :when, inclusion: {
                 in: ALLOWED_WHEN,
                 message: "should be one of: #{ALLOWED_WHEN.join(', ')}"
@@ -124,6 +121,10 @@ module Gitlab
             description: 'This job will produce a release.',
             inherit: false
 
+          entry :parallel, Entry::Product::Parallel,
+            description: 'Parallel configuration for this job.',
+            inherit: false
+
           attributes :script, :tags, :allow_failure, :when, :dependencies,
                      :needs, :retry, :parallel, :start_in,
                      :interruptible, :timeout, :resource_group, :release
@@ -174,7 +175,7 @@ module Gitlab
               environment_name: environment_defined? ? environment_value[:name] : nil,
               coverage: coverage_defined? ? coverage_value : nil,
               retry: retry_defined? ? retry_value : nil,
-              parallel: has_parallel? ? parallel.to_i : nil,
+              parallel: has_parallel? ? parallel_value : nil,
               interruptible: interruptible_defined? ? interruptible_value : nil,
               timeout: has_timeout? ? ChronicDuration.parse(timeout.to_s) : nil,
               artifacts: artifacts_value,

@@ -64,7 +64,7 @@ module Ci
         variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if trigger_request
 
         variables.append(key: 'CI_NODE_INDEX', value: self.options[:instance].to_s) if self.options&.include?(:instance)
-        variables.append(key: 'CI_NODE_TOTAL', value: (self.options&.dig(:parallel) || 1).to_s)
+        variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value.to_s)
 
         # legacy variables
         variables.append(key: 'CI_BUILD_NAME', value: name)
@@ -95,6 +95,14 @@ module Ci
 
     def secret_project_variables(environment: persisted_environment)
       project.ci_variables_for(ref: git_ref, environment: environment)
+    end
+
+    private
+
+    def ci_node_total_value
+      parallel = self.options&.dig(:parallel)
+      parallel = parallel.dig(:total) if parallel.is_a?(Hash)
+      parallel || 1
     end
   end
 end

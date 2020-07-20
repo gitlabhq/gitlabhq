@@ -3007,25 +3007,46 @@ RSpec.describe Ci::Build do
     end
 
     context 'when build is parallelized' do
-      let(:total) { 5 }
-      let(:index) { 3 }
+      shared_examples 'parallelized jobs config' do
+        let(:index) { 3 }
+        let(:total) { 5 }
 
-      before do
-        build.options[:parallel] = total
-        build.options[:instance] = index
-        build.name = "#{build.name} #{index}/#{total}"
+        before do
+          build.options[:parallel] = config
+          build.options[:instance] = index
+        end
+
+        it 'includes CI_NODE_INDEX' do
+          is_expected.to include(
+            { key: 'CI_NODE_INDEX', value: index.to_s, public: true, masked: false }
+          )
+        end
+
+        it 'includes correct CI_NODE_TOTAL' do
+          is_expected.to include(
+            { key: 'CI_NODE_TOTAL', value: total.to_s, public: true, masked: false }
+          )
+        end
       end
 
-      it 'includes CI_NODE_INDEX' do
-        is_expected.to include(
-          { key: 'CI_NODE_INDEX', value: index.to_s, public: true, masked: false }
-        )
+      context 'when parallel is a number' do
+        let(:config) { 5 }
+
+        it_behaves_like 'parallelized jobs config'
       end
 
-      it 'includes correct CI_NODE_TOTAL' do
-        is_expected.to include(
-          { key: 'CI_NODE_TOTAL', value: total.to_s, public: true, masked: false }
-        )
+      context 'when parallel is hash with the total key' do
+        let(:config) { { total: 5 } }
+
+        it_behaves_like 'parallelized jobs config'
+      end
+
+      context 'when parallel is nil' do
+        let(:config) {}
+
+        it_behaves_like 'parallelized jobs config' do
+          let(:total) { 1 }
+        end
       end
     end
 

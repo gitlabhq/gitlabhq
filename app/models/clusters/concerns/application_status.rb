@@ -79,7 +79,7 @@ module Clusters
             transition [:scheduled] => :uninstalling
           end
 
-          before_transition any => [:scheduled] do |application, _|
+          before_transition any => [:scheduled, :installed, :uninstalled] do |application, _|
             application.status_reason = nil
           end
 

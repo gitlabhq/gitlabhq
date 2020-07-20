@@ -56,6 +56,11 @@ export default {
       type: Object,
       required: true,
     },
+    collapsible: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     author() {
@@ -104,7 +109,7 @@ export default {
 </script>
 
 <template>
-  <li class="commit flex-row js-toggle-container">
+  <li :class="{ 'js-toggle-container': collapsible }" class="commit flex-row">
     <user-avatar-link
       :link-href="authorUrl"
       :img-src="authorAvatar"
@@ -123,7 +128,7 @@ export default {
         <span class="commit-row-message d-block d-sm-none">&middot; {{ commit.short_id }}</span>
 
         <button
-          v-if="commit.description_html"
+          v-if="commit.description_html && collapsible"
           class="text-expander js-toggle-button"
           type="button"
           :aria-label="__('Toggle commit description')"
@@ -144,7 +149,8 @@ export default {
 
         <pre
           v-if="commit.description_html"
-          class="commit-row-description js-toggle-content gl-mb-3"
+          :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
+          class="commit-row-description gl-mb-3 text-dark"
           v-html="commit.description_html"
         ></pre>
       </div>

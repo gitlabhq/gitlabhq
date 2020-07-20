@@ -312,6 +312,7 @@ project:
 - chat_services
 - cluster
 - clusters
+- cluster_agents
 - cluster_project
 - creator
 - cycle_analytics_stages
