@@ -54,7 +54,10 @@ RSpec.describe Iteration do
       end
 
       context 'when dates overlap' do
-        context 'same group' do
+        let(:start_date) { 5.days.from_now }
+        let(:due_date) { 6.days.from_now }
+
+        shared_examples_for 'overlapping dates' do
           context 'when start_date is in range' do
             let(:start_date) { 5.days.from_now }
             let(:due_date) { 3.weeks.from_now }
@@ -62,6 +65,11 @@ RSpec.describe Iteration do
             it 'is not valid' do
               expect(subject).not_to be_valid
               expect(subject.errors[:base]).to include('Dates cannot overlap with other existing Iterations')
+            end
+
+            it 'is not valid even if forced' do
+              subject.validate # to generate iid/etc
+              expect { subject.save!(validate: false) }.to raise_exception(ActiveRecord::StatementInvalid, /#{constraint_name}/)
             end
           end
 
@@ -73,25 +81,84 @@ RSpec.describe Iteration do
               expect(subject).not_to be_valid
               expect(subject.errors[:base]).to include('Dates cannot overlap with other existing Iterations')
             end
+
+            it 'is not valid even if forced' do
+              subject.validate # to generate iid/etc
+              expect { subject.save!(validate: false) }.to raise_exception(ActiveRecord::StatementInvalid, /#{constraint_name}/)
+            end
           end
 
           context 'when both overlap' do
-            let(:start_date) { 5.days.from_now }
-            let(:due_date) { 6.days.from_now }
-
             it 'is not valid' do
               expect(subject).not_to be_valid
               expect(subject.errors[:base]).to include('Dates cannot overlap with other existing Iterations')
             end
+
+            it 'is not valid even if forced' do
+              subject.validate # to generate iid/etc
+              expect { subject.save!(validate: false) }.to raise_exception(ActiveRecord::StatementInvalid, /#{constraint_name}/)
+            end
           end
         end
 
-        context 'different group' do
-          let(:start_date) { 5.days.from_now }
-          let(:due_date) { 6.days.from_now }
-          let(:group) { create(:group) }
+        context 'group' do
+          it_behaves_like 'overlapping dates' do
+            let(:constraint_name) { 'iteration_start_and_due_daterange_group_id_constraint' }
+          end
 
-          it { is_expected.to be_valid }
+          context 'different group' do
+            let(:group) { create(:group) }
+
+            it { is_expected.to be_valid }
+
+            it 'does not trigger exclusion constraints' do
+              expect { subject.save! }.not_to raise_exception
+            end
+          end
+
+          context 'in a project' do
+            let(:project) { create(:project) }
+
+            subject { build(:iteration, project: project, start_date: start_date, due_date: due_date) }
+
+            it { is_expected.to be_valid }
+
+            it 'does not trigger exclusion constraints' do
+              expect { subject.save! }.not_to raise_exception
+            end
+          end
+        end
+
+        context 'project' do
+          let_it_be(:existing_iteration) { create(:iteration, project: project, start_date: 4.days.from_now, due_date: 1.week.from_now) }
+
+          subject { build(:iteration, project: project, start_date: start_date, due_date: due_date) }
+
+          it_behaves_like 'overlapping dates' do
+            let(:constraint_name) { 'iteration_start_and_due_daterange_project_id_constraint' }
+          end
+
+          context 'different project' do
+            let(:project) { create(:project) }
+
+            it { is_expected.to be_valid }
+
+            it 'does not trigger exclusion constraints' do
+              expect { subject.save! }.not_to raise_exception
+            end
+          end
+
+          context 'in a group' do
+            let(:group) { create(:group) }
+
+            subject { build(:iteration, group: group, start_date: start_date, due_date: due_date) }
+
+            it { is_expected.to be_valid }
+
+            it 'does not trigger exclusion constraints' do
+              expect { subject.save! }.not_to raise_exception
+            end
+          end
         end
       end
     end

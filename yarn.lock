@@ -1156,20 +1156,20 @@
     dom-accessibility-api "^0.4.5"
     pretty-format "^25.5.0"
 
-"@toast-ui/editor@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.2.0.tgz#77fd790c6ae876d5de738bc022d6ebc5c84a6feb"
-  integrity sha512-WiqrY7OeCOS08NlznJobCwtxOWJC/5my8QefHCKTZyX9/70kkojcnyQ8aoiQQ5kIfGUJ6dKt6/JuKD5OOib+bQ==
+"@toast-ui/editor@^2.2.0", "@toast-ui/editor@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.3.0.tgz#47a0bb4f7cec8248dda64cbbd2edf63294debcd8"
+  integrity sha512-rCb35CMxYS6U2aiwWhdLZMzbgzoVHm2YxGrlmH4OdNQNfzAM03DHl4lTwq7EP7E4MG0FEMgMyn0Ovo5DI7G8+w==
   dependencies:
     "@types/codemirror" "0.0.71"
     codemirror "^5.48.4"
 
-"@toast-ui/vue-editor@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@toast-ui/vue-editor/-/vue-editor-2.2.0.tgz#bae8e6e6c0a7d6fb40a4f6b8e616aada3923118d"
-  integrity sha512-z8q60tEIfrIOk1fQitRg56ZxztOUyp2A1gLlTVuTpFNts21lTsMfFcUNdZsAivWUN6ToQu4qP8Bz80h9FZBLBg==
+"@toast-ui/vue-editor@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/vue-editor/-/vue-editor-2.3.0.tgz#8b80896f1132ca229ab28167c78f607d06e4d3ef"
+  integrity sha512-oXuy4YqaF9RHBqYutNg8xI9XvcrWQv9xRKQJLSPtR3wh9/5AeTuXm/b8qkJdoccCsJl5lUq/Qh7l/+o8zcbvFA==
   dependencies:
-    "@toast-ui/editor" "^2.2.0"
+    "@toast-ui/editor" "^2.3.0"
 
 "@types/babel__core@^7.1.0":
   version "7.1.2"

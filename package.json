@@ -49,7 +49,7 @@
     "@sentry/browser": "^5.10.2",
     "@sourcegraph/code-host-integration": "0.0.48",
     "@toast-ui/editor": "^2.2.0",
-    "@toast-ui/vue-editor": "^2.2.0",
+    "@toast-ui/vue-editor": "^2.3.0",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.11",

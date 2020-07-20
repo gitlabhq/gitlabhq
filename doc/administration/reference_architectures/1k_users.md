@@ -7,10 +7,10 @@ For a full list of reference architectures, see
 > - **Supported users (approximate):** 1,000
 > - **High Availability:** False
 
-| Users | Configuration([8](#footnotes))     | GCP            | AWS                 | Azure                  |
-|-------|------------------------------------|----------------|---------------------|------------------------|
-| 500   | 4 vCPU, 3.6GB Memory               | `n1-highcpu-4` | `c5.xlarge`         | F4s v2                 |
-| 1000  | 8 vCPU, 7.2GB Memory               | `n1-highcpu-8` | `c5.2xlarge`        | F8s v2                 |
+| Users       | Configuration([8](#footnotes))     | GCP            | AWS                 | Azure                  |
+|-------------|------------------------------------|----------------|---------------------|------------------------|
+| up to 500   | 4 vCPU, 3.6GB Memory               | `n1-highcpu-4` | `c5.xlarge`         | F4s v2                 |
+| up to 1000  | 8 vCPU, 7.2GB Memory               | `n1-highcpu-8` | `c5.2xlarge`        | F8s v2                 |
 
 In addition to the above, we recommend having at least
 2GB of swap on your server, even if you currently have

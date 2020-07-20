@@ -295,9 +295,13 @@ RSpec.describe Gitlab::Danger::Helper do
 
     context 'having specific changes' do
       it 'has database and backend categories' do
-        allow(fake_git).to receive(:diff_for_file).with('usage_data.rb') { double(:diff, patch: "+ count(User.active)") }
+        changed_files = ['usage_data.rb', 'lib/gitlab/usage_data.rb', 'ee/lib/ee/gitlab/usage_data.rb']
 
-        expect(helper.categories_for_file('usage_data.rb')).to eq([:database, :backend])
+        changed_files.each do |file|
+          allow(fake_git).to receive(:diff_for_file).with(file) { double(:diff, patch: "+ count(User.active)") }
+
+          expect(helper.categories_for_file(file)).to eq([:database, :backend])
+        end
       end
 
       it 'has backend category' do
@@ -310,6 +314,13 @@ RSpec.describe Gitlab::Danger::Helper do
         allow(fake_git).to receive(:diff_for_file).with('user.rb') { double(:diff, patch: "+ count(User.active)") }
 
         expect(helper.categories_for_file('user.rb')).to eq([:backend])
+      end
+
+      it 'has backend category for files that are not usage_data.rb' do
+        changed_file = 'usage_data/topology.rb'
+        allow(fake_git).to receive(:diff_for_file).with(changed_file) { double(:diff, patch: "+ count(User.active)") }
+
+        expect(helper.categories_for_file(changed_file)).to eq([:backend])
       end
     end
   end
