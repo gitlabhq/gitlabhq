@@ -12063,6 +12063,7 @@ The type of the security scanner.
 """
 enum SecurityScannerType {
   CONTAINER_SCANNING
+  COVERAGE_FUZZING
   DAST
   DEPENDENCY_SCANNING
   SAST
@@ -14937,7 +14938,7 @@ enum VulnerabilityIssueLinkType {
 """
 Represents a vulnerability location. The fields with data will depend on the vulnerability report type
 """
-union VulnerabilityLocation = VulnerabilityLocationContainerScanning | VulnerabilityLocationDast | VulnerabilityLocationDependencyScanning | VulnerabilityLocationSast | VulnerabilityLocationSecretDetection
+union VulnerabilityLocation = VulnerabilityLocationContainerScanning | VulnerabilityLocationCoverageFuzzing | VulnerabilityLocationDast | VulnerabilityLocationDependencyScanning | VulnerabilityLocationSast | VulnerabilityLocationSecretDetection
 
 """
 Represents the location of a vulnerability found by a container security scan
@@ -14957,6 +14958,36 @@ type VulnerabilityLocationContainerScanning {
   Operating system that runs on the vulnerable container image
   """
   operatingSystem: String
+}
+
+"""
+Represents the location of a vulnerability found by a Coverage Fuzzing scan
+"""
+type VulnerabilityLocationCoverageFuzzing {
+  """
+  Number of the last relevant line in the vulnerable file
+  """
+  endLine: String
+
+  """
+  Path to the vulnerable file
+  """
+  file: String
+
+  """
+  Number of the first relevant line in the vulnerable file
+  """
+  startLine: String
+
+  """
+  Class containing the vulnerability
+  """
+  vulnerableClass: String
+
+  """
+  Method containing the vulnerability
+  """
+  vulnerableMethod: String
 }
 
 """

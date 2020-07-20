@@ -5,7 +5,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-users-over-license-callout',
   '.js-admin-licensed-user-count-threshold',
   '.js-buy-pipeline-minutes-notification-callout',
-  '.js-alerts-moved-alert',
   '.js-token-expiry-callout',
 ];
 

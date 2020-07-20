@@ -2246,6 +2246,18 @@ Represents the location of a vulnerability found by a container security scan
 | `image` | String | Name of the vulnerable container image |
 | `operatingSystem` | String | Operating system that runs on the vulnerable container image |
 
+## VulnerabilityLocationCoverageFuzzing
+
+Represents the location of a vulnerability found by a Coverage Fuzzing scan
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `endLine` | String | Number of the last relevant line in the vulnerable file |
+| `file` | String | Path to the vulnerable file |
+| `startLine` | String | Number of the first relevant line in the vulnerable file |
+| `vulnerableClass` | String | Class containing the vulnerability |
+| `vulnerableMethod` | String | Method containing the vulnerability |
+
 ## VulnerabilityLocationDast
 
 Represents the location of a vulnerability found by a DAST scan

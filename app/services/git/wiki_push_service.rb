@@ -41,7 +41,12 @@ module Git
     end
 
     def create_event_for(change)
-      event_service.execute(change.last_known_slug, change.page, change.event_action)
+      event_service.execute(
+        change.last_known_slug,
+        change.page,
+        change.event_action,
+        change.sha
+      )
     end
 
     def event_service

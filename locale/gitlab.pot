@@ -2937,6 +2937,9 @@ msgstr ""
 msgid "Applying suggestions..."
 msgstr ""
 
+msgid "Approval Status"
+msgstr ""
+
 msgid "Approval rules"
 msgstr ""
 
@@ -2982,6 +2985,15 @@ msgid "ApprovalRule|Target branch"
 msgstr ""
 
 msgid "ApprovalRule|e.g. QA, Security, etc."
+msgstr ""
+
+msgid "ApprovalStatusTooltip|Adheres to separation of duties"
+msgstr ""
+
+msgid "ApprovalStatusTooltip|At least one rule does not adhere to separation of duties"
+msgstr ""
+
+msgid "ApprovalStatusTooltip|Fails to adhere to separation of duties"
 msgstr ""
 
 msgid "Approvals|Section: %section"

@@ -98,6 +98,7 @@ class WikiPage
   def slug
     attributes[:slug].presence || wiki.wiki.preview_slug(title, format)
   end
+  alias_method :id, :slug # required to use build_stubbed
 
   alias_method :to_param, :slug
 
@@ -265,8 +266,8 @@ class WikiPage
     '../shared/wikis/wiki_page'
   end
 
-  def id
-    page.version.to_s
+  def sha
+    page.version&.sha
   end
 
   def title_changed?

@@ -45,10 +45,11 @@ RSpec.describe API::ProjectMilestones do
 
   describe 'PUT /projects/:id/milestones/:milestone_id to test observer on close' do
     it 'creates an activity event when a milestone is closed' do
-      expect(Event).to receive(:create!)
+      path = "/projects/#{project.id}/milestones/#{milestone.id}"
 
-      put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
-          params: { state_event: 'close' }
+      expect do
+        put api(path, user), params: { state_event: 'close' }
+      end.to change(Event, :count).by(1)
     end
   end
 

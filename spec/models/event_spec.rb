@@ -111,6 +111,45 @@ RSpec.describe Event do
         expect(found).not_to include(false_positive)
       end
     end
+
+    describe '.for_fingerprint' do
+      let_it_be(:with_fingerprint) { create(:event, fingerprint: 'aaa') }
+
+      before_all do
+        create(:event)
+        create(:event, fingerprint: 'bbb')
+      end
+
+      it 'returns none if there is no fingerprint' do
+        expect(described_class.for_fingerprint(nil)).to be_empty
+        expect(described_class.for_fingerprint('')).to be_empty
+      end
+
+      it 'returns none if there is no match' do
+        expect(described_class.for_fingerprint('not-found')).to be_empty
+      end
+
+      it 'can find a given event' do
+        expect(described_class.for_fingerprint(with_fingerprint.fingerprint))
+          .to contain_exactly(with_fingerprint)
+      end
+    end
+  end
+
+  describe '#fingerprint' do
+    it 'is unique scoped to target' do
+      issue = create(:issue)
+      mr = create(:merge_request)
+
+      expect { create_list(:event, 2, target: issue, fingerprint: '1234') }
+        .to raise_error(include('fingerprint'))
+
+      expect do
+        create(:event, target: mr, fingerprint: 'abcd')
+        create(:event, target: issue, fingerprint: 'abcd')
+        create(:event, target: issue, fingerprint: 'efgh')
+      end.not_to raise_error
+    end
   end
 
   describe "Push event" do

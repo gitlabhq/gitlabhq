@@ -15,7 +15,7 @@ module Gitlab
         'p_analytics_insights',
         'p_analytics_issues',
         'p_analytics_repo',
-        'u_analytics_todos',
+        'u_todos',
         'i_analytics_cohorts',
         'i_analytics_dev_ops_score'
       ].freeze
@@ -40,7 +40,7 @@ module Gitlab
       end
 
       def weekly_unique_visits_for_any_target(week_of: 7.days.ago)
-        keys = TARGET_IDS.map { |target_id| key(target_id, week_of) }
+        keys = TARGET_IDS.select { |id| id =~ /_analytics_/ }.map { |target_id| key(target_id, week_of) }
 
         Gitlab::Redis::SharedState.with do |redis|
           redis.pfcount(*keys)

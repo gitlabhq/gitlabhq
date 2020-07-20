@@ -100,25 +100,21 @@ class EventCreateService
   # @param [WikiPage::Meta] wiki_page_meta The event target
   # @param [User] author The event author
   # @param [Symbol] action One of the Event::WIKI_ACTIONS
+  # @param [String] fingerprint The de-duplication fingerprint
   #
-  # @return a tuple of event and either :found or :created
-  def wiki_event(wiki_page_meta, author, action)
+  # The fingerprint, if provided, should be sufficient to find duplicate events.
+  # Suitable values would be, for example, the current page SHA.
+  #
+  # @return [Event] the event
+  def wiki_event(wiki_page_meta, author, action, fingerprint)
     raise IllegalActionError, action unless Event::WIKI_ACTIONS.include?(action)
-
-    if duplicate = existing_wiki_event(wiki_page_meta, action)
-      return duplicate
-    end
-
-    event = create_record_event(wiki_page_meta, author, action)
-    # Ensure that the event is linked in time to the metadata, for non-deletes
-    unless event.destroyed_action?
-      time_stamp = wiki_page_meta.updated_at
-      event.update_columns(updated_at: time_stamp, created_at: time_stamp)
-    end
 
     Gitlab::UsageDataCounters::TrackUniqueActions.track_action(event_action: action, event_target: wiki_page_meta.class, author_id: author.id)
 
-    event
+    duplicate = Event.for_wiki_meta(wiki_page_meta).for_fingerprint(fingerprint).first
+    return duplicate if duplicate.present?
+
+    create_record_event(wiki_page_meta, author, action, fingerprint.presence)
   end
 
   def approve_mr(merge_request, current_user)
@@ -127,44 +123,37 @@ class EventCreateService
 
   private
 
-  def existing_wiki_event(wiki_page_meta, action)
-    if Event.actions.fetch(action) == Event.actions[:destroyed]
-      most_recent = Event.for_wiki_meta(wiki_page_meta).recent.first
-      return most_recent if most_recent.present? && Event.actions[most_recent.action] == Event.actions[action]
-    else
-      Event.for_wiki_meta(wiki_page_meta).created_at(wiki_page_meta.updated_at).first
-    end
-  end
-
-  def create_record_event(record, current_user, status)
+  def create_record_event(record, current_user, status, fingerprint = nil)
     create_event(record.resource_parent, current_user, status,
-                 target_id: record.id, target_type: record.class.name)
+                 fingerprint: fingerprint,
+                 target_id: record.id,
+                 target_type: record.class.name)
   end
 
   # If creating several events, this method will insert them all in a single
   # statement
   #
-  # @param [[Eventable, Symbol]] a list of pairs of records and a valid status
+  # @param [[Eventable, Symbol, String]] a list of tuples of records, a valid status, and fingerprint
   # @param [User] the author of the event
-  def create_record_events(pairs, current_user)
+  def create_record_events(tuples, current_user)
     base_attrs = {
       created_at: Time.now.utc,
       updated_at: Time.now.utc,
       author_id: current_user.id
     }
 
-    attribute_sets = pairs.map do |record, status|
+    attribute_sets = tuples.map do |record, status, fingerprint|
       action = Event.actions[status]
       raise IllegalActionError, "#{status} is not a valid status" if action.nil?
 
       parent_attrs(record.resource_parent)
         .merge(base_attrs)
-        .merge(action: action, target_id: record.id, target_type: record.class.name)
+        .merge(action: action, fingerprint: fingerprint, target_id: record.id, target_type: record.class.name)
     end
 
     result = Event.insert_all(attribute_sets, returning: %w[id])
 
-    pairs.each do |record, status|
+    tuples.each do |record, status, _|
       Gitlab::UsageDataCounters::TrackUniqueActions.track_action(event_action: status, event_target: record.class, author_id: current_user.id)
     end
 
@@ -198,7 +187,11 @@ class EventCreateService
     )
     attributes.merge!(parent_attrs(resource_parent))
 
-    Event.create!(attributes)
+    if attributes[:fingerprint].present?
+      Event.safe_find_or_create_by!(attributes)
+    else
+      Event.create!(attributes)
+    end
   end
 
   def parent_attrs(resource_parent)

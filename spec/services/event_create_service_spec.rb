@@ -171,45 +171,53 @@ RSpec.describe EventCreateService do
     let_it_be(:wiki_page) { create(:wiki_page) }
     let_it_be(:meta) { create(:wiki_page_meta, :for_wiki_page, wiki_page: wiki_page) }
 
-    Event::WIKI_ACTIONS.each do |action|
-      context "The action is #{action}" do
-        let(:event) { service.wiki_event(meta, user, action) }
+    let(:fingerprint) { generate(:sha) }
 
-        it 'creates the event', :aggregate_failures do
-          expect(event).to have_attributes(
-            wiki_page?: true,
-            valid?: true,
-            persisted?: true,
-            action: action.to_s,
-            wiki_page: wiki_page,
-            author: user
-          )
-        end
+    def create_event
+      service.wiki_event(meta, user, action, fingerprint)
+    end
 
-        it 'records the event in the event counter' do
-          stub_feature_flags(Gitlab::UsageDataCounters::TrackUniqueActions::FEATURE_FLAG => true)
-          counter_class = Gitlab::UsageDataCounters::TrackUniqueActions
-          tracking_params = { event_action: counter_class::WIKI_ACTION, date_from: Date.yesterday, date_to: Date.today }
+    where(:action) { Event::WIKI_ACTIONS.map { |action| [action] } }
 
-          expect { event }
-            .to change { counter_class.count_unique_events(tracking_params) }
-            .from(0).to(1)
-        end
+    with_them do
+      it 'creates the event' do
+        expect(create_event).to have_attributes(
+          wiki_page?: true,
+          valid?: true,
+          persisted?: true,
+          action: action.to_s,
+          wiki_page: wiki_page,
+          author: user,
+          fingerprint: fingerprint
+        )
+      end
 
-        it 'is idempotent', :aggregate_failures do
-          expect { event }.to change(Event, :count).by(1)
-          duplicate = nil
-          expect { duplicate = service.wiki_event(meta, user, action) }.not_to change(Event, :count)
+      it 'is idempotent', :aggregate_failures do
+        event = nil
+        expect { event = create_event }.to change(Event, :count).by(1)
+        duplicate = nil
+        expect { duplicate = create_event }.not_to change(Event, :count)
 
-          expect(duplicate).to eq(event)
-        end
+        expect(duplicate).to eq(event)
+      end
+
+      it 'records the event in the event counter' do
+        stub_feature_flags(Gitlab::UsageDataCounters::TrackUniqueActions::FEATURE_FLAG => true)
+        counter_class = Gitlab::UsageDataCounters::TrackUniqueActions
+        tracking_params = { event_action: counter_class::WIKI_ACTION, date_from: Date.yesterday, date_to: Date.today }
+
+        expect { create_event }
+          .to change { counter_class.count_unique_events(tracking_params) }
+          .by(1)
       end
     end
 
     (Event.actions.keys - Event::WIKI_ACTIONS).each do |bad_action|
       context "The action is #{bad_action}" do
+        let(:action) { bad_action }
+
         it 'raises an error' do
-          expect { service.wiki_event(meta, user, bad_action) }.to raise_error(described_class::IllegalActionError)
+          expect { create_event }.to raise_error(described_class::IllegalActionError)
         end
       end
     end

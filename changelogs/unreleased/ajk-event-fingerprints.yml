@@ -1,0 +1,5 @@
+---
+title: Use fingerprint column on events to ensure event uniqueness
+merge_request: 31021
+author:
+type: changed

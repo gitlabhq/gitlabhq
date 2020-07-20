@@ -440,7 +440,7 @@ gem 'activerecord-explain-analyze', '~> 0.1', require: false
 gem 'oauth2', '~> 1.4'
 
 # Health check
-gem 'health_check', '~> 2.6.0'
+gem 'health_check', '~> 3.0'
 
 # System information
 gem 'vmstat', '~> 2.3.0'

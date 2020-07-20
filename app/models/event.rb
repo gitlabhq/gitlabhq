@@ -8,6 +8,7 @@ class Event < ApplicationRecord
   include CreatedAtFilterable
   include Gitlab::Utils::StrongMemoize
   include UsageStatistics
+  include ShaAttribute
 
   default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope
 
@@ -48,6 +49,8 @@ class Event < ApplicationRecord
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
   REPOSITORY_UPDATED_AT_INTERVAL = 5.minutes
 
+  sha_attribute :fingerprint
+
   enum action: ACTIONS, _suffix: true
 
   delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
@@ -82,6 +85,10 @@ class Event < ApplicationRecord
   scope :recent, -> { reorder(id: :desc) }
   scope :for_wiki_page, -> { where(target_type: 'WikiPage::Meta') }
   scope :for_design, -> { where(target_type: 'DesignManagement::Design') }
+  scope :for_fingerprint, ->(fingerprint) do
+    fingerprint.present? ? where(fingerprint: fingerprint) : none
+  end
+  scope :for_action, ->(action) { where(action: action) }
 
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association

@@ -994,7 +994,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           'p_analytics_insights' => 123,
           'p_analytics_issues' => 123,
           'p_analytics_repo' => 123,
-          'u_analytics_todos' => 123,
+          'u_todos' => 123,
           'i_analytics_cohorts' => 123,
           'i_analytics_dev_ops_score' => 123,
           'analytics_unique_visits_for_any_target' => 543

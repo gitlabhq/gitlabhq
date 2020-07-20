@@ -9,7 +9,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   before_action :authorize_read_group!, only: :index
   before_action :find_todos, only: [:index, :destroy_all]
 
-  track_unique_visits :index, target_id: 'u_analytics_todos'
+  track_unique_visits :index, target_id: 'u_todos'
 
   def index
     @sort = params[:sort]

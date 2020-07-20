@@ -45,13 +45,13 @@
             = _('MERGED')
         - elsif merge_request.closed?
           %li.issuable-status.d-none.d-sm-inline-block
-            = icon('ban')
+            = sprite_icon('cancel', size: 16, css_class: 'gl-vertical-align-text-bottom')
             = _('CLOSED')
         = render 'shared/merge_request_pipeline_status', merge_request: merge_request
         - if merge_request.open? && merge_request.broken?
           %li.issuable-pipeline-broken.d-none.d-sm-flex
             = link_to merge_request_path(merge_request), class: "has-tooltip", title: _('Cannot be merged automatically') do
-              = icon('exclamation-triangle')
+              = sprite_icon('warning-solid', size: 16)
         - if merge_request.assignees.any?
           %li.d-flex
             = render 'shared/issuable/assignees', project: merge_request.project, issuable: merge_request

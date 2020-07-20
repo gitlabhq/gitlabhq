@@ -48,7 +48,7 @@ RSpec.describe Dashboard::TodosController do
 
         it_behaves_like 'tracking unique visits', :index do
           let(:request_params) { { project_id: authorized_project.id } }
-          let(:target_id) { 'u_analytics_todos' }
+          let(:target_id) { 'u_todos' }
         end
       end
     end

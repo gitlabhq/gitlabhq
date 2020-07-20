@@ -35342,6 +35342,12 @@
               "description": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "COVERAGE_FUZZING",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -43980,6 +43986,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "VulnerabilityLocationCoverageFuzzing",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "VulnerabilityLocationDast",
               "ofType": null
             },
@@ -44036,6 +44047,89 @@
             {
               "name": "operatingSystem",
               "description": "Operating system that runs on the vulnerable container image",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "VulnerabilityLocationCoverageFuzzing",
+          "description": "Represents the location of a vulnerability found by a Coverage Fuzzing scan",
+          "fields": [
+            {
+              "name": "endLine",
+              "description": "Number of the last relevant line in the vulnerable file",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "file",
+              "description": "Path to the vulnerable file",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "startLine",
+              "description": "Number of the first relevant line in the vulnerable file",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "vulnerableClass",
+              "description": "Class containing the vulnerability",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "vulnerableMethod",
+              "description": "Method containing the vulnerability",
               "args": [
 
               ],

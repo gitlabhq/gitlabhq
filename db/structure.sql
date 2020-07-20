@@ -11405,7 +11405,9 @@ CREATE TABLE public.events (
     updated_at timestamp with time zone NOT NULL,
     action smallint NOT NULL,
     target_type character varying,
-    group_id bigint
+    group_id bigint,
+    fingerprint bytea,
+    CONSTRAINT check_97e06e05ad CHECK ((octet_length(fingerprint) <= 128))
 );
 
 CREATE SEQUENCE public.events_id_seq
@@ -19327,6 +19329,8 @@ CREATE INDEX index_events_on_project_id_and_id ON public.events USING btree (pro
 
 CREATE INDEX index_events_on_target_type_and_target_id ON public.events USING btree (target_type, target_id);
 
+CREATE UNIQUE INDEX index_events_on_target_type_and_target_id_and_fingerprint ON public.events USING btree (target_type, target_id, fingerprint);
+
 CREATE INDEX index_evidences_on_release_id ON public.evidences USING btree (release_id);
 
 CREATE INDEX index_expired_and_not_notified_personal_access_tokens ON public.personal_access_tokens USING btree (id, expires_at) WHERE ((impersonation = false) AND (revoked = false) AND (expire_notification_delivered = false));
@@ -23704,6 +23708,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200430123614
 20200430130048
 20200430174637
+20200504191813
+20200504200709
 20200505164958
 20200505171834
 20200505172405

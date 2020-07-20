@@ -41,6 +41,7 @@ Event:
 - updated_at
 - action
 - author_id
+- fingerprint
 WikiPage::Meta:
 - id
 - title
