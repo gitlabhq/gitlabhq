@@ -313,10 +313,11 @@ In order to have an understanding of the query's execution we add in the MR desc
 
 We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/). For more details, see the [database review guide](../database_review.md#preparation-when-adding-or-modifying-queries).
 
-Examples of query optimization work:
+#### Optimization recommendations and examples
 
-- [Example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26445)
-- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26871)
+- Use specialized indexes [example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26871), [example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26445).
+- Use defined `start` and `finish`, and simple queries, because these values can be memoized and reused, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37155).
+- Avoid joins and write the queries as simply as possible, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316).
 
 ### 4. Add the metric definition
 
