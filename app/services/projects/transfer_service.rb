@@ -55,9 +55,17 @@ module Projects
         raise TransferError.new(s_('TransferProject|Project cannot be transferred, because tags are present in its container registry'))
       end
 
+      if project.has_packages?(:npm) && !new_namespace_has_same_root?(project)
+        raise TransferError.new(s_("TransferProject|Root namespace can't be updated if project has NPM packages"))
+      end
+
       attempt_transfer_transaction
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def new_namespace_has_same_root?(project)
+      new_namespace.root_ancestor == project.namespace.root_ancestor
+    end
 
     def attempt_transfer_transaction
       Project.transaction do

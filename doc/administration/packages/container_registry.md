@@ -693,6 +693,35 @@ notifications:
       backoff: 1000
 ```
 
+## Run the Cleanup policy now
+
+To reduce the amount of [Container Registry disk space used by a given project](../troubleshooting/gitlab_rails_cheat_sheet.md#registry-disk-space-usage-by-project),
+administrators can clean up image tags
+and [run garbage collection](#container-registry-garbage-collection).
+
+To remove image tags by running the cleanup policy, run the following commands in the
+[GitLab Rails console](../troubleshooting/navigating_gitlab_via_rails_console.md):
+
+```ruby
+# Numeric ID of the project whose container registry should be cleaned up
+P = <project_id>
+
+# Numeric ID of a developer, maintainer or owner in that project
+U = <user_id>
+
+# Get required details / objects
+user    = User.find_by_id(U)
+project = Project.find_by_id(P)
+repo    = ContainerRepository.find_by(project_id: P)
+policy  = ContainerExpirationPolicy.find_by(project_id: P)
+
+# Start the tag cleanup
+Projects::ContainerRepository::CleanupTagsService.new(project, user, policy.attributes.except("created_at", "updated_at")).execute(repo)
+```
+
+NOTE: **Note:**
+You can also [run cleanup on a schedule](../../user/packages/container_registry/index.md#cleanup-policy).
+
 ## Container Registry garbage collection
 
 NOTE: **Note:**

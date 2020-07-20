@@ -8,13 +8,14 @@ RSpec.describe Banzai::ReferenceParser::BaseParser do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:context) { Banzai::RenderContext.new(project, user) }
-
-  subject do
-    klass = Class.new(described_class) do
+  let(:parser_class) do
+    Class.new(described_class) do
       self.reference_type = :foo
     end
+  end
 
-    klass.new(context)
+  subject do
+    parser_class.new(context)
   end
 
   describe '.reference_type=' do
@@ -43,12 +44,20 @@ RSpec.describe Banzai::ReferenceParser::BaseParser do
     let(:link) { empty_html_link }
 
     context 'when the link has a data-project attribute' do
-      it 'checks if user can read the resource' do
+      before do
         link['data-project'] = project.id.to_s
+      end
 
-        expect(subject).to receive(:can_read_reference?).with(user, project, link)
+      it 'includes the link if can_read_reference? returns true' do
+        expect(subject).to receive(:can_read_reference?).with(user, project, link).and_return(true)
 
-        subject.nodes_visible_to_user(user, [link])
+        expect(subject.nodes_visible_to_user(user, [link])).to contain_exactly(link)
+      end
+
+      it 'excludes the link if can_read_reference? returns false' do
+        expect(subject).to receive(:can_read_reference?).with(user, project, link).and_return(false)
+
+        expect(subject.nodes_visible_to_user(user, [link])).to be_empty
       end
     end
 
@@ -178,58 +187,56 @@ RSpec.describe Banzai::ReferenceParser::BaseParser do
     it 'gathers the references for every node matching the reference type' do
       dummy = Class.new(described_class) do
         self.reference_type = :test
+
+        def gather_references(nodes)
+          nodes
+        end
       end
 
-      instance = dummy.new(Banzai::RenderContext.new(project, user))
-      document = Nokogiri::HTML.fragment('<a class="gfm"></a><a class="gfm" data-reference-type="test"></a>')
+      instance = dummy.new(context)
+      document_a = Nokogiri::HTML.fragment(<<-FRAG)
+      <a class="gfm">one</a>
+      <a class="gfm" data-reference-type="test">two</a>
+      <a class="gfm" data-reference-type="other">three</a>
+      FRAG
+      document_b = Nokogiri::HTML.fragment(<<-FRAG)
+      <a class="gfm" data-reference-type="test">four</a>
+      FRAG
+      document_c = Nokogiri::HTML.fragment('')
 
-      expect(instance).to receive(:gather_references)
-        .with([document.children[1]])
-        .and_return([user])
-
-      expect(instance.process([document])).to eq([user])
+      expect(instance.process([document_a, document_b, document_c]))
+        .to contain_exactly(document_a.css('a')[1], document_b.css('a')[0])
     end
   end
 
   describe '#gather_references' do
-    let(:link) { double(:link) }
+    let(:nodes) { (1..10).map { |n| double(:link, id: n) } }
 
-    it 'does not process links a user can not reference' do
-      expect(subject).to receive(:nodes_user_can_reference)
-        .with(user, [link])
-        .and_return([])
+    let(:parser_class) do
+      Class.new(described_class) do
+        def nodes_user_can_reference(_user, nodes)
+          nodes.select { |n| n.id.even? }
+        end
 
-      expect(subject).to receive(:referenced_by).with([])
+        def nodes_visible_to_user(_user, nodes)
+          nodes.select { |n| n.id > 5 }
+        end
 
-      subject.gather_references([link])
+        def referenced_by(nodes)
+          nodes.map(&:id)
+        end
+      end
     end
 
-    it 'does not process links a user can not see' do
-      expect(subject).to receive(:nodes_user_can_reference)
-        .with(user, [link])
-        .and_return([link])
-
-      expect(subject).to receive(:nodes_visible_to_user)
-        .with(user, [link])
-        .and_return([])
-
-      expect(subject).to receive(:referenced_by).with([])
-
-      subject.gather_references([link])
+    it 'returns referenceable and visible objects, alongside nodes that are referenceable but not visible' do
+      expect(subject.gather_references(nodes)).to match(
+        visible: contain_exactly(6, 8, 10),
+        not_visible: match_array(nodes.select { |n| n.id.even? && n.id <= 5 })
+      )
     end
 
-    it 'returns the references if a user can reference and see a link' do
-      expect(subject).to receive(:nodes_user_can_reference)
-        .with(user, [link])
-        .and_return([link])
-
-      expect(subject).to receive(:nodes_visible_to_user)
-        .with(user, [link])
-        .and_return([link])
-
-      expect(subject).to receive(:referenced_by).with([link])
-
-      subject.gather_references([link])
+    it 'is always empty if the input is empty' do
+      expect(subject.gather_references([])) .to match(visible: be_empty, not_visible: be_empty)
     end
   end
 

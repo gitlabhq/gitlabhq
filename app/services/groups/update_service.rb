@@ -17,6 +17,8 @@ module Groups
 
       return false unless valid_share_with_group_lock_change?
 
+      return false unless valid_path_change_with_npm_packages?
+
       before_assignment_hook(group, params)
 
       group.assign_attributes(params)
@@ -35,6 +37,20 @@ module Groups
     end
 
     private
+
+    def valid_path_change_with_npm_packages?
+      return true unless group.packages_feature_enabled?
+      return true if params[:path].blank?
+      return true if !group.has_parent? && group.path == params[:path]
+
+      npm_packages = ::Packages::GroupPackagesFinder.new(current_user, group, package_type: :npm).execute
+      if npm_packages.exists?
+        group.errors.add(:path, s_('GroupSettings|cannot change when group contains projects with NPM packages'))
+        return
+      end
+
+      true
+    end
 
     def before_assignment_hook(group, params)
       # overridden in EE

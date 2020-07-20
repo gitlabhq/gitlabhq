@@ -838,6 +838,10 @@ class Project < ApplicationRecord
     auto_devops_config[:scope] != :project && !auto_devops_config[:status]
   end
 
+  def has_packages?(package_type)
+    packages.where(package_type: package_type).exists?
+  end
+
   def first_auto_devops_config
     return namespace.first_auto_devops_config if auto_devops&.enabled.nil?
 

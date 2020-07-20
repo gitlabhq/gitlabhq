@@ -6154,6 +6154,46 @@ RSpec.describe Project do
     end
   end
 
+  describe '#has_packages?' do
+    let(:project) { create(:project, :public) }
+
+    subject { project.has_packages?(package_type) }
+
+    shared_examples 'returning true examples' do
+      let!(:package) { create("#{package_type}_package", project: project) }
+
+      it { is_expected.to be true }
+    end
+
+    shared_examples 'returning false examples' do
+      it { is_expected.to be false }
+    end
+
+    context 'with maven packages' do
+      it_behaves_like 'returning true examples' do
+        let(:package_type) { :maven }
+      end
+    end
+
+    context 'with npm packages' do
+      it_behaves_like 'returning true examples' do
+        let(:package_type) { :npm }
+      end
+    end
+
+    context 'with conan packages' do
+      it_behaves_like 'returning true examples' do
+        let(:package_type) { :conan }
+      end
+    end
+
+    context 'with no package type' do
+      it_behaves_like 'returning false examples' do
+        let(:package_type) { nil }
+      end
+    end
+  end
+
   describe '#environments_for_scope' do
     let_it_be(:project, reload: true) { create(:project) }
 

@@ -172,6 +172,10 @@ class Group < Namespace
     notification_settings(hierarchy_order: hierarchy_order).where(user: user)
   end
 
+  def packages_feature_enabled?
+    ::Gitlab.config.packages.enabled
+  end
+
   def notification_email_for(user)
     # Finds the closest notification_setting with a `notification_email`
     notification_settings = notification_settings_for(user, hierarchy_order: :asc)
