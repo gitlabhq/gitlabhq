@@ -99,6 +99,11 @@ deployment platform. Changes performed outside of this tab are
 reflected upon refresh. Enforcement status changes are deployed
 directly to a deployment namespace of the selected environment.
 
+By default, the network policy list contains predefined policies in a
+disabled state. Once enabled,a predefined policy deploys to the
+selected environment's deployment platform and you can manage it like
+the regular policies.
+
 NOTE: **Note:**
 If you're using [Auto DevOps](../../../topics/autodevops/index.md) and
 change a policy in this section, your `auto-deploy-values.yaml` file

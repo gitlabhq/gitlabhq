@@ -50,7 +50,7 @@ Without mirroring, to work locally you'll have to use `git pull` to update your 
 with the upstream project, then push the changes back to your fork to update it.
 
 CAUTION: **Caution:**
-With mirroring, before approving a merge request, you'll likely be asked to sync; hence automating it is recommend.
+With mirroring, before approving a merge request, you'll likely be asked to sync; hence automating it is recommended.
 
 Read more about [How to keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/).
 
@@ -61,7 +61,7 @@ When you are ready to send your code back to the upstream project,
 choose your forked project's branch. For **Target branch**, choose the original project's branch.
 
 NOTE: **Note:**
-When creating a merge request, if the forked project's visibility is more restrictive than the parent project (for example the fork is private, parent is public), the target branch will default to the forked project's default branch. This prevents potentially exposing private code of the forked project.
+When creating a merge request, if the forked project's visibility is more restrictive than the parent project (for example the fork is private, the parent is public), the target branch will default to the forked project's default branch. This prevents potentially exposing the private code of the forked project.
 
 ![Selecting branches](img/forking_workflow_branch_select.png)
 
