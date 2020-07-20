@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Helpers::Version do
+RSpec.describe API::Helpers::Version do
   describe '.new' do
     it 'is possible to initialize it with existing API version' do
       expect(described_class.new('v4').to_s).to eq 'v4'

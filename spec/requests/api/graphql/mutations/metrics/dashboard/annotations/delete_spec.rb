@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::Metrics::Dashboard::Annotations::Delete do
+RSpec.describe Mutations::Metrics::Dashboard::Annotations::Delete do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

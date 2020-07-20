@@ -2,15 +2,24 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::PodDashboardService, :use_clean_rails_memory_store_caching do
+RSpec.describe Metrics::Dashboard::PodDashboardService, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
 
+  let(:dashboard_path) { described_class::DASHBOARD_PATH }
+  let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
+
   before do
     project.add_maintainer(user)
+  end
+
+  subject { described_class.new(*service_params) }
+
+  describe '#raw_dashboard' do
+    it_behaves_like '#raw_dashboard raises error if dashboard loading fails'
   end
 
   describe '.valid_params?' do
@@ -34,14 +43,15 @@ describe Metrics::Dashboard::PodDashboardService, :use_clean_rails_memory_store_
   end
 
   describe '#get_dashboard' do
-    let(:dashboard_path) { described_class::DASHBOARD_PATH }
-    let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
     let(:service_call) { subject.get_dashboard }
-
-    subject { described_class.new(*service_params) }
 
     it_behaves_like 'valid dashboard service response'
     it_behaves_like 'caches the unprocessed dashboard for subsequent calls'
+    it_behaves_like 'refreshes cache when dashboard_version is changed'
     it_behaves_like 'updates gitlab_metrics_dashboard_processing_time_ms metric'
+
+    it_behaves_like 'dashboard_version contains SHA256 hash of dashboard file content' do
+      let(:dashboard_version) { subject.send(:dashboard_version) }
+    end
   end
 end

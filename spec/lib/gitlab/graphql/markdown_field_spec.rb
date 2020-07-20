@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::Graphql::MarkdownField do
+RSpec.describe Gitlab::Graphql::MarkdownField do
   describe '.markdown_field' do
     it 'creates the field with some default attributes' do
       field = class_with_markdown_field(:test_html, null: true, method: :hello).fields['testHtml']

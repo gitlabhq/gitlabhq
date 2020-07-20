@@ -128,6 +128,9 @@ export default {
     isIssue() {
       return this.targetType === 'issue';
     },
+    canAssign() {
+      return this.getNoteableData.current_user?.can_update && this.isIssue;
+    },
   },
   methods: {
     onEdit() {
@@ -257,16 +260,7 @@ export default {
             {{ __('Copy link') }}
           </button>
         </li>
-        <li v-if="canEdit">
-          <button
-            class="btn btn-transparent js-note-delete js-note-delete"
-            type="button"
-            @click.prevent="onDelete"
-          >
-            <span class="text-danger">{{ __('Delete comment') }}</span>
-          </button>
-        </li>
-        <li v-if="isIssue">
+        <li v-if="canAssign">
           <button
             class="btn-default btn-transparent"
             data-testid="assign-user"
@@ -274,6 +268,15 @@ export default {
             @click="assignUser"
           >
             {{ displayAssignUserText }}
+          </button>
+        </li>
+        <li v-if="canEdit">
+          <button
+            class="btn btn-transparent js-note-delete js-note-delete"
+            type="button"
+            @click.prevent="onDelete"
+          >
+            <span class="text-danger">{{ __('Delete comment') }}</span>
           </button>
         </li>
       </ul>

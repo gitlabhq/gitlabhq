@@ -1,0 +1,5 @@
+---
+title: Reduce number of scanned commits for code intelligence
+merge_request: 36093
+author:
+type: performance

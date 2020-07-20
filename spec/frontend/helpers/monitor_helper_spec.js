@@ -33,15 +33,6 @@ describe('monitor helper', () => {
       ]);
     });
 
-    it('excludes NaN values', () => {
-      expect(
-        monitorHelper.makeDataSeries(
-          data({ metric: {}, values: [[1, 1], [2, NaN]] }),
-          defaultConfig,
-        ),
-      ).toEqual([{ ...expectedDataSeries[0], data: [[1, 1]] }]);
-    });
-
     it('updates series name from templates', () => {
       const config = {
         ...defaultConfig,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CronjobQueue do
+RSpec.describe CronjobQueue do
   let(:worker) do
     Class.new do
       def self.name

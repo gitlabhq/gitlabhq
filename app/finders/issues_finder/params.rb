@@ -27,19 +27,14 @@ class IssuesFinder
     end
 
     def user_can_see_all_confidential_issues?
-      return @user_can_see_all_confidential_issues if defined?(@user_can_see_all_confidential_issues)
-
-      return @user_can_see_all_confidential_issues = false if current_user.blank?
-      return @user_can_see_all_confidential_issues = true if current_user.can_read_all_resources?
-
-      @user_can_see_all_confidential_issues =
-        if project? && project
-          project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
-        elsif group
-          group.max_member_access_for_user(current_user) >= CONFIDENTIAL_ACCESS_LEVEL
+      strong_memoize(:user_can_see_all_confidential_issues) do
+        parent = project? ? project : group
+        if parent
+          Ability.allowed?(current_user, :read_confidential_issues, parent)
         else
-          false
+          Ability.allowed?(current_user, :read_all_resources)
         end
+      end
     end
 
     def user_cannot_see_confidential_issues?

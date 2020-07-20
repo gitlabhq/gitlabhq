@@ -15,14 +15,14 @@ export function createHeader(childElementCount, mergeRequestCount) {
   const headerText = getHeaderText(childElementCount, mergeRequestCount);
 
   return $('<span />', {
-    class: 'append-right-5',
+    class: 'gl-mr-2',
     text: headerText,
   });
 }
 
 export function createLink(mergeRequest) {
   return $('<a />', {
-    class: 'append-right-5',
+    class: 'gl-mr-2',
     href: mergeRequest.path,
     text: `!${mergeRequest.iid}`,
   });

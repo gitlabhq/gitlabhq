@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::Conduit::Maniphest do
+RSpec.describe Gitlab::PhabricatorImport::Conduit::Maniphest do
   let(:maniphest) do
     described_class.new(phabricator_url: 'https://see-ya-later.phabricator', api_token: 'api-token')
   end

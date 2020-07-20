@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectPathValidator do
+RSpec.describe ProjectPathValidator do
   let(:validator) { described_class.new(attributes: [:path]) }
 
   describe '.valid_path?' do

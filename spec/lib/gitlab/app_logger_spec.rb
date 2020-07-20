@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::AppLogger do
+RSpec.describe Gitlab::AppLogger do
   subject { described_class }
 
   it 'builds a Gitlab::Logger object twice' do

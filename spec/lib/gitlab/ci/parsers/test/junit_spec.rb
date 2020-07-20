@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Parsers::Test::Junit do
+RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
   describe '#parse!' do
     subject { described_class.new.parse!(junit, test_suite, args) }
 

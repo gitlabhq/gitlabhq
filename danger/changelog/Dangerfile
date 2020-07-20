@@ -35,7 +35,11 @@ def check_changelog_yaml(path)
   fail "`title` should be set, in #{gitlab.html_link(path)}! #{SEE_DOC}" if yaml["title"].nil?
   fail "`type` should be set, in #{gitlab.html_link(path)}! #{SEE_DOC}" if yaml["type"].nil?
 
-  if yaml["merge_request"].nil? && !helper.security_mr?
+  return if helper.security_mr?
+
+  cherry_pick_against_stable_branch = helper.cherry_pick_mr? && helper.stable_branch?
+
+  if yaml["merge_request"].nil?
     mr_line = raw_file.lines.find_index("merge_request:\n")
 
     if mr_line
@@ -43,14 +47,14 @@ def check_changelog_yaml(path)
     else
       message "Consider setting `merge_request` to #{gitlab.mr_json["iid"]} in #{gitlab.html_link(path)}. #{SEE_DOC}"
     end
-  elsif yaml["merge_request"] != gitlab.mr_json["iid"] && !helper.security_mr?
+  elsif yaml["merge_request"] != gitlab.mr_json["iid"] && !cherry_pick_against_stable_branch
     fail "Merge request ID was not set to #{gitlab.mr_json["iid"]}! #{SEE_DOC}"
   end
 rescue Psych::SyntaxError, Psych::DisallowedClass, Psych::BadAlias
   # YAML could not be parsed, fail the build.
   fail "#{gitlab.html_link(path)} isn't valid YAML! #{SEE_DOC}"
 rescue StandardError => e
-  warn "There was a problem trying to check the Changelog. Exception: #{e.name} - #{e.message}"
+  warn "There was a problem trying to check the Changelog. Exception: #{e.class.name} - #{e.message}"
 end
 
 def check_changelog_path(path)

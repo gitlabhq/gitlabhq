@@ -22,4 +22,8 @@ module AutoDevopsHelper
       s_('CICD|instance enabled')
     end
   end
+
+  def auto_devops_settings_path(project)
+    project_settings_ci_cd_path(project, anchor: 'autodevops-settings')
+  end
 end

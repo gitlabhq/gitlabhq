@@ -268,7 +268,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     end
   end
 
-  context 'view merge request where project has CI set up but no CI status' do
+  context 'view merge request where there is no pipeline yet' do
     before do
       pipeline = create(:ci_pipeline, project: project,
                                       sha: merge_request.diff_head_sha,
@@ -278,11 +278,11 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'has pipeline error text' do
+    it 'has pipeline loading state' do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      expect(page).to have_text("Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.")
+      expect(page).to have_text("Checking pipeline status")
     end
   end
 
@@ -889,9 +889,9 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'renders a CI pipeline error' do
+    it 'renders a CI pipeline loading state' do
       within '.ci-widget' do
-        expect(page).to have_content('Could not retrieve the pipeline status.')
+        expect(page).to have_content('Checking pipeline status')
       end
     end
   end

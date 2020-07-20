@@ -25,7 +25,7 @@ module Files
       return false unless commit_id
 
       last_commit = Gitlab::Git::Commit
-        .last_for_path(@start_project.repository, @start_branch, path)
+        .last_for_path(@start_project.repository, @start_branch, path, literal_pathspec: true)
 
       return false unless last_commit
 

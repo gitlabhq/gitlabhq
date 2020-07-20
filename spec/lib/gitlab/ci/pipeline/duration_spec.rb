@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Duration do
+RSpec.describe Gitlab::Ci::Pipeline::Duration do
   let(:calculated_duration) { calculate(data) }
 
   shared_examples 'calculating duration' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Gitlab::Ci::Config::Entry::Needs do
+RSpec.describe ::Gitlab::Ci::Config::Entry::Needs do
   subject(:needs) { described_class.new(config) }
 
   before do

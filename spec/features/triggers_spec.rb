@@ -85,7 +85,7 @@ RSpec.describe 'Triggers', :js do
       end
 
       expect(page.find('.flash-notice')).to have_content 'Trigger removed'
-      expect(page).to have_selector('p.settings-message.text-center.append-bottom-default')
+      expect(page).to have_selector('p.settings-message.text-center.gl-mb-3')
     end
   end
 

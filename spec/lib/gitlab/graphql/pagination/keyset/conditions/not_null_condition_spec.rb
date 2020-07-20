@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Pagination::Keyset::Conditions::NotNullCondition do
+RSpec.describe Gitlab::Graphql::Pagination::Keyset::Conditions::NotNullCondition do
   describe '#build' do
     let(:operators) { ['>', '>'] }
     let(:before_or_after) { :after }

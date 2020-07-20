@@ -15,11 +15,11 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
   before_action :authorize_admin_snippet!, only: [:destroy]
 
   def index
-    @snippet_counts = Snippets::CountService
+    @snippet_counts = ::Snippets::CountService
       .new(current_user, project: @project)
       .execute
 
-    @snippets = SnippetsFinder.new(current_user, project: @project, scope: params[:scope])
+    @snippets = SnippetsFinder.new(current_user, project: @project, scope: params[:scope], sort: sort_param)
       .execute
       .page(params[:page])
       .inc_author
@@ -35,7 +35,7 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
 
   def create
     create_params = snippet_params.merge(spammable_params)
-    service_response = Snippets::CreateService.new(project, current_user, create_params).execute
+    service_response = ::Snippets::CreateService.new(project, current_user, create_params).execute
     @snippet = service_response.payload[:snippet]
 
     handle_repository_error(:new)

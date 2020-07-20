@@ -1,0 +1,5 @@
+---
+title: Guard against data integrity issues when canceling review app jobs
+merge_request: 35555
+author:
+type: fixed

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BuildAccess do
+RSpec.describe Gitlab::BuildAccess do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe DesignManagement::DesignAction do
+RSpec.describe DesignManagement::DesignAction do
   describe 'validations' do
     describe 'the design' do
       let(:fail_validation) { raise_error(/design/i) }

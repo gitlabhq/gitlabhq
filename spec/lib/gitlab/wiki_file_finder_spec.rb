@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::WikiFileFinder do
+RSpec.describe Gitlab::WikiFileFinder do
   describe '#find' do
     let(:project) { create(:project, :public, :wiki_repo) }
     let(:wiki) { build(:project_wiki, project: project) }

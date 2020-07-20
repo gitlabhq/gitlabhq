@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WebIdeTerminal do
+RSpec.describe WebIdeTerminal do
   let(:build) { create(:ci_build) }
 
   subject { described_class.new(build) }

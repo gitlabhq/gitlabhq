@@ -78,7 +78,6 @@ module UsageDataHelpers
       labels
       lfs_objects
       merge_requests
-      merge_requests_users
       milestone_lists
       milestones
       notes
@@ -89,8 +88,6 @@ module UsageDataHelpers
       projects_jira_active
       projects_jira_server_active
       projects_jira_cloud_active
-      projects_slack_notifications_active
-      projects_slack_slash_active
       projects_slack_active
       projects_slack_slash_commands_active
       projects_custom_issue_tracker_active
@@ -231,6 +228,15 @@ module UsageDataHelpers
   def allow_prometheus_queries
     allow_next_instance_of(Gitlab::PrometheusClient) do |client|
       allow(client).to receive(:aggregate).and_return({})
+      allow(client).to receive(:query).and_return({})
+    end
+  end
+
+  def for_defined_days_back(days: [29, 2])
+    days.each do |n|
+      Timecop.travel(n.days.ago) do
+        yield
+      end
     end
   end
 end

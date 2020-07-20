@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Users, :do_not_mock_admin_mode do
+RSpec.describe API::Users, :do_not_mock_admin_mode do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user, reload: true) { create(:user, username: 'user.with.dot') }
   let_it_be(:key) { create(:key, user: user) }
@@ -904,6 +904,14 @@ describe API::Users, :do_not_mock_admin_mode do
       user.update!(bio: 'previous bio')
 
       put api("/users/#{user.id}", admin), params: { bio: '' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['bio']).to eq('')
+      expect(user.reload.bio).to eq('')
+    end
+
+    it 'updates user with nil bio' do
+      put api("/users/#{user.id}", admin), params: { bio: nil }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['bio']).to eq('')

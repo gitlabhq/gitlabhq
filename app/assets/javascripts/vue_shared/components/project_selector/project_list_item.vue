@@ -8,30 +8,25 @@ import { truncateNamespace } from '~/lib/utils/text_utility';
 
 export default {
   name: 'ProjectListItem',
-  components: {
-    Icon,
-    ProjectAvatar,
-    GlDeprecatedButton,
-  },
+  components: { Icon, ProjectAvatar, GlDeprecatedButton },
   props: {
     project: {
       type: Object,
       required: true,
-      validator: p => Number.isFinite(p.id) && isString(p.name) && isString(p.name_with_namespace),
+      validator: p =>
+        (Number.isFinite(p.id) || isString(p.id)) &&
+        isString(p.name) &&
+        (isString(p.name_with_namespace) || isString(p.nameWithNamespace)),
     },
-    selected: {
-      type: Boolean,
-      required: true,
-    },
-    matcher: {
-      type: String,
-      required: false,
-      default: '',
-    },
+    selected: { type: Boolean, required: true },
+    matcher: { type: String, required: false, default: '' },
   },
   computed: {
+    projectNameWithNamespace() {
+      return this.project.nameWithNamespace || this.project.name_with_namespace;
+    },
     truncatedNamespace() {
-      return truncateNamespace(this.project.name_with_namespace);
+      return truncateNamespace(this.projectNameWithNamespace);
     },
     highlightedProjectName() {
       return highlight(this.project.name, this.matcher);
@@ -50,7 +45,7 @@ export default {
     @click="onClick"
   >
     <icon
-      class="prepend-left-10 append-right-10 flex-shrink-0 position-top-0 js-selected-icon"
+      class="gl-ml-3 gl-mr-3 flex-shrink-0 position-top-0 js-selected-icon"
       :class="{ 'js-selected visible': selected, 'js-unselected invisible': !selected }"
       name="mobile-issue-close"
     />
@@ -58,7 +53,7 @@ export default {
     <div class="d-flex flex-wrap project-namespace-name-container">
       <div
         v-if="truncatedNamespace"
-        :title="project.name_with_namespace"
+        :title="projectNameWithNamespace"
         class="text-secondary text-truncate js-project-namespace"
       >
         {{ truncatedNamespace }}

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GonHelper do
+RSpec.describe Gitlab::GonHelper do
   let(:helper) do
     Class.new do
       include Gitlab::GonHelper

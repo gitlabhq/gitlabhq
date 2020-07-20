@@ -3,6 +3,7 @@ import '~/behaviors/markdown/render_gfm';
 import Flash from '../../flash';
 import { handleLocationHash } from '../../lib/utils/common_utils';
 import axios from '../../lib/utils/axios_utils';
+import eventHub from '../../notes/event_hub';
 import { __ } from '~/locale';
 
 const loadRichBlobViewer = type => {
@@ -177,6 +178,10 @@ export default class BlobViewer {
     return axios.get(url).then(({ data }) => {
       viewer.innerHTML = data.html;
       viewer.setAttribute('data-loaded', 'true');
+
+      if (window.gon?.features?.codeNavigation) {
+        eventHub.$emit('showBlobInteractionZones', viewer.dataset.path);
+      }
 
       return viewer;
     });

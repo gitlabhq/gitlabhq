@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Serverless::DomainEntity do
+RSpec.describe Serverless::DomainEntity do
   describe '#as_json' do
     let(:domain) { create(:pages_domain, :instance_serverless) }
 

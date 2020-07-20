@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ServiceFieldEntity do
+RSpec.describe ServiceFieldEntity do
   let(:request) { double('request') }
 
   subject { described_class.new(field, request: request, service: service).as_json }
@@ -55,12 +55,12 @@ describe ServiceFieldEntity do
     end
 
     context 'EmailsOnPush Service' do
-      let(:service) { create(:emails_on_push_service) }
+      let(:service) { create(:emails_on_push_service, send_from_committer_email: '1') }
 
       context 'field with type checkbox' do
         let(:field) { service.global_fields.find { |field| field[:name] == 'send_from_committer_email' } }
 
-        it 'exposes correct attributes' do
+        it 'exposes correct attributes and casts value to Boolean' do
           expected_hash = {
             type: 'checkbox',
             name: 'send_from_committer_email',
@@ -68,7 +68,7 @@ describe ServiceFieldEntity do
             placeholder: nil,
             required: nil,
             choices: nil,
-            value: true
+            value: 'true'
           }
 
           is_expected.to include(expected_hash)

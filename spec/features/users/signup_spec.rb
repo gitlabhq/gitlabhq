@@ -70,6 +70,13 @@ RSpec.shared_examples 'Signup' do
       expect(page).to have_content("Username is too long (maximum is 255 characters).")
     end
 
+    it 'shows an error message if the username is less than 2 characters' do
+      fill_in 'new_user_username', with: 'u'
+      wait_for_requests
+
+      expect(page).to have_content("Username is too short (minimum is 2 characters).")
+    end
+
     it 'shows an error message on submit if the username contains special characters' do
       fill_in 'new_user_username', with: 'new$user!username'
       wait_for_requests
@@ -91,7 +98,7 @@ RSpec.shared_examples 'Signup' do
       expect(page).to have_content("Invalid input, please avoid emojis")
     end
 
-    it 'shows a pending message if the username availability is being fetched', :quarantine do
+    it 'shows a pending message if the username availability is being fetched', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/31484' do
       fill_in 'new_user_username', with: 'new-user'
 
       expect(find('.username > .validation-pending')).not_to have_css '.hide'

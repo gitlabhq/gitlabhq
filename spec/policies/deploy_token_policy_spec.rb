@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeployTokenPolicy do
+RSpec.describe DeployTokenPolicy do
   let(:current_user) { create(:user) }
   let(:project) { create(:project) }
   let(:deploy_token) { create(:deploy_token, projects: [project]) }

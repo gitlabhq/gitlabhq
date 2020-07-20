@@ -18,7 +18,7 @@ class Implementation < GitlabUploader
   end
 end
 
-describe ObjectStorage do
+RSpec.describe ObjectStorage do
   let(:uploader_class) { Implementation }
   let(:object) { build_stubbed(:user) }
   let(:uploader) { uploader_class.new(object, :file) }

@@ -52,14 +52,12 @@ export default {
       });
     },
     linePosition() {
-      if (this.draft.position && this.draft.position.position_type === IMAGE_DIFF_POSITION_TYPE) {
+      if (this.position?.position_type === IMAGE_DIFF_POSITION_TYPE) {
         // eslint-disable-next-line @gitlab/require-i18n-strings
-        return `${this.draft.position.x}x ${this.draft.position.y}y`;
+        return `${this.position.x}x ${this.position.y}y`;
       }
 
-      const position = this.discussion ? this.discussion.position : this.draft.position;
-
-      return position?.new_line || position?.old_line;
+      return this.position?.new_line || this.position?.old_line;
     },
     content() {
       const el = document.createElement('div');
@@ -70,11 +68,14 @@ export default {
     showLinePosition() {
       return this.draft.file_hash || this.isDiffDiscussion;
     },
+    position() {
+      return this.draft.position || this.discussion.position;
+    },
     startLineNumber() {
-      return getStartLineNumber(this.draft.position?.line_range);
+      return getStartLineNumber(this.position?.line_range);
     },
     endLineNumber() {
-      return getEndLineNumber(this.draft.position?.line_range);
+      return getEndLineNumber(this.position?.line_range);
     },
   },
   methods: {

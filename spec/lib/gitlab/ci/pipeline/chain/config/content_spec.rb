@@ -2,10 +2,12 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::Config::Content do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content do
   let(:project) { create(:project, ci_config_path: ci_config_path) }
   let(:pipeline) { build(:ci_pipeline, project: project) }
-  let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new(project: project) }
+  let(:content) { nil }
+  let(:source) { :push }
+  let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new(project: project, content: content, source: source) }
 
   subject { described_class.new(pipeline, command) }
 
@@ -138,6 +140,26 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
         expect(pipeline.config_source).to eq 'auto_devops_source'
         expect(pipeline.pipeline_config.content).to eq(config_content_result)
         expect(command.config_content).to eq(config_content_result)
+      end
+    end
+
+    context 'when config is passed as a parameter' do
+      let(:source) { :ondemand_dast_scan }
+      let(:ci_config_path) { nil }
+      let(:content) do
+        <<~EOY
+          ---
+          stages:
+          - dast
+        EOY
+      end
+
+      it 'uses the parameter content' do
+        subject.perform!
+
+        expect(pipeline.config_source).to eq 'parameter_source'
+        expect(pipeline.pipeline_config.content).to eq(content)
+        expect(command.config_content).to eq(content)
       end
     end
 

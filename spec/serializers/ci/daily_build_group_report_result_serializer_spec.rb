@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DailyBuildGroupReportResultSerializer do
+RSpec.describe Ci::DailyBuildGroupReportResultSerializer do
   let(:report_result) do
     [
       double(date: '2020-05-20', group_name: 'rspec', data: { 'coverage' => 79.1 }),

@@ -392,29 +392,19 @@ want to store your package:
 image: python:latest
 
 stages:
-
   - deploy
 
 production:
-
   stage: deploy
-
   before_script:
-
     - pip3 install awscli --upgrade
-
     - pip3 install aws-sam-cli --upgrade
-
   script:
-
     - sam build
-
     - sam package --output-template-file packaged.yaml --s3-bucket <S3_bucket_name>
-
     - sam deploy --template-file packaged.yaml --stack-name gitlabpoc  --s3-bucket <S3_bucket_name> --capabilities CAPABILITY_IAM --region us-east-1
-
   environment: production
-  ```
+```
 
 Let’s examine the configuration file more closely:
 

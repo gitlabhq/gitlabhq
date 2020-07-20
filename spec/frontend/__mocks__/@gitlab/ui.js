@@ -7,22 +7,23 @@ export * from '@gitlab/ui';
  *
  * This mock decouples those tests from the implementation, removing the need to set
  * them up specially just for these tooltips.
+ *
+ * Mocking the modules using the full file path allows the mocks to take effect
+ * when the modules are imported in this project (`gitlab`) **and** when they
+ * are imported internally in `@gitlab/ui`.
  */
-export const GlTooltipDirective = {
-  bind() {},
-};
 
-export const GlTooltip = {
+jest.mock('@gitlab/ui/dist/directives/tooltip.js', () => ({
+  bind() {},
+}));
+
+jest.mock('@gitlab/ui/dist/components/base/tooltip/tooltip.js', () => ({
   render(h) {
     return h('div', this.$attrs, this.$slots.default);
   },
-};
+}));
 
-export const GlPopoverDirective = {
-  bind() {},
-};
-
-export const GlPopover = {
+jest.mock('@gitlab/ui/dist/components/base/popover/popover.js', () => ({
   props: {
     cssClasses: {
       type: Array,
@@ -33,4 +34,4 @@ export const GlPopover = {
   render(h) {
     return h('div', this.$attrs, Object.keys(this.$slots).map(s => this.$slots[s]));
   },
-};
+}));

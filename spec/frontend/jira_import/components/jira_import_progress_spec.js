@@ -1,13 +1,12 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import JiraImportProgress from '~/jira_import/components/jira_import_progress.vue';
-
-const illustration = 'illustration.svg';
-const importProject = 'JIRAPROJECT';
-const issuesPath = 'gitlab-org/gitlab-test/-/issues';
+import { illustration, issuesPath } from '../mock_data';
 
 describe('JiraImportProgress', () => {
   let wrapper;
+
+  const importProject = 'JIRAPROJECT';
 
   const getGlEmptyStateProp = attribute => wrapper.find(GlEmptyState).props(attribute);
 

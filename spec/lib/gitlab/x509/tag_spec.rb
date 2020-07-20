@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::X509::Tag do
+RSpec.describe Gitlab::X509::Tag do
   subject(:signature) { described_class.new(tag).signature }
 
   describe '#signature' do

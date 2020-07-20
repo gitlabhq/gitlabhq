@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ExclusiveLeaseHelpers::SleepingLock, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::ExclusiveLeaseHelpers::SleepingLock, :clean_gitlab_redis_shared_state do
   include ::ExclusiveLeaseHelpers
 
   let(:timeout) { 1.second }

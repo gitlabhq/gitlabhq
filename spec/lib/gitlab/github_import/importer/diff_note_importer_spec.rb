@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Importer::DiffNoteImporter do
+RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter do
   let(:project) { create(:project) }
   let(:client) { double(:client) }
   let(:user) { create(:user) }

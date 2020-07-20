@@ -79,7 +79,7 @@ module CommitsHelper
   # Returns a link formatted as a commit tag link
   def commit_tag_link(url, text)
     link_to(url, class: 'badge badge-gray ref-name') do
-      sprite_icon('tag', size: 12, css_class: 'append-right-5 vertical-align-middle') + "#{text}"
+      sprite_icon('tag', size: 12, css_class: 'gl-mr-2 vertical-align-middle') + "#{text}"
     end
   end
 
@@ -181,15 +181,11 @@ module CommitsHelper
   end
 
   def view_file_button(commit_sha, diff_new_path, project, replaced: false)
+    path = project_blob_path(project, tree_join(commit_sha, diff_new_path))
     title = replaced ? _('View replaced file @ ') : _('View file @ ')
 
-    link_to(
-      project_blob_path(project,
-                                  tree_join(commit_sha, diff_new_path)),
-      class: 'btn view-file js-view-file'
-    ) do
-      raw(title) + content_tag(:span, Commit.truncate_sha(commit_sha),
-                                       class: 'commit-sha')
+    link_to(path, class: 'btn') do
+      raw(title) + content_tag(:span, truncate_sha(commit_sha), class: 'commit-sha')
     end
   end
 

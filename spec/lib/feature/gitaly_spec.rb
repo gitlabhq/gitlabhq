@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Feature::Gitaly do
+RSpec.describe Feature::Gitaly do
   let(:feature_flag) { "mep_mep" }
 
   describe ".enabled?" do

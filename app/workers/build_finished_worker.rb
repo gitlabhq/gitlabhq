@@ -7,6 +7,7 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
   queue_namespace :pipeline_processing
   urgency :high
   worker_resource_boundary :cpu
+  tags :requires_disk_io
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)

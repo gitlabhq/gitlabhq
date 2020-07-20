@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Boards::ListsController do
+RSpec.describe Boards::ListsController do
   describe '#index' do
     let(:board) { create(:board) }
     let(:user) { board.project.owner }

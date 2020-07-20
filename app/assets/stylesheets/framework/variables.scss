@@ -113,29 +113,29 @@ $gl-gray-600: #666 !default;
 $gl-gray-700: #555 !default;
 $gl-gray-800: #333 !default;
 
-$green-50: #f1fdf6 !default;
-$green-100: #dcf5e7 !default;
-$green-200: #263a2e !default;
-$green-300: #75d09b !default;
-$green-400: #37b96d !default;
-$green-500: #1aaa55 !default;
-$green-600: #168f48 !default;
-$green-700: #12753a !default;
-$green-800: #0e5a2d !default;
+$green-50: #ecf4ee !default;
+$green-100: #c3e6cd !default;
+$green-200: #91d4a8 !default;
+$green-300: #52b87a !default;
+$green-400: #2da160 !default;
+$green-500: #108548 !default;
+$green-600: #217645 !default;
+$green-700: #24663b !default;
+$green-800: #0d532a !default;
 $green-900: #0a4020 !default;
 $green-950: #072b15 !default;
 
-$blue-50: #f6fafe !default;
-$blue-100: #e4f0fb !default;
-$blue-200: #b8d6f4 !default;
-$blue-300: #73afea !default;
-$blue-400: #418cd8 !default;
-$blue-500: #1f78d1 !default;
-$blue-600: #1b69b6 !default;
-$blue-700: #17599c !default;
-$blue-800: #134a81 !default;
-$blue-900: #0f3b66 !default;
-$blue-950: #0a2744 !default;
+$blue-50: #e9f3fc !default;
+$blue-100: #cbe2f9 !default;
+$blue-200: #9dc7f1 !default;
+$blue-300: #63a6e9 !default;
+$blue-400: #428fdc !default;
+$blue-500: #1f75cb !default;
+$blue-600: #1068bf !default;
+$blue-700: #0b5cad !default;
+$blue-800: #064787 !default;
+$blue-900: #033464 !default;
+$blue-950: #002850 !default;
 
 $orange-50: #fffaf4 !default;
 $orange-100: #fff1de !default;
@@ -164,14 +164,14 @@ $red-950: #4d0a00 !default;
 $gray-10: #fafafa !default;
 $gray-50: #f0f0f0 !default;
 $gray-100: #dbdbdb !default;
-$gray-200: #dfdfdf !default;
+$gray-200: #bfbfbf !default;
 $gray-300: #ccc !default;
 $gray-400: #bababa !default;
 $gray-500: #a7a7a7 !default;
 $gray-600: #919191 !default;
 $gray-700: #707070 !default;
 $gray-800: #4f4f4f !default;
-$gray-900: #2e2e2e !default;
+$gray-900: #303030 !default;
 $gray-950: #1f1f1f !default;
 
 $greens: (
@@ -333,7 +333,7 @@ $border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 /*
  * UI elements
  */
-$border-color: $gray-200;
+$border-color: $gray-100;
 $shadow-color: $t-gray-a-08;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
@@ -479,9 +479,9 @@ $gl-btn-active-gradient: inset 0 2px 3px $gl-btn-active-background;
 $added: #63c363;
 $deleted: #f77;
 $line-added: #ecfdf0;
-$line-added-dark: #c7f0d2;
+$line-added-dark: #c7f0d2 !default;
 $line-removed: #fbe9eb;
-$line-removed-dark: #fac5cd;
+$line-removed-dark: #fac5cd !default;
 $line-number-old: #f9d7dc;
 $line-number-new: #ddfbe6;
 $line-number-select: #fbf2da;
@@ -711,7 +711,6 @@ $input-lg-width: 320px;
 */
 $document-index-color: #888;
 $help-shortcut-header-color: #333;
-$accepting-mr-label-color: #69d100;
 
 /*
 * Issues
@@ -868,7 +867,7 @@ $priority-label-empty-state-width: 114px;
 Popovers
 */
 $popover-max-width: 384px;
-$popover-box-shadow: 0 2px 3px 1px $gray-200;
+$popover-box-shadow: 0 2px 3px 1px $gray-100;
 
 /*
 Issues Analytics

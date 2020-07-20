@@ -3,7 +3,7 @@
 require 'mime/types'
 
 module API
-  class Commits < Grape::API
+  class Commits < Grape::API::Instance
     include PaginationParams
 
     before do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Users < Grape::API
+  class Users < Grape::API::Instance
     include PaginationParams
     include APIGuard
     include Helpers::CustomAttributes
@@ -116,6 +116,8 @@ module API
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
         users, options = with_custom_attributes(users, { with: entity, current_user: current_user })
+
+        users = users.preload(:user_detail)
 
         present paginate(users), options
       end
@@ -328,9 +330,9 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        key = user.gpg_keys.new(declared_params(include_missing: false))
+        key = ::GpgKeys::CreateService.new(user, declared_params(include_missing: false)).execute
 
-        if key.save
+        if key.persisted?
           present key, with: Entities::GpgKey
         else
           render_validation_error!(key)
@@ -374,9 +376,10 @@ module API
         key = user.gpg_keys.find_by(id: params[:key_id])
         not_found!('GPG Key') unless key
 
-        key.destroy
-
-        no_content!
+        destroy_conditionally!(key) do |key|
+          destroy_service = ::GpgKeys::DestroyService.new(current_user)
+          destroy_service.execute(key)
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -730,9 +733,9 @@ module API
         optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
       end
       post "keys" do
-        key = current_user.keys.new(declared_params)
+        key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
-        if key.save
+        if key.persisted?
           present key, with: Entities::SSHKey
         else
           render_validation_error!(key)
@@ -750,7 +753,10 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        destroy_conditionally!(key)
+        destroy_conditionally!(key) do |key|
+          destroy_service = ::Keys::DestroyService.new(current_user)
+          destroy_service.execute(key)
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -789,9 +795,9 @@ module API
         requires :key, type: String, desc: 'The new GPG key'
       end
       post 'gpg_keys' do
-        key = current_user.gpg_keys.new(declared_params)
+        key = ::GpgKeys::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
-        if key.save
+        if key.persisted?
           present key, with: Entities::GpgKey
         else
           render_validation_error!(key)
@@ -825,9 +831,10 @@ module API
         key = current_user.gpg_keys.find_by(id: params[:key_id])
         not_found!('GPG Key') unless key
 
-        key.destroy
-
-        no_content!
+        destroy_conditionally!(key) do |key|
+          destroy_service = ::GpgKeys::DestroyService.new(current_user)
+          destroy_service.execute(key)
+        end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

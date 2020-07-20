@@ -13,7 +13,7 @@
 
 variables:
   SECURE_BINARIES_ANALYZERS: >-
-    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, tslint, secrets, sobelow, pmd-apex, kubesec,
+    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec,
     bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python,
     klar, clair-vulnerabilities-db,
     license-finder,
@@ -40,7 +40,7 @@ variables:
     - docker info
     - env
     - if [ -z "$SECURE_BINARIES_IMAGE" ]; then export SECURE_BINARIES_IMAGE=${SECURE_BINARIES_IMAGE:-"registry.gitlab.com/gitlab-org/security-products/analyzers/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"}; fi
-    - docker pull ${SECURE_BINARIES_IMAGE}
+    - docker pull --quiet ${SECURE_BINARIES_IMAGE}
     - mkdir -p output/$(dirname ${CI_JOB_NAME})
     - |
       if [ "$SECURE_BINARIES_SAVE_ARTIFACTS" = "true" ]; then
@@ -124,13 +124,6 @@ eslint:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\beslint\b/
-
-tslint:
-  extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\btslint\b/
 
 secrets:
   extends: .download_images

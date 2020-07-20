@@ -8,7 +8,7 @@ module Gitlab
       }.freeze
 
       def self.from_generic_alert(project:, payload:)
-        parsed_payload = Gitlab::Alerting::NotificationPayloadParser.call(payload).with_indifferent_access
+        parsed_payload = Gitlab::Alerting::NotificationPayloadParser.call(payload, project).with_indifferent_access
         annotations = parsed_payload[:annotations]
 
         {
@@ -34,7 +34,9 @@ module Gitlab
           payload: parsed_alert.payload,
           started_at: parsed_alert.starts_at,
           ended_at: parsed_alert.ends_at,
-          fingerprint: parsed_alert.gitlab_fingerprint
+          fingerprint: parsed_alert.gitlab_fingerprint,
+          environment: parsed_alert.environment,
+          prometheus_alert: parsed_alert.gitlab_alert
         }
       end
     end

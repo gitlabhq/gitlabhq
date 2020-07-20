@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AtomicInternalId do
+RSpec.describe AtomicInternalId do
   let(:milestone) { build(:milestone) }
   let(:iid) { double('iid', to_i: 42) }
   let(:external_iid) { 100 }

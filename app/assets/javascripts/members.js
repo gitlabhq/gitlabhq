@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
 
 export default class Members {
   constructor() {
@@ -13,7 +14,7 @@ export default class Members {
     $('.js-edit-member-form')
       .off('ajax:success')
       .on('ajax:success', this.formSuccess.bind(this));
-    gl.utils.disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
+    disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
   }
 
   dropdownClicked(options) {

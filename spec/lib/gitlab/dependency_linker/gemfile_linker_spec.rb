@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::GemfileLinker do
+RSpec.describe Gitlab::DependencyLinker::GemfileLinker do
   describe '.support?' do
     it 'supports Gemfile' do
       expect(described_class.support?('Gemfile')).to be_truthy

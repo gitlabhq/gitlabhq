@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelineSchedulePolicy, :models do
+RSpec.describe Ci::PipelineSchedulePolicy, :models do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:pipeline_schedule, reload: true) { create(:ci_pipeline_schedule, :nightly, project: project) }

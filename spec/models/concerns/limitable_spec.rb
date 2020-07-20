@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Limitable do
+RSpec.describe Limitable do
   let(:minimal_test_class) do
     Class.new do
       include ActiveModel::Model

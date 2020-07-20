@@ -50,6 +50,7 @@ module ApplicationSettingImplementation
         default_artifacts_expire_in: '30 days',
         default_branch_protection: Settings.gitlab['default_branch_protection'],
         default_ci_config_path: nil,
+        default_branch_name: nil,
         default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_project_creation: Settings.gitlab['default_project_creation'],
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
@@ -88,6 +89,7 @@ module ApplicationSettingImplementation
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         max_import_size: 50,
         mirror_available: true,
+        notify_on_unknown_sign_in: true,
         outbound_local_requests_whitelist: [],
         password_authentication_enabled_for_git: true,
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
@@ -156,7 +158,13 @@ module ApplicationSettingImplementation
         snowplow_iglu_registry_url: nil,
         custom_http_clone_url_root: nil,
         productivity_analytics_start_date: Time.current,
-        snippet_size_limit: 50.megabytes
+        snippet_size_limit: 50.megabytes,
+        project_import_limit: 6,
+        project_export_limit: 6,
+        project_download_export_limit: 1,
+        group_import_limit: 6,
+        group_export_limit: 6,
+        group_download_export_limit: 1
       }
     end
 

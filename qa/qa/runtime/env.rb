@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'gitlab/qa'
+require 'uri'
 
 module QA
   module Runtime
@@ -23,9 +24,38 @@ module QA
         SUPPORTED_FEATURES
       end
 
-      def dot_com?
-        Runtime::Scenario.gitlab_address.include?(".com")
+      def address_matches?(*options)
+        return false unless Runtime::Scenario.attributes[:gitlab_address]
+
+        opts = {}
+        opts[:domain] = '.+'
+        opts[:tld] = '.com'
+
+        uri = URI(Runtime::Scenario.gitlab_address)
+
+        if options.any?
+          options.each do |option|
+            opts[:domain] = 'gitlab' if option == :production
+
+            if option.is_a?(Hash) && !option[:subdomain].nil?
+              opts.merge!(option)
+
+              opts[:subdomain] = case option[:subdomain]
+                                 when Array
+                                   "(#{option[:subdomain].join("|")})."
+                                 when Regexp
+                                   option[:subdomain]
+                                 else
+                                   "(#{option[:subdomain]})."
+                                 end
+            end
+          end
+        end
+
+        uri.host.match?(/^#{opts[:subdomain]}#{opts[:domain]}#{opts[:tld]}$/)
       end
+
+      alias_method :dot_com?, :address_matches?
 
       def additional_repository_storage
         ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
@@ -192,6 +222,14 @@ module QA
 
       def gitlab_qa_password_6
         ENV['GITLAB_QA_PASSWORD_6']
+      end
+
+      def gitlab_qa_2fa_owner_username_1
+        ENV['GITLAB_QA_2FA_OWNER_USERNAME_1'] || 'gitlab-qa-2fa-owner-user1'
+      end
+
+      def gitlab_qa_2fa_owner_password_1
+        ENV['GITLAB_QA_2FA_OWNER_PASSWORD_1']
       end
 
       def gitlab_qa_1p_email

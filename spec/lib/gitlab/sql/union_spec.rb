@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SQL::Union do
+RSpec.describe Gitlab::SQL::Union do
   let(:relation_1) { User.where(email: 'alice@example.com').select(:id) }
   let(:relation_2) { User.where(email: 'bob@example.com').select(:id) }
 

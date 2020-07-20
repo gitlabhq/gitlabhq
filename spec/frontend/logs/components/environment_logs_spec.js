@@ -12,6 +12,7 @@ import {
   mockTrace,
   mockEnvironmentsEndpoint,
   mockDocumentationPath,
+  mockManagedAppsEndpoint,
 } from '../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils');
@@ -34,6 +35,7 @@ describe('EnvironmentLogs', () => {
     environmentName: mockEnvName,
     environmentsPath: mockEnvironmentsEndpoint,
     clusterApplicationsDocumentationPath: mockDocumentationPath,
+    clustersPath: mockManagedAppsEndpoint,
   };
 
   const updateControlBtnsMock = jest.fn();

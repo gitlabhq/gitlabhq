@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DiscussionsDiff::FileCollection do
+RSpec.describe Gitlab::DiscussionsDiff::FileCollection do
   let(:merge_request) { create(:merge_request) }
   let!(:diff_note_a) { create(:diff_note_on_merge_request, project: merge_request.project, noteable: merge_request) }
   let!(:diff_note_b) { create(:diff_note_on_merge_request, project: merge_request.project, noteable: merge_request) }

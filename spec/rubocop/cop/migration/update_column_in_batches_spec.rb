@@ -7,7 +7,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/migration/update_column_in_batches'
 
-describe RuboCop::Cop::Migration::UpdateColumnInBatches do
+RSpec.describe RuboCop::Cop::Migration::UpdateColumnInBatches do
   let(:cop) { described_class.new }
   let(:tmp_rails_root) { Rails.root.join('tmp', 'rails_root') }
   let(:migration_code) do

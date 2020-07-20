@@ -1,3 +1,6 @@
+// This application is being moved, please do not touch this files
+// Please see https://gitlab.com/gitlab-org/gitlab/-/issues/14744#note_364468096 for details
+
 import $ from 'jquery';
 import Vue from 'vue';
 import createRouter from './router';

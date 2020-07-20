@@ -1,0 +1,6 @@
+---
+title: Automatically close related issue when resolving Alert Management Prometheus
+  Alert
+merge_request: 35208
+author:
+type: added

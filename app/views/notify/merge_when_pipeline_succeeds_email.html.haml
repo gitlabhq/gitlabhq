@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+%html{ lang: "en" }
+  %head
+    %meta{ content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type" }
+    %meta{ content: "width=device-width, initial-scale=1", name: "viewport" }
+    %meta{ content: "IE=edge", "http-equiv" => "X-UA-Compatible" }
+    %title= message.subject
+    :css
+      /* CLIENT-SPECIFIC STYLES */
+      body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+      table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+      img { -ms-interpolation-mode: bicubic; }
+
+      /* iOS BLUE LINKS */
+      a[x-apple-data-detectors] {
+          color: inherit !important;
+          text-decoration: none !important;
+          font-size: inherit !important;
+          font-family: inherit !important;
+          font-weight: inherit !important;
+          line-height: inherit !important;
+      }
+
+      /* ANDROID MARGIN HACK */
+      body { margin:0 !important; }
+      div[style*="margin: 16px 0"] { margin:0 !important; }
+
+      @media only screen and (max-width: 639px) {
+          body, #body {
+              min-width: 320px !important;
+          }
+          table.wrapper {
+              width: 100% !important;
+              min-width: 320px !important;
+          }
+          table.wrapper > tbody > tr > td {
+              border-left: 0 !important;
+              border-right: 0 !important;
+              border-radius: 0 !important;
+              padding-left: 10px !important;
+              padding-right: 10px !important;
+          }
+      }
+
+      ul.assignees-list {
+          list-style: none;
+          padding: 0px;
+          display: block;
+          margin-top: 0px;
+      }
+      ul.assignees-list li {
+          display: inline-block;
+          padding-right: 12px;
+          padding-top: 8px;
+      }
+
+  %body{ style: "background-color:#fafafa;margin:0;padding:0;text-align:center;min-width:640px;width:100%;height:100%;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;" }
+    %table#body{ border: "0", cellpadding: "0", cellspacing: "0", style: "background-color:#fafafa;margin:0;padding:0;text-align:center;min-width:640px;width:100%;" }
+      %tbody
+        %tr.line
+          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background-color:#6b4fbb;height:4px;font-size:4px;line-height:4px;" }
+        %tr.header
+          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;" }
+            %img{ alt: "GitLab", height: "50", src: image_url('mailers/ci_pipeline_notif_v1/gitlab-logo.gif'), width: "55" }
+        %tr
+          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;" }
+            %table.wrapper{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:640px;margin:0 auto;border-collapse:separate;border-spacing:0;" }
+              %tbody
+                %tr
+                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background-color:#ffffff;text-align:left;padding:18px 25px;border:1px solid #ededed;border-radius:3px;overflow:hidden;" }
+                    %table.content{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;border-collapse:separate;border-spacing:0;" }
+                      %tbody
+                        %tr.success
+                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:10px;border-radius:3px;font-size:14px;line-height:1.3;text-align:center;overflow:hidden;color:#ffffff;background-color:#31af64;" }
+                            %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;margin:0 auto;" }
+                              %tbody
+                                %tr
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;padding-right:5px;" }
+                                    %img{ alt: "✓", height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-check-green-inverted.gif'), style: "display:block;", width: "13" }
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;" }
+                                    %span= _('Merge request was scheduled to merge after pipeline succeeds')
+                      %tr.spacer
+                        %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
+                          &nbsp;
+                      %tr.section
+                        %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;line-height:1.4;text-align:center;padding:0 15px;border:1px solid #ededed;border-radius:3px;overflow:hidden;" }
+                          %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;width:100%;" }
+                            %tbody
+                              %tr{ style: 'width:100%;' }
+                                %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;text-align:center;" }
+                                  %img{ src: image_url('mailers/approval/icon-merge-request-gray.gif'), style: "height:18px;width:18px;margin-bottom:-4px;", alt: "Merge request icon" }
+                                  %span{ style: "font-weight: 600;color:#333333;" }= _('Merge request')
+                                  %a{ href: merge_request_url(@merge_request), style: "font-weight: 600;color:#3777b0;text-decoration:none" }= @merge_request.to_reference
+                                  %span= _('was scheduled to merge after pipeline succeeds by')
+                                  %img.avatar{ height: "24", src: avatar_icon_for_user(@mwps_set_by, 24, only_path: false), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }
+                                  %a.muted{ href: user_url(@mwps_set_by), style: "color:#333333;text-decoration:none;" }
+                                    = @mwps_set_by.name
+                        %tr.spacer
+                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
+                            &nbsp;
+                        %tr.section
+                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:0 15px;border:1px solid #ededed;border-radius:3px;overflow:hidden;" }
+                            %table.info{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;" }
+                              %tbody
+                                %tr
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;" }= _('Project')
+                                  -# haml-lint:disable NoPlainNodes
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;" }
+                                    - namespace_name = @project.group ? @project.group.name : @project.namespace.owner.name
+                                    - namespace_url = @project.group ? group_url(@project.group) : user_url(@project.namespace.owner)
+                                    %a.muted{ href: namespace_url, style: "color:#333333;text-decoration:none;" }
+                                      = namespace_name
+                                    \/
+                                    %a.muted{ href: project_url(@project), style: "color:#333333;text-decoration:none;" }
+                                      = @project.name
+                                %tr
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" }= _('Branch')
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
+                                    %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;" }
+                                      %tbody
+                                        %tr
+                                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
+                                            %img{ height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-branch-gray.gif'), style: "display:block;", width: "13", alt: "Branch icon" }
+                                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
+                                            %span.muted{ style: "color:#333333;text-decoration:none;" }
+                                              = @merge_request.source_branch
+                                %tr
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" }= _('Author')
+                                  %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;color:#333333;font-weight:400;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
+                                    %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;" }
+                                      %tbody
+                                        %tr
+                                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
+                                            %img.avatar{ height: "24", src: avatar_icon_for_user(@merge_request.author, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }
+                                          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
+                                            %a.muted{ href: user_url(@merge_request.author), style: "color:#333333;text-decoration:none;" }
+                                              = @merge_request.author.name
+
+                                - if @merge_request.assignees.any?
+                                  %tr
+                                    %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" }
+                                      = assignees_label(@merge_request, include_value: false)
+                                    %td{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; margin: 0; padding: 14px 0 0px 5px; font-size: 15px; line-height: 1.4; color: #333333; font-weight: 400; width: 75%; border-top-style: solid; border-top-color: #ededed; border-top-width: 1px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" }
+                                      %ul.assignees-list{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 15px; line-height: 1.4; padding-right: 5px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" }
+                                        - @merge_request.assignees.each do |assignee|
+                                          %li
+                                            %img.avatar{ alt: "Avatar", height: "24", src: avatar_icon_for_user(assignee, 24, only_path: false), style: "border-radius: 12px; max-width: 100%; height: auto; -ms-interpolation-mode: bicubic; margin: -2px 0;", width: "24" }
+                                            %a.muted{ href: user_url(assignee), style: "color: #333333; text-decoration: none; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; vertical-align: top;" }
+                                              = assignee.name
+
+        = render_if_exists 'layouts/mailer/additional_text'
+
+        %tr.footer
+          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:25px 0;font-size:13px;line-height:1.6;color:#5c5c5c;" }
+            %img{ alt: "GitLab", height: "33", src: image_url('mailers/ci_pipeline_notif_v1/gitlab-logo-full-horizontal.gif'), style: "display:block;margin:0 auto 1em;", width: "90" }
+            %div
+              - manage_notifications_link = link_to(_("Manage all notifications"), profile_notifications_url, style: "color:#3777b0;text-decoration:none;")
+              - help_link = link_to(_("Help"), help_url, style: "color:#3777b0;text-decoration:none;")
+              = _("You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}").html_safe % { host: Gitlab.config.gitlab.host, manage_notifications_link: manage_notifications_link, help_link: help_link }

@@ -11,7 +11,6 @@ const createFile = (name = 'name', id = name, type = '', parent = null) =>
     name,
     path: parent ? `${parent.path}/${name}` : name,
     parentPath: parent ? parent.path : '',
-    lastCommit: {},
   });
 
 describe('getCommitIconMap', () => {

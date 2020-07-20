@@ -1,7 +1,7 @@
 - page_title _("Groups")
 
 .top-area
-  .prepend-top-default.append-bottom-default
+  .gl-mt-3.gl-mb-3
     = form_tag admin_groups_path, method: :get, class: 'js-search-form' do |f|
       = hidden_field_tag :sort, @sort
       .search-holder

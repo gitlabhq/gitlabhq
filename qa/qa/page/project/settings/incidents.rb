@@ -5,10 +5,11 @@ module QA
     module Project
       module Settings
         class Incidents < Page::Base
-          view 'app/views/projects/settings/operations/_incidents.html.haml' do
+          view 'app/assets/javascripts/incidents_settings/components/alerts_form.vue' do
             element :create_issue_checkbox
             element :incident_templates_dropdown
             element :save_changes_button
+            element :incident_templates_item
           end
 
           def enable_issues_for_incidents
@@ -16,8 +17,9 @@ module QA
           end
 
           def select_issue_template(template)
+            click_element(:incident_templates_dropdown)
             within_element :incident_templates_dropdown do
-              find(:option, template).select_option
+              find_element(:incident_templates_item, text: template).click
             end
           end
 

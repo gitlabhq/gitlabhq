@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::External::File::Artifact do
+RSpec.describe Gitlab::Ci::Config::External::File::Artifact do
   let(:parent_pipeline) { create(:ci_pipeline) }
   let(:context) do
     Gitlab::Ci::Config::External::Context.new(parent_pipeline: parent_pipeline)

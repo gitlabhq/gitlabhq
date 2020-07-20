@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration do
+RSpec.describe Gitlab::BackgroundMigration do
   describe '.queue' do
     it 'returns background migration worker queue' do
       expect(described_class.queue)
@@ -46,6 +46,25 @@ describe Gitlab::BackgroundMigration do
           expect(queue[0]).not_to receive(:delete)
 
           described_class.steal('Bar')
+        end
+
+        context 'when a custom predicate is given' do
+          it 'steals jobs that match the predicate' do
+            expect(queue[0]).to receive(:delete).and_return(true)
+
+            expect(described_class).to receive(:perform)
+              .with('Foo', [10, 20])
+
+            described_class.steal('Foo') { |(arg1, arg2)| arg1 == 10 && arg2 == 20 }
+          end
+
+          it 'does not steal jobs that do not match the predicate' do
+            expect(described_class).not_to receive(:perform)
+
+            expect(queue[0]).not_to receive(:delete)
+
+            described_class.steal('Foo') { |(arg1, _)| arg1 == 5 }
+          end
         end
       end
 

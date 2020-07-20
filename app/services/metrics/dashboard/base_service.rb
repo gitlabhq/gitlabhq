@@ -10,7 +10,8 @@ module Metrics
       STAGES = ::Gitlab::Metrics::Dashboard::Stages
       SEQUENCE = [
         STAGES::CommonMetricsInserter,
-        STAGES::EndpointInserter,
+        STAGES::MetricEndpointInserter,
+        STAGES::VariableEndpointInserter,
         STAGES::PanelIdsInserter,
         STAGES::Sorter,
         STAGES::AlertsInserter,
@@ -34,6 +35,14 @@ module Metrics
       # Returns an un-processed dashboard from the cache.
       def raw_dashboard
         Gitlab::Metrics::Dashboard::Cache.fetch(cache_key) { get_raw_dashboard }
+      end
+
+      # Should return true if this dashboard service is for an out-of-the-box
+      # dashboard.
+      # This method is overridden in app/services/metrics/dashboard/predefined_dashboard_service.rb.
+      # @return Boolean
+      def self.out_of_the_box_dashboard?
+        false
       end
 
       private
@@ -81,6 +90,17 @@ module Metrics
       # @return [String] Relative filepath of the dashboard yml
       def dashboard_path
         params[:dashboard_path]
+      end
+
+      def load_yaml(data)
+        ::Gitlab::Config::Loader::Yaml.new(data).load_raw!
+      rescue Gitlab::Config::Loader::Yaml::NotHashError
+        # Raise more informative error in app/models/performance_monitoring/prometheus_dashboard.rb.
+        {}
+      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => exception
+        raise Gitlab::Metrics::Dashboard::Errors::LayoutError, exception.message
+      rescue Gitlab::Config::Loader::FormatError
+        raise Gitlab::Metrics::Dashboard::Errors::LayoutError, _('Invalid yaml')
       end
 
       # @return [Hash] an unmodified dashboard

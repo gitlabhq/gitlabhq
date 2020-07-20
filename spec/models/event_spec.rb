@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Event do
+RSpec.describe Event do
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:target) }
@@ -643,30 +643,12 @@ describe Event do
       end
     end
 
-    describe '.not_design' do
-      it 'does not contain the design events' do
-        non_design_events = events.reject(&:design?)
-
-        expect(events).not_to match_array(non_design_events)
-        expect(described_class.not_design).to match_array(non_design_events)
-      end
-    end
-
     describe '.for_wiki_page' do
       it 'only contains the wiki page events' do
         wiki_events = events.select(&:wiki_page?)
 
         expect(events).not_to match_array(wiki_events)
         expect(described_class.for_wiki_page).to match_array(wiki_events)
-      end
-    end
-
-    describe '.not_wiki_page' do
-      it 'does not contain the wiki page events' do
-        non_wiki_events = events.reject(&:wiki_page?)
-
-        expect(events).not_to match_array(non_wiki_events)
-        expect(described_class.not_wiki_page).to match_array(non_wiki_events)
       end
     end
 

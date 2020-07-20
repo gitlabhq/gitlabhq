@@ -5,6 +5,11 @@ module NotesActions
   include Gitlab::Utils::StrongMemoize
   extend ActiveSupport::Concern
 
+  # last_fetched_at is an integer number of microseconds, which is the same
+  # precision as PostgreSQL "timestamp" fields. It's important for them to have
+  # identical precision for accurate pagination
+  MICROSECOND = 1_000_000
+
   included do
     before_action :set_polling_interval_header, only: [:index]
     before_action :require_noteable!, only: [:index, :create]
@@ -13,30 +18,20 @@ module NotesActions
   end
 
   def index
-    notes_json = { notes: [], last_fetched_at: Time.current.to_i }
-
-    notes = notes_finder
-              .execute
-              .inc_relations_for_view
-
-    if notes_filter != UserPreference::NOTES_FILTERS[:only_comments]
-      notes =
-        ResourceEvents::MergeIntoNotesService
-          .new(noteable, current_user, last_fetched_at: last_fetched_at)
-          .execute(notes)
-    end
-
+    notes, meta = gather_notes
     notes = prepare_notes_for_rendering(notes)
     notes = notes.select { |n| n.readable_by?(current_user) }
-
-    notes_json[:notes] =
+    notes =
       if use_note_serializer?
         note_serializer.represent(notes)
       else
         notes.map { |note| note_json(note) }
       end
 
-    render json: notes_json
+    # We know there's more data, so tell the frontend to poll again after 1ms
+    set_polling_interval_header(interval: 1) if meta[:more]
+
+    render json: meta.merge(notes: notes)
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -100,6 +95,48 @@ module NotesActions
   end
 
   private
+
+  # Lower bound (last_fetched_at as specified in the request) is already set in
+  # the finder. Here, we select between returning all notes since then, or a
+  # page's worth of notes.
+  def gather_notes
+    if Feature.enabled?(:paginated_notes, project)
+      gather_some_notes
+    else
+      gather_all_notes
+    end
+  end
+
+  def gather_all_notes
+    now = Time.current
+    notes = merge_resource_events(notes_finder.execute.inc_relations_for_view)
+
+    [notes, { last_fetched_at: (now.to_i * MICROSECOND) + now.usec }]
+  end
+
+  def gather_some_notes
+    paginator = Gitlab::UpdatedNotesPaginator.new(
+      notes_finder.execute.inc_relations_for_view,
+      last_fetched_at: last_fetched_at
+    )
+
+    notes = paginator.notes
+
+    # Fetch all the synthetic notes in the same time range as the real notes.
+    # Although we don't limit the number, their text is under our control so
+    # should be fairly cheap to process.
+    notes = merge_resource_events(notes, fetch_until: paginator.next_fetched_at)
+
+    [notes, paginator.metadata]
+  end
+
+  def merge_resource_events(notes, fetch_until: nil)
+    return notes if notes_filter == UserPreference::NOTES_FILTERS[:only_comments]
+
+    ResourceEvents::MergeIntoNotesService
+      .new(noteable, current_user, last_fetched_at: last_fetched_at, fetch_until: fetch_until)
+      .execute(notes)
+  end
 
   def note_html(note)
     render_to_string(
@@ -226,11 +263,11 @@ module NotesActions
   end
 
   def update_note_params
-    params.require(:note).permit(:note)
+    params.require(:note).permit(:note, :position)
   end
 
-  def set_polling_interval_header
-    Gitlab::PollingInterval.set_header(response, interval: 6_000)
+  def set_polling_interval_header(interval: 6000)
+    Gitlab::PollingInterval.set_header(response, interval: interval)
   end
 
   def noteable
@@ -242,7 +279,14 @@ module NotesActions
   end
 
   def last_fetched_at
-    request.headers['X-Last-Fetched-At']
+    strong_memoize(:last_fetched_at) do
+      microseconds = request.headers['X-Last-Fetched-At'].to_i
+
+      seconds = microseconds / MICROSECOND
+      frac = microseconds % MICROSECOND
+
+      Time.zone.at(seconds, frac)
+    end
   end
 
   def notes_filter

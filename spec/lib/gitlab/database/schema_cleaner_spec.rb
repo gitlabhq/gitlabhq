@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::SchemaCleaner do
+RSpec.describe Gitlab::Database::SchemaCleaner do
   let(:example_schema) { fixture_file(File.join('gitlab', 'database', 'structure_example.sql')) }
   let(:io) { StringIO.new }
 

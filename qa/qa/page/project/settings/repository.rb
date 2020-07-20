@@ -23,6 +23,10 @@ module QA
             element :deploy_keys_settings
           end
 
+          view 'app/views/projects/protected_tags/shared/_index.html.haml' do
+            element :protected_tag_settings_content
+          end
+
           def expand_deploy_tokens(&block)
             expand_section(:deploy_tokens_settings) do
               Settings::DeployTokens.perform(&block)
@@ -44,6 +48,12 @@ module QA
           def expand_mirroring_repositories(&block)
             expand_section(:mirroring_repositories_settings_section) do
               MirroringRepositories.perform(&block)
+            end
+          end
+
+          def expand_protected_tags(&block)
+            expand_section(:protected_tag_settings_content) do
+              ProtectedTags.perform(&block)
             end
           end
         end

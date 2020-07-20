@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::WikiPages::FrontMatterParser do
+RSpec.describe Gitlab::WikiPages::FrontMatterParser do
   subject(:parser) { described_class.new(raw_content, gate) }
 
   let(:content) { 'This is the content' }

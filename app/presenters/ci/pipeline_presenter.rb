@@ -110,6 +110,17 @@ module Ci
       merge_request_presenter&.target_branch_link
     end
 
+    def downloadable_path_for_report_type(file_type)
+      if (job_artifact = batch_lookup_report_artifact_for_file_type(file_type)) &&
+          can?(current_user, :read_build, job_artifact.job)
+        download_project_job_artifacts_path(
+          job_artifact.project,
+          job_artifact.job,
+          file_type: file_type,
+          proxy: true)
+      end
+    end
+
     private
 
     def plain_ref_name

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::GenerateCoverageReportsService do
+RSpec.describe Ci::GenerateCoverageReportsService do
   let(:service) { described_class.new(project) }
   let(:project) { create(:project, :repository) }
 

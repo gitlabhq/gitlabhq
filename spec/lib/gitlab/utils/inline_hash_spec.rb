@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Utils::InlineHash do
+RSpec.describe Gitlab::Utils::InlineHash do
   describe '.merge_keys' do
     subject { described_class.merge_keys(source) }
 

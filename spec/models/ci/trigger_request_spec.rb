@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::TriggerRequest do
+RSpec.describe Ci::TriggerRequest do
   describe 'validation' do
     it 'be invalid if saving a variable' do
       trigger = build(:ci_trigger_request, variables: { TRIGGER_KEY_1: 'TRIGGER_VALUE_1' } )

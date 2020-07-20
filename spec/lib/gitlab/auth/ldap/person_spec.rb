@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::Ldap::Person do
+RSpec.describe Gitlab::Auth::Ldap::Person do
   include LdapHelpers
 
   let(:entry) { ldap_user_entry('john.doe') }

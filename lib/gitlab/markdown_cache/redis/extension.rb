@@ -22,14 +22,30 @@ module Gitlab
           end
         end
 
+        prepended do
+          def self.preload_markdown_cache!(objects)
+            fields = Gitlab::MarkdownCache::Redis::Store.bulk_read(objects)
+
+            objects.each do |object|
+              fields[object.cache_key].value.each do |field_name, value|
+                object.write_markdown_field(field_name, value)
+              end
+            end
+          end
+        end
+
+        def write_markdown_field(field_name, value)
+          # The value read from redis is a string, so we're converting it back
+          # to an int.
+          value = value.to_i if field_name == :cached_markdown_version
+
+          instance_variable_set("@#{field_name}", value)
+        end
+
         private
 
         def save_markdown(updates)
           markdown_store.save(updates)
-        end
-
-        def write_markdown_field(field_name, value)
-          instance_variable_set("@#{field_name}", value)
         end
 
         def markdown_field_changed?(field_name)

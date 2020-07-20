@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::TableOfContentsTagFilter do
+RSpec.describe Banzai::Filter::TableOfContentsTagFilter do
   include FilterSpecHelper
 
   context 'table of contents' do

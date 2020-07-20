@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UsageDataCounters::SourceCodeCounter do
+RSpec.describe Gitlab::UsageDataCounters::SourceCodeCounter do
   it_behaves_like 'a redis usage counter', 'Source Code', :pushes
 
   it_behaves_like 'a redis usage counter with totals', :source_code, pushes: 5

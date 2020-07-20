@@ -3,6 +3,30 @@
 module WikiHelper
   include API::Helpers::RelatedResourcesHelpers
 
+  def wiki_page_title(page, action = nil)
+    titles = [_('Wiki')]
+
+    if page.persisted?
+      titles << page.human_title
+      breadcrumb_title(page.human_title)
+      wiki_breadcrumb_dropdown_links(page.slug)
+    end
+
+    titles << action if action
+    page_title(*titles.reverse)
+    add_to_breadcrumbs(_('Wiki'), wiki_path(page.wiki))
+  end
+
+  def link_to_wiki_page(page, **options)
+    link_to page.human_title, wiki_page_path(page.wiki, page), **options
+  end
+
+  def wiki_sidebar_toggle_button
+    content_tag :button, class: 'btn btn-default sidebar-toggle js-sidebar-wiki-toggle', role: 'button', type: 'button' do
+      sprite_icon('chevron-double-lg-left')
+    end
+  end
+
   # Produces a pure text breadcrumb for a given page.
   #
   # page_slug - The slug of a WikiPage object.
@@ -71,10 +95,13 @@ module WikiHelper
   def wiki_empty_state_messages(wiki)
     case wiki.container
     when Project
+      writable_body = s_("WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on.")
+      writable_body += s_("WikiEmpty| Have a Confluence wiki already? Use that instead.") if show_enable_confluence_integration?(wiki.container)
+
       {
         writable: {
           title: s_('WikiEmpty|The wiki lets you write documentation for your project'),
-          body: s_("WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on.")
+          body: writable_body
         },
         issuable: {
           title: s_('WikiEmpty|This project has no wiki pages'),
@@ -103,5 +130,20 @@ module WikiHelper
     else
       raise NotImplementedError, "Unknown wiki container type #{wiki.container.class.name}"
     end
+  end
+
+  def wiki_page_tracking_context(page)
+    {
+      'wiki-format'               => page.format,
+      'wiki-title-size'           => page.title.bytesize,
+      'wiki-content-size'         => page.raw_content.bytesize,
+      'wiki-directory-nest-level' => page.path.scan('/').count
+    }
+  end
+
+  def show_enable_confluence_integration?(container)
+    container.is_a?(Project) &&
+      current_user&.can?(:admin_project, container) &&
+      !container.has_confluence?
   end
 end

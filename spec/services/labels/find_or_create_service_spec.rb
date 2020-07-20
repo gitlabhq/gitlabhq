@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Labels::FindOrCreateService do
+RSpec.describe Labels::FindOrCreateService do
   describe '#execute' do
     let(:group)   { create(:group) }
     let(:project) { create(:project, namespace: group) }

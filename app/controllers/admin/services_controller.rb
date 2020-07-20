@@ -4,13 +4,18 @@ class Admin::ServicesController < Admin::ApplicationController
   include ServiceParams
 
   before_action :service, only: [:edit, :update]
+  before_action :whitelist_query_limiting, only: [:index]
+  before_action only: :edit do
+    push_frontend_feature_flag(:integration_form_refactor, default_enabled: true)
+  end
 
   def index
     @services = Service.find_or_create_templates.sort_by(&:title)
+    @existing_instance_types = Service.instances.pluck(:type) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   def edit
-    unless service.present?
+    if service.nil? || Service.instance_exists_for?(service.type)
       redirect_to admin_application_settings_services_path,
         alert: "Service is unknown or it doesn't exist"
     end
@@ -34,4 +39,8 @@ class Admin::ServicesController < Admin::ApplicationController
     @service ||= Service.find_by(id: params[:id], template: true)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/-/issues/220357')
+  end
 end

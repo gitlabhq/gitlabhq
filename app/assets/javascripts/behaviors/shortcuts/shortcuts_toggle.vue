@@ -1,11 +1,10 @@
 <script>
-import { GlToggle, GlSprintf } from '@gitlab/ui';
+import { GlToggle } from '@gitlab/ui';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { disableShortcuts, enableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
 
 export default {
   components: {
-    GlSprintf,
     GlToggle,
   },
   data() {
@@ -32,29 +31,10 @@ export default {
     <gl-toggle
       v-model="shortcutsEnabled"
       aria-describedby="shortcutsToggle"
-      class="prepend-left-10 mb-0"
-      label-position="right"
+      label="Keyboard shortcuts"
+      label-position="left"
       @change="onChange"
-    >
-      <template #labelOn>
-        <gl-sprintf
-          :message="__('%{screenreaderOnlyStart}Keyboard shorcuts%{screenreaderOnlyEnd} Enabled')"
-        >
-          <template #screenreaderOnly="{ content }">
-            <span class="sr-only">{{ content }}</span>
-          </template>
-        </gl-sprintf>
-      </template>
-      <template #labelOff>
-        <gl-sprintf
-          :message="__('%{screenreaderOnlyStart}Keyboard shorcuts%{screenreaderOnlyEnd} Disabled')"
-        >
-          <template #screenreaderOnly="{ content }">
-            <span class="sr-only">{{ content }}</span>
-          </template>
-        </gl-sprintf>
-      </template>
-    </gl-toggle>
+    />
     <div id="shortcutsToggle" class="sr-only">{{ __('Enable or disable keyboard shortcuts') }}</div>
   </div>
 </template>

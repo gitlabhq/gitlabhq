@@ -89,14 +89,13 @@ export default {
   <div class="md-header">
     <ul class="nav-links clearfix">
       <li :class="{ active: !previewMarkdown }" class="md-header-tab">
-        <button class="js-write-link" tabindex="-1" type="button" @click="writeMarkdownTab($event)">
+        <button class="js-write-link" type="button" @click="writeMarkdownTab($event)">
           {{ __('Write') }}
         </button>
       </li>
       <li :class="{ active: previewMarkdown }" class="md-header-tab">
         <button
           class="js-preview-link js-md-preview-button"
-          tabindex="-1"
           type="button"
           @click="previewMarkdownTab($event)"
         >

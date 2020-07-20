@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ReactiveCacheSetCache, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::ReactiveCacheSetCache, :clean_gitlab_redis_cache do
   let_it_be(:project) { create(:project) }
   let(:cache_prefix) { 'cache_prefix' }
   let(:expires_in) { 10.minutes }

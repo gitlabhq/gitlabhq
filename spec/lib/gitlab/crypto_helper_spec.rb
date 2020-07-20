@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CryptoHelper do
+RSpec.describe Gitlab::CryptoHelper do
   describe '.sha256' do
     it 'generates SHA256 digest Base46 encoded' do
       digest = described_class.sha256('some-value')

@@ -1,3 +1,9 @@
+---
+stage: Defend
+group: Container Security
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Getting started with the Web Application Firewall
 
 This is a step-by-step guide that will help you use GitLab's [Web Application Firewall](index.md) after
@@ -11,7 +17,7 @@ These instructions will also work for a self-managed GitLab instance. However, y
 need to ensure your own [Runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
-**Note**: GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#Ingress),
+**Note**: GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#ingress),
 so it will be available to your applications no matter how you deploy them to Kubernetes.
 
 ## Configuring your Google account
@@ -86,19 +92,13 @@ status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).
 The next step is to install some applications on your cluster that are needed
 to take full advantage of Auto DevOps.
 
-## Installing Helm and Ingress
+## Install Ingress
 
 GitLab's Kubernetes integration comes with some
 [pre-defined applications](../../user/project/clusters/index.md#installing-applications)
 for you to install.
 
 ![Cluster applications](../autodevops/img/guide_cluster_apps_v12_3.png)
-
-The first one to install is Helm Tiller, a package manager for Kubernetes, which
-is needed in order to install the rest of the applications. Go ahead and click
-its **Install** button.
-Once it is installed, the other applications that rely on it will each have their
-**Install** buttons enabled.
 
 For this guide, we need to install Ingress. Ingress provides load balancing,
 SSL termination, and name-based virtual hosting, using NGINX behind

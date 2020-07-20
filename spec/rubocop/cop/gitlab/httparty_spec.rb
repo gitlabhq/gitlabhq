@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/httparty'
 
-describe RuboCop::Cop::Gitlab::HTTParty do # rubocop:disable RSpec/FilePath
+RSpec.describe RuboCop::Cop::Gitlab::HTTParty, type: :rubocop do # rubocop:disable RSpec/FilePath
   include CopHelper
 
   subject(:cop) { described_class.new }

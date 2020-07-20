@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Snippets::DestroyService do
+RSpec.describe Snippets::DestroyService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
@@ -105,6 +105,26 @@ describe Snippets::DestroyService do
 
         it_behaves_like 'a successful destroy'
         it_behaves_like 'deletes the snippet repository'
+
+        context 'project statistics' do
+          before do
+            snippet.statistics.refresh!
+          end
+
+          it 'updates stats after deletion' do
+            expect(project.reload.statistics.snippets_size).not_to be_zero
+
+            subject
+
+            expect(project.reload.statistics.snippets_size).to be_zero
+          end
+
+          it 'schedules a namespace statistics update' do
+            expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async).with(project.namespace_id).once
+
+            subject
+          end
+        end
       end
 
       context 'when user is not able to admin_project_snippet' do
@@ -122,6 +142,12 @@ describe Snippets::DestroyService do
 
         it_behaves_like 'a successful destroy'
         it_behaves_like 'deletes the snippet repository'
+
+        it 'schedules a namespace statistics update' do
+          expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async).with(author.namespace_id)
+
+          subject
+        end
       end
 
       context 'when user is not able to admin_personal_snippet' do

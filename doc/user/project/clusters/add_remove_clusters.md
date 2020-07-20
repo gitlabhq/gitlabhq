@@ -13,6 +13,11 @@ GitLab offers integrated cluster creation for the following Kubernetes providers
 
 GitLab can also integrate with any standard Kubernetes provider, either on-premise or hosted.
 
+NOTE: **Note:**
+Watch the webcast [Scalable app deployment with GitLab and Google Cloud Platform](https://about.gitlab.com/webcast/scalable-app-deploy/)
+and learn how to spin up a Kubernetes cluster managed by Google Cloud Platform (GCP)
+in a few clicks.
+
 TIP: **Tip:**
 Every new Google Cloud Platform (GCP) account receives [$300 in credit upon sign up](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's
@@ -23,7 +28,7 @@ Google Kubernetes Engine Integration. All you have to do is [follow this link](h
 Before [adding a Kubernetes cluster](#create-new-cluster) using GitLab, you need:
 
 - GitLab itself. Either:
-  - A GitLab.com [account](https://about.gitlab.com/pricing/#gitlab-com).
+  - A [GitLab.com account](https://about.gitlab.com/pricing/#gitlab-com).
   - A [self-managed installation](https://about.gitlab.com/pricing/#self-managed) with GitLab version
     12.5 or later. This will ensure the GitLab UI can be used for cluster creation.
 - The following GitLab access:
@@ -52,14 +57,10 @@ to manage the newly created cluster.
 NOTE: **Note:**
 Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51716) in GitLab 11.5.
 
-When you install Helm into your cluster, the `tiller` service account
-is created with `cluster-admin` privileges in the `gitlab-managed-apps`
-namespace.
-
-This service account will be:
-
-- Added to the installed Helm Tiller.
-- Used by Helm to install and run [GitLab managed applications](index.md#installing-applications).
+The first time you install an application into your cluster, the `tiller` service
+account is created with `cluster-admin` privileges in the
+`gitlab-managed-apps` namespace. This service account will be used by Helm to
+install and run [GitLab managed applications](index.md#installing-applications).
 
 Helm will also create additional service accounts and other resources for each
 installed application. Consult the documentation of the Helm charts for each application
@@ -88,8 +89,8 @@ GitLab creates the following resources for RBAC clusters.
 | `gitlab`              | `ServiceAccount`     | `default` namespace                                                                                        | Creating a new cluster |
 | `gitlab-admin`        | `ClusterRoleBinding` | [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef | Creating a new cluster |
 | `gitlab-token`        | `Secret`             | Token for `gitlab` ServiceAccount                                                                          | Creating a new cluster |
-| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace                                                                            | Installing Helm Tiller |
-| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                                                                                    | Installing Helm Tiller |
+| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace                                                                            | Installing Helm charts |
+| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                                                                                    | Installing Helm charts |
 | Environment namespace | `Namespace`          | Contains all environment-specific resources                                                                | Deploying to a cluster |
 | Environment namespace | `ServiceAccount`     | Uses namespace of environment                                                                              | Deploying to a cluster |
 | Environment namespace | `Secret`             | Token for environment ServiceAccount                                                                       | Deploying to a cluster |
@@ -103,8 +104,8 @@ GitLab creates the following resources for ABAC clusters.
 |:----------------------|:---------------------|:-------------------------------------|:---------------------------|
 | `gitlab`              | `ServiceAccount`     | `default` namespace                         | Creating a new cluster |
 | `gitlab-token`        | `Secret`             | Token for `gitlab` ServiceAccount           | Creating a new cluster |
-| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace             | Installing Helm Tiller |
-| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                     | Installing Helm Tiller |
+| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace             | Installing Helm charts |
+| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                     | Installing Helm charts |
 | Environment namespace | `Namespace`          | Contains all environment-specific resources | Deploying to a cluster |
 | Environment namespace | `ServiceAccount`     | Uses namespace of environment               | Deploying to a cluster |
 | Environment namespace | `Secret`             | Token for environment ServiceAccount        | Deploying to a cluster |
@@ -126,7 +127,7 @@ arbitrary images as they effectively have root access.
 If you don't want to use GitLab Runner in privileged mode, either:
 
 - Use shared Runners on GitLab.com. They don't have this security issue.
-- Set up your own Runners using configuration described at
+- Set up your own Runners using the configuration described at
   [Shared Runners](../../gitlab_com/index.md#shared-runners). This involves:
   1. Making sure that you don't have it installed via
      [the applications](index.md#installing-applications).
@@ -135,23 +136,26 @@ If you don't want to use GitLab Runner in privileged mode, either:
 
 ## Create new cluster
 
-New clusters can be created using GitLab for:
+New clusters can be created using GitLab on Google Kubernetes Engine (GKE) or
+Amazon Elastic Kubernetes Service (EKS) at the project, group, or instance level:
 
-- [Google Kubernetes Engine (GKE)](add_gke_clusters.md).
-- [Amazon Elastic Kubernetes Service (EKS)](add_eks_clusters.md).
+1. Navigate to your:
+   - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
+   - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
+   - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
+1. Click **Add Kubernetes cluster**.
+1. Click the **Create new cluster** tab.
+1. Click either **Amazon EKS** or **Google GKE**, and follow the instructions for your desired service:
+   - [Amazon EKS](add_eks_clusters.md#new-eks-cluster).
+   - [Google GKE](add_gke_clusters.md#creating-the-cluster-on-gke).
 
 ## Add existing cluster
 
 If you have an existing Kubernetes cluster, you can add it to a project, group, or instance.
 
-For more information, see information for adding an:
-
-- [Existing Kubernetes cluster](#existing-kubernetes-cluster), including GKE clusters.
-- [Existing EKS cluster](add_eks_clusters.md#existing-eks-cluster).
-
 NOTE: **Note:**
 Kubernetes integration is not supported for arm64 clusters. See the issue
-[Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64044) for details.
+[Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/29838) for details.
 
 ### Existing Kubernetes cluster
 
@@ -214,9 +218,9 @@ To add a Kubernetes cluster to your project, group, or instance:
            kind: ClusterRole
            name: cluster-admin
          subjects:
-         - kind: ServiceAccount
-           name: gitlab-admin
-           namespace: kube-system
+           - kind: ServiceAccount
+             name: gitlab-admin
+             namespace: kube-system
          ```
 
       1. Apply the service account and cluster role binding to your cluster:
@@ -297,14 +301,15 @@ to install some [pre-defined applications](index.md#installing-applications).
 
 When connecting a cluster via GitLab integration, you may specify whether the
 cluster is RBAC-enabled or not. This will affect how GitLab interacts with the
-cluster for certain operations. If you **did not** check the "RBAC-enabled cluster"
+cluster for certain operations. If you did *not* check the **RBAC-enabled cluster**
 checkbox at creation time, GitLab will assume RBAC is disabled for your cluster
 when interacting with it. If so, you must disable RBAC on your cluster for the
 integration to work properly.
 
-![rbac](img/rbac.png)
+![rbac](img/rbac_v13_1.png)
 
-NOTE: **Note**: Disabling RBAC means that any application running in the cluster,
+NOTE: **Note:**
+Disabling RBAC means that any application running in the cluster,
 or user who can authenticate to the cluster, has full API access. This is a
 [security concern](index.md#security-implications), and may not be desirable.
 
@@ -320,17 +325,20 @@ kubectl create clusterrolebinding permissive-binding \
 
 ## Enabling or disabling integration
 
-After you have successfully added your cluster information, you can enable the
-Kubernetes cluster integration:
+The Kubernetes cluster integration enables after you have successfully either created
+a new cluster or added an existing one. To disable Kubernetes cluster integration:
 
-1. Click the **Enabled/Disabled** switch
-1. Hit **Save** for the changes to take effect
-
-To disable the Kubernetes cluster integration, follow the same procedure.
+1. Navigate to your:
+   - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
+   - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
+   - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
+1. Click on the name of the cluster.
+1. Click the **GitLab Integration** toggle.
+1. Click **Save changes**.
 
 ## Removing integration
 
-To remove the Kubernetes cluster integration from your project, either:
+To remove the Kubernetes cluster integration from your project, first navigate to the **Advanced Settings** tab of the cluster details page and either:
 
 - Select **Remove integration**, to remove only the Kubernetes integration.
 - [From GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/26815), select

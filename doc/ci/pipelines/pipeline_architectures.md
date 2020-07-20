@@ -133,28 +133,28 @@ build_b:
 
 test_a:
   stage: test
-  needs: build_a
+  needs: [build_a]
   script:
     - echo "This test job will start as soon as build_a finishes."
     - echo "It will not wait for build_b, or other jobs in the build stage, to finish."
 
 test_b:
   stage: test
-  needs: build_b
+  needs: [build_b]
   script:
     - echo "This test job will start as soon as build_b finishes."
     - echo "It will not wait for other jobs in the build stage to finish."
 
 deploy_a:
   stage: deploy
-  needs: test_a
+  needs: [test_a]
   script:
     - echo "Since build_a and test_a run quickly, this deploy job can run much earlier."
     - echo "It does not need to wait for build_b or test_b."
 
 deploy_b:
   stage: deploy
-  needs: test_b
+  needs: [test_b]
   script:
     - echo "Since build_b and test_b run slowly, this deploy job will run much later."
 ```
@@ -228,13 +228,13 @@ build_a:
 
 test_a:
   stage: test
-  needs: build_a
+  needs: [build_a]
   script:
     - echo "This job tests something."
 
 deploy_a:
   stage: deploy
-  needs: test_a
+  needs: [test_a]
   script:
     - echo "This job deploys something."
 ```
@@ -257,13 +257,13 @@ build_b:
 
 test_b:
   stage: test
-  needs: build_b
+  needs: [build_b]
   script:
     - echo "This job tests something else."
 
 deploy_b:
   stage: deploy
-  needs: test_b
+  needs: [test_b]
   script:
     - echo "This job deploys something else."
 ```

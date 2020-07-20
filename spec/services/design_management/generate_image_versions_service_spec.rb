@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DesignManagement::GenerateImageVersionsService do
+RSpec.describe DesignManagement::GenerateImageVersionsService do
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:version) { create(:design, :with_lfs_file, issue: issue).versions.first }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Bitbucket::Representation::Issue do
+RSpec.describe Bitbucket::Representation::Issue do
   describe '#iid' do
     it { expect(described_class.new('id' => 1).iid).to eq(1) }
   end

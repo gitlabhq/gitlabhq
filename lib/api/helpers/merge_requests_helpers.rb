@@ -5,7 +5,30 @@ module API
     module MergeRequestsHelpers
       extend Grape::API::Helpers
 
+      params :merge_requests_negatable_params do
+        optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
+        optional :author_username, type: String, desc: 'Return merge requests which are authored by the user with the given username'
+        mutually_exclusive :author_id, :author_username
+
+        optional :assignee_id,
+                 types: [Integer, String],
+                 integer_none_any: true,
+                 desc: 'Return merge requests which are assigned to the user with the given ID'
+        optional :assignee_username, type: Array[String], check_assignees_count: true,
+                 coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
+                 desc: 'Return merge requests which are assigned to the user with the given username'
+        mutually_exclusive :assignee_id, :assignee_username
+
+        optional :labels,
+                 type: Array[String],
+                 coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
+                 desc: 'Comma-separated list of label names'
+        optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
+        optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
+      end
+
       params :merge_requests_base_params do
+        use :merge_requests_negatable_params
         optional :state,
                  type: String,
                  values: %w[opened closed locked merged all],
@@ -21,11 +44,6 @@ module API
                  values: %w[asc desc],
                  default: 'desc',
                  desc: 'Return merge requests sorted in `asc` or `desc` order.'
-        optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
-        optional :labels,
-                 type: Array[String],
-                 coerce_with: Validations::Types::LabelsList.coerce,
-                 desc: 'Comma-separated list of label names'
         optional :with_labels_details, type: Boolean, desc: 'Return titles of labels and other details', default: false
         optional :with_merge_status_recheck, type: Boolean, desc: 'Request that stale merge statuses be rechecked asynchronously', default: false
         optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
@@ -37,19 +55,10 @@ module API
                  values: %w[simple],
                  desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
 
-        optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
-        optional :author_username, type: String, desc: 'Return merge requests which are authored by the user with the given username'
-        mutually_exclusive :author_id, :author_username
-
-        optional :assignee_id,
-                 types: [Integer, String],
-                 integer_none_any: true,
-                 desc: 'Return merge requests which are assigned to the user with the given ID'
         optional :scope,
                  type: String,
                  values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
                  desc: 'Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
-        optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         optional :source_branch, type: String, desc: 'Return merge requests with the given source branch'
         optional :source_project_id, type: Integer, desc: 'Return merge requests with the given source project id'
         optional :target_branch, type: String, desc: 'Return merge requests with the given target branch'
@@ -58,6 +67,9 @@ module API
                  desc: 'Search merge requests for text present in the title, description, or any combination of these'
         optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
         optional :wip, type: String, values: %w[yes no], desc: 'Search merge requests for WIP in the title'
+        optional :not, type: Hash, desc: 'Parameters to negate' do
+          use :merge_requests_negatable_params
+        end
       end
 
       params :optional_scope_param do

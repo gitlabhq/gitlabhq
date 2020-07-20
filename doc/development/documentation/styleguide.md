@@ -88,7 +88,7 @@ New information that would be useful toward the future usage or troubleshooting 
 
 The more we reflexively add useful information to the docs, the more (and more successfully) the docs will be used to efficiently accomplish tasks and solve problems.
 
-If you have questions when considering, authoring, or editing docs, ask the Technical Writing team on Slack in `#docs` or in GitLab by mentioning the writer for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages). Otherwise, forge ahead with your best effort. It does not need to be perfect; the team is happy to review and improve upon your content. Please review the [Documentation guidelines](index.md) before you begin your first documentation MR.
+If you have questions when considering, authoring, or editing docs, ask the Technical Writing team on Slack in `#docs` or in GitLab by mentioning the writer for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/product-categories/#devops-stages). Otherwise, forge ahead with your best effort. It does not need to be perfect; the team is happy to review and improve upon your content. Please review the [Documentation guidelines](index.md) before you begin your first documentation MR.
 
 Having a knowledge base in any form that is separate from the documentation would be against the docs-first methodology because the content would overlap with the documentation.
 
@@ -325,9 +325,22 @@ tenses, words, and phrases:
 - Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
   will be at some indeterminate point in the future.
+- Avoid the using the word *scalability* with increasing GitLab's performance
+  for additional users. Using the words *scale* or *scaling* in other cases is
+  acceptable, but references to increasing GitLab's performance for additional
+  users should direct readers to the GitLab
+  [reference architectures](../../administration/reference_architectures/index.md)
+  page.
+- Avoid all forms of the phrases *high availability* and *HA*, and instead
+  direct readers to the GitLab [reference architectures](../../administration/reference_architectures/index.md)
+  for information about configuring GitLab to have the performance needed for
+  additional users over time.
 - Don't use profanity or obscenities. Doing so may negatively affect other
   users and contributors, which is contrary to GitLab's value of
-  [diversity and inclusion](https://about.gitlab.com/handbook/values/#diversity-inclusion).
+  [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
+- Avoid the use of [racially-insensitive terminology or phrases](https://www.marketplace.org/2020/06/17/tech-companies-update-language-to-avoid-offensive-terms/). For example:
+  - Use *primary* and *secondary* for database and server relationships.
+  - Use *allowlist* and *denylist* to describe access control lists.
 
 ### Word usage clarifications
 
@@ -662,7 +675,7 @@ For other punctuation rules, please refer to the
 - Avoid adding things that show ephemeral statuses. For example, if a feature is
   considered beta or experimental, put this information in a note, not in the heading.
 - When introducing a new document, be careful for the headings to be
-  grammatically and syntactically correct. Mention an [assigned technical writer (TW)](https://about.gitlab.com/handbook/product/categories/)
+  grammatically and syntactically correct. Mention an [assigned technical writer (TW)](https://about.gitlab.com/handbook/product/product-categories/)
   for review.
   This is to ensure that no document with wrong heading is going
   live without an audit, thus preventing dead links and redirection issues when
@@ -750,6 +763,15 @@ _Internal_ refers to documentation in the same project. When linking to document
 separate projects (for example, linking to Omnibus docs from GitLab docs), you must use absolute
 URLs.
 
+Do not use absolute URLs like `https://docs.gitlab.com/ee/index.html` to crosslink
+to other docs within the same project. Use relative links to the file, like `../index.md`. (These are converted to HTML when the site is rendered.)
+
+Relative linking enables crosslinks to work:
+
+- in Review Apps, local previews, and `/help`.
+- when working on the docs locally, so you can verify that they work as early as possible in the process.
+- within the GitLab UI when browsing doc files in their respective repositories. For example, the links displayed at `https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md`.
+
 To link to internal documentation:
 
 - Use relative links to Markdown files in the same repository.
@@ -778,7 +800,7 @@ To link to internal documentation:
   - `../../issues/tags.md`
   - `../../issues/tags.md#stages`
 
-NOTE: **Note**:
+NOTE: **Note:**
 Using the Markdown extension is necessary for the [`/help`](index.md#gitlab-help) section of GitLab.
 
 ### Links to external documentation
@@ -839,19 +861,42 @@ To indicate the steps of navigation through the UI:
 
 ## Images
 
+Images, including screenshots, can help a reader better understand a concept.
+However, they can be hard to maintain, and should be used sparingly.
+
+Before including an image in the documentation, ensure it provides value to the reader.
+
+### Capture the image
+
+Use images to help the reader understand where they are in a process, or how they need to
+interact with the application.
+
+When you take screenshots:
+
+- *Capture the most relevant area of the page.* Don't include unnecessary white
+  space or areas of the page that don't help illustrate your point. Also, don't
+  include the entire page if you don't have to, but also ensure the image
+  contains enough information to allow the user to determine where things are.
+- *Be consistent.* Find a browser window size that works for you that also
+  displays all areas of the product, including the left navigation (usually >
+  1200px wide). For consistency, use this browser window size for your
+  screenshots by installing a browser extension for setting a window to a
+  specific size (for example,
+  [Window Resizer](https://chrome.google.com/webstore/detail/window-resizer/kkelicaakdanhinjdeammmilcgefonfh/related?hl=en)
+  for Google Chrome).
+
+### Save the image
+
+- Save the image with a lowercase file name that is descriptive of the feature
+  or concept in the image. If the image is of the GitLab interface, append the
+  GitLab version to the file name, based on the following format:
+  `image_name_vX_Y.png`. For example, for a screenshot taken from the pipelines
+  page of GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're adding an
+  illustration that doesn't include parts of the user interface, add the release
+  number corresponding to the release the image was added to; for an MR added to
+  11.1's milestone, a valid name for an illustration is `devops_diagram_v11_1.png`.
 - Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located.
-- Images should have a specific, non-generic name that will
-  differentiate and describe them properly.
-- For screenshots of GitLab software, append the GitLab version the screenshot was taken from to the
-  file name. Use the following format: `image_name_vX_Y.png`.
-- For example, for a screenshot taken from the pipelines page of
-  GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're
-  adding an illustration that does not include parts of the UI,
-  add the release number corresponding to the release the image
-  was added to. Example, for an MR added to 11.1's milestone,
-  a valid name for an illustration is `devops_diagram_v11_1.png`.
-- Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
 - [Compress all PNG images](#compress-images).
 - Compress gifs with <https://ezgif.com/optimize> or similar tool.
@@ -860,15 +905,20 @@ To indicate the steps of navigation through the UI:
 - Max image size: 100KB (gifs included).
 - See also how to link and embed [videos](#videos) to illustrate the docs.
 
-Inside the document:
+### Add the image link to content
 
-- The Markdown way of using an image inside a document is:
-  `![Proper description what the image is about](img/document_image_title_vX_Y.png)`
-- Always use a proper description for what the image is about. That way, when a
-  browser fails to show the image, this text will be used as an alternative
-  description.
-- If a heading is placed right after an image, always add three dashes (`---`)
-  between the image and the heading.
+The Markdown code for including an image in a document is:
+`![Image description which will be the alt tag](img/document_image_title_vX_Y.png)`
+
+The image description is the alt text for the rendered image on the docs site.
+For accessibility and SEO, use [descriptions](https://webaim.org/techniques/alttext/)
+that:
+
+- Are accurate, succinct, and unique.
+- Don't use *image of …* or *graphic of…* to describe the image.
+
+Also, if a heading immediately follows an image, be sure to add three dashes
+(`---`) between the image and the heading.
 
 ### Remove image shadow
 
@@ -1133,8 +1183,8 @@ The following are examples of source Markdown for menu items with their publishe
 Whenever you need to call special attention to particular sentences,
 use the following markup for highlighting.
 
-_Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
-lists, headers and so on, will not render correctly. For multiple lines, use blockquotes instead._
+Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
+lists, headers and so on, will not render correctly. For multiple lines, use [blockquotes](#blockquotes) instead.
 
 Alert boxes only render on the GitLab Docs site (<https://docs.gitlab.com>).
 Within GitLab itself, they will appear as plain Markdown text (like the examples
@@ -1271,20 +1321,20 @@ The following are styles to follow when describing UI elements on a screen:
 
 ### Verbs for UI elements
 
-The following are recommended verbs for specific uses.
+The following are recommended verbs for specific uses with UI elements:
 
-| Recommended | Used for                   | Alternatives               |
-|:------------|:---------------------------|:---------------------------|
-| "click"     | buttons, links, menu items | "hit", "press", "select"   |
-| "check"     | checkboxes                 | "enable", "click", "press" |
-| "select"    | dropdowns                  | "pick"                     |
-| "expand"    | expandable sections        | "open"                     |
+| Recommended         | Used for                   | Replaces                   |
+|:--------------------|:---------------------------|:---------------------------|
+| *click*             | buttons, links, menu items | "hit", "press", "select"   |
+| *select* or *clear* | checkboxes                 | "enable", "click", "press" |
+| *select*            | dropdowns                  | "pick"                     |
+| *expand*            | expandable sections        | "open"                     |
 
 ### Other Verbs
 
-| Recommended | Used for                        | Alternatives       |
-|:------------|:--------------------------------|:-------------------|
-| "go"        | making a browser go to location | "navigate", "open" |
+| Recommended | Used for                        | Replaces              |
+|:------------|:--------------------------------|:----------------------|
+| *go to*     | making a browser go to location | "navigate to", "open" |
 
 ## GitLab versions and tiers
 
@@ -1295,6 +1345,11 @@ Tagged and released versions of GitLab documentation are available:
 
 The version introducing a new feature is added to the top of the topic in the documentation to provide
 a helpful link back to how the feature was developed.
+
+TIP: **Tip:**
+Whenever you have documentation related to the `gitlab.rb` file, you're working with a self-managed installation.
+The section or page is therefore likely to apply only to self-managed instances.
+If so, the relevant "`TIER` ONLY" [Product badge](#product-badges) should be included at the highest applicable heading level.
 
 ### Text for documentation requiring version text
 
@@ -1326,6 +1381,22 @@ a helpful link back to how the feature was developed.
   > - [Moved](<link-to-issue>) to [GitLab Starter](https://about.gitlab.com/pricing/) in 11.8.
   > - [Moved](<link-to-issue>) to GitLab Core in 12.0.
   ```
+
+- If a feature is deprecated, include a link to a replacement (when available):
+
+  ```markdown
+  > - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
+  ```
+
+   It's also acceptable to describe the replacement in surrounding text, if available.
+
+   If the deprecation is not obvious in existing text, you may want to include a warning such as:
+
+   ```markdown
+   CAUTION: **Warning:**
+   This feature was [deprecated](link-to-issue) in GitLab 12.3
+   and replaced by [Feature name](link-to-feature-documentation).
+   ```
 
 NOTE: **Note:**
 Version text must be on its own line and surrounded by blank lines to render correctly.
@@ -1389,7 +1460,7 @@ lines with an inserted line break. Splitting product or feature names across
 lines makes searching for these items more difficult, and can cause problems if
 names change.
 
-For example, the followng Markdown content is *not* formatted correctly:
+For example, the following Markdown content is *not* formatted correctly:
 
 ```markdown
 When entering a product or feature name that includes a space (such as GitLab
@@ -1430,7 +1501,7 @@ For GitLab.com only tiers (when the feature is not available for self-managed in
 
 The tier should be ideally added to headers, so that the full badge will be displayed.
 However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
-the tier mention will be represented by an orange question mark that will show the tiers on hover.
+the tier mention will be represented by an orange info icon **(information)** that will show the tiers on hover.
 
 Use the lowest tier at the page level, even if higher-level tiers exist on the page. For example, you might have a page that is marked as Starter but a section badged as Premium.
 
@@ -1542,6 +1613,9 @@ can facilitate this by making sure the troubleshooting content addresses:
 1. How the user can confirm they have the problem.
 1. Steps the user can take towards resolution of the problem.
 
+If the contents of each category can be summarized in one line and a list of steps aren't required, consider setting up a
+[table](#tables) with headers of *Problem* \| *Cause* \| *Solution* (or *Workaround* if the fix is temporary), or *Error message* \| *Solution*.
+
 ## Feature flags
 
 Learn how to [document features deployed behind flags](feature_flags.md).
@@ -1606,6 +1680,13 @@ and email address of a user. Don't use real user information in API calls:
 - **Email addresses**: Use an email address ending in `example.com`.
 - **Names**: Use strings like `Example Username`. Alternatively, use diverse or non-gendered names with
   common surnames, such as `Sidney Jones`, `Zhang Wei`. or `Maria Garcia`.
+
+### Fake URLs
+
+When including sample URLs in the documentation, use:
+
+- `example.com` when the domain name is generic.
+- `gitlab.example.com` when referring to self-managed instances of GitLab.
 
 ### Fake tokens
 

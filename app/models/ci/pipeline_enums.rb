@@ -31,7 +31,7 @@ module Ci
         merge_request_event: 10,
         external_pull_request_event: 11,
         parent_pipeline: 12,
-        ondemand_scan: 13
+        ondemand_dast_scan: 13
       }
     end
 
@@ -45,7 +45,8 @@ module Ci
         webide_source: 3,
         remote_source: 4,
         external_project_source: 5,
-        bridge_source: 6
+        bridge_source: 6,
+        parameter_source: 7
       }
     end
 

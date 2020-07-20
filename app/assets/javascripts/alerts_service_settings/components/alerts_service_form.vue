@@ -64,6 +64,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isDisabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -142,7 +147,7 @@ export default {
     <gl-form-group :label="__('Active')" label-for="activated" label-class="label-bold">
       <toggle-button
         id="activated"
-        :disabled-input="loadingActivated"
+        :disabled-input="loadingActivated || isDisabled"
         :is-loading="loadingActivated"
         :value="activated"
         @change="toggleActivated"
@@ -152,7 +157,11 @@ export default {
       <div class="input-group">
         <gl-form-input id="url" :readonly="true" :value="url" />
         <span class="input-group-append">
-          <clipboard-button :text="url" :title="$options.COPY_TO_CLIPBOARD" />
+          <clipboard-button
+            :text="url"
+            :title="$options.COPY_TO_CLIPBOARD"
+            :disabled="isDisabled"
+          />
         </span>
       </div>
     </gl-form-group>
@@ -164,10 +173,16 @@ export default {
       <div class="input-group">
         <gl-form-input id="authorization-key" :readonly="true" :value="authorizationKey" />
         <span class="input-group-append">
-          <clipboard-button :text="authorizationKey" :title="$options.COPY_TO_CLIPBOARD" />
+          <clipboard-button
+            :text="authorizationKey"
+            :title="$options.COPY_TO_CLIPBOARD"
+            :disabled="isDisabled"
+          />
         </span>
       </div>
-      <gl-button v-gl-modal.authKeyModal class="mt-2">{{ $options.RESET_KEY }}</gl-button>
+      <gl-button v-gl-modal.authKeyModal class="mt-2" :disabled="isDisabled">{{
+        $options.RESET_KEY
+      }}</gl-button>
       <gl-modal
         modal-id="authKeyModal"
         :title="$options.RESET_KEY"

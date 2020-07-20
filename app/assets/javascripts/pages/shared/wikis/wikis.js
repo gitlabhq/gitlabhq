@@ -1,5 +1,6 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { s__, sprintf } from '~/locale';
+import Tracking from '~/tracking';
 
 const MARKDOWN_LINK_TEXT = {
   markdown: '[Link Title](page-slug)',
@@ -7,6 +8,9 @@ const MARKDOWN_LINK_TEXT = {
   asciidoc: 'link:page-slug[Link title]',
   org: '[[page-slug]]',
 };
+
+const TRACKING_EVENT_NAME = 'view_wiki_page';
+const TRACKING_CONTEXT_SCHEMA = 'iglu:com.gitlab/wiki_page_context/jsonschema/1-0-0';
 
 export default class Wikis {
   constructor() {
@@ -57,6 +61,8 @@ export default class Wikis {
         window.onbeforeunload = null;
       });
     }
+
+    Wikis.trackPageView();
   }
 
   handleWikiTitleChange(e) {
@@ -96,5 +102,18 @@ export default class Wikis {
       classList.add('right-sidebar-collapsed');
       classList.remove('right-sidebar-expanded');
     }
+  }
+
+  static trackPageView() {
+    const wikiPageContent = document.querySelector('.js-wiki-page-content[data-tracking-context]');
+    if (!wikiPageContent) return;
+
+    Tracking.event(document.body.dataset.page, TRACKING_EVENT_NAME, {
+      label: TRACKING_EVENT_NAME,
+      context: {
+        schema: TRACKING_CONTEXT_SCHEMA,
+        data: JSON.parse(wikiPageContent.dataset.trackingContext),
+      },
+    });
   }
 }

@@ -123,7 +123,7 @@ RSpec.describe NotesFinder do
       let!(:note1) { create :note_on_commit, project: project }
       let!(:note2) { create :note_on_commit, project: project }
       let(:commit) { note1.noteable }
-      let(:params) { { project: project, target_id: commit.id, target_type: 'commit', last_fetched_at: 1.hour.ago.to_i } }
+      let(:params) { { project: project, target_id: commit.id, target_type: 'commit', last_fetched_at: 1.hour.ago } }
 
       it 'finds all notes' do
         notes = described_class.new(user, params).execute
@@ -172,7 +172,7 @@ RSpec.describe NotesFinder do
         let(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
         let!(:confidential_note) { create(:note, noteable: confidential_issue, project: confidential_issue.project) }
 
-        let(:params) { { project: confidential_issue.project, target_id: confidential_issue.id, target_type: 'issue', last_fetched_at: 1.hour.ago.to_i } }
+        let(:params) { { project: confidential_issue.project, target_id: confidential_issue.id, target_type: 'issue', last_fetched_at: 1.hour.ago } }
 
         it 'returns notes if user can see the issue' do
           expect(described_class.new(user, params).execute).to eq([confidential_note])
@@ -204,7 +204,7 @@ RSpec.describe NotesFinder do
       end
 
       it 'returns the expected notes when last_fetched_at is given' do
-        params = { project: project, target: commit, last_fetched_at: 1.hour.ago.to_i }
+        params = { project: project, target: commit, last_fetched_at: 1.hour.ago }
         expect(described_class.new(user, params).execute).to eq([note2])
       end
 

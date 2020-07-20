@@ -595,6 +595,14 @@ describe('URL utility', () => {
       );
     });
 
+    it('handles arrays properly when railsArraySyntax=true', () => {
+      const url = 'https://gitlab.com/test';
+
+      expect(urlUtils.setUrlParams({ labels: ['foo', 'bar'] }, url, false, true)).toEqual(
+        'https://gitlab.com/test?labels%5B%5D=foo&labels%5B%5D=bar',
+      );
+    });
+
     it('removes all existing URL params and sets a new param when cleanParams=true', () => {
       const url = 'https://gitlab.com/test?group_id=gitlab-org&project_id=my-project';
 

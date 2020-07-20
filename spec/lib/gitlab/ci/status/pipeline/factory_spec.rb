@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Pipeline::Factory do
+RSpec.describe Gitlab::Ci::Status::Pipeline::Factory do
   let(:user) { create(:user) }
   let(:project) { pipeline.project }
   let(:status) { factory.fabricate! }
@@ -13,7 +13,7 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
   end
 
   context 'when pipeline has a core status' do
-    (HasStatus::AVAILABLE_STATUSES - HasStatus::BLOCKED_STATUS).each do |simple_status|
+    (Ci::HasStatus::AVAILABLE_STATUSES - Ci::HasStatus::BLOCKED_STATUS).each do |simple_status|
       context "when core status is #{simple_status}" do
         let(:pipeline) { create(:ci_pipeline, status: simple_status) }
 

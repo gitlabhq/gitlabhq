@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JobArtifactUploader do
+RSpec.describe JobArtifactUploader do
   let(:store) { described_class::Store::LOCAL }
   let(:job_artifact) { create(:ci_job_artifact, file_store: store) }
   let(:uploader) { described_class.new(job_artifact, :file) }

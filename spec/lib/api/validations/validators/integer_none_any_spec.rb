@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Validations::Validators::IntegerNoneAny do
+RSpec.describe API::Validations::Validators::IntegerNoneAny do
   include ApiValidatorsHelpers
 
   subject do

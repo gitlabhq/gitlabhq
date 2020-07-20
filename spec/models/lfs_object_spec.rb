@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LfsObject do
+RSpec.describe LfsObject do
   context 'scopes' do
     describe '.not_existing_in_project' do
       it 'contains only lfs objects not linked to the project' do

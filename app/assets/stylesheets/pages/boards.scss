@@ -45,7 +45,8 @@
   }
 }
 
-.boards-list {
+.boards-list,
+.board-swimlanes {
   height: calc(100vh - #{$issue-board-list-difference-xs});
   overflow-x: scroll;
   min-height: 200px;
@@ -82,7 +83,6 @@
   }
 
   .board-title-caret {
-    cursor: pointer;
     border-radius: $border-radius-default;
     line-height: $gl-spacing-scale-5;
     height: $gl-spacing-scale-5;
@@ -109,7 +109,6 @@
     .board-title {
       flex-direction: column;
       height: 100%;
-      padding: $gl-padding-8 0;
     }
 
     .board-title-caret {
@@ -203,8 +202,7 @@
   flex-grow: 1;
 }
 
-.board-delete {
-  color: $gray-darkest;
+.board-delete.gl-button {
   background-color: transparent;
   outline: 0;
 
@@ -579,7 +577,10 @@
   }
 }
 
-.board-epics-swimlanes {
+.board-swimlanes {
   overflow-x: auto;
-  min-height: 600px;
+}
+
+.board-header-collapsed-info-icon:hover {
+  color: $gray-900;
 }

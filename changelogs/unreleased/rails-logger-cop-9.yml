@@ -1,0 +1,5 @@
+---
+title: Use applogger in usage ping and webhook service
+merge_request: 32192
+author: Rajendra Kadam
+type: fixed

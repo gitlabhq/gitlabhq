@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Pages do
+RSpec.describe Gitlab::Pages do
   using RSpec::Parameterized::TableSyntax
 
   let(:pages_secret) { SecureRandom.random_bytes(Gitlab::Pages::SECRET_LENGTH) }

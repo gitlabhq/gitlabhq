@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::Pipeline, :mailer do
+RSpec.describe Ci::Pipeline, :mailer do
   include ProjectForksHelper
   include StubRequests
 
@@ -216,6 +216,50 @@ describe Ci::Pipeline, :mailer do
       it 'does not return anything' do
         is_expected.to be_empty
       end
+    end
+  end
+
+  describe '.outside_pipeline_family' do
+    subject(:outside_pipeline_family) { described_class.outside_pipeline_family(upstream_pipeline) }
+
+    let(:upstream_pipeline) { create(:ci_pipeline, project: project) }
+    let(:child_pipeline) { create(:ci_pipeline, project: project) }
+
+    let!(:other_pipeline) { create(:ci_pipeline, project: project) }
+
+    before do
+      create(:ci_sources_pipeline,
+             source_job: create(:ci_build, pipeline: upstream_pipeline),
+             source_project: project,
+             pipeline: child_pipeline,
+             project: project)
+    end
+
+    it 'only returns pipelines outside pipeline family' do
+      expect(outside_pipeline_family).to contain_exactly(other_pipeline)
+    end
+  end
+
+  describe '.before_pipeline' do
+    subject(:before_pipeline) { described_class.before_pipeline(child_pipeline) }
+
+    let!(:older_other_pipeline) { create(:ci_pipeline, project: project) }
+
+    let!(:upstream_pipeline) { create(:ci_pipeline, project: project) }
+    let!(:child_pipeline) { create(:ci_pipeline, project: project) }
+
+    let!(:other_pipeline) { create(:ci_pipeline, project: project) }
+
+    before do
+      create(:ci_sources_pipeline,
+             source_job: create(:ci_build, pipeline: upstream_pipeline),
+             source_project: project,
+             pipeline: child_pipeline,
+             project: project)
+    end
+
+    it 'only returns older pipelines outside pipeline family' do
+      expect(before_pipeline).to contain_exactly(older_other_pipeline)
     end
   end
 
@@ -1488,6 +1532,35 @@ describe Ci::Pipeline, :mailer do
              sha: project.commit.sha)
     end
 
+    describe '#lazy_ref_commit' do
+      let(:another) do
+        create(:ci_pipeline,
+               project: project,
+               ref: 'feature',
+               sha: project.commit('feature').sha)
+      end
+
+      let(:unicode) do
+        create(:ci_pipeline,
+               project: project,
+               ref: 'ü/unicode/multi-byte')
+      end
+
+      it 'returns the latest commit for a ref lazily' do
+        expect(project.repository)
+          .to receive(:list_commits_by_ref_name).once
+          .and_call_original
+
+        pipeline.lazy_ref_commit
+        another.lazy_ref_commit
+        unicode.lazy_ref_commit
+
+        expect(pipeline.lazy_ref_commit.id).to eq pipeline.sha
+        expect(another.lazy_ref_commit.id).to eq another.sha
+        expect(unicode.lazy_ref_commit).to be_nil
+      end
+    end
+
     describe '#latest?' do
       context 'with latest sha' do
         it 'returns true' do
@@ -1496,17 +1569,26 @@ describe Ci::Pipeline, :mailer do
       end
 
       context 'with a branch name as the ref' do
-        it 'looks up commit with the full ref name' do
-          expect(pipeline.project).to receive(:commit).with('refs/heads/master').and_call_original
+        it 'looks up a commit for a branch' do
+          expect(pipeline.ref).to eq 'master'
+          expect(pipeline).to be_latest
+        end
+      end
 
+      context 'with a tag name as a ref' do
+        it 'looks up a commit for a tag' do
+          expect(project.repository.branch_names).not_to include 'v1.0.0'
+
+          pipeline.update(sha: project.commit('v1.0.0').sha, ref: 'v1.0.0', tag: true)
+
+          expect(pipeline).to be_tag
           expect(pipeline).to be_latest
         end
       end
 
       context 'with not latest sha' do
         before do
-          pipeline.update(
-            sha: project.commit("#{project.default_branch}~1").sha)
+          pipeline.update(sha: project.commit("#{project.default_branch}~1").sha)
         end
 
         it 'returns false' do
@@ -1932,6 +2014,23 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '.last_finished_for_ref_id' do
+    let(:project) { create(:project, :repository) }
+    let(:branch) { project.default_branch }
+    let(:ref) { project.ci_refs.take }
+    let(:config_source) { Ci::PipelineEnums.config_sources[:parameter_source] }
+    let!(:pipeline1) { create(:ci_pipeline, :success, project: project, ref: branch) }
+    let!(:pipeline2) { create(:ci_pipeline, :success, project: project, ref: branch) }
+    let!(:pipeline3) { create(:ci_pipeline, :failed, project: project, ref: branch) }
+    let!(:pipeline4) { create(:ci_pipeline, :success, project: project, ref: branch) }
+    let!(:pipeline5) { create(:ci_pipeline, :success, project: project, ref: branch, config_source: config_source) }
+
+    it 'returns the expected pipeline' do
+      result = described_class.last_finished_for_ref_id(ref.id)
+      expect(result).to eq(pipeline4)
+    end
+  end
+
   describe '.internal_sources' do
     subject { described_class.internal_sources }
 
@@ -2087,7 +2186,7 @@ describe Ci::Pipeline, :mailer do
 
       it 'raises an exception' do
         expect { pipeline.update_legacy_status }
-          .to raise_error(HasStatus::UnknownStatusError)
+          .to raise_error(Ci::HasStatus::UnknownStatusError)
       end
     end
   end
@@ -2580,6 +2679,55 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#same_family_pipeline_ids' do
+    subject(:same_family_pipeline_ids) { pipeline.same_family_pipeline_ids }
+
+    context 'when pipeline is not child nor parent' do
+      it 'returns just the pipeline id' do
+        expect(same_family_pipeline_ids).to contain_exactly(pipeline.id)
+      end
+    end
+
+    context 'when pipeline is child' do
+      let(:parent) { create(:ci_pipeline, project: pipeline.project) }
+      let(:sibling) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create(:ci_sources_pipeline,
+               source_job: create(:ci_build, pipeline: parent),
+               source_project: parent.project,
+               pipeline: pipeline,
+               project: pipeline.project)
+
+        create(:ci_sources_pipeline,
+               source_job: create(:ci_build, pipeline: parent),
+               source_project: parent.project,
+               pipeline: sibling,
+               project: sibling.project)
+      end
+
+      it 'returns parent sibling and self ids' do
+        expect(same_family_pipeline_ids).to contain_exactly(parent.id, pipeline.id, sibling.id)
+      end
+    end
+
+    context 'when pipeline is parent' do
+      let(:child) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create(:ci_sources_pipeline,
+               source_job: create(:ci_build, pipeline: pipeline),
+               source_project: pipeline.project,
+               pipeline: child,
+               project: child.project)
+      end
+
+      it 'returns self and child ids' do
+        expect(same_family_pipeline_ids).to contain_exactly(pipeline.id, child.id)
+      end
+    end
+  end
+
   describe '#stuck?' do
     before do
       create(:ci_build, :pending, pipeline: pipeline)
@@ -2598,6 +2746,28 @@ describe Ci::Pipeline, :mailer do
 
       it 'is not stuck' do
         expect(pipeline).not_to be_stuck
+      end
+    end
+  end
+
+  describe '#add_error_message' do
+    let(:pipeline) { build_stubbed(:ci_pipeline) }
+
+    it 'adds a new pipeline error message' do
+      pipeline.add_error_message('The error message')
+
+      expect(pipeline.messages.map(&:content)).to contain_exactly('The error message')
+    end
+
+    context 'when feature flag ci_store_pipeline_messages is disabled' do
+      before do
+        stub_feature_flags(ci_store_pipeline_messages: false)
+      end
+
+      it ' does not add pipeline error message' do
+        pipeline.add_error_message('The error message')
+
+        expect(pipeline.messages).to be_empty
       end
     end
   end
@@ -2825,6 +2995,16 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#batch_lookup_report_artifact_for_file_type' do
+    context 'with code quality report artifact' do
+      let(:pipeline) { create(:ci_pipeline, :with_codequality_report, project: project) }
+
+      it "returns the code quality artifact" do
+        expect(pipeline.batch_lookup_report_artifact_for_file_type(:codequality)).to eq(pipeline.job_artifacts.sample)
+      end
+    end
+  end
+
   describe '#latest_report_builds' do
     it 'returns build with test artifacts' do
       test_build = create(:ci_build, :test_reports, pipeline: pipeline, project: project)
@@ -2888,6 +3068,39 @@ describe Ci::Pipeline, :mailer do
       let(:pipeline) { create(:ci_pipeline, :success, project: project) }
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#test_report_summary' do
+    subject { pipeline.test_report_summary }
+
+    context 'when pipeline has multiple builds with report results' do
+      let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+      before do
+        create(:ci_build, :success, :report_results, name: 'rspec', pipeline: pipeline, project: project)
+        create(:ci_build, :success, :report_results, name: 'java', pipeline: pipeline, project: project)
+      end
+
+      it 'returns test report summary with collected data', :aggregate_failures do
+        expect(subject.total_time).to be(0.84)
+        expect(subject.total_count).to be(4)
+        expect(subject.success_count).to be(0)
+        expect(subject.failed_count).to be(0)
+        expect(subject.error_count).to be(4)
+        expect(subject.skipped_count).to be(0)
+      end
+    end
+
+    context 'when pipeline does not have any builds with report results' do
+      it 'returns empty test report sumary', :aggregate_failures do
+        expect(subject.total_time).to be(0)
+        expect(subject.total_count).to be(0)
+        expect(subject.success_count).to be(0)
+        expect(subject.failed_count).to be(0)
+        expect(subject.error_count).to be(0)
+        expect(subject.skipped_count).to be(0)
+      end
     end
   end
 
@@ -3069,6 +3282,32 @@ describe Ci::Pipeline, :mailer do
         end
       end
     end
+
+    context 'when transitioning to success' do
+      context 'when feature is enabled' do
+        before do
+          stub_feature_flags(keep_latest_artifacts_for_ref: true)
+        end
+
+        it 'calls the PipelineSuccessUnlockArtifactsWorker' do
+          expect(Ci::PipelineSuccessUnlockArtifactsWorker).to receive(:perform_async).with(pipeline.id)
+
+          pipeline.succeed!
+        end
+      end
+
+      context 'when feature is disabled' do
+        before do
+          stub_feature_flags(keep_latest_artifacts_for_ref: false)
+        end
+
+        it 'does not call the PipelineSuccessUnlockArtifactsWorker' do
+          expect(Ci::PipelineSuccessUnlockArtifactsWorker).not_to receive(:perform_async)
+
+          pipeline.succeed!
+        end
+      end
+    end
   end
 
   describe '#default_branch?' do
@@ -3133,8 +3372,8 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '#error_messages' do
-    subject { pipeline.error_messages }
+  describe '#full_error_messages' do
+    subject { pipeline.full_error_messages }
 
     before do
       pipeline.valid?

@@ -1,0 +1,5 @@
+---
+title: Fix routing for paths starting with help and projects
+merge_request: 36048
+author:
+type: fixed

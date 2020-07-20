@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectImportOptions do
+RSpec.describe ProjectImportOptions do
   let(:project) { create(:project, :import_started) }
   let(:job) { { 'args' => [project.id, nil, nil], 'jid' => '123' } }
   let(:worker_class) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::StageMethods do
+RSpec.describe Gitlab::GithubImport::StageMethods do
   let(:project) { create(:project) }
   let(:worker) do
     Class.new { include(Gitlab::GithubImport::StageMethods) }.new

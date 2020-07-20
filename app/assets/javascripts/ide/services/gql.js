@@ -1,8 +1,21 @@
+import { memoize } from 'lodash';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 
-export default createGqClient(
-  {},
-  {
-    fetchPolicy: fetchPolicies.NO_CACHE,
-  },
+/**
+ * Returns a memoized client
+ *
+ * We defer creating the client so that importing this module does not cause any side-effects.
+ * Creating the client immediately caused issues with miragejs where the gql client uses the
+ * real fetch() instead of the shimmed one.
+ */
+const getClient = memoize(() =>
+  createGqClient(
+    {},
+    {
+      fetchPolicy: fetchPolicies.NO_CACHE,
+    },
+  ),
 );
+
+// eslint-disable-next-line import/prefer-default-export
+export const query = (...args) => getClient().query(...args);

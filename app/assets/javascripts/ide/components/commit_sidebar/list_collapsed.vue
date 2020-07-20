@@ -75,7 +75,7 @@ export default {
       :title="titleTooltip"
       data-container="body"
       data-placement="left"
-      class="append-bottom-15"
+      class="gl-mb-5"
     >
       <icon v-once :name="iconName" :size="18" />
     </div>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Pipeline do
+RSpec.describe Banzai::Pipeline do
   describe '.[]' do
     subject { described_class[name] }
 

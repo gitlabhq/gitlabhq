@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-describe Emails::Pipelines do
+RSpec.describe Emails::Pipelines do
   include EmailSpec::Matchers
 
   let_it_be(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Aws::ProvisionService do
+RSpec.describe Clusters::Aws::ProvisionService do
   describe '#execute' do
     let(:provider) { create(:cluster_provider_aws) }
 

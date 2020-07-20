@@ -10,6 +10,8 @@ export const sourceContentBody = `## On this page
 
 - TOC
 {:toc .hidden-md .hidden-lg}
+
+![image](path/to/image1.png)
 `;
 export const sourceContent = `${sourceContentHeader}${sourceContentSpacing}${sourceContentBody}`;
 export const sourceContentTitle = 'Handbook';
@@ -48,3 +50,8 @@ export const createMergeRequestResponse = {
 };
 
 export const trackingCategory = 'projects:static_site_editor:show';
+
+export const images = new Map([
+  ['path/to/image1.png', 'image1-content'],
+  ['path/to/image2.png', 'image2-content'],
+]);

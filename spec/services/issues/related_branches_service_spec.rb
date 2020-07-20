@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issues::RelatedBranchesService do
+RSpec.describe Issues::RelatedBranchesService do
   let_it_be(:developer) { create(:user) }
   let_it_be(:issue) { create(:issue) }
   let(:user) { developer }

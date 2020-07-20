@@ -2,17 +2,17 @@
 - can_create_project = current_user.can?(:create_projects, namespace)
 
 - if forked_project = namespace.find_fork_of(@project)
-  .bordered-box.fork-thumbnail.text-center.prepend-left-default.append-right-default.prepend-top-default.append-bottom-default.forked
+  .bordered-box.fork-thumbnail.text-center.gl-ml-3.gl-mr-3.gl-mt-3.gl-mb-3.forked
     = link_to project_path(forked_project) do
       - if /no_((\w*)_)*avatar/.match(avatar)
         = group_icon(namespace, class: "avatar rect-avatar s100 identicon mx-auto")
       - else
         .avatar-container.s100.mx-auto
           = image_tag(avatar, class: "avatar s100")
-      %h5.prepend-top-default
+      %h5.gl-mt-3
         = namespace.human_name
 - else
-  .bordered-box.fork-thumbnail.text-center.prepend-left-default.append-right-default.prepend-top-default.append-bottom-default{ class: ("disabled" unless can_create_project) }
+  .bordered-box.fork-thumbnail.text-center.gl-ml-3.gl-mr-3.gl-mt-3.gl-mb-3{ class: ("disabled" unless can_create_project) }
     = link_to project_forks_path(@project, namespace_key: namespace.id),
         method: "POST",
         class: ("disabled has-tooltip" unless can_create_project),
@@ -22,5 +22,5 @@
       - else
         .avatar-container.s100.mx-auto
           = image_tag(avatar, class: "avatar s100")
-      %h5.prepend-top-default{ data: { qa_selector: 'fork_namespace_content', qa_name: namespace.human_name } }
+      %h5.gl-mt-3{ data: { qa_selector: 'fork_namespace_content', qa_name: namespace.human_name } }
         = namespace.human_name

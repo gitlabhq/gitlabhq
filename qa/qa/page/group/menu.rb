@@ -7,9 +7,11 @@ module QA
         include SubMenus::Common
 
         view 'app/views/layouts/nav/sidebar/_group.html.haml' do
-          element :group_settings_item
-          element :group_members_item
           element :general_settings_link
+          element :group_issues_item
+          element :group_members_item
+          element :group_milestones_link
+          element :group_settings_item
         end
 
         view 'app/views/layouts/nav/sidebar/_analytics_links.html.haml' do
@@ -42,6 +44,25 @@ module QA
             within_submenu(:group_sidebar_submenu) do
               click_element(:general_settings_link)
             end
+          end
+        end
+
+        def go_to_milestones
+          hover_issues do
+            within_submenu do
+              click_element(:group_milestones_link)
+            end
+          end
+        end
+
+        private
+
+        def hover_issues
+          within_sidebar do
+            scroll_to_element(:group_issues_item)
+            find_element(:group_issues_item).hover
+
+            yield
           end
         end
       end

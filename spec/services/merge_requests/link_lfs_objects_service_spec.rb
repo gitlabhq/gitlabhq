@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::LinkLfsObjectsService, :sidekiq_inline do
+RSpec.describe MergeRequests::LinkLfsObjectsService, :sidekiq_inline do
   include ProjectForksHelper
   include RepoHelpers
 

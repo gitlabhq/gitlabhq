@@ -3,7 +3,7 @@ import { GlAlert, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
-import createIssueQuery from '~/alert_management/graphql/mutations/create_issue_from_alert.graphql';
+import createIssueMutation from '~/alert_management/graphql/mutations/create_issue_from_alert.mutation.graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
 import {
   trackAlertsDetailsViewsOptions,
@@ -19,18 +19,20 @@ describe('AlertDetails', () => {
   let mock;
   const projectPath = 'root/alerts';
   const projectIssuesPath = 'root/alerts/-/issues';
+  const projectId = '1';
 
   const findDetailsTable = () => wrapper.find(GlTable);
 
   function mountComponent({ data, loading = false, mountMethod = shallowMount, stubs = {} } = {}) {
     wrapper = mountMethod(AlertDetails, {
-      propsData: {
+      provide: {
         alertId: 'alertId',
         projectPath,
         projectIssuesPath,
+        projectId,
       },
       data() {
-        return { alert: { ...mockAlert }, ...data };
+        return { alert: { ...mockAlert }, sidebarStatus: false, ...data };
       },
       mocks: {
         $apollo: {
@@ -39,6 +41,7 @@ describe('AlertDetails', () => {
             alert: {
               loading,
             },
+            sidebarStatus: {},
           },
         },
       },
@@ -52,9 +55,7 @@ describe('AlertDetails', () => {
 
   afterEach(() => {
     if (wrapper) {
-      if (wrapper) {
-        wrapper.destroy();
-      }
+      wrapper.destroy();
     }
     mock.restore();
   });
@@ -133,7 +134,7 @@ describe('AlertDetails', () => {
       it('should display "View issue" button that links the issue page when issue exists', () => {
         const issueIid = '3';
         mountComponent({
-          data: { alert: { ...mockAlert, issueIid } },
+          data: { alert: { ...mockAlert, issueIid }, sidebarStatus: false },
         });
         expect(findViewIssueBtn().exists()).toBe(true);
         expect(findViewIssueBtn().attributes('href')).toBe(joinPaths(projectIssuesPath, issueIid));
@@ -146,8 +147,11 @@ describe('AlertDetails', () => {
           mountMethod: mount,
           data: { alert: { ...mockAlert, issueIid } },
         });
-        expect(findViewIssueBtn().exists()).toBe(false);
-        expect(findCreateIssueBtn().exists()).toBe(true);
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findViewIssueBtn().exists()).toBe(false);
+          expect(findCreateIssueBtn().exists()).toBe(true);
+        });
       });
 
       it('calls `$apollo.mutate` with `createIssueQuery`', () => {
@@ -158,7 +162,7 @@ describe('AlertDetails', () => {
 
         findCreateIssueBtn().trigger('click');
         expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-          mutation: createIssueQuery,
+          mutation: createIssueMutation,
           variables: {
             iid: mockAlert.iid,
             projectPath,
@@ -206,6 +210,13 @@ describe('AlertDetails', () => {
       it('displays a error state correctly', () => {
         mountComponent({ data: { errored: true } });
         expect(wrapper.find(GlAlert).exists()).toBe(true);
+      });
+
+      it('renders html-errors correctly', () => {
+        mountComponent({
+          data: { errored: true, sidebarErrorMessage: '<span data-testid="htmlError" />' },
+        });
+        expect(wrapper.find('[data-testid="htmlError"]').exists()).toBe(true);
       });
 
       it('does not display an error when dismissed', () => {

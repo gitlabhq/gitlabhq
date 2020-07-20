@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProfilesHelper do
+RSpec.describe ProfilesHelper do
   describe '#commit_email_select_options' do
     it 'returns an array with private commit email along with all the verified emails' do
       user = create(:user)

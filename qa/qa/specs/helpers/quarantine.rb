@@ -18,6 +18,10 @@ module QA
 
             config.before do |example|
               Quarantine.skip_or_run_quarantined_tests_or_contexts(config.inclusion_filter.rules, example)
+
+              if example.metadata.key?(:only)
+                skip('Test is not compatible with this environment') unless Runtime::Env.address_matches?(example.metadata[:only])
+              end
             end
           end
         end
@@ -46,27 +50,35 @@ module QA
             skip("Only running tests tagged with :quarantine and any of #{included_filters.keys}") if should_skip_when_focused?(example.metadata, included_filters)
           else
             if example.metadata.key?(:quarantine)
-              quarantine_message = %w(In quarantine)
               quarantine_tag = example.metadata[:quarantine]
 
-              if !!quarantine_tag
-                quarantine_message << case quarantine_tag
-                                      when String
-                                        ": #{quarantine_tag}"
-                                      when Hash
-                                        ": #{quarantine_tag[:issue]}"
-                                      else
-                                        ''
-                                      end
+              if quarantine_tag&.is_a?(Hash) && quarantine_tag&.key?(:only)
+                # If the :quarantine hash contains :only, we respect that.
+                # For instance `quarantine: { only: { subdomain: :staging } }` will only quarantine the test when it runs against staging.
+                return unless Runtime::Env.address_matches?(quarantine_tag[:only])
               end
 
-              skip(quarantine_message.join(' ').strip)
+              skip(quarantine_message(quarantine_tag))
             end
           end
         end
 
         def filters_other_than_quarantine(filter)
           filter.reject { |key, _| key == :quarantine }
+        end
+
+        def quarantine_message(quarantine_tag)
+          quarantine_message = %w(In quarantine)
+          quarantine_message << case quarantine_tag
+                                when String
+                                  ": #{quarantine_tag}"
+                                when Hash
+                                  quarantine_tag.key?(:issue) ? ": #{quarantine_tag[:issue]}" : ''
+                                else
+                                  ''
+                                end
+
+          quarantine_message.join(' ').strip
         end
 
         # Checks if a test or context should be skipped.

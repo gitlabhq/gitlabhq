@@ -23,6 +23,9 @@ module QA
             raise "Timed out waiting for the build trace to load" unless loaded?
             raise "Timed out waiting for the status to be a valid completed state" unless completed?(timeout: timeout)
 
+            job_log = find_element(:job_log_content).text
+            QA::Runtime::Logger.debug(" \n\n ------- Job log: ------- \n\n #{job_log} \n -------")
+
             passed?
           end
 

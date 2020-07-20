@@ -1,6 +1,6 @@
 import DashboardPage from '../pages/dashboard_page.vue';
 
-import { BASE_DASHBOARD_PAGE } from './constants';
+import { BASE_DASHBOARD_PAGE, CUSTOM_DASHBOARD_PAGE } from './constants';
 
 /**
  * Because the cluster health page uses the dashboard
@@ -12,7 +12,12 @@ import { BASE_DASHBOARD_PAGE } from './constants';
 export default [
   {
     name: BASE_DASHBOARD_PAGE,
-    path: '*',
+    path: '/',
+    component: DashboardPage,
+  },
+  {
+    name: CUSTOM_DASHBOARD_PAGE,
+    path: '/:dashboard(.*)',
     component: DashboardPage,
   },
 ];

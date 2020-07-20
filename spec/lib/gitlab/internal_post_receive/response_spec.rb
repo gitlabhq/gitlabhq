@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::InternalPostReceive::Response do
+RSpec.describe Gitlab::InternalPostReceive::Response do
   subject { described_class.new }
 
   describe '#add_merge_request_urls' do

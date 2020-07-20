@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Internal::Pages do
+RSpec.describe API::Internal::Pages do
   let(:auth_headers) do
     jwt_token = JWT.encode({ 'iss' => 'gitlab-pages' }, Gitlab::Pages.secret, 'HS256')
     { Gitlab::Pages::INTERNAL_API_REQUEST_HEADER => jwt_token }

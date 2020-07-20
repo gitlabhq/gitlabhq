@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::ProjectMembersResolver do
+RSpec.describe Resolvers::ProjectMembersResolver do
   include GraphqlHelpers
 
   context "with a group" do

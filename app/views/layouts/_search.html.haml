@@ -2,7 +2,7 @@
   = form_tag search_path, method: :get, class: 'form-inline' do |f|
     .search-input-container
       .search-input-wrap
-        .dropdown
+        .dropdown{ data: { url: search_autocomplete_path } }
           = search_field_tag 'search', nil, placeholder: _('Search or jump to…'),
                                             class: 'search-input dropdown-menu-toggle no-outline js-search-dashboard-options',
                                             spellcheck: false,
@@ -37,3 +37,6 @@
     -# workaround for non-JS feature specs, see spec/support/helpers/search_helpers.rb
     - if ENV['RAILS_ENV'] == 'test'
       %noscript= button_tag 'Search'
+    .search-autocomplete-opts.hide{ :'data-autocomplete-path' => search_autocomplete_path,
+                                    :'data-autocomplete-project-id' => search_context.project.try(:id),
+                                    :'data-autocomplete-project-ref' => search_context.ref }

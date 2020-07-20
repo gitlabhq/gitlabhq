@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo Troubleshooting **(PREMIUM ONLY)**
+# Troubleshooting Geo **(PREMIUM ONLY)**
 
 Setting up Geo requires careful attention to details and sometimes it's easy to
 miss a step.
@@ -452,13 +452,13 @@ to start again from scratch, there are a few steps that can help you:
    chown git:git /var/opt/gitlab/git-data/repositories
    ```
 
-   TIP: **Tip**
+   TIP: **Tip:**
    You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
    as soon as you confirmed that you don't need it anymore, to save disk space.
 
 1. _(Optional)_ Rename other data folders and create new ones
 
-   CAUTION: **Caution**:
+   CAUTION: **Caution:**
    You may still have files on the **secondary** node that have been removed from **primary** node but
    removal have not been reflected. If you skip this step, they will never be removed
    from this Geo node.
@@ -701,7 +701,8 @@ To check the configuration:
    Description          |
    ```
 
-   NOTE: **Note:** Pay particular attention to the host and port under
+   NOTE: **Note:**
+   Pay particular attention to the host and port under
    FDW options. That configuration should point to the Geo secondary
    database.
 

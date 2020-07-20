@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::Projects::ServicesResolver do
+RSpec.describe Resolvers::Projects::ServicesResolver do
   include GraphqlHelpers
 
   describe '#resolve' do

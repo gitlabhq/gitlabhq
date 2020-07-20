@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffFileEntity do
+RSpec.describe DiffFileEntity do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }

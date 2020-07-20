@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import { defaultAssignees, defaultMilestone } from './related_issuable_mock_data';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('RelatedIssuableItem', () => {
   let wrapper;
@@ -19,7 +20,7 @@ describe('RelatedIssuableItem', () => {
     idKey: 1,
     displayReference: 'gitlab-org/gitlab-test#1',
     pathIdSeparator: '#',
-    path: `${gl.TEST_HOST}/path`,
+    path: `${TEST_HOST}/path`,
     title: 'title',
     confidential: true,
     dueDate: '1990-12-31',

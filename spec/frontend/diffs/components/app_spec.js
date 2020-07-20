@@ -56,6 +56,7 @@ describe('diffs/components/app', () => {
         changesEmptyStateIllustration: '',
         dismissEndpoint: '',
         showSuggestPopover: true,
+        viewDiffsFileByFile: false,
         ...props,
       },
       provide,
@@ -827,6 +828,60 @@ describe('diffs/components/app', () => {
       wrapper.vm.hideTreeListIfJustOneFile();
 
       expect(toggleShowTreeList).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('file-by-file', () => {
+    it('renders a single diff', () => {
+      createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+        state.diffs.diffFiles.push({ file_hash: '123' });
+        state.diffs.diffFiles.push({ file_hash: '312' });
+      });
+
+      expect(wrapper.findAll(DiffFile).length).toBe(1);
+    });
+
+    describe('pagination', () => {
+      it('sets previous button as disabled', () => {
+        createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+          state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
+        });
+
+        expect(wrapper.find('[data-testid="singleFilePrevious"]').props('disabled')).toBe(true);
+        expect(wrapper.find('[data-testid="singleFileNext"]').props('disabled')).toBe(false);
+      });
+
+      it('sets next button as disabled', () => {
+        createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+          state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
+          state.diffs.currentDiffFileId = '312';
+        });
+
+        expect(wrapper.find('[data-testid="singleFilePrevious"]').props('disabled')).toBe(false);
+        expect(wrapper.find('[data-testid="singleFileNext"]').props('disabled')).toBe(true);
+      });
+
+      it.each`
+        currentDiffFileId | button                  | index
+        ${'123'}          | ${'singleFileNext'}     | ${1}
+        ${'312'}          | ${'singleFilePrevious'} | ${0}
+      `(
+        'it calls navigateToDiffFileIndex with $index when $button is clicked',
+        ({ currentDiffFileId, button, index }) => {
+          createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+            state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
+            state.diffs.currentDiffFileId = currentDiffFileId;
+          });
+
+          jest.spyOn(wrapper.vm, 'navigateToDiffFileIndex');
+
+          wrapper.find(`[data-testid="${button}"]`).vm.$emit('click');
+
+          return wrapper.vm.$nextTick().then(() => {
+            expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(index);
+          });
+        },
+      );
     });
   });
 });

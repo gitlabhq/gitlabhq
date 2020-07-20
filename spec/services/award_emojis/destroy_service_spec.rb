@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AwardEmojis::DestroyService do
+RSpec.describe AwardEmojis::DestroyService do
   let_it_be(:user) { create(:user) }
   let_it_be(:awardable) { create(:note) }
   let_it_be(:project) { awardable.project }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::GrafanaMetricEmbedService do
+RSpec.describe Metrics::Dashboard::GrafanaMetricEmbedService do
   include MetricsDashboardHelpers
   include ReactiveCachingHelpers
   include GrafanaApiHelpers
@@ -182,7 +182,7 @@ describe Metrics::Dashboard::GrafanaMetricEmbedService do
   end
 end
 
-describe Metrics::Dashboard::GrafanaUidParser do
+RSpec.describe Metrics::Dashboard::GrafanaUidParser do
   let_it_be(:grafana_integration) { create(:grafana_integration) }
   let_it_be(:project) { grafana_integration.project }
 
@@ -213,7 +213,7 @@ describe Metrics::Dashboard::GrafanaUidParser do
   end
 end
 
-describe Metrics::Dashboard::DatasourceNameParser do
+RSpec.describe Metrics::Dashboard::DatasourceNameParser do
   include GrafanaApiHelpers
 
   let(:grafana_url) { valid_grafana_dashboard_link('https://gitlab.grafana.net') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AddressableUrlValidator do
+RSpec.describe AddressableUrlValidator do
   let!(:badge) { build(:badge, link_url: 'http://www.example.com') }
 
   let(:validator) { described_class.new(validator_options.reverse_merge(attributes: [:link_url])) }

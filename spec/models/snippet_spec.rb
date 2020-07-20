@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Snippet do
+RSpec.describe Snippet do
   describe 'modules' do
     subject { described_class }
 
@@ -20,6 +20,7 @@ describe Snippet do
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:user_mentions).class_name("SnippetUserMention") }
     it { is_expected.to have_one(:snippet_repository) }
+    it { is_expected.to have_one(:statistics).class_name('SnippetStatistics').dependent(:destroy) }
   end
 
   describe 'validation' do
@@ -88,6 +89,17 @@ describe Snippet do
           end
         end
       end
+    end
+  end
+
+  describe 'callbacks' do
+    it 'creates snippet statistics when the snippet is created' do
+      snippet = build(:snippet)
+      expect(snippet.statistics).to be_nil
+
+      snippet.save
+
+      expect(snippet.statistics).to be_persisted
     end
   end
 
@@ -747,6 +759,31 @@ describe Snippet do
         stub_feature_flags(snippet_multiple_files: false)
 
         expect(subject).to eq described_class::MAX_SINGLE_FILE_COUNT
+      end
+    end
+  end
+
+  describe '#list_files' do
+    let_it_be(:snippet) { create(:snippet, :repository) }
+    let(:ref) { 'test-ref' }
+
+    subject { snippet.list_files(ref) }
+
+    context 'when snippet has a repository' do
+      it 'lists files from the repository with the ref' do
+        expect(snippet.repository).to receive(:ls_files).with(ref)
+
+        subject
+      end
+    end
+
+    context 'when snippet does not have a repository' do
+      before do
+        allow(snippet.repository).to receive(:empty?).and_return(true)
+      end
+
+      it 'returns an empty array' do
+        expect(subject).to eq []
       end
     end
   end

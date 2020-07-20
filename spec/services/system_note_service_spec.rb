@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SystemNoteService do
+RSpec.describe SystemNoteService do
   include Gitlab::Routing
   include RepoHelpers
   include AssetsHelpers
@@ -659,6 +659,50 @@ describe SystemNoteService do
       end
 
       described_class.design_discussion_added(discussion_note)
+    end
+  end
+
+  describe '.approve_mr' do
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:approve_mr)
+      end
+
+      described_class.approve_mr(noteable, author)
+    end
+  end
+
+  describe '.unapprove_mr' do
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:unapprove_mr)
+      end
+
+      described_class.unapprove_mr(noteable, author)
+    end
+  end
+
+  describe '.change_alert_status' do
+    let(:alert) { build(:alert_management_alert) }
+
+    it 'calls AlertManagementService' do
+      expect_next_instance_of(SystemNotes::AlertManagementService) do |service|
+        expect(service).to receive(:change_alert_status).with(alert)
+      end
+
+      described_class.change_alert_status(alert, author)
+    end
+  end
+
+  describe '.new_alert_issue' do
+    let(:alert) { build(:alert_management_alert, :with_issue) }
+
+    it 'calls AlertManagementService' do
+      expect_next_instance_of(SystemNotes::AlertManagementService) do |service|
+        expect(service).to receive(:new_alert_issue).with(alert, alert.issue)
+      end
+
+      described_class.new_alert_issue(alert, alert.issue, author)
     end
   end
 end

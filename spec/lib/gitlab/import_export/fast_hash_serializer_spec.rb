@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::FastHashSerializer do
+RSpec.describe Gitlab::ImportExport::FastHashSerializer do
   # FastHashSerializer#execute generates the hash which is not easily accessible
   # and includes `JSONBatchRelation` items which are serialized at this point.
   # Wrapping the result into JSON generating/parsing is for making
@@ -173,14 +173,6 @@ describe Gitlab::ImportExport::FastHashSerializer do
 
   it 'has merge request resource label events' do
     expect(subject['merge_requests'].first['resource_label_events']).not_to be_empty
-  end
-
-  it 'saves the correct service type' do
-    expect(subject['services'].first['type']).to eq('CustomIssueTrackerService')
-  end
-
-  it 'saves the properties for a service' do
-    expect(subject['services'].first['properties']).to eq('one' => 'value')
   end
 
   it 'has project feature' do

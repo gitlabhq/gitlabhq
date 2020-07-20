@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::Seed do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user, developer_projects: [project]) }
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require Rails.root.join('db', 'migrate', '20190402150158_backport_enterprise_schema.rb')
 
-describe BackportEnterpriseSchema, schema: 20190329085614 do
+RSpec.describe BackportEnterpriseSchema, schema: 20190329085614 do
   include MigrationsHelpers
 
   def drop_if_exists(table)

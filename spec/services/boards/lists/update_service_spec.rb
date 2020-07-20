@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Boards::Lists::UpdateService do
+RSpec.describe Boards::Lists::UpdateService do
   let(:user) { create(:user) }
   let!(:list) { create(:list, board: board, position: 0) }
 

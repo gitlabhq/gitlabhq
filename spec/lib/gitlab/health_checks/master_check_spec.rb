@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative './simple_check_shared'
 
-describe Gitlab::HealthChecks::MasterCheck do
+RSpec.describe Gitlab::HealthChecks::MasterCheck do
   let(:result_class) { Gitlab::HealthChecks::Result }
 
   before do

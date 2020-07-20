@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Todos do
+RSpec.describe API::Todos do
   let_it_be(:group) { create(:group) }
   let_it_be(:project_1) { create(:project, :repository, group: group) }
   let_it_be(:project_2) { create(:project) }

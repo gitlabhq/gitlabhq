@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Utils::UsageData do
+RSpec.describe Gitlab::Utils::UsageData do
   describe '#count' do
     let(:relation) { double(:relation) }
 
@@ -88,12 +88,20 @@ describe Gitlab::Utils::UsageData do
     end
 
     context 'when Prometheus is disabled' do
-      it 'returns nil' do
+      before do
         expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+      end
 
+      it 'returns nil by default' do
         result = described_class.with_prometheus_client { |client| client }
 
         expect(result).to be nil
+      end
+
+      it 'returns fallback if provided' do
+        result = described_class.with_prometheus_client(fallback: []) { |client| client }
+
+        expect(result).to eq([])
       end
     end
   end
@@ -106,6 +114,16 @@ describe Gitlab::Utils::UsageData do
 
       expect(result).to eq(42)
       expect(duration).to eq(2)
+    end
+  end
+
+  describe '#with_finished_at' do
+    it 'adds a timestamp to the hash yielded by the block' do
+      freeze_time do
+        result = described_class.with_finished_at(:current_time) { { a: 1 } }
+
+        expect(result).to eq(a: 1, current_time: Time.now)
+      end
     end
   end
 end

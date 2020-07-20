@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Deployments::UpdateService do
+RSpec.describe Deployments::UpdateService do
   let(:deploy) { create(:deployment) }
 
   describe '#execute' do

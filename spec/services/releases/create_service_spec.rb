@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Releases::CreateService do
+RSpec.describe Releases::CreateService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:tag_name) { project.repository.tag_names.first }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issues::CreateService do
+RSpec.describe Issues::CreateService do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
@@ -284,7 +284,9 @@ describe Issues::CreateService do
       end
     end
 
-    it_behaves_like 'new issuable record that supports quick actions'
+    it_behaves_like 'issuable record that supports quick actions' do
+      let(:issuable) { described_class.new(project, user, params).execute }
+    end
 
     context 'Quick actions' do
       context 'with assignee and milestone in params and command' do

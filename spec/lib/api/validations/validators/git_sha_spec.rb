@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Validations::Validators::GitSha do
+RSpec.describe API::Validations::Validators::GitSha do
   include ApiValidatorsHelpers
 
   let(:sha) { RepoHelpers.sample_commit.id }

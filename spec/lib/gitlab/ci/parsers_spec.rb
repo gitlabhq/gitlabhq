@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Parsers do
+RSpec.describe Gitlab::Ci::Parsers do
   describe '.fabricate!' do
     subject { described_class.fabricate!(file_type) }
 

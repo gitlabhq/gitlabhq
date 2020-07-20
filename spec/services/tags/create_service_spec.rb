@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Tags::CreateService do
+RSpec.describe Tags::CreateService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }

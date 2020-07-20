@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::BulkImporting do
+RSpec.describe Gitlab::GithubImport::BulkImporting do
   let(:importer) do
     Class.new { include(Gitlab::GithubImport::BulkImporting) }.new
   end

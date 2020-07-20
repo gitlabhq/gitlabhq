@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NamespacePolicy do
+RSpec.describe NamespacePolicy do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
   let(:admin) { create(:admin) }

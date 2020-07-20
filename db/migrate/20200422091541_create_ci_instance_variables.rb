@@ -26,8 +26,6 @@ class CreateCiInstanceVariables < ActiveRecord::Migration[6.0]
   end
 
   def down
-    # rubocop:disable Migration/DropTable
     drop_table :ci_instance_variables
-    # rubocop:enable Migration/DropTable
   end
 end

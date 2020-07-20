@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::Tree::TreeType do
+RSpec.describe Types::Tree::TreeType do
   specify { expect(described_class.graphql_name).to eq('Tree') }
 
   specify { expect(described_class).to have_graphql_fields(:trees, :submodules, :blobs, :last_commit) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Seed::Deployment do
+RSpec.describe Gitlab::Ci::Pipeline::Seed::Deployment do
   let_it_be(:project, refind: true) { create(:project, :repository) }
   let(:pipeline) do
     create(:ci_pipeline, project: project,
@@ -94,6 +94,19 @@ describe Gitlab::Ci::Pipeline::Seed::Deployment do
         {
           environment: 'production',
           options: { environment: { name: 'production', action: 'stop' } }
+        }
+      end
+
+      it 'returns nothing' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when job has environment attribute with prepare action' do
+      let(:attributes) do
+        {
+          environment: 'production',
+          options: { environment: { name: 'production', action: 'prepare' } }
         }
       end
 

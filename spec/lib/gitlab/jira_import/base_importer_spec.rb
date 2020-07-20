@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JiraImport::BaseImporter do
+RSpec.describe Gitlab::JiraImport::BaseImporter do
   include JiraServiceHelper
 
   let(:project) { create(:project) }

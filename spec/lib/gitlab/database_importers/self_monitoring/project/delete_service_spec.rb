@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DatabaseImporters::SelfMonitoring::Project::DeleteService do
+RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::DeleteService do
   describe '#execute' do
     let!(:application_setting) { create(:application_setting) }
     let(:result) { subject.execute }

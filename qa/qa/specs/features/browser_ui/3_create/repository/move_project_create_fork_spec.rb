@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217002', type: :investigating } do
+  RSpec.describe 'Create', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217002', type: :investigating } do
     describe 'Gitaly repository storage', :orchestrated, :repository_storage, :requires_admin do
       let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
       let(:parent_project) do

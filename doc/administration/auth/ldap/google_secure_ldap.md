@@ -34,7 +34,8 @@ The steps below cover:
    'Entire domain (GitLab)' or 'Selected organizational units' for both 'Verify user
    credentials' and 'Read user information'. Select 'Add LDAP Client'
 
-   TIP: **Tip:** If you plan to use GitLab [LDAP Group Sync](index.md#group-sync-starter-only)
+   TIP: **Tip:**
+   If you plan to use GitLab [LDAP Group Sync](index.md#group-sync-starter-only)
    , turn on 'Read group information'.
 
    ![Add LDAP Client Step 2](img/google_secure_ldap_add_step_2.png)

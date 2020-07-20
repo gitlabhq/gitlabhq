@@ -45,13 +45,5 @@ module Ci
         end
       end
     end
-
-    private
-
-    def validate_plan_limit_not_exceeded
-      if Gitlab::Ci::Features.instance_level_variables_limit_enabled?
-        super
-      end
-    end
   end
 end

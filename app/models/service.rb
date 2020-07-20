@@ -7,9 +7,12 @@ class Service < ApplicationRecord
   include Importable
   include ProjectServicesLoggable
   include DataFields
+  include IgnorableColumns
+
+  ignore_columns %i[title description], remove_with: '13.4', remove_after: '2020-09-22'
 
   SERVICE_NAMES = %w[
-    alerts asana assembla bamboo bugzilla buildkite campfire custom_issue_tracker discord
+    alerts asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
     drone_ci emails_on_push external_wiki flowdock hangouts_chat hipchat irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack
@@ -357,6 +360,14 @@ class Service < ApplicationRecord
     service
   end
 
+  def self.instance_exists_for?(type)
+    exists?(instance: true, type: type)
+  end
+
+  def self.instance_for(type)
+    find_by(instance: true, type: type)
+  end
+
   # override if needed
   def supports_data_fields?
     false
@@ -381,30 +392,7 @@ class Service < ApplicationRecord
   end
 
   def self.event_description(event)
-    case event
-    when "push", "push_events"
-      "Event will be triggered by a push to the repository"
-    when "tag_push", "tag_push_events"
-      "Event will be triggered when a new tag is pushed to the repository"
-    when "note", "note_events"
-      "Event will be triggered when someone adds a comment"
-    when "issue", "issue_events"
-      "Event will be triggered when an issue is created/updated/closed"
-    when "confidential_issue", "confidential_issue_events"
-      "Event will be triggered when a confidential issue is created/updated/closed"
-    when "merge_request", "merge_request_events"
-      "Event will be triggered when a merge request is created/updated/merged"
-    when "pipeline", "pipeline_events"
-      "Event will be triggered when a pipeline status changes"
-    when "wiki_page", "wiki_page_events"
-      "Event will be triggered when a wiki page is created/updated"
-    when "commit", "commit_events"
-      "Event will be triggered when a commit is created/updated"
-    when "deployment"
-      "Event will be triggered when a deployment finishes"
-    when "alert"
-      "Event will be triggered when a new, unique alert is recorded"
-    end
+    ServicesHelper.service_event_description(event)
   end
 
   def valid_recipients?

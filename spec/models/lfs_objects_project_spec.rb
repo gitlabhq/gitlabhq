@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LfsObjectsProject do
+RSpec.describe LfsObjectsProject do
   let_it_be(:project) { create(:project) }
 
   subject do

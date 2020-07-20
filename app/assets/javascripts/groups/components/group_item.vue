@@ -104,7 +104,7 @@ export default {
       :class="{ 'project-row-contents': !isGroup }"
       class="group-row-contents d-flex align-items-center py-2 pr-3"
     >
-      <div class="folder-toggle-wrap append-right-4 d-flex align-items-center">
+      <div class="folder-toggle-wrap gl-mr-2 d-flex align-items-center">
         <item-caret :is-group-open="group.isOpen" />
         <item-type-icon :item-type="group.type" :is-group-open="group.isOpen" />
       </div>
@@ -140,7 +140,7 @@ export default {
             <item-stats-value
               :icon-name="visibilityIcon"
               :title="visibilityTooltip"
-              css-class="item-visibility d-inline-flex align-items-center gl-mt-3 append-right-4 text-secondary"
+              css-class="item-visibility d-inline-flex align-items-center gl-mt-3 gl-mr-2 text-secondary"
             />
             <span v-if="group.permission" class="user-access-role gl-mt-3">
               {{ group.permission }}

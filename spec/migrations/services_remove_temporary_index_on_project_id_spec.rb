@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200203104214_services_remove_temporary_index_on_project_id.rb')
 
-describe ServicesRemoveTemporaryIndexOnProjectId do
+RSpec.describe ServicesRemoveTemporaryIndexOnProjectId do
   let(:migration_instance) { described_class.new }
 
   it 'adds and removes temporary partial index in up and down methods' do

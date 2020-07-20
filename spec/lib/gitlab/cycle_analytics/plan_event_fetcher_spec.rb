@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::PlanEventFetcher do
+RSpec.describe Gitlab::CycleAnalytics::PlanEventFetcher do
   let(:stage_name) { :plan }
 
   it_behaves_like 'default query config' do

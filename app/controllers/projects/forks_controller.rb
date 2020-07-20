@@ -3,6 +3,7 @@
 class Projects::ForksController < Projects::ApplicationController
   include ContinueParams
   include RendersMemberAccess
+  include RendersProjectsList
   include Gitlab::Utils::StrongMemoize
 
   # Authorize

@@ -7,6 +7,8 @@ RSpec.describe 'Group empty states' do
   let(:user) { create(:group_member, :developer, user: create(:user), group: group ).user }
 
   before do
+    stub_feature_flags(vue_issuables_list: false)
+
     sign_in(user)
   end
 

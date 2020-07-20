@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::View::Presenter::Base do
+RSpec.describe Gitlab::View::Presenter::Base do
   let(:project) { double(:project) }
   let(:presenter_class) do
     Struct.new(:subject).include(described_class)

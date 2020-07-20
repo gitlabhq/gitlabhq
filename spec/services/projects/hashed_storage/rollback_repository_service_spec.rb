@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis_shared_state do
+RSpec.describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis_shared_state do
   include GitHelpers
 
   let(:gitlab_shell) { Gitlab::Shell.new }

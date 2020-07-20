@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Branches::CreateService do
+RSpec.describe Branches::CreateService do
   subject(:service) { described_class.new(project, user) }
 
   let_it_be(:project) { create(:project_empty_repo) }

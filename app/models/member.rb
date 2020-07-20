@@ -38,6 +38,11 @@ class Member < ApplicationRecord
       scope: [:source_type, :source_id],
       allow_nil: true
     }
+  validates :user_id,
+    uniqueness: {
+      message: _('project bots cannot be added to other groups / projects')
+    },
+    if: :project_bot?
 
   # This scope encapsulates (most of) the conditions a row in the member table
   # must satisfy if it is a valid permission. Of particular note:
@@ -472,6 +477,10 @@ class Member < ApplicationRecord
 
   def update_highest_role_attribute
     user_id
+  end
+
+  def project_bot?
+    user&.project_bot?
   end
 end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExternalDiffUploader do
+RSpec.describe ExternalDiffUploader do
   let(:diff) { create(:merge_request).merge_request_diff }
   let(:path) { Gitlab.config.external_diffs.storage_path }
 

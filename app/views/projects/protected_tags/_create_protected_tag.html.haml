@@ -3,6 +3,7 @@
     = dropdown_tag('Select',
                    options: { toggle_class: 'js-allowed-to-create wide',
                    dropdown_class: 'dropdown-menu-selectable capitalize-header',
-                   data: { field_name: 'protected_tag[create_access_levels_attributes][0][access_level]', input_id: 'create_access_levels_attributes' }})
+                   dropdown_qa_selector: 'access_levels_content',
+                   data: { field_name: 'protected_tag[create_access_levels_attributes][0][access_level]', input_id: 'create_access_levels_attributes', qa_selector: 'access_levels_dropdown' }})
 
 = render 'projects/protected_tags/shared/create_protected_tag'

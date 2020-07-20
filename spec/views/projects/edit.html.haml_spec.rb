@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/edit' do
+RSpec.describe 'projects/edit' do
   include Devise::Test::ControllerHelpers
   include ProjectForksHelper
 

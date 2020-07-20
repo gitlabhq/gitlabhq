@@ -13,10 +13,34 @@ import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import { mergeUrlParams } from '../../lib/utils/url_utility';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
+import updateIssueConfidentialMutation from '~/sidebar/components/confidential/queries/update_issue_confidential.mutation.graphql';
 import { __, sprintf } from '~/locale';
 import Api from '~/api';
 
 let eTagPoll;
+
+export const updateConfidentialityOnIssue = ({ commit, getters }, { confidential, fullPath }) => {
+  const { iid } = getters.getNoteableData;
+
+  return utils.gqClient
+    .mutate({
+      mutation: updateIssueConfidentialMutation,
+      variables: {
+        input: {
+          projectPath: fullPath,
+          iid: String(iid),
+          confidential,
+        },
+      },
+    })
+    .then(({ data }) => {
+      const {
+        issueSetConfidential: { issue },
+      } = data;
+
+      commit(types.SET_ISSUE_CONFIDENTIAL, issue.confidential);
+    });
+};
 
 export const expandDiscussion = ({ commit, dispatch }, data) => {
   if (data.discussionId) {
@@ -31,6 +55,8 @@ export const collapseDiscussion = ({ commit }, data) => commit(types.COLLAPSE_DI
 export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
 
 export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);
+
+export const setConfidentiality = ({ commit }, data) => commit(types.SET_ISSUE_CONFIDENTIAL, data);
 
 export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
 
@@ -71,6 +97,14 @@ export const updateDiscussion = ({ commit, state }, discussion) => {
 
 export const setDiscussionSortDirection = ({ commit }, direction) => {
   commit(types.SET_DISCUSSIONS_SORT, direction);
+};
+
+export const setSelectedCommentPosition = ({ commit }, position) => {
+  commit(types.SET_SELECTED_COMMENT_POSITION, position);
+};
+
+export const setSelectedCommentPositionHover = ({ commit }, position) => {
+  commit(types.SET_SELECTED_COMMENT_POSITION_HOVER, position);
 };
 
 export const removeNote = ({ commit, dispatch, state }, note) => {
@@ -205,7 +239,6 @@ export const closeIssue = ({ commit, dispatch, state }) => {
     commit(types.CLOSE_ISSUE);
     dispatch('emitStateChangedEvent', data);
     dispatch('toggleStateButtonLoading', false);
-    dispatch('toggleBlockedIssueWarning', false);
   });
 };
 
@@ -377,9 +410,8 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 };
 
 const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
-  if (resp.notes && resp.notes.length) {
-    updateOrCreateNotes({ commit, state, getters, dispatch }, resp.notes);
-
+  if (resp.notes?.length) {
+    dispatch('updateOrCreateNotes', resp.notes);
     dispatch('startTaskList');
   }
 
@@ -399,12 +431,12 @@ const getFetchDataParams = state => {
   return { endpoint, options };
 };
 
-export const fetchData = ({ commit, state, getters }) => {
+export const fetchData = ({ commit, state, getters, dispatch }) => {
   const { endpoint, options } = getFetchDataParams(state);
 
   axios
     .get(endpoint, options)
-    .then(({ data }) => pollSuccessCallBack(data, commit, state, getters))
+    .then(({ data }) => pollSuccessCallBack(data, commit, state, getters, dispatch))
     .catch(() => Flash(__('Something went wrong while fetching latest comments.')));
 };
 
@@ -424,7 +456,7 @@ export const poll = ({ commit, state, getters, dispatch }) => {
   if (!Visibility.hidden()) {
     eTagPoll.makeRequest();
   } else {
-    fetchData({ commit, state, getters });
+    dispatch('fetchData');
   }
 
   Visibility.change(() => {

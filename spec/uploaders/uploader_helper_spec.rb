@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UploaderHelper do
+RSpec.describe UploaderHelper do
   let(:uploader) do
     example_uploader = Class.new(CarrierWave::Uploader::Base) do
       include UploaderHelper

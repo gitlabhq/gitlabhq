@@ -27,7 +27,7 @@ RSpec.describe 'Merge request > User toggles whitespace changes', :js do
 
       find('.js-show-diff-settings').click
 
-      expect(find('#show-whitespace')).to be_checked
+      expect(find('#show-whitespace')).not_to be_checked
     end
   end
 end

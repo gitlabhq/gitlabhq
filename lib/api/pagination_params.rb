@@ -4,7 +4,7 @@ module API
   # Concern for declare pagination params.
   #
   # @example
-  #   class CustomApiResource < Grape::API
+  #   class CustomApiResource < Grape::API::Instance
   #     include PaginationParams
   #
   #     params do

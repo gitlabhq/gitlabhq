@@ -21,6 +21,7 @@ class GitlabDanger
     specs
     roulette
     ce_ee_vue_templates
+    sidekiq_queues
   ].freeze
 
   MESSAGE_PREFIX = '==>'.freeze

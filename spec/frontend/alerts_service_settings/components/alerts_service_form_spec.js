@@ -15,6 +15,7 @@ const defaultProps = {
   alertsSetupUrl: 'http://invalid',
   alertsUsageUrl: 'http://invalid',
   initialActivated: false,
+  isDisabled: false,
 };
 
 describe('AlertsServiceForm', () => {
@@ -163,6 +164,19 @@ describe('AlertsServiceForm', () => {
         return wrapper.vm.toggleActivated(true).then(() => {
           expect(wrapper.find(ToggleButton).props('value')).toBe(false);
         });
+      });
+    });
+  });
+
+  describe('form is disabled', () => {
+    beforeEach(() => {
+      createComponent({ isDisabled: true });
+    });
+
+    it('cannot be toggled', () => {
+      wrapper.find(ToggleButton).vm.$emit('change');
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find(ToggleButton).props('disabledInput')).toBe(true);
       });
     });
   });

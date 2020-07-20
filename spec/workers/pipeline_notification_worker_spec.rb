@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PipelineNotificationWorker, :mailer do
+RSpec.describe PipelineNotificationWorker, :mailer do
   let_it_be(:pipeline) { create(:ci_pipeline) }
 
   describe '#execute' do

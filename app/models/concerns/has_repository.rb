@@ -5,7 +5,7 @@
 # of directly having a repository, like project or snippet.
 #
 # It also includes `Referable`, therefore the method
-# `to_reference` should be overriden in case the object
+# `to_reference` should be overridden in case the object
 # needs any special behavior.
 module HasRepository
   extend ActiveSupport::Concern
@@ -76,7 +76,11 @@ module HasRepository
   end
 
   def default_branch
-    @default_branch ||= repository.root_ref
+    @default_branch ||= repository.root_ref || default_branch_from_preferences
+  end
+
+  def default_branch_from_preferences
+    empty_repo? ? Gitlab::CurrentSettings.default_branch_name : nil
   end
 
   def reload_default_branch

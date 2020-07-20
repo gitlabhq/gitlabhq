@@ -1,3 +1,9 @@
+---
+stage: Configure
+group: Configure
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Group clusters API
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30213) in GitLab 12.1.
@@ -22,7 +28,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header 'Private-Token: <your_access_token>' "https://gitlab.example.com/api/v4/groups/26/clusters"
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/groups/26/clusters"
 ```
 
 Example response:
@@ -238,7 +244,7 @@ through the ["Add existing cluster to group"](#add-existing-cluster-to-group) en
 Example request:
 
 ```shell
-curl --header 'Private-Token: <your_access_token>' "https://gitlab.example.com/api/v4/groups/26/clusters/24" \
+curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/groups/26/clusters/24" \
 -H "Content-Type:application/json" \
 --request PUT --data '{"name":"new-cluster-name","domain":"new-domain.com","api_url":"https://new-api-url.com"}'
 ```

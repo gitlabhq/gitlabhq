@@ -14,7 +14,7 @@ class ServiceEventEntity < Grape::Entity
   end
 
   expose :description do |event|
-    service.class.event_description(event)
+    ServicesHelper.service_event_description(event)
   end
 
   expose :field, if: -> (_, _) { event_field } do

@@ -45,7 +45,6 @@ class ChaosController < ActionController::Base
     unless Devise.secure_compare(chaos_secret_configured, chaos_secret_request)
       render plain: "To experience chaos, please set a valid `X-Chaos-Secret` header or `token` param",
              status: :unauthorized
-      return
     end
   end
 

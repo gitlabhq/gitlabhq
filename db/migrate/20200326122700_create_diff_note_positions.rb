@@ -30,8 +30,6 @@ class CreateDiffNotePositions < ActiveRecord::Migration[6.0]
   # rubocop:enable Migration/AddLimitToTextColumns
 
   def down
-    # rubocop:disable Migration/DropTable
     drop_table :diff_note_positions
-    # rubocop:enable Migration/DropTable
   end
 end

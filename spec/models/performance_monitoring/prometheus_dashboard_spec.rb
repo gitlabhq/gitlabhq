@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PerformanceMonitoring::PrometheusDashboard do
+RSpec.describe PerformanceMonitoring::PrometheusDashboard do
   let(:json_content) do
     {
       "dashboard" => "Dashboard Title",
@@ -50,19 +50,19 @@ describe PerformanceMonitoring::PrometheusDashboard do
       context 'dashboard content is missing' do
         let(:json_content) { nil }
 
-        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+        it_behaves_like 'validation failed', panel_groups: ["should be an array of panel_groups objects"], dashboard: ["can't be blank"]
       end
 
       context 'dashboard content is NOT a hash' do
         let(:json_content) { YAML.safe_load("'test'") }
 
-        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+        it_behaves_like 'validation failed', panel_groups: ["should be an array of panel_groups objects"], dashboard: ["can't be blank"]
       end
 
       context 'content is an array' do
         let(:json_content) { [{ "dashboard" => "Dashboard Title" }] }
 
-        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+        it_behaves_like 'validation failed', panel_groups: ["should be an array of panel_groups objects"], dashboard: ["can't be blank"]
       end
 
       context 'dashboard definition is missing panels_groups and dashboard keys' do
@@ -72,7 +72,7 @@ describe PerformanceMonitoring::PrometheusDashboard do
           }
         end
 
-        it_behaves_like 'validation failed', panel_groups: ["can't be blank"], dashboard: ["can't be blank"]
+        it_behaves_like 'validation failed', panel_groups: ["should be an array of panel_groups objects"], dashboard: ["can't be blank"]
       end
 
       context 'group definition is missing panels and group keys' do
@@ -88,7 +88,7 @@ describe PerformanceMonitoring::PrometheusDashboard do
           }
         end
 
-        it_behaves_like 'validation failed', panels: ["can't be blank"], group: ["can't be blank"]
+        it_behaves_like 'validation failed', panels: ["should be an array of panels objects"], group: ["can't be blank"]
       end
 
       context 'panel definition is missing metrics and title keys' do
@@ -110,7 +110,7 @@ describe PerformanceMonitoring::PrometheusDashboard do
           }
         end
 
-        it_behaves_like 'validation failed', metrics: ["can't be blank"], title: ["can't be blank"]
+        it_behaves_like 'validation failed', metrics: ["should be an array of metrics objects"], title: ["can't be blank"]
       end
 
       context 'metrics definition is missing unit, query and query_range keys' do
@@ -180,7 +180,7 @@ describe PerformanceMonitoring::PrometheusDashboard do
   describe '.find_for' do
     let(:project) { build_stubbed(:project) }
     let(:user) { build_stubbed(:user) }
-    let(:environment) { build_stubbed(:environment) }
+    let(:environment) { build_stubbed(:environment, project: project) }
     let(:path) { ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH }
 
     context 'dashboard has been found' do

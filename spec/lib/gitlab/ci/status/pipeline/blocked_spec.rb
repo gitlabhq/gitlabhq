@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Pipeline::Blocked do
+RSpec.describe Gitlab::Ci::Status::Pipeline::Blocked do
   let(:pipeline) { double('pipeline') }
 
   subject do

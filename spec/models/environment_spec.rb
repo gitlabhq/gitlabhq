@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Environment, :use_clean_rails_memory_store_caching do
+RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
@@ -18,6 +18,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
   it { is_expected.to belong_to(:project).required }
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:metrics_dashboard_annotations) }
+  it { is_expected.to have_many(:alert_management_alerts) }
 
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
   it { is_expected.to delegate_method(:manual_actions).to(:last_deployment) }
@@ -846,6 +847,20 @@ describe Environment, :use_clean_rails_memory_store_caching do
     let!(:deployment) { create(:deployment, :success, environment: environment, project: project) }
 
     subject { environment.calculate_reactive_cache }
+
+    it 'overrides default reactive_cache_hard_limit to 10 Mb' do
+      expect(described_class.reactive_cache_hard_limit).to eq(10.megabyte)
+    end
+
+    it 'overrides reactive_cache_limit_enabled? with a FF' do
+      environment_with_enabled_ff = FactoryBot.build(:environment)
+      environment_with_disabled_ff = FactoryBot.build(:environment)
+
+      stub_feature_flags(reactive_caching_limit_environment: environment_with_enabled_ff.project)
+
+      expect(environment_with_enabled_ff.send(:reactive_cache_limit_enabled?)).to be_truthy
+      expect(environment_with_disabled_ff.send(:reactive_cache_limit_enabled?)).to be_falsey
+    end
 
     it 'returns cache data from the deployment platform' do
       expect(environment.deployment_platform).to receive(:calculate_reactive_cache_for)

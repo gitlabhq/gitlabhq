@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Query current user todos' do
+RSpec.describe 'Query current user todos' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

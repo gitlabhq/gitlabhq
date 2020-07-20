@@ -1,4 +1,9 @@
-import { addClassIfElementExists, canScrollUp, canScrollDown } from '~/lib/utils/dom_utils';
+import {
+  addClassIfElementExists,
+  canScrollUp,
+  canScrollDown,
+  parseBooleanDataAttributes,
+} from '~/lib/utils/dom_utils';
 
 const TEST_MARGIN = 5;
 
@@ -110,6 +115,49 @@ describe('DOM Utils', () => {
 
     it('is false if element cannot be scrolled down, with margin given', () => {
       expect(canScrollDown(element, TEST_MARGIN)).toBe(false);
+    });
+  });
+
+  describe('parseBooleanDataAttributes', () => {
+    let element;
+
+    beforeEach(() => {
+      setFixtures('<div data-foo-bar data-baz data-qux="">');
+      element = document.querySelector('[data-foo-bar]');
+    });
+
+    it('throws if not given an element', () => {
+      expect(() => parseBooleanDataAttributes(null, ['baz'])).toThrow();
+    });
+
+    it('throws if not given an array of dataset names', () => {
+      expect(() => parseBooleanDataAttributes(element)).toThrow();
+    });
+
+    it('returns an empty object if given an empty array of names', () => {
+      expect(parseBooleanDataAttributes(element, [])).toEqual({});
+    });
+
+    it('correctly parses boolean-like data attributes', () => {
+      expect(
+        parseBooleanDataAttributes(element, [
+          'fooBar',
+          'foobar',
+          'baz',
+          'qux',
+          'doesNotExist',
+          'toString',
+        ]),
+      ).toEqual({
+        fooBar: true,
+        foobar: false,
+        baz: true,
+        qux: true,
+        doesNotExist: false,
+
+        // Ensure prototype properties aren't false positives
+        toString: false,
+      });
     });
   });
 });

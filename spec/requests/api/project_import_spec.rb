@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProjectImport do
+RSpec.describe API::ProjectImport do
   include WorkhorseHelpers
 
   let(:user) { create(:user) }

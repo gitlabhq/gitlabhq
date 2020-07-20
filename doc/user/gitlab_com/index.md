@@ -78,31 +78,34 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | Setting                 | GitLab.com        | Default       |
 | -----------             | ----------------- | ------------- |
 | Artifacts maximum size (uncompressed) | 1G                | 100M          |
-| Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | kept forever           | deleted after 30 days unless otherwise specified    |
+| Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry).           | deleted after 30 days unless otherwise specified    |
 | Scheduled Pipeline Cron | `*/5 * * * *` | `19 * * * *` |
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited
 | [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |
 | [Max number of instance level variables](../../administration/instance_limits.md#number-of-instance-level-variables) | `25` | `25` |
+| [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs-core-only) | 3 months | Never |
 
 ## Repository size limit
 
-The maximum size your Git repository is allowed to be, including LFS. If you are near
-or over the size limit, you can [reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md).
+GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md) enabled. If a setting is not listed, it is set to the default value.
 
-| Setting                 | GitLab.com        | Default       |
-| -----------             | ----------------- | ------------- |
-| Repository size including LFS | 10G         | Unlimited     |
+If you are near
+or over the repository size limit, you can [reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md).
+
+| Setting                       | GitLab.com  | Default       |
+| -----------                   | ----------- | ------------- |
+| Repository size including LFS | 10 GB       | Unlimited     |
 
 NOTE: **Note:**
-`git push` and GitLab project imports are limited to 5GB per request. Git LFS and imports other than a file upload are not affected by this limit.
+`git push` and GitLab project imports are limited to 5 GB per request through Cloudflare. Git LFS and imports other than a file upload are not affected by this limit.
 
 ## IP range
 
 GitLab.com is using the IP range `34.74.90.64/28` for traffic from its Web/API
 fleet. This whole range is solely allocated to GitLab. You can expect connections from webhooks or repository mirroring to come
-from those IPs and whitelist them.
+from those IPs and allow them.
 
-GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com you might need to whitelist CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4) and [IPv6](https://www.cloudflare.com/ips-v6))
+GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4) and [IPv6](https://www.cloudflare.com/ips-v6)).
 
 For outgoing connections from CI/CD runners we are not providing static IP addresses.
 All our runners are deployed into Google Cloud Platform (GCP) - any IP based
@@ -334,9 +337,9 @@ Windows Shared Runners:
 ```yaml
 .shared_windows_runners:
   tags:
-  - shared-windows
-  - windows
-  - windows-1809
+    - shared-windows
+    - windows
+    - windows-1809
 
 stages:
   - build
@@ -349,17 +352,17 @@ before_script:
 
 build:
   extends:
-  - .shared_windows_runners
+    - .shared_windows_runners
   stage: build
   script:
-  - echo "running scripts in the build job"
+    - echo "running scripts in the build job"
 
 test:
   extends:
-  - .shared_windows_runners
+    - .shared_windows_runners
   stage: test
   script:
-  - echo "running scripts in the test job"
+    - echo "running scripts in the test job"
 ```
 
 #### Limitations and known issues
@@ -581,9 +584,9 @@ is used to forward logs to an [Elastic cluster](https://gitlab.com/gitlab-com/ru
 
 You can view more information in our runbooks such as:
 
-- A [detailed list of what we're logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#what-are-we-logging)
-- Our [current log retention policies](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#retention)
-- A [diagram of our logging infrastructure](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#logging-infrastructure-overview)
+- A [detailed list of what we're logging](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#what-are-we-logging)
+- Our [current log retention policies](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#retention)
+- A [diagram of our logging infrastructure](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#logging-infrastructure-overview)
 
 ## GitLab.com at scale
 

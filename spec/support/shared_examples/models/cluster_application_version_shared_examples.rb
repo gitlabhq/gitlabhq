@@ -19,4 +19,32 @@ RSpec.shared_examples 'cluster application version specs' do |application_name|
       it { is_expected.to be_falsey }
     end
   end
+
+  describe '#make_installed' do
+    subject { create(application_name, :installing) }
+
+    it 'sets the correct version of the application' do
+      subject.update!(version: '0.0.0')
+
+      subject.make_installed!
+
+      subject.reload
+
+      expect(subject.version).to eq(subject.class.const_get(:VERSION, false))
+    end
+
+    context 'application is updating' do
+      subject { create(application_name, :updating) }
+
+      it 'updates the version of the application' do
+        subject.update!(version: '0.0.0')
+
+        subject.make_installed!
+
+        subject.reload
+
+        expect(subject.version).to eq(subject.class.const_get(:VERSION, false))
+      end
+    end
+  end
 end

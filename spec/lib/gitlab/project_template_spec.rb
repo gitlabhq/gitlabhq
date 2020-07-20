@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ProjectTemplate do
+RSpec.describe Gitlab::ProjectTemplate do
   describe '.all' do
     it 'returns all templates' do
       expected = %w[
@@ -10,7 +10,7 @@ describe Gitlab::ProjectTemplate do
         gomicro gatsby hugo jekyll plainhtml gitbook
         hexo sse_middleman nfhugo nfjekyll nfplainhtml
         nfgitbook nfhexo salesforcedx serverless_framework
-        cluster_management
+        jsonnet cluster_management
       ]
 
       expect(described_class.all).to be_an(Array)

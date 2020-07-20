@@ -26,9 +26,7 @@ module Gitlab
       private
 
       def add_info_to_payload(payload, trans)
-        payload[:db_count] = trans.get(:db_count, :counter).to_i
-        payload[:db_write_count] = trans.get(:db_write_count, :counter).to_i
-        payload[:db_cached_count] = trans.get(:db_cached_count, :counter).to_i
+        payload.merge!(::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload)
       end
     end
   end

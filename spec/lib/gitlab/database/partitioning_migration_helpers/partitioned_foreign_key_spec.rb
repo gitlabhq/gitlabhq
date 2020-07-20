@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::PartitioningMigrationHelpers::PartitionedForeignKey do
+RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::PartitionedForeignKey do
   let(:foreign_key) do
     described_class.new(
       to_table: 'issues',

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Reports do
+RSpec.describe Gitlab::Ci::Config::Entry::Reports do
   let(:entry) { described_class.new(config) }
 
   describe 'validates ALLOWED_KEYS' do
@@ -44,6 +44,9 @@ describe Gitlab::Ci::Config::Entry::Reports do
         :license_management | 'gl-license-management-report.json'
         :license_scanning | 'gl-license-scanning-report.json'
         :performance | 'performance.json'
+        :browser_performance | 'browser-performance.json'
+        :browser_performance | 'performance.json'
+        :load_performance | 'load-performance.json'
         :lsif | 'lsif.json'
         :dotenv | 'build.dotenv'
         :cobertura | 'cobertura-coverage.xml'

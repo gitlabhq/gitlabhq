@@ -1,0 +1,5 @@
+---
+title: Updating $gray-200 hex value and remapping current instances to $gray-100
+merge_request: 36128
+author:
+type: other

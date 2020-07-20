@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190911251732_sync_issuables_state_id')
 
-describe SyncIssuablesStateId do
+RSpec.describe SyncIssuablesStateId do
   let(:migration) { described_class.new }
 
   describe '#up' do

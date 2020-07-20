@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqLogging::JSONFormatter do
+RSpec.describe Gitlab::SidekiqLogging::JSONFormatter do
   let(:message) { 'This is a test' }
   let(:now) { Time.now }
   let(:timestamp) { now.utc.to_f }

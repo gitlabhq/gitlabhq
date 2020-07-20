@@ -10,17 +10,30 @@ Sidekiq::Testing.inline! do
       # we use randomized approach (e.g. `Array#sample`).
       return unless source_project
 
-      fork_project = Projects::ForkService.new(
-        source_project,
-        user,
-        namespace: user.namespace,
-        skip_disk_validation: true
-      ).execute
+      Sidekiq::Worker.skipping_transaction_check do
+        fork_project = Projects::ForkService.new(
+          source_project,
+          user,
+          namespace: user.namespace,
+          skip_disk_validation: true
+        ).execute
 
-      if fork_project.valid?
-        print '.'
-      else
-        print 'F'
+        # Seed-Fu runs this entire fixture in a transaction, so the `after_commit`
+        # hook won't run until after the fixture is loaded. That is too late
+        # since the Sidekiq::Testing block has already exited. Force clearing
+        # the `after_commit` queue to ensure the job is run now.
+        fork_project.send(:_run_after_commit_queue)
+        fork_project.import_state.send(:_run_after_commit_queue)
+
+        # Expire repository cache after import to ensure
+        # valid_repo? call below returns a correct answer
+        fork_project.repository.expire_all_method_caches
+
+        if fork_project.valid? && fork_project.valid_repo?
+          print '.'
+        else
+          print 'F'
+        end
       end
     end
   end

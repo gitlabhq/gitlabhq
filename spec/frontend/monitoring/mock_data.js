@@ -5,28 +5,14 @@ import { TEST_HOST } from '../helpers/test_constants';
 export const mockProjectDir = '/frontend-fixtures/environments-project';
 export const mockApiEndpoint = `${TEST_HOST}/monitoring/mock`;
 
-export const propsData = {
-  hasMetrics: false,
-  documentationPath: '/path/to/docs',
-  settingsPath: '/path/to/settings',
-  clustersPath: '/path/to/clusters',
-  tagsPath: '/path/to/tags',
-  defaultBranch: 'master',
-  emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
-  emptyLoadingSvgPath: '/path/to/loading.svg',
-  emptyNoDataSvgPath: '/path/to/no-data.svg',
-  emptyNoDataSmallSvgPath: '/path/to/no-data-small.svg',
-  emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
-  customMetricsAvailable: false,
-  customMetricsPath: '',
-  validateQueryPath: '',
-};
+export const customDashboardBasePath = '.gitlab/dashboards';
 
 const customDashboardsData = new Array(30).fill(null).map((_, idx) => ({
   default: false,
   display_name: `Custom Dashboard ${idx}`,
   can_edit: true,
   system_dashboard: false,
+  out_of_the_box_dashboard: false,
   project_blob_path: `${mockProjectDir}/blob/master/dashboards/.gitlab/dashboards/dashboard_${idx}.yml`,
   path: `.gitlab/dashboards/dashboard_${idx}.yml`,
   starred: false,
@@ -64,136 +50,6 @@ export const anomalyDeploymentData = [
     'last?': false,
   },
 ];
-
-export const anomalyMockResultValues = {
-  noAnomaly: [
-    [
-      ['2019-08-19T19:00:00.000Z', 1.25],
-      ['2019-08-19T20:00:00.000Z', 1.45],
-      ['2019-08-19T21:00:00.000Z', 1.55],
-      ['2019-08-19T22:00:00.000Z', 1.48],
-    ],
-    [
-      // upper boundary
-      ['2019-08-19T19:00:00.000Z', 2],
-      ['2019-08-19T20:00:00.000Z', 2.55],
-      ['2019-08-19T21:00:00.000Z', 2.65],
-      ['2019-08-19T22:00:00.000Z', 3.0],
-    ],
-    [
-      // lower boundary
-      ['2019-08-19T19:00:00.000Z', 0.45],
-      ['2019-08-19T20:00:00.000Z', 0.65],
-      ['2019-08-19T21:00:00.000Z', 0.7],
-      ['2019-08-19T22:00:00.000Z', 0.8],
-    ],
-  ],
-  noBoundary: [
-    [
-      ['2019-08-19T19:00:00.000Z', 1.25],
-      ['2019-08-19T20:00:00.000Z', 1.45],
-      ['2019-08-19T21:00:00.000Z', 1.55],
-      ['2019-08-19T22:00:00.000Z', 1.48],
-    ],
-    [
-      // empty upper boundary
-    ],
-    [
-      // empty lower boundary
-    ],
-  ],
-  oneAnomaly: [
-    [
-      ['2019-08-19T19:00:00.000Z', 1.25],
-      ['2019-08-19T20:00:00.000Z', 3.45], // anomaly
-      ['2019-08-19T21:00:00.000Z', 1.55],
-    ],
-    [
-      // upper boundary
-      ['2019-08-19T19:00:00.000Z', 2],
-      ['2019-08-19T20:00:00.000Z', 2.55],
-      ['2019-08-19T21:00:00.000Z', 2.65],
-    ],
-    [
-      // lower boundary
-      ['2019-08-19T19:00:00.000Z', 0.45],
-      ['2019-08-19T20:00:00.000Z', 0.65],
-      ['2019-08-19T21:00:00.000Z', 0.7],
-    ],
-  ],
-  negativeBoundary: [
-    [
-      ['2019-08-19T19:00:00.000Z', 1.25],
-      ['2019-08-19T20:00:00.000Z', 3.45], // anomaly
-      ['2019-08-19T21:00:00.000Z', 1.55],
-    ],
-    [
-      // upper boundary
-      ['2019-08-19T19:00:00.000Z', 2],
-      ['2019-08-19T20:00:00.000Z', 2.55],
-      ['2019-08-19T21:00:00.000Z', 2.65],
-    ],
-    [
-      // lower boundary
-      ['2019-08-19T19:00:00.000Z', -1.25],
-      ['2019-08-19T20:00:00.000Z', -2.65],
-      ['2019-08-19T21:00:00.000Z', -3.7], // lowest point
-    ],
-  ],
-};
-
-export const anomalyMockGraphData = {
-  title: 'Requests Per Second Mock Data',
-  type: 'anomaly-chart',
-  weight: 3,
-  metrics: [
-    {
-      metricId: '90',
-      id: 'metric',
-      query_range: 'MOCK_PROMETHEUS_METRIC_QUERY_RANGE',
-      unit: 'RPS',
-      label: 'Metrics RPS',
-      metric_id: 90,
-      prometheus_endpoint_path: 'MOCK_METRIC_PEP',
-      result: [
-        {
-          metric: {},
-          values: [['2019-08-19T19:00:00.000Z', 0]],
-        },
-      ],
-    },
-    {
-      metricId: '91',
-      id: 'upper',
-      query_range: '...',
-      unit: 'RPS',
-      label: 'Upper Limit Metrics RPS',
-      metric_id: 91,
-      prometheus_endpoint_path: 'MOCK_UPPER_PEP',
-      result: [
-        {
-          metric: {},
-          values: [['2019-08-19T19:00:00.000Z', 0]],
-        },
-      ],
-    },
-    {
-      metricId: '92',
-      id: 'lower',
-      query_range: '...',
-      unit: 'RPS',
-      label: 'Lower Limit Metrics RPS',
-      metric_id: 92,
-      prometheus_endpoint_path: 'MOCK_LOWER_PEP',
-      result: [
-        {
-          metric: {},
-          values: [['2019-08-19T19:00:00.000Z', 0]],
-        },
-      ],
-    },
-  ],
-};
 
 export const deploymentData = [
   {
@@ -317,6 +173,7 @@ export const dashboardGitResponse = [
     display_name: 'Default',
     can_edit: false,
     system_dashboard: true,
+    out_of_the_box_dashboard: true,
     project_blob_path: null,
     path: 'config/prometheus/common_metrics.yml',
     starred: false,
@@ -327,6 +184,44 @@ export const dashboardGitResponse = [
     display_name: 'dashboard.yml',
     can_edit: true,
     system_dashboard: false,
+    out_of_the_box_dashboard: false,
+    project_blob_path: `${mockProjectDir}/-/blob/master/.gitlab/dashboards/dashboard.yml`,
+    path: '.gitlab/dashboards/dashboard.yml',
+    starred: true,
+    user_starred_path: `${mockProjectDir}/metrics_user_starred_dashboards?dashboard_path=.gitlab/dashboards/dashboard.yml`,
+  },
+  {
+    default: false,
+    display_name: 'Pod Health',
+    can_edit: false,
+    system_dashboard: false,
+    out_of_the_box_dashboard: true,
+    project_blob_path: null,
+    path: 'config/prometheus/pod_metrics.yml',
+    starred: false,
+    user_starred_path: `${mockProjectDir}/metrics_user_starred_dashboards?dashboard_path=config/prometheus/pod_metrics.yml`,
+  },
+  ...customDashboardsData,
+];
+
+export const selfMonitoringDashboardGitResponse = [
+  {
+    default: true,
+    display_name: 'Default',
+    can_edit: false,
+    system_dashboard: false,
+    out_of_the_box_dashboard: true,
+    project_blob_path: null,
+    path: 'config/prometheus/self_monitoring_default.yml',
+    starred: false,
+    user_starred_path: `${mockProjectDir}/metrics_user_starred_dashboards?dashboard_path=config/prometheus/self_monitoring_default.yml`,
+  },
+  {
+    default: false,
+    display_name: 'dashboard.yml',
+    can_edit: true,
+    system_dashboard: false,
+    out_of_the_box_dashboard: false,
     project_blob_path: `${mockProjectDir}/-/blob/master/.gitlab/dashboards/dashboard.yml`,
     path: '.gitlab/dashboards/dashboard.yml',
     starred: true,
@@ -348,30 +243,6 @@ export const metricsResult = [
     ],
   },
 ];
-
-export const singleStatMetricsResult = {
-  title: 'Super Chart A2',
-  type: 'single-stat',
-  weight: 2,
-  metrics: [
-    {
-      id: 'metric_a1',
-      metricId: '2',
-      query: 'max(go_memstats_alloc_bytes{job="prometheus"}) by (job) /1024/1024',
-      unit: 'MB',
-      label: 'Total Consumption',
-      metric_id: 2,
-      prometheus_endpoint_path:
-        '/root/kubernetes-gke-project/environments/35/prometheus/api/v1/query?query=max%28go_memstats_alloc_bytes%7Bjob%3D%22prometheus%22%7D%29+by+%28job%29+%2F1024%2F1024',
-      result: [
-        {
-          metric: { job: 'prometheus' },
-          value: ['2019-06-26T21:03:20.881Z', 91],
-        },
-      ],
-    },
-  ],
-};
 
 export const graphDataPrometheusQueryRangeMultiTrack = {
   title: 'Super Chart A3',
@@ -641,253 +512,186 @@ export const mockLinks = [
   },
 ];
 
-const templatingVariableTypes = {
+export const templatingVariablesExamples = {
   text: {
-    simple: 'Simple text',
-    advanced: {
-      label: 'Variable 4',
+    textSimple: 'My default value',
+    textAdvanced: {
+      label: 'Advanced text variable',
       type: 'text',
       options: {
-        default_value: 'default',
+        default_value: 'A default value',
       },
     },
   },
   custom: {
-    simple: ['value1', 'value2', 'value3'],
-    advanced: {
-      normal: {
-        label: 'Advanced Var',
-        type: 'custom',
-        options: {
-          values: [
-            { value: 'value1', text: 'Var 1 Option 1' },
-            {
-              value: 'value2',
-              text: 'Var 1 Option 2',
-              default: true,
-            },
-          ],
-        },
+    customSimple: ['value1', 'value2', 'value3'],
+    customAdvanced: {
+      label: 'Advanced Var',
+      type: 'custom',
+      options: {
+        values: [
+          { value: 'value1', text: 'Var 1 Option 1' },
+          {
+            value: 'value2',
+            text: 'Var 1 Option 2',
+            default: true,
+          },
+        ],
       },
-      withoutOpts: {
-        type: 'custom',
-        options: {},
+    },
+    customAdvancedWithoutOpts: {
+      type: 'custom',
+      options: {},
+    },
+    customAdvancedWithoutLabel: {
+      type: 'custom',
+      options: {
+        values: [
+          { value: 'value1', text: 'Var 1 Option 1' },
+          {
+            value: 'value2',
+            text: 'Var 1 Option 2',
+            default: true,
+          },
+        ],
       },
-      withoutLabel: {
-        type: 'custom',
-        options: {
-          values: [
-            { value: 'value1', text: 'Var 1 Option 1' },
-            {
-              value: 'value2',
-              text: 'Var 1 Option 2',
-              default: true,
-            },
-          ],
-        },
+    },
+    customAdvancedWithoutType: {
+      label: 'Variable 2',
+      options: {
+        values: [
+          { value: 'value1', text: 'Var 1 Option 1' },
+          {
+            value: 'value2',
+            text: 'Var 1 Option 2',
+            default: true,
+          },
+        ],
       },
-      withoutType: {
-        label: 'Variable 2',
-        options: {
-          values: [
-            { value: 'value1', text: 'Var 1 Option 1' },
-            {
-              value: 'value2',
-              text: 'Var 1 Option 2',
-              default: true,
-            },
-          ],
-        },
+    },
+    customAdvancedWithoutOptText: {
+      label: 'Options without text',
+      type: 'custom',
+      options: {
+        values: [
+          { value: 'value1' },
+          {
+            value: 'value2',
+            default: true,
+          },
+        ],
       },
-      withoutOptText: {
-        label: 'Options without text',
-        type: 'custom',
-        options: {
-          values: [
-            { value: 'value1' },
-            {
-              value: 'value2',
-              default: true,
-            },
-          ],
-        },
+    },
+  },
+  metricLabelValues: {
+    metricLabelValuesSimple: {
+      label: 'Metric Label Values',
+      type: 'metric_label_values',
+      options: {
+        prometheus_endpoint_path: '/series',
+        series_selector: 'backend:haproxy_backend_availability:ratio{env="{{env}}"}',
+        label: 'backend',
       },
     },
   },
 };
 
-const generateMockTemplatingData = data => {
-  const vars = data
-    ? {
-        variables: {
-          ...data,
-        },
-      }
-    : {};
-  return {
-    dashboard: {
-      templating: vars,
+export const storeTextVariables = [
+  {
+    type: 'text',
+    name: 'textSimple',
+    label: 'textSimple',
+    value: 'My default value',
+  },
+  {
+    type: 'text',
+    name: 'textAdvanced',
+    label: 'Advanced text variable',
+    value: 'A default value',
+  },
+];
+
+export const storeCustomVariables = [
+  {
+    type: 'custom',
+    name: 'customSimple',
+    label: 'customSimple',
+    options: {
+      values: [
+        { default: false, text: 'value1', value: 'value1' },
+        { default: false, text: 'value2', value: 'value2' },
+        { default: false, text: 'value3', value: 'value3' },
+      ],
     },
-  };
-};
-
-const responseForSimpleTextVariable = {
-  simpleText: {
-    label: 'simpleText',
-    type: 'text',
-    value: 'Simple text',
-  },
-};
-
-const responseForAdvTextVariable = {
-  advText: {
-    label: 'Variable 4',
-    type: 'text',
-    value: 'default',
-  },
-};
-
-const responseForSimpleCustomVariable = {
-  simpleCustom: {
-    label: 'simpleCustom',
     value: 'value1',
-    options: [
-      {
-        default: false,
-        text: 'value1',
-        value: 'value1',
-      },
-      {
-        default: false,
-        text: 'value2',
-        value: 'value2',
-      },
-      {
-        default: false,
-        text: 'value3',
-        value: 'value3',
-      },
-    ],
-    type: 'custom',
   },
-};
-
-const responseForAdvancedCustomVariableWithoutOptions = {
-  advCustomWithoutOpts: {
-    label: 'advCustomWithoutOpts',
-    options: [],
+  {
     type: 'custom',
-  },
-};
-
-const responseForAdvancedCustomVariableWithoutLabel = {
-  advCustomWithoutLabel: {
-    label: 'advCustomWithoutLabel',
-    value: 'value2',
-    options: [
-      {
-        default: false,
-        text: 'Var 1 Option 1',
-        value: 'value1',
-      },
-      {
-        default: true,
-        text: 'Var 1 Option 2',
-        value: 'value2',
-      },
-    ],
-    type: 'custom',
-  },
-};
-
-const responseForAdvancedCustomVariableWithoutOptText = {
-  advCustomWithoutOptText: {
-    label: 'Options without text',
-    value: 'value2',
-    options: [
-      {
-        default: false,
-        text: 'value1',
-        value: 'value1',
-      },
-      {
-        default: true,
-        text: 'value2',
-        value: 'value2',
-      },
-    ],
-    type: 'custom',
-  },
-};
-
-const responseForAdvancedCustomVariable = {
-  ...responseForSimpleCustomVariable,
-  advCustomNormal: {
+    name: 'customAdvanced',
     label: 'Advanced Var',
+    options: {
+      values: [
+        { default: false, text: 'Var 1 Option 1', value: 'value1' },
+        { default: true, text: 'Var 1 Option 2', value: 'value2' },
+      ],
+    },
     value: 'value2',
-    options: [
-      {
-        default: false,
-        text: 'Var 1 Option 1',
-        value: 'value1',
-      },
-      {
-        default: true,
-        text: 'Var 1 Option 2',
-        value: 'value2',
-      },
-    ],
-    type: 'custom',
   },
-};
+  {
+    type: 'custom',
+    name: 'customAdvancedWithoutOpts',
+    label: 'customAdvancedWithoutOpts',
+    options: { values: [] },
+    value: null,
+  },
+  {
+    type: 'custom',
+    name: 'customAdvancedWithoutLabel',
+    label: 'customAdvancedWithoutLabel',
+    value: 'value2',
+    options: {
+      values: [
+        { default: false, text: 'Var 1 Option 1', value: 'value1' },
+        { default: true, text: 'Var 1 Option 2', value: 'value2' },
+      ],
+    },
+  },
+  {
+    type: 'custom',
+    name: 'customAdvancedWithoutOptText',
+    label: 'Options without text',
+    options: {
+      values: [
+        { default: false, text: 'value1', value: 'value1' },
+        { default: true, text: 'value2', value: 'value2' },
+      ],
+    },
+    value: 'value2',
+  },
+];
 
-const responsesForAllVariableTypes = {
-  ...responseForSimpleTextVariable,
-  ...responseForAdvTextVariable,
-  ...responseForSimpleCustomVariable,
-  ...responseForAdvancedCustomVariable,
-};
+export const storeMetricLabelValuesVariables = [
+  {
+    type: 'metric_label_values',
+    name: 'metricLabelValuesSimple',
+    label: 'Metric Label Values',
+    options: { prometheusEndpointPath: '/series', label: 'backend', values: [] },
+    value: null,
+  },
+];
 
-export const mockTemplatingData = {
-  emptyTemplatingProp: generateMockTemplatingData(),
-  emptyVariablesProp: generateMockTemplatingData({}),
-  simpleText: generateMockTemplatingData({ simpleText: templatingVariableTypes.text.simple }),
-  advText: generateMockTemplatingData({ advText: templatingVariableTypes.text.advanced }),
-  simpleCustom: generateMockTemplatingData({ simpleCustom: templatingVariableTypes.custom.simple }),
-  advCustomWithoutOpts: generateMockTemplatingData({
-    advCustomWithoutOpts: templatingVariableTypes.custom.advanced.withoutOpts,
-  }),
-  advCustomWithoutType: generateMockTemplatingData({
-    advCustomWithoutType: templatingVariableTypes.custom.advanced.withoutType,
-  }),
-  advCustomWithoutLabel: generateMockTemplatingData({
-    advCustomWithoutLabel: templatingVariableTypes.custom.advanced.withoutLabel,
-  }),
-  advCustomWithoutOptText: generateMockTemplatingData({
-    advCustomWithoutOptText: templatingVariableTypes.custom.advanced.withoutOptText,
-  }),
-  simpleAndAdv: generateMockTemplatingData({
-    simpleCustom: templatingVariableTypes.custom.simple,
-    advCustomNormal: templatingVariableTypes.custom.advanced.normal,
-  }),
-  allVariableTypes: generateMockTemplatingData({
-    simpleText: templatingVariableTypes.text.simple,
-    advText: templatingVariableTypes.text.advanced,
-    simpleCustom: templatingVariableTypes.custom.simple,
-    advCustomNormal: templatingVariableTypes.custom.advanced.normal,
-  }),
-};
+export const storeVariables = [
+  ...storeTextVariables,
+  ...storeCustomVariables,
+  ...storeMetricLabelValuesVariables,
+];
 
-export const mockTemplatingDataResponses = {
-  emptyTemplatingProp: {},
-  emptyVariablesProp: {},
-  simpleText: responseForSimpleTextVariable,
-  advText: responseForAdvTextVariable,
-  simpleCustom: responseForSimpleCustomVariable,
-  advCustomWithoutOpts: responseForAdvancedCustomVariableWithoutOptions,
-  advCustomWithoutType: {},
-  advCustomWithoutLabel: responseForAdvancedCustomVariableWithoutLabel,
-  advCustomWithoutOptText: responseForAdvancedCustomVariableWithoutOptText,
-  simpleAndAdv: responseForAdvancedCustomVariable,
-  allVariableTypes: responsesForAllVariableTypes,
+export const dashboardHeaderProps = {
+  defaultBranch: 'master',
+  addDashboardDocumentationPath: 'https://path/to/docs',
+  isRearrangingPanels: false,
+  selectedTimeRange: {
+    start: '2020-01-01T00:00:00.000Z',
+    end: '2020-01-01T01:00:00.000Z',
+  },
 };

@@ -52,10 +52,23 @@ export default class GlFieldErrors {
     });
   }
 
-  focusOnFirstInvalid() {
-    const firstInvalid = this.state.inputs.filter(
-      input => !input.inputDomElement.validity.valid,
-    )[0];
-    firstInvalid.inputElement.focus();
+  get invalidInputs() {
+    return this.state.inputs.filter(
+      ({
+        inputDomElement: {
+          validity: { valid },
+        },
+      }) => !valid,
+    );
+  }
+
+  get focusedInvalidInput() {
+    return this.invalidInputs.find(({ inputElement }) => inputElement.is(':focus'));
+  }
+
+  focusInvalid() {
+    if (this.focusedInvalidInput) return;
+
+    this.invalidInputs[0].inputElement.focus();
   }
 }

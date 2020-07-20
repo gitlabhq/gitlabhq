@@ -13,9 +13,6 @@ class Namespace < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include IgnorableColumns
 
-  ignore_column :plan_id, remove_with: '13.1', remove_after: '2020-06-22'
-  ignore_column :trial_ends_on, remove_with: '13.2', remove_after: '2020-07-22'
-
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
   # Android repo (15) + some extra backup.
@@ -25,6 +22,7 @@ class Namespace < ApplicationRecord
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
+  has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
 
   has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
   has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
@@ -35,6 +33,7 @@ class Namespace < ApplicationRecord
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
+  has_many :custom_emoji, inverse_of: :namespace
   has_one :chat_team, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :root_storage_statistics, class_name: 'Namespace::RootStorageStatistics'
   has_one :aggregation_schedule, class_name: 'Namespace::AggregationSchedule'
@@ -49,6 +48,13 @@ class Namespace < ApplicationRecord
     presence: true,
     length: { maximum: 255 },
     namespace_path: true
+
+  # Introduce minimal path length of 2 characters.
+  # Allow change of other attributes without forcing users to
+  # rename their user or group. At the same time prevent changing
+  # the path without complying with new 2 chars requirement.
+  # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/225214
+  validates :path, length: { minimum: 2 }, if: :path_changed?
 
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
@@ -82,6 +88,7 @@ class Namespace < ApplicationRecord
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
         'COALESCE(SUM(ps.wiki_size), 0) AS wiki_size',
+        'COALESCE(SUM(ps.snippets_size), 0) AS snippets_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
         'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
         'COALESCE(SUM(ps.packages_size), 0) AS packages_size'
@@ -212,7 +219,7 @@ class Namespace < ApplicationRecord
     Gitlab.config.lfs.enabled
   end
 
-  def shared_runners_enabled?
+  def any_project_with_shared_runners_enabled?
     projects.with_shared_runners.any?
   end
 
@@ -281,6 +288,8 @@ class Namespace < ApplicationRecord
   end
 
   def root_ancestor
+    return self if persisted? && parent_id.nil?
+
     strong_memoize(:root_ancestor) do
       self_and_ancestors.reorder(nil).find_by(parent_id: nil)
     end

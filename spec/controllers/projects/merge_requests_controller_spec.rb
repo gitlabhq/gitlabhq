@@ -442,7 +442,7 @@ RSpec.describe Projects::MergeRequestsController do
           merge_request.update(squash: false)
           merge_with_sha(squash: '1')
 
-          expect(merge_request.reload.squash).to be_truthy
+          expect(merge_request.reload.squash_on_merge?).to be_truthy
         end
       end
 
@@ -451,7 +451,7 @@ RSpec.describe Projects::MergeRequestsController do
           merge_request.update(squash: true)
           merge_with_sha(squash: '0')
 
-          expect(merge_request.reload.squash).to be_falsey
+          expect(merge_request.reload.squash_on_merge?).to be_falsey
         end
       end
 

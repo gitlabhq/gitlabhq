@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::Maskable do
+RSpec.describe Ci::Maskable do
   let(:variable) { build(:ci_variable) }
 
   describe 'masked value validations' do

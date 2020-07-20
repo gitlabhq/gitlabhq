@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::Importer do
+RSpec.describe Gitlab::PhabricatorImport::Importer do
   it { expect(described_class).to be_async }
 
   it "acts like it's importing repositories" do

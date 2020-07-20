@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Templates do
+RSpec.describe API::Templates do
   context 'the Template Entity' do
     before do
       get api('/templates/gitignores/Ruby')

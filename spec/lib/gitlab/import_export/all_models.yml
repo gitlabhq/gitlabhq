@@ -31,6 +31,8 @@ issues:
 - closed_by
 - epic_issue
 - epic
+- feature_flag_issues
+- feature_flags
 - designs
 - design_versions
 - description_versions
@@ -95,6 +97,7 @@ snippets:
 - user_agent_detail
 - user_mentions
 - snippet_repository
+- statistics
 releases:
 - author
 - project
@@ -217,13 +220,15 @@ ci_pipelines:
 - parent_pipeline
 - downstream_bridges
 - job_artifacts
-- vulnerabilities_occurrence_pipelines
+- vulnerabilities_finding_pipelines
 - vulnerability_findings
 - pipeline_config
 - security_scans
 - daily_build_group_report_results
 - latest_builds
 - daily_report_results
+- latest_builds_report_results
+- messages
 ci_refs:
 - project
 - ci_pipelines
@@ -317,6 +322,7 @@ project:
 - last_event
 - services
 - campfire_service
+- confluence_service
 - discord_service
 - drone_ci_service
 - emails_on_push_service
@@ -458,6 +464,8 @@ project:
 - vulnerability_feedback
 - vulnerability_identifiers
 - vulnerability_scanners
+- dast_site_profiles
+- dast_sites
 - operations_feature_flags
 - operations_feature_flags_client
 - operations_feature_flags_user_lists
@@ -465,6 +473,7 @@ project:
 - prometheus_alert_events
 - self_managed_prometheus_alert_events
 - software_license_policies
+- software_licenses
 - project_registry
 - packages
 - package_files
@@ -505,6 +514,7 @@ project:
 - freeze_periods
 - webex_teams_service
 - build_report_results
+- vulnerability_statistic
 award_emoji:
 - awardable
 - user
@@ -569,6 +579,9 @@ self_managed_prometheus_alert_events:
 epic_issues:
 - issue
 - epic
+feature_flag_issues:
+- issue
+- feature_flag
 tracing_setting:
 - project
 reviews:

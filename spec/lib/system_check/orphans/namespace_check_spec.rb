@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-describe SystemCheck::Orphans::NamespaceCheck do
+RSpec.describe SystemCheck::Orphans::NamespaceCheck do
   let(:storages) { Gitlab.config.repositories.storages.reject { |key, _| key.eql? 'broken' } }
 
   before do

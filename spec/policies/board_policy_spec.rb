@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BoardPolicy do
+RSpec.describe BoardPolicy do
   let(:user) { create(:user) }
   let(:project) { create(:project, :private) }
   let(:group) { create(:group, :private) }

@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require_dependency 're2'
 
-describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
   let(:left) { double('left') }
   let(:right) { double('right') }
 

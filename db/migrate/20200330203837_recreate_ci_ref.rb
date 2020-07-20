@@ -25,9 +25,7 @@ class RecreateCiRef < ActiveRecord::Migration[6.0]
 
   def down
     with_lock_retries do
-      # rubocop:disable Migration/DropTable
       drop_table :ci_refs
-      # rubocop:enable Migration/DropTable
 
       create_table :ci_refs do |t|
         t.references :project, null: false, index: false, foreign_key: { on_delete: :cascade }, type: :integer

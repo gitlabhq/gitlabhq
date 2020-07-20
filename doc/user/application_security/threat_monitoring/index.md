@@ -58,12 +58,15 @@ prerequisites:
 
 If you're using custom Helm values for Cilium, you must enable Hubble
 with flow metrics for each namespace by adding the following lines to
-your [Hubble values](../../clusters/applications.md#install-cilium-using-gitlab-cicd):
+your [Cilium values](../../clusters/applications.md#install-cilium-using-gitlab-cicd):
 
 ```yaml
-metrics:
-  enabled:
-    - 'flow:sourceContext=namespace;destinationContext=namespace'
+global:
+  hubble:
+    enabled: true
+    metrics:
+      enabled:
+      - 'flow:sourceContext=namespace;destinationContext=namespace'
 ```
 
 The **Container Network Policy** section displays the following information

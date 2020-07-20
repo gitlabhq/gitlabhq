@@ -4,18 +4,26 @@ import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import LastCommit from './components/last_commit.vue';
 import TreeActionLink from './components/tree_action_link.vue';
+import WebIdeLink from './components/web_ide_link.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
 import apolloProvider from './graphql';
 import { setTitle } from './utils/title';
 import { updateFormAction } from './utils/dom';
 import { parseBoolean } from '../lib/utils/common_utils';
-import { webIDEUrl } from '../lib/utils/url_utility';
 import { __ } from '../locale';
 
 export default function setupVueRepositoryList() {
   const el = document.getElementById('js-tree-list');
   const { dataset } = el;
-  const { projectPath, projectShortPath, ref, escapedRef, fullName } = dataset;
+  const {
+    canPushCode,
+    projectPath,
+    projectShortPath,
+    forkPath,
+    ref,
+    escapedRef,
+    fullName,
+  } = dataset;
   const router = createRouter(projectPath, escapedRef);
 
   apolloProvider.clients.defaultClient.cache.writeData({
@@ -24,7 +32,6 @@ export default function setupVueRepositoryList() {
       projectShortPath,
       ref,
       escapedRef,
-      vueFileListLfsBadge: gon.features?.vueFileListLfsBadge || false,
       commits: [],
     },
   });
@@ -118,11 +125,12 @@ export default function setupVueRepositoryList() {
       el: webIdeLinkEl,
       router,
       render(h) {
-        return h(TreeActionLink, {
+        return h(WebIdeLink, {
           props: {
-            path: webIDEUrl(`/${projectPath}/edit/${ref}/-/${this.$route.params.path || ''}`),
-            text: __('Web IDE'),
-            cssClass: 'qa-web-ide-button',
+            projectPath,
+            refSha: ref,
+            forkPath,
+            canPushCode: parseBoolean(canPushCode),
           },
         });
       },

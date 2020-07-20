@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ProcessMemoryCache::Helper, :use_clean_rails_memory_store_caching do
+RSpec.describe Gitlab::ProcessMemoryCache::Helper, :use_clean_rails_memory_store_caching do
   let(:minimal_test_class) do
     Class.new do
       include Gitlab::ProcessMemoryCache::Helper

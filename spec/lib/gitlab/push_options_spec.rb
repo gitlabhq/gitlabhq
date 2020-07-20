@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::PushOptions do
+RSpec.describe Gitlab::PushOptions do
   describe 'namespace and key validation' do
     it 'ignores unrecognised namespaces' do
       options = described_class.new(['invalid.key=value'])

@@ -3,15 +3,33 @@
 module Gitlab
   module Ci
     class YamlProcessor
-      ValidationError = Class.new(StandardError)
+      # ValidationError is treated like a result object in the form of an exception.
+      # We can return any warnings, raised during the config validation, along with
+      # the error object until we support multiple messages to be returned.
+      class ValidationError < StandardError
+        attr_reader :warnings
+
+        def initialize(message, warnings: [])
+          @warnings = warnings
+          super(message)
+        end
+      end
 
       include Gitlab::Config::Entry::LegacyValidationHelpers
 
       attr_reader :stages, :jobs
 
-      ResultWithErrors = Struct.new(:content, :errors) do
+      class Result
+        attr_reader :config, :errors, :warnings
+
+        def initialize(config: nil, errors: [], warnings: [])
+          @config = config
+          @errors = errors
+          @warnings = warnings
+        end
+
         def valid?
-          errors.empty?
+          config.present? && errors.empty?
         end
       end
 
@@ -20,24 +38,32 @@ module Gitlab
         @config = @ci_config.to_hash
 
         unless @ci_config.valid?
-          raise ValidationError, @ci_config.errors.first
+          error!(@ci_config.errors.first)
         end
 
         initial_parsing
       rescue Gitlab::Ci::Config::ConfigError => e
-        raise ValidationError, e.message
+        error!(e.message)
       end
 
       def self.new_with_validation_errors(content, opts = {})
-        return ResultWithErrors.new('', ['Please provide content of .gitlab-ci.yml']) if content.blank?
+        return Result.new(errors: ['Please provide content of .gitlab-ci.yml']) if content.blank?
 
         config = Gitlab::Ci::Config.new(content, **opts)
-        return ResultWithErrors.new("", config.errors) unless config.valid?
+        return Result.new(errors: config.errors, warnings: config.warnings) unless config.valid?
 
         config = Gitlab::Ci::YamlProcessor.new(content, opts)
-        ResultWithErrors.new(config, [])
-      rescue ValidationError, Gitlab::Ci::Config::ConfigError => e
-        ResultWithErrors.new('', [e.message])
+        Result.new(config: config, warnings: config.warnings)
+
+      rescue ValidationError => e
+        Result.new(errors: [e.message], warnings: e.warnings)
+
+      rescue Gitlab::Ci::Config::ConfigError => e
+        Result.new(errors: [e.message])
+      end
+
+      def warnings
+        @ci_config&.warnings || []
       end
 
       def builds
@@ -66,6 +92,7 @@ module Gitlab
           cache: job[:cache],
           resource_group_key: job[:resource_group],
           scheduling_type: job[:scheduling_type],
+          secrets: job[:secrets],
           options: {
             image: job[:image],
             services: job[:services],
@@ -157,8 +184,12 @@ module Gitlab
         return unless job[:stage]
 
         unless job[:stage].is_a?(String) && job[:stage].in?(@stages)
-          raise ValidationError, "#{name} job: chosen stage does not exist; available stages are #{@stages.join(", ")}"
+          error!("#{name} job: chosen stage does not exist; available stages are #{@stages.join(", ")}")
         end
+      end
+
+      def error!(message)
+        raise ValidationError.new(message, warnings: warnings)
       end
 
       def validate_job_dependencies!(name, job)
@@ -190,7 +221,7 @@ module Gitlab
 
       def validate_job_dependency!(name, dependency, dependency_type = 'dependency')
         unless @jobs[dependency.to_sym]
-          raise ValidationError, "#{name} job: undefined #{dependency_type}: #{dependency}"
+          error!("#{name} job: undefined #{dependency_type}: #{dependency}")
         end
 
         job_stage_index = stage_index(name)
@@ -199,7 +230,7 @@ module Gitlab
         # A dependency might be defined later in the configuration
         # with a stage that does not exist
         unless dependency_stage_index.present? && dependency_stage_index < job_stage_index
-          raise ValidationError, "#{name} job: #{dependency_type} #{dependency} is not defined in prior stages"
+          error!("#{name} job: #{dependency_type} #{dependency} is not defined in prior stages")
         end
       end
 
@@ -221,19 +252,19 @@ module Gitlab
 
         on_stop_job = @jobs[on_stop.to_sym]
         unless on_stop_job
-          raise ValidationError, "#{name} job: on_stop job #{on_stop} is not defined"
+          error!("#{name} job: on_stop job #{on_stop} is not defined")
         end
 
         unless on_stop_job[:environment]
-          raise ValidationError, "#{name} job: on_stop job #{on_stop} does not have environment defined"
+          error!("#{name} job: on_stop job #{on_stop} does not have environment defined")
         end
 
         unless on_stop_job[:environment][:name] == environment[:name]
-          raise ValidationError, "#{name} job: on_stop job #{on_stop} have different environment name"
+          error!("#{name} job: on_stop job #{on_stop} have different environment name")
         end
 
         unless on_stop_job[:environment][:action] == 'stop'
-          raise ValidationError, "#{name} job: on_stop job #{on_stop} needs to have action stop defined"
+          error!("#{name} job: on_stop job #{on_stop} needs to have action stop defined")
         end
       end
     end

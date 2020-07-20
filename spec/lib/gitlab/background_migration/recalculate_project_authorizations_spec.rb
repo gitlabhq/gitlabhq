@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::RecalculateProjectAuthorizations, schema: 20200204113223 do
+RSpec.describe Gitlab::BackgroundMigration::RecalculateProjectAuthorizations, schema: 20200204113223 do
   let(:users_table) { table(:users) }
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }

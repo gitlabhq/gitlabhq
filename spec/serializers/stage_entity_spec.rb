@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe StageEntity do
+RSpec.describe StageEntity do
   let(:pipeline) { create(:ci_pipeline) }
   let(:request) { double('request') }
   let(:user) { create(:user) }

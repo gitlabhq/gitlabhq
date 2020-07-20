@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe InternalId do
+RSpec.describe InternalId do
   let(:project) { create(:project) }
   let(:usage) { :issues }
   let(:issue) { build(:issue, project: project) }

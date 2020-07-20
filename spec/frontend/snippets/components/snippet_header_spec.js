@@ -3,6 +3,7 @@ import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.g
 import { ApolloMutation } from 'vue-apollo';
 import { GlButton, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 
 describe('Snippet header component', () => {
   let wrapper;
@@ -20,9 +21,7 @@ describe('Snippet header component', () => {
     author: {
       name: 'Thor Odinson',
     },
-    blob: {
-      binary: false,
-    },
+    blobs: [Blob],
   };
   const mutationVariables = {
     mutation: DeleteSnippetMutation,
@@ -49,7 +48,6 @@ describe('Snippet header component', () => {
     mutationRes = mutationTypes.RESOLVE,
     snippetProps = {},
   } = {}) {
-    // const defaultProps = Object.assign({}, snippet, snippetProps);
     const defaultProps = Object.assign(snippet, snippetProps);
     if (permissions) {
       Object.assign(defaultProps.userPermissions, {
@@ -131,15 +129,18 @@ describe('Snippet header component', () => {
     expect(wrapper.find(GlModal).exists()).toBe(true);
   });
 
-  it('renders Edit button as disabled for binary snippets', () => {
+  it.each`
+    blobs                 | isDisabled | condition
+    ${[Blob]}             | ${false}   | ${'no binary'}
+    ${[Blob, BinaryBlob]} | ${true}    | ${'several blobs. incl. a binary'}
+    ${[BinaryBlob]}       | ${true}    | ${'binary'}
+  `('renders Edit button when snippet contains $condition file', ({ blobs, isDisabled }) => {
     createComponent({
       snippetProps: {
-        blob: {
-          binary: true,
-        },
+        blobs,
       },
     });
-    expect(wrapper.find('[href*="edit"]').props('disabled')).toBe(true);
+    expect(wrapper.find('[href*="edit"]').props('disabled')).toBe(isDisabled);
   });
 
   describe('Delete mutation', () => {

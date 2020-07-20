@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeployToken do
+RSpec.describe DeployToken do
   subject(:deploy_token) { create(:deploy_token) }
 
   it { is_expected.to have_many :project_deploy_tokens }

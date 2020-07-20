@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::ObjectPoolService do
+RSpec.describe Gitlab::GitalyClient::ObjectPoolService do
   let(:pool_repository) { create(:pool_repository) }
   let(:project) { create(:project, :repository) }
   let(:raw_repository) { project.repository.raw }

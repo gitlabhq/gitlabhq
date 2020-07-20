@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetPresenter do
+RSpec.describe SnippetPresenter do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:user) { create(:user) }

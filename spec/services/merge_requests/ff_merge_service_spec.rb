@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::FfMergeService do
+RSpec.describe MergeRequests::FfMergeService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:merge_request) do

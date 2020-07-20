@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Identifier do
+RSpec.describe Gitlab::Identifier do
   let(:identifier) do
     Class.new { include Gitlab::Identifier }.new
   end

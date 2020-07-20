@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JiraImport do
+RSpec.describe Gitlab::JiraImport do
   let(:project_id) { 321 }
 
   describe '.validate_project_settings!' do

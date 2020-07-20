@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'OmniAuth::Strategies::SAML', type: :strategy do
+RSpec.describe 'OmniAuth::Strategies::SAML', type: :strategy do
   let(:idp_sso_target_url) { 'https://login.example.com/idp' }
   let(:strategy) { [OmniAuth::Strategies::SAML, { idp_sso_target_url: idp_sso_target_url }] }
 

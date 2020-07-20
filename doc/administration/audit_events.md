@@ -56,9 +56,7 @@ From there, you can see the following actions:
 - User sign-in via [Group SAML](../user/group/saml_sso/index.md)
 - Permissions changes of a user assigned to a group
 - Removed user from group
-- Project imported in to group
-- Project added to group and with which visibility level
-- Project removed from group
+- Project repository imported into group
 - [Project shared with group](../user/project/members/share_project_with_groups.md)
   and with which [permissions](../user/permissions.md)
 - Removal of a previously shared group with a project
@@ -80,7 +78,7 @@ To view a project's audit events, navigate to **Project > Settings > Audit Event
 From there, you can see the following actions:
 
 - Added or removed deploy keys
-- Project created, deleted, renamed, moved(transferred), changed path
+- Project created, deleted, renamed, moved (transferred), changed path
 - Project changed visibility level
 - User was added to project and with which [permissions](../user/permissions.md)
 - Permission changes of a user assigned to a project
@@ -96,6 +94,7 @@ From there, you can see the following actions:
 - Permission to approve merge requests by committers was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Permission to approve merge requests by authors was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Number of required approvals was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
+- Added or removed users and groups from project approval groups ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213603) in GitLab 13.2)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events-starter)
 

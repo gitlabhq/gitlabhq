@@ -21,7 +21,7 @@ class SnippetsController < Snippets::ApplicationController
     if params[:username].present?
       @user = UserFinder.new(params[:username]).find_by_username!
 
-      @snippets = SnippetsFinder.new(current_user, author: @user, scope: params[:scope])
+      @snippets = SnippetsFinder.new(current_user, author: @user, scope: params[:scope], sort: sort_param)
         .execute
         .page(params[:page])
         .inc_author

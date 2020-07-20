@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Commits::CherryPickService do
+RSpec.describe Commits::CherryPickService do
   let(:project) { create(:project, :repository) }
   # *   ddd0f15ae83993f5cb66a927a28673882e99100b (HEAD -> master, origin/master, origin/HEAD) Merge branch 'po-fix-test-en
   # |\

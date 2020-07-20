@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/pipeline_schedules/_pipeline_schedule' do
+RSpec.describe 'projects/pipeline_schedules/_pipeline_schedule' do
   let(:owner) { create(:user) }
   let(:maintainer) { create(:user) }
   let(:project) { create(:project) }

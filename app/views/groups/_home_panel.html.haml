@@ -5,11 +5,11 @@
 .group-home-panel
   .row.mb-3
     .home-panel-title-row.col-md-12.col-lg-6.d-flex
-      .avatar-container.rect-avatar.s64.home-panel-avatar.append-right-default.float-none
+      .avatar-container.rect-avatar.s64.home-panel-avatar.gl-mr-3.float-none
         = group_icon(@group, class: 'avatar avatar-tile s64', width: 64, height: 64)
       .d-flex.flex-column.flex-wrap.align-items-baseline
         .d-inline-flex.align-items-baseline
-          %h1.home-panel-title.gl-mt-3.append-bottom-5
+          %h1.home-panel-title.gl-mt-3.gl-mb-2
             = @group.name
             %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
               = visibility_level_icon(@group.visibility_level, fw: false, options: {class: 'icon'})
@@ -27,7 +27,7 @@
           - new_project_label = _("New project")
           - new_subgroup_label = _("New subgroup")
           - if can_create_projects and can_create_subgroups
-            .btn-group.new-project-subgroup.droplab-dropdown.home-panel-action-button.prepend-top-default.js-new-project-subgroup.qa-new-project-or-subgroup-dropdown{ data: { project_path: new_project_path(namespace_id: @group.id), subgroup_path: new_group_path(parent_id: @group.id) } }
+            .btn-group.new-project-subgroup.droplab-dropdown.home-panel-action-button.gl-mt-3.js-new-project-subgroup.qa-new-project-or-subgroup-dropdown{ data: { project_path: new_project_path(namespace_id: @group.id), subgroup_path: new_group_path(parent_id: @group.id) } }
               %input.btn.btn-success.dropdown-primary.js-new-group-child.qa-new-in-group-button{ type: "button", value: new_project_label, data: { action: "new-project" } }
               %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle.qa-new-project-or-subgroup-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#new-project-or-subgroup-dropdown", 'display' => 'static' } }
                 = sprite_icon("chevron-down", css_class: "icon dropdown-btn-icon")
@@ -48,9 +48,9 @@
                         %strong= new_subgroup_label
                         %span= s_("GroupsTree|Create a subgroup in this group.")
           - elsif can_create_projects
-            = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success prepend-top-default"
+            = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success gl-mt-3"
           - elsif can_create_subgroups
-            = link_to new_subgroup_label, new_group_path(parent_id: @group.id), class: "btn btn-success prepend-top-default"
+            = link_to new_subgroup_label, new_group_path(parent_id: @group.id), class: "btn btn-success gl-mt-3"
 
   - if @group.description.present?
     .group-home-desc.mt-1

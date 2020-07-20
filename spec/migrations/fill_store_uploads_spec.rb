@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200513235347_fill_store_uploads.rb')
 
-describe FillStoreUploads do
+RSpec.describe FillStoreUploads do
   let(:uploads) { table(:uploads) }
   let(:path) { 'uploads/-/system/avatar.jpg' }
 

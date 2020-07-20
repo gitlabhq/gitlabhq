@@ -1,0 +1,5 @@
+---
+title: Remove moveMultipleIssues logic from issue model
+merge_request: 32243
+author: nuwe1
+type: other

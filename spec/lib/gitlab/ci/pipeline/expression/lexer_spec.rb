@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Expression::Lexer do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexer do
   let(:token_class) do
     Gitlab::Ci::Pipeline::Expression::Token
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe X509CertificateRevokeService do
+RSpec.describe X509CertificateRevokeService do
   describe '#execute' do
     let(:service) { described_class.new }
     let!(:x509_signature_1) { create(:x509_commit_signature, x509_certificate: x509_certificate, verification_status: :verified ) }

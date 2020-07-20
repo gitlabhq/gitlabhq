@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::Reader do
+RSpec.describe Gitlab::ImportExport::Reader do
   let(:shared) { Gitlab::ImportExport::Shared.new(nil) }
 
   describe '#project_tree' do

@@ -11,6 +11,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: authorized_project_update:authorized_project_update_project_group_link_create
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_over_user_range
   :feature_category: :authentication_and_authorization
   :has_external_dependencies: 
@@ -227,6 +235,14 @@
   :weight: 1
   :idempotent: 
   :tags: []
+- :name: cronjob:partition_creation
+  :feature_category: :database
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:personal_access_tokens_expiring
   :feature_category: :authentication_and_authorization
   :has_external_dependencies: 
@@ -331,14 +347,6 @@
   :weight: 1
   :idempotent: 
   :tags: []
-- :name: cronjob:stuck_import_jobs
-  :feature_category: :importers
-  :has_external_dependencies: 
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: 
-  :tags: []
 - :name: cronjob:stuck_merge_jobs
   :feature_category: :source_code_management
   :has_external_dependencies: 
@@ -354,6 +362,14 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+  :tags: []
+- :name: cronjob:update_container_registry_info
+  :feature_category: :container_registry
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:users_create_statistics
   :feature_category: :users
@@ -675,6 +691,14 @@
   :weight: 2
   :idempotent: true
   :tags: []
+- :name: incident_management:incident_management_pager_duty_process_incident
+  :feature_category: :incident_management
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 2
+  :idempotent: 
+  :tags: []
 - :name: incident_management:incident_management_process_alert
   :feature_category: :incident_management
   :has_external_dependencies: 
@@ -771,14 +795,6 @@
   :weight: 2
   :idempotent: 
   :tags: []
-- :name: notifications:new_release
-  :feature_category: :release_orchestration
-  :has_external_dependencies: 
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent: 
-  :tags: []
 - :name: object_pool:object_pool_create
   :feature_category: :gitaly
   :has_external_dependencies: 
@@ -827,6 +843,14 @@
   :weight: 1
   :idempotent: 
   :tags: []
+- :name: package_repositories:packages_nuget_extraction
+  :feature_category: :package_registry
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: 
+  :tags: []
 - :name: pipeline_background:archive_trace
   :feature_category: :continuous_integration
   :has_external_dependencies: 
@@ -852,6 +876,22 @@
   :idempotent: 
   :tags: []
 - :name: pipeline_background:ci_daily_build_group_report_results
+  :feature_category: :continuous_integration
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: pipeline_background:ci_pipeline_success_unlock_artifacts
+  :feature_category: :continuous_integration
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: pipeline_background:ci_ref_delete_unlock_artifacts
   :feature_category: :continuous_integration
   :has_external_dependencies: 
   :urgency: :low
@@ -970,7 +1010,8 @@
   :resource_boundary: :cpu
   :weight: 5
   :idempotent: 
-  :tags: []
+  :tags:
+  - :requires_disk_io
 - :name: pipeline_processing:build_queue
   :feature_category: :continuous_integration
   :has_external_dependencies: 
@@ -1025,7 +1066,7 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 5
-  :idempotent: 
+  :idempotent: true
   :tags: []
 - :name: pipeline_processing:stage_update
   :feature_category: :continuous_integration
@@ -1106,6 +1147,14 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+  :tags: []
+- :name: unassign_issuables:members_destroyer_unassign_issuables
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: update_namespace_statistics:namespaces_root_statistics
   :feature_category: :source_code_management
@@ -1526,10 +1575,10 @@
 - :name: project_update_repository_storage
   :feature_category: :gitaly
   :has_external_dependencies: 
-  :urgency: :low
+  :urgency: :throttled
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: 
+  :idempotent: true
   :tags: []
 - :name: prometheus_create_default_alerts
   :feature_category: :incident_management
@@ -1633,6 +1682,14 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
+  :idempotent: 
+  :tags: []
+- :name: service_desk_email_receiver
+  :feature_category: :issue_tracking
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
   :idempotent: 
   :tags: []
 - :name: system_hook_push

@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Issues API
 
-Every API call to issues must be authenticated.
-
 If a user is not a member of a project and the project is private, a `GET`
 request on that project will result in a `404` status code.
 
@@ -18,11 +16,11 @@ are paginated.
 
 Read more on [pagination](README.md#pagination).
 
-CAUTION: **Deprecation**
+CAUTION: **Deprecation:**
 > `reference` attribute in response is deprecated in favour of `references`.
 > Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
 
-NOTE: **Note**
+NOTE: **Note:**
 > `references.relative` is relative to the group / project that the issue is being requested. When issue is fetched from its project
 > `relative` format would be the same as `short` format and when requested across groups / projects it is expected to be the same as `full` format.
 
@@ -72,7 +70,7 @@ GET /issues?confidential=true
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                                                   |
 | `confidential`      | boolean          | no         | Filter confidential or public issues.                                                                                                               |
-| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
+| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji` |
 | `non_archived`      | boolean          | no         | Return issues only from non-archived projects. If `false`, response will return issues from both archived and non-archived projects. Default is `true`. _(Introduced in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/197170))_ |
 
 ```shell
@@ -187,6 +185,9 @@ the `weight` parameter:
 ## List group issues
 
 Get a list of a group's issues.
+
+If the group is private, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /groups/:id/issues
@@ -342,6 +343,9 @@ the `weight` parameter:
 ## List project issues
 
 Get a list of a project's issues.
+
+If the project is private, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues
@@ -504,6 +508,9 @@ the `weight` parameter:
 
 Get a single project issue.
 
+If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+
 ```plaintext
 GET /projects/:id/issues/:issue_iid
 ```
@@ -613,14 +620,13 @@ the `weight` parameter:
 }
 ```
 
-Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will additionally see
+Users on GitLab [Premium](https://about.gitlab.com/pricing/) will additionally see
 the `epic` property:
 
 ```javascript
 {
    "project_id" : 4,
    "description" : "Omnis vero earum sunt corporis dolor et placeat.",
-   "epic": {
    "epic_iid" : 5, //deprecated, use `iid` of the `epic` attribute
    "epic": {
      "id" : 42,
@@ -663,8 +669,8 @@ POST /projects/:id/issues
 | `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
 | `discussion_to_resolve`                   | string         | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
 | `weight` **(STARTER)**                    | integer        | no       | The weight of the issue. Valid values are greater than or equal to 0. |
-| `epic_id` **(ULTIMATE)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
-| `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
+| `epic_id` **(PREMIUM)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
+| `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug"
@@ -781,8 +787,8 @@ PUT /projects/:id/issues/:issue_iid
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, for example `2016-03-11`                                           |
 | `weight` **(STARTER)** | integer | no | The weight of the issue. Valid values are greater than or equal to 0. 0                                                                    |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
-| `epic_id` **(ULTIMATE)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
-| `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
+| `epic_id` **(PREMIUM)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
+| `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close"
@@ -871,10 +877,10 @@ the `weight` parameter:
 NOTE: **Note:**
 At least one of following parameters is required to be passed for the request to be successful: `:assignee_id`, `:assignee_ids`, `:confidential`, `:created_at`, `:description`, `:discussion_locked`, `:due_date`, `:labels`, `:milestone_id`, `:state_event`, or `:title`.
 
-NOTE: **Note**:
+NOTE: **Note:**
 `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-NOTE: **Note**:
+NOTE: **Note:**
 The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Delete an issue
@@ -892,6 +898,27 @@ DELETE /projects/:id/issues/:issue_iid
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/85"
+```
+
+## Reorder an issue
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211864) as a [community contribution](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35349) in GitLab 13.2.
+
+Reorders an issue, you can see the results when sorting issues manually
+
+```plaintext
+PUT /projects/:id/issues/:issue_iid/reorder
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+| `move_after_id` | integer | no | The ID of a projet's issue to move this issue after |
+| `move_before_id` | integer | no | The ID of a projet's issue to move this issue before |
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/85/reorder?move_after_id=51&move_before_id=92"
 ```
 
 ## Move an issue
@@ -1413,6 +1440,9 @@ Example response:
 
 ## Get time tracking stats
 
+If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+
 ```plaintext
 GET /projects/:id/issues/:issue_iid/time_stats
 ```
@@ -1440,6 +1470,9 @@ Example response:
 ## List merge requests related to issue
 
 Get all the merge requests that are related to the issue.
+
+If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues/:issue_id/related_merge_requests
@@ -1597,6 +1630,9 @@ Example response:
 
 Get all the merge requests that will close issue when merged.
 
+If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+
 ```plaintext
 GET /projects/:id/issues/:issue_iid/closed_by
 ```
@@ -1669,6 +1705,9 @@ Example response:
 ```
 
 ## Participants on issues
+
+If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/participants

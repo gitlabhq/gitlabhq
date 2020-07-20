@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200513234502_fill_file_store_lfs_objects.rb')
 
-describe FillFileStoreLfsObjects do
+RSpec.describe FillFileStoreLfsObjects do
   let(:lfs_objects) { table(:lfs_objects) }
   let(:oid) { 'b804383982bb89b00e828e3f44c038cc991d3d1768009fc39ba8e2c081b9fb75' }
 

@@ -19,6 +19,10 @@ A database review is required for:
   generally up to the author of a merge request to decide whether or
   not complex queries are being introduced and if they require a
   database review.
+- Changes in usage data metrics that use `count` and `distinct_count`.
+  These metrics could have complex queries over large tables.
+  See the [Telemetry Guide](telemetry/usage_ping.md#implementing-usage-ping)
+  for implementation details.
 
 A database reviewer is expected to look out for obviously complex
 queries in the change and review those closer. If the author does not
@@ -190,7 +194,8 @@ In general, migrations for a single deploy shouldn't take longer than
 1 hour for GitLab.com. The following guidelines are not hard rules, they were
 estimated to keep migration timing to a minimum.
 
-NOTE: **Note:** Keep in mind that all runtimes should be measured against GitLab.com.
+NOTE: **Note:**
+Keep in mind that all runtimes should be measured against GitLab.com.
 
 | Migration Type | Execution Time Recommended | Notes |
 |----|----|---|

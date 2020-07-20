@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection do
+RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:pipeline) { create(:ci_pipeline) }

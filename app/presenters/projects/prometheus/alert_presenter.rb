@@ -6,7 +6,7 @@ module Projects
       RESERVED_ANNOTATIONS = %w(gitlab_incident_markdown gitlab_y_label title).freeze
       GENERIC_ALERT_SUMMARY_ANNOTATIONS = %w(monitoring_tool service hosts).freeze
       MARKDOWN_LINE_BREAK = "  \n".freeze
-      INCIDENT_LABEL_NAME = IncidentManagement::CreateIssueService::INCIDENT_LABEL[:title].freeze
+      INCIDENT_LABEL_NAME = ::IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES[:title].freeze
       METRIC_TIME_WINDOW = 30.minutes
 
       def full_title
@@ -58,6 +58,25 @@ module Projects
         MARKDOWN
       end
 
+      def annotation_list
+        strong_memoize(:annotation_list) do
+          annotations
+            .reject { |annotation| annotation.label.in?(RESERVED_ANNOTATIONS | GENERIC_ALERT_SUMMARY_ANNOTATIONS) }
+            .map { |annotation| list_item(annotation.label, annotation.value) }
+            .join(MARKDOWN_LINE_BREAK)
+        end
+      end
+
+      def metric_embed_for_alert
+        "\n[](#{metrics_dashboard_url})" if metrics_dashboard_url
+      end
+
+      def metrics_dashboard_url
+        strong_memoize(:metrics_dashboard_url) do
+          embed_url_for_gitlab_alert || embed_url_for_self_managed_alert
+        end
+      end
+
       private
 
       def alert_title
@@ -93,15 +112,6 @@ module Projects
         end
       end
 
-      def annotation_list
-        strong_memoize(:annotation_list) do
-          annotations
-            .reject { |annotation| annotation.label.in?(RESERVED_ANNOTATIONS | GENERIC_ALERT_SUMMARY_ANNOTATIONS) }
-            .map { |annotation| list_item(annotation.label, annotation.value) }
-            .join(MARKDOWN_LINE_BREAK)
-        end
-      end
-
       def list_item(key, value)
         "**#{key}:** #{value}".strip
       end
@@ -120,12 +130,6 @@ module Projects
         Array(hosts.value).join(' ')
       end
 
-      def metric_embed_for_alert
-        url = embed_url_for_gitlab_alert || embed_url_for_self_managed_alert
-
-        "\n[](#{url})" if url
-      end
-
       def embed_url_for_gitlab_alert
         return unless gitlab_alert
 
@@ -133,6 +137,7 @@ module Projects
           project,
           gitlab_alert.prometheus_metric_id,
           environment_id: environment.id,
+          embedded: true,
           **alert_embed_window_params(embed_time)
         )
       end
@@ -144,6 +149,7 @@ module Projects
           project,
           environment,
           embed_json: dashboard_for_self_managed_alert.to_json,
+          embedded: true,
           **alert_embed_window_params(embed_time)
         )
       end

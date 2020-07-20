@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe API::MergeRequests do
+RSpec.describe API::MergeRequests do
   include ProjectForksHelper
 
   let(:base_time)   { Time.now }
@@ -422,6 +422,73 @@ describe API::MergeRequests do
           ])
           response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
+        end
+      end
+
+      context 'NOT params' do
+        let(:merge_request2) do
+          create(
+            :merge_request,
+            :simple,
+            milestone: milestone,
+            author: user,
+            assignees: [user],
+            merge_request_context_commits: [merge_request_context_commit],
+            source_project: project,
+            target_project: project,
+            source_branch: 'what',
+            title: "What",
+            created_at: base_time
+          )
+        end
+
+        before do
+          create(:label_link, label: label, target: merge_request)
+          create(:label_link, label: label2, target: merge_request2)
+        end
+
+        it 'returns merge requests without any of the labels given', :aggregate_failures do
+          get api(endpoint_path, user), params: { not: { labels: ["#{label.title}, #{label2.title}"] } }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response.length).to eq(3)
+          json_response.each do |mr|
+            expect(mr['labels']).not_to include(label2.title, label.title)
+          end
+        end
+
+        it 'returns merge requests without any of the milestones given', :aggregate_failures do
+          get api(endpoint_path, user), params: { not: { milestone: milestone.title } }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response.length).to eq(4)
+          json_response.each do |mr|
+            expect(mr['milestone']).not_to eq(milestone.title)
+          end
+        end
+
+        it 'returns merge requests without the author given', :aggregate_failures do
+          get api(endpoint_path, user), params: { not: { author_id: user2.id } }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response.length).to eq(5)
+          json_response.each do |mr|
+            expect(mr['author']['id']).not_to eq(user2.id)
+          end
+        end
+
+        it 'returns merge requests without the assignee given', :aggregate_failures do
+          get api(endpoint_path, user), params: { not: { assignee_id: user2.id } }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response.length).to eq(5)
+          json_response.each do |mr|
+            expect(mr['assignee']['id']).not_to eq(user2.id)
+          end
         end
       end
 
@@ -1930,7 +1997,7 @@ describe API::MergeRequests do
     it "updates the MR's squash attribute" do
       expect do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { squash: true }
-      end.to change { merge_request.reload.squash }
+      end.to change { merge_request.reload.squash_on_merge? }
 
       expect(response).to have_gitlab_http_status(:ok)
     end

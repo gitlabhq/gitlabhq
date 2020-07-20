@@ -63,16 +63,6 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
     include_examples 'correct event created'
   end
 
-  context 'the feature is disabled' do
-    before do
-      stub_feature_flags(wiki_events: false)
-    end
-
-    it 'does not record the activity' do
-      expect { service.execute }.not_to change(Event, :count)
-    end
-  end
-
   context 'when the options are bad' do
     let(:page_title) { '' }
 

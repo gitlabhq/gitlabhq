@@ -71,7 +71,11 @@ module Gitlab
       end
 
       def snippet_url(snippet, **options)
-        if options.delete(:raw).present?
+        if options[:file].present?
+          file, ref = options.values_at(:file, :ref)
+
+          instance.gitlab_raw_snippet_blob_url(snippet, file, ref)
+        elsif options.delete(:raw).present?
           instance.gitlab_raw_snippet_url(snippet, **options)
         else
           instance.gitlab_snippet_url(snippet, **options)
@@ -81,9 +85,11 @@ module Gitlab
       def wiki_url(wiki, **options)
         return wiki_page_url(wiki, Wiki::HOMEPAGE, **options) unless options[:action]
 
-        options[:controller] = 'projects/wikis'
-        options[:namespace_id] = wiki.container.namespace
-        options[:project_id] = wiki.container
+        if wiki.container.is_a?(Project)
+          options[:controller] = 'projects/wikis'
+          options[:namespace_id] = wiki.container.namespace
+          options[:project_id] = wiki.container
+        end
 
         instance.url_for(**options)
       end

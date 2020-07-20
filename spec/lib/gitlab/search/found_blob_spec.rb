@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Search::FoundBlob do
+RSpec.describe Gitlab::Search::FoundBlob do
   let(:project) { create(:project, :public, :repository) }
 
   describe 'parsing content results' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Hidden do
+RSpec.describe Gitlab::Ci::Config::Entry::Hidden do
   describe '.matching?' do
     subject { described_class.matching?(name, {}) }
 

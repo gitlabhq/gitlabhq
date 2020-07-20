@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WikiPage::Meta do
+RSpec.describe WikiPage::Meta do
   let_it_be(:project) { create(:project, :wiki_repo) }
   let_it_be(:other_project) { create(:project) }
 

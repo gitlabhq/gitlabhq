@@ -1,4 +1,7 @@
-.row.prepend-top-default.append-bottom-default
+- if lookup_context.template_exists?('top', "projects/services/#{@service.to_param}", true)
+  = render "projects/services/#{@service.to_param}/top"
+
+.row.gl-mt-3.gl-mb-3
   .col-lg-4
     %h4.gl-mt-0
       = @service.title
@@ -11,10 +14,10 @@
       %p= @service.detailed_description
   .col-lg-8
     = form_for(@service, as: :service, url: scoped_integration_path(@service), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'can-test' => @service.can_test?, 'test-url' => test_project_service_path(@project, @service) } }) do |form|
-      = render 'shared/service_settings', form: form, service: @service
-      .footer-block.row-content-block
+      = render 'shared/service_settings', form: form, integration: @service
+      .footer-block.row-content-block{ :class => "#{'gl-display-none' if @service.is_a?(AlertsService)}" }
         %input{ id: 'services_redirect_to', type: 'hidden', name: 'redirect_to', value: request.referrer }
-        = service_save_button
+        = service_save_button(disabled: @service.is_a?(AlertsService))
         &nbsp;
         = link_to _('Cancel'), project_settings_integrations_path(@project), class: 'btn btn-cancel'
 

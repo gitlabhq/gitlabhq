@@ -3,7 +3,7 @@
 module Mutations
   module AwardEmojis
     class Add < Base
-      graphql_name 'AddAwardEmoji'
+      graphql_name 'AwardEmojiAdd'
 
       def resolve(args)
         awardable = authorized_find!(id: args[:awardable_id])

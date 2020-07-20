@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'responds with error' do |message|
+RSpec.shared_examples 'responds with error' do |message|
   it 'returns error' do
     expect(subject).to be_a(ServiceResponse)
     expect(subject).to be_error

@@ -1,4 +1,4 @@
-# Backing up and restoring GitLab **(CORE ONLY)**
+# Back up and restore GitLab **(CORE ONLY)**
 
 GitLab provides Rake tasks for backing up and restoring GitLab instances.
 
@@ -25,14 +25,6 @@ installed on your system.
     # RHEL/CentOS
     sudo yum install rsync
     ```
-
-- **Tar**: Backup and restore tasks use `tar` under the hood to create and extract
-  archives. Ensure you have version 1.30 or above of `tar` available in your
-  system. To check the version, run:
-
-  ```shell
-  tar --version
-  ```
 
 ## Backup timestamp
 
@@ -75,7 +67,7 @@ Use this command if you've installed GitLab with the Omnibus package:
 sudo gitlab-backup create
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 Use this if you've installed GitLab from source:
@@ -90,7 +82,7 @@ If you are running GitLab within a Docker container, you can run the backup from
 docker exec -t <container name> gitlab-backup create
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 If you are using the [GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab) on a
@@ -206,7 +198,7 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 sudo gitlab-backup create STRATEGY=copy
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 #### Backup filename
@@ -221,7 +213,7 @@ By default a backup file is created according to the specification in [the Backu
 sudo gitlab-backup create BACKUP=dump
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 The resulting file will then be `dump_gitlab_backup.tar`. This is useful for systems that make use of rsync and incremental backups, and will result in considerably faster transfer speeds.
@@ -236,7 +228,7 @@ Note that the `--rsyncable` option in `gzip` is not guaranteed to be available o
 sudo gitlab-backup create BACKUP=dump GZIP_RSYNCABLE=yes
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 #### Excluding specific directories from the backup
@@ -264,7 +256,7 @@ For Omnibus GitLab packages:
 sudo gitlab-backup create SKIP=db,uploads
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 For installations from source:
@@ -466,7 +458,13 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_upload_connection'] = {
      'provider' => 'Google',
      'google_storage_access_key_id' => 'Access Key',
-     'google_storage_secret_access_key' => 'Secret'
+     'google_storage_secret_access_key' => 'Secret',
+
+     ## If you have CNAME buckets (foo.example.com), you might run into SSL issues
+     ## when uploading backups ("hostname foo.example.com.storage.googleapis.com
+     ## does not match the server certificate"). In that case, uncomnent the following
+     ## setting. See: https://github.com/fog/fog/issues/2834
+     #'path_style' => true
    }
    gitlab_rails['backup_upload_remote_directory'] = 'my.google.bucket'
    ```
@@ -499,7 +497,7 @@ sudo gitlab-backup create DIRECTORY=daily
 sudo gitlab-backup create DIRECTORY=weekly
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 #### Uploading to locally mounted shares
@@ -517,7 +515,8 @@ backups will be copied to, and will be created if it does not exist. If the
 directory that you want to copy the tarballs to is the root of your mounted
 directory, just use `.` instead.
 
-NOTE: **Note:** Since file system performance may affect GitLab's overall performance, we do not recommend using EFS for storage. See the [relevant documentation](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+NOTE: **Note:**
+Since file system performance may affect GitLab's overall performance, we do not recommend using EFS for storage. See the [relevant documentation](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 For Omnibus GitLab packages:
 
@@ -605,7 +604,7 @@ For Omnibus GitLab packages:
    0 2 * * * /opt/gitlab/bin/gitlab-backup create CRON=1
    ```
 
-   NOTE: **Note**
+   NOTE: **Note:**
    For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 For installations from source:
@@ -679,7 +678,7 @@ You can only restore a backup to **exactly the same version and type (CE/EE)** o
 GitLab that you created it on, for example CE 9.1.0.
 
 If your backup is a different version than the current installation, you will
-need to [downgrade your GitLab installation](https://docs.gitlab.com/omnibus/update/README.html#downgrading)
+need to [downgrade your GitLab installation](https://docs.gitlab.com/omnibus/update/README.html#downgrade)
 before restoring the backup.
 
 ### Restore prerequisites
@@ -806,7 +805,7 @@ restore:
 sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:restore`.
 
 CAUTION: **Warning:**
@@ -828,6 +827,12 @@ If there is a GitLab version mismatch between your backup tar file and the insta
 version of GitLab, the restore command will abort with an error. Install the
 [correct GitLab version](https://packages.gitlab.com/gitlab/) and try again.
 
+NOTE: **Note:**
+There is currently a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3470) for restore not working
+with `pgbouncer`. In order to workaround the issue, the Rails node will need to bypass `pgbouncer` and connect
+directly to the primary database node. This can be done by setting `gitlab_rails['db_host']` and `gitlab_rails['port']`
+to connect to the primary database node and [reconfiguring GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 ### Restore for Docker image and GitLab Helm chart installations
 
 For GitLab installations using the Docker image or the GitLab Helm chart on
@@ -845,10 +850,25 @@ backup location (default location is `/var/opt/gitlab/backups`).
 For Docker installations, the restore task can be run from host:
 
 ```shell
-docker exec -it <name of container> gitlab-backup restore
+# Stop the processes that are connected to the database
+docker exec -it <name of container> gitlab-ctl stop unicorn
+docker exec -it <name of container> gitlab-ctl stop puma
+docker exec -it <name of container> gitlab-ctl stop sidekiq
+
+# Verify that the processes are all down before continuing
+docker exec -it <name of container> gitlab-ctl status
+
+# Run the restore
+docker exec -it <name of container> gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
+
+# Restart the GitLab container
+docker restart <name of container>
+
+# Check GitLab
+docker exec -it <name of container> gitlab-rake gitlab:check SANITIZE=true
 ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:restore`.
 
 CAUTION: **Warning:**
@@ -858,6 +878,28 @@ use `gitlab-backup restore` to avoid this issue.
 
 The GitLab Helm chart uses a different process, documented in
 [restoring a GitLab Helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
+
+### Restoring only one or a few project(s) or group(s) from a backup
+
+While the Rake task used to restore a GitLab instance doesn't support
+restoring a single project or group, you can use a workaround by
+restoring your backup to a separate, temporary GitLab instance, and
+export your project or group from there:
+
+1. [Install a new GitLab](../install/README.md) instance at the same version as
+   the backed-up instance from which you want to restore.
+1. [Restore the backup](#restore-gitlab) into this new instance and
+   export your [project](../user/project/settings/import_export.md)
+   or [group](../user/group/settings/import_export.md). Make sure to
+   read the **Important Notes** on either export feature's documentation
+   to understand what will be exported and what not.
+1. Once the export is complete, go to the old instance and import it.
+1. After importing only the project(s) or group(s) that you wanted is complete,
+   you may delete the new, temporary GitLab instance.
+
+NOTE: **Note:**
+A feature request to provide direct restore of individual projects or groups
+is being discussed in [issue #17517](https://gitlab.com/gitlab-org/gitlab/-/issues/17517).
 
 ## Alternative backup strategies
 
@@ -914,7 +956,7 @@ Be advised that, backup is successfully restored in spite of these warnings.
 The Rake task runs this as the `gitlab` user which does not have the superuser access to the database. When restore is initiated it will also run as `gitlab` user but it will also try to alter the objects it does not have access to.
 Those objects have no influence on the database backup/restore but they give this annoying warning.
 
-For more information see similar questions on PostgreSQL issue tracker[here](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
+For more information see similar questions on PostgreSQL issue tracker [here](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
 
 ### When the secrets file is lost
 

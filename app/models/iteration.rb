@@ -34,6 +34,9 @@ class Iteration < ApplicationRecord
       .where('due_date is NULL or due_date >= ?', start_date)
   end
 
+  scope :start_date_passed, -> { where('start_date <= ?', Date.current).where('due_date > ?', Date.current) }
+  scope :due_date_passed, -> { where('due_date <= ?', Date.current) }
+
   state_machine :state_enum, initial: :upcoming do
     event :start do
       transition upcoming: :started
@@ -93,7 +96,7 @@ class Iteration < ApplicationRecord
 
   # ensure dates do not overlap with other Iterations in the same group/project
   def dates_do_not_overlap
-    return unless resource_parent.iterations.within_timeframe(start_date, due_date).exists?
+    return unless resource_parent.iterations.where.not(id: self.id).within_timeframe(start_date, due_date).exists?
 
     errors.add(:base, s_("Iteration|Dates cannot overlap with other existing Iterations"))
   end

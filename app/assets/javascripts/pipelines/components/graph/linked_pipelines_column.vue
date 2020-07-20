@@ -28,7 +28,7 @@ export default {
     columnClass() {
       const positionValues = {
         right: 'prepend-left-64',
-        left: 'append-right-32',
+        left: 'gl-mr-7',
       };
       return `graph-position-${this.graphPosition} ${positionValues[this.graphPosition]}`;
     },
@@ -40,6 +40,9 @@ export default {
   methods: {
     onPipelineClick(downstreamNode, pipeline, index) {
       this.$emit('linkedPipelineClick', pipeline, index, downstreamNode);
+    },
+    onDownstreamHovered(jobName) {
+      this.$emit('downstreamHovered', jobName);
     },
   },
 };
@@ -61,6 +64,7 @@ export default {
         :column-title="columnTitle"
         :project-id="projectId"
         @pipelineClicked="onPipelineClick($event, pipeline, index)"
+        @downstreamHovered="onDownstreamHovered"
       />
     </ul>
   </div>

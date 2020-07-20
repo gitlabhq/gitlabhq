@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::Grant do
+RSpec.describe Gitlab::Database::Grant do
   describe '.create_and_execute_trigger' do
     it 'returns true when the user can create and execute a trigger' do
       # We assume the DB/user is set up correctly so that triggers can be

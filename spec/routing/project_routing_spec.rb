@@ -2,70 +2,12 @@
 
 require 'spec_helper'
 
-describe 'project routing' do
+RSpec.describe 'project routing' do
+  let(:base_params) { { namespace_id: 'gitlab', project_id: 'gitlabhq' } }
+
   before do
     allow(Project).to receive(:find_by_full_path).and_return(false)
     allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq', any_args).and_return(true)
-  end
-
-  # Shared examples for a resource inside a Project
-  #
-  # By default it tests all the default REST actions: index, create, new, edit,
-  # show, update, and destroy. You can remove actions by customizing the
-  # `actions` variable.
-  #
-  # It also expects a `controller` variable to be available which defines both
-  # the path to the resource as well as the controller name.
-  #
-  # Examples
-  #
-  #   # Default behavior
-  #   it_behaves_like 'RESTful project resources' do
-  #     let(:controller) { 'issues' }
-  #   end
-  #
-  #   # Customizing actions
-  #   it_behaves_like 'RESTful project resources' do
-  #     let(:actions)    { [:index] }
-  #     let(:controller) { 'issues' }
-  #   end
-  #
-  #   # Different controller name and path
-  #   it_behaves_like 'RESTful project resources' do
-  #     let(:controller) { 'pages_domains' }
-  #     let(:controller_path) { 'pages/domains' }
-  #   end
-  shared_examples 'RESTful project resources' do
-    let(:actions) { [:index, :create, :new, :edit, :show, :update, :destroy] }
-    let(:controller_path) { controller }
-
-    it 'to #index' do
-      expect(get("/gitlab/gitlabhq/#{controller_path}")).to route_to("projects/#{controller}#index", namespace_id: 'gitlab', project_id: 'gitlabhq') if actions.include?(:index)
-    end
-
-    it 'to #create' do
-      expect(post("/gitlab/gitlabhq/#{controller_path}")).to route_to("projects/#{controller}#create", namespace_id: 'gitlab', project_id: 'gitlabhq') if actions.include?(:create)
-    end
-
-    it 'to #new' do
-      expect(get("/gitlab/gitlabhq/#{controller_path}/new")).to route_to("projects/#{controller}#new", namespace_id: 'gitlab', project_id: 'gitlabhq') if actions.include?(:new)
-    end
-
-    it 'to #edit' do
-      expect(get("/gitlab/gitlabhq/#{controller_path}/1/edit")).to route_to("projects/#{controller}#edit", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:edit)
-    end
-
-    it 'to #show' do
-      expect(get("/gitlab/gitlabhq/#{controller_path}/1")).to route_to("projects/#{controller}#show", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:show)
-    end
-
-    it 'to #update' do
-      expect(put("/gitlab/gitlabhq/#{controller_path}/1")).to route_to("projects/#{controller}#update", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:update)
-    end
-
-    it 'to #destroy' do
-      expect(delete("/gitlab/gitlabhq/#{controller_path}/1")).to route_to("projects/#{controller}#destroy", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:destroy)
-    end
   end
 
   #                 projects POST   /projects(.:format)     projects#create
@@ -77,6 +19,10 @@ describe 'project routing' do
   #                          DELETE /:id(.:format)          projects#destroy
   # preview_markdown_project POST   /:id/preview_markdown(.:format) projects#preview_markdown
   describe ProjectsController, 'routing' do
+    it 'to #index' do
+      expect(get('/projects')).to route_to('projects#index')
+    end
+
     it 'to #create' do
       expect(post('/projects')).to route_to('projects#create')
     end
@@ -145,25 +91,19 @@ describe 'project routing' do
     end
   end
 
-  #  pages_project_wikis GET    /:project_id/wikis/pages(.:format)       projects/wikis#pages
-  # history_project_wiki GET    /:project_id/wikis/:id/history(.:format) projects/wikis#history
-  #        project_wikis POST   /:project_id/wikis(.:format)             projects/wikis#create
-  #    edit_project_wiki GET    /:project_id/wikis/:id/edit(.:format)    projects/wikis#edit
-  #         project_wiki GET    /:project_id/wikis/:id(.:format)         projects/wikis#show
-  #                      DELETE /:project_id/wikis/:id(.:format)         projects/wikis#destroy
+  #      project_wikis_git_access GET    /:project_id/-/wikis/git_access(.:format) projects/wikis#git_access
+  #           project_wikis_pages GET    /:project_id/-/wikis/pages(.:format)      projects/wikis#pages
+  #             project_wikis_new GET    /:project_id/-/wikis/new(.:format)        projects/wikis#new
+  #                               POST   /:project_id/-/wikis(.:format)            projects/wikis#create
+  #             project_wiki_edit GET    /:project_id/-/wikis/*id/edit             projects/wikis#edit
+  #          project_wiki_history GET    /:project_id/-/wikis/*id/history          projects/wikis#history
+  # project_wiki_preview_markdown POST   /:project_id/-/wikis/*id/preview_markdown projects/wikis#preview_markdown
+  #                  project_wiki GET    /:project_id/-/wikis/*id                  projects/wikis#show
+  #                               PUT    /:project_id/-/wikis/*id                  projects/wikis#update
+  #                               DELETE /:project_id/-/wikis/*id                  projects/wikis#destroy
   describe Projects::WikisController, 'routing' do
-    it 'to #pages' do
-      expect(get('/gitlab/gitlabhq/-/wikis/pages')).to route_to('projects/wikis#pages', namespace_id: 'gitlab', project_id: 'gitlabhq')
-    end
-
-    it 'to #history' do
-      expect(get('/gitlab/gitlabhq/-/wikis/1/history')).to route_to('projects/wikis#history', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
-    end
-
-    it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:create, :edit, :show, :destroy] }
-      let(:controller) { 'wikis' }
-      let(:controller_path) { '/-/wikis' }
+    it_behaves_like 'wiki routing' do
+      let(:base_path) { '/gitlab/gitlabhq/-/wikis' }
     end
 
     it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/wikis", "/gitlab/gitlabhq/-/wikis"
@@ -242,10 +182,9 @@ describe 'project routing' do
   #      project_deploy_key PATCH  /:project_id/deploy_keys/:id(.:format)      deploy_keys#update
   #                         DELETE /:project_id/deploy_keys/:id(.:format)      deploy_keys#destroy
   describe Projects::DeployKeysController, 'routing' do
-    it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :new, :create, :edit, :update] }
-      let(:controller) { 'deploy_keys' }
-      let(:controller_path) { '/-/deploy_keys' }
+    it_behaves_like 'resource routing' do
+      let(:actions) { %i[index new create edit update] }
+      let(:base_path) { '/gitlab/gitlabhq/-/deploy_keys' }
     end
   end
 
@@ -253,10 +192,9 @@ describe 'project routing' do
   #                            POST   /:project_id/protected_branches(.:format)     protected_branches#create
   #   project_protected_branch DELETE /:project_id/protected_branches/:id(.:format) protected_branches#destroy
   describe Projects::ProtectedBranchesController, 'routing' do
-    it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :create, :destroy] }
-      let(:controller) { 'protected_branches' }
-      let(:controller_path) { '/-/protected_branches' }
+    it_behaves_like 'resource routing' do
+      let(:actions) { %i[index create destroy] }
+      let(:base_path) { '/gitlab/gitlabhq/-/protected_branches' }
     end
   end
 
@@ -316,10 +254,9 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/diffs')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'diffs')
     end
 
-    it_behaves_like 'RESTful project resources' do
-      let(:controller) { 'merge_requests' }
-      let(:actions) { [:index, :edit, :show, :update] }
-      let(:controller_path) { '/-/merge_requests' }
+    it_behaves_like 'resource routing' do
+      let(:actions) { %i[index edit show update] }
+      let(:base_path) { '/gitlab/gitlabhq/-/merge_requests' }
     end
 
     it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/merge_requests", "/gitlab/gitlabhq/-/merge_requests"
@@ -407,6 +344,10 @@ describe 'project routing' do
     it 'to #destroy' do
       expect(delete('/gitlab/gitlabhq/snippets/1')).to route_to('projects/snippets#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
+
+    it 'to #show from scope routing' do
+      expect(get('/gitlab/gitlabhq/-/snippets/1')).to route_to('projects/snippets#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
+    end
   end
 
   # test_project_hook POST    /:project_id/hooks/:id/test(.:format) hooks#test
@@ -420,9 +361,9 @@ describe 'project routing' do
       expect(post('/gitlab/gitlabhq/hooks/1/test')).to route_to('projects/hooks#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
-    it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :create, :destroy, :edit, :update] }
-      let(:controller) { 'hooks' }
+    it_behaves_like 'resource routing' do
+      let(:actions) { %i[index create destroy edit update] }
+      let(:base_path) { '/gitlab/gitlabhq/hooks' }
     end
   end
 
@@ -457,10 +398,9 @@ describe 'project routing' do
   #                         POST   /:project_id/commits(.:format)           commits#create
   #          project_commit GET    /:project_id/commits/:id(.:format)       commits#show
   describe Projects::CommitsController, 'routing' do
-    it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:show] }
-      let(:controller) { 'commits' }
-      let(:controller_path) { '/-/commits' }
+    it_behaves_like 'resource routing' do
+      let(:actions) { %i[show] }
+      let(:base_path) { '/gitlab/gitlabhq/-/commits' }
     end
 
     it 'to #show' do
@@ -477,10 +417,9 @@ describe 'project routing' do
   #                          PUT    /:project_id/project_members/:id(.:format)      project_members#update
   #                          DELETE /:project_id/project_members/:id(.:format)      project_members#destroy
   describe Projects::ProjectMembersController, 'routing' do
-    it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :create, :update, :destroy] }
-      let(:controller) { 'project_members' }
-      let(:controller_path) { '/-/project_members' }
+    it_behaves_like 'resource routing' do
+      let(:actions) { %i[index create update destroy] }
+      let(:base_path) { '/gitlab/gitlabhq/-/project_members' }
     end
   end
 
@@ -493,10 +432,9 @@ describe 'project routing' do
   #                           DELETE /:project_id/milestones/:id(.:format)      milestones#destroy
   # promote_project_milestone POST /:project_id/milestones/:id/promote          milestones#promote
   describe Projects::MilestonesController, 'routing' do
-    it_behaves_like 'RESTful project resources' do
-      let(:controller) { 'milestones' }
-      let(:actions) { [:index, :create, :new, :edit, :show, :update] }
-      let(:controller_path) { '/-/milestones' }
+    it_behaves_like 'resource routing' do
+      let(:actions) { %i[index create new edit show update] }
+      let(:base_path) { '/gitlab/gitlabhq/-/milestones' }
     end
 
     it 'to #promote' do
@@ -526,10 +464,9 @@ describe 'project routing' do
       expect(post('/gitlab/gitlabhq/-/issues/bulk_update')).to route_to('projects/issues#bulk_update', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it_behaves_like 'RESTful project resources' do
-      let(:controller) { 'issues' }
-      let(:actions) { [:index, :create, :new, :edit, :show, :update] }
-      let(:controller_path) { '/-/issues' }
+    it_behaves_like 'resource routing' do
+      let(:actions) { %i[index create new edit show update] }
+      let(:base_path) { '/gitlab/gitlabhq/-/issues' }
     end
 
     it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/issues", "/gitlab/gitlabhq/-/issues"
@@ -550,9 +487,9 @@ describe 'project routing' do
       )
     end
 
-    it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:create, :destroy] }
-      let(:controller) { 'notes' }
+    it_behaves_like 'resource routing' do
+      let(:actions) { %i[create destroy] }
+      let(:base_path) { '/gitlab/gitlabhq/notes' }
     end
   end
 
@@ -741,10 +678,10 @@ describe 'project routing' do
   end
 
   describe Projects::PagesDomainsController, 'routing' do
-    it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:show, :new, :create, :destroy] }
-      let(:controller) { 'pages_domains' }
-      let(:controller_path) { 'pages/domains' }
+    it_behaves_like 'resource routing' do
+      let(:actions) { %i[show new create destroy] }
+      let(:base_path) { '/gitlab/gitlabhq/pages/domains' }
+      let(:id) { 'my.domain.com' }
     end
 
     it 'to #destroy with a valid domain name' do
@@ -775,6 +712,12 @@ describe 'project routing' do
                            repository_id: '1',
                            id: '-rc1')
       end
+    end
+  end
+
+  describe Projects::Settings::OperationsController, 'routing' do
+    it 'to #reset_alerting_token' do
+      expect(post('/gitlab/gitlabhq/-/settings/operations/reset_alerting_token')).to route_to('projects/settings/operations#reset_alerting_token', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
   end
 
@@ -870,6 +813,14 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/resized_image/v432x230')).to route_to('projects/design_management/designs/resized_image#show', namespace_id: 'gitlab', project_id: 'gitlabhq', design_id: '1', sha: 'c6f00aa50b80887ada30a6fe517670be9f8f9ece', id: 'v432x230')
       expect(get('/gitlab/gitlabhq/-/design_management/designs/1/invalid/resized_image/v432x230')).to route_to('application#route_not_found', unmatched_route: 'gitlab/gitlabhq/-/design_management/designs/1/invalid/resized_image/v432x230')
       expect(get('/gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/resized_image/small')).to route_to('application#route_not_found', unmatched_route: 'gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/resized_image/small')
+    end
+  end
+
+  describe Projects::Snippets::BlobsController, "routing" do
+    it "to #raw" do
+      expect(get('/gitlab/gitlabhq/-/snippets/1/raw/master/lib/version.rb'))
+        .to route_to('projects/snippets/blobs#raw', namespace_id: 'gitlab',
+                     project_id: 'gitlabhq', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
     end
   end
 end

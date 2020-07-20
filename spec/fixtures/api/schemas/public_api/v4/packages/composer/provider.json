@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": ["providers"],
+  "properties": {
+    "providers": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Za-z_]+"
+      },
+      "patternProperties": {
+        "^[A-Za-z_]+": {
+          "type": "object",
+          "required": ["sha256"],
+          "properties": {
+            "sha256": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

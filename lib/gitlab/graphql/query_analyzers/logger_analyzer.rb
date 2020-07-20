@@ -52,8 +52,7 @@ module Gitlab
         end
 
         def duration(time_started)
-          nanoseconds = Gitlab::Metrics::System.monotonic_time - time_started
-          nanoseconds * 1000000
+          Gitlab::Metrics::System.monotonic_time - time_started
         end
 
         def default_initial_values(query)

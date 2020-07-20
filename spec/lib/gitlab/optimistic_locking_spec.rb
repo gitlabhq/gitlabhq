@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::OptimisticLocking do
+RSpec.describe Gitlab::OptimisticLocking do
   let!(:pipeline) { create(:ci_pipeline) }
   let!(:pipeline2) { Ci::Pipeline.find(pipeline.id) }
 

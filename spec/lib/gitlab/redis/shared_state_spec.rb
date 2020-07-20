@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Redis::SharedState do
+RSpec.describe Gitlab::Redis::SharedState do
   let(:config_file_name) { "config/redis.shared_state.yml" }
   let(:environment_config_file_name) { "GITLAB_REDIS_SHARED_STATE_CONFIG_FILE" }
   let(:config_old_format_socket) { "spec/fixtures/config/redis_shared_state_old_format_socket.yml" }

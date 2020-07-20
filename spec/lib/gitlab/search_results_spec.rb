@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SearchResults do
+RSpec.describe Gitlab::SearchResults do
   include ProjectForksHelper
   include SearchHelpers
 

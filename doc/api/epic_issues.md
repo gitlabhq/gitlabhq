@@ -4,13 +4,15 @@ group: Portfolio Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Epic Issues API **(ULTIMATE)**
+# Epic Issues API **(PREMIUM)**
 
 Every API call to epic_issues must be authenticated.
 
-If a user is not a member of a group and the group is private, a `GET` request on that group will result to a `404` status code.
+If a user is not a member of a group and the group is private, a `GET` request on that group will
+result in a `404` status code.
 
-Epics are available only in Ultimate. If epics feature is not available a `403` status code will be returned.
+Epics are available only in GitLab [Premium and higher](https://about.gitlab.com/pricing/).
+If the Epics feature is not available, a `403` status code will be returned.
 
 ## List issues for an epic
 

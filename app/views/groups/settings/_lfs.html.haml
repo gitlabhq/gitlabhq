@@ -5,7 +5,7 @@
 
 %p= s_('Check the %{docs_link_start}documentation%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
 
-.form-group.append-bottom-default
+.form-group.gl-mb-3
   .form-check
     = f.check_box :lfs_enabled, checked: @group.lfs_enabled?, class: 'form-check-input', data: { qa_selector: 'lfs_checkbox' }
     = f.label :lfs_enabled, class: 'form-check-label' do

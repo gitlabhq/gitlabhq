@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TreeHelper do
+RSpec.describe TreeHelper do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:sha) { 'c1c67abbaf91f624347bb3ae96eabe3a1b742478' }
@@ -152,6 +152,60 @@ describe TreeHelper do
       escaped_branch_name = '&lt;script&gt;alert(&#39;escape me!&#39;);&lt;/script&gt;'
 
       expect(helper.commit_in_single_accessible_branch).to include(escaped_branch_name)
+    end
+  end
+
+  describe '#vue_file_list_data' do
+    before do
+      allow(helper).to receive(:current_user).and_return(nil)
+    end
+
+    it 'returns a list of attributes related to the project' do
+      expect(helper.vue_file_list_data(project, sha)).to include(
+        can_push_code: nil,
+        fork_path: nil,
+        escaped_ref: sha,
+        ref: sha,
+        project_path: project.full_path,
+        project_short_path: project.path,
+        full_name: project.name_with_namespace
+      )
+    end
+
+    context 'user does not have write access but a personal fork exists' do
+      include ProjectForksHelper
+
+      let_it_be(:user) { create(:user) }
+      let!(:forked_project) { create(:project, :repository, namespace: user.namespace) }
+
+      before do
+        project.add_guest(user)
+        fork_project(project, nil, target_project: forked_project)
+
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      it 'includes fork_path too' do
+        expect(helper.vue_file_list_data(project, sha)).to include(
+          fork_path: forked_project.full_path
+        )
+      end
+    end
+
+    context 'user has write access' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        project.add_developer(user)
+
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      it 'includes can_push_code: true' do
+        expect(helper.vue_file_list_data(project, sha)).to include(
+          can_push_code: "true"
+        )
+      end
     end
   end
 end

@@ -5,7 +5,7 @@ require 'fast_spec_helper'
 require 'mail'
 require_relative '../../config/initializers/mail_encoding_patch.rb'
 
-describe 'Mail quoted-printable transfer encoding patch and Unicode characters' do
+RSpec.describe 'Mail quoted-printable transfer encoding patch and Unicode characters' do
   shared_examples 'email encoding' do |email|
     it 'enclosing in a new object does not change the encoded original' do
       new_email = Mail.new(email)

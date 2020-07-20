@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryForkWorker do
+RSpec.describe RepositoryForkWorker do
   include ProjectForksHelper
 
   describe 'modules' do

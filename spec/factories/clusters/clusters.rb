@@ -101,6 +101,7 @@ FactoryBot.define do
       application_knative factory: %i(clusters_applications_knative installed)
       application_elastic_stack factory: %i(clusters_applications_elastic_stack installed)
       application_fluentd factory: %i(clusters_applications_fluentd installed)
+      application_cilium factory: %i(clusters_applications_cilium installed)
     end
 
     trait :with_domain do

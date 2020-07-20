@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ApplicationWorker do
+RSpec.describe ApplicationWorker do
   let_it_be(:worker) do
     Class.new do
       def self.name

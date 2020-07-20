@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::Ref do
+RSpec.describe Ci::Ref do
   it { is_expected.to belong_to(:project) }
 
   describe '.ensure_for' do
@@ -59,6 +59,35 @@ describe Ci::Ref do
       let(:expected_ref_path) { 'refs/heads/feature' }
 
       it_behaves_like 'ensures ci_ref'
+    end
+  end
+
+  describe '#last_finished_pipeline_id' do
+    let(:pipeline_status) { :running }
+    let(:config_source) { Ci::PipelineEnums.config_sources[:repository_source] }
+    let(:pipeline) { create(:ci_pipeline, pipeline_status, config_source: config_source) }
+    let(:ci_ref) { pipeline.ci_ref }
+
+    context 'when there are no finished pipelines' do
+      it 'returns nil' do
+        expect(ci_ref.last_finished_pipeline_id).to be_nil
+      end
+    end
+
+    context 'when there are finished pipelines' do
+      let(:pipeline_status) { :success }
+
+      it 'returns the pipeline id' do
+        expect(ci_ref.last_finished_pipeline_id).to eq(pipeline.id)
+      end
+
+      context 'when the pipeline is not a ci_source' do
+        let(:config_source) { Ci::PipelineEnums.config_sources[:parameter_source] }
+
+        it 'returns nil' do
+          expect(ci_ref.last_finished_pipeline_id).to be_nil
+        end
+      end
     end
   end
 

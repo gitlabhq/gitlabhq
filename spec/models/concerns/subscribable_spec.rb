@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Subscribable, 'Subscribable' do
+RSpec.describe Subscribable, 'Subscribable' do
   let(:project)  { create(:project) }
   let(:resource) { create(:issue, project: project) }
   let(:user_1)   { create(:user) }

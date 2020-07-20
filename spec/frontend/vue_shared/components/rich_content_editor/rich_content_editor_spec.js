@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
-import AddImageModal from '~/vue_shared/components/rich_content_editor/modals/add_image_modal.vue';
+import AddImageModal from '~/vue_shared/components/rich_content_editor/modals/add_image/add_image_modal.vue';
 import {
   EDITOR_OPTIONS,
   EDITOR_TYPES,
@@ -13,25 +13,28 @@ import {
   addCustomEventListener,
   removeCustomEventListener,
   addImage,
-} from '~/vue_shared/components/rich_content_editor/editor_service';
+  registerHTMLToMarkdownRenderer,
+} from '~/vue_shared/components/rich_content_editor/services/editor_service';
 
-jest.mock('~/vue_shared/components/rich_content_editor/editor_service', () => ({
-  ...jest.requireActual('~/vue_shared/components/rich_content_editor/editor_service'),
+jest.mock('~/vue_shared/components/rich_content_editor/services/editor_service', () => ({
+  ...jest.requireActual('~/vue_shared/components/rich_content_editor/services/editor_service'),
   addCustomEventListener: jest.fn(),
   removeCustomEventListener: jest.fn(),
   addImage: jest.fn(),
+  registerHTMLToMarkdownRenderer: jest.fn(),
 }));
 
 describe('Rich Content Editor', () => {
   let wrapper;
 
-  const value = '## Some Markdown';
+  const content = '## Some Markdown';
+  const imageRoot = 'path/to/root/';
   const findEditor = () => wrapper.find({ ref: 'editor' });
   const findAddImageModal = () => wrapper.find(AddImageModal);
 
   beforeEach(() => {
     wrapper = shallowMount(RichContentEditor, {
-      propsData: { value },
+      propsData: { content, imageRoot },
     });
   });
 
@@ -41,7 +44,7 @@ describe('Rich Content Editor', () => {
     });
 
     it('renders the correct content', () => {
-      expect(findEditor().props().initialValue).toBe(value);
+      expect(findEditor().props().initialValue).toBe(content);
     });
 
     it('provides the correct editor options', () => {
@@ -73,16 +76,36 @@ describe('Rich Content Editor', () => {
     });
   });
 
-  describe('when editor is loaded', () => {
-    it('adds the CUSTOM_EVENTS.openAddImageModal custom event listener', () => {
-      const mockEditorApi = { eventManager: { addEventType: jest.fn(), listen: jest.fn() } };
-      findEditor().vm.$emit('load', mockEditorApi);
+  describe('when content is reset', () => {
+    it('should reset the content via setMarkdown', () => {
+      const newContent = 'Just the body content excluding the front matter for example';
+      const mockInstance = { invoke: jest.fn() };
+      wrapper.vm.$refs.editor = mockInstance;
 
+      wrapper.vm.resetInitialValue(newContent);
+
+      expect(mockInstance.invoke).toHaveBeenCalledWith('setMarkdown', newContent);
+    });
+  });
+
+  describe('when editor is loaded', () => {
+    let mockEditorApi;
+
+    beforeEach(() => {
+      mockEditorApi = { eventManager: { addEventType: jest.fn(), listen: jest.fn() } };
+      findEditor().vm.$emit('load', mockEditorApi);
+    });
+
+    it('adds the CUSTOM_EVENTS.openAddImageModal custom event listener', () => {
       expect(addCustomEventListener).toHaveBeenCalledWith(
         mockEditorApi,
         CUSTOM_EVENTS.openAddImageModal,
         wrapper.vm.onOpenAddImageModal,
       );
+    });
+
+    it('registers HTML to markdown renderer', () => {
+      expect(registerHTMLToMarkdownRenderer).toHaveBeenCalledWith(mockEditorApi);
     });
   });
 
@@ -107,7 +130,7 @@ describe('Rich Content Editor', () => {
     });
 
     it('calls the onAddImage method when the addImage event is emitted', () => {
-      const mockImage = { imageUrl: 'some/url.png', description: 'some description' };
+      const mockImage = { imageUrl: 'some/url.png', altText: 'some description' };
       const mockInstance = { exec: jest.fn() };
       wrapper.vm.$refs.editor = mockInstance;
 

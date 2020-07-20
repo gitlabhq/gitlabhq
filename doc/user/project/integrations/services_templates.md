@@ -1,28 +1,25 @@
-# Services templates
+# Service templates
 
-A GitLab administrator can add a service template that sets a default for each
-project. After a service template is enabled, it will be applied to **all**
-projects that don't have it already enabled and its details will be pre-filled
-on the project's Service page. By disabling the template, it will be disabled
-for new projects only.
+Using a service template, GitLab administrators can provide default values for configuring integrations at the project level.
+
+When you enable a service template, the defaults are applied to **all** projects that do not
+already have the integration enabled or do not otherwise have custom values saved.
+The values are pre-filled on each project's configuration page for the applicable integration.
+
+If you disable the template, these values no longer appear as defaults, while
+any values already saved for an integration remain unchanged.
 
 ## Enable a service template
 
 Navigate to the **Admin Area > Service Templates** and choose the service
 template you wish to create.
 
-## Services for external issue trackers
+## Service for external issue trackers
 
-In the image below you can see how a service template for Redmine would look
-like.
+The following image shows an example service template for Redmine.
 
 ![Redmine service template](img/services_templates_redmine_example.png)
 
----
-
 For each project, you will still need to configure the issue tracking
 URLs by replacing `:issues_tracker_id` in the above screenshot with the ID used
-by your external issue tracker. Prior to GitLab v7.8, this ID was configured in
-the project settings, and GitLab would automatically update the URL configured
-in `gitlab.yml`. This behavior is now deprecated and all issue tracker URLs
-must be configured directly within the project's **Integrations** settings.
+by your external issue tracker.

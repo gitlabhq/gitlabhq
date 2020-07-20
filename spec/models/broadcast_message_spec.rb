@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BroadcastMessage do
+RSpec.describe BroadcastMessage do
   subject { build(:broadcast_message) }
 
   it { is_expected.to be_valid }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'getting Alert Management Alert counts by status' do
+RSpec.describe 'getting Alert Management Alert counts by status' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::FileCollection::Compare do
+RSpec.describe Gitlab::Diff::FileCollection::Compare do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

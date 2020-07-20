@@ -30,8 +30,7 @@ can still be successfully merged into the target.
 When the merge request can't be merged, the pipeline runs against the source branch only. For example, when:
 
 - The target branch has changes that conflict with the changes in the source branch.
-- The merge request is a
-  [work in progress](../../../user/project/merge_requests/work_in_progress_merge_requests.md).
+- The merge request is a [**Draft** merge request](../../../user/project/merge_requests/work_in_progress_merge_requests.md).
 
 In these cases, the pipeline runs as a [pipeline for merge requests](../index.md)
 and is labeled as `detached`. If these cases no longer exist, new pipelines will

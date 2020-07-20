@@ -13,6 +13,14 @@ module Gitlab
                 mutation: mutation_class,
                 **custom_kwargs
         end
+
+        def mount_aliased_mutation(alias_name, mutation_class, **custom_kwargs)
+          aliased_mutation_class = Class.new(mutation_class) do
+            graphql_name alias_name
+          end
+
+          mount_mutation(aliased_mutation_class, **custom_kwargs)
+        end
       end
     end
   end

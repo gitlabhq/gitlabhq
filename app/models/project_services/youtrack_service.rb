@@ -12,11 +12,11 @@ class YoutrackService < IssueTrackerService
     end
   end
 
-  def default_title
+  def title
     'YouTrack'
   end
 
-  def default_description
+  def description
     s_('IssueTracker|YouTrack issue tracker')
   end
 
@@ -26,7 +26,6 @@ class YoutrackService < IssueTrackerService
 
   def fields
     [
-      { type: 'text', name: 'description', placeholder: description },
       { type: 'text', name: 'project_url', title: 'Project URL', placeholder: 'Project URL', required: true },
       { type: 'text', name: 'issues_url', title: 'Issue URL', placeholder: 'Issue URL', required: true }
     ]

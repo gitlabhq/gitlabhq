@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # Also see spec/graphql/features/authorization_spec.rb for
 # integration tests of AuthorizeFieldService
-describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
+RSpec.describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
   def type(type_authorizations = [])
     Class.new(Types::BaseObject) do
       graphql_name 'TestType'

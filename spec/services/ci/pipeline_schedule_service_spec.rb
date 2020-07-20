@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelineScheduleService do
+RSpec.describe Ci::PipelineScheduleService do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:service) { described_class.new(project, user) }

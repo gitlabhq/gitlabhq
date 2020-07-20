@@ -1,0 +1,17 @@
+= javascript_tag nonce: true do
+  :plain
+    if ('loading' in HTMLImageElement.prototype) {
+      document.querySelectorAll('img.lazy').forEach(img => {
+        img.loading = 'lazy';
+        let imgUrl = img.dataset.src;
+        // Only adding width + height for avatars for now
+        if (imgUrl.indexOf('/avatar/') > -1 && imgUrl.indexOf('?') === -1) {
+          const targetWidth = img.getAttribute('width') || img.width;
+          imgUrl += `?width=${targetWidth}`;
+        }
+        img.src = imgUrl;
+        img.removeAttribute('data-src');
+        img.classList.remove('lazy');
+        img.classList.add('js-lazy-loaded', 'qa-js-lazy-loaded');
+      });
+    }

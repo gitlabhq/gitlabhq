@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CommitCollection do
+RSpec.describe CommitCollection do
   let(:project) { create(:project, :repository) }
   let(:commit) { project.commit("c1c67abbaf91f624347bb3ae96eabe3a1b742478") }
 
@@ -72,6 +72,18 @@ describe CommitCollection do
       end
 
       expect(recorder.count).to be_zero
+    end
+  end
+
+  describe '#with_markdown_cache' do
+    let(:commits) { [commit] }
+    let(:collection) { described_class.new(project, commits) }
+
+    it 'preloads commits cache markdown' do
+      aggregate_failures do
+        expect(Commit).to receive(:preload_markdown_cache!).with(commits)
+        expect(collection.with_markdown_cache).to eq(collection)
+      end
     end
   end
 

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Files::CreateService do
+RSpec.describe Files::CreateService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user, :commit_email) }

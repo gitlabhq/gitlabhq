@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerRegistry::Client do
+RSpec.describe ContainerRegistry::Client do
   let(:token) { '12345' }
   let(:options) { { token: token } }
   let(:client) { described_class.new("http://container-registry", options) }

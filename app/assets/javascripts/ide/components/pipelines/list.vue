@@ -7,7 +7,7 @@ import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import Tabs from '../../../vue_shared/components/tabs/tabs';
 import Tab from '../../../vue_shared/components/tabs/tab.vue';
-import EmptyState from '../../../pipelines/components/empty_state.vue';
+import EmptyState from '../../../pipelines/components/pipelines_list/empty_state.vue';
 import JobsList from '../jobs/list.vue';
 
 import IDEServices from '~/ide/services';
@@ -59,7 +59,7 @@ export default {
 
 <template>
   <div class="ide-pipeline">
-    <gl-loading-icon v-if="showLoadingIcon" size="lg" class="prepend-top-default" />
+    <gl-loading-icon v-if="showLoadingIcon" size="lg" class="gl-mt-3" />
     <template v-else-if="hasLoadedPipeline">
       <header v-if="latestPipeline" class="ide-tree-header ide-pipeline-header">
         <ci-icon :status="latestPipeline.details.status" :size="24" class="d-flex" />

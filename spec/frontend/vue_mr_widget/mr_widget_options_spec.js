@@ -609,6 +609,12 @@ describe('mrWidgetOptions', () => {
       });
     });
 
+    describe('code quality widget', () => {
+      it('renders the component', () => {
+        expect(vm.$el.querySelector('.js-codequality-widget')).toExist();
+      });
+    });
+
     describe('pipeline for target branch after merge', () => {
       describe('with information for target branch pipeline', () => {
         beforeEach(done => {

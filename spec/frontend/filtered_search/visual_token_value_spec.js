@@ -4,6 +4,7 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import UsersCache from '~/lib/utils/users_cache';
 import DropdownUtils from '~/filtered_search//dropdown_utils';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('Filtered Search Visual Tokens', () => {
   const findElements = tokenElement => {
@@ -106,7 +107,7 @@ describe('Filtered Search Visual Tokens', () => {
     it('escapes user name when creating token', done => {
       const dummyUser = {
         name: '<script>',
-        avatar_url: `${gl.TEST_HOST}/mypics/avatar.png`,
+        avatar_url: `${TEST_HOST}/mypics/avatar.png`,
       };
       const { subject, tokenValueContainer, tokenValueElement } = findElements(authorToken);
       const tokenValue = tokenValueElement.innerText;

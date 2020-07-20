@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Discussions do
+RSpec.describe API::Discussions do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :public, :repository, namespace: user.namespace) }
   let(:private_user) { create(:user) }

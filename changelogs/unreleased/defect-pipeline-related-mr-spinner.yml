@@ -1,0 +1,6 @@
+---
+title: Fix infinite loading spinner for related merge requests on commit pipelines
+  tab
+merge_request: 36077
+author:
+type: fixed

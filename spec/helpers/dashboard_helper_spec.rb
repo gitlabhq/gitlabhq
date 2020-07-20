@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DashboardHelper do
+RSpec.describe DashboardHelper do
   let(:user) { build(:user) }
 
   before do

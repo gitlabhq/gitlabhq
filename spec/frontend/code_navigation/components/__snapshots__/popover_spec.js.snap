@@ -10,53 +10,81 @@ exports[`Code navigation popover component renders popover 1`] = `
     style="left: 0px;"
   />
    
-  <div
-    class="border-bottom"
+  <gl-tabs-stub
+    contentclass="gl-py-0"
+    nav-class="gl-hidden"
+    theme="indigo"
   >
-    <pre
-      class="border-0 bg-transparent m-0 code highlight"
+    <gl-tab-stub
+      title="Definition"
     >
-      <span
-        class="line"
-        lang="javascript"
+      <div
+        class="overflow-auto code-navigation-popover-container"
       >
-        <span
-          class="k"
+        <div
+          class=""
         >
-          function
-        </span>
-        <span>
-           main() {
-        </span>
-      </span>
-      <span
-        class="line"
-        lang="javascript"
+          <pre
+            class="border-0 bg-transparent m-0 code highlight text-wrap"
+          >
+            <span
+              class="line"
+              lang="javascript"
+            >
+              <span
+                class="k"
+              >
+                function
+              </span>
+              <span>
+                 main() {
+              </span>
+            </span>
+            <span
+              class="line"
+              lang="javascript"
+            >
+              <span>
+                }
+              </span>
+            </span>
+          </pre>
+        </div>
+      </div>
+       
+      <div
+        class="popover-body border-top"
       >
-        <span>
-          }
-        </span>
-      </span>
-    </pre>
-  </div>
-   
-  <div
-    class="popover-body"
-  >
-    <gl-button-stub
-      category="tertiary"
-      class="w-100"
-      data-testid="go-to-definition-btn"
-      href="http://gitlab.com/test.js#L20"
-      icon=""
-      size="medium"
-      target="_blank"
-      variant="default"
+        <gl-button-stub
+          category="tertiary"
+          class="w-100"
+          data-testid="go-to-definition-btn"
+          href="http://gitlab.com/test.js"
+          icon=""
+          size="medium"
+          target="_blank"
+          variant="default"
+        >
+          
+          Go to definition
+        
+        </gl-button-stub>
+      </div>
+    </gl-tab-stub>
+     
+    <gl-tab-stub
+      class="py-2"
+      data-testid="references-tab"
     >
+       
+      <p
+        class="gl-my-4 gl-px-4"
+      >
+        
+        No references found
       
-      Go to definition
-    
-    </gl-button-stub>
-  </div>
+      </p>
+    </gl-tab-stub>
+  </gl-tabs-stub>
 </div>
 `;

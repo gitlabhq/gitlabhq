@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Board'] do
+RSpec.describe GitlabSchema.types['Board'] do
   specify { expect(described_class.graphql_name).to eq('Board') }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_board) }

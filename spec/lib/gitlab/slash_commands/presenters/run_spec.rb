@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Presenters::Run do
+RSpec.describe Gitlab::SlashCommands::Presenters::Run do
   let(:presenter) { described_class.new }
 
   describe '#present' do

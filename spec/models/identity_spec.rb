@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Identity do
+RSpec.describe Identity do
   describe 'relations' do
     it { is_expected.to belong_to(:user) }
   end

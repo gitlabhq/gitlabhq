@@ -1,0 +1,5 @@
+---
+title: Use GpgKeys::DestroyService when a user deletes GPG keys for themselves via the API
+merge_request: 35033
+author: Rajendra Kadam
+type: fixed

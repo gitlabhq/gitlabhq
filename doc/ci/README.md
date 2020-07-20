@@ -16,9 +16,9 @@ through the [continuous methodologies](introduction/index.md#introduction-to-cic
 - Continuous Delivery (CD)
 - Continuous Deployment (CD)
 
-NOTE: **Out-of-the-box management systems can decrease hours spent on maintaining toolchains by 10% or more.**
-Watch our
-["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
+NOTE: **Note:**
+Out-of-the-box management systems can decrease hours spent on maintaining toolchains by 10% or more.
+Watch our ["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
 webcast to learn about continuous methods and how GitLab’s built-in CI can help you simplify and scale software development.
 
 ## Overview
@@ -58,7 +58,7 @@ the following documents:
 - [How GitLab CI/CD works](introduction/index.md#how-gitlab-cicd-works).
 - [Fundamental pipeline architectures](pipelines/pipeline_architectures.md).
 - [GitLab CI/CD basic workflow](introduction/index.md#basic-cicd-workflow).
-- [Step-by-step guide for writing `.gitlab-ci.yml` for the first time](../user/project/pages/getting_started_part_four.md).
+- [Step-by-step guide for writing `.gitlab-ci.yml` for the first time](../user/project/pages/getting_started/pages_from_scratch.md).
 
 If you're migrating from another CI/CD tool, check out our handy references:
 
@@ -126,9 +126,10 @@ Its feature set is listed on the table below according to DevOps stages.
 | [ChatOps](chatops/README.md) | Trigger CI jobs from chat, with results sent back to the channel. |
 |---+---|
 | **Verify** ||
-| [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md) | Quickly determine the performance impact of pending code changes. |
+| [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md) | Quickly determine the browser performance impact of pending code changes. |
+| [Load Performance Testing](../user/project/merge_requests/load_performance_testing.md) | Quickly determine the server performance impact of pending code changes. |
 | [CI services](services/README.md) | Link Docker containers with your base image.|
-| [Code Quality](../user/project/merge_requests/code_quality.md) **(STARTER)** | Analyze your source code quality. |
+| [Code Quality](../user/project/merge_requests/code_quality.md) | Analyze your source code quality. |
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |
 | [Interactive Web Terminals](interactive_web_terminal/index.md) **(CORE ONLY)** | Open an interactive web terminal to debug the running jobs. |
 | [JUnit tests](junit_test_reports.md) | Identify script failures directly on merge requests. |
@@ -139,7 +140,7 @@ Its feature set is listed on the table below according to DevOps stages.
 | [Building Docker images](docker/using_docker_build.md) | Maintain Docker-based projects using GitLab CI/CD. |
 | [Canary Deployments](../user/project/canary_deployments.md) **(PREMIUM)** | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
 | [Deploy Boards](../user/project/deploy_boards.md) **(PREMIUM)** | Check the current health and status of each CI/CD environment running on Kubernetes. |
-| [Feature Flags](../user/project/operations/feature_flags.md) **(PREMIUM)** | Deploy your features behind Feature Flags. |
+| [Feature Flags](../operations/feature_flags.md) **(PREMIUM)** | Deploy your features behind Feature Flags. |
 | [GitLab Pages](../user/project/pages/index.md) | Deploy static websites. |
 | [GitLab Releases](../user/project/releases/index.md) | Add release notes to Git tags. |
 | [Review Apps](review_apps/index.md) | Configure GitLab CI/CD to preview code changes. |

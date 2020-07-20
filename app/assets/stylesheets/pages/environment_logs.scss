@@ -31,10 +31,6 @@
         width: 160px;
       }
     }
-
-    .controllers {
-      @include build-controllers(16px, flex-end, false, 2, inline);
-    }
   }
 
   .log-lines,

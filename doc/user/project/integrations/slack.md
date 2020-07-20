@@ -1,25 +1,45 @@
 # Slack Notifications Service
 
-The Slack Notifications Service allows your GitLab project to send events (e.g. issue created) to your existing Slack team as notifications. This requires configurations in both Slack and GitLab.
+The Slack Notifications Service allows your GitLab project to send events
+(such as issue creation) to your existing Slack team as notifications. Setting up
+Slack notifications requires configuration changes for both Slack and GitLab.
 
-> Note: You can also use Slack slash commands to control GitLab inside Slack. This is the separately configured [Slack slash commands](slack_slash_commands.md).
+NOTE: **Note:**
+You can also use Slack slash commands to control GitLab inside Slack. This is the
+separately configured [Slack slash commands](slack_slash_commands.md).
 
-## Slack Configuration
+## Slack configuration
 
 1. Sign in to your Slack team and [start a new Incoming WebHooks configuration](https://my.slack.com/services/new/incoming-webhook).
-1. Select the Slack channel where notifications will be sent to by default. Click the **Add Incoming WebHooks integration** button to add the configuration.
-1. Copy the **Webhook URL**, which we'll use later in the GitLab configuration.
+1. Select the Slack channel where notifications will be sent to by default.
+   Click the **Add Incoming WebHooks integration** button to add the configuration.
+1. Copy the **Webhook URL**, which we will use later in the GitLab configuration.
 
-## GitLab Configuration
+## GitLab configuration
 
-1. Navigate to the [Integrations page](overview.md#accessing-integrations) in your project's settings, i.e. **Project > Settings > Integrations**.
+1. Open your project's page, and navigate to your project's
+   [Integrations page](overview.md#accessing-integrations) at
+   **{settings}** **Settings > Integrations**.
 1. Select the **Slack notifications** integration to configure it.
-1. Ensure that the **Active** toggle is enabled.
-1. Check the checkboxes corresponding to the GitLab events you want to send to Slack as a notification.
-1. For each event, optionally enter the Slack channel names where you want to send the event, separated by a comma. If left empty, the event will be sent to the default channel that you configured in the Slack Configuration step. **Note:** Usernames and private channels are not supported. To send direct messages, use the Member ID found under user's Slack profile.
-1. Paste the **Webhook URL** that you copied from the Slack Configuration step.
-1. Optionally customize the Slack bot username that will be sending the notifications.
-1. Configure the remaining options and click `Save changes`.
+1. Click **Enable integration**.
+1. In **Trigger**, select the checkboxes for each type of GitLab event to send to Slack as a
+   notification. See [Triggers available for Slack notifications](#triggers-available-for-slack-notifications)
+   for a full list. By default, messages are sent to the channel you configured during
+   [Slack integration](#slack-configuration).
+1. (Optional) To send messages to a different channel, multiple channels, or as a direct message:
+   - To send messages to channels, enter the Slack channel names, separated by commas.
+   - To send direct messages, use the Member ID found in the user's Slack profile.
+
+   NOTE: **Note:**
+   Usernames and private channels are not supported.
+
+1. In **Webhook**, provide the webhook URL that you copied from the
+   [Slack integration](#slack-configuration) step.
+1. (Optional) In **Username**, provide the username of the Slack bot that sends the notifications.
+1. Select the **Notify only broken pipelines** check box to only notify on failures.
+1. In the **Branches to be notified** select box, choose which types of branches
+   to send notifications for.
+1. Click **Test settings and save changes**.
 
 Your Slack team will now start receiving GitLab event notifications as configured.
 
@@ -43,14 +63,14 @@ The following triggers are available for Slack notifications:
 
 ## Troubleshooting
 
-If you're having trouble with the Slack integration not working, then start by
+If your Slack integration is not working, start troubleshooting by
 searching through the [Sidekiq logs](../../../administration/logs.md#sidekiqlog)
 for errors relating to your Slack service.
 
 ### Something went wrong on our end
 
-This is a generic error shown in the GitLab UI and doesn't mean much by itself.
-You'll need to look in [the logs](../../../administration/logs.md#productionlog) to find
+This is a generic error shown in the GitLab UI and does not mean much by itself.
+Review [the logs](../../../administration/logs.md#productionlog) to find
 an error message and keep troubleshooting from there.
 
 ### `certificate verify failed`
@@ -83,10 +103,10 @@ result = Net::HTTP.get(URI('https://<SLACK URL>'));0
 result = Net::HTTP.get(URI('https://<GITLAB URL>'));0
 ```
 
-If it's an issue with GitLab not trusting HTTPS connections to itself, then you may simply
+If GitLab is not trusting HTTPS connections to itself, then you may
 need to [add your certificate to GitLab's trusted certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
-If it's an issue with GitLab not trusting connections to Slack, then the GitLab
-OpenSSL trust store probably got messed up somehow. Typically this is from overriding
-the trust store with `gitlab_rails['env'] = {"SSL_CERT_FILE" => "/path/to/file.pem"}`
+If GitLab is not trusting connections to Slack, then the GitLab
+OpenSSL trust store is incorrect. Some typical causes: overriding
+the trust store with `gitlab_rails['env'] = {"SSL_CERT_FILE" => "/path/to/file.pem"}`,
 or by accidentally modifying the default CA bundle `/opt/gitlab/embedded/ssl/certs/cacert.pem`.

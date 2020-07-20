@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExportCsvWorker do
+RSpec.describe ExportCsvWorker do
   let(:user) { create(:user) }
   let(:project) { create(:project, creator: user) }
 

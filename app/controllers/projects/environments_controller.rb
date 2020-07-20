@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Projects::EnvironmentsController < Projects::ApplicationController
+  # Metrics dashboard code is getting decoupled from environments and is being moved
+  # into app/controllers/projects/metrics_dashboard_controller.rb
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/226002 for more details.
+
   include MetricsDashboard
 
   layout 'project'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DesignManagement::Repository do
+RSpec.describe DesignManagement::Repository do
   let(:project) { create(:project) }
   let(:repository) { described_class.new(project) }
 

@@ -149,10 +149,6 @@ class Label < ApplicationRecord
     1
   end
 
-  def self.by_ids(ids)
-    where(id: ids)
-  end
-
   def self.on_project_board?(project_id, label_id)
     return false if label_id.blank?
 

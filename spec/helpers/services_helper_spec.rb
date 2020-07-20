@@ -2,14 +2,33 @@
 
 require 'spec_helper'
 
-describe ServicesHelper do
+RSpec.describe ServicesHelper do
   describe 'event_action_title' do
     it { expect(event_action_title('comment')).to eq 'Comment' }
     it { expect(event_action_title('something')).to eq 'Something' }
   end
 
-  describe 'event_action_description' do
-    it { expect(event_action_description('comment')).to eq 'Comment will be posted on each event' }
-    it { expect(event_action_description('something')).to eq nil }
+  describe '#integration_form_data' do
+    subject { helper.integration_form_data(integration) }
+
+    context 'Jira service' do
+      let(:integration) { build(:jira_service) }
+
+      it 'includes Jira specific fields' do
+        is_expected.to include(
+          :id,
+          :show_active,
+          :activated,
+          :type,
+          :merge_request_events,
+          :commit_events,
+          :enable_comments,
+          :comment_detail,
+          :trigger_events,
+          :fields,
+          :inherit_from_id
+        )
+      end
+    end
   end
 end

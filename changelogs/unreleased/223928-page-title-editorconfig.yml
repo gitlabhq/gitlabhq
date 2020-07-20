@@ -1,0 +1,5 @@
+---
+title: 'Web IDE: Page title should not be .editorconfig when the IDE is first loaded.'
+merge_request: 36783
+author:
+type: fixed

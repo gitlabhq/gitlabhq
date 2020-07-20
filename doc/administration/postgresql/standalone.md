@@ -53,7 +53,8 @@ together with Omnibus GitLab. This is recommended as part of our
    gitlab_rails['auto_migrate'] = false
    ```
 
-   NOTE: **Note:** The role `postgres_role` was introduced with GitLab 10.3
+   NOTE: **Note:**
+   The role `postgres_role` was introduced with GitLab 10.3
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Note the PostgreSQL node's IP address or hostname, port, and

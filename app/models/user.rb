@@ -69,7 +69,7 @@ class User < ApplicationRecord
 
   MINIMUM_INACTIVE_DAYS = 180
 
-  ignore_column :ghost, remove_with: '13.2', remove_after: '2020-06-22'
+  ignore_column :bio, remove_with: '13.4', remove_after: '2020-09-22'
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -163,9 +163,10 @@ class User < ApplicationRecord
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :issue_assignees
+  has_many :issue_assignees, inverse_of: :assignee
+  has_many :merge_request_assignees, inverse_of: :assignee
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
-  has_many :assigned_merge_requests, dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
+  has_many :assigned_merge_requests, class_name: "MergeRequest", through: :merge_request_assignees, source: :merge_request
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'
@@ -194,7 +195,6 @@ class User < ApplicationRecord
   validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, devise_email: true, allow_blank: true
   validates :commit_email, devise_email: true, allow_nil: true, if: ->(user) { user.commit_email != user.email }
-  validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
@@ -229,7 +229,6 @@ class User < ApplicationRecord
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_validation :ensure_namespace_correct
   before_save :ensure_namespace_correct # in case validation is skipped
-  before_save :ensure_bio_is_assigned_to_user_details, if: :bio_changed?
   after_validation :set_username_errors
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
@@ -272,6 +271,7 @@ class User < ApplicationRecord
             :time_display_relative, :time_display_relative=,
             :time_format_in_24h, :time_format_in_24h=,
             :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
+            :view_diffs_file_by_file, :view_diffs_file_by_file=,
             :tab_width, :tab_width=,
             :sourcegraph_enabled, :sourcegraph_enabled=,
             :setup_for_company, :setup_for_company=,
@@ -281,6 +281,7 @@ class User < ApplicationRecord
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :job_title, :job_title=, to: :user_detail, allow_nil: true
+  delegate :bio, :bio=, :bio_html, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -619,11 +620,12 @@ class User < ApplicationRecord
 
     # Pattern used to extract `@user` user references from text
     def reference_pattern
-      %r{
-        (?<!\w)
-        #{Regexp.escape(reference_prefix)}
-        (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
-      }x
+      @reference_pattern ||=
+        %r{
+          (?<!\w)
+          #{Regexp.escape(reference_prefix)}
+          (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
+        }x
     end
 
     # Return (create if necessary) the ghost user. The ghost user
@@ -642,6 +644,7 @@ class User < ApplicationRecord
       unique_internal(where(user_type: :alert_bot), 'alert-bot', email_pattern) do |u|
         u.bio = 'The GitLab alert bot'
         u.name = 'GitLab Alert Bot'
+        u.avatar = bot_avatar(image: 'alert-bot.png')
       end
     end
 
@@ -652,6 +655,16 @@ class User < ApplicationRecord
         u.bio = 'The GitLab migration bot'
         u.name = 'GitLab Migration Bot'
         u.confirmed_at = Time.zone.now
+      end
+    end
+
+    def support_bot
+      email_pattern = "support%s@#{Settings.gitlab.host}"
+
+      unique_internal(where(user_type: :support_bot), 'support-bot', email_pattern) do |u|
+        u.bio = 'The GitLab support bot used for Service Desk'
+        u.name = 'GitLab Support Bot'
+        u.avatar = bot_avatar(image: 'support-bot.png')
       end
     end
 
@@ -1257,15 +1270,9 @@ class User < ApplicationRecord
       namespace.path = username if username_changed?
       namespace.name = name if name_changed?
     else
-      build_namespace(path: username, name: name)
+      namespace = build_namespace(path: username, name: name)
+      namespace.build_namespace_settings
     end
-  end
-
-  # Temporary, will be removed when bio is fully migrated
-  def ensure_bio_is_assigned_to_user_details
-    return if Feature.disabled?(:migrate_bio_to_user_details, default_enabled: true)
-
-    user_detail.bio = bio.to_s[0...255] # bio can be NULL in users, but cannot be NULL in user_details
   end
 
   def set_username_errors
@@ -1690,6 +1697,10 @@ class User < ApplicationRecord
 
   def impersonated?
     impersonator.present?
+  end
+
+  def created_recently?
+    created_at > Devise.confirm_within.ago
   end
 
   protected

@@ -17,16 +17,64 @@ being developed, efficiency and awareness can be increased.
 NOTE: **Note:**
 You will need at least Maintainer [permissions](../../permissions.md) to enable the Alert Management feature.
 
-1. Follow the [instructions for toggling generic alerts](../integrations/generic_alerts.md#setting-up-generic-alerts)
-1. You can now visit **{cloud-gear}** **Operations > Alerts** in your project's sidebar to [view a list](#alert-management-list) of alerts.
+There are several ways to accept alerts into your GitLab project, as outlined below.
+Enabling any of these methods will allow the Alerts list to display. After configuring
+alerts, visit **{cloud-gear}** **Operations > Alerts** in your project's sidebar
+to [view the list](#alert-management-list) of alerts.
 
-![Alert Management Toggle](img/alert_management_1_v13_1.png)
+### Opsgenie integration **(PREMIUM)**
 
-## Populate Alert data
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in [GitLab Premium](https://about.gitlab.com/pricing/)  13.2.
 
-To populate data, see the instructions for
-[customizing the payload](../integrations/generic_alerts.md) and making a
-request to the alerts endpoint.
+A new way of monitoring Alerts via a GitLab integration is with
+[Opsgenie](https://www.atlassian.com/software/opsgenie).
+
+NOTE: **Note:**
+If you enable the Opsgenie integration, you cannot have other GitLab alert services,
+such as [Generic Alerts](../integrations/generic_alerts.md) or
+Prometheus alerts, active at the same time.
+
+To enable Opsgenie integration:
+
+1. Sign in as a user with Maintainer or Owner [permissions](../../permissions.md).
+1. Navigate to **{cloud-gear}** **Operations > Alerts**.
+1. In the **Integrations** select box, select Opsgenie.
+1. Click the **Active** toggle.
+1. In the **API URL**, enter the base URL for your Opsgenie integration, such
+   as `https://app.opsgenie.com/alert/list`.
+1. Click **Save changes**.
+
+After enabling the integration, navigate to the Alerts list page at **{cloud-gear}** **Operations > Alerts**, and click **View alerts in Opsgenie**.
+
+### Enable a Generic Alerts endpoint
+
+GitLab provides the Generic Alerts endpoint so you can accept alerts from a third-party
+alerts service. See the
+[instructions for toggling generic alerts](../integrations/generic_alerts.md#setting-up-generic-alerts)
+to add this option. After configuring the endpoint, the
+[Alerts list](#alert-management-list) is enabled.
+
+To populate the alerts with data, see [Customizing the payload](../integrations/generic_alerts.md#customizing-the-payload) for requests to the alerts endpoint.
+
+### Enable GitLab-managed Prometheus alerts
+
+You can install the GitLab-managed Prometheus application on your Kubernetes
+cluster. For more information, see
+[Managed Prometheus on Kubernetes](../integrations/prometheus.md#managed-prometheus-on-kubernetes).
+When GitLab-managed Prometheus is installed, the [Alerts list](#alert-management-list)
+is also enabled.
+
+To populate the alerts with data, see
+[GitLab-Managed Prometheus instances](../../../operations/metrics/alerts.md#managed-prometheus-instances).
+
+### Enable external Prometheus alerts
+
+You can configure an externally-managed Prometheus instance to send alerts
+to GitLab. To set up this configuration, see the [configuring Prometheus](../../../operations/metrics/alerts.md#external-prometheus-instances) documentation. Activating the external Prometheus
+configuration also enables the [Alerts list](#alert-management-list).
+
+To populate the alerts with data, see
+[External Prometheus instances](../../../operations/metrics/alerts.md#external-prometheus-instances).
 
 ## Alert Management severity
 
@@ -55,14 +103,41 @@ You will need at least Developer [permissions](../../permissions.md) to view the
 You can find the Alert Management list at **{cloud-gear}** **Operations > Alerts** in your project's sidebar.
 Each alert contains the following metrics:
 
-![Alert Management List](img/alert_management_1_v13_0.png)
+![Alert Management List](img/alert_list_v13_1.png)
 
 - **Severity** - The current importance of a alert and how much attention it should receive.
 - **Start time** - How long ago the alert fired. This field uses the standard GitLab pattern of `X time ago`, but is supported by a granular date/time tooltip depending on the user's locale.
-- **End time** - How long ago the alert fired was resolved. This field uses the standard GitLab pattern of `X time ago`, but is supported by a granular date/time tooltip depending on the user's locale.
 - **Alert description** - The description of the alert, which attempts to capture the most meaningful data.
 - **Event count** - The number of times that an alert has fired.
+- **Issue** - A link to the incident issue that has been created for the alert.
 - **Status** - The [current status](#alert-management-statuses) of the alert.
+
+### Alert Management list sorting
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.
+
+The Alert Management list displays alerts sorted by start time, but you can
+change the sort order by clicking the headers in the Alert Management list.
+
+To see if a column is sortable, point your mouse at the header. Sortable columns
+display an arrow next to the column name, as shown in this example:
+
+![Alert Management List Sorting](img/alert_list_sort_v13_1.png)
+
+### Searching alerts
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213884) in GitLab 13.1.
+
+The alert list supports a simple free text search.
+
+![Alert List Search](img/alert_list_search_v13_1.png)
+
+This search filters on the following fields:
+
+- Title
+- Description
+- Monitoring tool
+- Service
 
 ### Alert Management statuses
 
@@ -138,13 +213,42 @@ deselect the user from the list of assignees, or click **Unassigned**.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
-NOTE: **Note:**
-GitLab currently only supports creating system notes when assigning an Alert.
+When you take action on an alert, this is logged as a system note,
+which is visible in the Alert Details view. This gives you a linear
+timeline of the alert's investigation and assignment history.
 
-Assigning a user an Alert creates a system note, visible in the Alert Details view,
-giving you a linear timeline of the alert's investigation and assignment history.
+The following actions will result in a system note:
+
+- [Updating the status of an alert](#update-an-alerts-status)
+- [Creating an issue based on an alert](#create-an-issue-from-an-alert)
+- [Assignment of an alert to a user](#update-an-alerts-assignee)
 
 ![Alert Management Details View System Notes](img/alert_detail_system_notes_v13_1.png)
+
+### View an Alert's metrics data
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.2.
+
+To view the metrics for an alert:
+
+   1. Sign in as a user with Developer or higher [permissions](../../permissions.md).
+   1. Navigate to **{cloud-gear}** **Operations > Alerts**.
+   1. Click the alert you want to view.
+   1. Below the title of the alert, click the **Metrics** tab.
+
+![Alert Management Metrics View](img/alert_detail_metrics_v13_2.png)
+
+For GitLab-managed Prometheus instances, metrics data is automatically available
+for the alert, making it easy to see surrounding behavior. See
+[Managed Prometheus instances](../../../operations/metrics/alerts.md#managed-prometheus-instances)
+for information on setting up alerts.
+
+For externally-managed Prometheus instances, you can configure your alerting rules to
+display a chart in the alert. See
+[Embedding metrics based on alerts in incident issues](../../../operations/metrics/embed.md#embedding-metrics-based-on-alerts-in-incident-issues)
+for information on how to appropriately configure your alerting rules. See
+[External Prometheus instances](../../../operations/metrics/alerts.md#external-prometheus-instances)
+for information on setting up alerts for your self-managed Prometheus instance.
 
 ## Use cases for assigning alerts
 

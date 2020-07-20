@@ -16,6 +16,9 @@
         %tr
           %th= _('Name')
           %th= s_('AccessTokens|Created')
+          %th
+            = _('Last Used')
+            = link_to icon('question-circle'), help_page_path('user/profile/personal_access_tokens.md', anchor: 'token-activity'), target: '_blank'
           %th= _('Expires')
           %th= _('Scopes')
           %th
@@ -25,9 +28,18 @@
             %td= token.name
             %td= token.created_at.to_date.to_s(:medium)
             %td
+              - if token.last_used_at?
+                %span.token-last-used-label= _(time_ago_with_tooltip(token.last_used_at))
+              - else
+                %span.token-never-used-label= _('Never')
+            %td
               - if token.expires?
-                %span{ class: ('text-warning' if token.expires_soon?) }
-                  = _('In %{time_to_now}') % { time_to_now: distance_of_time_in_words_to_now(token.expires_at) }
+                - if token.expires_at.past? || token.expires_at.today?
+                  %span{ class: 'text-danger has-tooltip', title: _('Expiration not enforced') }
+                    = _('Expired')
+                - else
+                  %span{ class: ('text-warning' if token.expires_soon?) }
+                    = _('In %{time_to_now}') % { time_to_now: distance_of_time_in_words_to_now(token.expires_at) }
               - else
                 %span.token-never-expires-label= _('Never')
             %td= token.scopes.present? ? token.scopes.join(', ') : _('<no scopes selected>')

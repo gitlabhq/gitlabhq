@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CommitPolicy do
+RSpec.describe CommitPolicy do
   describe '#rules' do
     let(:user) { create(:user) }
     let(:commit) { project.repository.head_commit }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::MilestoneParser do
+RSpec.describe Banzai::ReferenceParser::MilestoneParser do
   include ReferenceParserHelpers
 
   let(:project) { create(:project, :public) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::ConnectionTimer do
+RSpec.describe Gitlab::Database::ConnectionTimer do
   let(:current_clock_value) { 1234.56 }
 
   before do

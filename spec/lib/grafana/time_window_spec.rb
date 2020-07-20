@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Grafana::TimeWindow do
+RSpec.describe Grafana::TimeWindow do
   let(:from) { '1552799400000' }
   let(:to) { '1552828200000' }
 
@@ -32,7 +32,7 @@ describe Grafana::TimeWindow do
   end
 end
 
-describe Grafana::RangeWithDefaults do
+RSpec.describe Grafana::RangeWithDefaults do
   let(:from) { Grafana::Timestamp.from_ms_since_epoch('1552799400000') }
   let(:to) { Grafana::Timestamp.from_ms_since_epoch('1552828200000') }
 
@@ -78,7 +78,7 @@ describe Grafana::RangeWithDefaults do
   end
 end
 
-describe Grafana::Timestamp do
+RSpec.describe Grafana::Timestamp do
   let(:timestamp) { Time.at(1552799400) }
 
   around do |example|

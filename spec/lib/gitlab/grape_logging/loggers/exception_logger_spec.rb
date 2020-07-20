@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GrapeLogging::Loggers::ExceptionLogger do
+RSpec.describe Gitlab::GrapeLogging::Loggers::ExceptionLogger do
   let(:mock_request) { OpenStruct.new(env: {}) }
   let(:response_body) { nil }
 

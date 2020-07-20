@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Sidekiq::Cron::Job do
+RSpec.describe Sidekiq::Cron::Job do
   describe 'cron jobs' do
     context 'when Fugit depends on ZoTime or EoTime' do
       before do

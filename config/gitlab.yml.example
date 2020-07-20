@@ -205,6 +205,33 @@ production: &base
     # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
     expunge_deleted: false
 
+  ## Consolidated object store config
+  ## This will only take effect if the object_store sections are not defined
+  ## within the types (e.g. artifacts, lfs, etc.).
+  # object_store:
+  #   enabled: false
+  #   proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+  #   connection:
+  #     provider: AWS # Only AWS supported at the moment
+  #     aws_access_key_id: AWS_ACCESS_KEY_ID
+  #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+  #     region: us-east-1
+  #     aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+  #     endpoint: 'https://s3.amazonaws.com' # default: nil - Useful for S3 compliant services such as DigitalOcean Spaces
+  #   objects:
+  #     artifacts:
+  #       bucket: artifacts
+  #     external_diffs:
+  #       bucket: external-diffs
+  #     lfs:
+  #       bucket: lfs-objects
+  #     uploads:
+  #       bucket: uploads
+  #     packages:
+  #       bucket: packages
+  #     dependency_proxy:
+  #       bucket: dependency_proxy
+
   ## Build Artifacts
   artifacts:
     enabled: true
@@ -333,7 +360,7 @@ production: &base
     # storage_path: shared/terraform_state
     object_store:
       enabled: false
-      remote_directory: terraform_state # The bucket name
+      remote_directory: terraform # The bucket name
       connection:
         provider: AWS
         aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -474,11 +501,6 @@ production: &base
     geo_registry_sync_worker:
       cron: "*/1 * * * *"
 
-    # GitLab Geo migrated local files clean up worker
-    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
-    geo_migrated_local_files_clean_up_worker:
-      cron: "15 */6 * * *"
-
     # Export pseudonymized data in CSV format for analysis
     pseudonymizer_worker:
       cron: "0 * * * *"
@@ -487,11 +509,16 @@ production: &base
     # NOTE: This will only take effect if elasticsearch is enabled.
     elastic_index_bulk_cron_worker:
       cron: "*/1 * * * *"
-      
+
     # Elasticsearch bulk updater for initial updates.
     # NOTE: This will only take effect if elasticsearch is enabled.
     elastic_index_initial_bulk_cron_worker:
       cron: "*/1 * * * *"
+
+    # Elasticsearch reindexing worker
+    # NOTE: This will only take effect if elasticsearch is enabled.
+    elastic_index_initial_bulk_cron_worker:
+      cron: "*/10 * * * *"
 
   registry:
     # enabled: true
@@ -1078,11 +1105,6 @@ production: &base
     #   host: localhost
     #   port: 3808
 
-  ## ActionCable settings
-  action_cable:
-    # Number of threads used to process ActionCable connection callbacks and channel actions
-    # worker_pool_size: 4
-
   ## Monitoring
   # Built in monitoring settings
   monitoring:
@@ -1181,7 +1203,7 @@ test:
     # has been pushed).
     # when: always
     # The location where external diffs are stored (default: shared/external-diffs).
-    # storage_path: shared/external-diffs
+    storage_path: tmp/tests/external-diffs
     object_store:
       enabled: false
       remote_directory: external-diffs # The bucket name
@@ -1231,7 +1253,7 @@ test:
     storage_path: tmp/tests/terraform_state
     object_store:
       enabled: false
-      remote_directory: terraform_state
+      remote_directory: terraform
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID

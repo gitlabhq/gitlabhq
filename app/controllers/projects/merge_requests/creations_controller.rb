@@ -32,13 +32,13 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def pipelines
-    @pipelines = @merge_request.all_pipelines
+    @pipelines = Ci::PipelinesForMergeRequestFinder.new(@merge_request, current_user).execute
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
     render json: {
       pipelines: PipelineSerializer
-      .new(project: @project, current_user: @current_user)
+      .new(project: @project, current_user: current_user)
       .represent(@pipelines)
     }
   end

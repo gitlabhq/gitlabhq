@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildRunnerSession, model: true do
+RSpec.describe Ci::BuildRunnerSession, model: true do
   let!(:build) { create(:ci_build, :with_runner_session) }
   let(:url) { 'https://new.example.com' }
 

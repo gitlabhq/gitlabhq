@@ -158,6 +158,89 @@ end
 
 will include all rules from `ProjectPolicy`. The delegated conditions will be evaluated with the correct delegated subject, and will be sorted along with the regular rules in the policy. Note that only the relevant rules for a particular ability will actually be considered.
 
+### Overrides
+
+We allow policies to opt-out of delegated abilities.
+
+Delegated policies may define some abilities in a way that is incorrect for the
+delegating policy. Take for example a child/parent relationship, where some
+abilities can be inferred, and some cannot:
+
+```ruby
+class ParentPolicy < BasePolicy
+  condition(:speaks_spanish) { @subject.spoken_languages.include?(:es) }
+  condition(:has_license) { @subject.driving_license.present? }
+  condition(:enjoys_broccoli) { @subject.enjoyment_of(:broccoli) > 0 }
+  
+  rule { speaks_spanish }.enable :read_spanish
+  rule { has_license }.enable :drive_car
+  rule { enjoys_broccoli }.enable :eat_broccoli
+  rule { ~enjoys_broccoli }.prevent :eat_broccoli
+end
+```
+
+Here, if we delegated the child policy to the parent policy, some values would be
+incorrect - we might correctly infer that the child can speak their parent's
+language, but it would be incorrect to infer that the child can drive or would
+eat broccoli just because the parent can and does.
+
+Some of these things we can deal with - we can forbid driving universally in the
+child policy, for example:
+
+```ruby
+class ChildPolicy < BasePolicy
+  delegate { @subject.parent }
+  
+  rule { default }.prevent :drive_car
+end
+```
+
+But the food preferences one is harder - because of the `prevent` call in the
+parent policy, if the parent dislikes it, even calling `enable` in the child
+will not enable `:eat_broccoli`.
+
+We could remove the `prevent` call in the parent policy, but that still doesn't
+help us, since the rules are different: parents get to eat what they like, and
+children eat what they are given, provided they are well behaved. Allowing
+delegation would end up with only children whose parents enjoy green vegetables
+eating it. But a parent may well give their child broccoli, even if they dislike
+it themselves, because it is good for their child.
+
+The solution it to override the `:eat_broccoli` ability in the child policy:
+
+```ruby
+class ChildPolicy < BasePolicy
+  delegate { @subject.parent }
+  
+  overrides :eat_broccoli
+  
+  condition(:good_kid) { @subject.behavior_level >= Child::GOOD }
+  
+  rule { good_kid }.enable :eat_broccoli
+end
+```
+
+With this definition, the `ChildPolicy` will _never_ look in the `ParentPolicy` to
+satisfy `:eat_broccoli`, but it _will_ use it for any other abilities. The child
+policy can then define `:eat_broccoli` in a way that makes sense for `Child` and not
+`Parent`.
+
+### Alternatives to using `overrides`
+
+Overriding policy delegation is complex, for the same reason delegation is
+complex - it involves reasoning about logical inference, and being clear about
+semantics. Misuse of `override` has the potential to duplicate code, and
+potentially introduce security bugs, allowing things that should be prevented.
+For this reason, it should be used only when other approaches are not feasible.
+
+Other approaches can include for example using different ability names. Choosing
+to eat a food and eating foods you are given are semantically distinct, and they
+could be named differently (perhaps `chooses_to_eat_broccoli` and
+`eats_what_is_given` in this case). It can depend on how polymorphic the call
+site is. If you know that we will always check the policy with a `Parent` or a
+`Child`, then we can choose the appropriate ability name. If the call site is
+polymorphic, then we cannot do that.
+
 ## Specifying Policy Class
 
 You can also override the Policy used for a given subject:

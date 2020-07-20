@@ -1,8 +1,9 @@
 - page_title _("GitLab Import")
 - header_title _("Projects"), root_path
 
-%h3.page-title
-  = icon('gitlab')
+%h3.page-title.d-flex
+  .gl-display-flex.gl-align-items-center.gl-justify-content-center
+    = sprite_icon('tanuki', size: 16, css_class: 'gl-mr-2')
   = _('Import an exported GitLab project')
 %hr
 

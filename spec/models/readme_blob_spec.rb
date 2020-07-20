@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ReadmeBlob do
+RSpec.describe ReadmeBlob do
   include FakeBlobHelpers
 
   describe 'policy' do

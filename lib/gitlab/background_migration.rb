@@ -33,6 +33,7 @@ module Gitlab
 
           next unless job.queue == self.queue
           next unless migration_class == steal_class
+          next if block_given? && !(yield migration_args)
 
           begin
             perform(migration_class, migration_args) if job.delete

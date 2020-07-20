@@ -17,3 +17,8 @@
     height: 230px;
   }
 }
+
+// This is temporary class to be removed after feature flag removal: https://gitlab.com/gitlab-org/gitlab/-/issues/223197
+.design-list-item-new {
+  height: 210px;
+}

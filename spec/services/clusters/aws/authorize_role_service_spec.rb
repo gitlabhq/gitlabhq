@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Aws::AuthorizeRoleService do
+RSpec.describe Clusters::Aws::AuthorizeRoleService do
   let(:user) { create(:user) }
   let(:credentials) { instance_double(Aws::Credentials) }
   let(:credentials_service) { instance_double(Clusters::Aws::FetchCredentialsService, execute: credentials) }

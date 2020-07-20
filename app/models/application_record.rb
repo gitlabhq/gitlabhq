@@ -13,6 +13,10 @@ class ApplicationRecord < ActiveRecord::Base
     where(id: ids)
   end
 
+  def self.iid_in(iids)
+    where(iid: iids)
+  end
+
   def self.id_not_in(ids)
     where.not(id: ids)
   end
@@ -32,6 +36,10 @@ class ApplicationRecord < ActiveRecord::Base
     end
 
     false
+  end
+
+  def self.at_most(count)
+    limit(count)
   end
 
   def self.safe_find_or_create_by!(*args)

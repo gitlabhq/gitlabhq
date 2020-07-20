@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Members < Grape::API
+  class Members < Grape::API::Instance
     include PaginationParams
 
     before { authenticate! }
@@ -18,7 +18,7 @@ module API
         end
         params do
           optional :query, type: String, desc: 'A query string to search for members'
-          optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
+          optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of user ids to look up for membership'
           optional :show_seat_info, type: Boolean, desc: 'Show seat information for members'
           use :optional_filter_params_ee
           use :pagination
@@ -37,7 +37,7 @@ module API
         end
         params do
           optional :query, type: String, desc: 'A query string to search for members'
-          optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
+          optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of user ids to look up for membership'
           optional :show_seat_info, type: Boolean, desc: 'Show seat information for members'
           use :pagination
         end
@@ -107,7 +107,7 @@ module API
 
           if !member
             not_allowed! # This currently can only be reached in EE
-          elsif member.persisted? && member.valid?
+          elsif member.valid? && member.persisted?
             present_members(member)
           else
             render_validation_error!(member)
@@ -145,6 +145,8 @@ module API
         desc 'Removes a user from a group or project.'
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the member'
+          optional :unassign_issuables, type: Boolean, default: false,
+                   desc: 'Flag indicating if the removed member should be unassigned from any issues or merge requests within given group or project'
         end
         # rubocop: disable CodeReuse/ActiveRecord
         delete ":id/members/:user_id" do
@@ -152,7 +154,7 @@ module API
           member = source.members.find_by!(user_id: params[:user_id])
 
           destroy_conditionally!(member) do
-            ::Members::DestroyService.new(current_user).execute(member)
+            ::Members::DestroyService.new(current_user).execute(member, unassign_issuables: params[:unassign_issuables])
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord

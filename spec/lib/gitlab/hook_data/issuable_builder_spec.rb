@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::HookData::IssuableBuilder do
+RSpec.describe Gitlab::HookData::IssuableBuilder do
   let_it_be(:user) { create(:user) }
 
   # This shared example requires a `builder` and `user` variable

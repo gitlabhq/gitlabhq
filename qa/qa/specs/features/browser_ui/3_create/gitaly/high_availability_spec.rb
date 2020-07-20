@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     context 'Gitaly' do
       describe 'High Availability', :orchestrated, :gitaly_ha do
         let(:project) do
@@ -10,15 +10,15 @@ module QA
           end
         end
         let(:initial_file) { 'pushed_to_primary.txt' }
-        let(:final_file) { 'pushed_to_secondary.txt' }
+        let(:final_file) { 'committed_to_primary.txt' }
+        let(:praefect_manager) { Service::PraefectManager.new }
 
         before do
-          @praefect_manager = Service::PraefectManager.new
           Flow::Login.sign_in
         end
 
         after do
-          @praefect_manager.reset
+          praefect_manager.reset_cluster
         end
 
         it 'makes sure that automatic failover is happening' do
@@ -30,7 +30,7 @@ module QA
             push.file_content = "This should exist on both nodes"
           end
 
-          @praefect_manager.stop_primary_node
+          praefect_manager.trigger_failover_by_stopping_primary_node
 
           project.visit!
 
@@ -41,11 +41,13 @@ module QA
             expect(show).to have_file(initial_file)
           end
 
+          praefect_manager.enable_writes
+
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project
             commit.add_files([
               {
-                file_path: 'committed_to_primary.txt',
+                file_path: final_file,
                 content: 'This should exist on both nodes too'
               }
             ])

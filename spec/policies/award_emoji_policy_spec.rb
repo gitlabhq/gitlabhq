@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AwardEmojiPolicy do
+RSpec.describe AwardEmojiPolicy do
   let(:user) { create(:user) }
   let(:award_emoji) { create(:award_emoji, awardable: awardable) }
 

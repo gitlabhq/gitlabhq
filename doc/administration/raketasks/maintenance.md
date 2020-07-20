@@ -260,7 +260,7 @@ clear it.
 
 To clear all exclusive leases:
 
-DANGER: **DANGER**:
+DANGER: **Danger:**
 Don't run it while GitLab or Sidekiq is running
 
 ```shell
@@ -317,7 +317,7 @@ migrations are completed (have an `up` status).
 
 Sometimes you may need to re-import the common metrics that power the Metrics dashboards.
 
-This could be as a result of [updating existing metrics](../../development/prometheus_metrics.md#update-existing-metrics), or as a [troubleshooting measure](../../user/project/integrations/prometheus.md#troubleshooting).
+This could be as a result of [updating existing metrics](../../development/prometheus_metrics.md#update-existing-metrics), or as a [troubleshooting measure](../../operations/metrics/dashboards/index.md#troubleshooting).
 
 To re-import the metrics you can run:
 

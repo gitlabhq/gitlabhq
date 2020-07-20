@@ -2,11 +2,13 @@
 
 module SnippetsActions
   extend ActiveSupport::Concern
-  include SendsBlob
+
   include RendersNotes
   include RendersBlob
   include PaginatedCollection
   include Gitlab::NoteableMetadata
+  include Snippets::SendBlob
+  include SnippetsSort
 
   included do
     skip_before_action :verify_authenticity_token,
@@ -25,6 +27,10 @@ module SnippetsActions
     render 'edit'
   end
 
+  # This endpoint is being replaced by Snippets::BlobController#raw
+  # Support for old raw links will be maintainted via this action but
+  # it will only return the first blob found,
+  # see: https://gitlab.com/gitlab-org/gitlab/-/issues/217775
   def raw
     workhorse_set_content_type!
 
@@ -39,12 +45,7 @@ module SnippetsActions
         filename: Snippet.sanitized_file_name(blob.name)
       )
     else
-      send_blob(
-        snippet.repository,
-        blob,
-        inline: content_disposition == 'inline',
-        allow_caching: snippet.public?
-      )
+      send_snippet_blob(snippet, blob)
     end
   end
 
@@ -105,10 +106,6 @@ module SnippetsActions
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   private
-
-  def content_disposition
-    @disposition ||= params[:inline] == 'false' ? 'attachment' : 'inline'
-  end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def blob

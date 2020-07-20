@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ApplicationSettingsHelper do
+RSpec.describe ApplicationSettingsHelper do
   context 'when all protocols in use' do
     before do
       stub_application_setting(enabled_git_access_protocol: '')

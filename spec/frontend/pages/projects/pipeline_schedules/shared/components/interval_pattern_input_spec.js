@@ -1,4 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import { trimText } from 'helpers/text_helper';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
 
 describe('Interval Pattern Input Component', () => {
@@ -14,15 +15,22 @@ describe('Interval Pattern Input Component', () => {
     everyWeek: `0 ${mockHour} * * ${mockWeekDayIndex}`,
     everyMonth: `0 ${mockHour} ${mockDay} * *`,
   };
+  const customKey = 'custom';
+  const everyDayKey = 'everyDay';
+  const cronIntervalNotInPreset = `0 12 * * *`;
 
-  const findEveryDayRadio = () => wrapper.find('#every-day');
-  const findEveryWeekRadio = () => wrapper.find('#every-week');
-  const findEveryMonthRadio = () => wrapper.find('#every-month');
-  const findCustomRadio = () => wrapper.find('#custom');
+  const findEveryDayRadio = () => wrapper.find(`[data-testid=${everyDayKey}]`);
+  const findEveryWeekRadio = () => wrapper.find('[data-testid="everyWeek"]');
+  const findEveryMonthRadio = () => wrapper.find('[data-testid="everyMonth"]');
+  const findCustomRadio = () => wrapper.find(`[data-testid="${customKey}"]`);
   const findCustomInput = () => wrapper.find('#schedule_cron');
-  const selectEveryDayRadio = () => findEveryDayRadio().setChecked();
-  const selectEveryWeekRadio = () => findEveryWeekRadio().setChecked();
-  const selectEveryMonthRadio = () => findEveryMonthRadio().setChecked();
+  const findAllLabels = () => wrapper.findAll('label');
+  const findSelectedRadio = () =>
+    wrapper.findAll('input[type="radio"]').wrappers.find(x => x.element.checked);
+  const findSelectedRadioKey = () => findSelectedRadio()?.attributes('data-testid');
+  const selectEveryDayRadio = () => findEveryDayRadio().trigger('click');
+  const selectEveryWeekRadio = () => findEveryWeekRadio().trigger('click');
+  const selectEveryMonthRadio = () => findEveryMonthRadio().trigger('click');
   const selectCustomRadio = () => findCustomRadio().trigger('click');
 
   const createWrapper = (props = {}, data = {}) => {
@@ -30,7 +38,7 @@ describe('Interval Pattern Input Component', () => {
       throw new Error('A wrapper already exists');
     }
 
-    wrapper = shallowMount(IntervalPatternInput, {
+    wrapper = mount(IntervalPatternInput, {
       propsData: { ...props },
       data() {
         return {
@@ -63,8 +71,8 @@ describe('Interval Pattern Input Component', () => {
       createWrapper();
     });
 
-    it('to a non empty string when no initial value is not passed', () => {
-      expect(findCustomInput()).not.toBe('');
+    it('defaults to every day value when no `initialCronInterval` is passed', () => {
+      expect(findCustomInput().element.value).toBe(cronIntervalPresets.everyDay);
     });
   });
 
@@ -85,20 +93,20 @@ describe('Interval Pattern Input Component', () => {
       createWrapper();
     });
 
-    it('when a default option is selected', () => {
+    it('when a default option is selected', async () => {
       selectEveryDayRadio();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findCustomInput().attributes('disabled')).toBeUndefined();
-      });
+      await wrapper.vm.$nextTick();
+
+      expect(findCustomInput().attributes('disabled')).toBeUndefined();
     });
 
-    it('when the custom option is selected', () => {
+    it('when the custom option is selected', async () => {
       selectCustomRadio();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findCustomInput().attributes('disabled')).toBeUndefined();
-      });
+      await wrapper.vm.$nextTick();
+
+      expect(findCustomInput().attributes('disabled')).toBeUndefined();
     });
   });
 
@@ -115,40 +123,83 @@ describe('Interval Pattern Input Component', () => {
     });
   });
 
+  describe('Time strings', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('renders each label for radio options properly', () => {
+      const labels = findAllLabels().wrappers.map(el => trimText(el.text()));
+
+      expect(labels).toEqual([
+        'Every day (at 4:00am)',
+        'Every week (Monday at 4:00am)',
+        'Every month (Day 1 at 4:00am)',
+        'Custom ( Cron syntax )',
+      ]);
+    });
+  });
+
   describe('User Actions with radio buttons', () => {
-    it.each`
-      desc                                             | initialCronInterval               | act                      | expectedValue
-      ${'when everyday is selected, update value'}     | ${'1 2 3 4 5'}                    | ${selectEveryDayRadio}   | ${cronIntervalPresets.everyDay}
-      ${'when everyweek is selected, update value'}    | ${'1 2 3 4 5'}                    | ${selectEveryWeekRadio}  | ${cronIntervalPresets.everyWeek}
-      ${'when everymonth is selected, update value'}   | ${'1 2 3 4 5'}                    | ${selectEveryMonthRadio} | ${cronIntervalPresets.everyMonth}
-      ${'when custom is selected, add space to value'} | ${cronIntervalPresets.everyMonth} | ${selectCustomRadio}     | ${`${cronIntervalPresets.everyMonth} `}
-    `('$desc', ({ initialCronInterval, act, expectedValue }) => {
-      createWrapper({ initialCronInterval });
+    describe('Default option', () => {
+      beforeEach(() => {
+        createWrapper();
+      });
 
-      act();
+      it('when everyday is selected, update value', async () => {
+        selectEveryWeekRadio();
+        await wrapper.vm.$nextTick();
+        expect(findCustomInput().element.value).toBe(cronIntervalPresets.everyWeek);
 
-      return wrapper.vm.$nextTick().then(() => {
+        selectEveryDayRadio();
+        await wrapper.vm.$nextTick();
+        expect(findCustomInput().element.value).toBe(cronIntervalPresets.everyDay);
+      });
+    });
+
+    describe('Other options', () => {
+      it.each`
+        desc                                                 | initialCronInterval               | act                      | expectedValue
+        ${'when everyweek is selected, update value'}        | ${'1 2 3 4 5'}                    | ${selectEveryWeekRadio}  | ${cronIntervalPresets.everyWeek}
+        ${'when everymonth is selected, update value'}       | ${'1 2 3 4 5'}                    | ${selectEveryMonthRadio} | ${cronIntervalPresets.everyMonth}
+        ${'when custom is selected, value remains the same'} | ${cronIntervalPresets.everyMonth} | ${selectCustomRadio}     | ${cronIntervalPresets.everyMonth}
+      `('$desc', async ({ initialCronInterval, act, expectedValue }) => {
+        createWrapper({ initialCronInterval });
+
+        act();
+
+        await wrapper.vm.$nextTick();
+
         expect(findCustomInput().element.value).toBe(expectedValue);
       });
     });
   });
+
   describe('User actions with input field for Cron syntax', () => {
     beforeEach(() => {
       createWrapper();
     });
 
-    it('when editing the cron input it selects the custom radio button', () => {
+    it('when editing the cron input it selects the custom radio button', async () => {
       const newValue = '0 * * * *';
+
+      expect(findSelectedRadioKey()).toBe(everyDayKey);
 
       findCustomInput().setValue(newValue);
 
-      expect(wrapper.vm.cronInterval).toBe(newValue);
+      await wrapper.vm.$nextTick;
+
+      expect(findSelectedRadioKey()).toBe(customKey);
+    });
+  });
+
+  describe('Edit form field', () => {
+    beforeEach(() => {
+      createWrapper({ initialCronInterval: cronIntervalNotInPreset });
     });
 
-    it('when value of input is one of the defaults, it selects the corresponding radio button', () => {
-      findCustomInput().setValue(cronIntervalPresets.everyWeek);
-
-      expect(wrapper.vm.cronInterval).toBe(cronIntervalPresets.everyWeek);
+    it('loads with the custom option being selected', () => {
+      expect(findSelectedRadioKey()).toBe(customKey);
     });
   });
 });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AfterCommitQueue do
+RSpec.describe AfterCommitQueue do
   it 'runs after transaction is committed' do
     called = false
     test_proc = proc { called = true }

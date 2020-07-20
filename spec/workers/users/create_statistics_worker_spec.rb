@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Users::CreateStatisticsWorker do
+RSpec.describe Users::CreateStatisticsWorker do
   describe '#perform' do
     subject { described_class.new.perform }
 

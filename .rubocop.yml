@@ -308,6 +308,18 @@ Gitlab/Union:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+API/GrapeAPIInstance:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/**/api/**/*.rb'
+
+API/GrapeArrayMissingCoerce:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/**/api/**/*.rb'
+
 Cop/SidekiqOptionsQueue:
   Enabled: true
   Exclude:
@@ -316,6 +328,9 @@ Cop/SidekiqOptionsQueue:
 
 Graphql/AuthorizeTypes:
   Enabled: true
+  Include:
+    - 'app/graphql/types/**/*'
+    - 'ee/app/graphql/types/**/*'
   Exclude:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
@@ -450,10 +465,17 @@ Rails/TimeZone:
     - 'spec/models/**/*'
     - 'ee/app/models/**/*'
     - 'ee/spec/models/**/*'
+    - 'app/workers/**/*'
+    - 'spec/workers/**/*'
+    - 'ee/app/workers/**/*'
+    - 'ee/spec/workers/**/*'
+
 
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Enabled: true
+  AllowImplicitReturn: false
+  AllowedReceivers: ['ActionDispatch::TestRequest']
   Include:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'

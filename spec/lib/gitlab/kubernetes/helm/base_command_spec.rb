@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::Helm::BaseCommand do
+RSpec.describe Gitlab::Kubernetes::Helm::BaseCommand do
   subject(:base_command) do
     test_class.new(rbac)
   end

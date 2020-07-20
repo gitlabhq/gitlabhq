@@ -19,7 +19,7 @@ module ResourceEvents
       return [] unless resource.respond_to?(:resource_label_events)
 
       events = resource.resource_label_events.includes(:label, user: :status) # rubocop: disable CodeReuse/ActiveRecord
-      events = since_fetch_at(events)
+      events = apply_common_filters(events)
 
       events.group_by { |event| event.discussion_id }
     end

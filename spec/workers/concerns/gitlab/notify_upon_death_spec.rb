@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::NotifyUponDeath do
+RSpec.describe Gitlab::NotifyUponDeath do
   let(:worker_class) do
     Class.new do
       include Sidekiq::Worker

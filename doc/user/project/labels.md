@@ -54,7 +54,7 @@ and edit labels.
 
 View the project labels list by going to the project and clicking **Issues > Labels**.
 The list includes all labels that are defined at the project level, as well as all
-labels inherited from the parent group. You can filter the list by entering a search
+labels inherited from the immediate parent group. You can filter the list by entering a search
 query at the top and clicking search (**{search}**).
 
 To create a new project label:
@@ -94,7 +94,7 @@ also be merged.
 All issues, merge requests, issue board lists, issue board filters, and label subscriptions
 with the old labels will be assigned to the new group label.
 
-WARNING: **Caution:**
+CAUTION: **Caution:**
 Promoting a label is a permanent action, and cannot be reversed.
 
 To promote a project label to a group label:
@@ -251,3 +251,16 @@ If you sort by `Priority`, GitLab uses this sort comparison order:
 Ties are broken arbitrarily.
 
 ![Labels sort priority](img/labels_sort_priority.png)
+
+## Troubleshooting
+
+### Some label titles end with `_duplicate<number>`
+
+In specific circumstances it was possible to create labels with duplicate titles in the same
+namespace.
+
+To resolve the duplication, [in GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21384)
+and later, some duplicate labels have `_duplicate<number>` appended to their titles.
+
+You can safely change these labels' titles if you prefer.
+For details of the original problem, see [issue 30390](https://gitlab.com/gitlab-org/gitlab/issues/30390).

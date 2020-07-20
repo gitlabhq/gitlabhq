@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TrackingHelper do
+RSpec.describe TrackingHelper do
   describe '#tracking_attrs' do
     using RSpec::Parameterized::TableSyntax
 

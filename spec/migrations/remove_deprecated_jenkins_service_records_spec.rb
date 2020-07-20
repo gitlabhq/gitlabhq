@@ -4,7 +4,7 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200511130129_remove_deprecated_jenkins_service_records.rb')
 require Rails.root.join('db', 'post_migrate', '20200511130130_ensure_deprecated_jenkins_service_records_removal.rb')
 
-shared_examples 'remove DeprecatedJenkinsService records' do
+RSpec.shared_examples 'remove DeprecatedJenkinsService records' do
   let(:services) { table(:services) }
 
   before do
@@ -19,10 +19,10 @@ shared_examples 'remove DeprecatedJenkinsService records' do
   end
 end
 
-describe RemoveDeprecatedJenkinsServiceRecords, :migration do
+RSpec.describe RemoveDeprecatedJenkinsServiceRecords, :migration do
   it_behaves_like 'remove DeprecatedJenkinsService records'
 end
 
-describe EnsureDeprecatedJenkinsServiceRecordsRemoval, :migration do
+RSpec.describe EnsureDeprecatedJenkinsServiceRecordsRemoval, :migration do
   it_behaves_like 'remove DeprecatedJenkinsService records'
 end

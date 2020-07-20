@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage', :github, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/26952', type: :bug } do
+  RSpec.describe 'Manage', :github, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/26952', type: :bug } do
     describe 'Project import from GitHub' do
       let(:imported_project) do
         Resource::ProjectImportedFromGithub.fabricate! do |project|
@@ -62,12 +62,9 @@ module QA
 
           Page::Project::Issue::Show.perform do |issue_page|
             expect(issue_page).to have_comment(comment_text)
-          end
-
-          Page::Issuable::Sidebar.perform do |issuable|
-            expect(issuable).to have_label('enhancement')
-            expect(issuable).to have_label('help wanted')
-            expect(issuable).to have_label('good first issue')
+            expect(issue_page).to have_label('enhancement')
+            expect(issue_page).to have_label('help wanted')
+            expect(issue_page).to have_label('good first issue')
           end
         end
       end
@@ -91,9 +88,9 @@ module QA
         expect(page).to have_content('[Review comment] Nice blank line.')
         expect(page).to have_content('[Single diff comment] Much better without this line!')
 
-        Page::Issuable::Sidebar.perform do |issuable|
-          expect(issuable).to have_label('bug')
-          expect(issuable).to have_label('enhancement')
+        Page::MergeRequest::Show.perform do |merge_request|
+          expect(merge_request).to have_label('bug')
+          expect(merge_request).to have_label('enhancement')
         end
       end
 

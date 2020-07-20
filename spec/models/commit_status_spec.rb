@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CommitStatus do
+RSpec.describe CommitStatus do
   let_it_be(:project) { create(:project, :repository) }
 
   let_it_be(:pipeline) do

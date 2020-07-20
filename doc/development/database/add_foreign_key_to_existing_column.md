@@ -113,7 +113,8 @@ end
 
 Validating the foreign key will scan the whole table and make sure that each relation is correct.
 
-NOTE: **Note:** When using [background migrations](../background_migrations.md), foreign key validation should happen in the next GitLab release.
+NOTE: **Note:**
+When using [background migrations](../background_migrations.md), foreign key validation should happen in the next GitLab release.
 
 Migration file for validating the foreign key:
 

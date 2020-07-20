@@ -15,7 +15,7 @@
       .form-group
         .form-text
           %p.text-secondary
-            = _('Select a weight for the storage new repositories will be placed on.')
+            = _('Enter weights for storages for new repositories.')
             = link_to icon('question-circle'), help_page_path('administration/repository_storage_paths')
         .form-check
           - storage_weights.each do |attribute|

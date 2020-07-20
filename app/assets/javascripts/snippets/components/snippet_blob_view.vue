@@ -1,6 +1,4 @@
 <script>
-import BlobEmbeddable from '~/blob/components/blob_embeddable.vue';
-import { SNIPPET_VISIBILITY_PUBLIC } from '../constants';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobContent from '~/blob/components/blob_content.vue';
 import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
@@ -16,7 +14,6 @@ import {
 
 export default {
   components: {
-    BlobEmbeddable,
     BlobHeader,
     BlobContent,
     CloneDropdownButton,
@@ -49,21 +46,19 @@ export default {
       type: Object,
       required: true,
     },
+    blob: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
-      blob: this.snippet.blob,
       blobContent: '',
       activeViewerType:
-        this.snippet.blob?.richViewer && !window.location.hash
-          ? RICH_BLOB_VIEWER
-          : SIMPLE_BLOB_VIEWER,
+        this.blob?.richViewer && !window.location.hash ? RICH_BLOB_VIEWER : SIMPLE_BLOB_VIEWER,
     };
   },
   computed: {
-    embeddable() {
-      return this.snippet.visibilityLevel === SNIPPET_VISIBILITY_PUBLIC;
-    },
     isContentLoading() {
       return this.$apollo.queries.blobContent.loading;
     },
@@ -92,33 +87,30 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <blob-embeddable v-if="embeddable" class="mb-3" :url="snippet.webUrl" />
-    <article class="file-holder snippet-file-content">
-      <blob-header
-        :blob="blob"
-        :active-viewer-type="viewer.type"
-        :has-render-error="hasRenderError"
-        @viewer-changed="switchViewer"
-      >
-        <template #actions>
-          <clone-dropdown-button
-            v-if="canBeCloned"
-            class="mr-2"
-            :ssh-link="snippet.sshUrlToRepo"
-            :http-link="snippet.httpUrlToRepo"
-            data-qa-selector="clone_button"
-          />
-        </template>
-      </blob-header>
-      <blob-content
-        :loading="isContentLoading"
-        :content="blobContent"
-        :active-viewer="viewer"
-        :blob="blob"
-        @[$options.BLOB_RENDER_EVENT_LOAD]="forceQuery"
-        @[$options.BLOB_RENDER_EVENT_SHOW_SOURCE]="switchViewer"
-      />
-    </article>
-  </div>
+  <article class="file-holder snippet-file-content">
+    <blob-header
+      :blob="blob"
+      :active-viewer-type="viewer.type"
+      :has-render-error="hasRenderError"
+      @viewer-changed="switchViewer"
+    >
+      <template #actions>
+        <clone-dropdown-button
+          v-if="canBeCloned"
+          class="gl-mr-3"
+          :ssh-link="snippet.sshUrlToRepo"
+          :http-link="snippet.httpUrlToRepo"
+          data-qa-selector="clone_button"
+        />
+      </template>
+    </blob-header>
+    <blob-content
+      :loading="isContentLoading"
+      :content="blobContent"
+      :active-viewer="viewer"
+      :blob="blob"
+      @[$options.BLOB_RENDER_EVENT_LOAD]="forceQuery"
+      @[$options.BLOB_RENDER_EVENT_SHOW_SOURCE]="switchViewer"
+    />
+  </article>
 </template>

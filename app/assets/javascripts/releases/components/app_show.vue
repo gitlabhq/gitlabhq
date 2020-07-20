@@ -21,7 +21,7 @@ export default {
 };
 </script>
 <template>
-  <div class="prepend-top-default">
+  <div class="gl-mt-3">
     <gl-skeleton-loading v-if="isFetchingRelease" />
 
     <release-block v-else-if="!fetchError" :release="release" />

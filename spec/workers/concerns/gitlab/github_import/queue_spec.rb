@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Queue do
+RSpec.describe Gitlab::GithubImport::Queue do
   it 'sets the Sidekiq options for the worker' do
     worker = Class.new do
       def self.name

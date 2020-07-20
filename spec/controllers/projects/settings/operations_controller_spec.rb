@@ -151,7 +151,8 @@ RSpec.describe Projects::Settings::OperationsController do
           incident_management_setting_attributes: {
             create_issue: 'false',
             send_email: 'false',
-            issue_template_key: 'some-other-template'
+            issue_template_key: 'some-other-template',
+            pagerduty_active: 'true'
           }
         }
       end
@@ -159,7 +160,6 @@ RSpec.describe Projects::Settings::OperationsController do
       it_behaves_like 'PATCHable'
 
       context 'updating each incident management setting' do
-        let(:project) { create(:project) }
         let(:new_incident_management_settings) { {} }
 
         before do
@@ -185,6 +185,98 @@ RSpec.describe Projects::Settings::OperationsController do
         it_behaves_like 'a gitlab tracking event', { issue_template_key: nil }, 'disabled_issue_template_on_alerts'
         it_behaves_like 'a gitlab tracking event', { send_email: '1' }, 'enabled_sending_emails'
         it_behaves_like 'a gitlab tracking event', { send_email: '0' }, 'disabled_sending_emails'
+        it_behaves_like 'a gitlab tracking event', { pagerduty_active: '1' }, 'enabled_pagerduty_webhook'
+        it_behaves_like 'a gitlab tracking event', { pagerduty_active: '0' }, 'disabled_pagerduty_webhook'
+      end
+    end
+
+    describe 'POST #reset_pagerduty_token' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      context 'with existing incident management setting has active PagerDuty webhook' do
+        let!(:incident_management_setting) do
+          create(:project_incident_management_setting, project: project, pagerduty_active: true)
+        end
+
+        let!(:old_token) { incident_management_setting.pagerduty_token }
+
+        it 'returns newly reset token' do
+          reset_pagerduty_token
+
+          new_token = incident_management_setting.reload.pagerduty_token
+          new_webhook_url = project_incidents_pagerduty_url(project, token: new_token)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['pagerduty_webhook_url']).to eq(new_webhook_url)
+          expect(json_response['pagerduty_token']).to eq(new_token)
+          expect(old_token).not_to eq(new_token)
+        end
+      end
+
+      context 'without existing incident management setting' do
+        it 'does not reset a token' do
+          reset_pagerduty_token
+
+          new_webhook_url = project_incidents_pagerduty_url(project, token: nil)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['pagerduty_webhook_url']).to eq(new_webhook_url)
+          expect(project.incident_management_setting.pagerduty_token).to be_nil
+        end
+      end
+
+      context 'when update fails' do
+        let(:operations_update_service) { spy(:operations_update_service) }
+        let(:pagerduty_token_params) do
+          { incident_management_setting_attributes: { regenerate_token: true } }
+        end
+
+        before do
+          expect(::Projects::Operations::UpdateService)
+            .to receive(:new).with(project, user, pagerduty_token_params)
+            .and_return(operations_update_service)
+          expect(operations_update_service).to receive(:execute)
+            .and_return(status: :error)
+        end
+
+        it 'returns unprocessable_entity' do
+          reset_pagerduty_token
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response).to be_empty
+        end
+      end
+
+      context 'with insufficient permissions' do
+        before do
+          project.add_reporter(user)
+        end
+
+        it 'returns 404' do
+          reset_pagerduty_token
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'as an anonymous user' do
+        before do
+          sign_out(user)
+        end
+
+        it 'returns a redirect' do
+          reset_pagerduty_token
+
+          expect(response).to have_gitlab_http_status(:redirect)
+        end
+      end
+
+      private
+
+      def reset_pagerduty_token
+        post :reset_pagerduty_token, params: project_params(project), format: :json
       end
     end
   end
@@ -296,9 +388,7 @@ RSpec.describe Projects::Settings::OperationsController do
       end
     end
 
-    describe 'POST reset_alerting_token' do
-      let(:project) { create(:project) }
-
+    describe 'POST #reset_alerting_token' do
       before do
         project.add_maintainer(user)
       end

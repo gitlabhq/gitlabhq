@@ -2,20 +2,29 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::SelfMonitoringDashboardService, :use_clean_rails_memory_store_caching do
+RSpec.describe Metrics::Dashboard::SelfMonitoringDashboardService, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
 
+  let(:service_params) { [project, user, { environment: environment }] }
+
   before do
     project.add_maintainer(user)
     stub_application_setting(self_monitoring_project_id: project.id)
   end
 
+  subject do
+    described_class.new(service_params)
+  end
+
+  describe '#raw_dashboard' do
+    it_behaves_like '#raw_dashboard raises error if dashboard loading fails'
+  end
+
   describe '#get_dashboard' do
-    let(:service_params) { [project, user, { environment: environment }] }
     let(:service_call) { subject.get_dashboard }
 
     subject { described_class.new(*service_params) }
@@ -23,7 +32,13 @@ describe Metrics::Dashboard::SelfMonitoringDashboardService, :use_clean_rails_me
     it_behaves_like 'valid dashboard service response'
     it_behaves_like 'raises error for users with insufficient permissions'
     it_behaves_like 'caches the unprocessed dashboard for subsequent calls'
+    it_behaves_like 'refreshes cache when dashboard_version is changed'
     it_behaves_like 'updates gitlab_metrics_dashboard_processing_time_ms metric'
+
+    it_behaves_like 'dashboard_version contains SHA256 hash of dashboard file content' do
+      let(:dashboard_path) { described_class::DASHBOARD_PATH }
+      let(:dashboard_version) { subject.send(:dashboard_version) }
+    end
   end
 
   describe '.all_dashboard_paths' do
@@ -35,7 +50,8 @@ describe Metrics::Dashboard::SelfMonitoringDashboardService, :use_clean_rails_me
           path: described_class::DASHBOARD_PATH,
           display_name: described_class::DASHBOARD_NAME,
           default: true,
-          system_dashboard: false
+          system_dashboard: false,
+          out_of_the_box_dashboard: true
         }]
       )
     end

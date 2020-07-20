@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::AfterRenameService do
+RSpec.describe Projects::AfterRenameService do
   let(:rugged_config) { rugged_repo(project.repository).config }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::Hashed.new(project) }

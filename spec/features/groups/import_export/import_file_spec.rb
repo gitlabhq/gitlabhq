@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Import/Export - Group Import', :js do
+RSpec.describe 'Import/Export - Group Import', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:import_path) { "#{Dir.tmpdir}/group_import_spec" }
 

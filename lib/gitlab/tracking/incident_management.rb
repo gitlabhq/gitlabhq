@@ -32,6 +32,9 @@ module Gitlab
             },
             send_email: {
               name: 'sending_emails'
+            },
+            pagerduty_active: {
+              name: 'pagerduty_webhook'
             }
           }.with_indifferent_access.freeze
         end

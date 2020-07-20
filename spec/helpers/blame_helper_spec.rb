@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlameHelper do
+RSpec.describe BlameHelper do
   describe '#get_age_map_start_date' do
     let(:dates) do
       [Time.zone.local(2014, 3, 17, 0, 0, 0),

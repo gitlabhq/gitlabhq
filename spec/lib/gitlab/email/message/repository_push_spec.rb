@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Email::Message::RepositoryPush do
+RSpec.describe Gitlab::Email::Message::RepositoryPush do
   include RepoHelpers
 
   let!(:group) { create(:group, name: 'my_group') }

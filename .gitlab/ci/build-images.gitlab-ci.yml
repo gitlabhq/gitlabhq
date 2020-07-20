@@ -1,0 +1,31 @@
+# This image is used by the `review-qa-*` jobs. Not currently used by the `omnibus-gitlab` pipelines which rebuild this
+# image, e.g. https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/jobs/587107399, which we could probably avoid.
+# See https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5429.
+build-qa-image:
+  extends:
+    - .use-kaniko
+    - .build-images:rules:build-qa-image
+  stage: build-images
+  needs: []
+  script:
+    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
+    - /kaniko/executor --context=${CI_PROJECT_DIR} --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile --destination=${QA_IMAGE} --cache=true
+  retry: 2
+
+# This image is used by:
+# - The `CNG` pipelines (via the `review-build-cng` job): https://gitlab.com/gitlab-org/build/CNG/-/blob/cfc67136d711e1c8c409bf8e57427a644393da2f/.gitlab-ci.yml#L335
+# - The `omnibus-gitlab` pipelines (via the `package-and-qa` job): https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/dfd1ad475868fc84e91ab7b5706aa03e46dc3a86/.gitlab-ci.yml#L130
+build-assets-image:
+  extends:
+    - .use-kaniko
+    - .build-images:rules:build-assets-image
+  stage: build-images
+  needs: ["compile-production-assets"]
+  variables:
+    GIT_DEPTH: "1"
+  script:
+    # TODO: Change the image tag to be the MD5 of assets files and skip image building if the image exists
+    # We'll also need to pass GITLAB_ASSETS_TAG to the trigerred omnibus-gitlab pipeline similarly to how we do it for trigerred CNG pipelines
+    # https://gitlab.com/gitlab-org/gitlab/issues/208389
+    - run_timed_command "scripts/build_assets_image"
+  retry: 2

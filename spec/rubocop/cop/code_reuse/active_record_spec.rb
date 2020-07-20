@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rubocop'
-require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/code_reuse/active_record'
 
-describe RuboCop::Cop::CodeReuse::ActiveRecord do
+RSpec.describe RuboCop::Cop::CodeReuse::ActiveRecord, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }
@@ -46,7 +45,7 @@ describe RuboCop::Cop::CodeReuse::ActiveRecord do
   end
 
   it 'does not flag the use of ActiveRecord models in a model' do
-    path = Rails.root.join('app', 'models', 'foo.rb').to_s
+    path = rails_root_join('app', 'models', 'foo.rb').to_s
 
     expect_no_offenses(<<~SOURCE, path)
     def foo
@@ -56,7 +55,7 @@ describe RuboCop::Cop::CodeReuse::ActiveRecord do
   end
 
   it 'does not flag the use of ActiveRecord models in a spec' do
-    path = Rails.root.join('spec', 'foo_spec.rb').to_s
+    path = rails_root_join('spec', 'foo_spec.rb').to_s
 
     expect_no_offenses(<<~SOURCE, path)
     def foo
@@ -66,10 +65,7 @@ describe RuboCop::Cop::CodeReuse::ActiveRecord do
   end
 
   it 'does not flag the use of ActiveRecord models in a background migration' do
-    path = Rails
-      .root
-      .join('lib', 'gitlab', 'background_migration', 'foo.rb')
-      .to_s
+    path = rails_root_join('lib', 'gitlab', 'background_migration', 'foo.rb').to_s
 
     expect_no_offenses(<<~SOURCE, path)
     def foo
@@ -79,7 +75,7 @@ describe RuboCop::Cop::CodeReuse::ActiveRecord do
   end
 
   it 'does not flag the use of ActiveRecord models in lib/gitlab/database' do
-    path = Rails.root.join('lib', 'gitlab', 'database', 'foo.rb').to_s
+    path = rails_root_join('lib', 'gitlab', 'database', 'foo.rb').to_s
 
     expect_no_offenses(<<~SOURCE, path)
     def foo

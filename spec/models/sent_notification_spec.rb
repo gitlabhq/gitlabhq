@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SentNotification do
+RSpec.describe SentNotification do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 

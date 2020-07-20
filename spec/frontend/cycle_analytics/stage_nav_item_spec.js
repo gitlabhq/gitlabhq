@@ -10,7 +10,6 @@ describe('StageNavItem', () => {
     const func = shallow ? shallowMount : mount;
     return func(StageNavItem, {
       propsData: {
-        canEdit: false,
         isActive: false,
         isUserAllowed: false,
         isDefaultStage: true,
@@ -125,7 +124,7 @@ describe('StageNavItem', () => {
 
   describe('User can edit stages', () => {
     beforeEach(() => {
-      wrapper = createComponent({ canEdit: true, isUserAllowed: true }, false);
+      wrapper = createComponent({ isUserAllowed: true }, false);
     });
 
     afterEach(() => {

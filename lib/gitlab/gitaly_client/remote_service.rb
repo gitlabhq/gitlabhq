@@ -8,9 +8,11 @@ module Gitlab
       MAX_MSG_SIZE = 128.kilobytes.freeze
 
       def self.exists?(remote_url)
-        request = Gitaly::FindRemoteRepositoryRequest.new(remote: remote_url)
+        storage = GitalyClient.random_storage
 
-        response = GitalyClient.call(GitalyClient.random_storage,
+        request = Gitaly::FindRemoteRepositoryRequest.new(remote: remote_url, storage_name: storage)
+
+        response = GitalyClient.call(storage,
                                      :remote_service,
                                      :find_remote_repository, request,
                                      timeout: GitalyClient.medium_timeout)

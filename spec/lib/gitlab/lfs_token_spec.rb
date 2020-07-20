@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
   let_it_be(:user)       { create(:user) }
   let_it_be(:project)    { create(:project) }
   let_it_be(:deploy_key) { create(:deploy_key) }

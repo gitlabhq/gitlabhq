@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe SystemHook do
+RSpec.describe SystemHook do
   context 'default attributes' do
     let(:system_hook) { build(:system_hook) }
 

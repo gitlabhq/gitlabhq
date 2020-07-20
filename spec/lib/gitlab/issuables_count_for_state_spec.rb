@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::IssuablesCountForState do
+RSpec.describe Gitlab::IssuablesCountForState do
   let(:finder) do
     double(:finder, count_by_state: { opened: 2, closed: 1 })
   end

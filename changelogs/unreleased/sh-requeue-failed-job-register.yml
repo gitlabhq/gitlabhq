@@ -1,0 +1,5 @@
+---
+title: Fail jobs that fail to render registration response
+merge_request: 36274
+author:
+type: fixed

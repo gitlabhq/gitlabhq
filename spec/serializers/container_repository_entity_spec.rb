@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerRepositoryEntity do
+RSpec.describe ContainerRepositoryEntity do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:repository) { create(:container_repository, project: project) }

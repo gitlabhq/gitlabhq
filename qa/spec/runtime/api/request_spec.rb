@@ -22,6 +22,12 @@ describe QA::Runtime::API::Request do
     end
   end
 
+  describe '#mask_url' do
+    it 'returns the full API request url with the token masked' do
+      expect(request.mask_url).to eq 'http://example.com/api/v4/users?private_token=[****]'
+    end
+  end
+
   describe '#request_path' do
     it 'prepends the api path' do
       expect(request.request_path('/users')).to eq '/api/v4/users'

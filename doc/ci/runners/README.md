@@ -6,6 +6,8 @@ type: reference
 ---
 
 # Configuring GitLab Runners
+<!-- This topic contains several commented-out sections that were accidentally added in 13.2.-->
+<!-- The commented-out sections will be added back in 13.3.-->
 
 In GitLab CI/CD, Runners run the code defined in [`.gitlab-ci.yml`](../yaml/README.md).
 A GitLab Runner is a lightweight, highly-scalable agent that picks up a CI job through
@@ -35,12 +37,21 @@ Use shared Runners when you have multiple jobs with similar requirements. Rather
 having multiple Runners idling for many projects, you can have a few Runners that handle
 multiple projects.
 
-If you are using a self-managed instance of GitLab, your administrator can create
-shared Runners and configure them to use the
-[executor](https://docs.gitlab.com/runner/executors/README.html) you want.
+If you are using a self-managed instance of GitLab:
 
-If you are using GitLab.com, you can select from a list of
-[shared Runners that GitLab maintains](../../user/gitlab_com/index.md#shared-runners).
+- Your administrator can install and register shared Runners by viewing the instructions
+  [here](https://docs.gitlab.com/runner/install/index.html).
+  <!-- going to your project's
+  <!-- **Settings > CI / CD**, expanding the **Runners** section, and clicking **Show Runner installation instructions**.-->
+  <!-- These instructions are also available [here](https://docs.gitlab.com/runner/install/index.html).-->
+- The administrator can also configure a maximum number of shared Runner [pipeline minutes for
+  each group](../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only).
+
+If you are using GitLab.com:
+
+- You can select from a list of [shared Runners that GitLab maintains](../../user/gitlab_com/index.md#shared-runners).
+- The shared Runners consume the [pipelines minutes](../../subscriptions/index.md#ci-pipeline-minutes)
+  included with your account.
 
 #### How shared Runners pick jobs
 
@@ -95,16 +106,38 @@ The fair usage algorithm assigns jobs in this order:
 1. Job 6 is next, because Project 3 is the only project left with no running jobs.
 1. Lastly we choose Job 3... because, again, it's the only job left.
 
-#### Enable a shared Runner
+#### Enable shared Runners
 
-By default, all projects can use shared Runners, and they are enabled by default.
+On GitLab.com, [shared Runners](#shared-runners) are enabled in all projects by
+default.
 
-However, you can enable or disable shared Runners for individual projects.
+On self-managed instances of GitLab, an administrator must [install](https://docs.gitlab.com/runner/install/index.html)
+and [register](https://docs.gitlab.com/runner/register/index.html) them.
 
-To enable or disable a shared Runner:
+You can also enable shared Runners for individual projects.
+
+To enable shared Runners:
 
 1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
-1. Click **Allow shared Runners** or **Disable shared Runners**.
+1. Click **Allow shared Runners**.
+
+#### Disable shared Runners
+
+You can disable shared Runners for individual projects<!-- or for groups-->.
+You must have Owner permissions for the project<!-- or group-->.
+
+To disable shared Runners for a project:
+
+1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. In the **Shared Runners** area, click **Disable shared Runners**.
+
+<!--To disable shared Runners for a group:
+
+1. Go to the group's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. In the **Shared Runners** area, click **Disable shared Runners globally**.
+1. Optionally, to allow shared Runners to be enabled for individual projects or subgroups,
+   click **Allow projects/subgroups to override the global setting**.
+-->
 
 ### Group Runners
 
@@ -126,14 +159,43 @@ To create a group Runner:
 1. Note the URL and token.
 1. [Register the Runner](https://docs.gitlab.com/runner/register/).
 
+<!-- #### View and manage group Runners
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37366/) in GitLab 13.3.
+
+You can view and manage all Runners for a group, its subgroups, and projects.
+You can do this for your self-managed GitLab instance or for GitLab.com.
+You must have [Owner permissions](../../user/permissions.md#group-members-permissions) for the group.
+
+1. Go to the group where you want to view the Runners.
+1. Go to **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. The following fields are displayed.
+
+   | Attribute    | Description |
+   | ------------ | ----------- |
+   | Type         | One or more of the following states: shared, group, specific, locked, or paused |
+   | Runner token | Token used to identify the Runner, and which the Runner uses to communicate with the GitLab instance |
+   | Description  | Description given to the Runner when it was created |
+   | Version      | GitLab Runner version |
+   | IP address   | IP address of the host on which the Runner is registered |
+   | Projects     | The count of projects to which the Runner is assigned |
+   | Jobs         | Total of jobs run by the Runner |
+   | Tags         | Tags associated with the Runner |
+   | Last contact | Timestamp indicating when the GitLab instance last contacted the Runner |
+
+From this page, you can edit, pause, and remove Runners from the group, its subgroups, and projects. -->
+
 #### Pause or remove a group Runner
 
-You can pause or remove a group Runner.
+You can pause or remove a group Runner for your self-managed GitLab instance or for GitLab.com.
 You must have [Owner permissions](../../user/permissions.md#group-members-permissions) for the group.
 
 1. Go to the group you want to remove or pause the Runner for.
 1. Go to **{settings}** **Settings > CI/CD** and expand the **Runners** section.
 1. Click **Pause** or **Remove Runner**.
+<!--   - If you pause a group Runner that is used by multiple projects, the Runner pauses for all projects. -->
+<!--   - From the group view, you cannot remove a Runner that is assigned to more than one project. -->
+<!--     You must remove it from each project first. -->
 1. On the confirmation dialog, click **OK**.
 
 ### Specific Runners

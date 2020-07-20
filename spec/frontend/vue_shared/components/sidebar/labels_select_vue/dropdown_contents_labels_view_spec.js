@@ -44,6 +44,7 @@ const createComponent = (initialState = mockConfig) => {
 describe('DropdownContentsLabelsView', () => {
   let wrapper;
   let wrapperStandalone;
+  let wrapperEmbedded;
 
   beforeEach(() => {
     wrapper = createComponent();
@@ -51,11 +52,16 @@ describe('DropdownContentsLabelsView', () => {
       ...mockConfig,
       variant: 'standalone',
     });
+    wrapperEmbedded = createComponent({
+      ...mockConfig,
+      variant: 'embedded',
+    });
   });
 
   afterEach(() => {
     wrapper.destroy();
     wrapperStandalone.destroy();
+    wrapperEmbedded.destroy();
   });
 
   describe('computed', () => {
@@ -211,6 +217,10 @@ describe('DropdownContentsLabelsView', () => {
       expect(wrapperStandalone.find('.dropdown-title').exists()).toBe(false);
     });
 
+    it('renders dropdown title element when `state.variant` is "embedded"', () => {
+      expect(wrapperEmbedded.find('.dropdown-title').exists()).toBe(true);
+    });
+
     it('renders dropdown close button element', () => {
       const closeButtonEl = wrapper.find('.dropdown-title').find(GlButton);
 
@@ -290,6 +300,10 @@ describe('DropdownContentsLabelsView', () => {
 
     it('does not render footer list items when `state.variant` is "standalone"', () => {
       expect(wrapperStandalone.find('.dropdown-footer').exists()).toBe(false);
+    });
+
+    it('renders footer list items when `state.variant` is "embedded"', () => {
+      expect(wrapperEmbedded.find('.dropdown-footer').exists()).toBe(true);
     });
   });
 });

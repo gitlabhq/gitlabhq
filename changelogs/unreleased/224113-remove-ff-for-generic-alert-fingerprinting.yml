@@ -1,0 +1,5 @@
+---
+title: Remove generic_alert_fingerprinting feature flag
+merge_request: 36148
+author:
+type: added

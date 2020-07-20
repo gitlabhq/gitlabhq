@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issues::ZoomLinkService do
+RSpec.describe Issues::ZoomLinkService do
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue) }
 

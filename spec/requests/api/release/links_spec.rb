@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Release::Links do
+RSpec.describe API::Release::Links do
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }

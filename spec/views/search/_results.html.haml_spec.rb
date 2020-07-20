@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'search/_results' do
+RSpec.describe 'search/_results' do
   before do
     controller.params[:action] = 'show'
 

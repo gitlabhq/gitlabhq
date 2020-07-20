@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Instance Statistics', 'routing' do
+RSpec.describe 'Instance Statistics', 'routing' do
   include RSpec::Rails::RequestExampleGroup
 
   it "routes '/-/instance_statistics' to dev ops score" do

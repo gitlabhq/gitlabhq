@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BatchWorkerContext do
+RSpec.describe Gitlab::BatchWorkerContext do
   subject(:batch_context) do
     described_class.new(
       %w(hello world),

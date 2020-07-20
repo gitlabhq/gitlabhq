@@ -19,6 +19,13 @@ module QA
         Open3.popen2e(*command) do |stdin, out, wait|
           stdin.puts(stdin_data) if stdin_data
           stdin.close if stdin_data
+
+          if block_given?
+            out.each do |line|
+              yield line
+            end
+          end
+
           out.each_char { |char| print char }
 
           if wait.value.exited? && wait.value.exitstatus.nonzero?

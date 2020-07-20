@@ -6,7 +6,7 @@ require 'rspec-parameterized'
 
 require_relative '../../rubocop/migration_helpers'
 
-describe RuboCop::MigrationHelpers do
+RSpec.describe RuboCop::MigrationHelpers do
   using RSpec::Parameterized::TableSyntax
 
   subject(:fake_cop) { Class.new { include RuboCop::MigrationHelpers }.new }

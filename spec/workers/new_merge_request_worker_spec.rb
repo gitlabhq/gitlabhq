@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NewMergeRequestWorker do
+RSpec.describe NewMergeRequestWorker do
   describe '#perform' do
     let(:worker) { described_class.new }
 

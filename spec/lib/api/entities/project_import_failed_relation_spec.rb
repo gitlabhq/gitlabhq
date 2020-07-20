@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Entities::ProjectImportFailedRelation do
+RSpec.describe API::Entities::ProjectImportFailedRelation do
   describe '#as_json' do
     subject { entity.as_json }
 

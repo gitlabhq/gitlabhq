@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::SystemNotes::ZoomService do
+RSpec.describe ::SystemNotes::ZoomService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:author)  { create(:user) }
 

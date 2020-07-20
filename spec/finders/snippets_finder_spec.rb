@@ -283,6 +283,12 @@ RSpec.describe SnippetsFinder do
       it 'returns only personal snippets when the user cannot read cross project' do
         expect(described_class.new(user).execute).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
       end
+
+      context 'when only project snippets are required' do
+        it 'returns no records' do
+          expect(described_class.new(user, only_project: true).execute).to be_empty
+        end
+      end
     end
 
     context 'when project snippets are disabled' do
@@ -293,6 +299,22 @@ RSpec.describe SnippetsFinder do
         expect(finder).not_to receive(:init_collection)
         expect(Snippet).to receive(:none).and_call_original
         expect(finder.execute).to be_empty
+      end
+    end
+
+    context 'no sort param is provided' do
+      it 'returns snippets sorted by id' do
+        snippets = described_class.new(admin).execute
+
+        expect(snippets.ids).to eq(Snippet.order_id_desc.ids)
+      end
+    end
+
+    context 'sort param is provided' do
+      it 'returns snippets sorted by sort param' do
+        snippets = described_class.new(admin, sort: 'updated_desc').execute
+
+        expect(snippets.ids).to eq(Snippet.order_updated_desc.ids)
       end
     end
   end

@@ -88,12 +88,16 @@ export default {
           @click.prevent="handleColorClick(color)"
         />
       </div>
-      <div class="color-input-container d-flex">
+      <div class="color-input-container gl-display-flex">
         <span
           class="dropdown-label-color-preview position-relative position-relative d-inline-block"
           :style="{ backgroundColor: selectedColor }"
         ></span>
-        <gl-form-input v-model.trim="selectedColor" :placeholder="__('Use custom color #FF0000')" />
+        <gl-form-input
+          v-model.trim="selectedColor"
+          class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
+          :placeholder="__('Use custom color #FF0000')"
+        />
       </div>
     </div>
     <div class="dropdown-actions clearfix pt-2 px-2">

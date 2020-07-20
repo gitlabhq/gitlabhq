@@ -18,7 +18,9 @@ namespace :cache do
               count: REDIS_CLEAR_BATCH_SIZE
             )
 
-            redis.del(*keys) if keys.any?
+            Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+              redis.del(*keys) if keys.any?
+            end
 
             break if cursor == REDIS_SCAN_START_STOP
           end

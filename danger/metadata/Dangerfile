@@ -5,7 +5,11 @@ THROUGHPUT_LABELS = [
   'security',
   'bug',
   'feature',
-  'backstage',
+  'feature::addition',
+  'feature::maintenance',
+  'tooling',
+  'tooling::pipelines',
+  'tooling::workflow',
   'documentation'
 ].freeze
 

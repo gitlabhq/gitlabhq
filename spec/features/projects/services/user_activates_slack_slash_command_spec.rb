@@ -24,7 +24,7 @@ RSpec.describe 'Slack slash commands', :js do
     click_active_toggle
     click_on 'Save'
 
-    expect(current_path).to eq(project_settings_integrations_path(project))
+    expect(current_path).to eq(edit_project_service_path(project, :slack_slash_commands))
     expect(page).to have_content('Slack slash commands settings saved, but not activated.')
   end
 
@@ -32,7 +32,7 @@ RSpec.describe 'Slack slash commands', :js do
     fill_in 'Token', with: 'token'
     click_on 'Save'
 
-    expect(current_path).to eq(project_settings_integrations_path(project))
+    expect(current_path).to eq(edit_project_service_path(project, :slack_slash_commands))
     expect(page).to have_content('Slack slash commands activated.')
   end
 

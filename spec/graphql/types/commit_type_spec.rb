@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Commit'] do
+RSpec.describe GitlabSchema.types['Commit'] do
   specify { expect(described_class.graphql_name).to eq('Commit') }
 
   specify { expect(described_class).to require_graphql_authorizations(:download_code) }

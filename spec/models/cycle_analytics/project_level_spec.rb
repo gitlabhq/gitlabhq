@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CycleAnalytics::ProjectLevel do
+RSpec.describe CycleAnalytics::ProjectLevel do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:from_date) { 10.days.ago }
   let_it_be(:user) { project.owner }

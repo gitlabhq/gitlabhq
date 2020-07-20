@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Exporter::SidekiqExporter do
+RSpec.describe Gitlab::Metrics::Exporter::SidekiqExporter do
   let(:exporter) { described_class.new }
 
   after do

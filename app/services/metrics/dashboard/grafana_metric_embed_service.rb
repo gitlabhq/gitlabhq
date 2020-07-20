@@ -80,7 +80,7 @@ module Metrics
 
       def fetch_dashboard
         uid = GrafanaUidParser.new(grafana_url, project).parse
-        raise DashboardProcessingError.new('Dashboard uid not found') unless uid
+        raise DashboardProcessingError.new(_('Dashboard uid not found')) unless uid
 
         response = client.get_dashboard(uid: uid)
 
@@ -89,7 +89,7 @@ module Metrics
 
       def fetch_datasource(dashboard)
         name = DatasourceNameParser.new(grafana_url, dashboard).parse
-        raise DashboardProcessingError.new('Datasource name not found') unless name
+        raise DashboardProcessingError.new(_('Datasource name not found')) unless name
 
         response = client.get_datasource(name: name)
 
@@ -115,7 +115,7 @@ module Metrics
       def parse_json(json)
         Gitlab::Json.parse(json, symbolize_names: true)
       rescue JSON::ParserError
-        raise DashboardProcessingError.new('Grafana response contains invalid json')
+        raise DashboardProcessingError.new(_('Grafana response contains invalid json'))
       end
     end
 

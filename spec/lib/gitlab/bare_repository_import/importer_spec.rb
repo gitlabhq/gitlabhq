@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
+RSpec.describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
   let!(:admin) { create(:admin) }
   let!(:base_dir) { Dir.mktmpdir + '/' }
   let(:bare_repository) { Gitlab::BareRepositoryImport::Repository.new(base_dir, File.join(base_dir, "#{project_path}.git")) }

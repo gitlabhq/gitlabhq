@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Management::CreateProjectService do
+RSpec.describe Clusters::Management::CreateProjectService do
   let(:cluster) { create(:cluster, :project) }
   let(:current_user) { create(:user) }
 

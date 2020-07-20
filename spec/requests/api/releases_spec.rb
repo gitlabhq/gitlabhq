@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Releases do
+RSpec.describe API::Releases do
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }

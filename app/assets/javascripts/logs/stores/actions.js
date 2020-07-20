@@ -2,7 +2,7 @@ import { backOff } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
-import { TOKEN_TYPE_POD_NAME, tracking } from '../constants';
+import { TOKEN_TYPE_POD_NAME, tracking, logExplorerOptions } from '../constants';
 import trackLogs from '../logs_tracking_helper';
 
 import * as types from './mutation_types';
@@ -25,9 +25,15 @@ const requestUntilData = (url, params) =>
 
 const requestLogsUntilData = ({ commit, state }) => {
   const params = {};
-  const { logs_api_path } = state.environments.options.find(
-    ({ name }) => name === state.environments.current,
-  );
+  const type = state.environments.current
+    ? logExplorerOptions.environments
+    : logExplorerOptions.managedApps;
+  const selectedObj = state[type].options.find(({ name }) => name === state[type].current);
+
+  const path =
+    type === logExplorerOptions.environments
+      ? selectedObj.logs_api_path
+      : selectedObj.gitlab_managed_apps_logs_path;
 
   if (state.pods.current) {
     params.pod_name = state.pods.current;
@@ -48,7 +54,7 @@ const requestLogsUntilData = ({ commit, state }) => {
     params.cursor = state.logs.cursor;
   }
 
-  return requestUntilData(logs_api_path, params);
+  return requestUntilData(path, params);
 };
 
 /**
@@ -100,6 +106,11 @@ export const showEnvironment = ({ dispatch, commit }, environmentName) => {
   dispatch('fetchLogs', tracking.ENVIRONMENT_SELECTED);
 };
 
+export const showManagedApp = ({ dispatch, commit }, managedApp) => {
+  commit(types.SET_MANAGED_APP, managedApp);
+  dispatch('fetchLogs', tracking.MANAGED_APP_SELECTED);
+};
+
 export const refreshPodLogs = ({ dispatch, commit }) => {
   commit(types.REFRESH_POD_LOGS);
   dispatch('fetchLogs', tracking.REFRESH_POD_LOGS);
@@ -121,6 +132,23 @@ export const fetchEnvironments = ({ commit, dispatch }, environmentsPath) => {
     })
     .catch(() => {
       commit(types.RECEIVE_ENVIRONMENTS_DATA_ERROR);
+    });
+};
+
+/**
+ * Fetch managed apps data
+ * @param {Object} store
+ * @param {String} clustersPath
+ */
+
+export const fetchManagedApps = ({ commit }, clustersPath) => {
+  return axios
+    .get(clustersPath)
+    .then(({ data }) => {
+      commit(types.RECEIVE_MANAGED_APPS_DATA_SUCCESS, data.clusters);
+    })
+    .catch(() => {
+      commit(types.RECEIVE_MANAGED_APPS_DATA_ERROR);
     });
 };
 

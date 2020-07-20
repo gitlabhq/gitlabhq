@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'project service activation' do
+RSpec.shared_context 'project service activation' do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

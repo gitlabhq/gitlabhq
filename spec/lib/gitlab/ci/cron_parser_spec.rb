@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::CronParser do
+RSpec.describe Gitlab::Ci::CronParser do
   shared_examples_for "returns time in the future" do
     it { is_expected.to be > Time.now }
   end

@@ -35,11 +35,15 @@ export default {
   <tr :class="className" class="notes_holder">
     <td class="notes_line old"></td>
     <td class="notes-content parallel old" colspan="2">
-      <div v-if="leftDraft.isDraft" class="content"><draft-note :draft="leftDraft" /></div>
+      <div v-if="leftDraft.isDraft" class="content">
+        <draft-note :draft="leftDraft" :line="line.left" />
+      </div>
     </td>
     <td class="notes_line new"></td>
     <td class="notes-content parallel new" colspan="2">
-      <div v-if="rightDraft.isDraft" class="content"><draft-note :draft="rightDraft" /></div>
+      <div v-if="rightDraft.isDraft" class="content">
+        <draft-note :draft="rightDraft" :line="line.right" />
+      </div>
     </td>
   </tr>
 </template>

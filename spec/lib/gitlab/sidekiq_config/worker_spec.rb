@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::SidekiqConfig::Worker do
+RSpec.describe Gitlab::SidekiqConfig::Worker do
   def create_worker(queue:, **attributes)
     namespace = queue.include?(':') && queue.split(':').first
     inner_worker = double(

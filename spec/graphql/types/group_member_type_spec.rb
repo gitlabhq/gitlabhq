@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::GroupMemberType do
+RSpec.describe Types::GroupMemberType do
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Group) }
 
   specify { expect(described_class.graphql_name).to eq('GroupMember') }

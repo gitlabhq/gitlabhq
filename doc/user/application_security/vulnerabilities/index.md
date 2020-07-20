@@ -1,7 +1,7 @@
 ---
 type: reference, howto
 stage: Secure
-group: Vulnerability Research
+group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -9,10 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13561) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
 
-Each security vulnerability in the [Vulnerability List](../dependency_list/index.md) has its own standalone
+Each security vulnerability in the [Security Dashboard](../security_dashboard/index.md#project-security-dashboard) has its own standalone
 page.
 
-![Standalone vulnerability page](img/standalone_vulnerability_page_v12_10.png)
+![Standalone vulnerability page](img/standalone_vulnerability_page_v13_1.png)
 
 On the standalone vulnerability page, you can interact with the vulnerability in
 several different ways:
@@ -30,7 +30,7 @@ several different ways:
 You can switch the status of a vulnerability using the **Status** dropdown to one of
 the following values:
 
-| State     | Description                                                       |
+| Status    | Description                                                       |
 |-----------|-------------------------------------------------------------------|
 | Detected  | The default state for a newly discovered vulnerability            |
 | Confirmed | A user has seen this vulnerability and confirmed it to be real    |

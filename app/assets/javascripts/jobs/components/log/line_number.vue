@@ -1,10 +1,6 @@
 <script>
-import { GlLink } from '@gitlab/ui';
-
 export default {
-  components: {
-    GlLink,
-  },
+  functional: true,
   props: {
     lineNumber: {
       type: Number,
@@ -15,41 +11,24 @@ export default {
       required: true,
     },
   },
-  computed: {
-    /**
-     * Builds the url for each line number
-     *
-     * @returns {String}
-     */
-    buildLineNumber() {
-      return `${this.path}#${this.lineNumberId}`;
-    },
-    /**
-     * Array indexes start with 0, so we add 1
-     * to create the line number
-     *
-     * @returns {Number} the line number
-     */
-    parsedLineNumber() {
-      return this.lineNumber + 1;
-    },
+  render(h, { props }) {
+    const { lineNumber, path } = props;
 
-    /**
-     * Creates the anchor for each link
-     *
-     * @returns {String}
-     */
-    lineNumberId() {
-      return `L${this.parsedLineNumber}`;
-    },
+    const parsedLineNumber = lineNumber + 1;
+    const lineId = `L${parsedLineNumber}`;
+    const lineHref = `${path}#${lineId}`;
+
+    return h(
+      'a',
+      {
+        class: 'gl-link d-inline-block text-right line-number flex-shrink-0',
+        attrs: {
+          id: lineId,
+          href: lineHref,
+        },
+      },
+      parsedLineNumber,
+    );
   },
 };
 </script>
-<template>
-  <gl-link
-    :id="lineNumberId"
-    class="d-inline-block text-right line-number flex-shrink-0"
-    :href="buildLineNumber"
-    >{{ parsedLineNumber }}</gl-link
-  >
-</template>

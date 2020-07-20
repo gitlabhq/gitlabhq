@@ -53,6 +53,17 @@ class CommitCollection
     self
   end
 
+  # Returns the collection with markdown fields preloaded.
+  #
+  # Get the markdown cache from redis using pipeline to prevent n+1 requests
+  # when rendering the markdown of an attribute (e.g. title, full_title,
+  # description).
+  def with_markdown_cache
+    Commit.preload_markdown_cache!(commits)
+
+    self
+  end
+
   def unenriched
     commits.reject(&:gitaly_commit?)
   end

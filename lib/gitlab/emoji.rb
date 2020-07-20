@@ -44,6 +44,10 @@ module Gitlab
       "<img class='emoji' title=':#{name}:' alt=':#{name}:' src='#{src}' height='20' width='20' align='absmiddle' />"
     end
 
+    def emoji_exists?(name)
+      emojis.has_key?(name)
+    end
+
     # CSS sprite fallback takes precedence over image fallback
     def gl_emoji_tag(name, options = {})
       emoji_name = emojis_aliases[name] || name

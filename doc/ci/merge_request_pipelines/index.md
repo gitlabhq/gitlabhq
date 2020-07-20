@@ -24,7 +24,7 @@ can run a pipeline for merge requests.
 
 ![Merge request page](img/merge_request.png)
 
-NOTE: **Note**:
+NOTE: **Note:**
 If you use this feature with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md),
 pipelines for merge requests take precedence over the other regular pipelines.
 
@@ -32,7 +32,6 @@ pipelines for merge requests take precedence over the other regular pipelines.
 
 To enable pipelines for merge requests:
 
-- You must have maintainer [permissions](../../user/permissions.md).
 - Your repository must be a GitLab repository, not an
   [external repository](../ci_cd_for_external_repos/index.md).
 - [In GitLab 11.10 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25504),
@@ -66,19 +65,19 @@ build:
   stage: build
   script: ./build
   only:
-  - master
+    - master
 
 test:
   stage: test
   script: ./test
   only:
-  - merge_requests
+    - merge_requests
 
 deploy:
   stage: deploy
   script: ./deploy
   only:
-  - master
+    - master
 ```
 
 #### Excluding certain jobs
@@ -207,7 +206,7 @@ The variable names begin with the `CI_MERGE_REQUEST_` prefix.
 ### Two pipelines created when pushing to a merge request
 
 If you are experiencing duplicated pipelines when using `rules`, take a look at
-the [key details when using `rules`](../yaml/README.md#key-details-when-using-rules),
+the [important differences between `rules` and `only`/`except`](../yaml/README.md#differences-between-rules-and-onlyexcept),
 which will help you get your starting configuration correct.
 
 If you are seeing two pipelines when using `only/except`, please see the caveats

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TestReportsComparerSerializer do
+RSpec.describe TestReportsComparerSerializer do
   include TestReportsHelper
 
   let(:project) { double(:project) }

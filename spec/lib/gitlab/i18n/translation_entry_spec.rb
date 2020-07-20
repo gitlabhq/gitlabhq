@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::I18n::TranslationEntry do
+RSpec.describe Gitlab::I18n::TranslationEntry do
   describe '#singular_translation' do
     it 'returns the normal `msgstr` for translations without plural' do
       data = { msgid: 'Hello world', msgstr: 'Bonjour monde' }

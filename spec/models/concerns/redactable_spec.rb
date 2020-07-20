@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Redactable do
+RSpec.describe Redactable do
   before do
     stub_commonmark_sourcepos_disabled
   end

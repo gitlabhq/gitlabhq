@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AvatarUploader do
+RSpec.describe AvatarUploader do
   let(:model) { build_stubbed(:user) }
   let(:uploader) { described_class.new(model, :avatar) }
   let(:upload) { create(:upload, model: model) }

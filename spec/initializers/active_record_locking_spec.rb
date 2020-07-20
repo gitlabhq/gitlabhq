@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'ActiveRecord locking' do
+RSpec.describe 'ActiveRecord locking' do
   let(:issue) { create(:issue) }
 
   shared_examples 'locked model' do

@@ -1,5 +1,9 @@
 import { NOT_IN_DB_PREFIX } from '../constants';
-import { addPrefixToCustomVariableParams, addDashboardMetaDataToLink } from './utils';
+import {
+  addPrefixToCustomVariableParams,
+  addDashboardMetaDataToLink,
+  normalizeCustomDashboardPath,
+} from './utils';
 
 const metricsIdsInPanel = panel =>
   panel.metrics.filter(metric => metric.metricId && metric.result).map(metric => metric.metricId);
@@ -10,10 +14,10 @@ const metricsIdsInPanel = panel =>
  *
  * @param {Object} state
  */
-export const selectedDashboard = state => {
+export const selectedDashboard = (state, getters) => {
   const { allDashboards } = state;
   return (
-    allDashboards.find(d => d.path === state.currentDashboard) ||
+    allDashboards.find(d => d.path === getters.fullDashboardPath) ||
     allDashboards.find(d => d.default) ||
     null
   );
@@ -129,8 +133,8 @@ export const linksWithMetadata = state => {
 };
 
 /**
- * Maps an variables object to an array along with stripping
- * the variable prefix.
+ * Maps a variables array to an object for replacement in
+ * prometheus queries.
  *
  * This method outputs an object in the below format
  *
@@ -143,16 +147,29 @@ export const linksWithMetadata = state => {
  * user-defined variables coming through the URL and differentiate
  * from other variables used for Prometheus API endpoint.
  *
- * @param {Object} variables - Custom variables provided by the user
- * @returns {Array} The custom variables array to be send to the API
+ * @param {Object} state - State containing variables provided by the user
+ * @returns {Array} The custom variables object to be send to the API
  * in the format of {variables[key1]=value1, variables[key2]=value2}
  */
 
 export const getCustomVariablesParams = state =>
-  Object.keys(state.variables).reduce((acc, variable) => {
-    acc[addPrefixToCustomVariableParams(variable)] = state.variables[variable]?.value;
+  state.variables.reduce((acc, variable) => {
+    const { name, value } = variable;
+    if (value !== null) {
+      acc[addPrefixToCustomVariableParams(name)] = value;
+    }
     return acc;
   }, {});
+
+/**
+ * For a given custom dashboard file name, this method
+ * returns the full file path.
+ *
+ * @param {Object} state
+ * @returns {String} full dashboard path
+ */
+export const fullDashboardPath = state =>
+  normalizeCustomDashboardPath(state.currentDashboard, state.customDashboardBasePath);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

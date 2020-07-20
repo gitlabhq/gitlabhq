@@ -7,6 +7,8 @@
 
     - if event.wiki_page?
       = render "events/event/wiki", event: event
+    - elsif event.design?
+      = render 'events/event/design', event: event
     - elsif event.created_project_action?
       = render "events/event/created_project", event: event
     - elsif event.push_action?

@@ -25,6 +25,7 @@ The following table lists examples with step-by-step tutorials that are containe
 | Use case                      | Resource                                                                                                                   |
 |:------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
 | Browser performance testing   | [Browser Performance Testing with the Sitespeed.io container](../../user/project/merge_requests/browser_performance_testing.md). |
+| Load performance testing      | [Load Performance Testing with the k6 container](../../user/project/merge_requests/load_performance_testing.md). |
 | Clojure                       | [Test a Clojure application with GitLab CI/CD](test-clojure-application.md).                                               |
 | Deployment with Dpl           | [Using `dpl` as deployment tool](deployment/README.md).                                                                    |
 | Elixir                        | [Testing a Phoenix application with GitLab CI/CD](test_phoenix_app_with_gitlab_ci_cd/index.md).                            |
@@ -46,8 +47,6 @@ The following table lists examples with step-by-step tutorials that are containe
 
 Contributions are welcome! You can help your favorite programming
 language users and GitLab by sending a merge request with a guide for that language.
-You may want to apply for the [GitLab Community Writers Program](https://about.gitlab.com/community/writers/)
-to get paid for writing complete articles for GitLab.
 
 ## CI/CD templates
 
@@ -63,6 +62,7 @@ choose one of these templates:
 - [C++ (`C++.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/C++.gitlab-ci.yml)
 - [Chef (`Chef.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Chef.gitlab-ci.yml)
 - [Clojure (`Clojure.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Clojure.gitlab-ci.yml)
+- [Composer `Composer.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Composer.gitlab-ci.yml)
 - [Crystal (`Crystal.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Crystal.gitlab-ci.yml)
 - [Django (`Django.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Django.gitlab-ci.yml)
 - [Docker (`Docker.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Docker.gitlab-ci.yml)
@@ -78,6 +78,7 @@ choose one of these templates:
 - [LaTeX (`LaTeX.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/LaTeX.gitlab-ci.yml)
 - [Maven (`Maven.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Maven.gitlab-ci.yml)
 - [Mono (`Mono.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Mono.gitlab-ci.yml)
+- [NPM (`npm.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/npm.gitlab-ci.yml)
 - [Node.js (`Nodejs.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Nodejs.gitlab-ci.yml)
 - [OpenShift (`OpenShift.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/OpenShift.gitlab-ci.yml)
 - [Packer (`Packer.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Packer.gitlab-ci.yml)

@@ -3,10 +3,10 @@ import savedContentMetaQuery from '../queries/saved_content_meta.query.graphql';
 
 const submitContentChangesResolver = (
   _,
-  { input: { project: projectId, username, sourcePath, content } },
+  { input: { project: projectId, username, sourcePath, content, images } },
   { cache },
 ) => {
-  return submitContentChanges({ projectId, username, sourcePath, content }).then(
+  return submitContentChanges({ projectId, username, sourcePath, content, images }).then(
     savedContentMeta => {
       cache.writeQuery({
         query: savedContentMetaQuery,

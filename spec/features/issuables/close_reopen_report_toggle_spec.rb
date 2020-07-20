@@ -10,7 +10,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
     let(:human_model_name) { issuable.model_name.human.downcase }
 
     it 'shows toggle' do
-      expect(page).to have_link("Close #{human_model_name}")
+      expect(page).to have_button("Close #{human_model_name}")
       expect(page).to have_selector('.issuable-close-dropdown')
     end
 
@@ -63,7 +63,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
         let(:issuable) { create(:issue, :closed, :locked, project: project) }
 
         it 'hides the reopen button' do
-          expect(page).not_to have_link('Reopen issue')
+          expect(page).not_to have_button('Reopen issue')
         end
 
         context 'when the issue author is the current user' do
@@ -72,7 +72,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
           end
 
           it 'hides the reopen button' do
-            expect(page).not_to have_link('Reopen issue')
+            expect(page).not_to have_button('Reopen issue')
           end
         end
       end
@@ -91,8 +91,8 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
       it 'only shows the `Report abuse` and `New issue` buttons' do
         expect(page).to have_link('Report abuse')
         expect(page).to have_link('New issue')
-        expect(page).not_to have_link('Close issue')
-        expect(page).not_to have_link('Reopen issue')
+        expect(page).not_to have_button('Close issue')
+        expect(page).not_to have_button('Reopen issue')
         expect(page).not_to have_link('Edit')
       end
     end
@@ -120,8 +120,8 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
         it 'shows only the `Report abuse` and `Edit` button' do
           expect(page).to have_link('Report abuse')
           expect(page).to have_link('Edit')
-          expect(page).not_to have_link('Close merge request')
-          expect(page).not_to have_link('Reopen merge request')
+          expect(page).not_to have_button('Close merge request')
+          expect(page).not_to have_button('Reopen merge request')
         end
 
         context 'when the merge request author is the current user' do
@@ -130,8 +130,8 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
           it 'shows only the `Edit` button' do
             expect(page).to have_link('Edit')
             expect(page).not_to have_link('Report abuse')
-            expect(page).not_to have_link('Close merge request')
-            expect(page).not_to have_link('Reopen merge request')
+            expect(page).not_to have_button('Close merge request')
+            expect(page).not_to have_button('Reopen merge request')
           end
         end
       end
@@ -149,8 +149,8 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
 
       it 'only shows a `Report abuse` button' do
         expect(page).to have_link('Report abuse')
-        expect(page).not_to have_link('Close merge request')
-        expect(page).not_to have_link('Reopen merge request')
+        expect(page).not_to have_button('Close merge request')
+        expect(page).not_to have_button('Reopen merge request')
         expect(page).not_to have_link('Edit')
       end
     end

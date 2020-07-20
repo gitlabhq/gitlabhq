@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CronValidator do
+RSpec.describe CronValidator do
   subject do
     Class.new do
       include ActiveModel::Model

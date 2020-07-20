@@ -17,6 +17,7 @@ resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
   end
 
   collection do
+    get :service_desk
     post :bulk_update
     post :import_csv
     post :export_csv

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Importer::ReleasesImporter do
+RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
   let(:project) { create(:project) }
   let(:client) { double(:client) }
   let(:importer) { described_class.new(project, client) }

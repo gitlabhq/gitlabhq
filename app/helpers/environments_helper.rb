@@ -24,7 +24,7 @@ module EnvironmentsHelper
   def metrics_data(project, environment)
     metrics_data = {}
     metrics_data.merge!(project_metrics_data(project)) if project
-    metrics_data.merge!(environment_metrics_data(environment)) if environment
+    metrics_data.merge!(environment_metrics_data(environment, project)) if environment
     metrics_data.merge!(project_and_environment_metrics_data(project, environment)) if project && environment
     metrics_data.merge!(static_metrics_data)
 
@@ -36,7 +36,8 @@ module EnvironmentsHelper
       "environment-name": environment.name,
       "environments-path": project_environments_path(project, format: :json),
       "environment-id": environment.id,
-      "cluster-applications-documentation-path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack')
+      "cluster-applications-documentation-path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack'),
+      "clusters-path": project_clusters_path(project, format: :json)
     }
   end
 
@@ -65,16 +66,27 @@ module EnvironmentsHelper
     }
   end
 
-  def environment_metrics_data(environment)
+  def environment_metrics_data(environment, project = nil)
     return {} unless environment
 
     {
-      'metrics-dashboard-base-path' => environment_metrics_path(environment),
+      'metrics-dashboard-base-path' => metrics_dashboard_base_path(environment, project),
       'current-environment-name'    => environment.name,
       'has-metrics'                 => "#{environment.has_metrics?}",
       'prometheus-status'           => "#{environment.prometheus_status}",
       'environment-state'           => "#{environment.state}"
     }
+  end
+
+  def metrics_dashboard_base_path(environment, project)
+    # This is needed to support our transition from environment scoped metric paths to project scoped.
+    if project
+      path = project_metrics_dashboard_path(project)
+
+      return path if request.path.include?(path)
+    end
+
+    environment_metrics_path(environment)
   end
 
   def project_and_environment_metrics_data(project, environment)
@@ -84,14 +96,16 @@ module EnvironmentsHelper
       'metrics-endpoint'     => additional_metrics_project_environment_path(project, environment, format: :json),
       'dashboard-endpoint'   => metrics_dashboard_project_environment_path(project, environment, format: :json),
       'deployments-endpoint' => project_environment_deployments_path(project, environment, format: :json),
-      'alerts-endpoint'      => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json)
-
+      'alerts-endpoint'      => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
+      'operations-settings-path' => project_settings_operations_path(project),
+      'can-access-operations-settings' => can?(current_user, :admin_operations, project).to_s
     }
   end
 
   def static_metrics_data
     {
       'documentation-path'               => help_page_path('administration/monitoring/prometheus/index.md'),
+      'add-dashboard-documentation-path' => help_page_path('user/project/integrations/prometheus.md', anchor: 'adding-a-new-dashboard-to-your-project'),
       'empty-getting-started-svg-path'   => image_path('illustrations/monitoring/getting_started.svg'),
       'empty-loading-svg-path'           => image_path('illustrations/monitoring/loading.svg'),
       'empty-no-data-svg-path'           => image_path('illustrations/monitoring/no_data.svg'),

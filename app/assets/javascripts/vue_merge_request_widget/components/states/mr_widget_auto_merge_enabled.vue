@@ -87,7 +87,7 @@ export default {
     <status-icon status="success" />
     <div class="media-body">
       <h4 class="d-flex align-items-start">
-        <span class="append-right-10">
+        <span class="gl-mr-3">
           <span class="js-status-text-before-author">{{ statusTextBeforeAuthor }}</span>
           <mr-widget-author :author="mr.setToAutoMergeBy" />
           <span class="js-status-text-after-author">{{ statusTextAfterAuthor }}</span>
@@ -113,9 +113,7 @@ export default {
           {{ s__('mrWidget|The source branch will be deleted') }}
         </p>
         <p v-else class="d-flex align-items-start">
-          <span class="append-right-10">{{
-            s__('mrWidget|The source branch will not be deleted')
-          }}</span>
+          <span class="gl-mr-3">{{ s__('mrWidget|The source branch will not be deleted') }}</span>
           <a
             v-if="canRemoveSourceBranch"
             :disabled="isRemovingSourceBranch"

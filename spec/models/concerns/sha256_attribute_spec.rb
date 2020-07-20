@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Sha256Attribute do
+RSpec.describe Sha256Attribute do
   let(:model) { Class.new { include Sha256Attribute } }
 
   before do

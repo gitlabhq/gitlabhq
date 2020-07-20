@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'sidekiq/testing'
 
-describe Gitlab::SidekiqMiddleware do
+RSpec.describe Gitlab::SidekiqMiddleware do
   before do
     stub_const('TestWorker', Class.new)
 

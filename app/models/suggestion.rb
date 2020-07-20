@@ -38,11 +38,18 @@ class Suggestion < ApplicationRecord
   end
 
   def appliable?(cached: true)
-    !applied? &&
-      noteable.opened? &&
-      !outdated?(cached: cached) &&
-      different_content? &&
-      note.active?
+    inapplicable_reason(cached: cached).nil?
+  end
+
+  def inapplicable_reason(cached: true)
+    strong_memoize("inapplicable_reason_#{cached}") do
+      next :applied if applied?
+      next :merge_request_merged if noteable.merged?
+      next :merge_request_closed if noteable.closed?
+      next :source_branch_deleted unless noteable.source_branch_exists?
+      next :outdated if outdated?(cached: cached) || !note.active?
+      next :same_content unless different_content?
+    end
   end
 
   # Overwrites outdated column
@@ -51,6 +58,10 @@ class Suggestion < ApplicationRecord
     return true unless diff_file
 
     from_content != fetch_from_content
+  end
+
+  def single_line?
+    lines_above.zero? && lines_below.zero?
   end
 
   def target_line

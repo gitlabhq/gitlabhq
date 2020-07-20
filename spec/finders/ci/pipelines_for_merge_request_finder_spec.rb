@@ -3,11 +3,97 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelinesForMergeRequestFinder do
+  describe '#execute' do
+    include ProjectForksHelper
+
+    subject { finder.execute }
+
+    let_it_be(:developer_in_parent) { create(:user) }
+    let_it_be(:developer_in_fork) { create(:user) }
+    let_it_be(:developer_in_both) { create(:user) }
+    let_it_be(:reporter_in_parent_and_developer_in_fork) { create(:user) }
+    let_it_be(:external_user) { create(:user) }
+    let_it_be(:parent_project) { create(:project, :repository, :private) }
+    let_it_be(:forked_project) { fork_project(parent_project, nil, repository: true, target_project: create(:project, :private, :repository)) }
+
+    let(:merge_request) do
+      create(:merge_request, source_project: forked_project, source_branch: 'feature',
+                             target_project: parent_project, target_branch: 'master')
+    end
+
+    let!(:pipeline_in_parent) do
+      create(:ci_pipeline, :merged_result_pipeline, merge_request: merge_request, project: parent_project)
+    end
+
+    let!(:pipeline_in_fork) do
+      create(:ci_pipeline, :merged_result_pipeline, merge_request: merge_request, project: forked_project)
+    end
+
+    let(:finder) { described_class.new(merge_request, actor) }
+
+    before_all do
+      parent_project.add_developer(developer_in_parent)
+      parent_project.add_developer(developer_in_both)
+      parent_project.add_reporter(reporter_in_parent_and_developer_in_fork)
+      forked_project.add_developer(developer_in_fork)
+      forked_project.add_developer(developer_in_both)
+      forked_project.add_developer(reporter_in_parent_and_developer_in_fork)
+    end
+
+    context 'when actor has permission to read pipelines in both parent and forked projects' do
+      let(:actor) { developer_in_both }
+
+      it 'returns all pipelines' do
+        is_expected.to eq([pipeline_in_fork, pipeline_in_parent])
+      end
+    end
+
+    context 'when actor has permission to read pipelines in both parent and forked projects' do
+      let(:actor) { reporter_in_parent_and_developer_in_fork }
+
+      it 'returns all pipelines' do
+        is_expected.to eq([pipeline_in_fork, pipeline_in_parent])
+      end
+    end
+
+    context 'when actor has permission to read pipelines in the parent project only' do
+      let(:actor) { developer_in_parent }
+
+      it 'returns pipelines in parent' do
+        is_expected.to eq([pipeline_in_parent])
+      end
+    end
+
+    context 'when actor has permission to read pipelines in the forked project only' do
+      let(:actor) { developer_in_fork }
+
+      it 'returns pipelines in fork' do
+        is_expected.to eq([pipeline_in_fork])
+      end
+    end
+
+    context 'when actor does not have permission to read pipelines' do
+      let(:actor) { external_user }
+
+      it 'returns nothing' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when actor is nil' do
+      let(:actor) { nil }
+
+      it 'returns nothing' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '#all' do
     let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.source_project }
 
-    subject { described_class.new(merge_request) }
+    subject { described_class.new(merge_request, nil) }
 
     shared_examples 'returning pipelines with proper ordering' do
       let!(:all_pipelines) do
@@ -134,7 +220,7 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder do
                     branch_pipeline_2,
                     branch_pipeline])
 
-          expect(described_class.new(merge_request_2).all)
+          expect(described_class.new(merge_request_2, nil).all)
             .to eq([detached_merge_request_pipeline_2,
                     branch_pipeline_2,
                     branch_pipeline])

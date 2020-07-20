@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'gitlab:update_project_templates rake task' do
+RSpec.describe 'gitlab:update_project_templates rake task' do
   let!(:tmpdir) { Dir.mktmpdir }
 
   before do

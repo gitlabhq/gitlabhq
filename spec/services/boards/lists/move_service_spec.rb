@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Boards::Lists::MoveService do
+RSpec.describe Boards::Lists::MoveService do
   describe '#execute' do
     context 'when board parent is a project' do
       let(:project) { create(:project) }

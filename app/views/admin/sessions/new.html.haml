@@ -15,7 +15,7 @@
 
         -# Show a message if none of the mechanisms above are enabled
         - if !allow_admin_mode_password_authentication_for_web? && !ldap_sign_in_enabled? && !omniauth_enabled?
-          .prepend-top-default.center
+          .gl-mt-3.center
             = _('No authentication methods configured.')
 
         - if omniauth_enabled? && button_based_providers_enabled?

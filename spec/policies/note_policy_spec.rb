@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NotePolicy do
+RSpec.describe NotePolicy do
   describe '#rules' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public) }

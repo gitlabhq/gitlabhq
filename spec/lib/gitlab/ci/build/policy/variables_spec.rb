@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Policy::Variables do
+RSpec.describe Gitlab::Ci::Build::Policy::Variables do
   let_it_be(:project) { create(:project) }
 
   let(:pipeline) do

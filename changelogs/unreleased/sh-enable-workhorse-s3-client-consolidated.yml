@@ -1,0 +1,5 @@
+---
+title: Enable S3 Workhorse client if consolidated object settings used
+merge_request: 35480
+author:
+type: added

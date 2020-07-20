@@ -1,0 +1,5 @@
+---
+title: Fix 'Active' checkbox text in Pipeline Schedule form to be a label
+merge_request: 27054
+author: Jonston Chan
+type: fixed

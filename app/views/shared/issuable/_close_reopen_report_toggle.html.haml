@@ -4,14 +4,13 @@
 - button_responsive_class = 'd-none d-sm-none d-md-block'
 - button_class = "#{button_responsive_class} btn btn-grouped js-issuable-close-button js-btn-issue-action issuable-close-button"
 - toggle_class = "#{button_responsive_class} btn btn-nr dropdown-toggle js-issuable-close-toggle"
-- button_method = issuable_close_reopen_button_method(issuable)
 - add_blocked_class = false
 - if defined? warn_before_close
   - add_blocked_class = !issuable.closed? && warn_before_close
 
-.float-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
-  = link_to "#{display_button_action} #{display_issuable_type}", close_reopen_issuable_path(issuable),
-            method: button_method, class: "#{button_class} btn-#{button_action} #{(add_blocked_class ? 'btn-issue-blocked' : '')}", title: "#{display_button_action} #{display_issuable_type}", data: { qa_selector: 'close_issue_button' }
+.float-left.btn-group.gl-ml-3.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
+  %button{ class: "#{button_class} btn-#{button_action} #{(add_blocked_class ? 'btn-issue-blocked' : '')}", data: { qa_selector: 'close_issue_button', endpoint: close_reopen_issuable_path(issuable) } }
+    #{display_button_action} #{display_issuable_type}
 
   = button_tag type: 'button', class: "#{toggle_class} btn-#{button_action}-color",
                data: { 'dropdown-trigger' => '#issuable-close-menu' }, 'aria-label' => _('Toggle dropdown') do
@@ -20,7 +19,7 @@
   %ul#issuable-close-menu.js-issuable-close-menu.dropdown-menu{ data: { dropdown: true } }
     %li.close-item{ class: "#{issuable_button_visibility(issuable, true) || 'droplab-item-selected'}",
                     data: { text: _("Close %{display_issuable_type}") % { display_issuable_type: display_issuable_type }, url: close_issuable_path(issuable),
-                    button_class: "#{button_class} btn-close", toggle_class: "#{toggle_class} btn-close-color", method: button_method } }
+                    button_class: "#{button_class} btn-close", toggle_class: "#{toggle_class} btn-close-color" } }
       %button.btn.btn-transparent
         = icon('check', class: 'icon')
         .description
@@ -30,7 +29,7 @@
 
     %li.reopen-item{ class: "#{issuable_button_visibility(issuable, false) || 'droplab-item-selected'}",
                      data: { text: _("Reopen %{display_issuable_type}") % { display_issuable_type: display_issuable_type }, url: reopen_issuable_path(issuable),
-                     button_class: "#{button_class} btn-reopen", toggle_class: "#{toggle_class} btn-reopen-color", method: button_method } }
+                     button_class: "#{button_class} btn-reopen", toggle_class: "#{toggle_class} btn-reopen-color" } }
       %button.btn.btn-transparent
         = icon('check', class: 'icon')
         .description

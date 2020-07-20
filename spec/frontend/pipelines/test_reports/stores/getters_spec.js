@@ -9,12 +9,12 @@ describe('Getters TestReports Store', () => {
 
   const defaultState = {
     testReports,
-    selectedSuite: testReports.test_suites[0],
+    selectedSuiteIndex: 0,
   };
 
   const emptyState = {
     testReports: {},
-    selectedSuite: {},
+    selectedSuite: null,
   };
 
   beforeEach(() => {
@@ -44,6 +44,17 @@ describe('Getters TestReports Store', () => {
       setupState(emptyState);
 
       expect(getters.getTestSuites(state)).toEqual([]);
+    });
+  });
+
+  describe('getSelectedSuite', () => {
+    it('should return the selected suite', () => {
+      setupState();
+
+      const selectedSuite = getters.getSelectedSuite(state);
+      const expected = testReports.test_suites[state.selectedSuiteIndex];
+
+      expect(selectedSuite).toEqual(expected);
     });
   });
 

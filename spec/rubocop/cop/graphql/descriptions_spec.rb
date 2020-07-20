@@ -2,11 +2,9 @@
 
 require 'fast_spec_helper'
 require 'rubocop'
-require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/graphql/descriptions'
 
-describe RuboCop::Cop::Graphql::Descriptions do
-  include RuboCop::RSpec::ExpectOffense
+RSpec.describe RuboCop::Cop::Graphql::Descriptions, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

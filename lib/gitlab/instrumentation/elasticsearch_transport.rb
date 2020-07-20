@@ -5,8 +5,10 @@ require 'elasticsearch-transport'
 module Gitlab
   module Instrumentation
     module ElasticsearchTransportInterceptor
-      def perform_request(*args)
+      def perform_request(method, path, params = {}, body = nil, headers = nil)
         start = Time.now
+        headers = (headers || {})
+          .reverse_merge({ 'X-Opaque-Id': Labkit::Correlation::CorrelationId.current_or_new_id })
         super
       ensure
         if ::Gitlab::SafeRequestStore.active?
@@ -14,7 +16,7 @@ module Gitlab
 
           ::Gitlab::Instrumentation::ElasticsearchTransport.increment_request_count
           ::Gitlab::Instrumentation::ElasticsearchTransport.add_duration(duration)
-          ::Gitlab::Instrumentation::ElasticsearchTransport.add_call_details(duration, args)
+          ::Gitlab::Instrumentation::ElasticsearchTransport.add_call_details(duration, method, path, params, body)
         end
       end
     end
@@ -47,14 +49,14 @@ module Gitlab
         ::Gitlab::SafeRequestStore[ELASTICSEARCH_CALL_DURATION] += duration
       end
 
-      def self.add_call_details(duration, args)
+      def self.add_call_details(duration, method, path, params, body)
         return unless Gitlab::PerformanceBar.enabled_for_request?
 
         detail_store << {
-          method: args[0],
-          path: args[1],
-          params: args[2],
-          body: args[3],
+          method: method,
+          path: path,
+          params: params,
+          body: body,
           duration: duration,
           backtrace: ::Gitlab::BacktraceCleaner.clean_backtrace(caller)
         }

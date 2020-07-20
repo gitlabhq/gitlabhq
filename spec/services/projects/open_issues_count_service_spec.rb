@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::OpenIssuesCountService, :use_clean_rails_memory_store_caching do
+RSpec.describe Projects::OpenIssuesCountService, :use_clean_rails_memory_store_caching do
   let(:project) { create(:project) }
 
   subject { described_class.new(project) }

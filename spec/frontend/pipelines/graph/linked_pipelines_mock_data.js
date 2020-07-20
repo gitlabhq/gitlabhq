@@ -14,6 +14,9 @@ export default {
   active: false,
   coverage: null,
   source: 'push',
+  source_job: {
+    name: 'trigger_job',
+  },
   created_at: '2018-06-05T11:31:30.452Z',
   updated_at: '2018-10-31T16:35:31.305Z',
   path: '/gitlab-org/gitlab-runner/pipelines/23211253',
@@ -381,6 +384,9 @@ export default {
     active: false,
     coverage: null,
     source: 'pipeline',
+    source_job: {
+      name: 'trigger_job',
+    },
     path: '/gitlab-com/gitlab-docs/pipelines/34993051',
     details: {
       status: {
@@ -889,6 +895,9 @@ export default {
       active: false,
       coverage: null,
       source: 'pipeline',
+      source_job: {
+        name: 'trigger_job',
+      },
       path: '/gitlab-com/gitlab-docs/pipelines/34993051',
       details: {
         status: {
@@ -1402,6 +1411,9 @@ export default {
       active: false,
       coverage: null,
       source: 'pipeline',
+      source_job: {
+        name: 'trigger_job',
+      },
       path: '/gitlab-com/gitlab-docs/pipelines/34993051',
       details: {
         status: {
@@ -1912,6 +1924,9 @@ export default {
       active: false,
       coverage: null,
       source: 'pipeline',
+      source_job: {
+        name: 'trigger_job',
+      },
       path: '/gitlab-com/gitlab-docs/pipelines/34993051',
       details: {
         status: {
@@ -2412,6 +2427,9 @@ export default {
           active: false,
           coverage: null,
           source: 'push',
+          source_job: {
+            name: 'trigger_job',
+          },
           created_at: '2019-01-06T17:48:37.599Z',
           updated_at: '2019-01-06T17:48:38.371Z',
           path: '/h5bp/html5-boilerplate/pipelines/26',
@@ -3743,6 +3761,9 @@ export default {
             active: false,
             coverage: null,
             source: 'push',
+            source_job: {
+              name: 'trigger_job',
+            },
             path: '/gitlab-org/gitlab-test/pipelines/4',
             details: {
               status: {

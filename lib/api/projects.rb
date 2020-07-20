@@ -3,7 +3,7 @@
 require_dependency 'declarative_policy'
 
 module API
-  class Projects < Grape::API
+  class Projects < Grape::API::Instance
     include PaginationParams
     include Helpers::CustomAttributes
 
@@ -17,6 +17,7 @@ module API
         projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
         projects = projects.with_statistics if params[:statistics]
+        projects = projects.joins(:statistics) if params[:order_by].include?('project_statistics') # rubocop: disable CodeReuse/ActiveRecord
 
         lang = params[:with_programming_language]
         projects = projects.with_programming_language(lang) if lang
@@ -26,6 +27,20 @@ module API
 
       def verify_update_project_attrs!(project, attrs)
         attrs.delete(:repository_storage) unless can?(current_user, :change_repository_storage, project)
+      end
+
+      def verify_project_filters!(attrs)
+        attrs.delete(:repository_storage) unless can?(current_user, :use_project_statistics_filters)
+      end
+
+      def verify_statistics_order_by_projects!
+        return unless Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS.include?(params[:order_by])
+
+        params[:order_by] = if can?(current_user, :use_project_statistics_filters)
+                              "project_statistics.#{params[:order_by]}"
+                            else
+                              route.params['order_by'][:default]
+                            end
       end
 
       def delete_project(user_project)
@@ -52,8 +67,9 @@ module API
       end
 
       params :sort_params do
-        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
-                            default: 'created_at', desc: 'Return projects ordered by field'
+        optional :order_by, type: String,
+                            values: %w[id name path created_at updated_at last_activity_at] + Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS,
+                            default: 'created_at', desc: "Return projects ordered by field. #{Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS.join(', ')} are only available to admins."
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return projects sorted in ascending and descending order'
       end
@@ -75,6 +91,7 @@ module API
         optional :id_before, type: Integer, desc: 'Limit results to projects with IDs less than the specified ID'
         optional :last_activity_after, type: DateTime, desc: 'Limit results to projects with last_activity after specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         optional :last_activity_before, type: DateTime, desc: 'Limit results to projects with last_activity before specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
 
         use :optional_filter_params_ee
       end
@@ -88,10 +105,15 @@ module API
       end
 
       def load_projects
-        ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
+        params = project_finder_params
+        verify_project_filters!(params)
+
+        ProjectsFinder.new(current_user: current_user, params: params).execute
       end
 
       def present_projects(projects, options = {})
+        verify_statistics_order_by_projects!
+
         projects = reorder_projects(projects)
         projects = apply_filters(projects)
 
@@ -524,7 +546,7 @@ module API
       end
       params do
         optional :search, type: String, desc: 'Return list of users matching the search criteria'
-        optional :skip_users, type: Array[Integer], desc: 'Filter out users with the specified IDs'
+        optional :skip_users, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter out users with the specified IDs'
         use :pagination
       end
       get ':id/users' do

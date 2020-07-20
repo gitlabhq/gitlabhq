@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
 import component from '~/registry/shared/components/expiration_policy_fields.vue';
 
-import { NAME_REGEX_LENGTH } from '~/registry/shared/constants';
+import { NAME_REGEX_LENGTH, ENABLED_TEXT, DISABLED_TEXT } from '~/registry/shared/constants';
 import { formOptions } from '../mock_data';
 
 describe('Expiration Policy Form', () => {
@@ -94,7 +94,9 @@ describe('Expiration Policy Form', () => {
           : 'input';
         element.vm.$emit(modelUpdateEvent, value);
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.emitted('input')).toEqual([[{ [modelName]: value }]]);
+          expect(wrapper.emitted('input')).toEqual([
+            [{ newValue: { [modelName]: value }, modified: modelName }],
+          ]);
         });
       });
 
@@ -126,41 +128,60 @@ describe('Expiration Policy Form', () => {
   });
 
   describe.each`
-    modelName            | elementName        | stateVariable
-    ${'name_regex'}      | ${'name-matching'} | ${'nameRegexState'}
-    ${'name_regex_keep'} | ${'keep-name'}     | ${'nameKeepRegexState'}
-  `('regex textarea validation', ({ modelName, elementName, stateVariable }) => {
-    describe(`when name regex is longer than ${NAME_REGEX_LENGTH}`, () => {
-      const invalidString = new Array(NAME_REGEX_LENGTH + 2).join(',');
+    modelName            | elementName
+    ${'name_regex'}      | ${'name-matching'}
+    ${'name_regex_keep'} | ${'keep-name'}
+  `('regex textarea validation', ({ modelName, elementName }) => {
+    const invalidString = new Array(NAME_REGEX_LENGTH + 2).join(',');
 
-      beforeEach(() => {
-        mountComponent({ value: { [modelName]: invalidString } });
+    describe('when apiError contains an error message', () => {
+      const errorMessage = 'something went wrong';
+
+      it('shows the error message on the relevant field', () => {
+        mountComponent({ apiErrors: { [modelName]: errorMessage } });
+        expect(findFormGroup(elementName).attributes('invalid-feedback')).toBe(errorMessage);
       });
 
-      it(`${stateVariable} is false`, () => {
-        expect(wrapper.vm.textAreaState[stateVariable]).toBe(false);
-      });
-
-      it('emit the @invalidated event', () => {
-        expect(wrapper.emitted('invalidated')).toBeTruthy();
+      it('gives precedence to API errors compared to local ones', () => {
+        mountComponent({
+          apiErrors: { [modelName]: errorMessage },
+          value: { [modelName]: invalidString },
+        });
+        expect(findFormGroup(elementName).attributes('invalid-feedback')).toBe(errorMessage);
       });
     });
 
-    it('if the user did not type validation is null', () => {
-      mountComponent({ value: { [modelName]: '' } });
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.textAreaState[stateVariable]).toBe(null);
+    describe('when apiErrors is empty', () => {
+      it('if the user did not type validation is null', async () => {
+        mountComponent({ value: { [modelName]: '' } });
+        expect(findFormGroup(elementName).attributes('state')).toBeUndefined();
         expect(wrapper.emitted('validated')).toBeTruthy();
       });
-    });
 
-    it(`if the user typed and is less than ${NAME_REGEX_LENGTH} state is true`, () => {
-      mountComponent({ value: { [modelName]: 'foo' } });
-      return wrapper.vm.$nextTick().then(() => {
+      it(`if the user typed and is less than ${NAME_REGEX_LENGTH} state is true`, () => {
+        mountComponent({ value: { [modelName]: 'foo' } });
+
         const formGroup = findFormGroup(elementName);
         const formElement = findFormElements(elementName, formGroup);
         expect(formGroup.attributes('state')).toBeTruthy();
         expect(formElement.attributes('state')).toBeTruthy();
+      });
+
+      describe(`when name regex is longer than ${NAME_REGEX_LENGTH}`, () => {
+        beforeEach(() => {
+          mountComponent({ value: { [modelName]: invalidString } });
+        });
+
+        it('textAreaValidation state is false', () => {
+          expect(findFormGroup(elementName).attributes('state')).toBeUndefined();
+          // we are forced to check the model attribute because falsy attrs are all casted to undefined in attrs
+          // while in this case false shows an error and null instead shows nothing.
+          expect(wrapper.vm.textAreaValidation[modelName].state).toBe(false);
+        });
+
+        it('emit the @invalidated event', () => {
+          expect(wrapper.emitted('invalidated')).toBeTruthy();
+        });
       });
     });
   });
@@ -169,13 +190,13 @@ describe('Expiration Policy Form', () => {
     it('toggleDescriptionText show disabled when settings.enabled is false', () => {
       mountComponent();
       const toggleHelpText = findFormGroup('toggle').find('span');
-      expect(toggleHelpText.html()).toContain('disabled');
+      expect(toggleHelpText.html()).toContain(DISABLED_TEXT);
     });
 
     it('toggleDescriptionText show enabled when settings.enabled is true', () => {
       mountComponent({ value: { enabled: true } });
       const toggleHelpText = findFormGroup('toggle').find('span');
-      expect(toggleHelpText.html()).toContain('enabled');
+      expect(toggleHelpText.html()).toContain(ENABLED_TEXT);
     });
   });
 });

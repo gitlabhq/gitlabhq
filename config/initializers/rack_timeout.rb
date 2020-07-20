@@ -10,8 +10,6 @@
 # logged and we should fix the potential timeout issue in the code itself.
 
 if Gitlab::Runtime.puma? && !Rails.env.test?
-  require 'rack/timeout/base'
-
   Rack::Timeout::Logger.level = Logger::ERROR
 
   Gitlab::Application.configure do |config|

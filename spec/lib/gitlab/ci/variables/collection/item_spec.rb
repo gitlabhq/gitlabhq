@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Variables::Collection::Item do
+RSpec.describe Gitlab::Ci::Variables::Collection::Item do
   let(:variable_key) { 'VAR' }
   let(:variable_value) { 'something' }
   let(:expected_value) { variable_value }

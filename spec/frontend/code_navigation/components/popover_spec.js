@@ -26,7 +26,8 @@ const MOCK_CODE_DATA = Object.freeze({
       ],
     },
   ],
-  definition_path: 'test.js#L20',
+  definition_path: 'test.js',
+  definitionLineNumber: 20,
 });
 
 const MOCK_DOCS_DATA = Object.freeze({
@@ -36,6 +37,17 @@ const MOCK_DOCS_DATA = Object.freeze({
       value: 'console.log',
     },
   ],
+  definition_path: 'test.js#L20',
+});
+
+const MOCK_DATA_WITH_REFERENCES = Object.freeze({
+  hover: [
+    {
+      language: null,
+      value: 'console.log',
+    },
+  ],
+  references: [{ path: 'index.js' }, { path: 'app.js' }],
   definition_path: 'test.js#L20',
 });
 
@@ -63,6 +75,16 @@ describe('Code navigation popover component', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
+  it('srender references tab with empty text when no references exist', () => {
+    factory({
+      position: { x: 0, y: 0, height: 0 },
+      data: MOCK_CODE_DATA,
+      definitionPathPrefix: DEFINITION_PATH_PREFIX,
+    });
+
+    expect(wrapper.find('[data-testid="references-tab"]').text()).toContain('No references found');
+  });
+
   it('renders link with hash to current file', () => {
     factory({
       position: { x: 0, y: 0, height: 0 },
@@ -72,6 +94,17 @@ describe('Code navigation popover component', () => {
     });
 
     expect(wrapper.find('[data-testid="go-to-definition-btn"]').attributes('href')).toBe('#L20');
+  });
+
+  it('renders list of references', () => {
+    factory({
+      position: { x: 0, y: 0, height: 0 },
+      data: MOCK_DATA_WITH_REFERENCES,
+      definitionPathPrefix: DEFINITION_PATH_PREFIX,
+    });
+
+    expect(wrapper.find('[data-testid="references-tab"]').exists()).toBe(true);
+    expect(wrapper.findAll('[data-testid="reference-link"]').length).toBe(2);
   });
 
   describe('code output', () => {

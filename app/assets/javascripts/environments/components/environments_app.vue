@@ -159,11 +159,7 @@ export default {
       @onChangePage="onChangePage"
     >
       <template v-if="!isLoading && state.environments.length === 0" #emptyState>
-        <empty-state
-          :new-path="newEnvironmentPath"
-          :help-path="helpPagePath"
-          :can-create-environment="canCreateEnvironment"
-        />
+        <empty-state :help-path="helpPagePath" />
       </template>
     </container>
   </div>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::ObjectPool do
+RSpec.describe Gitlab::Git::ObjectPool do
   include RepoHelpers
 
   let(:pool_repository) { create(:pool_repository) }

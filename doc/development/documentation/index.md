@@ -26,7 +26,7 @@ The source of the documentation exists within the codebase of each GitLab applic
 | --- | --- |
 | [GitLab](https://gitlab.com/gitlab-org/gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab/tree/master/doc) |
 | [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/) | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/tree/master/docs) |
-| [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab/tree/master/doc) |
+| [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc) |
 | [Charts](https://gitlab.com/gitlab-org/charts/gitlab) | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/tree/master/doc) |
 
 Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
@@ -70,7 +70,28 @@ See the [Structure](styleguide.md#structure) section of the [Documentation Style
 ## Metadata
 
 To provide additional directives or useful information, we add metadata in YAML
-format to the beginning of each product documentation page.
+format to the beginning of each product documentation page (YAML front matter).
+All values are treated as strings and are only used for the
+[docs website](site_architecture/index.md).
+
+### Stage and group metadata
+
+Each page should ideally have metadata related to the stage and group it
+belongs to, as well as an information block as described below:
+
+- `stage`: The [Stage](https://about.gitlab.com/handbook/product/product-categories/#devops-stages)
+  to which the majority of the page's content belongs.
+- `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
+  to which the majority of the page's content belongs.
+- `info`: The following line, which provides direction to contributors regarding
+  how to contact the Technical Writer associated with the page's Stage and
+  Group:
+
+  ```plaintext
+  To determine the technical writer assigned to the Stage/Group
+  associated with this page, see
+  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+  ```
 
 For example, the following metadata would be at the beginning of a product
 documentation page whose content is primarily associated with the Audit Events
@@ -84,23 +105,63 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 ```
 
-The following list describes the YAML parameters in use:
+### Page type metadata
+
+Originally discussed in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/1280),
+each page should have a `type` metadata. It can be one or more of the following:
+
+- `index`: Index/overview pages. They serve as a list to other pages. Doesn't
+  necessarily mean the page should be named `index.md`. [Example page](../../install/README.md).
+- `concepts`: What you need to know before using product. Informational, not
+  instructional. For example, abstract ideas, explain meaning or benefit, support
+  understanding of tasks. They are read for background information, for example
+  "Why X is important". [Example page](../../topics/autodevops/index.md).
+- `howto`: Specific use case instructions. [Example page](../../ssh/README.md).
+- `tutorial`: Learn a process/concept by doing. [Example page](../../gitlab-basics/start-using-git.md).
+- `reference`: Covers what things are/do. Things like specific settings, facts
+  without too much explanation that are read for detailed information.
+  [Example page](../../ci/yaml/README.md).
+
+### Redirection metadata
+
+The following metadata should be added when a page is moved to another location:
 
 - `redirect_to`: The relative path and filename (with an `.md` extension) of the
   location to which visitors should be redirected for a moved page.
   [Learn more](#changing-document-location).
-- `stage`: The [Stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
-  to which the majority of the page's content belongs.
-- `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
-  to which the majority of the page's content belongs.
-- `info`: The following line, which provides direction to contributors regarding
-  how to contact the Technical Writer associated with the page's Stage and
-  Group: `To determine the technical writer assigned to the Stage/Group
-  associated with this page, see
-  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers`
 - `disqus_identifier`: Identifier for Disqus commenting system. Used to keep
   comments with a page that's been moved to a new URL.
   [Learn more](#redirections-for-pages-with-disqus-comments).
+
+### Comments metadata
+
+The [docs website](site_architecture/index.md) has comments (provided by Disqus)
+enabled by default. In case you want to disable them (for example in index pages),
+set it to `false`:
+
+```yaml
+---
+comments: false
+---
+```
+
+### Additional page metadata
+
+Each page can have additional (optional) metadata (set in the
+[default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
+Nanoc layout), which will be shown to the top of the page if defined:
+
+- `author`: The name of the author of a page, usually a tutorial. It requires `author_gitlab` in order to be shown.
+- `author_gitlab`: The username of the author on GitLab.com. It requires `author` in order to be shown.
+- `date`: The date the page was created, usually for tutorials.
+- `article_type`: The type of article. Can be either `tutorial` or `user guide`.
+- `level`: The level of complexity of a how-to or tutorial. Can be either `beginner`,
+  `advanced`, or `intermediate`.
+- `last_updated`: The date in ISO format when the page was last updated. For example `2020-02-14`.
+- `reading_time`: If you want to add an indication of the approximate reading
+  time of a page, you can set `reading_time` to `true`. This uses a simple
+  [algorithm](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/lib/helpers/reading_time.rb)
+  to calculate the reading time based on the number of words.
 
 ## Changing document location
 
@@ -225,9 +286,6 @@ it increases the work of the release managers.
 
 Every GitLab instance includes the documentation, which is available at `/help`
 (`https://gitlab.example.com/help`). For example, <https://gitlab.com/help>.
-
-There are [plans](https://gitlab.com/groups/gitlab-org/-/epics/693) to end this
-practice and instead link out from the GitLab application to <https://docs.gitlab.com> URLs.
 
 The documentation available online on <https://docs.gitlab.com> is deployed every four hours from the `master` branch of GitLab, Omnibus, and Runner. Therefore,
 after a merge request gets merged, it will be available online on the same day.
@@ -492,122 +550,138 @@ The output should be similar to:
 Note that this requires you to either have the required lint tools installed on your machine,
 or a working Docker installation, in which case an image with these tools pre-installed will be used.
 
-### Local linting
+### Local linters
 
 To help adhere to the [documentation style guidelines](styleguide.md), and improve the content
-added to documentation, consider locally installing and running documentation linters. This will
-help you catch common issues before raising merge requests for review of documentation.
+added to documentation, [install documentation linters](#install-linters) and
+[integrate them with your code editor](#configure-editors).
 
-Running the following locally allows you to match the checks in the build pipeline:
+At GitLab, we mostly use:
 
-- [markdownlint](#markdownlint).
-- [Vale](#vale).
-
-NOTE: **Note:**
-This list does not limit what other linters you can add to your local documentation writing toolchain.
+- [markdownlint](#markdownlint)
+- [Vale](#vale)
 
 #### markdownlint
 
-[markdownlint](https://github.com/DavidAnson/markdownlint) checks that Markdown
-syntax follows [certain rules](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules),
-and is used by the [`docs-lint` test](#testing) with a [configuration file](#markdownlint-configuration).
-Our [Documentation Style Guide](styleguide.md#markdown) and [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
-elaborate on which choices must be made when selecting Markdown syntax for GitLab
-documentation. This tool helps catch deviations from those guidelines.
+[markdownlint](https://github.com/DavidAnson/markdownlint) checks that Markdown syntax follows
+[certain rules](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules), and is
+used by the [`docs-lint` test](#testing).
 
-markdownlint can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
-either on a single Markdown file or on all Markdown files in a project. For example, to run
-markdownlint on all documentation in the [`gitlab` project](https://gitlab.com/gitlab-org/gitlab),
-run the following commands from within your `gitlab` project root directory, which will
-automatically detect the [`.markdownlint.json`](#markdownlint-configuration) configuration
-file in the root of the project, and test all files in `/doc` and its subdirectories:
+Our [Documentation Style Guide](styleguide.md#markdown) and
+[Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/) elaborate on which choices must
+be made when selecting Markdown syntax for GitLab documentation. This tool helps catch deviations
+from those guidelines.
 
-```shell
-markdownlint 'doc/**/*.md'
-```
+markdownlint configuration is found in the following projects:
 
-If you wish to use a different configuration file, use the `-c` flag:
+- [`gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.markdownlint.json)
+- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/blob/master/.markdownlint.json)
+- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/.markdownlint.json)
+- [`charts`](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.markdownlint.json)
+- [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/.markdownlint.json)
 
-```shell
-markdownlint -c <config-file-name> 'doc/**/*.md'
-```
+This configuration is also used within build pipelines.
 
-##### Run markdownlint in an editor
+You can use markdownlint:
 
-markdownlint can also be run as a linter within text editors using [plugins/extensions](https://github.com/DavidAnson/markdownlint#related),
-such as:
+- [On the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--).
+- [Within a code editor](#configure-editors).
+
+#### Vale
+
+[Vale](https://errata-ai.gitbook.io/vale/) is a grammar, style, and word usage linter for the
+English language. Vale's configuration is stored in the
+[`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) file located in the root
+directory of projects.
+
+Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/) that extend any of
+several types of checks, which we store in the `.linting/vale/styles/gitlab` directory within the
+documentation directory of projects.
+
+Vale configuration is found in the following projects:
+
+- [`gitlab`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.vale/gitlab)
+- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/master/docs/.vale/gitlab)
+- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc/.vale/gitlab)
+- [`charts`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc/.vale/gitlab)
+- [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/master/doc/.vale/gitlab)
+
+This configuration is also used within build pipelines.
+
+You can use Vale:
+
+- [On the command line](https://errata-ai.gitbook.io/vale/getting-started/usage).
+- [Within a code editor](#configure-editors).
+
+#### Install linters
+
+At a minimum, install [markdownlint](#markdownlint) and [Vale](#vale) to match the checks run in
+build pipelines:
+
+1. Install `markdownlint-cli`, using either:
+
+   - `npm`:
+
+     ```shell
+     npm install -g markdownlint-cli
+     ```
+
+   - `yarn`:
+
+     ```shell
+     yarn global add markdownlint-cli
+     ```
+
+     We recommend installing the version of `markdownlint-cli` currently used in the documentation
+     linting [Docker image](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/dockerfiles/Dockerfile.gitlab-docs-lint#L38).
+
+1. Install [`vale`](https://github.com/errata-ai/vale/releases). For example, to install using
+   `brew` for macOS, run:
+
+   ```shell
+   brew install vale
+   ```
+
+   We recommend installing the version of Vale currently used in the documentation linting
+   [Docker image](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/dockerfiles/Dockerfile.gitlab-docs-lint#L16).
+
+In addition to using markdownlint and Vale at the command line, these tools can be
+[integrated with your code editor](#configure-editors).
+
+#### Configure editors
+
+To configure markdownlint within your editor, install one of the following as appropriate:
 
 - [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
 - [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
 - [Atom](https://atom.io/packages/linter-node-markdownlint)
 
-It is best to use the [same configuration file](#markdownlint-configuration) as what
-is in use in the four repositories that are the sources for <https://docs.gitlab.com>. Each
-plugin/extension has different requirements regarding the configuration file, which
-is explained in each editor's docs.
-
-##### markdownlint configuration
-
-Each formatting issue that markdownlint checks has an associated
-[rule](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules).
-These rules are configured in the `.markdownlint.json` files located in the root of
-four repositories that are the sources for <https://docs.gitlab.com>:
-
-- [`gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.markdownlint.json)
-- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/blob/master/.markdownlint.json)
-- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/.markdownlint.json)
-- [`charts`](https://gitlab.com/charts/gitlab/blob/master/.markdownlint.json)
-
-By default all rules are enabled, so the configuration file is used to disable unwanted
-rules, and also to configure optional parameters for enabled rules as needed. You can
-also check [the issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64352) that
-tracked the changes required to implement these rules, and details which rules were
-on or off when markdownlint was enabled on the docs.
-
-#### Vale
-
-[Vale](https://errata-ai.gitbook.io/vale/) is a grammar, style, and word usage linter
-for the English language. Vale's configuration is stored in the
-[`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) file
-located in the root directory of the [GitLab repository](https://gitlab.com/gitlab-org/gitlab).
-
-Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/),
-stored in the `doc/.linting/vale/styles/gitlab` directory, that extend any of
-several types of checks.
-
-To view linting suggestions locally, you must install Vale on your own machine,
-and from GitLab's root directory (where `.vale.ini` is located), run:
-
-```shell
-vale --glob='*.{md}' doc
-```
-
-Vale's error-level test results [are displayed](#testing) in CI pipelines.
-
-##### Run Vale in an editor
-
-You can run Vale as a linter within your text editor of choice, with:
+To configure Vale within your editor, install one of the following as appropriate:
 
 - The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale)
 - The Visual Studio Code [`testthedocs.vale` extension](https://marketplace.visualstudio.com/items?itemName=testthedocs.vale)
 
 We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
 
-##### Disable a Vale test
+#### Disable Vale tests
 
-You can disable a specific Vale linting rule or all Vale linting rules for any portion of a document:
+You can disable a specific Vale linting rule or all Vale linting rules for any portion of a
+document:
 
-- To disable a specific rule, add a `<!-- vale gitlab.rulename = NO -->` tag
-  before the text, and a `<!-- vale gitlab.rulename = YES -->` tag after the text,
-  replacing `rulename` with the filename of a test in the [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.linting/vale/styles/gitlab) directory.
-- To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text,
-  and a `<!-- vale on -->` tag after the text.
+- To disable a specific rule, add a `<!-- vale gitlab.rulename = NO -->` tag before the text, and a
+  `<!-- vale gitlab.rulename = YES -->` tag after the text, replacing `rulename` with the filename
+  of a test in the
+  [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.linting/vale/styles/gitlab)
+  directory.
+- To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text, and a
+  `<!-- vale on -->` tag after the text.
 
-Whenever possible, exclude only the problematic rule and line(s).
-In some cases, such as list items, you may need to disable linting for the entire
-list until ["Ignore comments are not honored in a Markdown file"](https://github.com/errata-ai/vale/issues/175) is resolved.
+Whenever possible, exclude only the problematic rule and line(s). In some cases, such as list items,
+you may need to disable linting for the entire list until
+[Vale issue #175](https://github.com/errata-ai/vale/issues/175) is resolved.
 
-For more information, see [Vale's documentation](https://errata-ai.gitbook.io/vale/getting-started/markup#markup-based-configuration).
+For more information, see
+[Vale's documentation](https://errata-ai.gitbook.io/vale/getting-started/markup#markup-based-configuration).
 
 ## Danger Bot
 

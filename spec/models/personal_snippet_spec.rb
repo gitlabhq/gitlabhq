@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PersonalSnippet do
+RSpec.describe PersonalSnippet do
   describe '#embeddable?' do
     [
       { snippet: :public,   embeddable: true },

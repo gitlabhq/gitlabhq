@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan', :orchestrated, :smtp do
+  RSpec.describe 'Plan', :orchestrated, :smtp do
     describe 'Email Notification' do
       include Support::Api
 

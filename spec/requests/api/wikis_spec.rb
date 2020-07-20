@@ -12,7 +12,7 @@ require 'spec_helper'
 # - maintainer
 # because they are 3 edge cases of using wiki pages.
 
-describe API::Wikis do
+RSpec.describe API::Wikis do
   include WorkhorseHelpers
 
   let(:user) { create(:user) }
@@ -21,178 +21,10 @@ describe API::Wikis do
   let(:payload) { { content: 'content', format: 'rdoc', title: 'title' } }
   let(:expected_keys_with_content) { %w(content format slug title) }
   let(:expected_keys_without_content) { %w(format slug title) }
+  let(:wiki) { project_wiki }
 
-  shared_examples_for 'returns list of wiki pages' do
-    context 'when wiki has pages' do
-      let!(:pages) do
-        [create(:wiki_page, wiki: project_wiki, title: 'page1', content: 'content of page1'),
-         create(:wiki_page, wiki: project_wiki, title: 'page2.with.dot', content: 'content of page2')]
-      end
-
-      it 'returns the list of wiki pages without content' do
-        get api(url, user)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to eq(2)
-
-        json_response.each_with_index do |page, index|
-          expect(page.keys).to match_array(expected_keys_without_content)
-          expect(page['slug']).to eq(pages[index].slug)
-          expect(page['title']).to eq(pages[index].title)
-        end
-      end
-
-      it 'returns the list of wiki pages with content' do
-        get api(url, user), params: { with_content: 1 }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to eq(2)
-
-        json_response.each_with_index do |page, index|
-          expect(page.keys).to match_array(expected_keys_with_content)
-          expect(page['content']).to eq(pages[index].content)
-          expect(page['slug']).to eq(pages[index].slug)
-          expect(page['title']).to eq(pages[index].title)
-        end
-      end
-    end
-
-    it 'return the empty list of wiki pages' do
-      get api(url, user)
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.size).to eq(0)
-    end
-  end
-
-  shared_examples_for 'returns wiki page' do
-    it 'returns the wiki page' do
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.size).to eq(4)
-      expect(json_response.keys).to match_array(expected_keys_with_content)
-      expect(json_response['content']).to eq(page.content)
-      expect(json_response['slug']).to eq(page.slug)
-      expect(json_response['title']).to eq(page.title)
-    end
-  end
-
-  shared_examples_for 'creates wiki page' do
-    it 'creates the wiki page' do
-      post(api(url, user), params: payload)
-
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response.size).to eq(4)
-      expect(json_response.keys).to match_array(expected_keys_with_content)
-      expect(json_response['content']).to eq(payload[:content])
-      expect(json_response['slug']).to eq(payload[:title].tr(' ', '-'))
-      expect(json_response['title']).to eq(payload[:title])
-      expect(json_response['rdoc']).to eq(payload[:rdoc])
-    end
-
-    [:title, :content].each do |part|
-      it "responds with validation error on empty #{part}" do
-        payload.delete(part)
-
-        post(api(url, user), params: payload)
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response.size).to eq(1)
-        expect(json_response['error']).to eq("#{part} is missing")
-      end
-    end
-  end
-
-  shared_examples_for 'updates wiki page' do
-    it 'updates the wiki page' do
-      put(api(url, user), params: payload)
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.size).to eq(4)
-      expect(json_response.keys).to match_array(expected_keys_with_content)
-      expect(json_response['content']).to eq(payload[:content])
-      expect(json_response['slug']).to eq(payload[:title].tr(' ', '-'))
-      expect(json_response['title']).to eq(payload[:title])
-    end
-
-    [:title, :content, :format].each do |part|
-      it "updates with wiki with missing #{part}" do
-        payload.delete(part)
-
-        put(api(url, user), params: payload)
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-  end
-
-  shared_examples_for '403 Forbidden' do
-    it 'returns 403 Forbidden' do
-      expect(response).to have_gitlab_http_status(:forbidden)
-      expect(json_response.size).to eq(1)
-      expect(json_response['message']).to eq('403 Forbidden')
-    end
-  end
-
-  shared_examples_for '404 Wiki Page Not Found' do
-    it 'returns 404 Wiki Page Not Found' do
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response.size).to eq(1)
-      expect(json_response['message']).to eq('404 Wiki Page Not Found')
-    end
-  end
-
-  shared_examples_for '404 Project Not Found' do
-    it 'returns 404 Project Not Found' do
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response.size).to eq(1)
-      expect(json_response['message']).to eq('404 Project Not Found')
-    end
-  end
-
-  shared_examples_for '204 No Content' do
-    it 'returns 204 No Content' do
-      expect(response).to have_gitlab_http_status(:no_content)
-    end
-  end
-
-  shared_examples_for 'uploads wiki attachment' do
-    it 'pushes attachment to the wiki repository' do
-      allow(SecureRandom).to receive(:hex).and_return('fixed_hex')
-
-      workhorse_post_with_file(api(url, user), file_key: :file, params: payload)
-
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response).to eq result_hash.deep_stringify_keys
-    end
-
-    it 'responds with validation error on empty file' do
-      payload.delete(:file)
-
-      post(api(url, user), params: payload)
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response.size).to eq(1)
-      expect(json_response['error']).to eq('file is missing')
-    end
-
-    it 'responds with validation error on invalid temp file' do
-      payload[:file] = { tempfile: '/etc/hosts' }
-
-      post(api(url, user), params: payload)
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response.size).to eq(1)
-      expect(json_response['error']).to eq('file is invalid')
-    end
-
-    it 'is backward compatible with regular multipart uploads' do
-      allow(SecureRandom).to receive(:hex).and_return('fixed_hex')
-
-      post(api(url, user), params: payload)
-
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response).to eq result_hash.deep_stringify_keys
-    end
+  shared_examples_for 'wiki API 404 Project Not Found' do
+    include_examples 'wiki API 404 Not Found', 'Project'
   end
 
   describe 'GET /projects/:id/wikis' do
@@ -206,7 +38,7 @@ describe API::Wikis do
           get api(url)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -216,7 +48,7 @@ describe API::Wikis do
           get api(url, user)
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
 
       context 'when user is maintainer' do
@@ -226,7 +58,7 @@ describe API::Wikis do
           get api(url, user)
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
     end
 
@@ -238,7 +70,7 @@ describe API::Wikis do
           get api(url)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -246,7 +78,7 @@ describe API::Wikis do
           project.add_developer(user)
         end
 
-        include_examples 'returns list of wiki pages'
+        include_examples 'wikis API returns list of wiki pages'
       end
 
       context 'when user is maintainer' do
@@ -254,7 +86,7 @@ describe API::Wikis do
           project.add_maintainer(user)
         end
 
-        include_examples 'returns list of wiki pages'
+        include_examples 'wikis API returns list of wiki pages'
       end
     end
 
@@ -266,7 +98,7 @@ describe API::Wikis do
           get api(url)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -274,7 +106,7 @@ describe API::Wikis do
           project.add_developer(user)
         end
 
-        include_examples 'returns list of wiki pages'
+        include_examples 'wikis API returns list of wiki pages'
       end
 
       context 'when user is maintainer' do
@@ -282,7 +114,7 @@ describe API::Wikis do
           project.add_maintainer(user)
         end
 
-        include_examples 'returns list of wiki pages'
+        include_examples 'wikis API returns list of wiki pages'
       end
     end
   end
@@ -299,7 +131,7 @@ describe API::Wikis do
           get api(url)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -309,7 +141,7 @@ describe API::Wikis do
           get api(url, user)
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
 
       context 'when user is maintainer' do
@@ -319,7 +151,7 @@ describe API::Wikis do
           get api(url, user)
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
     end
 
@@ -331,7 +163,7 @@ describe API::Wikis do
           get api(url)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -340,12 +172,12 @@ describe API::Wikis do
           get api(url, user)
         end
 
-        include_examples 'returns wiki page'
+        include_examples 'wikis API returns wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
 
-          include_examples '404 Wiki Page Not Found'
+          include_examples 'wiki API 404 Wiki Page Not Found'
         end
       end
 
@@ -356,12 +188,12 @@ describe API::Wikis do
           get api(url, user)
         end
 
-        include_examples 'returns wiki page'
+        include_examples 'wikis API returns wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
 
-          include_examples '404 Wiki Page Not Found'
+          include_examples 'wiki API 404 Wiki Page Not Found'
         end
       end
     end
@@ -374,7 +206,7 @@ describe API::Wikis do
           get api(url)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -384,12 +216,12 @@ describe API::Wikis do
           get api(url, user)
         end
 
-        include_examples 'returns wiki page'
+        include_examples 'wikis API returns wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
 
-          include_examples '404 Wiki Page Not Found'
+          include_examples 'wiki API 404 Wiki Page Not Found'
         end
       end
 
@@ -400,12 +232,12 @@ describe API::Wikis do
           get api(url, user)
         end
 
-        include_examples 'returns wiki page'
+        include_examples 'wikis API returns wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
 
-          include_examples '404 Wiki Page Not Found'
+          include_examples 'wiki API 404 Wiki Page Not Found'
         end
       end
     end
@@ -423,7 +255,7 @@ describe API::Wikis do
           post(api(url), params: payload)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -432,7 +264,7 @@ describe API::Wikis do
           post(api(url, user), params: payload)
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
 
       context 'when user is maintainer' do
@@ -441,7 +273,7 @@ describe API::Wikis do
           post(api(url, user), params: payload)
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
     end
 
@@ -453,7 +285,7 @@ describe API::Wikis do
           post(api(url), params: payload)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -461,7 +293,7 @@ describe API::Wikis do
           project.add_developer(user)
         end
 
-        include_examples 'creates wiki page'
+        include_examples 'wikis API creates wiki page'
       end
 
       context 'when user is maintainer' do
@@ -469,7 +301,7 @@ describe API::Wikis do
           project.add_maintainer(user)
         end
 
-        include_examples 'creates wiki page'
+        include_examples 'wikis API creates wiki page'
       end
     end
 
@@ -481,7 +313,7 @@ describe API::Wikis do
           post(api(url), params: payload)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -489,7 +321,7 @@ describe API::Wikis do
           project.add_developer(user)
         end
 
-        include_examples 'creates wiki page'
+        include_examples 'wikis API creates wiki page'
       end
 
       context 'when user is maintainer' do
@@ -497,7 +329,7 @@ describe API::Wikis do
           project.add_maintainer(user)
         end
 
-        include_examples 'creates wiki page'
+        include_examples 'wikis API creates wiki page'
       end
     end
   end
@@ -515,7 +347,7 @@ describe API::Wikis do
           put(api(url), params: payload)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -525,7 +357,7 @@ describe API::Wikis do
           put(api(url, user), params: payload)
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
 
       context 'when user is maintainer' do
@@ -535,7 +367,7 @@ describe API::Wikis do
           put(api(url, user), params: payload)
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
     end
 
@@ -547,7 +379,7 @@ describe API::Wikis do
           put(api(url), params: payload)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -555,7 +387,7 @@ describe API::Wikis do
           project.add_developer(user)
         end
 
-        include_examples 'updates wiki page'
+        include_examples 'wikis API updates wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
@@ -564,7 +396,7 @@ describe API::Wikis do
             put(api(url, user), params: payload)
           end
 
-          include_examples '404 Wiki Page Not Found'
+          include_examples 'wiki API 404 Wiki Page Not Found'
         end
       end
 
@@ -573,7 +405,7 @@ describe API::Wikis do
           project.add_maintainer(user)
         end
 
-        include_examples 'updates wiki page'
+        include_examples 'wikis API updates wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
@@ -582,7 +414,7 @@ describe API::Wikis do
             put(api(url, user), params: payload)
           end
 
-          include_examples '404 Wiki Page Not Found'
+          include_examples 'wiki API 404 Wiki Page Not Found'
         end
       end
     end
@@ -595,7 +427,7 @@ describe API::Wikis do
           put(api(url), params: payload)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -603,7 +435,7 @@ describe API::Wikis do
           project.add_developer(user)
         end
 
-        include_examples 'updates wiki page'
+        include_examples 'wikis API updates wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
@@ -612,7 +444,7 @@ describe API::Wikis do
             put(api(url, user), params: payload)
           end
 
-          include_examples '404 Wiki Page Not Found'
+          include_examples 'wiki API 404 Wiki Page Not Found'
         end
       end
 
@@ -621,7 +453,7 @@ describe API::Wikis do
           project.add_maintainer(user)
         end
 
-        include_examples 'updates wiki page'
+        include_examples 'wikis API updates wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
@@ -630,7 +462,7 @@ describe API::Wikis do
             put(api(url, user), params: payload)
           end
 
-          include_examples '404 Wiki Page Not Found'
+          include_examples 'wiki API 404 Wiki Page Not Found'
         end
       end
     end
@@ -638,7 +470,7 @@ describe API::Wikis do
     context 'when wiki belongs to a group project' do
       let(:project) { create(:project, :wiki_repo, namespace: group) }
 
-      include_examples 'updates wiki page'
+      include_examples 'wikis API updates wiki page'
     end
   end
 
@@ -654,7 +486,7 @@ describe API::Wikis do
           delete(api(url))
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -664,7 +496,7 @@ describe API::Wikis do
           delete(api(url, user))
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
 
       context 'when user is maintainer' do
@@ -674,7 +506,7 @@ describe API::Wikis do
           delete(api(url, user))
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
     end
 
@@ -686,7 +518,7 @@ describe API::Wikis do
           delete(api(url))
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -696,7 +528,7 @@ describe API::Wikis do
           delete(api(url, user))
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
 
       context 'when user is maintainer' do
@@ -706,7 +538,7 @@ describe API::Wikis do
           delete(api(url, user))
         end
 
-        include_examples '204 No Content'
+        include_examples 'wiki API 204 No Content'
       end
     end
 
@@ -718,7 +550,7 @@ describe API::Wikis do
           delete(api(url))
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -728,7 +560,7 @@ describe API::Wikis do
           delete(api(url, user))
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
 
       context 'when user is maintainer' do
@@ -738,12 +570,12 @@ describe API::Wikis do
           delete(api(url, user))
         end
 
-        include_examples '204 No Content'
+        include_examples 'wiki API 204 No Content'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
 
-          include_examples '404 Wiki Page Not Found'
+          include_examples 'wiki API 404 Wiki Page Not Found'
         end
       end
     end
@@ -755,7 +587,7 @@ describe API::Wikis do
         delete(api(url, user))
       end
 
-      include_examples '204 No Content'
+      include_examples 'wiki API 204 No Content'
     end
   end
 
@@ -783,7 +615,7 @@ describe API::Wikis do
           post(api(url), params: payload)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -792,7 +624,7 @@ describe API::Wikis do
           post(api(url, user), params: payload)
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
 
       context 'when user is maintainer' do
@@ -801,7 +633,7 @@ describe API::Wikis do
           post(api(url, user), params: payload)
         end
 
-        include_examples '403 Forbidden'
+        include_examples 'wiki API 403 Forbidden'
       end
     end
 
@@ -813,7 +645,7 @@ describe API::Wikis do
           post(api(url), params: payload)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -821,7 +653,7 @@ describe API::Wikis do
           project.add_developer(user)
         end
 
-        include_examples 'uploads wiki attachment'
+        include_examples 'wiki API uploads wiki attachment'
       end
 
       context 'when user is maintainer' do
@@ -829,7 +661,7 @@ describe API::Wikis do
           project.add_maintainer(user)
         end
 
-        include_examples 'uploads wiki attachment'
+        include_examples 'wiki API uploads wiki attachment'
       end
     end
 
@@ -841,7 +673,7 @@ describe API::Wikis do
           post(api(url), params: payload)
         end
 
-        include_examples '404 Project Not Found'
+        include_examples 'wiki API 404 Project Not Found'
       end
 
       context 'when user is developer' do
@@ -849,7 +681,7 @@ describe API::Wikis do
           project.add_developer(user)
         end
 
-        include_examples 'uploads wiki attachment'
+        include_examples 'wiki API uploads wiki attachment'
       end
 
       context 'when user is maintainer' do
@@ -857,7 +689,7 @@ describe API::Wikis do
           project.add_maintainer(user)
         end
 
-        include_examples 'uploads wiki attachment'
+        include_examples 'wiki API uploads wiki attachment'
       end
     end
   end

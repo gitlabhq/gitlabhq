@@ -11,7 +11,7 @@ fragment SnippetBase on Snippet {
   webUrl
   httpUrlToRepo
   sshUrlToRepo
-  blob {
+  blobs {
     binary
     name
     path

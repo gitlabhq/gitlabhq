@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-describe ProjectDailyStatistic do
+RSpec.describe ProjectDailyStatistic do
   it { is_expected.to belong_to(:project) }
 end

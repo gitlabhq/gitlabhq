@@ -99,6 +99,9 @@ Complementary reads:
 - [Code comments](code_comments.md)
 - [Renaming features](renaming_features.md)
 - [Windows Development on GCP](windows.md)
+- [Code Intelligence](code_intelligence/index.md)
+- [Approval Rules](approval_rules.md)
+- [Feature categorization](feature_categorization/index.md)
 
 ## Performance guides
 

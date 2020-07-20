@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestBasicEntity do
+RSpec.describe MergeRequestBasicEntity do
   let(:resource) { build(:merge_request) }
 
   subject do

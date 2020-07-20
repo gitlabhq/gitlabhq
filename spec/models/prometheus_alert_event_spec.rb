@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PrometheusAlertEvent do
+RSpec.describe PrometheusAlertEvent do
   subject { build(:prometheus_alert_event) }
 
   let(:alert) { subject.prometheus_alert }

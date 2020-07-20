@@ -1,10 +1,16 @@
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   calculateJiraImportLabel,
   extractJiraProjectsOptions,
   IMPORT_STATE,
   isFinished,
   isInProgress,
+  setFinishedAlertHideMap,
+  shouldShowFinishedAlert,
 } from '~/jira_import/utils/jira_import_utils';
+import { JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY } from '~/issuables_list/constants';
+
+useLocalStorageSpy();
 
 describe('isInProgress', () => {
   it.each`
@@ -87,5 +93,58 @@ describe('calculateJiraImportLabel', () => {
     const label = calculateJiraImportLabel(jiraImports, labels);
 
     expect(label.color).toBe('#333');
+  });
+});
+
+describe('shouldShowFinishedAlert', () => {
+  const labelTitle = 'jira-import::JCP-1';
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('checks localStorage value', () => {
+    jest.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify({}));
+
+    shouldShowFinishedAlert(labelTitle, IMPORT_STATE.FINISHED);
+
+    expect(localStorage.getItem).toHaveBeenCalledWith(JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY);
+  });
+
+  it('returns true when an import has finished', () => {
+    jest.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify({}));
+
+    expect(shouldShowFinishedAlert(labelTitle, IMPORT_STATE.FINISHED)).toBe(true);
+  });
+
+  it('returns false when an import has finished but the user chose to hide the alert', () => {
+    jest.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify({ [labelTitle]: true }));
+
+    expect(shouldShowFinishedAlert(labelTitle, IMPORT_STATE.FINISHED)).toBe(false);
+  });
+
+  it('returns false when an import has not finished', () => {
+    jest.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify({}));
+
+    expect(shouldShowFinishedAlert(labelTitle, IMPORT_STATE.SCHEDULED)).toBe(false);
+  });
+});
+
+describe('setFinishedAlertHideMap', () => {
+  const labelTitle = 'jira-import::ABC-1';
+  const newLabelTitle = 'jira-import::JCP-1';
+
+  it('sets item to localStorage correctly', () => {
+    jest.spyOn(localStorage, 'getItem').mockReturnValue(JSON.stringify({ [labelTitle]: true }));
+
+    setFinishedAlertHideMap(newLabelTitle);
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY,
+      JSON.stringify({
+        [labelTitle]: true,
+        [newLabelTitle]: true,
+      }),
+    );
   });
 });

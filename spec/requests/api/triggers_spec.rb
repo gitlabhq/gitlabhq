@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Triggers do
+RSpec.describe API::Triggers do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
 

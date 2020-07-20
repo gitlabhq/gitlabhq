@@ -1,0 +1,5 @@
+---
+title: Replace fa-eyes-slash icons with GitLab SVG eye-slash icon
+merge_request: 36602
+author:
+type: performance

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
   let(:merge_request) { create(:merge_request_with_diffs) }
   let(:diff_hash) do
     { ".gitignore-false-false-false" =>

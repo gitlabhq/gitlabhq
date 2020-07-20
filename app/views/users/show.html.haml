@@ -85,12 +85,13 @@
         - if @user.bio.present?
           .cover-desc.cgray
             %p.profile-user-bio
-              = @user.bio
+              = markdown(@user.bio_html)
+
 
     - unless profile_tabs.empty?
       .scrolling-tabs-container
-        .fade-left= icon('angle-left')
-        .fade-right= icon('angle-right')
+        .fade-left= sprite_icon('chevron-lg-left', size: 12)
+        .fade-right= sprite_icon('chevron-lg-right', size: 12)
         %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs
           - if profile_tab?(:overview)
             %li.js-overview-tab

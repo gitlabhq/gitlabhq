@@ -16,10 +16,11 @@ import Tracking from '~/tracking';
  */
 export default function initTodoToggle() {
   $(document).on('todo:toggle', (e, count) => {
+    const updatedCount = count || e?.detail?.count || 0;
     const $todoPendingCount = $('.todos-count');
 
-    $todoPendingCount.text(highCountTrim(count));
-    $todoPendingCount.toggleClass('hidden', count === 0);
+    $todoPendingCount.text(highCountTrim(updatedCount));
+    $todoPendingCount.toggleClass('hidden', updatedCount === 0);
   });
 }
 

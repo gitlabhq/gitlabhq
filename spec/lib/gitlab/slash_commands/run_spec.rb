@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Run do
+RSpec.describe Gitlab::SlashCommands::Run do
   describe '.available?' do
     it 'returns true when builds are enabled for the project' do
       project = double(:project, builds_enabled?: true)

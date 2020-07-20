@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectExportWorker do
+RSpec.describe ProjectExportWorker do
   let!(:user) { create(:user) }
   let!(:project) { create(:project) }
 
@@ -67,6 +67,16 @@ describe ProjectExportWorker do
       it 'does not raise error when user cannot be found' do
         expect { subject.perform(non_existing_record_id, project.id, {}) }.not_to raise_error
       end
+    end
+  end
+
+  describe 'sidekiq options' do
+    it 'disables retry' do
+      expect(described_class.sidekiq_options['retry']).to eq(false)
+    end
+
+    it 'sets default status expiration' do
+      expect(described_class.sidekiq_options['status_expiration']).to eq(StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION)
     end
   end
 end

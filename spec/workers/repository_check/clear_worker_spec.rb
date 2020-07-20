@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-describe RepositoryCheck::ClearWorker do
+RSpec.describe RepositoryCheck::ClearWorker do
   it 'clears repository check columns' do
     project = create(:project)
     project.update_columns(
       last_repository_check_failed: true,
-      last_repository_check_at: Time.now
+      last_repository_check_at: Time.current
     )
 
     described_class.new.perform

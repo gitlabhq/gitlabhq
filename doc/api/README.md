@@ -423,7 +423,7 @@ Status: 200 OK
 ```
 
 CAUTION: **Deprecation:**
-The `Links` Header will be removed in GitLab 14.0 to be aligned with the [W3C specification](https://www.w3.org/wiki/LinkHeader)
+The `Links` Header will be removed in GitLab 14.0 to be aligned with the [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader)
 
 The link to the next page contains an additional filter `id_after=42` which excludes records we have retrieved already.
 Note the type of filter depends on the `order_by` option used and we may have more than one additional filter.
@@ -490,6 +490,28 @@ GET /api/v4/projects/1/repository/files/src%2FREADME.md?ref=master
 GET /api/v4/projects/1/branches/my%2Fbranch/commits
 GET /api/v4/projects/1/repository/tags/my%2Ftag
 ```
+
+## Request Payload
+
+API Requests can use parameters sent as [query strings](https://en.wikipedia.org/wiki/Query_string)
+or as a [payload body](https://tools.ietf.org/html/draft-ietf-httpbis-p3-payload-14#section-3.2).
+GET requests usually send a query string, while PUT/POST requests usually send the payload body:
+
+- Query string:
+
+  ```shell
+  curl --request POST "https://gitlab/api/v4/projects?name=<example-name>&description=<example-description>"
+  ```
+
+- Request payload (JSON):
+
+  ```shell
+  curl --request POST --header "Content-Type: application/json" --data '{"name":"<example-name>", "description":"<example-description"}' "https://gitlab/api/v4/projects"
+  ```
+
+URL encoded query strings have a length limitation. Requests that are too large will
+result in a `414 Request-URI Too Large` error message. This can be resolved by using
+a payload body instead.
 
 ## Encoding API parameters of `array` and `hash` types
 

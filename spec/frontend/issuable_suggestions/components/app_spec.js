@@ -89,7 +89,7 @@ describe('Issuable suggestions app component', () => {
           wrapper
             .findAll('li')
             .at(0)
-            .is('.append-bottom-default'),
+            .is('.gl-mb-3'),
         ).toBe(true);
       });
     });
@@ -102,7 +102,7 @@ describe('Issuable suggestions app component', () => {
           wrapper
             .findAll('li')
             .at(1)
-            .is('.append-bottom-default'),
+            .is('.gl-mb-3'),
         ).toBe(false);
       });
     });

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require "spec_helper"
 
-describe "uploading designs" do
+RSpec.describe "uploading designs" do
   include GraphqlHelpers
   include DesignManagementTestHelpers
   include WorkhorseHelpers

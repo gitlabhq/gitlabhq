@@ -3,12 +3,14 @@
 const path = require('path');
 const { ErrorWithStack } = require('jest-util');
 const JSDOMEnvironment = require('jest-environment-jsdom-sixteen');
+const { TEST_HOST } = require('./helpers/test_constants');
 
 const ROOT_PATH = path.resolve(__dirname, '../..');
 
 class CustomEnvironment extends JSDOMEnvironment {
   constructor(config, context) {
-    super(config, context);
+    // Setup testURL so that window.location is setup properly
+    super({ ...config, testURL: TEST_HOST }, context);
 
     Object.assign(context.console, {
       error(...args) {
@@ -57,6 +59,9 @@ class CustomEnvironment extends JSDOMEnvironment {
         ownerDocument: this.global.document,
       },
     });
+
+    // Expose the jsdom (created in super class) to the global so that we can call reconfigure({ url: '' }) to properly set `window.location`
+    this.global.dom = this.dom;
   }
 
   async teardown() {

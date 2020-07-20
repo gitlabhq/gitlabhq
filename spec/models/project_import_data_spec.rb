@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectImportData do
+RSpec.describe ProjectImportData do
   describe '#merge_data' do
     it 'writes the Hash to the attribute if it is nil' do
       row = described_class.new

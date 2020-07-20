@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/pages_domains/show' do
+RSpec.describe 'projects/pages_domains/show' do
   let(:project) { create(:project, :repository) }
 
   before do

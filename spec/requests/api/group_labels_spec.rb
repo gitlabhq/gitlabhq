@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::GroupLabels do
+RSpec.describe API::GroupLabels do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:subgroup) { create(:group, parent: group) }

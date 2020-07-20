@@ -4,7 +4,7 @@ require 'spec_helper'
 
 ISSUES_MEDIAN = 30.minutes.to_i
 
-shared_examples 'base stage' do
+RSpec.shared_examples 'base stage' do
   let(:stage) { described_class.new(options: { project: double }) }
 
   before do
@@ -35,7 +35,7 @@ shared_examples 'base stage' do
   end
 end
 
-shared_examples 'calculate #median with date range' do
+RSpec.shared_examples 'calculate #median with date range' do
   context 'when valid date range is given' do
     before do
       stage_options[:from] = 5.days.ago
@@ -55,7 +55,7 @@ shared_examples 'calculate #median with date range' do
   end
 end
 
-shared_examples 'Gitlab::Analytics::CycleAnalytics::DataCollector backend examples' do
+RSpec.shared_examples 'Gitlab::Analytics::CycleAnalytics::DataCollector backend examples' do
   let(:stage_params) { Gitlab::Analytics::CycleAnalytics::DefaultStages.send("params_for_#{stage_name}_stage").merge(project: project) }
   let(:stage) { Analytics::CycleAnalytics::ProjectStage.new(stage_params) }
   let(:data_collector) { Gitlab::Analytics::CycleAnalytics::DataCollector.new(stage: stage, params: { from: stage_options[:from], current_user: project.creator }) }

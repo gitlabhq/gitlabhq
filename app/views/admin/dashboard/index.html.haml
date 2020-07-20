@@ -1,4 +1,5 @@
-- breadcrumb_title "Dashboard"
+- breadcrumb_title _("Dashboard")
+- page_title _("Dashboard")
 
 - if show_license_breakdown?
   = render_if_exists 'admin/licenses/breakdown', license: @license
@@ -9,7 +10,7 @@
       dismissible: true.to_s } }
       = notice[:message].html_safe
 
-.admin-dashboard.prepend-top-default
+.admin-dashboard.gl-mt-3
   .row
     .col-sm-4
       .info-well.dark-well

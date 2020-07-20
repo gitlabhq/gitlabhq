@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Stage::Common do
+RSpec.describe Gitlab::Ci::Status::Stage::Common do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }

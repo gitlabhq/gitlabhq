@@ -1,0 +1,23 @@
+# Read more about the feature here: https://docs.gitlab.com/ee/user/project/merge_requests/load_performance_testing.html
+
+stages:
+  - build
+  - test
+  - deploy
+  - performance
+
+load_performance:
+  stage: performance
+  image: docker:git
+  variables:
+    K6_IMAGE: loadimpact/k6
+    K6_VERSION: 0.26.2
+    K6_TEST_FILE: github.com/loadimpact/k6/samples/http_get.js
+    K6_OPTIONS: ''
+  services:
+    - docker:stable-dind
+  script:
+    - docker run --rm -v "$(pwd)":/k6 -w /k6 $K6_IMAGE:$K6_VERSION run $K6_TEST_FILE --summary-export=load-performance.json $K6_OPTIONS
+  artifacts:
+    reports:
+      load_performance: load-performance.json

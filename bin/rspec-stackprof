@@ -8,9 +8,10 @@ require 'spec_helper'
 filename = ARGV[0].split('/').last
 interval = ENV.fetch('INTERVAL', 1000).to_i
 limit = ENV.fetch('LIMIT', 20)
+raw = ENV.fetch('RAW', false) == 'true'
 output_file = "tmp/#{filename}.dump"
 
-StackProf.run(mode: :wall, out: output_file, interval: interval) do
+StackProf.run(mode: :wall, out: output_file, interval: interval, raw: raw) do
   RSpec::Core::Runner.run(ARGV, $stderr, $stdout)
 end
 

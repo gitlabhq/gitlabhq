@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::Annotation do
+RSpec.describe Metrics::Dashboard::Annotation do
   using RSpec::Parameterized::TableSyntax
 
   describe 'associations' do

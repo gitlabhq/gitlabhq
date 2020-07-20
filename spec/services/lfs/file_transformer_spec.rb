@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Lfs::FileTransformer do
+RSpec.describe Lfs::FileTransformer do
   let(:project) { create(:project, :repository, :wiki_repo) }
   let(:repository) { project.repository }
   let(:file_content) { 'Test file content' }

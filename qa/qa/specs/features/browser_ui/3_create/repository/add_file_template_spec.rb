@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'File templates' do
       include Runtime::Fixtures
 
-      before(:all) do
-        @project = Resource::Project.fabricate_via_api! do |project|
+      let(:project) do
+        Resource::Project.fabricate_via_api! do |project|
           project.name = 'file-template-project'
           project.description = 'Add file templates via the Files view'
           project.initialize_with_readme = true
@@ -46,7 +48,7 @@ module QA
 
           Flow::Login.sign_in
 
-          @project.visit!
+          project.visit!
 
           Page::Project::Show.perform(&:create_new_file!)
           Page::File::Form.perform do |form|
@@ -54,12 +56,14 @@ module QA
 
             expect(form).to have_normalized_ws_text(content[0..100])
 
+            form.add_name("#{SecureRandom.hex(8)}/#{template[:file_name]}")
             form.commit_changes
 
-            expect(form).to have_content('The file has been successfully created.')
-            expect(form).to have_content(template[:file_name])
-            expect(form).to have_content('Add new file')
-            expect(form).to have_normalized_ws_text(content[0..100])
+            aggregate_failures "indications of file created" do
+              expect(form).to have_content(template[:file_name])
+              expect(form).to have_normalized_ws_text(content[0..100])
+              expect(form).to have_content('Add new file')
+            end
           end
         end
       end

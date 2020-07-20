@@ -83,13 +83,13 @@ module QA
       end
 
       def api_get_from(get_path)
-        url = Runtime::API::Request.new(api_client, get_path).url
-        response = get(url)
+        request = Runtime::API::Request.new(api_client, get_path)
+        response = get(request.url)
 
         if response.code == HTTP_STATUS_SERVER_ERROR
-          raise InternalServerError, "Failed to GET #{url} - (#{response.code}): `#{response}`."
+          raise InternalServerError, "Failed to GET #{request.mask_url} - (#{response.code}): `#{response}`."
         elsif response.code != HTTP_STATUS_OK
-          raise ResourceNotFoundError, "Resource at #{url} could not be found (#{response.code}): `#{response}`."
+          raise ResourceNotFoundError, "Resource at #{request.mask_url} could not be found (#{response.code}): `#{response}`."
         end
 
         response
@@ -108,11 +108,11 @@ module QA
       end
 
       def api_delete
-        url = Runtime::API::Request.new(api_client, api_delete_path).url
-        response = delete(url)
+        request = Runtime::API::Request.new(api_client, api_delete_path)
+        response = delete(request.url)
 
         unless [HTTP_STATUS_NO_CONTENT, HTTP_STATUS_ACCEPTED].include? response.code
-          raise ResourceNotDeletedError, "Resource at #{url} could not be deleted (#{response.code}): `#{response}`."
+          raise ResourceNotDeletedError, "Resource at #{request.mask_url} could not be deleted (#{response.code}): `#{response}`."
         end
 
         response

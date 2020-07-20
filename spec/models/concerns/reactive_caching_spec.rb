@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ReactiveCaching, :use_clean_rails_memory_store_caching do
+RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
   include ExclusiveLeaseHelpers
   include ReactiveCachingHelpers
 
@@ -285,38 +285,30 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         go!
       end
 
-      context 'when calculated object size exceeds default reactive_cache_hard_limit' do
-        let(:calculation) { -> { 'a' * 2 * 1.megabyte } }
+      context 'when reactive_cache_hard_limit is set' do
+        let(:test_class) { Class.new(cache_class_test) { self.reactive_cache_hard_limit = 1.megabyte } }
+        let(:instance) { test_class.new(666, &calculation) }
 
-        shared_examples 'ExceededReactiveCacheLimit' do
+        context 'when cache size is over the overridden limit' do
+          let(:calculation) { -> { 'a' * 2 * 1.megabyte } }
+
           it 'raises ExceededReactiveCacheLimit exception and does not cache new data' do
             expect { go! }.to raise_exception(ReactiveCaching::ExceededReactiveCacheLimit)
 
             expect(read_reactive_cache(instance)).not_to eq(calculation.call)
           end
-        end
 
-        context 'when reactive_cache_hard_limit feature flag is enabled' do
-          it_behaves_like 'ExceededReactiveCacheLimit'
-
-          context 'when reactive_cache_hard_limit is overridden' do
-            let(:test_class) { Class.new(cache_class_test) { self.reactive_cache_hard_limit = 3.megabytes } }
-            let(:instance) { test_class.new(666, &calculation) }
+          context 'when reactive_cache_limit_enabled? is overridden to return false' do
+            before do
+              allow(instance).to receive(:reactive_cache_limit_enabled?).and_return(false)
+            end
 
             it_behaves_like 'successful cache'
-
-            context 'when cache size is over the overridden limit' do
-              let(:calculation) { -> { 'a' * 4 * 1.megabyte } }
-
-              it_behaves_like 'ExceededReactiveCacheLimit'
-            end
           end
         end
 
-        context 'when reactive_cache_limit feature flag is disabled' do
-          before do
-            stub_feature_flags(reactive_cache_limit: false)
-          end
+        context 'when cache size is within the overridden limit' do
+          let(:calculation) { -> { 'Smaller than 1Mb reactive_cache_hard_limit' } }
 
           it_behaves_like 'successful cache'
         end
@@ -377,7 +369,7 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     it { expect(subject.reactive_cache_refresh_interval).to be_a(ActiveSupport::Duration) }
     it { expect(subject.reactive_cache_lifetime).to be_a(ActiveSupport::Duration) }
     it { expect(subject.reactive_cache_key).to respond_to(:call) }
-    it { expect(subject.reactive_cache_hard_limit).to be_a(Integer) }
+    it { expect(subject.reactive_cache_hard_limit).to be_nil }
     it { expect(subject.reactive_cache_worker_finder).to respond_to(:call) }
   end
 end

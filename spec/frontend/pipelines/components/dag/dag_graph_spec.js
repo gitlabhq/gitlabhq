@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import DagGraph from '~/pipelines/components/dag/dag_graph.vue';
 import { IS_HIGHLIGHTED, LINK_SELECTOR, NODE_SELECTOR } from '~/pipelines/components/dag/constants';
 import { highlightIn, highlightOut } from '~/pipelines/components/dag/interactions';
@@ -19,7 +19,7 @@ describe('The DAG graph', () => {
       wrapper.destroy();
     }
 
-    wrapper = mount(DagGraph, {
+    wrapper = shallowMount(DagGraph, {
       attachToDocument: true,
       propsData,
       data() {

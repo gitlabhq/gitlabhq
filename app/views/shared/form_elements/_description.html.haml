@@ -1,20 +1,16 @@
 - project = local_assigns.fetch(:project)
 - model = local_assigns.fetch(:model)
-
-
-
 - form = local_assigns.fetch(:form)
 - placeholder = model.is_a?(MergeRequest) ? _('Describe the goal of the changes and what reviewers should be aware of.') : _('Write a comment or drag your files here…')
-- supports_quick_actions = model.new_record?
 
-- if supports_quick_actions
-  - preview_url = preview_markdown_path(project, target_type: model.class.name)
-- else
-  - preview_url = preview_markdown_path(project)
+- supports_quick_actions = true
+- preview_url = preview_markdown_path(project, target_type: model.class.name)
 
 .form-group.row.detail-page-description
   = form.label :description, 'Description', class: 'col-form-label col-sm-2'
   .col-sm-10
+    - if model.is_a?(MergeRequest)
+      = hidden_field_tag :merge_request_diff_head_sha, model.diff_head_sha
 
     - if model.is_a?(Issuable)
       = render 'shared/issuable/form/template_selector', issuable: model

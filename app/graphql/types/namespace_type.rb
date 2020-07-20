@@ -38,3 +38,5 @@ module Types
           resolver: ::Resolvers::NamespaceProjectsResolver
   end
 end
+
+Types::NamespaceType.prepend_if_ee('EE::Types::NamespaceType')

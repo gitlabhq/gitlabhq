@@ -13,7 +13,6 @@ To enable YouTrack integration in a project:
 
     | Field           | Description                                                                                                                                                                                                 |
     |:----------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | **Description** | Name for the issue tracker (to differentiate between instances, for example).                                                                                                                               |
     | **Project URL** | URL to the project in YouTrack which is being linked to this GitLab project.                                                                                                                                |
     | **Issues URL**  | URL to the issue in YouTrack project that is linked to this GitLab project. Note that the **Issues URL** requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. |
 

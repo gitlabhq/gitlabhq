@@ -116,6 +116,44 @@ information with several options:
 
 ![Interacting with security reports](img/interacting_with_vulnerability_v13_0.png)
 
+### View details of a DAST vulnerability
+
+Vulnerabilities detected by DAST occur in the live web application. Rectification of these types of
+vulnerabilities requires specific information. DAST provides the information required to
+investigate and rectify the underlying cause.
+
+To view details of DAST vulnerabilities:
+
+1. To see all vulnerabilities detected:
+
+   - In a project, go to the project's **{shield}** **Security & Compliance** page.
+   - Only in a merge request, go the merge request's **Security** tab.
+
+1. Click on the vulnerability's description. The following details are provided:
+
+   | Field            | Description                                                                                                                                                                   |
+|:-----------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Description      | Description of the vulnerability.                                                                                                                                             |
+| Project          | Namespace and project in which the vulnerability was detected.                                                                                                                |
+| Method           | HTTP method used to detect the vulnerability.                                                                                                                                 |
+| URL              | URL at which the vulnerability was detected.                                                                                                                                  |
+| Request Headers  | Headers of the request.                                                                                                                                                       |
+| Response Status  | Response status received from the application.                                                                                                                                |
+| Response Headers | Headers of the response received from the application.                                                                                                                        |
+| Evidence         | Evidence of the data found that verified the vulnerability. Often a snippet of the request or response, this can be used to help verify that the finding is a vulnerability. |
+| Identifiers      | Identifiers of the vulnerability.                                                                                                                                             |
+| Severity         | Severity of the vulnerability.                                                                                                                                                |
+| Scanner Type     | Type of vulnerability report.                                                                                                                                                 |
+| Links            | Links to further details of the detected vulnerability.                                                                                                                       |
+| Solution         | Details of a recommended solution to the vulnerability (optional).                                                                                                            |
+
+#### Hide sensitive information in headers
+
+HTTP request and response headers may contain sensitive information, including cookies and
+authorization credentials. By default, content of specific headers are masked in DAST vulnerability
+reports. You can specify the list of all headers to be masked. For details, see
+[Hide sensitive information](dast/index.md#hide-sensitive-information).
+
 ### Dismissing a vulnerability
 
 To dismiss a vulnerability, you must set its status to Dismissed. Follow these steps to do so:
@@ -258,14 +296,16 @@ An approval is optional when a security report:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
-To enable License Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
-must be created with the case-sensitive name `License-Check`. This approval group must be set
-with the number of approvals required greater than zero.
+`License-Check` is an approval rule you can enable to allow an individual or group to approve a
+merge request that contains a `denied` license.
 
-Once this group is added to your project, the approval rule is enabled for all Merge Requests. To
-configure how this rule behaves, you can choose which licenses to `allow` or `deny` in the
-[project policies for License Compliance](../compliance/license_compliance/index.md#project-policies-for-license-compliance)
-section.
+You can enable `License-Check` one of two ways:
+
+- Create a [project approval rule](../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
+  with the case-sensitive name `License-Check`.
+- Create an approval group in the [project policies section for License Compliance](../compliance/license_compliance/index.md#policies).
+  You must set this approval group's number of approvals required to greater than zero. Once you
+  enable this group in your project, the approval rule is enabled for all merge requests.
 
 Any code changes cause the approvals required to reset.
 

@@ -11,6 +11,7 @@ import {
   fetchEnvironments,
   fetchLogs,
   fetchMoreLogsPrepend,
+  fetchManagedApps,
 } from '~/logs/stores/actions';
 
 import { defaultTimeRange } from '~/vue_shared/constants';
@@ -30,6 +31,8 @@ import {
   mockResponse,
   mockCursor,
   mockNextCursor,
+  mockManagedApps,
+  mockManagedAppsEndpoint,
 } from '../mock_data';
 import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
 
@@ -212,6 +215,30 @@ describe('Logs Store actions', () => {
           { type: types.REQUEST_ENVIRONMENTS_DATA },
           { type: types.RECEIVE_ENVIRONMENTS_DATA_ERROR },
         ],
+        [],
+      );
+    });
+  });
+
+  describe('fetchManagedApps', () => {
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    it('should commit RECEIVE_MANAGED_APPS_DATA_SUCCESS mutation on succesful fetch', () => {
+      mock.onGet(mockManagedAppsEndpoint).replyOnce(200, { clusters: mockManagedApps });
+      return testAction(fetchManagedApps, mockManagedAppsEndpoint, state, [
+        { type: types.RECEIVE_MANAGED_APPS_DATA_SUCCESS, payload: mockManagedApps },
+      ]);
+    });
+
+    it('should commit RECEIVE_MANAGED_APPS_DATA_ERROR on wrong data', () => {
+      mock.onGet(mockManagedAppsEndpoint).replyOnce(500);
+      return testAction(
+        fetchManagedApps,
+        mockManagedAppsEndpoint,
+        state,
+        [{ type: types.RECEIVE_MANAGED_APPS_DATA_ERROR }],
         [],
       );
     });

@@ -2,6 +2,7 @@
 
 module MergeRequests
   class BaseService < ::IssuableBaseService
+    extend ::Gitlab::Utils::Override
     include MergeRequests::AssignsMergeParams
 
     def create_note(merge_request, state = merge_request.state)
@@ -27,6 +28,11 @@ module MergeRequests
     def cleanup_environments(merge_request)
       Ci::StopEnvironmentsService.new(merge_request.source_project, current_user)
                                  .execute_for_merge_request(merge_request)
+    end
+
+    def cancel_review_app_jobs!(merge_request)
+      environments = merge_request.environments.in_review_folder.available
+      environments.each { |environment| environment.cancel_deployment_jobs! }
     end
 
     def source_project
@@ -56,6 +62,12 @@ module MergeRequests
       self.params = assign_allowed_merge_params(merge_request, params)
 
       super
+    end
+
+    override :handle_quick_actions
+    def handle_quick_actions(merge_request)
+      super
+      handle_wip_event(merge_request)
     end
 
     def handle_wip_event(merge_request)
@@ -88,10 +100,6 @@ module MergeRequests
 
     def create_pipeline_for(merge_request, user)
       MergeRequests::CreatePipelineService.new(project, user).execute(merge_request)
-    end
-
-    def can_use_merge_request_ref?(merge_request)
-      !merge_request.for_fork?
     end
 
     def abort_auto_merge(merge_request, reason)

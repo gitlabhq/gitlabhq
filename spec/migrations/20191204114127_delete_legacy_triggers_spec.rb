@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20191204114127_delete_legacy_triggers.rb')
 
-describe DeleteLegacyTriggers, schema: 2019_11_25_140458 do
+RSpec.describe DeleteLegacyTriggers, schema: 2019_11_25_140458 do
   let(:ci_trigger_table) { table(:ci_triggers) }
   let(:user) { table(:users).create!(name: 'test', email: 'test@example.com', projects_limit: 1) }
 

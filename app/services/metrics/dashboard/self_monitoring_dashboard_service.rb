@@ -8,9 +8,13 @@ module Metrics
       DASHBOARD_PATH = 'config/prometheus/self_monitoring_default.yml'
       DASHBOARD_NAME = N_('Default dashboard')
 
+      # SHA256 hash of dashboard content
+      DASHBOARD_VERSION = '1dff3e3cb76e73c8e368823c98b34c61aec0d141978450dea195a3b3dc2415d6'
+
       SEQUENCE = [
         STAGES::CustomMetricsInserter,
-        STAGES::EndpointInserter,
+        STAGES::MetricEndpointInserter,
+        STAGES::VariableEndpointInserter,
         STAGES::PanelIdsInserter,
         STAGES::Sorter
       ].freeze
@@ -25,13 +29,20 @@ module Metrics
             path: DASHBOARD_PATH,
             display_name: _(DASHBOARD_NAME),
             default: true,
-            system_dashboard: false
+            system_dashboard: false,
+            out_of_the_box_dashboard: out_of_the_box_dashboard?
           }]
         end
 
         def self_monitoring_project?(params)
           params[:dashboard_path].nil? && params[:environment]&.project&.self_monitoring?
         end
+      end
+
+      private
+
+      def dashboard_version
+        DASHBOARD_VERSION
       end
     end
   end

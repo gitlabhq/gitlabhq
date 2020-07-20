@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::NetworkPolicy do
+RSpec.describe Gitlab::Kubernetes::NetworkPolicy do
   let(:policy) do
     described_class.new(
       name: name,

@@ -1,0 +1,5 @@
+---
+title: Add CPU, memory usage charts to self monitoring default dashboard
+merge_request: 33532
+author:
+type: changed

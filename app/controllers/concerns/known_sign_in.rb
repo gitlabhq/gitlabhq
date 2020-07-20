@@ -2,17 +2,32 @@
 
 module KnownSignIn
   include Gitlab::Utils::StrongMemoize
+  include CookiesHelper
+
+  KNOWN_SIGN_IN_COOKIE = :known_sign_in
+  KNOWN_SIGN_IN_COOKIE_EXPIRY = 14.days
 
   private
 
   def verify_known_sign_in
-    return unless current_user
+    return unless Gitlab::CurrentSettings.notify_on_unknown_sign_in? && current_user
 
-    notify_user unless known_remote_ip?
+    notify_user unless known_device? || known_remote_ip?
+
+    update_cookie
   end
 
   def known_remote_ip?
     known_ip_addresses.include?(request.remote_ip)
+  end
+
+  def known_device?
+    cookies.encrypted[KNOWN_SIGN_IN_COOKIE] == current_user.id
+  end
+
+  def update_cookie
+    set_secure_cookie(KNOWN_SIGN_IN_COOKIE, current_user.id,
+                      type: COOKIE_TYPE_ENCRYPTED, httponly: true, expires: KNOWN_SIGN_IN_COOKIE_EXPIRY)
   end
 
   def sessions

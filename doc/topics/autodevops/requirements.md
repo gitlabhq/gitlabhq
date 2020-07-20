@@ -103,22 +103,26 @@ After all requirements are met, you can [enable Auto DevOps](index.md#enablingdi
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208132) in GitLab 13.0.
 
-You can choose to target [Amazon Elastic Container Service (ECS)](../../ci/cloud_deployment/index.md) as a deployment platform instead of using Kubernetes.
+You can choose to target [AWS ECS](../../ci/cloud_deployment/index.md) as a deployment platform instead of using Kubernetes.
 
-To get started on Auto DevOps to Amazon ECS, you'll have to add a specific Environment
+To get started on Auto DevOps to AWS ECS, you'll have to add a specific Environment
 Variable. To do so, follow these steps:
 
 1. In your project, go to **Settings > CI / CD** and expand the **Variables**
    section.
 
 1. Specify which AWS platform to target during the Auto DevOps deployment
-   by adding the `AUTO_DEVOPS_PLATFORM_TARGET` variable.
+   by adding the `AUTO_DEVOPS_PLATFORM_TARGET` variable with one of the following values:
+   - `FARGATE` if the service you're targeting must be of launch type FARGATE.
+   - `ECS` if you're not enforcing any launch type check when deploying to ECS.
 
-1. Give this variable the value `ECS` before saving it.
-
-When you trigger a pipeline, if Auto DevOps is enabled and if you've correctly
+When you trigger a pipeline, if you have Auto DevOps enabled and if you have correctly
 [entered AWS credentials as environment variables](../../ci/cloud_deployment/index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs),
-your application will be deployed to Amazon ECS.
+your application will be deployed to AWS ECS.
+
+NOTE: **Note:**
+[GitLab Managed Apps](../../user/clusters/applications.md) are not available when deploying to AWS ECS.
+You must manually configure your application (such as Ingress or Help) on AWS ECS.
 
 NOTE: **Note:**
 If you have both a valid `AUTO_DEVOPS_PLATFORM_TARGET` variable and a Kubernetes cluster tied to your project,
@@ -130,5 +134,5 @@ defined in the [`Jobs/Deploy/ECS.gitlab-ci.yml` template](https://gitlab.com/git
 However, it's not recommended to [include](../../ci/yaml/README.md#includetemplate)
 it on its own. This template is designed to be used with Auto DevOps only. It may change
 unexpectedly causing your pipeline to fail if included on its own. Also, the job
-names within this template may also change. Don't override these jobs' names in your
+names within this template may also change. Do not override these jobs' names in your
 own pipeline, as the override will stop working when the name changes.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Cleanup::ProjectUploads do
+RSpec.describe Gitlab::Cleanup::ProjectUploads do
   subject { described_class.new(logger: logger) }
 
   let(:logger) { double(:logger) }

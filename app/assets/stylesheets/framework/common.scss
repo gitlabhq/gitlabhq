@@ -396,35 +396,16 @@ img.emoji {
   🚨 Do not use these classes — they are deprecated and being removed. 🚨
   See https://gitlab.com/gitlab-org/gitlab/-/issues/217418 for more details.
 **/
-.prepend-top-5 { margin-top: 5px; }
 .prepend-top-10 { margin-top: 10px; }
 .prepend-top-15 { margin-top: 15px; }
-.prepend-top-default { margin-top: $gl-padding !important; }
-.prepend-top-16 { margin-top: 16px; }
 .prepend-top-20 { margin-top: 20px; }
-.prepend-left-5 { margin-left: 5px; }
-.prepend-left-10 { margin-left: 10px; }
 .prepend-left-15 { margin-left: 15px; }
-.prepend-left-default { margin-left: $gl-padding; }
 .prepend-left-20 { margin-left: 20px; }
-.prepend-left-32 { margin-left: 32px; }
 .prepend-left-64 { margin-left: 64px; }
-.append-right-2 { margin-right: 2px; }
-.append-right-4 { margin-right: 4px; }
-.append-right-5 { margin-right: 5px; }
-.append-right-10 { margin-right: 10px; }
 .append-right-15 { margin-right: 15px; }
-.append-right-default { margin-right: $gl-padding; }
 .append-right-20 { margin-right: 20px; }
-.append-right-32 { margin-right: 32px; }
-.append-right-48 { margin-right: 48px; }
-.prepend-right-32 { margin-right: 32px; }
-.append-bottom-5 { margin-bottom: 5px; }
 .append-bottom-10 { margin-bottom: 10px; }
-.append-bottom-15 { margin-bottom: 15px; }
 .append-bottom-20 { margin-bottom: 20px; }
-.append-bottom-default { margin-bottom: $gl-padding; }
-.prepend-bottom-32 { margin-bottom: 32px; }
 .ml-10 { margin-left: 4.5rem; }
 .inline { display: inline-block; }
 .center { text-align: center; }
@@ -556,41 +537,6 @@ img.emoji {
     > .dropdown-menu,
     > .btn {
       width: 100%;
-    }
-  }
-}
-
-.onboarding-helper-container {
-  bottom: 40px;
-  right: 40px;
-  font-size: $gl-font-size-small;
-  background: $gray-50;
-  width: 200px;
-  border-radius: 24px;
-  box-shadow: 0 2px 4px $issue-boards-card-shadow;
-  z-index: 10000;
-
-  .collapsible {
-    max-height: 0;
-    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
-  }
-
-  &.expanded {
-    border-bottom-right-radius: $border-radius-default;
-    border-bottom-left-radius: $border-radius-default;
-
-    .collapsible {
-      max-height: 1000px;
-      transition: max-height 1s ease-in-out;
-    }
-  }
-
-  .avatar {
-    border-color: darken($gray-normal, 10%);
-
-    img {
-      width: 32px;
-      height: 32px;
     }
   }
 }

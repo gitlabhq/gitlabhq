@@ -81,7 +81,7 @@ already reserved for category labels).
 The descriptions on the [labels page](https://gitlab.com/groups/gitlab-org/-/labels)
 explain what falls under each type label.
 
-The GitLab handbook documents [when something is a bug and when it is a feature request](https://about.gitlab.com/handbook/product/product-management/process/feature-or-bug.html).
+The GitLab handbook documents [when something is a bug](https://about.gitlab.com/handbook/product/product-processes/#bug-issues) and [when it is a feature request](https://about.gitlab.com/handbook/product/product-processes/#feature-issues).
 
 ### Facet labels
 
@@ -104,7 +104,7 @@ Following is a non-exhaustive list of facet labels:
 
 ### Stage labels
 
-Stage labels specify which [stage](https://about.gitlab.com/handbook/product/categories/#hierarchy) the issue belongs to.
+Stage labels specify which [stage](https://about.gitlab.com/handbook/product/product-categories/#hierarchy) the issue belongs to.
 
 #### Naming and color convention
 
@@ -148,7 +148,7 @@ The current group labels can be found by [searching the labels list for `group::
 These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
 and thus are mutually exclusive.
 
-You can find the groups listed in the [Product Stages, Groups, and Categories](https://about.gitlab.com/handbook/product/categories/) page.
+You can find the groups listed in the [Product Stages, Groups, and Categories](https://about.gitlab.com/handbook/product/product-categories/) page.
 
 We use the term group to map down product requirements from our product stages.
 As a team needs some way to collect the work their members are planning to be assigned to, we use the `~group::` labels to do so.
@@ -167,7 +167,7 @@ Please read [Stage and Group labels in Throughput](https://about.gitlab.com/hand
 ### Category labels
 
 From the handbook's
-[Product stages, groups, and categories](https://about.gitlab.com/handbook/product/categories/#hierarchy)
+[Product stages, groups, and categories](https://about.gitlab.com/handbook/product/product-categories/#hierarchy)
 page:
 
 > Categories are high-level capabilities that may be a standalone product at
@@ -199,7 +199,7 @@ in <https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml
 ### Feature labels
 
 From the handbook's
-[Product stages, groups, and categories](https://about.gitlab.com/handbook/product/categories/#hierarchy)
+[Product stages, groups, and categories](https://about.gitlab.com/handbook/product/product-categories/#hierarchy)
 page:
 
 > Features: Small, discrete functionalities. e.g. Issue weights. Some common
@@ -312,22 +312,13 @@ We want to avoid a situation when a contributor picks an
 because we realize that it does not fit our vision, or we want to solve it in a
 different way.
 
-We add the ~"Accepting merge requests" label to:
+We automatically add the ~"Accepting merge requests" label to issues
+that match the [triage policy](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#accepting-merge-requests).
 
-- Low priority ~bug issues (i.e. we do not add it to the bugs that we want to
-  solve in the ~"Next Patch Release")
-- Small ~feature
-- Small ~"technical debt" issues
-
-After adding the ~"Accepting merge requests" label, we try to estimate the
-[weight](#issue-weight) of the issue. We use issue weight to let contributors
-know how difficult the issue is. Additionally:
-
-- We advertise [`Accepting merge requests` issues with weight < 5](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight)
-  as suitable for people that have never contributed to GitLab before on the
-  [Up For Grabs campaign](https://up-for-grabs.net/#/)
-- We encourage people that have never contributed to any open source project to
-  look for [`Accepting merge requests` issues with a weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1)
+We recommend people that have never contributed to any open source project to
+look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1) or the `~"Good for 1st time contributors"` [label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=%E2%9C%93&state=opened&label_name[]=Good%20for%201st%20time%20contributors&assignee_id=None) attached to it.
+More experienced contributors are very welcome to tackle
+[any of them](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None).
 
 If you've decided that you would like to work on an issue, please @-mention
 the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)

@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::ImportExport::AttributesFinder do
+RSpec.describe Gitlab::ImportExport::AttributesFinder do
   describe '#find_root' do
     subject { described_class.new(config: config).find_root(model_key) }
 

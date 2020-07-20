@@ -9,6 +9,8 @@ describe('GLForm', () => {
 
   describe('when instantiated', () => {
     beforeEach(done => {
+      window.gl = window.gl || {};
+
       testContext.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
       testContext.textarea = testContext.form.find('textarea');
       jest.spyOn($.prototype, 'off').mockReturnValue(testContext.textarea);
@@ -109,6 +111,22 @@ describe('GLForm', () => {
 
         expect(testContext.glForm.destroyAutosize()).toBeUndefined();
         expect(autosize.destroy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('supportsQuickActions', () => {
+      it('should return false if textarea does not support quick actions', () => {
+        const glForm = new GLForm(testContext.form, false);
+
+        expect(glForm.supportsQuickActions).toEqual(false);
+      });
+
+      it('should return true if textarea supports quick actions', () => {
+        testContext.textarea.attr('data-supports-quick-actions', true);
+
+        const glForm = new GLForm(testContext.form, false);
+
+        expect(glForm.supportsQuickActions).toEqual(true);
       });
     });
   });

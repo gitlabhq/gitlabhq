@@ -102,7 +102,7 @@ export default {
                 class="btn-link d-flex align-items-center"
                 @click.stop="setSearchType(searchType)"
               >
-                <span class="d-flex append-right-default ide-search-list-current-icon">
+                <span class="d-flex gl-mr-3 ide-search-list-current-icon">
                   <icon :size="18" name="search" />
                 </span>
                 <span>{{ searchType.label }}</span>

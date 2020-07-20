@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerRegistry::Path do
+RSpec.describe ContainerRegistry::Path do
   subject { described_class.new(path) }
 
   describe '#components' do

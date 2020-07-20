@@ -5,7 +5,8 @@ class Projects::ImportsController < Projects::ApplicationController
   include ImportUrlParams
 
   # Authorize
-  before_action :authorize_admin_project!
+  before_action :authorize_admin_project!, only: [:new, :create]
+  before_action :require_namespace_project_creation_permission, only: :show
   before_action :require_no_repo, only: [:new, :create]
   before_action :redirect_if_progress, only: [:new, :create]
   before_action :redirect_if_no_import, only: :show
@@ -49,6 +50,10 @@ class Projects::ImportsController < Projects::ApplicationController
     if @project.repository_exists?
       redirect_to project_path(@project)
     end
+  end
+
+  def require_namespace_project_creation_permission
+    render_404 unless current_user.can?(:admin_project, @project) || current_user.can?(:create_projects, @project.namespace)
   end
 
   def redirect_if_progress

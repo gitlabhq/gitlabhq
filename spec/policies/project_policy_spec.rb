@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectPolicy do
+RSpec.describe ProjectPolicy do
   include ExternalAuthorizationServiceHelpers
   include_context 'ProjectPolicy context'
   let_it_be(:other_user) { create(:user) }
@@ -30,7 +30,7 @@ describe ProjectPolicy do
       admin_issue admin_label admin_list read_commit_status read_build
       read_container_image read_pipeline read_environment read_deployment
       read_merge_request download_wiki_code read_sentry_issue read_metrics_dashboard_annotation
-      metrics_dashboard
+      metrics_dashboard read_confidential_issues
     ]
   end
 
@@ -46,6 +46,7 @@ describe ProjectPolicy do
       resolve_note create_container_image update_container_image destroy_container_image daily_statistics
       create_environment update_environment create_deployment update_deployment create_release update_release
       create_metrics_dashboard_annotation delete_metrics_dashboard_annotation update_metrics_dashboard_annotation
+      read_terraform_state
     ]
   end
 
@@ -496,6 +497,33 @@ describe ProjectPolicy do
     end
   end
 
+  context 'support bot' do
+    let(:current_user) { User.support_bot }
+
+    subject { described_class.new(current_user, project) }
+
+    context 'with service desk disabled' do
+      it { expect_allowed(:guest_access) }
+      it { expect_disallowed(:create_note, :read_project) }
+    end
+
+    context 'with service desk enabled' do
+      before do
+        allow(project).to receive(:service_desk_enabled?).and_return(true)
+      end
+
+      it { expect_allowed(:reporter_access, :create_note, :read_issue) }
+
+      context 'when issues are protected members only' do
+        before do
+          project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+        end
+
+        it { expect_allowed(:reporter_access, :create_note, :read_issue) }
+      end
+    end
+  end
+
   describe 'read_prometheus_alerts' do
     subject { described_class.new(current_user, project) }
 
@@ -855,6 +883,28 @@ describe ProjectPolicy do
     end
   end
 
+  describe 'design permissions' do
+    subject { described_class.new(guest, project) }
+
+    let(:design_permissions) do
+      %i[read_design_activity read_design]
+    end
+
+    context 'when design management is not available' do
+      it { is_expected.not_to be_allowed(*design_permissions) }
+    end
+
+    context 'when design management is available' do
+      include DesignManagementTestHelpers
+
+      before do
+        enable_design_management
+      end
+
+      it { is_expected.to be_allowed(*design_permissions) }
+    end
+  end
+
   describe 'read_build_report_results' do
     subject { described_class.new(guest, project) }
 
@@ -890,6 +940,66 @@ describe ProjectPolicy do
       let(:can_read_pipeline) { false }
 
       it { is_expected.to be_disallowed(:read_build_report_results) }
+    end
+  end
+
+  describe 'read_package' do
+    subject { described_class.new(current_user, project) }
+
+    context 'with admin' do
+      let(:current_user) { admin }
+
+      it { is_expected.to be_allowed(:read_package) }
+
+      context 'when repository is disabled' do
+        before do
+          project.project_feature.update(repository_access_level: ProjectFeature::DISABLED)
+        end
+
+        it { is_expected.to be_disallowed(:read_package) }
+      end
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with developer' do
+      let(:current_user) { developer }
+
+      it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_allowed(:read_package) }
     end
   end
 end

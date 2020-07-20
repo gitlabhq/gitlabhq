@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::PrometheusHealthCheckService, '#execute' do
+RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' do
   let(:service) { described_class.new(cluster) }
 
   subject { service.execute }

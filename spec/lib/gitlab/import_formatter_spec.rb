@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportFormatter do
+RSpec.describe Gitlab::ImportFormatter do
   let(:formatter) { Gitlab::ImportFormatter.new }
 
   describe '#comment' do

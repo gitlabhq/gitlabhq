@@ -115,8 +115,7 @@ that backup, the database can apply the WAL logs in order until the
 database has reached the target time.
 
 On GitLab.com, Consul and Patroni work together to coordinate failovers with
-the read replicas. [Omnibus ships with repmgr instead of
-Patroni](../administration/postgresql/replication_and_failover.md).
+the read replicas. [Omnibus ships with both repmgr and Patroni](../administration/postgresql/replication_and_failover.md).
 
 #### Load-balancing
 

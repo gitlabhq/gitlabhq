@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::Wiki do
+RSpec.describe Gitlab::Git::Wiki do
   using RSpec::Parameterized::TableSyntax
 
   let(:project) { create(:project) }

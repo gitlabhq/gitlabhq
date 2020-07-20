@@ -14,7 +14,7 @@
   .form-group.row
     = label_tag :tag_name, nil, class: 'col-form-label col-sm-2'
     .col-sm-10
-      = text_field_tag :tag_name, params[:tag_name], required: true, autofocus: true, class: 'form-control'
+      = text_field_tag :tag_name, params[:tag_name], required: true, autofocus: true, class: 'form-control', data: { qa_selector: "tag_name_field" }
   .form-group.row
     = label_tag :ref, 'Create from', class: 'col-form-label col-sm-2'
     .col-sm-10.create-from
@@ -29,7 +29,7 @@
   .form-group.row
     = label_tag :message, nil, class: 'col-form-label col-sm-2'
     .col-sm-10
-      = text_area_tag :message, @message, required: false, class: 'form-control', rows: 5
+      = text_area_tag :message, @message, required: false, class: 'form-control', rows: 5, data: { qa_selector: "tag_message_field" }
       .form-text.text-muted
         = tag_description_help_text
   %hr
@@ -40,17 +40,17 @@
         - link_start = '<a href="%{url}" rel="noopener noreferrer" target="_blank">'.html_safe
         - releases_page_path = project_releases_path(@project)
         - releases_page_link_start = link_start % { url: releases_page_path }
-        - docs_url = help_page_path('user/project/releases/index.md', anchor: 'creating-a-release')
+        - docs_url = help_page_path('user/project/releases/index.md', anchor: 'create-a-release')
         - docs_link_start = link_start % { url: docs_url }
         - link_end = '</a>'.html_safe
         - replacements = { releases_page_link_start: releases_page_link_start, docs_link_start: docs_link_start, link_end: link_end }
         = s_('TagsPage|Optionally, create a public Release of your project, based on this tag. Release notes are displayed on the %{releases_page_link_start}Releases%{link_end} page. %{docs_link_start}More information%{link_end}').html_safe % replacements
 
       = render layout: 'shared/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
-        = render 'shared/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here…'), current_text: @release_description
+        = render 'shared/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here…'), current_text: @release_description, qa_selector: 'release_notes_field'
         = render 'shared/notes/hints'
   .form-actions
-    = button_tag s_('TagsPage|Create tag'), class: 'btn btn-success'
+    = button_tag s_('TagsPage|Create tag'), class: 'btn btn-success', data: { qa_selector: "create_tag_button" }
     = link_to s_('TagsPage|Cancel'), project_tags_path(@project), class: 'btn btn-cancel'
 -# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

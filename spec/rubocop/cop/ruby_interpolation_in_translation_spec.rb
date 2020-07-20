@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 require 'rubocop'
 require 'rubocop/rspec/support'
@@ -9,7 +9,7 @@ require_relative '../../../rubocop/cop/ruby_interpolation_in_translation'
 
 # Disabling interpolation check as we deliberately want to have #{} in strings.
 # rubocop:disable Lint/InterpolationCheck
-describe RuboCop::Cop::RubyInterpolationInTranslation do
+RSpec.describe RuboCop::Cop::RubyInterpolationInTranslation, type: :rubocop do
   subject(:cop) { described_class.new }
 
   it 'does not add an offence for a regular messages' do

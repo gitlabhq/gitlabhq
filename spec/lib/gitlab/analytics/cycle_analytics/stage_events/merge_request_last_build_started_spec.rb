@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-describe Gitlab::Analytics::CycleAnalytics::StageEvents::MergeRequestLastBuildStarted do
+RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::MergeRequestLastBuildStarted do
   it_behaves_like 'cycle analytics event'
 end

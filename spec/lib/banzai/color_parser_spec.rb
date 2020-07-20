@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::ColorParser do
+RSpec.describe Banzai::ColorParser do
   describe '.parse' do
     context 'HEX format' do
       [

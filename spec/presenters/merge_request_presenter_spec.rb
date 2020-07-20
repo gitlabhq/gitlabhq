@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestPresenter do
+RSpec.describe MergeRequestPresenter do
   let(:resource) { create(:merge_request, source_project: project) }
   let(:project) { create(:project) }
   let(:user) { create(:user) }
@@ -612,5 +612,23 @@ describe MergeRequestPresenter do
         is_expected.to eq(false)
       end
     end
+  end
+
+  describe '#api_approvals_path' do
+    subject { described_class.new(resource, current_user: user).api_approvals_path }
+
+    it { is_expected.to eq(expose_path("/api/v4/projects/#{project.id}/merge_requests/#{resource.iid}/approvals")) }
+  end
+
+  describe '#api_approve_path' do
+    subject { described_class.new(resource, current_user: user).api_approve_path }
+
+    it { is_expected.to eq(expose_path("/api/v4/projects/#{project.id}/merge_requests/#{resource.iid}/approve")) }
+  end
+
+  describe '#api_unapprove_path' do
+    subject { described_class.new(resource, current_user: user).api_unapprove_path }
+
+    it { is_expected.to eq(expose_path("/api/v4/projects/#{project.id}/merge_requests/#{resource.iid}/unapprove")) }
   end
 end

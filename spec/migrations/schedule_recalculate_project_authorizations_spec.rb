@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200204113223_schedule_recalculate_project_authorizations.rb')
 
-describe ScheduleRecalculateProjectAuthorizations do
+RSpec.describe ScheduleRecalculateProjectAuthorizations do
   let(:users_table) { table(:users) }
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }

@@ -2,55 +2,39 @@
 
 require 'spec_helper'
 
-describe Gitlab::Import::Metrics do
-  let(:importer_stub) do
-    Class.new do
-      prepend Gitlab::Import::Metrics
+RSpec.describe Gitlab::Import::Metrics do
+  let(:importer) { :test_importer }
+  let(:project) { create(:project) }
+  let(:histogram) { double(:histogram) }
+  let(:counter) { double(:counter) }
 
-      Gitlab::Import::Metrics.measure :execute, metrics: {
-        importer_counter:   {
-          type: :counter,
-          description: 'description'
-        },
-        importer_histogram: {
-          type: :histogram,
-          labels: { importer: 'importer' },
-          description: 'description'
-        }
-      }
+  subject { described_class.new(importer, project) }
 
-      def execute
-        true
-      end
+  describe '#report_import_time' do
+    before do
+      allow(Gitlab::Metrics).to receive(:counter) { counter }
+      allow(Gitlab::Metrics).to receive(:histogram) { histogram }
+      allow(counter).to receive(:increment)
+      allow(counter).to receive(:observe)
     end
-  end
 
-  subject { importer_stub.new.execute }
+    it 'emits importer metrics' do
+      expect(Gitlab::Metrics).to receive(:counter).with(
+        :test_importer_imported_projects_total,
+        'The number of imported projects'
+      )
 
-  describe '#execute' do
-    let(:counter) { double(:counter) }
-    let(:histogram) { double(:histogram) }
-
-    it 'increments counter metric' do
-      expect(Gitlab::Metrics)
-        .to receive(:counter)
-              .with(:importer_counter, 'description')
-              .and_return(counter)
+      expect(Gitlab::Metrics).to receive(:histogram).with(
+        :test_importer_total_duration_seconds,
+        'Total time spent importing projects, in seconds',
+        {},
+        described_class::IMPORT_DURATION_BUCKETS
+      )
 
       expect(counter).to receive(:increment)
+      expect(histogram).to receive(:observe).with({ importer: :test_importer }, anything)
 
-      subject
-    end
-
-    it 'measures method duration and reports histogram metric' do
-      expect(Gitlab::Metrics)
-        .to receive(:histogram)
-              .with(:importer_histogram, 'description')
-              .and_return(histogram)
-
-      expect(histogram).to receive(:observe).with({ importer: 'importer' }, anything)
-
-      subject
+      subject.track_finished_import
     end
   end
 end

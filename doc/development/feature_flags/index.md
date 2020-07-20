@@ -1,6 +1,6 @@
 # Feature flags in development of GitLab
 
-[Feature Flags](../../user/project/operations/feature_flags.md)
+[Feature Flags](../../operations/feature_flags.md)
 can be used to gradually roll out changes, be
 it a new feature, or a performance improvement. By using feature flags, we can
 comfortably measure the impact of our changes, while still being able to easily

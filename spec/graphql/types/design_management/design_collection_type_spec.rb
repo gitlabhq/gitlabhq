@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['DesignCollection'] do
+RSpec.describe GitlabSchema.types['DesignCollection'] do
   it { expect(described_class).to require_graphql_authorizations(:read_design) }
 
   it 'has the expected fields' do

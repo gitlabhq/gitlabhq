@@ -1,0 +1,5 @@
+---
+title: Fix to remove speech bubble on hover over image on MR Overview tab
+merge_request: 36474
+author: Adam Alvis @adamalvis
+type: fixed

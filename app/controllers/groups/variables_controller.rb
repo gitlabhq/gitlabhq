@@ -9,7 +9,7 @@ module Groups
     def show
       respond_to do |format|
         format.json do
-          render status: :ok, json: { variables: GroupVariableSerializer.new.represent(@group.variables) }
+          render status: :ok, json: { variables: ::Ci::GroupVariableSerializer.new.represent(@group.variables) }
         end
       end
     end
@@ -29,7 +29,7 @@ module Groups
     private
 
     def render_group_variables
-      render status: :ok, json: { variables: GroupVariableSerializer.new.represent(@group.variables) }
+      render status: :ok, json: { variables: ::Ci::GroupVariableSerializer.new.represent(@group.variables) }
     end
 
     def render_error

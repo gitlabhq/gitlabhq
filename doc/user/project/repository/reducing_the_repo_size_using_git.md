@@ -25,11 +25,16 @@ Rewriting repository history is a destructive operation. Make sure to backup you
 you begin. The best way back up a repository is to
 [export the project](../settings/import_export.md#exporting-a-project-and-its-data).
 
+NOTE: **Note:**
+Git LFS files can only be removed by an Administrator using a
+[Rake task](../../../raketasks/cleanup.md). Removal of this limitation
+[is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/223621).
+
 ## Purge files from repository history
 
 To make cloning your project faster, rewrite branches and tags to remove unwanted files.
 
-1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/master/INSTALL.md)
+1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
    using a supported package manager or from source.
 
 1. Clone a fresh copy of the repository using `--bare`:
@@ -40,10 +45,23 @@ To make cloning your project faster, rewrite branches and tags to remove unwante
 
 1. Using `git filter-repo`, purge any files from the history of your repository.
 
-   To purge all large files, the `--strip-blobs-bigger-than` option can be used:
+   To purge large files, the `--strip-blobs-bigger-than` option can be used:
 
    ```shell
    git filter-repo --strip-blobs-bigger-than 10M
+   ```
+
+   To purge large files stored using Git LFS, the `--blob--callback` option can
+   be used. The example below, uses the callback to read the file size from the
+   Git LFS pointer, and removes files larger than 10MB.
+
+   ```shell
+   git filter-repo --blob-callback '
+     if blob.data.startswith(b"version https://git-lfs.github.com/spec/v1"):
+       size_in_bytes = int.from_bytes(blob.data[124:], byteorder="big")
+       if size_in_bytes > 10*1000:
+         blob.skip()
+     '
    ```
 
    To purge specific large files by path, the `--path` and `--invert-paths` options can be combined:
@@ -80,6 +98,12 @@ To make cloning your project faster, rewrite branches and tags to remove unwante
    [Protected tags](../protected_tags.md) will cause this to fail. To proceed, you must remove tag
    protection, push, and then re-enable protected tags.
 
+1. Manually run [project housekeeping](../../../administration/housekeeping.md#manual-housekeeping)
+
+NOTE: **Note:**
+Project statistics are cached for performance. You may need to wait 5-10 minutes
+to see a reduction in storage utilization.
+
 ## Purge files from GitLab storage
 
 To reduce the size of your repository in GitLab, you must remove GitLab internal references to
@@ -103,7 +127,7 @@ cannot be fetched at all.
 
 However, these refs can be accessed from the Git bundle inside a project export.
 
-1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/master/INSTALL.md)
+1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
    using a supported package manager or from source.
 
 1. Generate a fresh [export from the
@@ -128,7 +152,7 @@ However, these refs can be accessed from the Git bundle inside a project export.
    trying to remove internal refs, we will rely on the `commit-map` produced by each run to tell us
    which internal refs to remove.
 
-   NOTE:**Note:**
+   NOTE: **Note:**
    `git filter-repo` creates a new `commit-map` file every run, and overwrite the `commit-map` from
    the previous run. You will need this file from **every** run. Do the next step every time you run
    `git filter-repo`.
@@ -176,6 +200,7 @@ You will receive an email once it has completed.
 
 When using repository cleanup, note:
 
+- Project statistics are cached. You may need to wait 5-10 minutes to see a reduction in storage utilization.
 - Housekeeping prunes loose objects older than 2 weeks. This means objects added in the last 2 weeks
   will not be removed immediately. If you have access to the
   [Gitaly](../../../administration/gitaly/index.md) server, you may run `git gc --prune=now` to

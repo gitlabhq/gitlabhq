@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AutoMerge::BaseService do
+RSpec.describe AutoMerge::BaseService do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:service) { described_class.new(project, user, params) }
@@ -51,7 +51,7 @@ describe AutoMerge::BaseService do
         expect(merge_request.merge_params['commit_message']).to eq("Merge branch 'patch-12' into 'master'")
         expect(merge_request.merge_params['sha']).to eq('200fcc9c260f7219eaf0daba87d818f0922c5b18')
         expect(merge_request.merge_params['should_remove_source_branch']).to eq(false)
-        expect(merge_request.squash).to eq(false)
+        expect(merge_request.squash_on_merge?).to eq(false)
         expect(merge_request.merge_params['squash_commit_message']).to eq('Update README.md')
       end
     end

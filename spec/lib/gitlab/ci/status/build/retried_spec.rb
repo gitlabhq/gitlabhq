@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Build::Retried do
+RSpec.describe Gitlab::Ci::Status::Build::Retried do
   let(:build) { create(:ci_build, :retried) }
   let(:status) { double('core status') }
   let(:user) { double('user') }

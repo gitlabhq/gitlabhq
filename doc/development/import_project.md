@@ -17,7 +17,8 @@ The first option is to simply [import the Project tarball file via the GitLab UI
 
 It should take up to 15 minutes for the project to fully import. You can head to the project's main page for the current status.
 
-NOTE: **Note:** This method ignores all the errors silently (including the ones related to `GITALY_DISABLE_REQUEST_LIMITS`) and is used by GitLab's users. For development and testing, check the other methods below.
+NOTE: **Note:**
+This method ignores all the errors silently (including the ones related to `GITALY_DISABLE_REQUEST_LIMITS`) and is used by GitLab's users. For development and testing, check the other methods below.
 
 ### Importing via the `import-project` script
 
@@ -47,7 +48,9 @@ This method will take longer to import than the other methods and will depend on
 
 ### Importing via a Rake task
 
-[`import.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/import_export/import.rake) was introduced for importing large GitLab project exports.
+> The [Rake task](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/import_export/import.rake) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20724) in GitLab 12.6, replacing a GitLab.com Ruby script.
+
+This script was introduced in GitLab 12.6 for importing large GitLab project exports.
 
 As part of this script we also disable direct and background upload to avoid situations where a huge archive is being uploaded to GCS (while being inside a transaction, which can cause idle transaction timeouts).
 
@@ -63,8 +66,52 @@ Parameters:
 | `archive_path` | string | yes | Path to the exported project tarball you want to import |
 
 ```shell
-bundle exec rake "gitlab:import_export:import[root, root, testingprojectimport, /path/to/file.tar.gz]"
+bundle exec rake "gitlab:import_export:import[root, group/subgroup, testingprojectimport, /path/to/file.tar.gz]"
 ```
+
+If you're running Omnibus, run the following Rake task:
+
+```shell
+gitlab-rake "gitlab:import_export:import[root, group/subgroup, testingprojectimport, /path/to/file.tar.gz]"
+```
+
+#### Troubleshooting
+
+Check the common errors listed below, what they mean, and how to fix them.
+
+##### `Exception: undefined method 'name' for nil:NilClass`
+
+The `username` is not valid.
+
+##### `Exception: undefined method 'full_path' for nil:NilClass`
+
+The `namespace_path` does not exist.
+For example, one of the groups or subgroups is mistyped or missing
+or you've specified the project name in the path.
+
+The task will only create the project.
+If you want to import it to a new group or subgroup then create it first.
+
+##### `Exception: No such file or directory @ rb_sysopen - (filename)`
+
+The specified project export file in `archive_path` is missing.
+
+##### `Name can contain only letters, digits, emojis ...`
+
+```plaintext
+Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter,
+digit, emoji or '_'. and Path can contain only letters, digits, '_', '-' and '.'. Cannot start
+with '-', end in '.git' or end in '.atom'
+```
+
+The project name specified in `project_path` is not valid for one of the specified reasons.
+
+Only put the project name in `project_path`. If, for example, you put a path of subgroups in there
+it will fail with this error as `/` is not a valid character in a project name.
+
+##### `Name has already been taken and Path has already been taken`
+
+A project with that name already exists.
 
 ### Importing via the Rails console
 

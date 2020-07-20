@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ArchiveTraceWorker do
+RSpec.describe ArchiveTraceWorker do
   describe '#perform' do
     subject { described_class.new.perform(job&.id) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::ImportIssueWorker do
+RSpec.describe Gitlab::GithubImport::ImportIssueWorker do
   let(:worker) { described_class.new }
 
   describe '#import' do

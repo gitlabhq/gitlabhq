@@ -59,7 +59,7 @@ it. The restriction for visibility levels on the application setting level also
 applies to groups, so if that's set to internal, the explore page will be empty
 for anonymous users. The group page now has a visibility level icon.
 
-Admin users cannot create subgroups or projects with higher visibility level than that of the parent group.
+Admin users cannot create subgroups or projects with higher visibility level than that of the immediate parent group.
 
 ## Visibility of users
 

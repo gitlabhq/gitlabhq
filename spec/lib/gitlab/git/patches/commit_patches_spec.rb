@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::Git::Patches::CommitPatches do
+RSpec.describe Gitlab::Git::Patches::CommitPatches do
   describe '#commit' do
     let(:patches) do
       patches_folder = Rails.root.join('spec/fixtures/patchfiles')

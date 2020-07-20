@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssuableSidebarExtrasEntity do
+RSpec.describe IssuableSidebarExtrasEntity do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:resource) { create(:issue, project: project) }

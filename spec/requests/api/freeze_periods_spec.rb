@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::FreezePeriods do
+RSpec.describe API::FreezePeriods do
   let_it_be(:project) { create(:project, :repository, :private) }
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }

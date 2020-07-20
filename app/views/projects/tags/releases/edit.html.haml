@@ -1,6 +1,6 @@
-- add_to_breadcrumbs "Tags", project_tags_path(@project)
+- add_to_breadcrumbs _("Tags"), project_tags_path(@project)
 - breadcrumb_title @tag.name
-- page_title "Edit", @tag.name, "Tags"
+- page_title _("Edit"), @tag.name, _("Tags")
 
 .sub-header-block.no-bottom-space
   .oneline
@@ -14,6 +14,6 @@
     = render 'shared/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: "Write your release notes or drag files here…"
     = render 'shared/notes/hints'
   .error-alert
-  .prepend-top-default
+  .gl-mt-3
     = f.submit 'Save changes', class: 'btn btn-success'
     = link_to "Cancel", project_tag_path(@project, @tag.name), class: "btn btn-default btn-cancel"

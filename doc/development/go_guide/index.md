@@ -414,7 +414,7 @@ it will display its help message (if `cli` has been used).
 
 With the exception of [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner),
 which publishes its own binaries, our Go binaries are created by projects
-managed by the [Distribution group](https://about.gitlab.com/handbook/product/categories/#distribution-group).
+managed by the [Distribution group](https://about.gitlab.com/handbook/product/product-categories/#distribution-group).
 
 The [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) project creates a
 single, monolithic operating system package containing all the binaries, while
@@ -452,6 +452,28 @@ are:
 
 To reduce unnecessary differences between two distribution methods, Omnibus and
 CNG **should always use the same Go version**.
+
+### Supporting multiple Go versions
+
+Individual Golang-projects need to support multiple Go versions for the following reasons:
+
+1. When a new Go release is out, we should start integrating it into the CI pipelines to verify compatibility with the new compiler.
+1. We must support the [Omnibus official Go version](#updating-go-version), which may be behind the latest minor release.
+1. When Omnibus switches Go version, we still may need to support the old one for security backports.
+
+These 3 requirements may easily be satisfied by keeping support for the 3 latest minor versions of Go.
+
+It's ok to drop support for the oldest Go version and support only 2 latest releases,
+if this is enough to support backports to the last 3 GitLab minor releases.
+
+Example:
+
+In case we want to drop support for `go 1.11` in GitLab `12.10`, we need to verify which Go versions we are using in `12.9`, `12.8`, and `12.7`.
+
+We will not consider the active milestone, `12.10`, because a backport for `12.7` will be required in case of a critical security release.
+
+1. If both [Omnibus and CNG](#updating-go-version) were using Go `1.12` since GitLab `12.7`, then we safely drop support for `1.11`.
+1. If Omnibus or CNG were using `1.11` in GitLab `12.7`, then we still need to keep support for Go `1.11` for easier backporting of security fixes.
 
 ## Secure Team standards and style guidelines
 

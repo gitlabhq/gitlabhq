@@ -1,0 +1,5 @@
+---
+title: Allow policies to override parent rules
+merge_request: 33990
+author:
+type: added

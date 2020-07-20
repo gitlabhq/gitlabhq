@@ -837,7 +837,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders empty state' do
           expect(page).to have_content(job.detailed_status(user).illustration[:title])
-          expect(page).not_to have_selector('.js-build-trace')
+          expect(page).not_to have_selector('.job-log')
           expect(page).to have_content('This job has been canceled')
         end
       end
@@ -852,7 +852,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it 'renders empty state' do
         expect(page).to have_content(job.detailed_status(user).illustration[:title])
-        expect(page).not_to have_selector('.js-build-trace')
+        expect(page).not_to have_selector('.job-log')
         expect(page).to have_content('This job has been skipped')
       end
     end

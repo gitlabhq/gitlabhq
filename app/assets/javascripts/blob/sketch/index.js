@@ -56,7 +56,7 @@ export default class SketchLoader {
   error() {
     const errorMsg = document.createElement('p');
 
-    errorMsg.className = 'prepend-top-default append-bottom-default text-center';
+    errorMsg.className = 'gl-mt-3 gl-mb-3 text-center';
     errorMsg.textContent = __(`
       Cannot show preview. For previews on sketch files, they must have the file format
       introduced by Sketch version 43 and above.

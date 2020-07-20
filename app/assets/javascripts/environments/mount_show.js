@@ -15,7 +15,7 @@ export default () => {
     data() {
       const environment = JSON.parse(JSON.stringify(container.dataset));
       environment.delete_path = environment.deletePath;
-      environment.mounted_to_show = true;
+      environment.onSingleEnvironmentPage = true;
 
       return {
         environment,

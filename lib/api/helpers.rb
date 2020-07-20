@@ -41,6 +41,16 @@ module API
       end
     end
 
+    def job_token_authentication?
+      initial_current_user && @current_authenticated_job.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    end
+
+    # Returns the job associated with the token provided for
+    # authentication, if any
+    def current_authenticated_job
+      @current_authenticated_job
+    end
+
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     # We can't rewrite this with StrongMemoize because `sudo!` would
     # actually write to `@current_user`, and `sudo?` would immediately
@@ -77,12 +87,6 @@ module API
 
     def user_project
       @project ||= find_project!(params[:id])
-    end
-
-    def wiki_page
-      page = ProjectWiki.new(user_project, current_user).find_page(params[:slug])
-
-      page || not_found!('Wiki Page')
     end
 
     def available_labels_for(label_parent, include_ancestor_groups: true)
@@ -374,6 +378,12 @@ module API
       render_api_error!(message.join(' '), 404)
     end
 
+    def check_sha_param!(params, merge_request)
+      if params[:sha] && merge_request.diff_head_sha != params[:sha]
+        render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
+      end
+    end
+
     def unauthorized!
       render_api_error!('401 Unauthorized', 401)
     end
@@ -416,8 +426,12 @@ module API
 
     def render_validation_error!(model)
       if model.errors.any?
-        render_api_error!(model.errors.messages || '400 Bad Request', 400)
+        render_api_error!(model_error_messages(model) || '400 Bad Request', 400)
       end
+    end
+
+    def model_error_messages(model)
+      model.errors.messages
     end
 
     def render_spam_error!
@@ -490,7 +504,7 @@ module API
         header['X-Sendfile'] = path
         body
       else
-        file path
+        sendfile path
       end
     end
 
@@ -534,6 +548,8 @@ module API
 
     def project_finder_params_ce
       finder_params = project_finder_params_visibility_ce
+      finder_params[:with_issues_enabled] = true if params[:with_issues_enabled].present?
+      finder_params[:with_merge_requests_enabled] = true if params[:with_merge_requests_enabled].present?
       finder_params[:without_deleted] = true
       finder_params[:search] = params[:search] if params[:search]
       finder_params[:search_namespaces] = true if params[:search_namespaces].present?
@@ -543,6 +559,7 @@ module API
       finder_params[:id_before] = params[:id_before] if params[:id_before]
       finder_params[:last_activity_after] = params[:last_activity_after] if params[:last_activity_after]
       finder_params[:last_activity_before] = params[:last_activity_before] if params[:last_activity_before]
+      finder_params[:repository_storage] = params[:repository_storage] if params[:repository_storage]
       finder_params
     end
 

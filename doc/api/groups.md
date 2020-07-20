@@ -19,7 +19,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (admins only) |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md) |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md#valid-access-levels) |
 | `top_level_only`         | boolean           | no       | Limit to top level groups, excluding all subgroups |
 
 ```plaintext
@@ -94,7 +94,8 @@ GET /groups?statistics=true
       "wiki_size" : 100,
       "lfs_objects_size" : 123,
       "job_artifacts_size" : 57,
-      "packages_size": 0
+      "packages_size": 0,
+      "snippets_size" : 50,
     }
   }
 ]
@@ -121,7 +122,7 @@ Parameters:
 
 | Attribute                | Type              | Required | Description |
 | ------------------------ | ----------------- | -------- | ----------- |
-| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the parent group |
+| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
 | `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
@@ -130,7 +131,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (admins only) |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md) |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md#valid-access-levels) |
 
 ```plaintext
 GET /groups/:id/subgroups
@@ -193,7 +194,7 @@ Parameters:
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
 | `with_shared`                 | boolean        | no       | Include projects shared to this group. Default is `true` |
 | `include_subgroups`           | boolean        | no       | Include projects in subgroups of this group. Default is `false`   |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md) |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_security_reports`       | boolean        | no       | **(ULTIMATE)** Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
 
@@ -268,7 +269,7 @@ Parameters:
 | `starred`                     | boolean        | no       | Limit by projects starred by the current user |
 | `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md) |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 Example response:
@@ -666,8 +667,8 @@ Parameters:
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
 | `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.      |
-| `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group. |
-| `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group. |
+| `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
+| `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
 
 ### Options for `default_branch_protection`
 
@@ -740,8 +741,8 @@ PUT /groups/:id
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `file_template_project_id`           | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |
-| `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group. |
-| `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group. |
+| `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
+| `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
 
 NOTE: **Note:**
 The `projects` and `shared_projects` attributes in the response are deprecated and will be [removed in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -1051,7 +1052,7 @@ POST /groups/:id/ldap_group_links
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `cn`      | string         | no       | The CN of an LDAP group |
 | `filter`  | string         | no       | The LDAP filter for the group |
-| `group_access` | integer   | yes      | Minimum access level for members of the LDAP group |
+| `group_access` | integer   | yes      | Minimum [access level](members.md#valid-access-levels) for members of the LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
 NOTE: **Note:**
@@ -1140,7 +1141,7 @@ POST /groups/:id/share
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
-| `group_access` | integer | yes | The [permissions level](members.md) to grant the group |
+| `group_access` | integer | yes | The [access level](members.md#valid-access-levels) to grant the group |
 | `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
 
 ### Delete link sharing group with another group

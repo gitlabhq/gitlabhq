@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestsHelper do
+RSpec.describe MergeRequestsHelper do
   include ActionView::Helpers::UrlHelper
   include ProjectForksHelper
 

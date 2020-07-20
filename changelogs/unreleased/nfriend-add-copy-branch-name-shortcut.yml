@@ -1,0 +1,5 @@
+---
+title: Add keyboard shortcut ('b') to copy MR source branch name on MR page
+merge_request: 36338
+author:
+type: added

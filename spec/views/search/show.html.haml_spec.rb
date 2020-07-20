@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'search/show' do
+RSpec.describe 'search/show' do
   let(:search_term) { nil }
 
   before do

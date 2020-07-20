@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RequestAwareEntity do
+RSpec.describe RequestAwareEntity do
   subject do
     Class.new.include(described_class).new
   end

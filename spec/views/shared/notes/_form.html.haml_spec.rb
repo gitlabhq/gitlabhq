@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'shared/notes/_form' do
+RSpec.describe 'shared/notes/_form' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }

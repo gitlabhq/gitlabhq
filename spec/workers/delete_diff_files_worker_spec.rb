@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeleteDiffFilesWorker do
+RSpec.describe DeleteDiffFilesWorker do
   describe '#perform' do
     let(:merge_request) { create(:merge_request) }
     let(:merge_request_diff) { merge_request.merge_request_diff }

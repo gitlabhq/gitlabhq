@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Variables < Grape::API
+  class Variables < Grape::API::Instance
     include PaginationParams
 
     before { authenticate! }
@@ -12,6 +12,15 @@ module API
         # This method exists so that EE can more easily filter out certain
         # parameters, without having to modify the source code directly.
         params
+      end
+
+      def find_variable(params)
+        variables = ::Ci::VariablesFinder.new(user_project, params).execute.to_a
+
+        return variables.first unless ::Gitlab::Ci::Features.variables_api_filter_environment_scope?
+        return variables.first unless variables.many? # rubocop: disable CodeReuse/ActiveRecord
+
+        conflict!("There are multiple variables with provided parameters. Please use 'filter[environment_scope]'")
       end
     end
 
@@ -39,10 +48,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/variables/:key' do
-        key = params[:key]
-        variable = user_project.variables.find_by(key: key)
-
-        break not_found!('Variable') unless variable
+        variable = find_variable(params)
+        not_found!('Variable') unless variable
 
         present variable, with: Entities::Variable
       end
@@ -56,7 +63,7 @@ module API
         requires :value, type: String, desc: 'The value of the variable'
         optional :protected, type: Boolean, desc: 'Whether the variable is protected'
         optional :masked, type: Boolean, desc: 'Whether the variable is masked'
-        optional :variable_type, type: String, values: Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
+        optional :variable_type, type: String, values: ::Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
         optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
       end
       post ':id/variables' do
@@ -80,16 +87,16 @@ module API
         optional :value, type: String, desc: 'The value of the variable'
         optional :protected, type: Boolean, desc: 'Whether the variable is protected'
         optional :masked, type: Boolean, desc: 'Whether the variable is masked'
-        optional :variable_type, type: String, values: Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
+        optional :variable_type, type: String, values: ::Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
         optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
+        optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ':id/variables/:key' do
-        variable = user_project.variables.find_by(key: params[:key])
+        variable = find_variable(params)
+        not_found!('Variable') unless variable
 
-        break not_found!('Variable') unless variable
-
-        variable_params = declared_params(include_missing: false).except(:key)
+        variable_params = declared_params(include_missing: false).except(:key, :filter)
         variable_params = filter_variable_parameters(variable_params)
 
         if variable.update(variable_params)
@@ -105,10 +112,11 @@ module API
       end
       params do
         requires :key, type: String, desc: 'The key of the variable'
+        optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/variables/:key' do
-        variable = user_project.variables.find_by(key: params[:key])
+        variable = find_variable(params)
         not_found!('Variable') unless variable
 
         # Variables don't have a timestamp. Therefore, destroy unconditionally.

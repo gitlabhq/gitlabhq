@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Web IDE file templates' do
       include Runtime::Fixtures
 
@@ -53,9 +55,10 @@ module QA
             ide.create_new_file_from_template template[:file_name], template[:name]
 
             expect(ide.has_file?(template[:file_name])).to be_truthy
-
             expect(ide).to have_button('Undo')
             expect(ide).to have_normalized_ws_text(content[0..100])
+
+            ide.rename_file(template[:file_name], "#{SecureRandom.hex(8)}/#{template[:file_name]}")
 
             ide.commit_changes
 

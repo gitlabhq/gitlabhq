@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-shared_examples 'ChronicDurationAttribute reader' do
+RSpec.shared_examples 'ChronicDurationAttribute reader' do
   it 'contains dynamically created reader method' do
     expect(subject.class).to be_public_method_defined(virtual_field)
   end
@@ -22,7 +22,7 @@ shared_examples 'ChronicDurationAttribute reader' do
   end
 end
 
-shared_examples 'ChronicDurationAttribute writer' do
+RSpec.shared_examples 'ChronicDurationAttribute writer' do
   it 'contains dynamically created writer method' do
     expect(subject.class).to be_public_method_defined("#{virtual_field}=")
   end
@@ -94,7 +94,7 @@ shared_examples 'ChronicDurationAttribute writer' do
   end
 end
 
-describe 'ChronicDurationAttribute' do
+RSpec.describe 'ChronicDurationAttribute' do
   context 'when default value is not set' do
     let(:source_field) {:maximum_timeout}
     let(:virtual_field) {:maximum_timeout_human_readable}
@@ -118,7 +118,7 @@ describe 'ChronicDurationAttribute' do
   end
 end
 
-describe 'ChronicDurationAttribute - reader' do
+RSpec.describe 'ChronicDurationAttribute - reader' do
   let(:source_field) {:timeout}
   let(:virtual_field) {:timeout_human_readable}
 

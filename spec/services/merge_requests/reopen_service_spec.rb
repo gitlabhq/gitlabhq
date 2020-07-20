@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::ReopenService do
+RSpec.describe MergeRequests::ReopenService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }

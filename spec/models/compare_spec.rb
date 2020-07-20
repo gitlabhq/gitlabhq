@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Compare do
+RSpec.describe Compare do
   include RepoHelpers
 
   let(:project) { create(:project, :public, :repository) }

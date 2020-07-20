@@ -2,9 +2,16 @@
 
 require 'spec_helper'
 
-describe 'projects/settings/operations/show' do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+RSpec.describe 'projects/settings/operations/show' do
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+
+  let(:operations_show_locals) do
+    {
+      prometheus_service: project.find_or_initialize_service('prometheus'),
+      alerts_service: project.find_or_initialize_service('alerts')
+    }
+  end
 
   before do
     assign :project, project
@@ -20,13 +27,13 @@ describe 'projects/settings/operations/show' do
       allow(view).to receive(:incident_management_available?) { false }
     end
 
-    let!(:error_tracking_setting) do
+    let_it_be(:error_tracking_setting) do
       create(:project_error_tracking_setting, project: project)
     end
 
     context 'Settings page ' do
       it 'renders the Operations Settings page' do
-        render template: "projects/settings/operations/show", locals: { prometheus_service: project.find_or_initialize_service('prometheus') }
+        render template: 'projects/settings/operations/show', locals: operations_show_locals
 
         expect(rendered).to have_content _('Error Tracking')
         expect(rendered).to have_content _('To link Sentry to GitLab, enter your Sentry URL and Auth Token')

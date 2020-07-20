@@ -68,6 +68,15 @@ class Rack::Attack
     end
   end
 
+  # Product analytics feature is in experimental stage.
+  # At this point we want to limit amount of events registered
+  # per application (aid stands for application id).
+  throttle('throttle_product_analytics_collector', limit: 100, period: 60) do |req|
+    if req.product_analytics_collector_request?
+      req.params['aid']
+    end
+  end
+
   throttle('throttle_authenticated_web', Gitlab::Throttle.authenticated_web_options) do |req|
     if req.web_request? &&
         Gitlab::Throttle.settings.throttle_authenticated_web_enabled
@@ -126,6 +135,10 @@ class Rack::Attack
 
     def health_check_request?
       path =~ %r{^/-/(health|liveness|readiness)}
+    end
+
+    def product_analytics_collector_request?
+      path.start_with?('/-/collector/i')
     end
 
     def should_be_skipped?

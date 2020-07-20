@@ -3,71 +3,83 @@
 module Gitlab
   class GlRepository
     class Identifier
-      attr_reader :gl_repository, :repo_type
+      include Gitlab::Utils::StrongMemoize
 
-      def initialize(gl_repository)
-        @gl_repository = gl_repository
-        @segments = gl_repository.split('-')
+      InvalidIdentifier = Class.new(ArgumentError)
 
-        raise_error if segments.size > 3
+      def self.parse(gl_repository)
+        segments = gl_repository&.split('-')
 
-        @repo_type = find_repo_type
-        @container_id = find_container_id
-        @container_class = find_container_class
+        # gl_repository can either have 2 or 3 segments:
+        #
+        # TODO: convert all 2-segment format to 3-segment:
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/219192
+        identifier = case segments&.size
+                     when 2
+                       TwoPartIdentifier.new(*segments)
+                     when 3
+                       ThreePartIdentifier.new(*segments)
+                     end
+
+        return identifier if identifier&.valid?
+
+        raise InvalidIdentifier, %Q(Invalid GL Repository "#{gl_repository}")
       end
 
-      def fetch_container!
-        container_class.find_by_id(container_id)
-      end
+      # The older 2-segment format, where the container is implied.
+      # eg. project-1, wiki-1
+      class TwoPartIdentifier < Identifier
+        def initialize(repo_type_name, container_id_str)
+          @container_id_str = container_id_str
+          @repo_type_name = repo_type_name
+        end
 
-      private
+        private
 
-      attr_reader :segments, :container_class, :container_id
-
-      def find_repo_type
-        type_name = three_segments_format? ? segments.last : segments.first
-        type = Gitlab::GlRepository.types[type_name]
-
-        raise_error unless type
-
-        type
-      end
-
-      def find_container_class
-        if three_segments_format?
-          case segments[0]
-          when 'project'
-            Project
-          when 'group'
-            Group
-          else
-            raise_error
-          end
-        else
+        def container_class
           repo_type.container_class
         end
       end
 
-      def find_container_id
-        id = Integer(segments[1], 10, exception: false)
+      # The newer 3-segment format, where the container is explicit
+      # eg. group-1-wiki, project-1-wiki
+      class ThreePartIdentifier < Identifier
+        def initialize(container_type, container_id_str, repo_type_name)
+          @container_id_str = container_id_str
+          @container_type = container_type
+          @repo_type_name = repo_type_name
+        end
 
-        raise_error unless id
+        private
 
-        id
+        def container_class
+          case @container_type
+          when 'project'
+            Project
+          when 'group'
+            Group
+          end
+        end
       end
 
-      # gl_repository can either have 2 or 3 segments:
-      # "wiki-1" is the older 2-segment format, where container is implied.
-      # "group-1-wiki" is the newer 3-segment format, including container information.
-      #
-      # TODO: convert all 2-segment format to 3-segment:
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/219192
-      def three_segments_format?
-        segments.size == 3
+      def repo_type
+        strong_memoize(:repo_type) { Gitlab::GlRepository.types[repo_type_name] }
       end
 
-      def raise_error
-        raise ArgumentError, "Invalid GL Repository \"#{gl_repository}\""
+      def container
+        strong_memoize(:container) { container_class.find_by_id(container_id) }
+      end
+
+      def valid?
+        repo_type.present? && container_class.present? && container_id&.positive?
+      end
+
+      private
+
+      attr_reader :container_id_str, :repo_type_name
+
+      def container_id
+        strong_memoize(:container_id) { Integer(container_id_str, 10, exception: false) }
       end
     end
   end

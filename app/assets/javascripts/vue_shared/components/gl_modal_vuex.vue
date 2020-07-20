@@ -52,6 +52,14 @@ export default {
       // $root.$emit is a workaround because other b-modal approaches don't work yet with gl-modal
       this.$root.$emit('bv::hide::modal', this.modalId);
     },
+    cancel() {
+      this.$emit('cancel');
+      this.syncHide();
+    },
+    ok() {
+      this.$emit('ok');
+      this.syncHide();
+    },
   },
 };
 </script>
@@ -65,5 +73,6 @@ export default {
     @hidden="syncHide"
   >
     <slot></slot>
+    <slot slot="modal-footer" name="modal-footer" :ok="ok" :cancel="cancel"></slot>
   </gl-modal>
 </template>

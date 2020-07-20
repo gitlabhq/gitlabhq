@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabDanger do
+RSpec.describe GitlabDanger do
   let(:gitlab_danger_helper) { nil }
 
   subject { described_class.new(gitlab_danger_helper) }

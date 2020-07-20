@@ -11,7 +11,7 @@ export const parseLine = (line = {}, lineNumber) => ({
 /**
  * When a line has `section_header` set to true, we create a new
  * structure to allow to nest the lines that belong to the
- * collpasible section
+ * collapsible section
  *
  * @param Object line
  * @param Number lineNumber
@@ -91,7 +91,7 @@ export const getIncrementalLineNumber = acc => {
  * Parses the job log content into a structure usable by the template
  *
  * For collaspible lines (section_header = true):
- *    - creates a new array to hold the lines that are collpasible,
+ *    - creates a new array to hold the lines that are collapsible,
  *    - adds a isClosed property to handle toggle
  *    - adds a isHeader property to handle template logic
  *    - adds the section_duration
@@ -177,5 +177,3 @@ export const updateIncrementalTrace = (newLog = [], oldParsed = []) => {
 
   return logLinesParser(newLog, parsedLog);
 };
-
-export const isNewJobLogActive = () => gon && gon.features && gon.features.jobLogJson;

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Setting Due Date of an issue' do
+RSpec.describe 'Setting Due Date of an issue' do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

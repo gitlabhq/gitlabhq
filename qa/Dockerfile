@@ -3,11 +3,10 @@ LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
 
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV DOCKER_VERSION="17.09.0-ce"
-ENV CHROME_VERSION="83.0.4103.61-1"
-ENV CHROME_DRIVER_VERSION="83.0.4103.39"
+ENV CHROME_VERSION="84.0.4147.89-1"
+ENV CHROME_DRIVER_VERSION="84.0.4147.30"
 ENV CHROME_DEB="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 ENV CHROME_URL="https://s3.amazonaws.com/gitlab-google-chrome-stable/${CHROME_DEB}"
-ENV K3D_VERSION="1.3.4"
 
 ##
 # Add support for stretch-backports
@@ -47,12 +46,6 @@ RUN curl --silent --show-error --fail -O "${CHROME_URL}" && \
 RUN wget -q "https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip"
 RUN unzip chromedriver_linux64.zip -d /usr/local/bin
 RUN rm -f chromedriver_linux64.zip
-
-##
-# Install K3d local cluster support
-#   https://github.com/rancher/k3d
-#
-RUN curl -s https://raw.githubusercontent.com/rancher/k3d/master/install.sh | TAG="v${K3D_VERSION}" bash
 
 ##
 # Install gcloud and kubectl CLI used in Auto DevOps test to create K8s

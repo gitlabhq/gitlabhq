@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Awardable do
+RSpec.describe Awardable do
   let!(:issue)        { create(:issue) }
   let!(:award_emoji)  { create(:award_emoji, :downvote, awardable: issue) }
 

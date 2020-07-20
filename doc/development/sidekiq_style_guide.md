@@ -175,9 +175,9 @@ Jobs can have an `urgency` attribute set, which can be `:high`,
 
 | **Urgency**  | **Queue Scheduling Target** | **Execution Latency Requirement**  |
 |--------------|-----------------------------|------------------------------------|
-| `:high`      | 100 milliseconds            | p50 of 1 second, p99 of 10 seconds |
-| `:low`       | 1 minute                    | Maximum run time of 1 hour         |
-| `:throttled` | None                        | Maximum run time of 1 hour         |
+| `:high`      | 10 seconds                  | p50 of 1 second, p99 of 10 seconds |
+| `:low`       | 1 minute                    | Maximum run time of 5 minutes      |
+| `:throttled` | None                        | Maximum run time of 5 minutes      |
 
 To set a job's urgency, use the `urgency` class method:
 
@@ -225,6 +225,47 @@ work between two different workers, one with `urgency :high` code that
 executes quickly, and the other with `urgency :low`, which has no
 execution latency requirements (but also has lower scheduling targets).
 
+### Changing a queue's urgency
+
+On GitLab.com, we run Sidekiq in several
+[shards](https://dashboards.gitlab.net/d/sidekiq-shard-detail/sidekiq-shard-detail),
+each of which represents a particular type of workload.
+
+When changing a queue's urgency, or adding a new queue, we need to take
+into account the expected workload on the new shard. Note that, if we're
+changing an existing queue, there is also an effect on the old shard,
+but that will always be a reduction in work.
+
+To do this, we want to calculate the expected increase in total execution time
+and RPS (throughput) for the new shard. We can get these values from:
+
+- The [Queue Detail
+  dashboard](https://dashboards.gitlab.net/d/sidekiq-queue-detail/sidekiq-queue-detail)
+  has values for the queue itself. For a new queue, we can look for
+  queues that have similar patterns or are scheduled in similar
+  circumstances.
+- The [Shard Detail
+  dashboard](https://dashboards.gitlab.net/d/sidekiq-shard-detail/sidekiq-shard-detail)
+  has Total Execution Time and Throughput (RPS). The Shard Utilization
+  panel will show if there is currently any excess capacity for this
+  shard.
+
+We can then calculate the RPS * average runtime (estimated for new jobs)
+for the queue we're changing to see what the relative increase in RPS and
+execution time we expect for the new shard:
+
+```ruby
+new_queue_consumption = queue_rps * queue_duration_avg
+shard_consumption = shard_rps * shard_duration_avg
+
+(new_queue_consumption / shard_consumption) * 100
+```
+
+If we expect an increase of **less than 5%**, then no further action is needed.
+
+Otherwise, please ping `@gitlab-org/scalability` on the merge request and ask
+for a review.
+
 ## Jobs with External Dependencies
 
 Most background jobs in the GitLab application communicate with other GitLab
@@ -262,7 +303,8 @@ class ExternalDependencyWorker
 end
 ```
 
-NOTE: **Note:** Note that a job cannot be both high urgency and have
+NOTE: **Note:**
+Note that a job cannot be both high urgency and have
 external dependencies.
 
 ## CPU-bound and Memory-bound Workers
@@ -337,55 +379,10 @@ We use the following approach to determine whether a worker is CPU-bound:
 - Note that these values should not be used over small sample sizes, but
   rather over fairly large aggregates.
 
-## Feature Categorization
+## Feature category
 
-Each Sidekiq worker, or one of its ancestor classes, must declare a
-`feature_category` attribute. This attribute maps each worker to a feature
-category. This is done for error budgeting, alert routing, and team attribution
-for Sidekiq workers.
-
-The declaration uses the `feature_category` class method, as shown below.
-
-```ruby
-class SomeScheduledTaskWorker
-  include ApplicationWorker
-
-  # Declares that this worker is part of the
-  # `continuous_integration` feature category
-  feature_category :continuous_integration
-
-  # ...
-end
-```
-
-The list of value values can be found in the file `config/feature_categories.yml`.
-This file is, in turn generated from the [`stages.yml` from the GitLab Company Handbook
-source](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml).
-
-### Updating `config/feature_categories.yml`
-
-Occasionally new features will be added to GitLab stages. When this occurs, you
-can automatically update `config/feature_categories.yml` by running
-`scripts/update-feature-categories`. This script will fetch and parse
-[`stages.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml)
-and generate a new version of the file, which needs to be checked into source control.
-
-### Excluding Sidekiq workers from feature categorization
-
-A few Sidekiq workers, that are used across all features, cannot be mapped to a
-single category. These should be declared as such using the `feature_category_not_owned!`
- declaration, as shown below:
-
-```ruby
-class SomeCrossCuttingConcernWorker
-  include ApplicationWorker
-
-  # Declares that this worker does not map to a feature category
-  feature_category_not_owned!
-
-  # ...
-end
-```
+All Sidekiq workers must define a known [feature
+category](feature_categorization/index.md#sidekiq-workers).
 
 ## Job weights
 
@@ -400,6 +397,8 @@ workers do not need to have weights specified. They can simply use the
 default weight, which is 1.
 
 ## Worker context
+
+> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/9) in GitLab 12.8.
 
 To have some more information about workers in the logs, we add
 [metadata to the jobs in the form of an
@@ -417,27 +416,27 @@ need to do anything.
 
 There are however some instances when there would be no context
 present when the job is scheduled, or the context that is present is
-likely to be incorrect. For these instances we've added rubocop-rules
+likely to be incorrect. For these instances, we've added Rubocop rules
 to draw attention and avoid incorrect metadata in our logs.
 
 As with most our cops, there are perfectly valid reasons for disabling
 them. In this case it could be that the context from the request is
 correct. Or maybe you've specified a context already in a way that
-isn't picked up by the cops. In any case, please leave a code-comment
+isn't picked up by the cops. In any case, leave a code comment
 pointing to which context will be used when disabling the cops.
 
-When you do provide objects to the context, please make sure that the
-route for namespaces and projects is pre-loaded. This can be done using
+When you do provide objects to the context, make sure that the
+route for namespaces and projects is pre-loaded. This can be done by using
 the `.with_route` scope defined on all `Routable`s.
 
-### Cron-Workers
+### Cron workers
 
-The context is automatically cleared for workers in the cronjob-queue
-(which `include CronjobQueue`), even when scheduling them from
+The context is automatically cleared for workers in the Cronjob queue
+(`include CronjobQueue`), even when scheduling them from
 requests. We do this to avoid incorrect metadata when other jobs are
-scheduled from the cron-worker.
+scheduled from the cron worker.
 
-Cron-Workers themselves run instance wide, so they aren't scoped to
+Cron workers themselves run instance wide, so they aren't scoped to
 users, namespaces, projects, or other resources that should be added to
 the context.
 
@@ -449,46 +448,46 @@ somewhere within the worker:
 
 1. Wrap the code that schedules jobs in the `with_context` helper:
 
-```ruby
-  def perform
-    deletion_cutoff = Gitlab::CurrentSettings
-                        .deletion_adjourned_period.days.ago.to_date
-    projects = Project.with_route.with_namespace
-                 .aimed_for_deletion(deletion_cutoff)
+   ```ruby
+     def perform
+       deletion_cutoff = Gitlab::CurrentSettings
+                           .deletion_adjourned_period.days.ago.to_date
+       projects = Project.with_route.with_namespace
+                    .aimed_for_deletion(deletion_cutoff)
 
-    projects.find_each(batch_size: 100).with_index do |project, index|
-      delay = index * INTERVAL
+       projects.find_each(batch_size: 100).with_index do |project, index|
+         delay = index * INTERVAL
 
-      with_context(project: project) do
-        AdjournedProjectDeletionWorker.perform_in(delay, project.id)
-      end
-    end
-  end
-```
+         with_context(project: project) do
+           AdjournedProjectDeletionWorker.perform_in(delay, project.id)
+         end
+       end
+     end
+   ```
 
 1. Use the a batch scheduling method that provides context:
 
-```ruby
-  def schedule_projects_in_batch(projects)
-    ProjectImportScheduleWorker.bulk_perform_async_with_contexts(
-      projects,
-      arguments_proc: -> (project) { project.id },
-      context_proc: -> (project) { { project: project } }
-    )
-  end
-```
+   ```ruby
+     def schedule_projects_in_batch(projects)
+       ProjectImportScheduleWorker.bulk_perform_async_with_contexts(
+         projects,
+         arguments_proc: -> (project) { project.id },
+         context_proc: -> (project) { { project: project } }
+       )
+     end
+   ```
 
-or when scheduling with delays:
+   Or, when scheduling with delays:
 
-```ruby
-  diffs.each_batch(of: BATCH_SIZE) do |diffs, index|
-    DeleteDiffFilesWorker
-      .bulk_perform_in_with_contexts(index *  5.minutes,
-                                     diffs,
-                                     arguments_proc: -> (diff) { diff.id },
-                                     context_proc: -> (diff) { { project: diff.merge_request.target_project } })
-  end
-```
+   ```ruby
+     diffs.each_batch(of: BATCH_SIZE) do |diffs, index|
+       DeleteDiffFilesWorker
+         .bulk_perform_in_with_contexts(index *  5.minutes,
+                                        diffs,
+                                        arguments_proc: -> (diff) { diff.id },
+                                        context_proc: -> (diff) { { project: diff.merge_request.target_project } })
+     end
+   ```
 
 ### Jobs scheduled in bulk
 
@@ -512,11 +511,11 @@ For example:
 Each object from the enumerable in the first argument is yielded into 2
 blocks:
 
-The `arguments_proc` which needs to return the list of arguments the
-job needs to be scheduled with.
+- The `arguments_proc` which needs to return the list of arguments the
+  job needs to be scheduled with.
 
-The `context_proc` which needs to return a hash with the context
-information for the job.
+- The `context_proc` which needs to return a hash with the context
+  information for the job.
 
 ## Arguments logging
 
@@ -597,7 +596,6 @@ There are two options for safely adding new arguments to Sidekiq workers:
 
 1. Set up a [multi-step deployment](#multi-step-deployment) in which the new argument is first added to the worker
 1. Use a [parameter hash](#parameter-hash) for additional arguments. This is perhaps the most flexible option.
-1. Use a parameter hash for additional arguments. This is perhaps the most flexible option.
 
 ##### Multi-step deployment
 

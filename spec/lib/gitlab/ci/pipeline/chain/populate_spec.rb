@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::Populate do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 

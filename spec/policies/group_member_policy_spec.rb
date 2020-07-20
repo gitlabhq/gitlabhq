@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupMemberPolicy do
+RSpec.describe GroupMemberPolicy do
   let(:guest) { create(:user) }
   let(:owner) { create(:user) }
   let(:group) { create(:group, :private) }

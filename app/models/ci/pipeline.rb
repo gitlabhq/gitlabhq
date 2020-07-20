@@ -3,7 +3,7 @@
 module Ci
   class Pipeline < ApplicationRecord
     extend Gitlab::Ci::Model
-    include HasStatus
+    include Ci::HasStatus
     include Importable
     include AfterCommitQueue
     include Presentable
@@ -51,6 +51,8 @@ module Ci
     has_many :latest_builds, -> { latest }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
     has_many :downloadable_artifacts, -> { not_expired.downloadable }, through: :latest_builds, source: :job_artifacts
 
+    has_many :messages, class_name: 'Ci::PipelineMessage', inverse_of: :pipeline
+
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
     has_many :merge_requests_as_head_pipeline, foreign_key: "head_pipeline_id", class_name: 'MergeRequest'
@@ -80,6 +82,7 @@ module Ci
     has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
 
     has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult', foreign_key: :last_pipeline_id
+    has_many :latest_builds_report_results, through: :latest_builds, source: :report_results
 
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
@@ -109,6 +112,8 @@ module Ci
     # We use `Ci::PipelineEnums.failure_reasons` here so that EE can more easily
     # extend this `Hash` with new values.
     enum failure_reason: ::Ci::PipelineEnums.failure_reasons
+
+    enum locked: { unlocked: 0, artifacts_locked: 1 }
 
     state_machine :status, initial: :created do
       event :enqueue do
@@ -244,6 +249,14 @@ module Ci
 
         pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
       end
+
+      after_transition any => [:success] do |pipeline|
+        next unless Gitlab::Ci::Features.keep_latest_artifacts_for_ref_enabled?(pipeline.project)
+
+        pipeline.run_after_commit do
+          Ci::PipelineSuccessUnlockArtifactsWorker.perform_async(pipeline.id)
+        end
+      end
     end
 
     scope :internal, -> { where(source: internal_sources) }
@@ -256,7 +269,14 @@ module Ci
     scope :for_ref, -> (ref) { where(ref: ref) }
     scope :for_id, -> (id) { where(id: id) }
     scope :for_iid, -> (iid) { where(iid: iid) }
+    scope :for_project, -> (project) { where(project: project) }
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
+    scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
+    scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
+
+    scope :outside_pipeline_family, ->(pipeline) do
+      where.not(id: pipeline.same_family_pipeline_ids)
+    end
 
     scope :with_reports, -> (reports_scope) do
       where('EXISTS (?)', ::Ci::Build.latest.with_reports(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
@@ -268,6 +288,15 @@ module Ci
                  .with_status(:running, :success, :failed)
                  .not_interruptible
       )
+    end
+
+    # Returns the pipelines that associated with the given merge request.
+    # In general, please use `Ci::PipelinesForMergeRequestFinder` instead,
+    # for checking permission of the actor.
+    scope :triggered_by_merge_request, -> (merge_request) do
+      ci_sources.where(source: :merge_request_event,
+                       merge_request: merge_request,
+                       project: [merge_request.source_project, merge_request.target_project])
     end
 
     # Returns the pipelines in descending order (= newest first), optionally
@@ -346,6 +375,10 @@ module Ci
 
     def self.latest_successful_ids_per_project
       success.group(:project_id).select('max(id) as id')
+    end
+
+    def self.last_finished_for_ref_id(ci_ref_id)
+      where(ci_ref_id: ci_ref_id).ci_sources.finished.order(id: :desc).select(:id).take
     end
 
     def self.truncate_sha(sha)
@@ -438,6 +471,10 @@ module Ci
           status: composite_status.status,
           warnings: composite_status.warnings?)
       end
+    end
+
+    def triggered_pipelines_with_preloads
+      triggered_pipelines.preload(:source_job)
     end
 
     def legacy_stages
@@ -552,10 +589,28 @@ module Ci
       end
     end
 
+    def lazy_ref_commit
+      return unless ::Gitlab::Ci::Features.pipeline_latest?
+
+      BatchLoader.for(ref).batch do |refs, loader|
+        next unless project.repository_exists?
+
+        project.repository.list_commits_by_ref_name(refs).then do |commits|
+          commits.each { |key, commit| loader.call(key, commits[key]) }
+        end
+      end
+    end
+
     def latest?
       return false unless git_ref && commit.present?
 
-      project.commit(git_ref) == commit
+      unless ::Gitlab::Ci::Features.pipeline_latest?
+        return project.commit(git_ref) == commit
+      end
+
+      return false if lazy_ref_commit.nil?
+
+      lazy_ref_commit.id == commit.id
     end
 
     def retried
@@ -569,8 +624,44 @@ module Ci
       end
     end
 
+    def batch_lookup_report_artifact_for_file_type(file_type)
+      latest_report_artifacts
+        .values_at(*::Ci::JobArtifact.associated_file_types_for(file_type.to_s))
+        .flatten
+        .compact
+        .last
+    end
+
+    # This batch loads the latest reports for each CI job artifact
+    # type (e.g. sast, dast, etc.) in a single SQL query to eliminate
+    # the need to do N different `job_artifacts.where(file_type:
+    # X).last` calls.
+    #
+    # Return a hash of file type => array of 1 job artifact
+    def latest_report_artifacts
+      ::Gitlab::SafeRequestStore.fetch("pipeline:#{self.id}:latest_report_artifacts") do
+        # Note we use read_attribute(:project_id) to read the project
+        # ID instead of self.project_id. The latter appears to load
+        # the Project model. This extra filter doesn't appear to
+        # affect query plan but included to ensure we don't leak the
+        # wrong informaiton.
+        ::Ci::JobArtifact.where(
+          id: job_artifacts.with_reports
+            .select('max(ci_job_artifacts.id) as id')
+            .where(project_id: self.read_attribute(:project_id))
+            .group(:file_type)
+        )
+          .preload(:job)
+          .group_by(&:file_type)
+      end
+    end
+
     def has_kubernetes_active?
       project.deployment_platform&.active?
+    end
+
+    def freeze_period?
+      Ci::FreezePeriodStatus.new(project: project).execute
     end
 
     def has_warnings?
@@ -607,6 +698,25 @@ module Ci
       yaml_errors.present?
     end
 
+    def add_error_message(content)
+      add_message(:error, content)
+    end
+
+    def add_warning_message(content)
+      add_message(:warning, content)
+    end
+
+    # We can't use `messages.error` scope here because messages should also be
+    # read when the pipeline is not persisted. Using the scope will return no
+    # results as it would query persisted data.
+    def error_messages
+      messages.select(&:error?)
+    end
+
+    def warning_messages
+      messages.select(&:warning?)
+    end
+
     # Manually set the notes for a Ci::Pipeline
     # There is no ActiveRecord relation between Ci::Pipeline and notes
     # as they are related to a commit sha. This method helps importing
@@ -639,7 +749,7 @@ module Ci
         when 'manual' then block
         when 'scheduled' then delay
         else
-          raise HasStatus::UnknownStatusError,
+          raise Ci::HasStatus::UnknownStatusError,
                 "Unknown status `#{new_status}`"
         end
       end
@@ -683,6 +793,7 @@ module Ci
         end
 
         variables.append(key: 'CI_KUBERNETES_ACTIVE', value: 'true') if has_kubernetes_active?
+        variables.append(key: 'CI_DEPLOY_FREEZE', value: 'true') if freeze_period?
 
         if external_pull_request_event? && external_pull_request
           variables.concat(external_pull_request.predefined_variables)
@@ -748,13 +859,10 @@ module Ci
     end
 
     # If pipeline is a child of another pipeline, include the parent
-    # and the siblings, otherwise return only itself.
+    # and the siblings, otherwise return only itself and children.
     def same_family_pipeline_ids
-      if (parent = parent_pipeline)
-        [parent.id] + parent.child_pipelines.pluck(:id)
-      else
-        [self.id]
-      end
+      parent = parent_pipeline || self
+      [parent.id] + parent.child_pipelines.pluck(:id)
     end
 
     def bridge_triggered?
@@ -802,6 +910,10 @@ module Ci
       complete? && latest_report_builds(reports_scope).exists?
     end
 
+    def test_report_summary
+      Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results)
+    end
+
     def test_reports
       Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
         latest_report_builds(Ci::JobArtifact.test_reports).preload(:project).find_each do |build|
@@ -838,6 +950,10 @@ module Ci
           build.collect_terraform_reports!(terraform_reports)
         end
       end
+    end
+
+    def has_archive_artifacts?
+      complete? && builds.latest.with_existing_job_artifacts(Ci::JobArtifact.archive.or(Ci::JobArtifact.metadata)).exists?
     end
 
     def has_exposed_artifacts?
@@ -925,7 +1041,7 @@ module Ci
       stages.find_by!(name: name)
     end
 
-    def error_messages
+    def full_error_messages
       errors ? errors.full_messages.to_sentence : ""
     end
 
@@ -964,8 +1080,6 @@ module Ci
     # Set scheduling type of processables if they were created before scheduling_type
     # data was deployed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22246).
     def ensure_scheduling_type!
-      return unless ::Gitlab::Ci::Features.ensure_scheduling_type_enabled?
-
       processables.populate_scheduling_type!
     end
 
@@ -976,6 +1090,12 @@ module Ci
     end
 
     private
+
+    def add_message(severity, content)
+      return unless Gitlab::Ci::Features.store_pipeline_messages?(project)
+
+      messages.build(severity: severity, content: content)
+    end
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)

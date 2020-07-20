@@ -84,8 +84,6 @@ module Ci
     end
 
     def secret_instance_variables
-      return [] unless ::Feature.enabled?(:ci_instance_level_variables, project, default_enabled: true)
-
       project.ci_instance_variables_for(ref: git_ref)
     end
 

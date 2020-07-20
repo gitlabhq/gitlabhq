@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MattermostSlashCommandsService do
+RSpec.describe MattermostSlashCommandsService do
   it_behaves_like "chat slash commands service"
 
   context 'Mattermost API' do

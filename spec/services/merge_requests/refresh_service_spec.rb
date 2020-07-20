@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::RefreshService do
+RSpec.describe MergeRequests::RefreshService do
   include ProjectForksHelper
   include ProjectHelpers
 
@@ -225,12 +225,13 @@ describe MergeRequests::RefreshService do
         context 'when service runs on forked project' do
           let(:project) { @fork_project }
 
-          it 'creates legacy detached merge request pipeline for fork merge request', :sidekiq_might_not_need_inline do
+          it 'creates detached merge request pipeline for fork merge request', :sidekiq_inline do
             expect { subject }
               .to change { @fork_merge_request.pipelines_for_merge_request.count }.by(1)
 
-            expect(@fork_merge_request.pipelines_for_merge_request.first)
-              .to be_legacy_detached_merge_request_pipeline
+            merge_request_pipeline = @fork_merge_request.pipelines_for_merge_request.first
+            expect(merge_request_pipeline).to be_detached_merge_request_pipeline
+            expect(merge_request_pipeline.project).to eq(@project)
           end
         end
 

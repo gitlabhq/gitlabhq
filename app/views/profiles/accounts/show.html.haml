@@ -5,7 +5,7 @@
   .alert.alert-info
     = s_('Profiles|Some options are unavailable for LDAP accounts')
 
-.row.prepend-top-default
+.row.gl-mt-3
   .col-lg-4.profile-settings-sidebar
     %h4.gl-mt-0
       = s_('Profiles|Two-Factor Authentication')
@@ -22,7 +22,7 @@
 
 %hr
 - if display_providers_on_profile?
-  .row.prepend-top-default
+  .row.gl-mt-3
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0
         = s_('Profiles|Social sign-in')
@@ -32,7 +32,7 @@
       = render 'providers', providers: button_based_providers, group_saml_identities: local_assigns[:group_saml_identities]
   %hr
 - if current_user.can_change_username?
-  .row.prepend-top-default
+  .row.gl-mt-3
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0.warning-title
         = s_('Profiles|Change username')
@@ -45,7 +45,7 @@
       #update-username{ data: data }
   %hr
 
-.row.prepend-top-default
+.row.gl-mt-3
   .col-lg-4.profile-settings-sidebar
     %h4.gl-mt-0.danger-title
       = s_('Profiles|Delete account')
@@ -72,4 +72,4 @@
       - else
         %p
           = s_("Profiles|You don't have access to delete this user.")
-.append-bottom-default
+.gl-mb-3

@@ -4,7 +4,7 @@
     %h4= _('Usage ping is not enabled')
     - if !current_user.admin?
       %p
-        - usage_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'usage-ping')
+        - usage_ping_path = help_page_path('development/telemetry/usage_ping')
         - usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: usage_ping_path }
         = s_('In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}.').html_safe % { usage_ping_link_start: usage_ping_link_start, usage_ping_link_end: '</a>'.html_safe }
     - if current_user.admin?

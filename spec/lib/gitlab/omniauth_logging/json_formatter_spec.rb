@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::OmniauthLogging::JSONFormatter do
+RSpec.describe Gitlab::OmniauthLogging::JSONFormatter do
   it "generates log in json format" do
     Timecop.freeze(Time.utc(2019, 12, 04, 9, 10, 11, 123456)) do
       expect(subject.call(:info, Time.now, 'omniauth', 'log message'))

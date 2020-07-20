@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Email do
+RSpec.describe Email do
   describe 'modules' do
     subject { described_class }
 

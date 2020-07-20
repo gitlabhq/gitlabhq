@@ -1,0 +1,19 @@
+# Publishes a tag/branch to Composer Packages of the current project
+publish:
+  image: curlimages/curl:latest
+  stage: build
+  variables:
+    URL: "$CI_SERVER_PROTOCOL://$CI_SERVER_HOST:$CI_SERVER_PORT/api/v4/projects/$CI_PROJECT_ID/packages/composer?job_token=$CI_JOB_TOKEN"
+  script:
+    - version=$([[ -z "$CI_COMMIT_TAG" ]] && echo "branch=$CI_COMMIT_REF_NAME" || echo "tag=$CI_COMMIT_TAG")
+    - insecure=$([ "$CI_SERVER_PROTOCOL" = "http" ] && echo "--insecure" || echo "")
+    - response=$(curl -s -w "\n%{http_code}" $insecure --data $version $URL)
+    - code=$(echo "$response" | tail -n 1)
+    - body=$(echo "$response" | head -n 1)
+    # Output state information
+    - if [ $code -eq 201 ]; then
+        echo "Package created - Code $code - $body";
+      else
+        echo "Could not create package - Code $code - $body";
+        exit 1;
+      fi

@@ -3,7 +3,7 @@ const prettier = require('prettier');
 const fs = require('fs');
 const { getStagedFiles } = require('./frontend_script_utils');
 
-const matchExtensions = ['js', 'vue'];
+const matchExtensions = ['js', 'vue', 'graphql'];
 
 // This will improve glob performance by excluding certain directories.
 // The .prettierignore file will also be respected, but after the glob has executed.

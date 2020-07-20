@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Redis::Queues do
+RSpec.describe Gitlab::Redis::Queues do
   let(:config_file_name) { "config/redis.queues.yml" }
   let(:environment_config_file_name) { "GITLAB_REDIS_QUEUES_CONFIG_FILE" }
   let(:config_old_format_socket) { "spec/fixtures/config/redis_queues_old_format_socket.yml" }

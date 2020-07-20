@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::Git::Blame, :seed_helper do
+RSpec.describe Gitlab::Git::Blame, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   let(:blame) do
     Gitlab::Git::Blame.new(repository, SeedRepo::Commit::ID, "CONTRIBUTING.md")

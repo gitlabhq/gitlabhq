@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssueEntity do
+RSpec.describe IssueEntity do
   let(:project)  { create(:project) }
   let(:resource) { create(:issue, project: project) }
   let(:user)     { create(:user) }

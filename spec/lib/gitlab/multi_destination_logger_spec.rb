@@ -31,7 +31,7 @@ class EmptyLogger < Gitlab::MultiDestinationLogger
   end
 end
 
-describe Gitlab::MultiDestinationLogger do
+RSpec.describe Gitlab::MultiDestinationLogger do
   after(:all) do
     TestLogger.loggers.each do |logger|
       log_file_path = "#{Rails.root}/log/#{logger.file_name}"

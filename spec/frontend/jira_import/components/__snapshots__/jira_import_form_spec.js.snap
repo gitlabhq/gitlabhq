@@ -1,0 +1,277 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JiraImportForm table body shows correct information in each cell 1`] = `
+<table
+  aria-busy="false"
+  aria-colcount="3"
+  class="table b-table gl-table b-table-fixed"
+  role="table"
+>
+  <!---->
+  <!---->
+  <thead
+    class=""
+    role="rowgroup"
+  >
+    <!---->
+    <tr
+      class=""
+      role="row"
+    >
+      <th
+        aria-colindex="1"
+        class=""
+        role="columnheader"
+        scope="col"
+      >
+        Jira display name
+      </th>
+      <th
+        aria-colindex="2"
+        aria-label="Arrow"
+        class=""
+        role="columnheader"
+        scope="col"
+      />
+      <th
+        aria-colindex="3"
+        class=""
+        role="columnheader"
+        scope="col"
+      >
+        GitLab username
+      </th>
+    </tr>
+  </thead>
+  <tbody
+    role="rowgroup"
+  >
+    <!---->
+    <tr
+      class=""
+      role="row"
+    >
+      <td
+        aria-colindex="1"
+        class=""
+        role="cell"
+      >
+        Jane Doe
+      </td>
+      <td
+        aria-colindex="2"
+        class=""
+        role="cell"
+      >
+        <svg
+          aria-label="Will be mapped to"
+          class="gl-icon s16"
+          data-testid="arrow-right-icon"
+        >
+          <use
+            href="#arrow-right"
+          />
+        </svg>
+      </td>
+      <td
+        aria-colindex="3"
+        class=""
+        role="cell"
+      >
+        <div
+          aria-label="The GitLab user to which the Jira user Jane Doe will be mapped"
+          class="dropdown b-dropdown gl-new-dropdown w-100 btn-group"
+        >
+          <!---->
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
+            type="button"
+          >
+            <!---->
+             
+            <span
+              class="gl-new-dropdown-button-text"
+            >
+              janedoe
+            </span>
+             
+            <svg
+              class="dropdown-chevron gl-icon s16"
+              data-testid="chevron-down-icon"
+            >
+              <use
+                href="#chevron-down"
+              />
+            </svg>
+          </button>
+          <ul
+            class="dropdown-menu"
+            role="menu"
+            tabindex="-1"
+          >
+            <!---->
+             
+            <div
+              class="gl-search-box-by-type m-2"
+            >
+              <svg
+                class="gl-search-box-by-type-search-icon gl-icon s16"
+                data-testid="search-icon"
+              >
+                <use
+                  href="#search"
+                />
+              </svg>
+               
+              <input
+                aria-label="Search"
+                class="gl-form-input gl-search-box-by-type-input form-control"
+                placeholder="Search"
+                type="text"
+              />
+               
+              <div
+                class="gl-search-box-by-type-right-icons"
+              >
+                <!---->
+                 
+                <!---->
+              </div>
+            </div>
+              
+            <li
+              class="gl-new-dropdown-text text-secondary"
+              role="presentation"
+            >
+              <p
+                class="b-dropdown-text"
+              >
+                
+            No matches found
+          
+              </p>
+            </li>
+             
+          </ul>
+        </div>
+      </td>
+    </tr>
+    <tr
+      class=""
+      role="row"
+    >
+      <td
+        aria-colindex="1"
+        class=""
+        role="cell"
+      >
+        Fred Chopin
+      </td>
+      <td
+        aria-colindex="2"
+        class=""
+        role="cell"
+      >
+        <svg
+          aria-label="Will be mapped to"
+          class="gl-icon s16"
+          data-testid="arrow-right-icon"
+        >
+          <use
+            href="#arrow-right"
+          />
+        </svg>
+      </td>
+      <td
+        aria-colindex="3"
+        class=""
+        role="cell"
+      >
+        <div
+          aria-label="The GitLab user to which the Jira user Fred Chopin will be mapped"
+          class="dropdown b-dropdown gl-new-dropdown w-100 btn-group"
+        >
+          <!---->
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
+            type="button"
+          >
+            <!---->
+             
+            <span
+              class="gl-new-dropdown-button-text"
+            >
+              mrgitlab
+            </span>
+             
+            <svg
+              class="dropdown-chevron gl-icon s16"
+              data-testid="chevron-down-icon"
+            >
+              <use
+                href="#chevron-down"
+              />
+            </svg>
+          </button>
+          <ul
+            class="dropdown-menu"
+            role="menu"
+            tabindex="-1"
+          >
+            <!---->
+             
+            <div
+              class="gl-search-box-by-type m-2"
+            >
+              <svg
+                class="gl-search-box-by-type-search-icon gl-icon s16"
+                data-testid="search-icon"
+              >
+                <use
+                  href="#search"
+                />
+              </svg>
+               
+              <input
+                aria-label="Search"
+                class="gl-form-input gl-search-box-by-type-input form-control"
+                placeholder="Search"
+                type="text"
+              />
+               
+              <div
+                class="gl-search-box-by-type-right-icons"
+              >
+                <!---->
+                 
+                <!---->
+              </div>
+            </div>
+              
+            <li
+              class="gl-new-dropdown-text text-secondary"
+              role="presentation"
+            >
+              <p
+                class="b-dropdown-text"
+              >
+                
+            No matches found
+          
+              </p>
+            </li>
+             
+          </ul>
+        </div>
+      </td>
+    </tr>
+    <!---->
+    <!---->
+  </tbody>
+  <!---->
+</table>
+`;

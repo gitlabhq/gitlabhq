@@ -3,7 +3,7 @@
 module API
   # Internal access API
   module Internal
-    class Base < Grape::API
+    class Base < Grape::API::Instance
       before { authenticate_by_gitlab_shell_token! }
 
       before do
@@ -63,15 +63,13 @@ module API
               gl_project_path: gl_repository_path,
               gl_id: Gitlab::GlId.gl_id(actor.user),
               gl_username: actor.username,
-              git_config_options: [],
+              git_config_options: ["uploadpack.allowFilter=true",
+                                   "uploadpack.allowAnySHA1InWant=true"],
               gitaly: gitaly_payload(params[:action]),
               gl_console_messages: check_result.console_messages
             }
 
             # Custom option for git-receive-pack command
-            if Feature.enabled?(:gitaly_upload_pack_filter, project, default_enabled: true)
-              payload[:git_config_options] << "uploadpack.allowFilter=true" << "uploadpack.allowAnySHA1InWant=true"
-            end
 
             receive_max_input_size = Gitlab::CurrentSettings.receive_max_input_size.to_i
 

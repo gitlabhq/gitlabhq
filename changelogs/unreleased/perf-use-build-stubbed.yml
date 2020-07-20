@@ -1,0 +1,5 @@
+---
+title: Use build_stubbed to avoid interacting with the DB in todos helper specs
+merge_request: 32906
+author: Arun Kumar Mohan
+type: performance

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::ReferenceRedactorFilter do
+RSpec.describe Banzai::Filter::ReferenceRedactorFilter do
   include ActionView::Helpers::UrlHelper
   include FilterSpecHelper
 

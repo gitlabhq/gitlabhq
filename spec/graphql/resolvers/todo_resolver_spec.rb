@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::TodoResolver do
+RSpec.describe Resolvers::TodoResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -10,9 +10,9 @@ describe Resolvers::TodoResolver do
     let_it_be(:author1) { create(:user) }
     let_it_be(:author2) { create(:user) }
 
-    let_it_be(:todo1) { create(:todo, user: current_user, target_type: 'MergeRequest', state: :pending, action: Todo::MENTIONED, author: author1) }
-    let_it_be(:todo2) { create(:todo, user: current_user, state: :done, action: Todo::ASSIGNED, author: author2) }
-    let_it_be(:todo3) { create(:todo, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1) }
+    let_it_be(:merge_request_todo_pending) { create(:todo, user: current_user, target_type: 'MergeRequest', state: :pending, action: Todo::MENTIONED, author: author1) }
+    let_it_be(:issue_todo_done) { create(:todo, user: current_user, state: :done, action: Todo::ASSIGNED, author: author2) }
+    let_it_be(:issue_todo_pending) { create(:todo, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1) }
 
     it 'calls TodosFinder' do
       expect_next_instance_of(TodosFinder) do |finder|
@@ -23,22 +23,30 @@ describe Resolvers::TodoResolver do
     end
 
     context 'when using no filter' do
-      it 'returns expected todos' do
-        expect(resolve_todos).to contain_exactly(todo1, todo3)
+      it 'returns pending todos' do
+        expect(resolve_todos).to contain_exactly(merge_request_todo_pending, issue_todo_pending)
       end
     end
 
     context 'when using filters' do
       it 'returns the todos for multiple states' do
-        todos = resolve_todos({ state: [:done, :pending] })
+        todos = resolve_todos(state: [:done, :pending])
 
-        expect(todos).to contain_exactly(todo1, todo2, todo3)
+        expect(todos).to contain_exactly(merge_request_todo_pending, issue_todo_done, issue_todo_pending)
       end
 
-      it 'returns the todos for multiple types' do
-        todos = resolve_todos({ type: %w[Issue MergeRequest] })
+      it 'returns the todos for multiple filters' do
+        design_todo_pending = create(:todo, target_type: 'DesignManagement::Design', user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
 
-        expect(todos).to contain_exactly(todo1, todo3)
+        todos = resolve_todos(type: ['MergeRequest', 'DesignManagement::Design'])
+
+        expect(todos).to contain_exactly(merge_request_todo_pending, design_todo_pending)
+      end
+
+      it 'returns the todos for single filter' do
+        todos = resolve_todos(type: 'MergeRequest')
+
+        expect(todos).to contain_exactly(merge_request_todo_pending)
       end
 
       it 'returns the todos for multiple groups' do
@@ -53,7 +61,7 @@ describe Resolvers::TodoResolver do
         todo5 = create(:todo, group: group2, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
         create(:todo, group: group3, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
 
-        todos = resolve_todos({ group_id: [group2.id, group1.id] })
+        todos = resolve_todos(group_id: [group2.id, group1.id])
 
         expect(todos).to contain_exactly(todo4, todo5)
       end
@@ -61,20 +69,19 @@ describe Resolvers::TodoResolver do
       it 'returns the todos for multiple authors' do
         author3 = create(:user)
 
-        todo4 = create(:todo, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author2)
         create(:todo, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author3)
 
-        todos = resolve_todos({ author_id: [author2.id, author1.id] })
+        todos = resolve_todos(author_id: [author2.id, author1.id])
 
-        expect(todos).to contain_exactly(todo1, todo3, todo4)
+        expect(todos).to contain_exactly(merge_request_todo_pending, issue_todo_pending)
       end
 
       it 'returns the todos for multiple actions' do
         create(:todo, user: current_user, state: :pending, action: Todo::DIRECTLY_ADDRESSED, author: author1)
 
-        todos = resolve_todos({ action: [Todo::MENTIONED, Todo::ASSIGNED] })
+        todos = resolve_todos(action: [Todo::MENTIONED, Todo::ASSIGNED])
 
-        expect(todos).to contain_exactly(todo1, todo3)
+        expect(todos).to contain_exactly(merge_request_todo_pending, issue_todo_pending)
       end
 
       it 'returns the todos for multiple projects' do
@@ -86,7 +93,7 @@ describe Resolvers::TodoResolver do
         todo5 = create(:todo, project: project2, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
         create(:todo, project: project3, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
 
-        todos = resolve_todos({ project_id: [project2.id, project1.id] })
+        todos = resolve_todos(project_id: [project2.id, project1.id])
 
         expect(todos).to contain_exactly(todo4, todo5)
       end

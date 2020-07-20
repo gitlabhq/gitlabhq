@@ -1,0 +1,5 @@
+---
+title: Improve pipeline index controller performance by resolving Gitaly N+1 calls
+merge_request: 34160
+author:
+type: performance

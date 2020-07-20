@@ -1,8 +1,8 @@
 - show_group_events = local_assigns.fetch(:show_group_events, false)
 
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller.flex-fill
-  .fade-left= icon('angle-left')
-  .fade-right= icon('angle-right')
+  .fade-left= sprite_icon('chevron-lg-left', size: 12)
+  .fade-right= sprite_icon('chevron-lg-right', size: 12)
   %ul.nav-links.event-filter.scrolling-tabs.nav.nav-tabs
     = event_filter_link EventFilter::ALL, _('All'), s_('EventFilterBy|Filter by all')
     - if event_filter_visible(:repository)
@@ -15,6 +15,8 @@
       = render_if_exists 'events/epics_filter'
     - if comments_visible?
       = event_filter_link EventFilter::COMMENTS, _('Comments'), s_('EventFilterBy|Filter by comments')
-    - if Feature.enabled?(:wiki_events) && (@project.nil? || @project.has_wiki?)
+    - if @project.nil? || @project.has_wiki?
       = event_filter_link EventFilter::WIKI, _('Wiki'), s_('EventFilterBy|Filter by wiki')
+    - if event_filter_visible(:designs)
+      = event_filter_link EventFilter::DESIGNS, _('Designs'), s_('EventFilterBy|Filter by designs')
     = event_filter_link EventFilter::TEAM, _('Team'), s_('EventFilterBy|Filter by team')

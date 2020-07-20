@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::Projects::GrafanaIntegrationResolver do
+RSpec.describe Resolvers::Projects::GrafanaIntegrationResolver do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ApplicationRecord do
+RSpec.describe ApplicationRecord do
   describe '#id_in' do
     let(:records) { create_list(:user, 3) }
 
@@ -56,6 +56,13 @@ describe ApplicationRecord do
   describe '.underscore' do
     it 'returns the underscored value of the class as a string' do
       expect(MergeRequest.underscore).to eq('merge_request')
+    end
+  end
+
+  describe '.at_most' do
+    it 'limits the number of records returned' do
+      create_list(:user, 3)
+      expect(User.at_most(2).count).to eq(2)
     end
   end
 end

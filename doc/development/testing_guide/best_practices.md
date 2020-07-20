@@ -110,7 +110,8 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 
 ### System / Feature tests
 
-NOTE: **Note:** Before writing a new system test, [please consider **not**
+NOTE: **Note:**
+Before writing a new system test, [please consider **not**
 writing one](testing_levels.md#consider-not-writing-a-system-test)!
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
@@ -741,7 +742,7 @@ GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test f
 - There should be only one top-level factory definition per file.
 - FactoryBot methods are mixed in to all RSpec groups. This means you can (and
   should) call `create(...)` instead of `FactoryBot.create(...)`.
-- Make use of [traits](https://www.rubydoc.info/gems/factory_bot/file/GETTING_STARTED.md#Traits) to clean up definitions and usages.
+- Make use of [traits](https://www.rubydoc.info/gems/factory_bot/file/GETTING_STARTED.md#traits) to clean up definitions and usages.
 - When defining a factory, don't define attributes that are not required for the
   resulting record to pass validation.
 - When instantiating from a factory, don't supply attributes that aren't
@@ -812,6 +813,40 @@ For very generic helpers, consider including them in the `spec/support/rspec.rb`
 file which is used by the `spec/fast_spec_helper.rb` file. See
 [Fast unit tests](#fast-unit-tests) for more details about the
 `spec/fast_spec_helper.rb` file.
+
+### Test environment logging
+
+Services for the test environment are automatically configured and started when
+tests are run, including Gitaly, Workhorse, Elasticsearch, and Capybara. When run in CI, or
+if the service needs to be installed, the test environment will log information
+about set-up time, producing log messages like the following:
+
+```plaintext
+==> Setting up Gitaly...
+    Gitaly set up in 31.459649 seconds...
+
+==> Setting up GitLab Workhorse...
+    GitLab Workhorse set up in 29.695619 seconds...
+fatal: update refs/heads/diff-files-symlink-to-image: invalid <newvalue>: 8cfca84
+From https://gitlab.com/gitlab-org/gitlab-test
+ * [new branch]      diff-files-image-to-symlink -> origin/diff-files-image-to-symlink
+ * [new branch]      diff-files-symlink-to-image -> origin/diff-files-symlink-to-image
+ * [new branch]      diff-files-symlink-to-text -> origin/diff-files-symlink-to-text
+ * [new branch]      diff-files-text-to-symlink -> origin/diff-files-text-to-symlink
+   b80faa8..40232f7  snippet/multiple-files -> origin/snippet/multiple-files
+ * [new branch]      testing/branch-with-#-hash -> origin/testing/branch-with-#-hash
+
+==> Setting up GitLab Elasticsearch Indexer...
+    GitLab Elasticsearch Indexer set up in 26.514623 seconds...
+```
+
+This information is omitted when running locally and when no action needs
+to be performed. If you would always like to see these messages, set the
+following environment variable:
+
+```shell
+GITLAB_TESTING_LOG_LEVEL=debug
+```
 
 ---
 

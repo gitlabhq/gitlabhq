@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::ClusterPolicy, :models do
+RSpec.describe Clusters::ClusterPolicy, :models do
   let(:cluster) { create(:cluster, :project) }
   let(:project) { cluster.project }
   let(:user) { create(:user) }

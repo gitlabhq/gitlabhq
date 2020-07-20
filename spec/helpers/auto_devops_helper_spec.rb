@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AutoDevopsHelper do
+RSpec.describe AutoDevopsHelper do
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -90,6 +90,12 @@ describe AutoDevopsHelper do
       end
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#auto_devops_settings_path' do
+    it 'returns auto devops settings path' do
+      expect(helper.auto_devops_settings_path(project)).to eql(project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
     end
   end
 

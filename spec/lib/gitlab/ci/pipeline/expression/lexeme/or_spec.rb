@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-describe Gitlab::Ci::Pipeline::Expression::Lexeme::Or do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Or do
   let(:left) { double('left', evaluate: nil) }
   let(:right) { double('right', evaluate: nil) }
 

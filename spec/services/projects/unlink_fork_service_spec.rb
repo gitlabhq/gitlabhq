@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::UnlinkForkService, :use_clean_rails_memory_store_caching do
+RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_caching do
   include ProjectForksHelper
 
   subject { described_class.new(forked_project, user) }
@@ -53,6 +53,7 @@ describe Projects::UnlinkForkService, :use_clean_rails_memory_store_caching do
     expect(source.forks_count).to eq(1)
 
     subject.execute
+    BatchLoader::Executor.clear_current
 
     expect(source.forks_count).to be_zero
   end
@@ -146,6 +147,7 @@ describe Projects::UnlinkForkService, :use_clean_rails_memory_store_caching do
       expect(project.forks_count).to eq(2)
 
       subject.execute
+      BatchLoader::Executor.clear_current
 
       expect(project.forks_count).to be_zero
     end
@@ -212,6 +214,7 @@ describe Projects::UnlinkForkService, :use_clean_rails_memory_store_caching do
         expect(forked_project.forks_count).to eq(1)
 
         subject.execute
+        BatchLoader::Executor.clear_current
 
         expect(project.forks_count).to eq(1)
         expect(forked_project.forks_count).to eq(0)

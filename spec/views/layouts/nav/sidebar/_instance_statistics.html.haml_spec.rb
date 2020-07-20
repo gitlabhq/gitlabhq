@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-describe 'layouts/nav/sidebar/_instance_statistics' do
+RSpec.describe 'layouts/nav/sidebar/_instance_statistics' do
   it_behaves_like 'has nav sidebar'
 end

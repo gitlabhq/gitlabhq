@@ -253,13 +253,6 @@
 }
 
 .stage-cell {
-  &.table-section {
-    @include media-breakpoint-up(md) {
-      min-width: 160px; /* Hack alert: Without this the mini graph pipeline won't work properly*/
-      margin-right: -4px;
-    }
-  }
-
   .mini-pipeline-graph-dropdown-toggle {
     svg {
       height: $ci-action-icon-size;
@@ -816,7 +809,7 @@
 
   &.ci-status-icon-created,
   &.ci-status-icon-skipped {
-    @include mini-pipeline-graph-color($white, $gray-200, $gray-300, $gray-500, $gray-600, $gray-700);
+    @include mini-pipeline-graph-color($white, $gray-100, $gray-300, $gray-500, $gray-600, $gray-700);
   }
 }
 
@@ -1107,8 +1100,4 @@ button.mini-pipeline-graph-dropdown-toggle {
 
 .progress-bar.bg-primary {
   background-color: $blue-500 !important;
-}
-
-.parent-child-label-container {
-  padding-top: $gl-padding-4;
 }

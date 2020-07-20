@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Sherlock::Transaction do
+RSpec.describe Gitlab::Sherlock::Transaction do
   let(:transaction) { described_class.new('POST', '/cat_pictures') }
 
   describe '#id' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Gcp::FinalizeCreationService, '#execute' do
+RSpec.describe Clusters::Gcp::FinalizeCreationService, '#execute' do
   include GoogleApi::CloudPlatformHelpers
   include KubernetesHelpers
 

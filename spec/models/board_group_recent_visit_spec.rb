@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BoardGroupRecentVisit do
+RSpec.describe BoardGroupRecentVisit do
   let(:user)  { create(:user) }
   let(:group) { create(:group) }
   let(:board) { create(:board, group: group) }

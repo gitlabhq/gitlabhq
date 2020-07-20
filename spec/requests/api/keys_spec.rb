@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Keys do
+RSpec.describe API::Keys do
   let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
   let(:key)   { create(:key, user: user, expires_at: 1.day.from_now) }

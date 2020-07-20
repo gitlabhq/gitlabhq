@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::GroupVariables do
+RSpec.describe API::GroupVariables do
   let(:group) { create(:group) }
   let(:user) { create(:user) }
 

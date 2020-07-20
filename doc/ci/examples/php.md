@@ -76,7 +76,7 @@ environment, let's add it in `.gitlab-ci.yml`:
 ...
 
 before_script:
-- bash ci/docker_install.sh > /dev/null
+  - bash ci/docker_install.sh > /dev/null
 
 ...
 ```
@@ -88,7 +88,7 @@ Last step, run the actual tests using `phpunit`:
 
 test:app:
   script:
-  - phpunit --configuration phpunit_myapp.xml
+    - phpunit --configuration phpunit_myapp.xml
 
 ...
 ```
@@ -104,11 +104,11 @@ image: php:5.6
 
 before_script:
 # Install dependencies
-- bash ci/docker_install.sh > /dev/null
+  - bash ci/docker_install.sh > /dev/null
 
 test:app:
   script:
-  - phpunit --configuration phpunit_myapp.xml
+    - phpunit --configuration phpunit_myapp.xml
 ```
 
 ### Test against different PHP versions in Docker builds
@@ -119,19 +119,19 @@ with a different Docker image version and the runner will do the rest:
 ```yaml
 before_script:
 # Install dependencies
-- bash ci/docker_install.sh > /dev/null
+  - bash ci/docker_install.sh > /dev/null
 
 # We test PHP5.6
 test:5.6:
   image: php:5.6
   script:
-  - phpunit --configuration phpunit_myapp.xml
+    - phpunit --configuration phpunit_myapp.xml
 
 # We test PHP7.0 (good luck with that)
 test:7.0:
   image: php:7.0
   script:
-  - phpunit --configuration phpunit_myapp.xml
+    - phpunit --configuration phpunit_myapp.xml
 ```
 
 ### Custom PHP configuration in Docker builds
@@ -142,7 +142,7 @@ add a `before_script` action:
 
 ```yaml
 before_script:
-- cp my_php.ini /usr/local/etc/php/conf.d/test.ini
+  - cp my_php.ini /usr/local/etc/php/conf.d/test.ini
 ```
 
 Of course, `my_php.ini` must be present in the root directory of your repository.
@@ -166,7 +166,7 @@ Next, add the following snippet to your `.gitlab-ci.yml`:
 ```yaml
 test:app:
   script:
-  - phpunit --configuration phpunit_myapp.xml
+    - phpunit --configuration phpunit_myapp.xml
 ```
 
 Finally, push to GitLab and let the tests begin!
@@ -217,11 +217,11 @@ you can use [atoum](https://github.com/atoum/atoum):
 
 ```yaml
 before_script:
-- wget http://downloads.atoum.org/nightly/mageekguy.atoum.phar
+  - wget http://downloads.atoum.org/nightly/mageekguy.atoum.phar
 
 test:atoum:
   script:
-  - php mageekguy.atoum.phar
+    - php mageekguy.atoum.phar
 ```
 
 ### Using Composer
@@ -238,16 +238,16 @@ following in your `.gitlab-ci.yml`:
 # your git repository.
 cache:
   paths:
-  - vendor/
+    - vendor/
 
 before_script:
 # Install composer dependencies
-- wget https://composer.github.io/installer.sig -O - -q | tr -d '\n' > installer.sig
-- php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-- php -r "if (hash_file('SHA384', 'composer-setup.php') === file_get_contents('installer.sig')) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-- php composer-setup.php
-- php -r "unlink('composer-setup.php'); unlink('installer.sig');"
-- php composer.phar install
+  - wget https://composer.github.io/installer.sig -O - -q | tr -d '\n' > installer.sig
+  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  - php -r "if (hash_file('SHA384', 'composer-setup.php') === file_get_contents('installer.sig')) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+  - php composer-setup.php
+  - php -r "unlink('composer-setup.php'); unlink('installer.sig');"
+  - php composer.phar install
 
 ...
 ```

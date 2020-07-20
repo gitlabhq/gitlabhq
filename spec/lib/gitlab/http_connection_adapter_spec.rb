@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::HTTPConnectionAdapter do
+RSpec.describe Gitlab::HTTPConnectionAdapter do
   include StubRequests
 
   describe '#connection' do

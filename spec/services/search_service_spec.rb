@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SearchService do
+RSpec.describe SearchService do
   let_it_be(:user) { create(:user) }
 
   let_it_be(:accessible_group) { create(:group, :private) }

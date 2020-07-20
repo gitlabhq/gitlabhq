@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Creation of a new commit' do
+RSpec.describe 'Creation of a new commit' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

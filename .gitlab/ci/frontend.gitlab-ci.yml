@@ -2,16 +2,18 @@
   extends:
     - .default-retry
     - .default-before_script
-    - .assets-compile-cache
   variables:
     SETUP_DB: "false"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
-    WEBPACK_VENDOR_DLL: "true"
 
 .compile-assets-base:
-  extends: .frontend-base
+  extends:
+    - .frontend-base
+    - .assets-compile-cache
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-git-2.27-lfs-2.9-node-12.x-yarn-1.21-graphicsmagick-1.3.34
+  variables:
+    WEBPACK_VENDOR_DLL: "true"
   stage: prepare
   script:
     - node --version
@@ -90,21 +92,6 @@ update-yarn-cache:
   cache:
     policy: push
 
-build-assets-image:
-  extends:
-    - .use-kaniko
-    - .frontend:rules:compile-production-assets
-  stage: build-images
-  needs: ["compile-production-assets"]
-  variables:
-    GIT_DEPTH: "1"
-  script:
-    # TODO: Change the image tag to be the MD5 of assets files and skip image building if the image exists
-    # We'll also need to pass GITLAB_ASSETS_TAG to the trigerred omnibus-gitlab pipeline similarly to how we do it for trigerred CNG pipelines
-    # https://gitlab.com/gitlab-org/gitlab/issues/208389
-    - run_timed_command "scripts/build_assets_image"
-  retry: 2
-
 .frontend-fixtures-base:
   extends:
     - .frontend-base
@@ -114,6 +101,7 @@ build-assets-image:
   needs: ["setup-test-env", "compile-test-assets"]
   variables:
     SETUP_DB: "true"
+    WEBPACK_VENDOR_DLL: "true"
   script:
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
@@ -138,22 +126,25 @@ frontend-fixtures-as-if-foss:
 
 .frontend-test-base:
   extends:
-    - .default-retry
+    - .frontend-base
     - .yarn-cache
   variables:
     USE_BUNDLE_INSTALL: "false"
-    SETUP_DB: "false"
   stage: test
-  before_script:
-    - source scripts/utils.sh
+
+eslint-as-if-foss:
+  extends:
+    - .frontend-test-base
+    - .frontend:rules:eslint-as-if-foss
+    - .as-if-foss
+  needs: []
+  script:
+    - run_timed_command "retry yarn install --frozen-lockfile"
+    - yarn run eslint
 
 .karma-base:
   extends: .frontend-test-base
-  variables:
-    # we override the max_old_space_size to prevent OOM errors
-    NODE_OPTIONS: --max_old_space_size=3584
   script:
-    - source scripts/utils.sh
     - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
     - run_timed_command "retry yarn install --frozen-lockfile"
     - run_timed_command "yarn karma"
@@ -174,6 +165,7 @@ karma:
       - tmp/tests/frontend/
     reports:
       junit: junit_karma.xml
+      cobertura: coverage-javascript/cobertura-coverage.xml
 
 karma-as-if-foss:
   extends:
@@ -185,7 +177,6 @@ karma-as-if-foss:
 .jest-base:
   extends: .frontend-test-base
   script:
-    - source scripts/utils.sh
     - run_timed_command "retry yarn install --frozen-lockfile"
     - run_timed_command "yarn jest --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js"
 
@@ -211,7 +202,6 @@ jest-integration:
     - .frontend-test-base
     - .frontend:rules:default-frontend-jobs
   script:
-    - source scripts/utils.sh
     - run_timed_command "retry yarn install --frozen-lockfile"
     - run_timed_command "yarn jest:integration --ci"
   needs: ["frontend-fixtures"]
@@ -236,11 +226,14 @@ coverage-frontend:
     - run_timed_command "retry yarn install --frozen-lockfile"
   script:
     - run_timed_command "yarn node scripts/frontend/merge_coverage_frontend.js"
+  coverage: '/^Statements\s*:\s*?(\d+(?:\.\d+)?)%/'
   artifacts:
     name: coverage-frontend
     expire_in: 31d
     paths:
       - coverage-frontend/
+    reports:
+      cobertura: coverage-frontend/cobertura-coverage.xml
 
 .qa-frontend-node:
   extends:

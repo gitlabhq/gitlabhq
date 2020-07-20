@@ -4,21 +4,25 @@ import '~/behaviors/markdown/render_gfm';
 import { unescape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { stripHtml } from '~/lib/utils/text_utility';
-import Flash from '../../../flash';
-import GLForm from '../../../gl_form';
-import markdownHeader from './header.vue';
-import markdownToolbar from './toolbar.vue';
-import icon from '../icon.vue';
+import Flash from '~/flash';
+import GLForm from '~/gl_form';
+import MarkdownHeader from './header.vue';
+import MarkdownToolbar from './toolbar.vue';
+import Icon from '../icon.vue';
+import GlMentions from '~/vue_shared/components/gl_mentions.vue';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import axios from '~/lib/utils/axios_utils';
 
 export default {
   components: {
-    markdownHeader,
-    markdownToolbar,
-    icon,
+    GlMentions,
+    MarkdownHeader,
+    MarkdownToolbar,
+    Icon,
     Suggestions,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     isSubmitting: {
       type: Boolean,
@@ -159,12 +163,10 @@ export default {
     },
   },
   mounted() {
-    /*
-        GLForm class handles all the toolbar buttons
-      */
+    // GLForm class handles all the toolbar buttons
     return new GLForm($(this.$refs['gl-form']), {
       emojis: this.enableAutocomplete,
-      members: this.enableAutocomplete,
+      members: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
       issues: this.enableAutocomplete,
       mergeRequests: this.enableAutocomplete,
       epics: this.enableAutocomplete,
@@ -229,7 +231,7 @@ export default {
 <template>
   <div
     ref="gl-form"
-    :class="{ 'prepend-top-default append-bottom-default': addSpacingClasses }"
+    :class="{ 'gl-mt-3 gl-mb-3': addSpacingClasses }"
     class="js-vue-markdown-field md-area position-relative"
   >
     <markdown-header
@@ -243,7 +245,10 @@ export default {
     />
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
-        <slot name="textarea"></slot>
+        <gl-mentions v-if="glFeatures.tributeAutocomplete">
+          <slot name="textarea"></slot>
+        </gl-mentions>
+        <slot v-else name="textarea"></slot>
         <a
           class="zen-control zen-control-leave js-zen-leave gl-text-gray-700"
           href="#"

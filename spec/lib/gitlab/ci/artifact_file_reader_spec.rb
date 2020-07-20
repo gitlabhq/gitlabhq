@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::ArtifactFileReader do
+RSpec.describe Gitlab::Ci::ArtifactFileReader do
   let(:job) { create(:ci_build) }
   let(:path) { 'generated.yml' } # included in the ci_build_artifacts.zip
 

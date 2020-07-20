@@ -1,0 +1,18 @@
+query getDashboardValidationWarnings(
+  $projectPath: ID!
+  $environmentName: String
+  $dashboardPath: String!
+) {
+  project(fullPath: $projectPath) {
+    id
+    environments(name: $environmentName) {
+      nodes {
+        name
+        metricsDashboard(path: $dashboardPath) {
+          path
+          schemaValidationWarnings
+        }
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EmailsOnPushWorker, :mailer do
+RSpec.describe EmailsOnPushWorker, :mailer do
   include RepoHelpers
   include EmailSpec::Matchers
 

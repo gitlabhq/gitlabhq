@@ -52,8 +52,6 @@ RSpec.describe GroupsController do
         expect(assigns(:events).map(&:id)).to contain_exactly(event.id)
       end
     end
-
-    it_behaves_like 'namespace storage limit alert'
   end
 
   describe 'GET #show' do
@@ -941,7 +939,7 @@ RSpec.describe GroupsController do
 
         allow(Gitlab::ApplicationRateLimiter)
           .to receive(:increment)
-          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_export][:threshold] + 1)
+          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_export][:threshold].call + 1)
       end
 
       it 'throttles the endpoint' do
@@ -1015,7 +1013,7 @@ RSpec.describe GroupsController do
 
         allow(Gitlab::ApplicationRateLimiter)
           .to receive(:increment)
-          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_download_export][:threshold] + 1)
+          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_download_export][:threshold].call + 1)
       end
 
       it 'throttles the endpoint' do
@@ -1136,6 +1134,36 @@ RSpec.describe GroupsController do
       subject { get :activity, params: { id: group.to_param } }
 
       it_behaves_like 'disabled when using an external authorization service'
+    end
+
+    describe "GET #activity as JSON" do
+      include DesignManagementTestHelpers
+      render_views
+
+      let(:project) { create(:project, :public, group: group) }
+      let(:other_project) { create(:project, :public, group: group) }
+
+      def get_activity
+        get :activity, params: { format: :json, id: group.to_param }
+      end
+
+      before do
+        enable_design_management
+        issue = create(:issue, project: project)
+        create(:event, :created, project: project, target: issue)
+        create(:design_event, project: project)
+        create(:design_event, project: other_project)
+
+        sign_in(user)
+
+        request.cookies[:event_filter] = 'all'
+      end
+
+      it 'returns count' do
+        get_activity
+
+        expect(json_response['count']).to eq(3)
+      end
     end
 
     describe 'GET #issues' do

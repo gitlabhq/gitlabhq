@@ -12,7 +12,8 @@ module Gitlab
           CreateNoteHandler,
           CreateIssueHandler,
           UnsubscribeHandler,
-          CreateMergeRequestHandler
+          CreateMergeRequestHandler,
+          ServiceDeskHandler
         ]
       end
 
@@ -25,5 +26,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Email::Handler.prepend_if_ee('::EE::Gitlab::Email::Handler')

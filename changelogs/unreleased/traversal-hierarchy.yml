@@ -1,0 +1,5 @@
+---
+title: Define a namespace traversal cache
+merge_request: 35713
+author:
+type: performance

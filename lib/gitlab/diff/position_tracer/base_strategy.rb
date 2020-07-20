@@ -8,6 +8,7 @@ module Gitlab
 
         delegate \
           :project,
+          :diff_file,
           :ac_diffs,
           :bd_diffs,
           :cd_diffs,

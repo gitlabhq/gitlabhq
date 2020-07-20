@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Users::BlockService do
+RSpec.describe Users::BlockService do
   let(:current_user) { create(:admin) }
 
   subject(:service) { described_class.new(current_user) }

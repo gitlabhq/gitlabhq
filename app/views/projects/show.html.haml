@@ -1,14 +1,11 @@
 - breadcrumb_title _("Details")
+- page_title _("Projects")
 - @content_class = "limit-container-width" unless fluid_layout
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
 
 = render partial: 'flash_messages', locals: { project: @project }
-
-- if !@project.empty_repo? && can?(current_user, :download_code, @project) && !vue_file_list_enabled?
-  - signatures_path = project_signatures_path(@project, @project.default_branch)
-  .js-signature-container{ data: { 'signatures-path': signatures_path } }
 
 %div{ class: [("limit-container-width" unless fluid_layout)] }
   = render "projects/last_push"

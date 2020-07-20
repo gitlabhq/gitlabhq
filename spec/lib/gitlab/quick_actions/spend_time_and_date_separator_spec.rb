@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::QuickActions::SpendTimeAndDateSeparator do
+RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator do
   subject { described_class }
 
   shared_examples 'arg line with invalid parameters' do

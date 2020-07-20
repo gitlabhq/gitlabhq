@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssueBoardEntity do
+RSpec.describe IssueBoardEntity do
   let_it_be(:project)   { create(:project) }
   let_it_be(:resource)  { create(:issue, project: project) }
   let_it_be(:user)      { create(:user) }

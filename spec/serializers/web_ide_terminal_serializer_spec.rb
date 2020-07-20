@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WebIdeTerminalSerializer do
+RSpec.describe WebIdeTerminalSerializer do
   let(:build) { create(:ci_build) }
 
   subject { described_class.new.represent(WebIdeTerminal.new(build)) }

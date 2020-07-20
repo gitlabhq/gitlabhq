@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::CommitRenderer do
+RSpec.describe Banzai::CommitRenderer do
   describe '.render', :clean_gitlab_redis_cache do
     it 'renders a commit description and title' do
       user = build(:user)

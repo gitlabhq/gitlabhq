@@ -78,8 +78,6 @@
   - 1
 - - detect_repository_languages
   - 1
-- - elastic_batch_project_indexer
-  - 1
 - - elastic_commit_indexer
   - 1
 - - elastic_delete_project
@@ -165,8 +163,6 @@
 - - new_merge_request
   - 2
 - - new_note
-  - 2
-- - notifications
   - 2
 - - object_pool
   - 1
@@ -262,6 +258,8 @@
   - 1
 - - todos_destroyer
   - 1
+- - unassign_issuables
+  - 1
 - - update_external_pull_requests
   - 3
 - - update_highest_role
@@ -273,6 +271,8 @@
 - - update_project_statistics
   - 1
 - - upload_checksum
+  - 1
+- - vulnerabilities_statistics_adjustment
   - 1
 - - vulnerability_exports_export
   - 1

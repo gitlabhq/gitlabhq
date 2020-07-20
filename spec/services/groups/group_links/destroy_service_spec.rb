@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::GroupLinks::DestroyService, '#execute' do
+RSpec.describe Groups::GroupLinks::DestroyService, '#execute' do
   let(:user) { create(:user) }
 
   let_it_be(:group) { create(:group, :private) }

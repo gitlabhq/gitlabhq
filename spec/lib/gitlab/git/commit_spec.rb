@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::Git::Commit, :seed_helper do
+RSpec.describe Gitlab::Git::Commit, :seed_helper do
   include GitHelpers
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
@@ -224,6 +224,34 @@ describe Gitlab::Git::Commit, :seed_helper do
           subject { super().id }
 
           it { is_expected.to eq(SeedRepo::Commit::ID) }
+        end
+      end
+
+      context 'pathspec' do
+        let(:pathspec) { 'files/ruby/*' }
+
+        context 'with default literal_pathspec value' do
+          it 'finds the seed commit' do
+            commit = described_class.last_for_path(repository, 'master', pathspec)
+
+            expect(commit.id).to eq(SeedRepo::Commit::ID)
+          end
+        end
+
+        context 'with literal_pathspec set to false' do
+          it 'finds the seed commit' do
+            commit = described_class.last_for_path(repository, 'master', pathspec, literal_pathspec: false)
+
+            expect(commit.id).to eq(SeedRepo::Commit::ID)
+          end
+        end
+
+        context 'with literal_pathspec set to true' do
+          it 'does not find the seed commit' do
+            commit = described_class.last_for_path(repository, 'master', pathspec, literal_pathspec: true)
+
+            expect(commit).to be_nil
+          end
         end
       end
 
@@ -560,7 +588,7 @@ describe Gitlab::Git::Commit, :seed_helper do
   end
 
   skip 'move this test to gitaly-ruby' do
-    describe '#init_from_rugged' do
+    RSpec.describe '#init_from_rugged' do
       let(:gitlab_commit) { described_class.new(repository, rugged_commit) }
 
       subject { gitlab_commit }

@@ -12,11 +12,10 @@
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - cache_key = project_list_cache_key(project, pipeline_status: pipeline_status)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
-- show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
+- show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project) && project.last_pipeline.present?
 - css_controls_class = compact_mode ? [] : ["flex-lg-row", "justify-content-lg-between"]
 - css_controls_class << "with-pipeline-status" if show_pipeline_status_icon
 - avatar_container_class = project.creator && use_creator_avatar ? '' : 'rect-avatar'
-- license_name = project_license_name(project)
 
 %li.project-row.d-flex{ class: css_class }
   = cache(cache_key) do
@@ -40,13 +39,13 @@
                 %span.project-name<
                   = project.name
 
-          %span.metadata-info.visibility-icon.append-right-10.gl-mt-3.text-secondary.has-tooltip{ data: { container: 'body', placement: 'top' }, title: visibility_icon_description(project) }
+          %span.metadata-info.visibility-icon.gl-mr-3.gl-mt-3.text-secondary.has-tooltip{ data: { container: 'body', placement: 'top' }, title: visibility_icon_description(project) }
             = visibility_level_icon(project.visibility_level, fw: true)
 
-          - if explore_projects_tab? && license_name
-            %span.metadata-info.d-inline-flex.align-items-center.append-right-10.gl-mt-3
-              = sprite_icon('scale', size: 14, css_class: 'append-right-4')
-              = license_name
+          - if explore_projects_tab? && project_license_name(project)
+            %span.metadata-info.d-inline-flex.align-items-center.gl-mr-3.gl-mt-3
+              = sprite_icon('scale', size: 14, css_class: 'gl-mr-2')
+              = project_license_name(project)
 
           - if !explore_projects_tab? && access&.nonzero?
             -# haml-lint:disable UnnecessaryStringOutput
@@ -59,10 +58,10 @@
               = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project
 
         - if show_last_commit_as_description
-          .description.d-none.d-sm-block.append-right-default
+          .description.d-none.d-sm-block.gl-mr-3
             = link_to_markdown(project.commit.title, project_commit_path(project, project.commit), class: "commit-row-message")
         - elsif project.description.present?
-          .description.d-none.d-sm-block.append-right-default
+          .description.d-none.d-sm-block.gl-mr-3
             = markdown_field(project, :description)
 
       .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0.text-secondary{ class: css_controls_class.join(" ") }
@@ -77,25 +76,25 @@
             = link_to project_starrers_path(project),
                 class: "d-flex align-items-center icon-wrapper stars has-tooltip",
                 title: _('Stars'), data: { container: 'body', placement: 'top' } do
-              = sprite_icon('star', size: 14, css_class: 'append-right-4')
+              = sprite_icon('star', size: 14, css_class: 'gl-mr-2')
               = number_with_delimiter(project.star_count)
           - if forks
             = link_to project_forks_path(project),
                 class: "align-items-center icon-wrapper forks has-tooltip",
                 title: _('Forks'), data: { container: 'body', placement: 'top' } do
-              = sprite_icon('fork', size: 14, css_class: 'append-right-4')
+              = sprite_icon('fork', size: 14, css_class: 'gl-mr-2')
               = number_with_delimiter(project.forks_count)
           - if show_merge_request_count?(disabled: !merge_requests, compact_mode: compact_mode)
             = link_to project_merge_requests_path(project),
                 class: "d-none d-xl-flex align-items-center icon-wrapper merge-requests has-tooltip",
                 title: _('Merge Requests'), data: { container: 'body', placement: 'top' } do
-              = sprite_icon('git-merge', size: 14, css_class: 'append-right-4')
+              = sprite_icon('git-merge', size: 14, css_class: 'gl-mr-2')
               = number_with_delimiter(project.open_merge_requests_count)
           - if show_issue_count?(disabled: !issues, compact_mode: compact_mode)
             = link_to project_issues_path(project),
                 class: "d-none d-xl-flex align-items-center icon-wrapper issues has-tooltip",
                 title: _('Issues'), data: { container: 'body', placement: 'top' } do
-              = sprite_icon('issues', size: 14, css_class: 'append-right-4')
+              = sprite_icon('issues', size: 14, css_class: 'gl-mr-2')
               = number_with_delimiter(project.open_issues_count)
         .updated-note
           %span

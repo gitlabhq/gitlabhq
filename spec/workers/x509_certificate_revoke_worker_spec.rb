@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe X509CertificateRevokeWorker do
+RSpec.describe X509CertificateRevokeWorker do
   describe '#perform' do
     context 'with a revoked certificate' do
       subject { described_class.new }

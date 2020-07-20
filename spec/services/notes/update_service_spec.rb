@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Notes::UpdateService do
+RSpec.describe Notes::UpdateService do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, group: group) }
   let(:private_group) { create(:group, :private) }
@@ -56,6 +56,45 @@ describe Notes::UpdateService do
 
         expect(note.suggestions.order(:relative_order).map(&:to_content))
           .to eq(["  foo\n", "  bar\n"])
+      end
+    end
+
+    context 'setting confidentiality' do
+      let(:opts) { { confidential: true } }
+
+      context 'simple note' do
+        it 'updates the confidentiality' do
+          expect { update_note(opts) }.to change { note.reload.confidential }.from(nil).to(true)
+        end
+      end
+
+      context 'discussion notes' do
+        let(:note) { create(:discussion_note, project: project, noteable: issue, author: user, note: "Old note #{user2.to_reference}") }
+        let!(:response_note_1) { create(:discussion_note, project: project, noteable: issue, in_reply_to: note) }
+        let!(:response_note_2) { create(:discussion_note, project: project, noteable: issue, in_reply_to: note, confidential: false) }
+        let!(:other_note) { create(:note, project: project, noteable: issue) }
+
+        context 'when updating the root note' do
+          it 'updates the confidentiality of the root note and all the responses' do
+            update_note(opts)
+
+            expect(note.reload.confidential).to be_truthy
+            expect(response_note_1.reload.confidential).to be_truthy
+            expect(response_note_2.reload.confidential).to be_truthy
+            expect(other_note.reload.confidential).to be_falsey
+          end
+        end
+
+        context 'when updating one of the response notes' do
+          it 'updates only the confidentiality of the note that is being updated' do
+            Notes::UpdateService.new(project, user, opts).execute(response_note_1)
+
+            expect(note.reload.confidential).to be_falsey
+            expect(response_note_1.reload.confidential).to be_truthy
+            expect(response_note_2.reload.confidential).to be_falsey
+            expect(other_note.reload.confidential).to be_falsey
+          end
+        end
       end
     end
 

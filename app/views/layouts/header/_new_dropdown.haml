@@ -15,6 +15,7 @@
             %li= link_to _('New project'), new_project_path(namespace_id: @group.id)
           - if create_group_subgroup
             %li= link_to _('New subgroup'), new_group_path(parent_id: @group.id)
+          = render_if_exists 'layouts/header/create_epic_new_dropdown_item'
           %li.divider
           %li.dropdown-bold-header GitLab
 

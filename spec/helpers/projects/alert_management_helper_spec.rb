@@ -2,23 +2,24 @@
 
 require 'spec_helper'
 
-describe Projects::AlertManagementHelper do
+RSpec.describe Projects::AlertManagementHelper do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project_path) { project.full_path }
+  let(:project_path) { project.full_path }
+  let(:project_id) { project.id }
 
   describe '#alert_management_data' do
     let(:user_can_enable_alert_management) { true }
-    let(:setting_path) { edit_project_service_path(project, AlertsService) }
+    let(:setting_path) { project_settings_operations_path(project, anchor: 'js-alert-management-settings') }
 
     subject(:data) { helper.alert_management_data(current_user, project) }
 
     before do
       allow(helper)
         .to receive(:can?)
-        .with(current_user, :admin_project, project)
+        .with(current_user, :admin_operations, project)
         .and_return(user_can_enable_alert_management)
     end
 
@@ -27,6 +28,7 @@ describe Projects::AlertManagementHelper do
         expect(helper.alert_management_data(current_user, project)).to match(
           'project-path' => project_path,
           'enable-alert-management-path' => setting_path,
+          'populating-alerts-help-url' => 'http://test.host/help/user/project/operations/alert_management.html#enable-alert-management',
           'empty-alert-svg-path' => match_asset_path('/assets/illustrations/alert-management-empty-state.svg'),
           'user-can-enable-alert-management' => 'true',
           'alert-management-enabled' => 'false'
@@ -56,6 +58,28 @@ describe Projects::AlertManagementHelper do
       end
     end
 
+    context 'with prometheus service' do
+      let_it_be(:prometheus_service) { create(:prometheus_service, project: project) }
+
+      context 'when prometheus service is active' do
+        it 'enables alert management' do
+          expect(data).to include(
+            'alert-management-enabled' => 'true'
+          )
+        end
+      end
+
+      context 'when prometheus service is inactive' do
+        it 'disables alert management' do
+          prometheus_service.update!(manual_configuration: false)
+
+          expect(data).to include(
+            'alert-management-enabled' => 'false'
+          )
+        end
+      end
+    end
+
     context 'when user does not have requisite enablement permissions' do
       let(:user_can_enable_alert_management) { false }
 
@@ -75,6 +99,7 @@ describe Projects::AlertManagementHelper do
       expect(helper.alert_management_detail_data(project, alert_id)).to eq(
         'alert-id' => alert_id,
         'project-path' => project_path,
+        'project-id' => project_id,
         'project-issues-path' => issues_path
       )
     end

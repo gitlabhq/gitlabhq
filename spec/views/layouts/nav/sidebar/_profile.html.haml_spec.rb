@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'layouts/nav/sidebar/_profile' do
+RSpec.describe 'layouts/nav/sidebar/_profile' do
   let(:user) { create(:user) }
 
   before do

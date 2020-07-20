@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::MergeRequestPipelinesResolver do
+RSpec.describe Resolvers::MergeRequestPipelinesResolver do
   include GraphqlHelpers
 
   let_it_be(:merge_request) { create(:merge_request) }

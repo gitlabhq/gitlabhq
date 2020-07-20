@@ -15,6 +15,7 @@ describe('DiffFile', () => {
     vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
       file: JSON.parse(JSON.stringify(diffFileMockDataReadable)),
       canCurrentUserFork: false,
+      viewDiffsFileByFile: false,
     }).$mount();
     trackingSpy = mockTracking('_category_', vm.$el, jest.spyOn);
   });
@@ -113,6 +114,7 @@ describe('DiffFile', () => {
         vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
           file: JSON.parse(JSON.stringify(diffFileMockDataUnreadable)),
           canCurrentUserFork: false,
+          viewDiffsFileByFile: false,
         }).$mount();
 
         vm.renderIt = false;
@@ -235,6 +237,7 @@ describe('DiffFile', () => {
       vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
         file: JSON.parse(JSON.stringify(diffFileMockDataUnreadable)),
         canCurrentUserFork: false,
+        viewDiffsFileByFile: false,
       }).$mount();
 
       jest.spyOn(vm, 'handleLoadCollapsedDiff').mockImplementation(() => {});

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'environments routing' do
+RSpec.describe 'environments routing' do
   let(:project) { create(:project) }
 
   let(:environment) do

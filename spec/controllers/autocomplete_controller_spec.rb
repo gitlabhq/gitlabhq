@@ -365,6 +365,56 @@ RSpec.describe AutocompleteController do
     end
   end
 
+  context 'GET deploy_keys_with_owners' do
+    let!(:deploy_key) { create(:deploy_key, user: user) }
+    let!(:deploy_keys_project) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key) }
+
+    context 'unauthorized user' do
+      it 'returns a not found response' do
+        get(:deploy_keys_with_owners, params: { project_id: project.id })
+
+        expect(response).to have_gitlab_http_status(:redirect)
+      end
+    end
+
+    context 'when the user who can read the project is logged in' do
+      before do
+        sign_in(user)
+      end
+
+      it 'renders the deploy key in a json payload, with its owner' do
+        get(:deploy_keys_with_owners, params: { project_id: project.id })
+
+        expect(json_response.count).to eq(1)
+        expect(json_response.first['title']).to eq(deploy_key.title)
+        expect(json_response.first['owner']['id']).to eq(deploy_key.user.id)
+      end
+
+      context 'with an unknown project' do
+        it 'returns a not found response' do
+          get(:deploy_keys_with_owners, params: { project_id: 9999 })
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'and the user cannot read the owner of the key' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :read_user, deploy_key.user).and_return(false)
+        end
+
+        it 'returns a payload without owner' do
+          get(:deploy_keys_with_owners, params: { project_id: project.id })
+
+          expect(json_response.count).to eq(1)
+          expect(json_response.first['title']).to eq(deploy_key.title)
+          expect(json_response.first['owner']).to be_nil
+        end
+      end
+    end
+  end
+
   context 'Get merge_request_target_branches' do
     let!(:merge_request) { create(:merge_request, source_project: project, target_branch: 'feature') }
 

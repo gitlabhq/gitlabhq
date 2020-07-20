@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SystemHookPushWorker do
+RSpec.describe SystemHookPushWorker do
   include RepoHelpers
 
   subject { described_class.new }

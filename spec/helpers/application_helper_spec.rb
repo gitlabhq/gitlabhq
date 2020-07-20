@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ApplicationHelper do
+RSpec.describe ApplicationHelper do
   describe 'current_controller?' do
     before do
       stub_controller_name('foo')
@@ -206,6 +206,16 @@ describe ApplicationHelper do
       flags_list = helper.client_js_flags
       expect(flags_list[:isGeneric]).to eq(true)
       expect(flags_list[:isOther]).to eq(true)
+    end
+  end
+
+  describe '#page_startup_api_calls' do
+    it 'returns map containing JS Page Startup Calls' do
+      helper.add_page_startup_api_call("testURL")
+
+      startup_calls = helper.page_startup_api_calls
+
+      expect(startup_calls["testURL"]).to eq({})
     end
   end
 

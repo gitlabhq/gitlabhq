@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::Create do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

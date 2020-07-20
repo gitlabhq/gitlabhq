@@ -1,6 +1,7 @@
 import AjaxCache from '~/lib/utils/ajax_cache';
 import { trimFirstCharOfLineContent } from '~/diffs/store/utils';
 import { sprintf, __ } from '~/locale';
+import createGqClient, { fetchPolicies } from '~/lib/graphql';
 
 // factory function because global flag makes RegExp stateful
 const createQuickActionsRegex = () => /^\/\w+.*$/gm;
@@ -34,3 +35,10 @@ export const stripQuickActions = note => note.replace(createQuickActionsRegex(),
 
 export const prepareDiffLines = diffLines =>
   diffLines.map(line => ({ ...trimFirstCharOfLineContent(line) }));
+
+export const gqClient = createGqClient(
+  {},
+  {
+    fetchPolicy: fetchPolicies.NO_CACHE,
+  },
+);

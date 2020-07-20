@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/generic_commit_statuses/_generic_commit_status.html.haml' do
+RSpec.describe 'projects/generic_commit_statuses/_generic_commit_status.html.haml' do
   include Devise::Test::ControllerHelpers
 
   let(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe NewNoteWorker do
+RSpec.describe NewNoteWorker do
   context 'when Note found' do
     let(:note) { create(:note) }
 

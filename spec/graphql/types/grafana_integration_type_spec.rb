@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['GrafanaIntegration'] do
+RSpec.describe GitlabSchema.types['GrafanaIntegration'] do
   let(:expected_fields) do
     %i[
       id

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Service do
+RSpec.describe Service do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -304,8 +304,6 @@ describe Service do
       end
 
       describe 'build issue tracker from an integration' do
-        let(:title) { 'custom title' }
-        let(:description) { 'custom description' }
         let(:url) { 'http://jira.example.com' }
         let(:api_url) { 'http://api-jira.example.com' }
         let(:username) { 'jira-username' }
@@ -322,8 +320,6 @@ describe Service do
             service = described_class.build_from_integration(project.id, integration)
 
             expect(service).to be_active
-            expect(service.title).to eq(title)
-            expect(service.description).to eq(description)
             expect(service.url).to eq(url)
             expect(service.api_url).to eq(api_url)
             expect(service.username).to eq(username)
@@ -335,7 +331,7 @@ describe Service do
 
         # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
         context 'when data are stored in properties' do
-          let(:properties) { data_params.merge(title: title, description: description) }
+          let(:properties) { data_params }
           let!(:integration) do
             create(:jira_service, :without_properties_callback, template: true, properties: properties.merge(additional: 'something'))
           end
@@ -345,14 +341,14 @@ describe Service do
 
         context 'when data are stored in separated fields' do
           let(:integration) do
-            create(:jira_service, :template, data_params.merge(properties: {}, title: title, description: description))
+            create(:jira_service, :template, data_params.merge(properties: {}))
           end
 
           it_behaves_like 'service creation from an integration'
         end
 
         context 'when data are stored in both properties and separated fields' do
-          let(:properties) { data_params.merge(title: title, description: description) }
+          let(:properties) { data_params }
           let(:integration) do
             create(:jira_service, :without_properties_callback, active: true, template: true, properties: properties).tap do |service|
               create(:jira_tracker_data, data_params.merge(service: service))
@@ -386,6 +382,33 @@ describe Service do
           expect(service.priority).to eq(4)
           expect(service.api_key).to eq('123456789')
         end
+      end
+    end
+  end
+
+  describe 'instance' do
+    describe '.instance_for' do
+      let_it_be(:jira_service) { create(:jira_service, :instance) }
+      let_it_be(:slack_service) { create(:slack_service, :instance) }
+
+      subject { described_class.instance_for(type) }
+
+      context 'Hipchat serivce' do
+        let(:type) { 'HipchatService' }
+
+        it { is_expected.to eq(nil) }
+      end
+
+      context 'Jira serivce' do
+        let(:type) { 'JiraService' }
+
+        it { is_expected.to eq(jira_service) }
+      end
+
+      context 'Slack serivce' do
+        let(:type) { 'SlackService' }
+
+        it { is_expected.to eq(slack_service) }
       end
     end
   end
@@ -514,17 +537,12 @@ describe Service do
     let(:service) do
       GitlabIssueTrackerService.create(
         project: create(:project),
-        title: 'random title',
         project_url: 'http://gitlab.example.com'
       )
     end
 
     it 'does not raise error' do
       expect { service }.not_to raise_error
-    end
-
-    it 'sets title correctly' do
-      expect(service.title).to eq('random title')
     end
 
     it 'sets data correctly' do

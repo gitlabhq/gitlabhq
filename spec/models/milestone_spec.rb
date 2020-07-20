@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Milestone do
+RSpec.describe Milestone do
   it_behaves_like 'a timebox', :milestone
 
   describe 'MilestoneStruct#serializable_hash' do

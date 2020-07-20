@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AuditEventService do
+RSpec.describe AuditEventService do
   let(:project) { create(:project) }
   let(:user) { create(:user, :with_sign_ins) }
   let(:project_member) { create(:project_member, user: user) }
@@ -17,6 +17,7 @@ describe AuditEventService do
     it 'creates an event and logs to a file' do
       expect(service).to receive(:file_logger).and_return(logger)
       expect(logger).to receive(:info).with(author_id: user.id,
+                                            author_name: user.name,
                                             entity_id: project.id,
                                             entity_type: "Project",
                                             action: :destroy)
@@ -35,6 +36,7 @@ describe AuditEventService do
         })
       expect(service).to receive(:file_logger).and_return(logger)
       expect(logger).to receive(:info).with(author_id: user.id,
+                                            author_name: user.name,
                                             entity_type: 'Project',
                                             entity_id: project.id,
                                             from: 'true',
@@ -56,6 +58,7 @@ describe AuditEventService do
     it 'logs security event to file' do
       expect(service).to receive(:file_logger).and_return(logger)
       expect(logger).to receive(:info).with(author_id: user.id,
+                                            author_name: user.name,
                                             entity_type: 'Project',
                                             entity_id: project.id,
                                             action: :destroy)

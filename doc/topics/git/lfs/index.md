@@ -89,6 +89,9 @@ that are on the remote repository, such as for a branch from origin:
 git lfs fetch origin master
 ```
 
+Make sure your files aren't listed in `.gitignore`, otherwise, they will be ignored by Git thus will not
+be pushed to the remote repository.
+
 ### Migrate an existing repo to Git LFS
 
 Read the documentation on how to [migrate an existing Git repository with Git LFS](migrate_to_git_lfs.md).

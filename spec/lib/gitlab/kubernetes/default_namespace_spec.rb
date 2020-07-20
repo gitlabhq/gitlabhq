@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::DefaultNamespace do
+RSpec.describe Gitlab::Kubernetes::DefaultNamespace do
   let(:generator) { described_class.new(cluster, project: environment.project) }
 
   describe '#from_environment_name' do

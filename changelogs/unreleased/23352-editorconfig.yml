@@ -1,0 +1,5 @@
+---
+title: Support reading .editorconfig files inside of the Web IDE
+merge_request: 32378
+author:
+type: added

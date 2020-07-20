@@ -1,6 +1,6 @@
 .row
   .col-12
-    .calendar-block.prepend-top-default.append-bottom-default
+    .calendar-block.gl-mt-3.gl-mb-3
       .user-calendar.d-none.d-sm-block{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
         %h4.center.light
           .spinner.spinner-md
@@ -9,7 +9,7 @@
   .col-md-12.col-lg-6
     - if can?(current_user, :read_cross_project)
       .activities-block
-        .prepend-top-16
+        .gl-mt-5
           .d-flex.align-items-center.border-bottom
             %h4.flex-grow
               = s_('UserProfile|Activity')
@@ -20,7 +20,7 @@
 
   .col-md-12.col-lg-6
     .projects-block
-      .prepend-top-16
+      .gl-mt-5
         .d-flex.align-items-center.border-bottom
           %h4.flex-grow
             = s_('UserProfile|Personal projects')

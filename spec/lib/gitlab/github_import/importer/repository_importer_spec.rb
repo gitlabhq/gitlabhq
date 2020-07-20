@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Importer::RepositoryImporter do
+RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter do
   let(:repository) { double(:repository) }
   let(:import_state) { double(:import_state) }
   let(:client) { double(:client) }

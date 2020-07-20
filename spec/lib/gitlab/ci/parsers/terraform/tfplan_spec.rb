@@ -2,39 +2,86 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Parsers::Terraform::Tfplan do
+RSpec.describe Gitlab::Ci::Parsers::Terraform::Tfplan do
   describe '#parse!' do
-    let_it_be(:artifact) { create(:ci_job_artifact, :terraform) }
+    let(:artifact) { create(:ci_job_artifact, :terraform) }
 
     let(:reports) { Gitlab::Ci::Reports::TerraformReports.new }
 
     context 'when data is invalid' do
-      context 'when there is no data' do
-        it 'raises an error' do
-          plan = '{}'
-
-          expect { subject.parse!(plan, reports, artifact: artifact) }.to raise_error(
-            described_class::TfplanParserError
-          )
-        end
-      end
-
       context 'when data is not a JSON file' do
-        it 'raises an error' do
-          plan = { 'create' => 0, 'update' => 1, 'delete' => 0 }.to_s
+        it 'reports an invalid_json_format error' do
+          plan = 'Not a JSON file'
 
-          expect { subject.parse!(plan, reports, artifact: artifact) }.to raise_error(
-            described_class::TfplanParserError
+          expect { subject.parse!(plan, reports, artifact: artifact) }.not_to raise_error
+
+          reports.plans.each do |key, hash_value|
+            expect(hash_value.keys).to match_array(%w[job_id job_name job_path tf_report_error])
+          end
+
+          expect(reports.plans).to match(
+            a_hash_including(
+              artifact.job.id.to_s => a_hash_including(
+                'tf_report_error' => :invalid_json_format
+              )
+            )
           )
         end
       end
 
       context 'when JSON is missing a required key' do
-        it 'raises an error' do
+        it 'reports an invalid_json_keys error' do
           plan = '{ "wrong_key": 1 }'
 
-          expect { subject.parse!(plan, reports, artifact: artifact) }.to raise_error(
-            described_class::TfplanParserError
+          expect { subject.parse!(plan, reports, artifact: artifact) }.not_to raise_error
+
+          reports.plans.each do |key, hash_value|
+            expect(hash_value.keys).to match_array(%w[job_id job_name job_path tf_report_error])
+          end
+
+          expect(reports.plans).to match(
+            a_hash_including(
+              artifact.job.id.to_s => a_hash_including(
+                'tf_report_error' => :missing_json_keys
+              )
+            )
+          )
+        end
+      end
+
+      context 'when artifact is invalid' do
+        it 'reports an :unknown_error' do
+          expect { subject.parse!('{}', reports, artifact: nil) }.not_to raise_error
+
+          reports.plans.each do |key, hash_value|
+            expect(hash_value.keys).to match_array(%w[tf_report_error])
+          end
+
+          expect(reports.plans).to match(
+            a_hash_including(
+              'failed_tf_plan' => a_hash_including(
+                'tf_report_error' => :unknown_error
+              )
+            )
+          )
+        end
+      end
+
+      context 'when job is invalid' do
+        it 'reports an :unknown_error' do
+          artifact.job_id = nil
+          expect { subject.parse!('{}', reports, artifact: artifact) }.not_to raise_error
+
+          reports.plans.each do |key, hash_value|
+            expect(hash_value.keys).to match_array(%w[tf_report_error])
+          end
+
+          expect(reports.plans).to match(
+            a_hash_including(
+              'failed_tf_plan' => a_hash_including(
+                'tf_report_error' => :unknown_error
+              )
+            )
           )
         end
       end
@@ -47,7 +94,7 @@ describe Gitlab::Ci::Parsers::Terraform::Tfplan do
         expect { subject.parse!(plan, reports, artifact: artifact) }.not_to raise_error
 
         reports.plans.each do |key, hash_value|
-          expect(hash_value.keys).to match_array(%w[create delete job_name job_path update])
+          expect(hash_value.keys).to match_array(%w[create delete job_id job_name job_path update])
         end
 
         expect(reports.plans).to match(
@@ -68,7 +115,7 @@ describe Gitlab::Ci::Parsers::Terraform::Tfplan do
         expect { subject.parse!(plan, reports, artifact: artifact) }.not_to raise_error
 
         reports.plans.each do |key, hash_value|
-          expect(hash_value.keys).to match_array(%w[create delete job_name job_path update])
+          expect(hash_value.keys).to match_array(%w[create delete job_id job_name job_path update])
         end
 
         expect(reports.plans).to match(

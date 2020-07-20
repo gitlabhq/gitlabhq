@@ -1,0 +1,5 @@
+---
+title: Add indices for projects with disable_overriding_approvers_per_merge_request
+merge_request: 35224
+author:
+type: added

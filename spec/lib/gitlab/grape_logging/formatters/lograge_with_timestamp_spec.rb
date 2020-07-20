@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp do
+RSpec.describe Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp do
   let(:log_entry) do
     {
       status: 200,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::GitlabProviderRepoEntity do
+RSpec.describe Import::GitlabProviderRepoEntity do
   let(:repo_data) do
     {
       'id' => 1,

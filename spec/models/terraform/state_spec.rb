@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Terraform::State do
+RSpec.describe Terraform::State do
   subject { create(:terraform_state, :with_file) }
 
   let(:terraform_state_file) { fixture_file('terraform/terraform.tfstate') }

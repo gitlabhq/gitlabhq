@@ -1,20 +1,41 @@
 import { shallowMount } from '@vue/test-utils';
+import { createStore } from '~/monitoring/stores';
 import DashboardPage from '~/monitoring/pages/dashboard_page.vue';
 import Dashboard from '~/monitoring/components/dashboard.vue';
-import { propsData } from '../mock_data';
+import { dashboardProps } from '../fixture_data';
 
 describe('monitoring/pages/dashboard_page', () => {
   let wrapper;
+  let store;
+  let $route;
+
+  const buildRouter = () => {
+    const dashboard = {};
+    $route = {
+      params: { dashboard },
+      query: { dashboard },
+    };
+  };
 
   const buildWrapper = (props = {}) => {
     wrapper = shallowMount(DashboardPage, {
+      store,
       propsData: {
         ...props,
+      },
+      mocks: {
+        $route,
       },
     });
   };
 
   const findDashboardComponent = () => wrapper.find(Dashboard);
+
+  beforeEach(() => {
+    buildRouter();
+    store = createStore();
+    jest.spyOn(store, 'dispatch').mockResolvedValue();
+  });
 
   afterEach(() => {
     if (wrapper) {
@@ -28,9 +49,18 @@ describe('monitoring/pages/dashboard_page', () => {
   });
 
   it('renders the dashboard page with dashboard component', () => {
-    buildWrapper({ dashboardProps: propsData });
+    buildWrapper({ dashboardProps });
 
-    expect(findDashboardComponent().props()).toMatchObject(propsData);
+    const allProps = {
+      ...dashboardProps,
+      // default props values
+      rearrangePanelsAvailable: false,
+      showHeader: true,
+      showPanels: true,
+      smallEmptyState: false,
+    };
+
     expect(findDashboardComponent()).toExist();
+    expect(allProps).toMatchObject(findDashboardComponent().props());
   });
 });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::ScheduleUpdateService do
+RSpec.describe Clusters::Applications::ScheduleUpdateService do
   describe '#execute' do
     let(:project) { create(:project) }
 

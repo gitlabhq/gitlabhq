@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Submodules do
+RSpec.describe API::Submodules do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace ) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }

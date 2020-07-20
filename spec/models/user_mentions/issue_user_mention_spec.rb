@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssueUserMention do
+RSpec.describe IssueUserMention do
   describe 'associations' do
     it { is_expected.to belong_to(:issue) }
     it { is_expected.to belong_to(:note) }

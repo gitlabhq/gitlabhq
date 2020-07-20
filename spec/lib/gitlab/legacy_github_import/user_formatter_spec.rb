@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::UserFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::UserFormatter do
   let(:client) { double }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
 

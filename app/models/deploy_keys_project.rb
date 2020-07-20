@@ -6,6 +6,7 @@ class DeployKeysProject < ApplicationRecord
   scope :without_project_deleted,  -> { joins(:project).where(projects: { pending_delete: false }) }
   scope :in_project, ->(project) { where(project: project) }
   scope :with_write_access, -> { where(can_push: true) }
+  scope :with_deploy_keys, -> { includes(:deploy_key) }
 
   accepts_nested_attributes_for :deploy_key
 

@@ -11,7 +11,7 @@
 - can_create_issue = show_new_issue_link?(@project)
 
 = render_if_exists "projects/issues/alert_blocked", issue: @issue, current_user: current_user
-= render_if_exists "projects/issues/alert_moved_from_service_desk", issue: @issue
+= render "projects/issues/alert_moved_from_service_desk", issue: @issue
 
 .detail-page-header
   .detail-page-header-body
@@ -24,14 +24,11 @@
       %span.d-none.d-sm-block Open
 
     .issuable-meta
-      - if @issue.confidential
-        .issuable-warning-icon.inline= sprite_icon('eye-slash', size: 16, css_class: 'icon')
-      - if @issue.discussion_locked?
-        .issuable-warning-icon.inline= sprite_icon('lock', size: 16, css_class: 'icon')
+      #js-issuable-header-warnings
       = issuable_meta(@issue, @project, "Issue")
 
     %a.btn.btn-default.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
-      = icon('angle-double-left')
+      = sprite_icon('chevron-double-lg-left')
 
   .detail-page-header-actions.js-issuable-actions.js-issuable-buttons{ data: { "action": "close-reopen" } }
     .clearfix.issue-btn-group.dropdown
@@ -77,6 +74,9 @@
     - if @issue.sentry_issue.present?
       #js-sentry-error-stack-trace{ data: error_details_data(@project, @issue.sentry_issue.sentry_issue_identifier) }
 
+    - if Feature.enabled?(:design_management_moved, @project, default_enabled: true)
+      = render 'projects/issues/design_management'
+
     = render_if_exists 'projects/issues/related_issues'
 
     #js-related-merge-requests{ data: { endpoint: expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid)), project_namespace: @project.namespace.path, project_path: @project.path } }
@@ -86,14 +86,17 @@
         -# This element is filled in using JavaScript.
 
   .content-block.emoji-block.emoji-block-sticky
-    .row
-      .col-md-12.col-lg-4.js-noteable-awards
+    .row.gl-m-0.gl-justify-content-space-between
+      .js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
-      .col-md-12.col-lg-8.new-branch-col
+      .new-branch-col
         #js-vue-sort-issue-discussions
         #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' if show_new_branch_button?
 
-  = render 'projects/issues/tabs'
+  - if Feature.enabled?(:design_management_moved, @project, default_enabled: true)
+    = render 'projects/issues/discussion'
+  - else
+    = render 'projects/issues/tabs'
 
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @issue.assignees

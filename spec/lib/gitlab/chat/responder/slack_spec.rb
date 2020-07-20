@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Chat::Responder::Slack do
+RSpec.describe Gitlab::Chat::Responder::Slack do
   let(:chat_name) { create(:chat_name, chat_id: 'U123') }
 
   let(:pipeline) do

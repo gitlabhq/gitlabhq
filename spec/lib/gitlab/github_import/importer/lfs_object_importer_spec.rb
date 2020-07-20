@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Importer::LfsObjectImporter do
+RSpec.describe Gitlab::GithubImport::Importer::LfsObjectImporter do
   let(:project) { create(:project) }
   let(:lfs_attributes) do
     {

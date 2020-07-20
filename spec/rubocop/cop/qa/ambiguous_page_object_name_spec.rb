@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 require 'rubocop'
 require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/qa/ambiguous_page_object_name'
 
-describe RuboCop::Cop::QA::AmbiguousPageObjectName do
+RSpec.describe RuboCop::Cop::QA::AmbiguousPageObjectName, type: :rubocop do
   include CopHelper
 
   let(:source_file) { 'qa/page.rb' }

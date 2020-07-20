@@ -54,4 +54,8 @@ Rails.application.configure do
     config.logger = ActiveSupport::TaggedLogging.new(Logger.new(nil))
     config.log_level = :fatal
   end
+
+  # Mount the ActionCable Engine in-app so that we don't have to spawn another Puma
+  # process for feature specs
+  ENV['ACTION_CABLE_IN_APP'] = 'true'
 end

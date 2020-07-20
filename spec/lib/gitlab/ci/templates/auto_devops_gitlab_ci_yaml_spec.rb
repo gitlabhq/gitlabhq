@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Auto-DevOps.gitlab-ci.yml' do
+RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps') }
 
   describe 'the created pipeline' do
@@ -37,6 +37,7 @@ describe 'Auto-DevOps.gitlab-ci.yml' do
 
     context 'when the project is set for deployment to AWS' do
       let(:platform_value) { 'ECS' }
+      let(:review_prod_build_names) { build_names.select {|n| n.include?('review') || n.include?('production')} }
 
       before do
         create(:ci_variable, project: project, key: 'AUTO_DEVOPS_PLATFORM_TARGET', value: platform_value)
@@ -67,8 +68,15 @@ describe 'Auto-DevOps.gitlab-ci.yml' do
       end
 
       it 'creates an ECS deployment job for production only' do
-        expect(build_names).not_to include('review_ecs')
-        expect(build_names).to include('production_ecs')
+        expect(review_prod_build_names).to contain_exactly('production_ecs')
+      end
+
+      context 'with FARGATE as a launch type' do
+        let(:platform_value) { 'FARGATE' }
+
+        it 'creates a FARGATE deployment job for production only' do
+          expect(review_prod_build_names).to contain_exactly('production_fargate')
+        end
       end
 
       context 'and we are not on the default branch' do
@@ -79,15 +87,22 @@ describe 'Auto-DevOps.gitlab-ci.yml' do
           project.repository.create_branch(pipeline_branch)
         end
 
-        it_behaves_like 'no ECS job when AUTO_DEVOPS_PLATFORM_TARGET is not present' do
-          let(:job_name) { 'review_ecs' }
+        %w(review_ecs review_fargate).each do |job|
+          it_behaves_like 'no ECS job when AUTO_DEVOPS_PLATFORM_TARGET is not present' do
+            let(:job_name) { job }
+          end
         end
 
         it 'creates an ECS deployment job for review only' do
-          expect(build_names).to include('review_ecs')
-          expect(build_names).not_to include('production_ecs')
-          expect(build_names).not_to include('review')
-          expect(build_names).not_to include('production')
+          expect(review_prod_build_names).to contain_exactly('review_ecs')
+        end
+
+        context 'with FARGATE as a launch type' do
+          let(:platform_value) { 'FARGATE' }
+
+          it 'creates an FARGATE deployment job for review only' do
+            expect(review_prod_build_names).to contain_exactly('review_fargate')
+          end
         end
       end
 
@@ -190,6 +205,7 @@ describe 'Auto-DevOps.gitlab-ci.yml' do
       'Buildpack'       | { 'README.md' => '' }                   | { 'BUILDPACK_URL' => 'http://example.com' } | %w(build test) | %w()
       'Explicit set'    | { 'README.md' => '' }                   | { 'AUTO_DEVOPS_EXPLICITLY_ENABLED' => '1' } | %w(build test) | %w()
       'Explicit unset'  | { 'README.md' => '' }                   | { 'AUTO_DEVOPS_EXPLICITLY_ENABLED' => '0' } | %w()           | %w(build test)
+      'DOCKERFILE_PATH' | { 'README.md' => '' }                   | { 'DOCKERFILE_PATH' => 'Docker.file' }      | %w(build test) | %w()
       'Dockerfile'      | { 'Dockerfile' => '' }                  | {}                                          | %w(build test) | %w()
       'Clojure'         | { 'project.clj' => '' }                 | {}                                          | %w(build test) | %w()
       'Go modules'      | { 'go.mod' => '' }                      | {}                                          | %w(build test) | %w()

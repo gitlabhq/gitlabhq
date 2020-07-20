@@ -1,0 +1,5 @@
+---
+title: Fix order of integrations to be sorted alphabetically
+merge_request: 34501
+author:
+type: fixed

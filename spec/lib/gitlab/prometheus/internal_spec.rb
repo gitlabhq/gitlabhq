@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Prometheus::Internal do
+RSpec.describe Gitlab::Prometheus::Internal do
   let(:listen_address) { 'localhost:9090' }
 
   let(:prometheus_settings) do

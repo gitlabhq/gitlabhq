@@ -1,69 +1,56 @@
 # frozen_string_literal: true
 
 class ResourceMilestoneEventFinder
-  include FinderMethods
-
-  MAX_PER_PAGE = 100
-
-  attr_reader :params, :current_user, :eventable
-
-  def initialize(current_user, eventable, params = {})
+  def initialize(current_user, eventable)
     @current_user = current_user
     @eventable = eventable
-    @params = params
   end
 
+  # Returns the ResourceMilestoneEvents of the eventable
+  # visible to the user.
+  #
+  # @return ResourceMilestoneEvent::ActiveRecord_AssociationRelation
   def execute
-    Kaminari.paginate_array(visible_events)
+    eventable.resource_milestone_events.include_relations
+      .where(milestone_id: readable_milestone_ids) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   private
 
-  def visible_events
-    @visible_events ||= visible_to_user(events)
+  attr_reader :current_user, :eventable
+
+  def readable_milestone_ids
+    readable_milestones = events_milestones.select do |milestone|
+      parent_availabilities[key_for_parent(milestone.parent)]
+    end
+
+    readable_milestones.map(&:id).uniq
   end
 
-  def events
-    @events ||= eventable.resource_milestone_events.include_relations.page(page).per(per_page)
+  # rubocop: disable CodeReuse/ActiveRecord
+  def events_milestones
+    @events_milestones ||= Milestone.where(id: unique_milestone_ids_from_events)
+                             .includes(:project, :group)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
-  def visible_to_user(events)
-    events.select { |event| visible_for_user?(event) }
-  end
-
-  def visible_for_user?(event)
-    milestone = event_milestones[event.milestone_id]
-    return if milestone.blank?
-
-    parent = milestone.parent
-    parent_availabilities[key_for_parent(parent)]
+  def relevant_milestone_parents
+    events_milestones.map(&:parent).uniq
   end
 
   def parent_availabilities
-    @parent_availabilities ||= relevant_parents.to_h do |parent|
+    @parent_availabilities ||= relevant_milestone_parents.to_h do |parent|
       [key_for_parent(parent), Ability.allowed?(current_user, :read_milestone, parent)]
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
+  def unique_milestone_ids_from_events
+    eventable.resource_milestone_events.select(:milestone_id).distinct
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
   def key_for_parent(parent)
     "#{parent.class.name}_#{parent.id}"
-  end
-
-  def event_milestones
-    @milestones ||= events.map(&:milestone).uniq.to_h do |milestone|
-      [milestone.id, milestone]
-    end
-  end
-
-  def relevant_parents
-    @relevant_parents ||= event_milestones.map { |_id, milestone| milestone.parent }
-  end
-
-  def per_page
-    [params[:per_page], MAX_PER_PAGE].compact.min
-  end
-
-  def page
-    params[:page] || 1
   end
 end

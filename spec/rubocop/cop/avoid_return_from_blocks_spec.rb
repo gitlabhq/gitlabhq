@@ -5,7 +5,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/avoid_return_from_blocks'
 
-describe RuboCop::Cop::AvoidReturnFromBlocks do
+RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do
   include CopHelper
 
   subject(:cop) { described_class.new }

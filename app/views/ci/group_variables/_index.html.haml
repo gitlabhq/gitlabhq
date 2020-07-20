@@ -6,8 +6,8 @@
       = render 'ci/group_variables/variable_header'
       - variables.each do |variable|
         .group-variable-row.d-flex.w-100.border-bottom.pt-2.pb-2
-          .table-section.section-40.append-right-10.key
+          .table-section.section-40.gl-mr-3.key
             = variable.key
-          .table-section.section-40.append-right-10
+          .table-section.section-40.gl-mr-3
             %a.group-origin-link{ href: group_settings_ci_cd_path(variable.group) }
               = variable.group.name

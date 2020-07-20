@@ -1,6 +1,6 @@
 - @hide_top_links = true
-- page_title "To-Do List"
-- header_title "To-Do List", dashboard_todos_path
+- page_title _("To-Do List")
+- header_title _("To-Do List"), dashboard_todos_path
 
 = render_dashboard_gold_trial(current_user)
 
@@ -25,7 +25,7 @@
 
     .nav-controls
       - if @todos.any?(&:pending?)
-        .append-right-default
+        .gl-mr-3
           = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading d-flex align-items-center js-todos-mark-all', method: :delete, data: { href: destroy_all_dashboard_todos_path(todos_filter_params) } do
             Mark all as done
             %span.spinner.ml-1

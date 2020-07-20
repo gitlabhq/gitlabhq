@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::GroupImport do
+RSpec.describe API::GroupImport do
   include WorkhorseHelpers
 
   let_it_be(:user) { create(:user) }
@@ -122,6 +122,7 @@ describe API::GroupImport do
           before do
             allow_next_instance_of(Group) do |group|
               allow(group).to receive(:persisted?).and_return(false)
+              allow(group).to receive(:save).and_return(false)
             end
           end
 

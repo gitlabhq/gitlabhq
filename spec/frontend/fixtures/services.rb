@@ -8,7 +8,7 @@ RSpec.describe Projects::ServicesController, '(JavaScript fixtures)', type: :con
   let(:admin)     { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project)   { create(:project_empty_repo, namespace: namespace, path: 'services-project') }
-  let!(:service)  { create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker') }
+  let!(:service)  { create(:custom_issue_tracker_service, project: project) }
 
   render_views
 

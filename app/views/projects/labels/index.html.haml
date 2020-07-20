@@ -1,4 +1,4 @@
-- page_title "Labels"
+- page_title _("Labels")
 - can_admin_label = can?(current_user, :admin_label, @project)
 - search = params[:search]
 - subscribed = params[:subscribed]
@@ -52,5 +52,5 @@
   = render 'shared/empty_states/labels'
 
 %template#js-badge-item-template
-  %li.label-link-item.js-priority-badge.inline.prepend-left-10
+  %li.label-link-item.js-priority-badge.inline.gl-ml-3
     .label-badge.label-badge-blue= _('Prioritized label')

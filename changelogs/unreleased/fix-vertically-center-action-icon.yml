@@ -1,0 +1,5 @@
+---
+title: vertically center action icon in the CI pipeline
+merge_request: 33427
+author: Nathanael Weber
+type: fixed

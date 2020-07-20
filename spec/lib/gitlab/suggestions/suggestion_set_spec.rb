@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Suggestions::SuggestionSet do
+RSpec.describe Gitlab::Suggestions::SuggestionSet do
   def create_suggestion(file_path, new_line, to_content)
     position = Gitlab::Diff::Position.new(old_path: file_path,
                                           new_path: file_path,
@@ -87,11 +87,10 @@ describe Gitlab::Suggestions::SuggestionSet do
     it 'returns an array of hashes with proper key/value pairs' do
       first_action = suggestion_set.actions.first
 
-      file_path, file_suggestion = suggestion_set
-                                     .send(:suggestions_per_file).first
+      file_suggestion = suggestion_set.send(:suggestions_per_file).first
 
       expect(first_action[:action]).to be('update')
-      expect(first_action[:file_path]).to eq(file_path)
+      expect(first_action[:file_path]).to eq(file_suggestion.file_path)
       expect(first_action[:content]).to eq(file_suggestion.new_content)
     end
   end

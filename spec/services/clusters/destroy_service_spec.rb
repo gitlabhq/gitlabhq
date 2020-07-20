@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::DestroyService do
+RSpec.describe Clusters::DestroyService do
   describe '#execute' do
     subject { described_class.new(cluster.user, params).execute(cluster) }
 

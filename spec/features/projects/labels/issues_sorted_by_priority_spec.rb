@@ -14,7 +14,7 @@ RSpec.describe 'Issue prioritization' do
   let(:label_5) { create(:label, title: 'label_5', project: project) } # no priority
 
   # According to https://gitlab.com/gitlab-org/gitlab-foss/issues/14189#note_4360653
-  context 'when issues have one label' do
+  context 'when issues have one label', :js do
     it 'Are sorted properly' do
       # Issues
       issue_1 = create(:issue, title: 'issue_1', project: project)
@@ -44,7 +44,7 @@ RSpec.describe 'Issue prioritization' do
     end
   end
 
-  context 'when issues have multiple labels' do
+  context 'when issues have multiple labels', :js do
     it 'Are sorted properly' do
       # Issues
       issue_1 = create(:issue, title: 'issue_1', project: project)

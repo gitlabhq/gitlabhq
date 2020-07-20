@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::ServiceAccount do
+RSpec.describe Gitlab::Kubernetes::ServiceAccount do
   let(:name) { 'a_service_account' }
   let(:namespace_name) { 'a_namespace' }
   let(:service_account) { described_class.new(name, namespace_name) }

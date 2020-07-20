@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::Projects::JiraProjectsResolver do
+RSpec.describe Resolvers::Projects::JiraProjectsResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -63,7 +63,7 @@ describe Resolvers::Projects::JiraProjectsResolver do
 
         context 'when Jira connection is not valid' do
           before do
-            WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/project/search?maxResults=50&query=&startAt=0')
+            WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/project')
               .to_raise(JIRA::HTTPError.new(double(message: 'Some failure.')))
           end
 

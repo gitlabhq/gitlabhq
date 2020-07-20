@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectPresenter do
+RSpec.describe ProjectPresenter do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:presenter) { described_class.new(project, current_user: user) }

@@ -8,7 +8,6 @@ import NotificationsForm from '~/notifications_form';
 import ProjectsList from '~/projects_list';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import GroupTabs from './group_tabs';
-import initNamespaceStorageLimitAlert from '~/namespace_storage_limit_alert';
 
 export default function initGroupDetails(actionName = 'show') {
   const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
@@ -28,6 +27,4 @@ export default function initGroupDetails(actionName = 'show') {
   if (newGroupChildWrapper) {
     new NewGroupChild(newGroupChildWrapper);
   }
-
-  initNamespaceStorageLimitAlert();
 }

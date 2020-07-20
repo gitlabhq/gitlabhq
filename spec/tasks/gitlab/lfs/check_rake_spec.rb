@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'gitlab:lfs rake tasks' do
+RSpec.describe 'gitlab:lfs rake tasks' do
   describe 'check' do
     let!(:lfs_object) { create(:lfs_object, :with_file, :correct_oid) }
 

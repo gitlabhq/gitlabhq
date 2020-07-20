@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'clusters/clusters/gcp/_form' do
+RSpec.describe 'clusters/clusters/gcp/_form' do
   let(:admin) { create(:admin) }
   let(:environment) { create(:environment) }
   let(:gcp_cluster) { create(:cluster, :provided_by_gcp) }

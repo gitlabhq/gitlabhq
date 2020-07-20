@@ -1,0 +1,13 @@
+{
+  "type": "paragraph",
+  "content": [
+    {
+      "type": "text",
+      "text": "This is a sample paragraph"
+    },
+    {
+      "type": "text",
+      "text": " with lorem ipsum dolor sit amet..."
+    }
+  ]
+}

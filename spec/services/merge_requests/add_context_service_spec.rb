@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::AddContextService do
+RSpec.describe MergeRequests::AddContextService do
   let(:project) { create(:project, :repository) }
   let(:admin) { create(:admin) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: admin) }

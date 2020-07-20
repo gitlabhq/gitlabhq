@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Verify', :docker, :runner do
+  RSpec.describe 'Verify', :docker, :runner do
     describe 'Code coverage statistics' do
       let(:simplecov) { '\(\d+.\d+\%\) covered' }
       let(:executor) { "qa-runner-#{Time.now.to_i}" }

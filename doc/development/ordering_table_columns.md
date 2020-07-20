@@ -1,5 +1,10 @@
 # Ordering Table Columns in PostgreSQL
 
+For GitLab we require that columns of new tables are ordered to use the
+least amount of space. An easy way of doing this is to order them based on the
+type size in descending order with variable sizes (`text`, `varchar`, arrays,
+`json`, `jsonb`, and so on) at the end.
+
 Similar to C structures the space of a table is influenced by the order of
 columns. This is because the size of columns is aligned depending on the type of
 the following column. Let's consider an example:
@@ -40,10 +45,9 @@ In these examples, the `id` and `user_id` columns are packed together, which
 means we only need 8 bytes to store _both_ of them. This in turn means each row
 will require 8 bytes less space.
 
-For GitLab we require that columns of new tables are ordered based to use the
-least amount of space. An easy way of doing this is to order them based on the
-type size in descending order with variable sizes (`text`, `varchar`, arrays,
-`json`, `jsonb`, and so on) at the end.
+Note: **NOTE:**
+Since Ruby on Rails 5.1, the default data type for IDs is `bigint`, which uses 8 bytes.
+We are using `integer` in the examples to showcase a more realistic reordering scenario.
 
 ## Type Sizes
 

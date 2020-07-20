@@ -7,6 +7,7 @@ class GroupsController < Groups::ApplicationController
   include PreviewMarkdown
   include RecordUserLastActivity
   include SendFileUpload
+  include FiltersEvents
   extend ::Gitlab::Utils::Override
 
   respond_to :html

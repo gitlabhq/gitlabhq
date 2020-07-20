@@ -74,7 +74,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleDiscussion']),
+    ...mapActions(['toggleDiscussion', 'setSelectedCommentPositionHover']),
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === SYSTEM_NOTE) {
@@ -99,7 +99,11 @@ export default {
 
 <template>
   <div class="discussion-notes">
-    <ul class="notes">
+    <ul
+      class="notes"
+      @mouseenter="setSelectedCommentPositionHover(discussion.position.line_range)"
+      @mouseleave="setSelectedCommentPositionHover()"
+    >
       <template v-if="shouldGroupReplies">
         <component
           :is="componentName(firstNote)"
@@ -108,6 +112,7 @@ export default {
           :commit="commit"
           :help-page-path="helpPagePath"
           :show-reply-button="userCanReply"
+          :discussion-root="true"
           @handleDeleteNote="$emit('deleteNote')"
           @startReplying="$emit('startReplying')"
         >
@@ -151,6 +156,7 @@ export default {
           :note="componentData(note)"
           :help-page-path="helpPagePath"
           :line="diffLine"
+          :discussion-root="index === 0"
           @handleDeleteNote="$emit('deleteNote')"
         >
           <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>

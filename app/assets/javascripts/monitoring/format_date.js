@@ -14,6 +14,7 @@ export const timezones = {
 
 export const formats = {
   shortTime: 'h:MM TT',
+  shortDateTime: 'm/d h:MM TT',
   default: 'dd mmm yyyy, h:MMTT (Z)',
 };
 

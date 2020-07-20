@@ -8,8 +8,6 @@ module BlobViewer
     self.partial_name = 'openapi'
     self.file_types = %i(openapi)
     self.binary = false
-    # TODO: get an icon for OpenAPI
-    self.switcher_icon = 'file-pdf-o'
-    self.switcher_title = 'OpenAPI'
+    self.switcher_icon = 'api'
   end
 end

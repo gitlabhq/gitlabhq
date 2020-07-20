@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Git::BaseHooksService do
+RSpec.describe Git::BaseHooksService do
   include RepoHelpers
   include GitHelpers
 

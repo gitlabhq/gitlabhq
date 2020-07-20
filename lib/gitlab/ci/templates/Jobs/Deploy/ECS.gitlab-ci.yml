@@ -13,11 +13,20 @@
   script:
     - ecs update-task-definition
 
-review_ecs:
-  extends: .deploy_to_ecs
+.review_ecs_base:
   stage: review
+  extends: .deploy_to_ecs
   environment:
     name: review/$CI_COMMIT_REF_NAME
+
+.production_ecs_base:
+  stage: production
+  extends: .deploy_to_ecs
+  environment:
+    name: production
+
+review_ecs:
+  extends: .review_ecs_base
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "ECS"'
       when: never
@@ -29,13 +38,34 @@ review_ecs:
       when: never
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
 
+review_fargate:
+  extends: .review_ecs_base
+  rules:
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "FARGATE"'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE'
+      when: never
+    - if: '$REVIEW_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+
 production_ecs:
-  extends: .deploy_to_ecs
-  stage: production
-  environment:
-    name: production
+  extends: .production_ecs_base
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "ECS"'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+
+production_fargate:
+  extends: .production_ecs_base
+  rules:
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "FARGATE"'
       when: never
     - if: '$CI_KUBERNETES_ACTIVE'
       when: never

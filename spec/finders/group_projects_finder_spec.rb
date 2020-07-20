@@ -46,6 +46,18 @@ RSpec.describe GroupProjectsFinder do
       context 'without subgroups projects' do
         it { is_expected.to match_array([shared_project_3, shared_project_2, shared_project_1, private_project, public_project]) }
       end
+
+      context "with min access level" do
+        let!(:shared_project_4) { create(:project, :internal, path: '8') }
+
+        before do
+          shared_project_4.project_group_links.create(group_access: Gitlab::Access::REPORTER, group: group)
+        end
+
+        let(:params) { { min_access_level: Gitlab::Access::MAINTAINER } }
+
+        it { is_expected.to match_array([shared_project_3, shared_project_2, shared_project_1, private_project, public_project]) }
+      end
     end
   end
 
@@ -168,6 +180,38 @@ RSpec.describe GroupProjectsFinder do
       context 'without subgroups projects' do
         it { is_expected.to eq([public_project]) }
       end
+    end
+  end
+
+  describe 'feature availability' do
+    let!(:project_with_issues_disabled) { create(:project, :issues_disabled, :internal, path: '9') }
+    let!(:project_with_merge_request_disabled) { create(:project, :merge_requests_disabled, :internal, path: '10') }
+
+    before do
+      project_with_issues_disabled.project_group_links.create!(group_access: Gitlab::Access::REPORTER, group: group)
+      project_with_merge_request_disabled.project_group_links.create!(group_access: Gitlab::Access::REPORTER, group: group)
+    end
+
+    context 'without issues and merge request enabled' do
+      it { is_expected.to match_array([public_project, shared_project_1, shared_project_3, project_with_issues_disabled, project_with_merge_request_disabled]) }
+    end
+
+    context 'with issues enabled' do
+      let(:params) { { with_issues_enabled: true } }
+
+      it { is_expected.to match_array([public_project, shared_project_1, shared_project_3, project_with_merge_request_disabled]) }
+    end
+
+    context 'with merge request enabled' do
+      let(:params) { { with_merge_requests_enabled: true } }
+
+      it { is_expected.to match_array([public_project, shared_project_1, shared_project_3, project_with_issues_disabled]) }
+    end
+
+    context 'with issues and merge request enabled' do
+      let(:params) { { with_merge_requests_enabled: true, with_issues_enabled: true } }
+
+      it { is_expected.to match_array([public_project, shared_project_1, shared_project_3]) }
     end
   end
 

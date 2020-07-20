@@ -7,9 +7,9 @@
 .event-title.d-flex.flex-wrap
   = inline_event_icon(event)
   - many_refs = event.ref_count.to_i > 1
-  %span.event-type.d-inline-block.append-right-4.pushed= many_refs ? "#{event.action_name} #{event.ref_count} #{event.ref_type.pluralize}" : "#{event.action_name} #{event.ref_type}"
+  %span.event-type.d-inline-block.gl-mr-2.pushed= many_refs ? "#{event.action_name} #{event.ref_count} #{event.ref_type.pluralize}" : "#{event.action_name} #{event.ref_type}"
   - unless many_refs
-    %span.append-right-4
+    %span.gl-mr-2
       - commits_link = project_commits_path(project, event.ref_name)
       - should_link = event.tag? ? project.repository.tag_exists?(event.ref_name) : project.repository.branch_exists?(event.ref_name)
       = link_to_if should_link, event.ref_name, commits_link, class: 'ref-name'

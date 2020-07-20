@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Exporter::WebExporter do
+RSpec.describe Gitlab::Metrics::Exporter::WebExporter do
   let(:exporter) { described_class.new }
   let(:readiness_probe) { exporter.send(:readiness_probe).execute }
 

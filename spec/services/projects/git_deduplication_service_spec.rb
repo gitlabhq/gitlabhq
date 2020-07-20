@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::GitDeduplicationService do
+RSpec.describe Projects::GitDeduplicationService do
   include ExclusiveLeaseHelpers
 
   let(:pool) { create(:pool_repository, :ready) }
@@ -139,7 +139,7 @@ describe Projects::GitDeduplicationService do
         end
 
         it 'fails when a lease is already out' do
-          expect(service).to receive(:log_error).with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
+          expect(service).to receive(:log_error).with("Cannot obtain an exclusive lease for #{service.class.name}. There must be another instance already in execution.")
 
           service.execute
         end

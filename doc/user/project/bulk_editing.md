@@ -14,7 +14,7 @@ For more details, see
 If you want to update attributes across multiple issues or merge requests, you can do it
 by bulk editing them, that is, editing them together.
 
-![Bulk editing](img/bulk-editing.png)
+![Bulk editing](img/bulk-editing_v13_2.png)
 
 ## Bulk edit issues at the project level
 
@@ -25,8 +25,12 @@ When bulk editing issues in a project, you can edit the following attributes:
 
 - Status (open/closed)
 - Assignee
+- Epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in
+   [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.) **(PREMIUM)**
 - Milestone
 - Labels
+- Health status ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in
+   [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.) **(ULTIMATE)**
 - Subscriptions
 
 To update multiple project issues at the same time:

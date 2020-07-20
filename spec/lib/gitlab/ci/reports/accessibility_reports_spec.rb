@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Reports::AccessibilityReports do
+RSpec.describe Gitlab::Ci::Reports::AccessibilityReports do
   let(:accessibility_report) { described_class.new }
   let(:url) { 'https://gitlab.com' }
   let(:data) do

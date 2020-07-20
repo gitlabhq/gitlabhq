@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Config::Entry::Configurable do
+RSpec.describe Gitlab::Config::Entry::Configurable do
   let(:entry) do
     Class.new(Gitlab::Config::Entry::Node) do
       include Gitlab::Config::Entry::Configurable

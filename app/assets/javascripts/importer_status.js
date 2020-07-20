@@ -35,8 +35,8 @@ class ImporterStatus {
     const $tr = $btn.closest('tr');
     const $targetField = $tr.find('.import-target');
     const $namespaceInput = $targetField.find('.js-select-namespace option:selected');
-    const id = $tr.attr('id').replace('repo_', '');
     const repoData = $tr.data();
+    const id = repoData.id || $tr.attr('id').replace('repo_', '');
 
     let targetNamespace;
     let newName;
@@ -63,7 +63,7 @@ class ImporterStatus {
     return axios
       .post(this.importUrl, attributes)
       .then(({ data }) => {
-        const job = $(`tr#repo_${id}`);
+        const job = $tr;
         job.attr('id', `project_${data.id}`);
 
         job.find('.import-target').html(`<a href="${data.full_path}">${data.full_path}</a>`);
@@ -86,7 +86,7 @@ class ImporterStatus {
       .catch(error => {
         let details = error;
 
-        const $statusField = $(`#repo_${this.id} .job-status`);
+        const $statusField = $tr.find('.job-status');
         $statusField.text(__('Failed'));
 
         if (error.response && error.response.data && error.response.data.errors) {

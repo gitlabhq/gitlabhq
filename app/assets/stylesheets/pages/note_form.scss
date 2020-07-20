@@ -62,7 +62,8 @@
     background-color: $white;
 
     &.is-focused {
-      @extend .form-control:focus;
+      border-color: $input-focus-border-color;
+      box-shadow: $input-focus-box-shadow;
 
       .comment-toolbar,
       .nav-links {
@@ -359,14 +360,6 @@ table {
   }
 }
 
-.toolbar-button-icon {
-  position: relative;
-  top: 1px;
-  margin-right: $gl-padding-4;
-  color: inherit;
-  font-size: 16px;
-}
-
 .toolbar-text {
   font-size: 14px;
   line-height: 16px;
@@ -489,6 +482,7 @@ table {
   border: 0;
   font-size: 14px;
   line-height: 16px;
+  vertical-align: initial;
 
   &:hover,
   &:focus {
@@ -497,6 +491,10 @@ table {
     .text-attach-file {
       text-decoration: underline;
     }
+  }
+
+  .gl-icon:not(:last-child) {
+    margin-right: 0;
   }
 }
 

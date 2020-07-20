@@ -21,6 +21,11 @@ module Gitlab
             issue_metrics_table[:first_mentioned_in_commit_at]
           end
 
+          override :column_list
+          def column_list
+            [timestamp_projection]
+          end
+
           # rubocop: disable CodeReuse/ActiveRecord
           def apply_query_customization(query)
             issue_metrics_join = mr_closing_issues_table

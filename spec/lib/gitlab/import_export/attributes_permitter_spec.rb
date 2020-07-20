@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::AttributesPermitter do
+RSpec.describe Gitlab::ImportExport::AttributesPermitter do
   let(:yml_config) do
     <<-EOF
       tree:

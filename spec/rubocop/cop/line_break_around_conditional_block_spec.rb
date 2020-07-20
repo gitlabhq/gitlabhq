@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/line_break_around_conditional_block'
 
-describe RuboCop::Cop::LineBreakAroundConditionalBlock do
+RSpec.describe RuboCop::Cop::LineBreakAroundConditionalBlock, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

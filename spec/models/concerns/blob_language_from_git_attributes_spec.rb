@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlobLanguageFromGitAttributes do
+RSpec.describe BlobLanguageFromGitAttributes do
   include FakeBlobHelpers
 
   let(:project) { build(:project, :repository) }

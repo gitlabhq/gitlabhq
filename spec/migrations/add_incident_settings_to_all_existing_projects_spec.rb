@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200609212701_add_incident_settings_to_all_existing_projects.rb')
 
-describe AddIncidentSettingsToAllExistingProjects, :migration do
+RSpec.describe AddIncidentSettingsToAllExistingProjects, :migration do
   let(:project_incident_management_settings) { table(:project_incident_management_settings) }
   let(:labels) { table(:labels) }
   let(:label_links) { table(:label_links) }
@@ -67,7 +67,7 @@ describe AddIncidentSettingsToAllExistingProjects, :migration do
     context 'when project has incident labels' do
       before do
         issue = issues.create!(project_id: project.id)
-        incident_label_attrs = IncidentManagement::CreateIssueService::INCIDENT_LABEL
+        incident_label_attrs = IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES
         incident_label = labels.create!(project_id: project.id, **incident_label_attrs)
         label_links.create!(target_id: issue.id, label_id: incident_label.id, target_type: 'Issue')
       end

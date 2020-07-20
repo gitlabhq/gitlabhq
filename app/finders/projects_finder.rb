@@ -23,6 +23,7 @@
 #     min_access_level: integer
 #     last_activity_after: datetime
 #     last_activity_before: datetime
+#     repository_storage: string
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
@@ -75,6 +76,7 @@ class ProjectsFinder < UnionFinder
     collection = by_deleted_status(collection)
     collection = by_last_activity_after(collection)
     collection = by_last_activity_before(collection)
+    collection = by_repository_storage(collection)
     collection
   end
 
@@ -192,6 +194,14 @@ class ProjectsFinder < UnionFinder
   def by_last_activity_before(items)
     if params[:last_activity_before].present?
       items.where("last_activity_at < ?", params[:last_activity_before]) # rubocop: disable CodeReuse/ActiveRecord
+    else
+      items
+    end
+  end
+
+  def by_repository_storage(items)
+    if params[:repository_storage].present?
+      items.where(repository_storage: params[:repository_storage]) # rubocop: disable CodeReuse/ActiveRecord
     else
       items
     end

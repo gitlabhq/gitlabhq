@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DevOpsScore::Metric do
+RSpec.describe DevOpsScore::Metric do
   let(:conv_dev_index) { create(:dev_ops_score_metric) }
 
   describe '#percentage_score' do

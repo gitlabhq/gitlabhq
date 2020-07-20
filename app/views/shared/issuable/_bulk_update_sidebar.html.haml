@@ -1,4 +1,6 @@
 - type = local_assigns.fetch(:type)
+- bulk_issue_health_status_flag = Feature.enabled?(:bulk_update_health_status, @project&.group, default_enabled: true) && type == :issues && @project&.group&.feature_available?(:issuable_health_status)
+- epic_bulk_edit_flag = @project&.group&.feature_available?(:epics) && type == :issues
 
 %aside.issues-bulk-update.js-right-sidebar.right-sidebar{ "aria-live" => "polite", data: { 'signed-in': current_user.present? } }
   .issuable-sidebar.hidden
@@ -26,6 +28,13 @@
           - field_name = "update[assignee_ids][]"
           = dropdown_tag(_("Select assignee"), options: { toggle_class: "js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: _("Assign to"), filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
             placeholder: _("Search authors"), data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: field_name } })
+      - if epic_bulk_edit_flag
+        .block
+          .title
+            = _('Epic')
+          .filter-item.epic-bulk-edit
+            #js-epic-select-root{ data: { group_id: @project&.group&.id, show_header: "true" } }
+          %input{ id: 'issue_epic_id', type: 'hidden', name: 'update[epic_id]' }
       .block
         .title
           = _('Milestone')
@@ -36,6 +45,13 @@
           = _('Labels')
         .filter-item.labels-filter
           = render "shared/issuable/label_dropdown", classes: ["js-filter-bulk-update", "js-multiselect"], dropdown_title: _("Apply a label"), show_create: false, show_footer: false, extra_options: false, filter_submit: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true, default_label: _("Labels") }, label_name: _("Select labels"), no_default_styles: true
+      - if bulk_issue_health_status_flag
+        .block
+          .title
+            = _('Health status')
+          .filter-item.health-status.health-status-filter
+            #js-bulk-update-health-status-root
+          %input{ id: 'issue_health_status_value', type: 'hidden', name: 'update[health_status]' }
       .block
         .title
           = _('Subscriptions')

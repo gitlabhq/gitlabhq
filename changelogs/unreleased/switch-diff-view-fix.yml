@@ -1,0 +1,6 @@
+---
+title: Deduplicate URL parameters when requesting merge request diffs which causes
+  diffs load to fail
+merge_request: 33117
+author:
+type: fixed

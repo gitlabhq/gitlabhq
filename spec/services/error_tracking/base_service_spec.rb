@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ErrorTracking::BaseService do
+RSpec.describe ErrorTracking::BaseService do
   describe '#compose_response' do
     let(:project) { double('project') }
     let(:user) { double('user') }

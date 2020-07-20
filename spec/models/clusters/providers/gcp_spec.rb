@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Providers::Gcp do
+RSpec.describe Clusters::Providers::Gcp do
   it { is_expected.to belong_to(:cluster) }
   it { is_expected.to validate_presence_of(:zone) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::UsersStarredDashboard do
+RSpec.describe Metrics::UsersStarredDashboard do
   describe 'associations' do
     it { is_expected.to belong_to(:project).inverse_of(:metrics_users_starred_dashboards) }
     it { is_expected.to belong_to(:user).inverse_of(:metrics_users_starred_dashboards) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SubmoduleHelper do
+RSpec.describe SubmoduleHelper do
   include RepoHelpers
 
   let(:submodule_item) { double(id: 'hash', path: 'rack') }

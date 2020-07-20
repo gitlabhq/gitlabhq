@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::HTTP do
+RSpec.describe Gitlab::HTTP do
   include StubRequests
 
   context 'when allow_local_requests' do

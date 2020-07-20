@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-describe "Groups", "routing" do
-  let(:group_path) { 'complex.group-namegit' }
+RSpec.shared_examples 'groups routing' do
+  let(:group_path) { 'projects.abc123' }
   let!(:group) { create(:group, path: group_path) }
 
   it "to #show" do
@@ -54,5 +54,25 @@ describe "Groups", "routing" do
     allow(Group).to receive(:find_by_full_path).with('gitlabhq', any_args).and_return(true)
 
     expect(get('/groups/gitlabhq/-/boards')).to route_to('groups/boards#index', group_id: 'gitlabhq')
+  end
+end
+
+RSpec.describe "Groups", "routing" do
+  context 'complex group path with dot' do
+    include_examples 'groups routing' do
+      let(:group_path) { 'complex.group-namegit' }
+    end
+  end
+
+  context 'group path starting with help' do
+    include_examples 'groups routing' do
+      let(:group_path) { 'help.abc123' }
+    end
+  end
+
+  context 'group path starting with projects' do
+    include_examples 'groups routing' do
+      let(:group_path) { 'projects.abc123' }
+    end
   end
 end

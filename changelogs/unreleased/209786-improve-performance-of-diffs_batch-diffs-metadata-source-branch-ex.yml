@@ -1,0 +1,5 @@
+---
+title: Further improve the performance for loading large diffs on a Merge request
+merge_request: 34516
+author:
+type: performance

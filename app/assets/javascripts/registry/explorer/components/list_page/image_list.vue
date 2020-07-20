@@ -37,7 +37,8 @@ export default {
       v-for="(listItem, index) in images"
       :key="index"
       :item="listItem"
-      :show-top-border="index === 0"
+      :first="index === 0"
+      :last="index === images.length - 1"
       @delete="$emit('delete', $event)"
     />
 

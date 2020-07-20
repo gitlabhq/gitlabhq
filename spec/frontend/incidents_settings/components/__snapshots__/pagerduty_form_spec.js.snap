@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Alert integration settings form should match the default snapshot 1`] = `
+<div>
+  <!---->
+   
+  <p>
+    Setting up a webhook with PagerDuty will automatically create a GitLab issue for each PagerDuty incident.
+  </p>
+   
+  <form>
+    <gl-form-group-stub
+      class="col-8 col-md-9 gl-p-0"
+    >
+      <gl-toggle-stub
+        id="active"
+        label="Active"
+        labelposition="top"
+        value="true"
+      />
+    </gl-form-group-stub>
+     
+    <gl-form-group-stub
+      class="col-8 col-md-9 gl-p-0"
+      label="Webhook URL"
+      label-class="label-bold"
+      label-for="url"
+    >
+      <gl-form-input-group-stub
+        data-testid="webhook-url"
+        id="url"
+        predefinedoptions="[object Object]"
+        readonly=""
+        value="pagerduty.webhook.com"
+      />
+       
+      <div
+        class="gl-text-gray-400 gl-pt-2"
+      >
+        <gl-sprintf-stub
+          message="Create a GitLab issue for each PagerDuty incident by %{docsLink}"
+        />
+      </div>
+       
+      <gl-button-stub
+        category="tertiary"
+        class="gl-mt-3"
+        data-testid="webhook-reset-btn"
+        icon=""
+        role="button"
+        size="medium"
+        tabindex="0"
+        variant="default"
+      >
+        
+        Reset webhook URL
+      
+      </gl-button-stub>
+       
+      <gl-modal-stub
+        modalclass=""
+        modalid="resetWebhookModal"
+        ok-title="Reset webhook URL"
+        ok-variant="danger"
+        size="md"
+        title="Reset webhook URL"
+        titletag="h4"
+      >
+        
+        Resetting the webhook URL for this project will require updating this integration's settings in PagerDuty.
+      
+      </gl-modal-stub>
+    </gl-form-group-stub>
+     
+    <gl-button-stub
+      category="tertiary"
+      class="js-no-auto-disable"
+      icon=""
+      size="medium"
+      type="submit"
+      variant="success"
+    >
+      
+      Save changes
+    
+    </gl-button-stub>
+  </form>
+</div>
+`;

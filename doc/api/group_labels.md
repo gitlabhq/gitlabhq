@@ -170,7 +170,8 @@ Example response:
 }
 ```
 
-NOTE: **Note:** An older endpoint `PUT /groups/:id/labels` with `name` in the parameters is still available, but deprecated.
+NOTE: **Note:**
+An older endpoint `PUT /groups/:id/labels` with `name` in the parameters is still available, but deprecated.
 
 ## Delete a group label
 
@@ -189,7 +190,8 @@ DELETE /groups/:id/labels/:label_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/bug"
 ```
 
-NOTE: **Note:** An older endpoint `DELETE /groups/:id/labels` with `name` in the parameters is still available, but deprecated.
+NOTE: **Note:**
+An older endpoint `DELETE /groups/:id/labels` with `name` in the parameters is still available, but deprecated.
 
 ## Subscribe to a group label
 

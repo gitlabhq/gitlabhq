@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Presenters::IssueClose do
+RSpec.describe Gitlab::SlashCommands::Presenters::IssueClose do
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let(:attachment) { subject[:attachments].first }

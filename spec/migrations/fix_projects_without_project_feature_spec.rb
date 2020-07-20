@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200127111840_fix_projects_without_project_feature.rb')
 
-describe FixProjectsWithoutProjectFeature do
+RSpec.describe FixProjectsWithoutProjectFeature do
   let(:namespace) { table(:namespaces).create(name: 'gitlab', path: 'gitlab-org') }
 
   let!(:projects) do

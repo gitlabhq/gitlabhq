@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::CodeEventFetcher do
+RSpec.describe Gitlab::CycleAnalytics::CodeEventFetcher do
   let(:stage_name) { :code }
 
   it_behaves_like 'default query config' do

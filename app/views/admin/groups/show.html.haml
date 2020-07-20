@@ -1,6 +1,8 @@
 - add_to_breadcrumbs _("Groups"), admin_groups_path
 - breadcrumb_title @group.name
 - page_title @group.name, _("Groups")
+
+.js-remove-member-modal
 %h3.page-title
   = _('Group: %{group_name}') % { group_name: @group.full_name }
 

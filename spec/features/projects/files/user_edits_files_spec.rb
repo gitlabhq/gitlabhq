@@ -11,8 +11,6 @@ RSpec.describe 'Projects > Files > User edits files', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(web_ide_default: false)
-
     sign_in(user)
   end
 
@@ -46,9 +44,9 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       find('.file-editor', match: :first)
 
       find('#editor')
-      execute_script("ace.edit('editor').setValue('*.rbca')")
+      execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
 
-      expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
+      expect(evaluate_script('monaco.editor.getModels()[0].getValue()')).to eq('*.rbca')
     end
 
     it 'does not show the edit link if a file is binary' do
@@ -67,7 +65,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       find('.file-editor', match: :first)
 
       find('#editor')
-      execute_script("ace.edit('editor').setValue('*.rbca')")
+      execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
 
@@ -85,7 +83,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       find('.file-editor', match: :first)
 
       find('#editor')
-      execute_script("ace.edit('editor').setValue('*.rbca')")
+      execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       fill_in(:branch_name, with: 'new_branch_name', visible: true)
       click_button('Commit changes')
@@ -103,7 +101,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       find('.file-editor', match: :first)
 
       find('#editor')
-      execute_script("ace.edit('editor').setValue('*.rbca')")
+      execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
       click_link('Preview changes')
 
       expect(page).to have_css('.line_holder.new')
@@ -148,9 +146,9 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       find('.file-editor', match: :first)
 
       find('#editor')
-      execute_script("ace.edit('editor').setValue('*.rbca')")
+      execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
 
-      expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
+      expect(evaluate_script('monaco.editor.getModels()[0].getValue()')).to eq('*.rbca')
     end
 
     it 'opens the Web IDE in a forked project', :sidekiq_might_not_need_inline do
@@ -178,7 +176,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       find('.file-editor', match: :first)
 
       find('#editor')
-      execute_script("ace.edit('editor').setValue('*.rbca')")
+      execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
 
@@ -207,7 +205,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
         expect(page).not_to have_button('Cancel')
 
         find('#editor')
-        execute_script("ace.edit('editor').setValue('*.rbca')")
+        execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
         fill_in(:commit_message, with: 'Another commit', visible: true)
         click_button('Commit changes')
 

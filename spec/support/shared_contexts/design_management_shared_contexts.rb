@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'four designs in three versions' do
+RSpec.shared_context 'four designs in three versions' do
   include DesignManagementTestHelpers
 
   let_it_be(:issue) { create(:issue) }

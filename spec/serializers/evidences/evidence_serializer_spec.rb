@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Evidences::EvidenceSerializer do
+RSpec.describe Evidences::EvidenceSerializer do
   it 'represents an EvidenceEntity entity' do
     expect(described_class.entity_class).to eq(Evidences::EvidenceEntity)
   end

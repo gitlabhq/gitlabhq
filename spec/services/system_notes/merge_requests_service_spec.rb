@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::SystemNotes::MergeRequestsService do
+RSpec.describe ::SystemNotes::MergeRequestsService do
   include Gitlab::Routing
 
   let_it_be(:group) { create(:group) }
@@ -52,8 +52,8 @@ describe ::SystemNotes::MergeRequestsService do
   end
 
   describe '.handle_merge_request_wip' do
-    context 'adding wip note' do
-      let(:noteable) { create(:merge_request, source_project: project, title: 'WIP Lorem ipsum') }
+    context 'adding draft note' do
+      let(:noteable) { create(:merge_request, source_project: project, title: 'Draft: Lorem ipsum') }
 
       subject { service.handle_merge_request_wip }
 
@@ -259,6 +259,20 @@ describe ::SystemNotes::MergeRequestsService do
     it 'links the merge request and the cherry-pick commit' do
       expect(subject.noteable).to eq(merge_request)
       expect(subject.commit_id).to eq(commit_sha)
+    end
+  end
+
+  describe '#approve_mr' do
+    subject { described_class.new(noteable: noteable, project: project, author: author).approve_mr }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'approved' }
+    end
+
+    context 'when merge request approved' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "approved this merge request"
+      end
     end
   end
 end

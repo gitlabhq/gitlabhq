@@ -1,0 +1,5 @@
+---
+title: Use new vuex store for code quality MR widget
+merge_request: 36120
+author:
+type: changed

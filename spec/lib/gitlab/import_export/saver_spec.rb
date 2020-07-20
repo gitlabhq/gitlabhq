@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'fileutils'
 
-describe Gitlab::ImportExport::Saver do
+RSpec.describe Gitlab::ImportExport::Saver do
   let!(:project) { create(:project, :public, name: 'project') }
   let(:base_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:export_path) { "#{base_path}/project_tree_saver_spec/export" }

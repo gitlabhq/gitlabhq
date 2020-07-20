@@ -63,6 +63,22 @@ export default class IssuableBulkUpdateSidebar {
     new MilestoneSelect();
     issueStatusSelect();
     subscriptionSelect();
+
+    if (IS_EE) {
+      import('ee/vue_shared/components/sidebar/health_status_select/health_status_bundle')
+        .then(({ default: HealthStatusSelect }) => {
+          HealthStatusSelect();
+        })
+        .catch(() => {});
+    }
+
+    if (IS_EE) {
+      import('ee/vue_shared/components/sidebar/epics_select/epics_select_bundle')
+        .then(({ default: EpicSelect }) => {
+          EpicSelect();
+        })
+        .catch(() => {});
+    }
   }
 
   setupBulkUpdateActions() {

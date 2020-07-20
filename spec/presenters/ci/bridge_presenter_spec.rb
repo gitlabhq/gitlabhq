@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BridgePresenter do
+RSpec.describe Ci::BridgePresenter do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, status: :failed) }

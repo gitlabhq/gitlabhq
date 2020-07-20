@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NotificationsHelper do
+RSpec.describe NotificationsHelper do
   describe 'notification_icon' do
     it { expect(notification_icon(:disabled)).to match('class="fa fa-microphone-slash fa-fw"') }
     it { expect(notification_icon(:owner_disabled)).to match('class="fa fa-microphone-slash fa-fw"') }

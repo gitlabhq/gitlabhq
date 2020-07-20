@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::NamespaceProjectsResolver do
+RSpec.describe Resolvers::NamespaceProjectsResolver do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

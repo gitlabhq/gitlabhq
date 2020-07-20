@@ -28,8 +28,9 @@ RSpec.describe 'Environment > Metrics' do
   shared_examples 'has environment selector' do
     it 'has a working environment selector', :js do
       click_link('See metrics')
-
-      expect(page).to have_metrics_path(environment)
+      # TODO: See metrics on the sidebar still points to the old metrics URL
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/229277
+      expect(page).to have_current_path(metrics_project_environment_path(project, id: environment.id))
       expect(page).to have_css('[data-qa-selector="environments_dropdown"]')
 
       within('[data-qa-selector="environments_dropdown"]') do
@@ -40,7 +41,7 @@ RSpec.describe 'Environment > Metrics' do
         click_on(staging.name)
       end
 
-      expect(page).to have_metrics_path(staging)
+      expect(page).to have_current_path(project_metrics_dashboard_path(project, environment: staging.id))
 
       wait_for_requests
     end
@@ -66,9 +67,5 @@ RSpec.describe 'Environment > Metrics' do
 
   def visit_environment(environment)
     visit project_environment_path(environment.project, environment)
-  end
-
-  def have_metrics_path(environment)
-    have_current_path(metrics_project_environment_path(project, id: environment.id))
   end
 end

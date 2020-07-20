@@ -115,6 +115,6 @@ There are multiple ways to find the source of queries.
 
 ## See also
 
-- [Bullet](profiling.md#Bullet) For finding `N+1` query problems
+- [Bullet](profiling.md#bullet) For finding `N+1` query problems
 - [Performance guidelines](performance.md)
 - [Merge request performance guidelines](merge_request_performance_guidelines.md#query-counts)

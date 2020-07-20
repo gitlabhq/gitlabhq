@@ -211,4 +211,9 @@ RSpec.describe SearchController do
       end.to raise_error(ActionController::ParameterMissing)
     end
   end
+
+  describe 'GET #autocomplete' do
+    it_behaves_like 'when the user cannot read cross project', :autocomplete, { term: 'hello' }
+    it_behaves_like 'with external authorization service enabled', :autocomplete, { term: 'hello' }
+  end
 end

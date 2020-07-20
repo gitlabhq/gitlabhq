@@ -35,6 +35,17 @@ When adding a foreign key in PostgreSQL the column is not indexed automatically,
 thus you must also add a concurrent index. Not doing so will result in cascading
 deletes being very slow.
 
+## Naming foreign keys
+
+By default Ruby on Rails uses the `_id` suffix for foreign keys. So we should
+only use this suffix for associations between two tables. If you want to
+reference an ID on a third party platform the `_xid` suffix is recommended.
+
+The spec `spec/db/schema_spec.rb` will test if all columns with the `_id` suffix
+have a foreign key constraint. So if that spec fails, don't add the column to
+`IGNORED_FK_COLUMNS`, but instead add the FK constraint, or consider naming it
+differently.
+
 ## Dependent Removals
 
 Don't define options such as `dependent: :destroy` or `dependent: :delete` when

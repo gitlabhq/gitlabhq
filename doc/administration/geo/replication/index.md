@@ -9,7 +9,7 @@ type: howto
 
 > - Introduced in GitLab Enterprise Edition 8.9.
 > - Using Geo in combination with
->   [multi-server architectures](../../reference_architectures/index.md)
+>   [multi-node architectures](../../reference_architectures/index.md)
 >   is considered **Generally Available** (GA) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
 
@@ -213,9 +213,29 @@ For information on configuring Geo, see [Geo configuration](configuration.md).
 
 For information on how to update your Geo nodes to the latest GitLab version, see [Updating the Geo nodes](updating_the_geo_nodes.md).
 
-### Configuring Geo for multiple servers
+### Pausing and resuming replication
 
-For information on configuring Geo for multiple servers, see [Geo for multiple servers](multiple_servers.md).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+In some circumstances, like during [upgrades](updating_the_geo_nodes.md) or a [planned failover](../disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
+
+Pausing and resuming replication is done via a command line tool from the secondary node.
+
+**To Pause: (from secondary)**
+
+```shell
+gitlab-ctl geo-replication-pause
+```
+
+**To Resume: (from secondary)**
+
+```shell
+gitlab-ctl geo-replication-resume
+```
+
+### Configuring Geo for multiple nodes
+
+For information on configuring Geo for multiple nodes, see [Geo for multiple servers](multiple_servers.md).
 
 ### Configuring Geo with Object Storage
 
@@ -244,6 +264,10 @@ For an example of how to set up a location-aware Git remote URL with AWS Route53
 ## Remove Geo node
 
 For more information on removing a Geo node, see [Removing **secondary** Geo nodes](remove_geo_node.md).
+
+## Disable Geo
+
+To find out how to disable Geo, see [Disabling Geo](disable_geo.md).
 
 ## Current limitations
 

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe UserRecentEventsFinder do
-  let(:current_user)     { create(:user) }
-  let(:project_owner)    { create(:user) }
+  let_it_be(:project_owner, reload: true) { create(:user) }
+  let_it_be(:current_user, reload: true)  { create(:user) }
   let(:private_project)  { create(:project, :private, creator: project_owner) }
   let(:internal_project) { create(:project, :internal, creator: project_owner) }
   let(:public_project)   { create(:project, :public, creator: project_owner) }
@@ -35,6 +35,18 @@ RSpec.describe UserRecentEventsFinder do
       expect(Ability).to receive(:allowed?).with(current_user, :read_cross_project) { false }
 
       expect(finder.execute).to be_empty
+    end
+
+    describe 'design activity events' do
+      let_it_be(:event_a) { create(:design_event, author: project_owner) }
+      let_it_be(:event_b) { create(:design_event, author: project_owner) }
+
+      it 'only includes design events', :aggregate_failures do
+        events = finder.execute
+
+        expect(events).to include(event_a)
+        expect(events).to include(event_b)
+      end
     end
   end
 end

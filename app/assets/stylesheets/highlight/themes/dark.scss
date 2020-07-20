@@ -1,6 +1,6 @@
 /* https://github.com/MozMorris/tomorrow-pygments */
 
-@import "../common";
+@import '../common';
 
 /*
 * Dark syntax colors
@@ -223,11 +223,20 @@ $dark-il: #de935f;
   .cs { color: $dark-cs; } /* Comment.Special */
   .gd { color: $dark-gd; } /* Generic.Deleted */
   .ge { font-style: italic; } /* Generic.Emph */
-  .gh { color: $dark-gh; font-weight: $gl-font-weight-bold; } /* Generic.Heading */
+  .gh { /* Generic.Heading */
+    color: $dark-gh;
+    font-weight: $gl-font-weight-bold;
+  }
   .gi { color: $dark-gi; } /* Generic.Inserted */
-  .gp { color: $dark-gp; font-weight: $gl-font-weight-bold; } /* Generic.Prompt */
+  .gp { /* Generic.Prompt */
+    color: $dark-gp;
+    font-weight: $gl-font-weight-bold;
+  }
   .gs { font-weight: $gl-font-weight-bold; } /* Generic.Strong */
-  .gu { color: $dark-gu; font-weight: $gl-font-weight-bold; } /* Generic.Subheading */
+  .gu { /* Generic.Subheading */
+    color: $dark-gu;
+    font-weight: $gl-font-weight-bold;
+  }
   .kc { color: $dark-kc; } /* Keyword.Constant */
   .kd { color: $dark-kd; } /* Keyword.Declaration */
   .kn { color: $dark-kn; } /* Keyword.Namespace */

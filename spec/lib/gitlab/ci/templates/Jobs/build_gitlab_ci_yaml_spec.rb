@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Jobs/Build.gitlab-ci.yml' do
+RSpec.describe 'Jobs/Build.gitlab-ci.yml' do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Jobs/Build') }
 
   describe 'the created pipeline' do

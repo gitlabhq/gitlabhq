@@ -2,23 +2,30 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memory_store_caching do
+RSpec.describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
 
+  let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
+  let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
+
+  subject { described_class.new(*service_params) }
+
   before do
     project.add_maintainer(user)
   end
 
-  describe '#get_dashboard' do
-    let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
-    let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
-    let(:service_call) { subject.get_dashboard }
+  describe '#raw_dashboard' do
+    let(:project) { project_with_dashboard(dashboard_path) }
 
-    subject { described_class.new(*service_params) }
+    it_behaves_like '#raw_dashboard raises error if dashboard loading fails'
+  end
+
+  describe '#get_dashboard' do
+    let(:service_call) { subject.get_dashboard }
 
     context 'when the dashboard does not exist' do
       it_behaves_like 'misconfigured dashboard service response', :not_found
@@ -92,7 +99,8 @@ describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memory_sto
             path: dashboard_path,
             display_name: 'test.yml',
             default: false,
-            system_dashboard: false
+            system_dashboard: false,
+            out_of_the_box_dashboard: false
           }]
         )
       end

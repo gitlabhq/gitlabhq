@@ -9,3 +9,5 @@ export const FILTER_TYPE = {
   none: 'none',
   any: 'any',
 };
+
+export const MAX_HISTORY_SIZE = 5;

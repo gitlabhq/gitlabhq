@@ -127,9 +127,9 @@ module Gitlab
         end
       end
 
-      def local_branches(sort_by: nil)
+      def local_branches(sort_by: nil, pagination_params: nil)
         wrapped_gitaly_errors do
-          gitaly_ref_client.local_branches(sort_by: sort_by)
+          gitaly_ref_client.local_branches(sort_by: sort_by, pagination_params: pagination_params)
         end
       end
 
@@ -1002,15 +1002,21 @@ module Gitlab
         end
       end
 
-      def list_last_commits_for_tree(sha, path, offset: 0, limit: 25)
+      def list_last_commits_for_tree(sha, path, offset: 0, limit: 25, literal_pathspec: false)
         wrapped_gitaly_errors do
-          gitaly_commit_client.list_last_commits_for_tree(sha, path, offset: offset, limit: limit)
+          gitaly_commit_client.list_last_commits_for_tree(sha, path, offset: offset, limit: limit, literal_pathspec: literal_pathspec)
         end
       end
 
-      def last_commit_for_path(sha, path)
+      def list_commits_by_ref_name(refs)
         wrapped_gitaly_errors do
-          gitaly_commit_client.last_commit_for_path(sha, path)
+          gitaly_commit_client.list_commits_by_ref_name(refs)
+        end
+      end
+
+      def last_commit_for_path(sha, path, literal_pathspec: false)
+        wrapped_gitaly_errors do
+          gitaly_commit_client.last_commit_for_path(sha, path, literal_pathspec: literal_pathspec)
         end
       end
 

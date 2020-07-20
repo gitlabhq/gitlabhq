@@ -1,7 +1,7 @@
 - if @project
   = render 'projects/services/prometheus/configuration_banner', project: @project, service: @service
 
-%h4.append-bottom-default
+%h4.gl-mb-3
   = s_('PrometheusService|Manual configuration')
 %p
   = s_('PrometheusService|Select the Active checkbox to override the Auto Configuration with custom settings. If unchecked, Auto Configuration settings are used.')

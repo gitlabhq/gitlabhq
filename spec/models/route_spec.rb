@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Route do
+RSpec.describe Route do
   let(:group) { create(:group, path: 'git_lab', name: 'git_lab') }
   let(:route) { group.route }
 

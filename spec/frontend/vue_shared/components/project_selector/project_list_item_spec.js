@@ -74,6 +74,16 @@ describe('ProjectListItem component', () => {
     expect(renderedNamespace).toBe('a / ... / e /');
   });
 
+  it(`renders a simple namespace name of a GraphQL project`, () => {
+    options.propsData.project.name_with_namespace = undefined;
+    options.propsData.project.nameWithNamespace = 'test';
+
+    wrapper = shallowMount(Component, options);
+    const renderedNamespace = trimText(wrapper.find('.js-project-namespace').text());
+
+    expect(renderedNamespace).toBe('test /');
+  });
+
   it(`renders the project name`, () => {
     options.propsData.project.name = 'my-test-project';
 

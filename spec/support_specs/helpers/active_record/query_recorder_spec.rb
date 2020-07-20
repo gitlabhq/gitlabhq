@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ActiveRecord::QueryRecorder do
+RSpec.describe ActiveRecord::QueryRecorder do
   before do
     stub_const('TestQueries', Class.new(ActiveRecord::Base))
 

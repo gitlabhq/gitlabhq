@@ -17,7 +17,7 @@ import UnmetPrerequisitesBlock from './unmet_prerequisites_block.vue';
 import Sidebar from './sidebar.vue';
 import { sprintf } from '~/locale';
 import delayedJobMixin from '../mixins/delayed_job_mixin';
-import { isNewJobLogActive } from '../store/utils';
+import Log from './log/log.vue';
 
 export default {
   name: 'JobPageApp',
@@ -28,7 +28,7 @@ export default {
     EnvironmentsBlock,
     ErasedBlock,
     Icon,
-    Log: () => (isNewJobLogActive() ? import('./log/log.vue') : import('./job_log.vue')),
+    Log,
     LogTopBar,
     StuckBlock,
     UnmetPrerequisitesBlock,
@@ -270,7 +270,7 @@ export default {
         <div
           v-if="job.archived"
           ref="sticky"
-          class="js-archived-job prepend-top-default archived-job"
+          class="js-archived-job gl-mt-3 archived-job"
           :class="{ 'sticky-top border-bottom-0': hasTrace }"
         >
           <icon name="lock" class="align-text-bottom" />
@@ -280,7 +280,7 @@ export default {
         <div
           v-if="hasTrace"
           class="build-trace-container position-relative"
-          :class="{ 'prepend-top-default': !job.archived }"
+          :class="{ 'gl-mt-3': !job.archived }"
         >
           <log-top-bar
             :class="{

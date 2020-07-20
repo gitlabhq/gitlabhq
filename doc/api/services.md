@@ -493,6 +493,42 @@ Get Emails on push service settings for a project.
 GET /projects/:id/services/emails-on-push
 ```
 
+## Confluence service
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220934) in GitLab 13.2.
+
+Replaces the link to the internal wiki with a link to a Confluence Cloud Workspace.
+
+### Create/Edit Confluence service
+
+Set Confluence service for a project.
+
+```plaintext
+PUT /projects/:id/services/confluence
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `confluence_url` | string | true | The URL of the Confluence Cloud Workspace hosted on atlassian.net.  |
+
+### Delete Confluence service
+
+Delete Confluence service for a project.
+
+```plaintext
+DELETE /projects/:id/services/confluence
+```
+
+### Get Confluence service settings
+
+Get Confluence service settings for a project.
+
+```plaintext
+GET /projects/:id/services/confluence
+```
+
 ## External Wiki
 
 Replaces the link to the internal wiki with a link to an external wiki.
@@ -1008,7 +1044,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `api_url` | string | true | Prometheus API Base URL. For example, `http://prometheus.example.com/`. |
 | `google_iap_audience_client_id` | string | false | Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com) |
-| `google_iap_service_account_json` | string | false | credentials.json file for your service account, like { "type": "service_account", "project_id": ... } |
+| `google_iap_service_account_json` | string | false | `credentials.json` file for your service account, like { "type": "service_account", "project_id": ... } |
 
 ### Delete Prometheus service
 

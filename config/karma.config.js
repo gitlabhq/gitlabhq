@@ -181,7 +181,7 @@ module.exports = function(config) {
   if (process.env.BABEL_ENV === 'coverage' || process.env.NODE_ENV === 'coverage') {
     karmaConfig.reporters.push('coverage-istanbul');
     karmaConfig.coverageIstanbulReporter = {
-      reports: ['html', 'text-summary'],
+      reports: ['html', 'text-summary', 'cobertura'],
       dir: 'coverage-javascript/',
       subdir: '.',
       fixWebpackSourcePaths: true,

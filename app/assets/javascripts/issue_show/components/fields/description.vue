@@ -55,7 +55,7 @@ export default {
           class="note-textarea js-gfm-input js-autosize markdown-area
           qa-description-textarea"
           dir="auto"
-          data-supports-quick-actions="false"
+          data-supports-quick-actions="true"
           :aria-label="__('Description')"
           :placeholder="__('Write a comment or drag your files here…')"
           @keydown.meta.enter="updateIssuable"

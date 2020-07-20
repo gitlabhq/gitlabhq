@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::WebIde::Config do
+RSpec.describe Gitlab::WebIde::Config do
   let(:config) do
     described_class.new(yml)
   end

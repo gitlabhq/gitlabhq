@@ -1,0 +1,5 @@
+---
+title: Use GpgKeys::CreateService when an admin creates a new GPG key for a user
+merge_request: 34737
+author: Rajendra Kadam
+type: fixed

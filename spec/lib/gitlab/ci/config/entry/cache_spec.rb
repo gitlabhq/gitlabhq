@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Cache do
+RSpec.describe Gitlab::Ci::Config::Entry::Cache do
   subject(:entry) { described_class.new(config) }
 
   describe 'validations' do

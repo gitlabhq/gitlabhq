@@ -8,6 +8,14 @@ export default {
     SidebarTodo,
   },
   props: {
+    alert: {
+      type: Object,
+      required: true,
+    },
+    projectPath: {
+      type: String,
+      required: true,
+    },
     sidebarCollapsed: {
       type: Boolean,
       required: true,
@@ -17,18 +25,17 @@ export default {
 </script>
 
 <template>
-  <div class="block  d-flex justify-content-between">
+  <div class="block gl-display-flex gl-justify-content-space-between">
     <span class="issuable-header-text hide-collapsed">
-      {{ __('Quick actions') }}
+      {{ __('To Do') }}
     </span>
-    <toggle-sidebar
-      :collapsed="sidebarCollapsed"
-      css-classes="ml-auto"
-      @toggle="$emit('toggle-sidebar')"
+    <sidebar-todo
+      v-if="!sidebarCollapsed"
+      :project-path="projectPath"
+      :alert="alert"
+      :sidebar-collapsed="sidebarCollapsed"
+      @alert-error="$emit('alert-error', $event)"
     />
-    <!-- TODO: Implement after or as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/215946 -->
-    <template v-if="false">
-      <sidebar-todo v-if="!sidebarCollapsed" :sidebar-collapsed="sidebarCollapsed" />
-    </template>
+    <toggle-sidebar :collapsed="sidebarCollapsed" @toggle="$emit('toggle-sidebar')" />
   </div>
 </template>

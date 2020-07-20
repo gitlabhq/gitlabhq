@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200128134110_migrate_commit_notes_mentions_to_db')
 
-describe MigrateCommitNotesMentionsToDb, :migration, :sidekiq do
+RSpec.describe MigrateCommitNotesMentionsToDb, :migration, :sidekiq do
   let(:users) { table(:users) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

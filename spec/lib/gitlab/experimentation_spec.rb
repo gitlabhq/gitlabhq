@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Experimentation do
+RSpec.describe Gitlab::Experimentation do
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
       test_experiment: {

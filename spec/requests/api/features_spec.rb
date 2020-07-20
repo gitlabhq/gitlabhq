@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Features, stub_feature_flags: false do
+RSpec.describe API::Features, stub_feature_flags: false do
   let_it_be(:user)  { create(:user) }
   let_it_be(:admin) { create(:admin) }
 

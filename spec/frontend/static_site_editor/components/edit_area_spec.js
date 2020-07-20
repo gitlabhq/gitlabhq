@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
+import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/constants';
 
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
@@ -51,7 +52,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
 
   it('renders rich content editor', () => {
     expect(findRichContentEditor().exists()).toBe(true);
-    expect(findRichContentEditor().props('value')).toBe(body);
+    expect(findRichContentEditor().props('content')).toBe(body);
   });
 
   it('renders publish toolbar', () => {
@@ -75,6 +76,15 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
       return wrapper.vm.$nextTick();
     });
 
+    it('updates parsedSource with new content', () => {
+      const newContent = 'New content';
+      const spySyncParsedSource = jest.spyOn(wrapper.vm.parsedSource, 'sync');
+
+      findRichContentEditor().vm.$emit('input', newContent);
+
+      expect(spySyncParsedSource).toHaveBeenCalledWith(newContent, true);
+    });
+
     it('sets publish toolbar as saveable', () => {
       expect(findPublishToolbar().props('saveable')).toBe(true);
     });
@@ -90,5 +100,34 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
         expect(findPublishToolbar().props('saveable')).toBe(false);
       });
     });
+  });
+
+  describe('when the mode changes', () => {
+    const setInitialMode = mode => {
+      wrapper.setData({ editorMode: mode });
+    };
+
+    afterEach(() => {
+      setInitialMode(EDITOR_TYPES.wysiwyg);
+    });
+
+    it.each`
+      initialMode              | targetMode               | resetValue
+      ${EDITOR_TYPES.wysiwyg}  | ${EDITOR_TYPES.markdown} | ${content}
+      ${EDITOR_TYPES.markdown} | ${EDITOR_TYPES.wysiwyg}  | ${body}
+    `(
+      'sets editorMode from $initialMode to $targetMode',
+      ({ initialMode, targetMode, resetValue }) => {
+        setInitialMode(initialMode);
+
+        const resetInitialValue = jest.fn();
+
+        findRichContentEditor().setMethods({ resetInitialValue });
+        findRichContentEditor().vm.$emit('modeChange', targetMode);
+
+        expect(resetInitialValue).toHaveBeenCalledWith(resetValue);
+        expect(wrapper.vm.editorMode).toBe(targetMode);
+      },
+    );
   });
 });

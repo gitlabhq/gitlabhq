@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::Skip do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip do
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:pipeline, reload: true) { create(:ci_pipeline, project: project) }

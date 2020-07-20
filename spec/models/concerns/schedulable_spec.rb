@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Schedulable do
+RSpec.describe Schedulable do
   shared_examples 'before_save callback' do
     it 'updates next_run_at' do
       expect { object.save! }.to change { object.next_run_at }

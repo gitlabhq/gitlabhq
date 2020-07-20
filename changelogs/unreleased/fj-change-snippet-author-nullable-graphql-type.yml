@@ -1,0 +1,5 @@
+---
+title: Set author as nullable in snippet GraphQL Type
+merge_request: 34135
+author:
+type: fixed

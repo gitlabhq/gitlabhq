@@ -1,27 +1,24 @@
-// Browser polyfills
-
 /**
- * Polyfill: fetch
- * @what https://fetch.spec.whatwg.org/
- * @why Because Apollo GraphQL client relies on fetch
- * @browsers Internet Explorer 11
- * @see https://caniuse.com/#feat=fetch
+ * Polyfill
+ * @what requestIdleCallback
+ * @why To align browser features
+ * @browsers Safari (all versions)
+ * @see https://caniuse.com/#feat=requestidlecallback
  */
-import 'unfetch/polyfill/index';
+window.requestIdleCallback =
+  window.requestIdleCallback ||
+  function requestShim(cb) {
+    const start = Date.now();
+    return setTimeout(() => {
+      cb({
+        didTimeout: false,
+        timeRemaining: () => Math.max(0, 50 - (Date.now() - start)),
+      });
+    }, 1);
+  };
 
-/**
- * Polyfill: FormData APIs
- * @what delete(), get(), getAll(), has(), set(), entries(), keys(), values(),
- *    and support for for...of
- * @why Because Apollo GraphQL client relies on fetch
- * @browsers Internet Explorer 11, Edge < 18
- * @see https://caniuse.com/#feat=mdn-api_formdata and subfeatures
- */
-import 'formdata-polyfill';
-
-import './polyfills/custom_event';
-import './polyfills/element';
-import './polyfills/event';
-import './polyfills/nodelist';
-import './polyfills/request_idle_callback';
-import './polyfills/svg';
+window.cancelIdleCallback =
+  window.cancelIdleCallback ||
+  function cancelShim(id) {
+    clearTimeout(id);
+  };

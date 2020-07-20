@@ -7,11 +7,11 @@ class GitlabIssueTrackerService < IssueTrackerService
 
   default_value_for :default, true
 
-  def default_title
+  def title
     'GitLab'
   end
 
-  def default_description
+  def description
     s_('IssueTracker|GitLab issue tracker')
   end
 

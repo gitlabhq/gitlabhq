@@ -49,7 +49,7 @@ export default {
       <pagination-links
         :change="change"
         :page-info="pageInfo"
-        class="d-flex justify-content-center prepend-top-default"
+        class="d-flex justify-content-center gl-mt-3"
       />
     </template>
   </div>

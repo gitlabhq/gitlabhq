@@ -29,7 +29,7 @@ module ReactiveCaching
     self.reactive_cache_lease_timeout = 2.minutes
     self.reactive_cache_refresh_interval = 1.minute
     self.reactive_cache_lifetime = 10.minutes
-    self.reactive_cache_hard_limit = 1.megabyte
+    self.reactive_cache_hard_limit = nil # this value should be set in megabytes. E.g: 1.megabyte
     self.reactive_cache_work_type = :default
     self.reactive_cache_worker_finder = ->(id, *_args) do
       find_by(primary_key => id)
@@ -159,8 +159,12 @@ module ReactiveCaching
       WORK_TYPE.fetch(self.class.reactive_cache_work_type.to_sym)
     end
 
+    def reactive_cache_limit_enabled?
+      !!self.reactive_cache_hard_limit
+    end
+
     def check_exceeded_reactive_cache_limit!(data)
-      return unless Feature.enabled?(:reactive_cache_limit)
+      return unless reactive_cache_limit_enabled?
 
       data_deep_size = Gitlab::Utils::DeepSize.new(data, max_size: self.class.reactive_cache_hard_limit)
 

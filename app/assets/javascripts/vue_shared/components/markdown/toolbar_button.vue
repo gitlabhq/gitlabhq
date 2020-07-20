@@ -64,7 +64,6 @@ export default {
     :aria-label="buttonTitle"
     type="button"
     class="toolbar-btn js-md"
-    tabindex="-1"
     data-container="body"
     @click="() => $emit('click')"
   >

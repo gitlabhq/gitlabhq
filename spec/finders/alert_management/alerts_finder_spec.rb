@@ -11,7 +11,7 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
   let(:params) { {} }
 
   describe '#execute' do
-    subject { described_class.new(current_user, project, params).execute }
+    subject(:execute) { described_class.new(current_user, project, params).execute }
 
     context 'user is not a developer or above' do
       it { is_expected.to be_empty }
@@ -144,81 +144,55 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
         end
 
         context 'when sorting by severity' do
-          let_it_be(:alert_critical) { create(:alert_management_alert, project: project, severity: :critical) }
-          let_it_be(:alert_high) { create(:alert_management_alert, project: project, severity: :high) }
-          let_it_be(:alert_medium) { create(:alert_management_alert, project: project, severity: :medium) }
-          let_it_be(:alert_low) { create(:alert_management_alert, project: project, severity: :low) }
-          let_it_be(:alert_info) { create(:alert_management_alert, project: project, severity: :info) }
-          let_it_be(:alert_unknown) { create(:alert_management_alert, project: project, severity: :unknown) }
+          let_it_be(:alert_critical) { create(:alert_management_alert, :critical, project: project) }
+          let_it_be(:alert_high) { create(:alert_management_alert, :high, project: project) }
+          let_it_be(:alert_medium) { create(:alert_management_alert, :medium, project: project) }
+          let_it_be(:alert_low) { create(:alert_management_alert, :low, project: project) }
+          let_it_be(:alert_info) { create(:alert_management_alert, :info, project: project) }
+          let_it_be(:alert_unknown) { create(:alert_management_alert, :unknown, project: project) }
 
-          context 'sorts alerts ascending' do
+          context 'with ascending sort order' do
             let(:params) { { sort: 'severity_asc' } }
 
-            it do
-              is_expected.to eq [
-                alert_2,
-                alert_critical,
-                alert_1,
-                alert_high,
-                alert_medium,
-                alert_low,
-                alert_info,
-                alert_unknown
-              ]
+            it 'sorts alerts by severity from less critical to more critical' do
+              expect(execute.pluck(:severity).uniq).to eq(%w(unknown info low medium high critical))
             end
           end
 
-          context 'sorts alerts descending' do
+          context 'with descending sort order' do
             let(:params) { { sort: 'severity_desc' } }
 
-            it do
-              is_expected.to eq [
-                alert_unknown,
-                alert_info,
-                alert_low,
-                alert_medium,
-                alert_1,
-                alert_high,
-                alert_critical,
-                alert_2
-              ]
+            it 'sorts alerts by severity from more critical to less critical' do
+              expect(execute.pluck(:severity).uniq).to eq(%w(critical high medium low info unknown))
             end
           end
         end
 
         context 'when sorting by status' do
+          let(:statuses) { AlertManagement::Alert::STATUSES }
+          let(:triggered) { statuses[:triggered] }
+          let(:acknowledged) { statuses[:acknowledged] }
+          let(:resolved) { statuses[:resolved] }
+          let(:ignored) { statuses[:ignored] }
+
           let_it_be(:alert_triggered) { create(:alert_management_alert, project: project) }
           let_it_be(:alert_acknowledged) { create(:alert_management_alert, :acknowledged, project: project) }
           let_it_be(:alert_resolved) { create(:alert_management_alert, :resolved, project: project) }
           let_it_be(:alert_ignored) { create(:alert_management_alert, :ignored, project: project) }
 
-          context 'sorts alerts ascending' do
+          context 'with ascending sort order' do
             let(:params) { { sort: 'status_asc' } }
 
-            it do
-              is_expected.to eq [
-                alert_triggered,
-                alert_acknowledged,
-                alert_1,
-                alert_resolved,
-                alert_2,
-                alert_ignored
-              ]
+            it 'sorts by status: Ignored > Resolved > Acknowledged > Triggered' do
+              expect(execute.map(&:status).uniq).to eq([ignored, resolved, acknowledged, triggered])
             end
           end
 
-          context 'sorts alerts descending' do
+          context 'with descending sort order' do
             let(:params) { { sort: 'status_desc' } }
 
-            it do
-              is_expected.to eq [
-                alert_2,
-                alert_ignored,
-                alert_1,
-                alert_resolved,
-                alert_acknowledged,
-                alert_triggered
-              ]
+            it 'sorts by status: Triggered > Acknowledged > Resolved > Ignored' do
+              expect(execute.map(&:status).uniq).to eq([triggered, acknowledged, resolved, ignored])
             end
           end
         end

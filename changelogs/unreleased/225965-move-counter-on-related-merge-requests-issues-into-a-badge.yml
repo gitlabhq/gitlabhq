@@ -1,0 +1,5 @@
+---
+title: Remove border from related merge requests/issues counter
+merge_request: 36272
+author:
+type: fixed

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::SampleMetricsService do
+RSpec.describe Metrics::SampleMetricsService do
   describe 'query' do
     let(:range_start) { '2019-12-02T23:31:45.000Z' }
     let(:range_end) { '2019-12-03T00:01:45.000Z' }

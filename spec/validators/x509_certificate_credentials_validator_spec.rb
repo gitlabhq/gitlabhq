@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe X509CertificateCredentialsValidator do
+RSpec.describe X509CertificateCredentialsValidator do
   let(:certificate_data) { File.read('spec/fixtures/x509_certificate.crt') }
   let(:pkey_data) { File.read('spec/fixtures/x509_certificate_pk.key') }
 

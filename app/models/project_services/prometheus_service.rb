@@ -28,6 +28,9 @@ class PrometheusService < MonitoringService
 
   after_create_commit :create_default_alerts
 
+  scope :preload_project, -> { preload(:project) }
+  scope :with_clusters_with_cilium, -> { joins(project: [:clusters]).merge(Clusters::Cluster.with_available_cilium) }
+
   def initialize_properties
     if properties.nil?
       self.properties = {}
@@ -51,7 +54,7 @@ class PrometheusService < MonitoringService
   end
 
   def fields
-    result = [
+    [
       {
         type: 'checkbox',
         name: 'manual_configuration',
@@ -64,30 +67,23 @@ class PrometheusService < MonitoringService
         title: 'API URL',
         placeholder: s_('PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/'),
         required: true
+      },
+      {
+        type: 'text',
+        name: 'google_iap_audience_client_id',
+        title: 'Google IAP Audience Client ID',
+        placeholder: s_('PrometheusService|Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)'),
+        autocomplete: 'off',
+        required: false
+      },
+      {
+        type: 'textarea',
+        name: 'google_iap_service_account_json',
+        title: 'Google IAP Service Account JSON',
+        placeholder: s_('PrometheusService|Contents of the credentials.json file of your service account, like: { "type": "service_account", "project_id": ... }'),
+        required: false
       }
     ]
-
-    if Feature.enabled?(:prometheus_service_iap_auth)
-      result += [
-        {
-          type: 'text',
-          name: 'google_iap_audience_client_id',
-          title: 'Google IAP Audience Client ID',
-          placeholder: s_('PrometheusService|Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)'),
-          autocomplete: 'off',
-          required: false
-        },
-        {
-          type: 'textarea',
-          name: 'google_iap_service_account_json',
-          title: 'Google IAP Service Account JSON',
-          placeholder: s_('PrometheusService|Contents of the credentials.json file of your service account, like: { "type": "service_account", "project_id": ... }'),
-          required: false
-        }
-      ]
-    end
-
-    result
   end
 
   # Check we can connect to the Prometheus API
@@ -103,7 +99,7 @@ class PrometheusService < MonitoringService
 
     options = { allow_local_requests: allow_local_api_url? }
 
-    if Feature.enabled?(:prometheus_service_iap_auth) && behind_iap?
+    if behind_iap?
       # Adds the Authorization header
       options[:headers] = iap_client.apply({})
     end

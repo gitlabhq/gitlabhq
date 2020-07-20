@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::WikiFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::WikiFormatter do
   let(:project) do
     create(:project,
            namespace: create(:namespace, path: 'gitlabhq'),

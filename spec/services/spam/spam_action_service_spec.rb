@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Spam::SpamActionService do
+RSpec.describe Spam::SpamActionService do
   include_context 'includes Spam constants'
 
   let(:fake_ip) { '1.2.3.4' }

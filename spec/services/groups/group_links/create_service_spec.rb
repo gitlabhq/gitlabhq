@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::GroupLinks::CreateService, '#execute' do
+RSpec.describe Groups::GroupLinks::CreateService, '#execute' do
   let(:parent_group_user) { create(:user) }
   let(:group_user) { create(:user) }
   let(:child_group_user) { create(:user) }

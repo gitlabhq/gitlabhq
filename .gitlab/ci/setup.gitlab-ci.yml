@@ -9,6 +9,7 @@ cache gems:
   stage: test
   needs: ["setup-test-env"]
   variables:
+    BUNDLE_INSTALL_FLAGS: --with=production --with=development --with=test --jobs=2 --path=vendor --retry=3 --quiet
     SETUP_DB: "false"
   script:
     - bundle package --all --all-platforms

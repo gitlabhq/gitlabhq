@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::SetConfidentialNoteEventsOnServices, schema: 20180122154930 do
+RSpec.describe Gitlab::BackgroundMigration::SetConfidentialNoteEventsOnServices do
   let(:services) { table(:services) }
 
   describe '#perform' do

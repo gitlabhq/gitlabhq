@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Gcp::ProvisionService do
+RSpec.describe Clusters::Gcp::ProvisionService do
   include GoogleApi::CloudPlatformHelpers
 
   describe '#execute' do

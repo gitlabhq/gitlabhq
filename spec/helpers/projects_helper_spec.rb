@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectsHelper do
+RSpec.describe ProjectsHelper do
   include ProjectForksHelper
 
   let_it_be(:project) { create(:project) }
@@ -444,8 +444,8 @@ describe ProjectsHelper do
   end
 
   describe '#get_project_nav_tabs' do
+    let_it_be(:user) { create(:user) }
     let(:project) { create(:project) }
-    let(:user)    { create(:user) }
 
     before do
       allow(helper).to receive(:can?) { true }
@@ -500,6 +500,20 @@ describe ProjectsHelper do
         expect(project.external_wiki).to be_nil
         is_expected.not_to include(:external_wiki)
       end
+    end
+
+    context 'when project has confluence enabled' do
+      before do
+        allow(project).to receive(:has_confluence?).and_return(true)
+      end
+
+      it { is_expected.to include(:confluence) }
+      it { is_expected.not_to include(:wiki) }
+    end
+
+    context 'when project does not have confluence enabled' do
+      it { is_expected.not_to include(:confluence) }
+      it { is_expected.to include(:wiki) }
     end
   end
 
@@ -977,18 +991,31 @@ describe ProjectsHelper do
     end
   end
 
-  describe '#project_license_name(project)' do
+  describe '#project_license_name(project)', :request_store do
     let_it_be(:project) { create(:project) }
     let_it_be(:repository) { project.repository }
 
     subject { project_license_name(project) }
 
-    context 'gitaly is working appropriately' do
-      it 'returns the license name' do
-        license = Licensee::License.new('mit')
-        allow(repository).to receive(:license).and_return(license)
+    def license_name
+      project_license_name(project)
+    end
 
+    context 'gitaly is working appropriately' do
+      let(:license) { Licensee::License.new('mit') }
+
+      before do
+        expect(repository).to receive(:license).and_return(license)
+      end
+
+      it 'returns the license name' do
         expect(subject).to eq(license.name)
+      end
+
+      it 'memoizes the value' do
+        expect do
+          2.times { expect(license_name).to eq(license.name) }
+        end.to change { Gitlab::GitalyClient.get_request_count }.by_at_most(1)
       end
     end
 
@@ -1003,10 +1030,16 @@ describe ProjectsHelper do
 
           subject
         end
+
+        it 'memoizes the nil value' do
+          expect do
+            2.times { expect(license_name).to be_nil }
+          end.to change { Gitlab::GitalyClient.get_request_count }.by_at_most(1)
+        end
       end
 
       before do
-        allow(repository).to receive(:license).and_raise(exception)
+        expect(repository).to receive(:license).and_raise(exception)
       end
 
       context "Gitlab::Git::CommandError" do

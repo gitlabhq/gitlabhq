@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design reply form component renders button text as "Comment" when creating a comment 1`] = `
+"<button data-track-event=\\"click_button\\" data-qa-selector=\\"save_comment_button\\" type=\\"submit\\" disabled=\\"disabled\\" class=\\"btn btn-success btn-md disabled\\">
+  <!---->
+  Comment
+</button>"
+`;
+
+exports[`Design reply form component renders button text as "Save comment" when creating a comment 1`] = `
+"<button data-track-event=\\"click_button\\" data-qa-selector=\\"save_comment_button\\" type=\\"submit\\" disabled=\\"disabled\\" class=\\"btn btn-success btn-md disabled\\">
+  <!---->
+  Save comment
+</button>"
+`;

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::OAuth::User do
+RSpec.describe Gitlab::Auth::OAuth::User do
   include LdapHelpers
 
   let(:oauth_user) { described_class.new(auth_hash) }

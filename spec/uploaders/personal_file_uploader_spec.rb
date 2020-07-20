@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PersonalFileUploader do
+RSpec.describe PersonalFileUploader do
   let(:model) { create(:personal_snippet) }
   let(:uploader) { described_class.new(model) }
   let(:upload) { create(:upload, :personal_snippet_upload) }

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'lib/gitlab/badge/shared/metadata'
 
-describe Gitlab::Badge::Coverage::Metadata do
+RSpec.describe Gitlab::Badge::Coverage::Metadata do
   let(:badge) do
     double(project: create(:project), ref: 'feature', job: 'test')
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::Issues::Importer do
+RSpec.describe Gitlab::PhabricatorImport::Issues::Importer do
   let(:project) { create(:project) }
 
   let(:response) do

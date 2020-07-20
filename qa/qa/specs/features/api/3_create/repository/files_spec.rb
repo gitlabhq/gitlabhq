@@ -4,7 +4,7 @@ require 'airborne'
 require 'securerandom'
 
 module QA
-  describe 'API basics' do
+  RSpec.describe 'API basics' do
     before(:context) do
       @api_client = Runtime::API::Client.new(:gitlab)
     end

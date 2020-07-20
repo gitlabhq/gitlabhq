@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Adding an image DiffNote' do
+RSpec.describe 'Adding an image DiffNote' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

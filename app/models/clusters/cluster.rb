@@ -2,6 +2,7 @@
 
 module Clusters
   class Cluster < ApplicationRecord
+    prepend HasEnvironmentScope
     include Presentable
     include Gitlab::Utils::StrongMemoize
     include FromUnion
@@ -20,7 +21,8 @@ module Clusters
       Clusters::Applications::Jupyter.application_name => Clusters::Applications::Jupyter,
       Clusters::Applications::Knative.application_name => Clusters::Applications::Knative,
       Clusters::Applications::ElasticStack.application_name => Clusters::Applications::ElasticStack,
-      Clusters::Applications::Fluentd.application_name => Clusters::Applications::Fluentd
+      Clusters::Applications::Fluentd.application_name => Clusters::Applications::Fluentd,
+      Clusters::Applications::Cilium.application_name => Clusters::Applications::Cilium
     }.freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
@@ -64,6 +66,7 @@ module Clusters
     has_one_cluster_application :knative
     has_one_cluster_application :elastic_stack
     has_one_cluster_application :fluentd
+    has_one_cluster_application :cilium
 
     has_many :kubernetes_namespaces
     has_many :metrics_dashboard_annotations, class_name: 'Metrics::Dashboard::Annotation', inverse_of: :cluster
@@ -81,6 +84,7 @@ module Clusters
     validate :no_groups, unless: :group_type?
     validate :no_projects, unless: :project_type?
     validate :unique_management_project_environment_scope
+    validate :unique_environment_scope
 
     after_save :clear_reactive_cache!
 
@@ -129,6 +133,7 @@ module Clusters
 
     scope :with_enabled_modsecurity, -> { joins(:application_ingress).merge(::Clusters::Applications::Ingress.modsecurity_enabled) }
     scope :with_available_elasticstack, -> { joins(:application_elastic_stack).merge(::Clusters::Applications::ElasticStack.available) }
+    scope :with_available_cilium, -> { joins(:application_cilium).merge(::Clusters::Applications::Cilium.available) }
     scope :distinct_with_deployed_environments, -> { joins(:environments).merge(::Deployment.success).distinct }
     scope :preload_elasticstack, -> { preload(:application_elastic_stack) }
     scope :preload_environments, -> { preload(:environments) }
@@ -228,7 +233,9 @@ module Clusters
     def calculate_reactive_cache
       return unless enabled?
 
-      { connection_status: retrieve_connection_status, nodes: retrieve_nodes }
+      gitlab_kubernetes_nodes = Gitlab::Kubernetes::Node.new(self)
+
+      { connection_status: retrieve_connection_status, nodes: gitlab_kubernetes_nodes.all.presence }
     end
 
     def persisted_applications
@@ -335,7 +342,11 @@ module Clusters
     end
 
     def local_tiller_enabled?
-      Feature.enabled?(:managed_apps_local_tiller, clusterable, default_enabled: false)
+      Feature.enabled?(:managed_apps_local_tiller, clusterable, default_enabled: true)
+    end
+
+    def prometheus_adapter
+      application_prometheus
     end
 
     private
@@ -348,6 +359,12 @@ module Clusters
         .where.not(id: id)
 
       if duplicate_management_clusters.any?
+        errors.add(:environment_scope, 'cannot add duplicated environment scope')
+      end
+    end
+
+    def unique_environment_scope
+      if clusterable.present? && clusterable.clusters.where(environment_scope: environment_scope).where.not(id: id).exists?
         errors.add(:environment_scope, 'cannot add duplicated environment scope')
       end
     end
@@ -381,54 +398,6 @@ module Clusters
     def retrieve_connection_status
       result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.core_client.discover }
       result[:status]
-    end
-
-    def retrieve_nodes
-      result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.get_nodes }
-
-      return unless result[:response]
-
-      cluster_nodes = result[:response]
-
-      result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.metrics_client.get_nodes }
-      nodes_metrics = result[:response].to_a
-
-      cluster_nodes.inject([]) do |memo, node|
-        sliced_node = filter_relevant_node_attributes(node)
-
-        matched_node_metric = nodes_metrics.find { |node_metric| node_metric.metadata.name == node.metadata.name }
-
-        sliced_node_metrics = matched_node_metric ? filter_relevant_node_metrics_attributes(matched_node_metric) : {}
-
-        memo << sliced_node.merge(sliced_node_metrics)
-      end
-    end
-
-    def filter_relevant_node_attributes(node)
-      {
-        'metadata' => {
-          'name' => node.metadata.name
-        },
-        'status' => {
-          'capacity' => {
-            'cpu' => node.status.capacity.cpu,
-            'memory' => node.status.capacity.memory
-          },
-          'allocatable' => {
-            'cpu' => node.status.allocatable.cpu,
-            'memory' => node.status.allocatable.memory
-          }
-        }
-      }
-    end
-
-    def filter_relevant_node_metrics_attributes(node_metrics)
-      {
-        'usage' => {
-          'cpu' => node_metrics.usage.cpu,
-          'memory' => node_metrics.usage.memory
-        }
-      }
     end
 
     # To keep backward compatibility with AUTO_DEVOPS_DOMAIN

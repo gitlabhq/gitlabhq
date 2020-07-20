@@ -2,9 +2,7 @@
 import LineNumber from './line_number.vue';
 
 export default {
-  components: {
-    LineNumber,
-  },
+  functional: true,
   props: {
     line: {
       type: Object,
@@ -15,18 +13,28 @@ export default {
       required: true,
     },
   },
+  render(h, { props }) {
+    const { line, path } = props;
+
+    const chars = line.content.map(content => {
+      return h(
+        'span',
+        {
+          class: ['ws-pre-wrap', content.style],
+        },
+        content.text,
+      );
+    });
+
+    return h('div', { class: 'js-line log-line' }, [
+      h(LineNumber, {
+        props: {
+          lineNumber: line.lineNumber,
+          path,
+        },
+      }),
+      ...chars,
+    ]);
+  },
 };
 </script>
-
-<template>
-  <div class="js-line log-line">
-    <line-number :line-number="line.lineNumber" :path="path" />
-    <span
-      v-for="(content, i) in line.content"
-      :key="i"
-      :class="content.style"
-      class="ws-pre-wrap"
-      >{{ content.text }}</span
-    >
-  </div>
-</template>

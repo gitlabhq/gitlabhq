@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage', :smoke do
+  RSpec.describe 'Manage', :smoke do
     describe 'basic user login' do
       it 'user logs in using basic credentials and logs out' do
         Flow::Login.sign_in

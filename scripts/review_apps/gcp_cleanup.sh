@@ -11,7 +11,7 @@ function setup_gcp_dependencies() {
 
 # These scripts require the following environment variables:
 # - REVIEW_APPS_GCP_REGION - e.g `us-central1`
-# - KUBE_NAMESPACE - e.g `review-apps-ee`
+# - KUBE_NAMESPACE - e.g `review-apps`
 
 function delete_firewall_rules() {
   if [[ ${#@} -eq 0 ]]; then

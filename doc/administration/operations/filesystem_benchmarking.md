@@ -65,7 +65,8 @@ operations per second.
 
 ### Simple benchmarking
 
-NOTE: **Note:** This test is naive but may be useful if `fio` is not
+NOTE: **Note:**
+This test is naive but may be useful if `fio` is not
 available on the system. It's possible to receive good results on this
 test but still have poor performance due to read speed and various other
 factors.

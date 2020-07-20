@@ -60,7 +60,7 @@ describe('Test reports summary', () => {
     });
 
     it('displays the correct total', () => {
-      expect(totalTests().text()).toBe('4 jobs');
+      expect(totalTests().text()).toBe('4 tests');
     });
 
     it('displays the correct failure count', () => {

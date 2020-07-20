@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::QueryLimiting::Middleware do
+RSpec.describe Gitlab::QueryLimiting::Middleware do
   describe '#call' do
     it 'runs the application with query limiting in place' do
       middleware = described_class.new(-> (env) { env })

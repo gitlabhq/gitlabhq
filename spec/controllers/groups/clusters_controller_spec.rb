@@ -192,6 +192,46 @@ RSpec.describe Groups::ClustersController do
     end
   end
 
+  it_behaves_like 'GET #metrics_dashboard for dashboard', 'Cluster health' do
+    let(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
+
+    let(:metrics_dashboard_req_params) do
+      {
+        id: cluster.id,
+        group_id: group.name
+      }
+    end
+  end
+
+  describe 'GET #prometheus_proxy' do
+    let(:proxyable) do
+      create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group])
+    end
+
+    it_behaves_like 'metrics dashboard prometheus api proxy' do
+      let(:proxyable_params) do
+        {
+          id: proxyable.id.to_s,
+          group_id: group.name
+        }
+      end
+
+      context 'with anonymous user' do
+        let(:prometheus_body) { nil }
+
+        before do
+          sign_out(user)
+        end
+
+        it 'returns 404' do
+          get :prometheus_proxy, params: prometheus_proxy_params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe 'POST create for new cluster' do
     let(:legacy_abac_param) { 'true' }
     let(:params) do

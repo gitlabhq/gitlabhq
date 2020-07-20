@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestContextCommit do
+RSpec.describe MergeRequestContextCommit do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:raw_repository) { project.repository.raw_repository }

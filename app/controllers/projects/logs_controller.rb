@@ -2,15 +2,16 @@
 
 module Projects
   class LogsController < Projects::ApplicationController
+    include ::Gitlab::Utils::StrongMemoize
+
     before_action :authorize_read_pod_logs!
-    before_action :environment
     before_action :ensure_deployments, only: %i(k8s elasticsearch)
 
     def index
-      if environment.nil?
-        render :empty_logs
-      else
+      if environment || cluster
         render :index
+      else
+        render :empty_logs
       end
     end
 
@@ -39,8 +40,9 @@ module Projects
       end
     end
 
-    def index_params
-      params.permit(:environment_name)
+    # cluster is selected either via environment or directly by id
+    def cluster_params
+      params.permit(:environment_name, :cluster_id)
     end
 
     def k8s_params
@@ -52,28 +54,46 @@ module Projects
     end
 
     def environment
-      @environment ||= if index_params.key?(:environment_name)
-                         EnvironmentsFinder.new(project, current_user, name: index_params[:environment_name]).find.first
-                       else
-                         project.default_environment
-                       end
+      strong_memoize(:environment) do
+        if cluster_params.key?(:environment_name)
+          EnvironmentsFinder.new(project, current_user, name: cluster_params[:environment_name]).find.first
+        else
+          project.default_environment
+        end
+      end
     end
 
     def cluster
-      environment.deployment_platform&.cluster
+      strong_memoize(:cluster) do
+        if gitlab_managed_apps_logs?
+          clusters = ClusterAncestorsFinder.new(project, current_user).execute
+          clusters.find { |cluster| cluster.id == cluster_params[:cluster_id].to_i }
+        else
+          environment&.deployment_platform&.cluster
+        end
+      end
     end
 
     def namespace
-      environment.deployment_namespace
+      if gitlab_managed_apps_logs?
+        Gitlab::Kubernetes::Helm::NAMESPACE
+      else
+        environment.deployment_namespace
+      end
     end
 
     def ensure_deployments
+      return if gitlab_managed_apps_logs?
       return if cluster && namespace.present?
 
       render status: :bad_request, json: {
         status: :error,
         message: _('Environment does not have deployments')
       }
+    end
+
+    def gitlab_managed_apps_logs?
+      cluster_params.key?(:cluster_id)
     end
   end
 end

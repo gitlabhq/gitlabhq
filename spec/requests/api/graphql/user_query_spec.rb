@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'getting user information' do
+RSpec.describe 'getting user information' do
   include GraphqlHelpers
 
   let(:query) do

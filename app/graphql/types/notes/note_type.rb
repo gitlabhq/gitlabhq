@@ -27,6 +27,8 @@ module Types
       field :system, GraphQL::BOOLEAN_TYPE,
             null: false,
             description: 'Indicates whether this note was created by the system or by a user'
+      field :system_note_icon_name, GraphQL::STRING_TYPE, null: true,
+            description: 'Name of the icon corresponding to a system note'
 
       field :body, GraphQL::STRING_TYPE,
             null: false,
@@ -46,6 +48,10 @@ module Types
       field :confidential, GraphQL::BOOLEAN_TYPE, null: true,
             description: 'Indicates if this note is confidential',
             method: :confidential?
+
+      def system_note_icon_name
+        SystemNoteHelper.system_note_icon_name(object) if object.system?
+      end
     end
   end
 end

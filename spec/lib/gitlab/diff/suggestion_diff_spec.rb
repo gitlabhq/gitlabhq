@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::SuggestionDiff do
+RSpec.describe Gitlab::Diff::SuggestionDiff do
   describe '#diff_lines' do
     let(:from_content) do
       <<-BLOB.strip_heredoc

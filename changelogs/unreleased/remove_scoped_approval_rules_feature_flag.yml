@@ -1,0 +1,5 @@
+---
+title: Remove `scoped_approval_rules` feature flag
+merge_request: 28864
+author: Lee Tickett
+type: added

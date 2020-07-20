@@ -1,0 +1,5 @@
+---
+title: 'GraphQL mutation for changing locked status of an issue'
+merge_request: 36866
+author:
+type: added

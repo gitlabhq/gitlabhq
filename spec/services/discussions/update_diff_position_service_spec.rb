@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Discussions::UpdateDiffPositionService do
+RSpec.describe Discussions::UpdateDiffPositionService do
   let(:project) { create(:project, :repository) }
   let(:current_user) { project.owner }
   let(:create_commit) { project.commit("913c66a37b4a45b9769037c55c2d238bd0942d2e") }

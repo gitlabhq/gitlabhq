@@ -1,6 +1,6 @@
 - page_title _("Fork project")
 
-.row.prepend-top-default
+.row.gl-mt-3
   .col-lg-3
     %h4.gl-mt-0
       = _("Fork project")
@@ -9,13 +9,13 @@
   .col-lg-9
     - if @namespaces.present?
       .fork-thumbnail-container.js-fork-content
-        %h5.gl-mt-0.gl-mb-0.prepend-left-default.append-right-default
+        %h5.gl-mt-0.gl-mb-0.gl-ml-3.gl-mr-3
           = _("Select a namespace to fork the project")
         - @namespaces.each do |namespace|
           = render 'fork_button', namespace: namespace
     - else
       %strong
         = _("No available namespaces to fork the project.")
-      %p.prepend-top-default
+      %p.gl-mt-3
         = _("You must have permission to create a project in a namespace before forking.")
 

@@ -18,7 +18,7 @@ RSpec.shared_context 'GroupPolicy context' do
    ]
   end
   let(:read_group_permissions) { %i[read_label read_list read_milestone read_board] }
-  let(:reporter_permissions) { %i[admin_label read_container_image read_metrics_dashboard_annotation] }
+  let(:reporter_permissions) { %i[admin_label read_container_image read_metrics_dashboard_annotation read_prometheus] }
   let(:developer_permissions) { %i[admin_milestone create_metrics_dashboard_annotation delete_metrics_dashboard_annotation update_metrics_dashboard_annotation] }
   let(:maintainer_permissions) do
     %i[
@@ -38,6 +38,7 @@ RSpec.shared_context 'GroupPolicy context' do
       :update_default_branch_protection
     ].compact
   end
+  let(:admin_permissions) { %i[read_confidential_issues] }
 
   before_all do
     group.add_guest(guest)

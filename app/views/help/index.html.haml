@@ -1,6 +1,6 @@
 %div
 - if Gitlab::CurrentSettings.help_page_text.present?
-  .prepend-top-default.md
+  .gl-mt-3.md
     = markdown_field(Gitlab::CurrentSettings.current_application_settings, :help_page_text)
   %hr
 
@@ -28,7 +28,7 @@
 %p= link_to 'Check the current instance configuration ', help_instance_configuration_url
 %hr
 
-.row.prepend-top-default
+.row.gl-mt-3
   .col-md-8
     .documentation-index.md
       = markdown(@help_index)

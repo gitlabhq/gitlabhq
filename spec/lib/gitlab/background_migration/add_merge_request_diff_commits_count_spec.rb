@@ -2,13 +2,15 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::AddMergeRequestDiffCommitsCount, schema: 20180105212544 do
+RSpec.describe Gitlab::BackgroundMigration::AddMergeRequestDiffCommitsCount do
+  let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
   let(:merge_requests_table) { table(:merge_requests) }
   let(:merge_request_diffs_table) { table(:merge_request_diffs) }
   let(:merge_request_diff_commits_table) { table(:merge_request_diff_commits) }
 
-  let(:project) { projects_table.create!(name: 'gitlab', path: 'gitlab-org/gitlab-ce') }
+  let(:namespace) { namespaces_table.create!(name: 'gitlab-org', path: 'gitlab-org') }
+  let(:project) { projects_table.create!(name: 'gitlab', path: 'gitlab-org/gitlab-ce', namespace_id: namespace.id) }
   let(:merge_request) do
     merge_requests_table.create!(target_project_id: project.id,
                                  target_branch: 'master',

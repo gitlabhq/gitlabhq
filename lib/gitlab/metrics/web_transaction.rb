@@ -32,6 +32,10 @@ module Gitlab
 
         action = "#{controller.action_name}"
 
+        # Try to get the feature category, but don't fail when the controller is
+        # not an ApplicationController.
+        feature_category = controller.class.try(:feature_category_for_action, action).to_s
+
         # Devise exposes a method called "request_format" that does the below.
         # However, this method is not available to all controllers (e.g. certain
         # Doorkeeper controllers). As such we use the underlying code directly.
@@ -45,7 +49,7 @@ module Gitlab
           action = "#{action}.#{suffix}"
         end
 
-        { controller: controller.class.name, action: action }
+        { controller: controller.class.name, action: action, feature_category: feature_category }
       end
 
       def labels_from_endpoint
@@ -61,7 +65,10 @@ module Gitlab
 
         if route
           path = endpoint_paths_cache[route.request_method][route.path]
-          { controller: 'Grape', action: "#{route.request_method} #{path}" }
+
+          # Feature categories will be added for grape endpoints in
+          # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/462
+          { controller: 'Grape', action: "#{route.request_method} #{path}", feature_category: '' }
         end
       end
 

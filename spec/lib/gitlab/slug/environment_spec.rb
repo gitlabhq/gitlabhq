@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Slug::Environment do
+RSpec.describe Gitlab::Slug::Environment do
   describe '#generate' do
     {
       "staging-12345678901234567" => "staging-123456789-q517sa",

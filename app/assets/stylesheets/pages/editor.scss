@@ -45,6 +45,7 @@
     display: block;
     float: left;
     margin-right: 10px;
+    max-width: 250px;
   }
 
   .new-file-name,
@@ -138,10 +139,6 @@
       @media(max-width: map-get($grid-breakpoints, md)-1) {
         clear: both;
       }
-    }
-
-    .editor-ref {
-      max-width: 250px;
     }
   }
 }

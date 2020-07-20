@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::RenderContext do
+RSpec.describe Banzai::RenderContext do
   let(:document) { Nokogiri::HTML.fragment('<p>hello</p>') }
 
   describe '#project_for_node' do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 include ImportExport::CommonUtil
 
-describe Gitlab::ImportExport::VersionChecker do
+RSpec.describe Gitlab::ImportExport::VersionChecker do
   let!(:shared) { Gitlab::ImportExport::Shared.new(nil) }
 
   describe 'bundle a project Git repo' do

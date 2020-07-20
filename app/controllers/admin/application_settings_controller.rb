@@ -227,6 +227,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :raw_blob_request_limit,
       :namespace_storage_size_limit,
       :issues_create_limit,
+      :default_branch_name,
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
       repository_storages: [],

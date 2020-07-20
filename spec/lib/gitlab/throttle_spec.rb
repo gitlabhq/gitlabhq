@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Throttle do
+RSpec.describe Gitlab::Throttle do
   describe '.protected_paths_enabled?' do
     subject { described_class.protected_paths_enabled? }
 

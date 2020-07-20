@@ -190,6 +190,7 @@ module ApplicationSettingsHelper
       :container_expiration_policies_enable_historic_entries,
       :container_registry_token_expire_delay,
       :default_artifacts_expire_in,
+      :default_branch_name,
       :default_branch_protection,
       :default_ci_config_path,
       :default_group_visibility,
@@ -244,6 +245,7 @@ module ApplicationSettingsHelper
       :metrics_method_call_threshold,
       :minimum_password_length,
       :mirror_available,
+      :notify_on_unknown_sign_in,
       :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,
@@ -319,7 +321,13 @@ module ApplicationSettingsHelper
       :email_restrictions_enabled,
       :email_restrictions,
       :issues_create_limit,
-      :raw_blob_request_limit
+      :raw_blob_request_limit,
+      :project_import_limit,
+      :project_export_limit,
+      :project_download_export_limit,
+      :group_import_limit,
+      :group_export_limit,
+      :group_download_export_limit
     ]
   end
 

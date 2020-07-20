@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'merge request show action' do
+RSpec.shared_context 'merge request show action' do
   include Devise::Test::ControllerHelpers
   include ProjectForksHelper
 

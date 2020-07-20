@@ -34,7 +34,7 @@ module RepositoryCheck
     end
 
     def perform_repository_checks
-      start = Time.now
+      start = Time.current
 
       # This loop will break after a little more than one hour ('a little
       # more' because `git fsck` may take a few minutes), or if it runs out of
@@ -42,7 +42,7 @@ module RepositoryCheck
       # RepositoryCheckWorker each hour so that as long as there are repositories to
       # check, only one (or two) will be checked at a time.
       project_ids.each do |project_id|
-        break if Time.now - start >= RUN_TIME
+        break if Time.current - start >= RUN_TIME
 
         next unless try_obtain_lease_for_project(project_id)
 

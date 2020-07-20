@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
   let_it_be(:build) { create(:ci_build, :running) }
 
   before do

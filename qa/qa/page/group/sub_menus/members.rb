@@ -7,6 +7,10 @@ module QA
         class Members < Page::Base
           include Page::Component::UsersSelect
 
+          view 'app/assets/javascripts/vue_shared/components/remove_member_modal.vue' do
+            element :remove_member_modal_content
+          end
+
           view 'app/views/shared/members/_invite_member.html.haml' do
             element :member_select_field
             element :invite_member_button
@@ -32,10 +36,12 @@ module QA
           end
 
           def remove_member(username)
-            page.accept_confirm do
-              within_element(:member_row, text: username) do
-                click_element :delete_member_button
-              end
+            within_element(:member_row, text: username) do
+              click_element :delete_member_button
+            end
+
+            within_element(:remove_member_modal_content) do
+              click_button("Remove member")
             end
           end
         end

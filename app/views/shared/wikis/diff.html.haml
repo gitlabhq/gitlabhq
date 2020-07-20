@@ -1,0 +1,32 @@
+- wiki_page_title @page, _('Changes')
+- commit = @diffs.diffable
+
+.wiki-page-header.top-area.has-sidebar-toggle.flex-column.flex-lg-row
+  = wiki_sidebar_toggle_button
+
+  .nav-text
+    %h2.wiki-page-title
+      = link_to_wiki_page @page
+      %span.light
+        &middot;
+        = _('Changes')
+
+  .nav-controls.pb-md-3.pb-lg-0
+    = link_to wiki_page_path(@wiki, @page, action: :history), class: 'btn', role: 'button', data: { qa_selector: 'page_history_button' } do
+      = s_('Wiki|Page history')
+
+.page-content-header
+  .header-main-content
+    %strong= markdown_field(commit, :title)
+    %span.d-none.d-sm-inline= _('authored')
+    #{time_ago_with_tooltip(commit.authored_date)}
+    %span= s_('ByAuthor|by')
+    = author_avatar(commit, size: 24, has_tooltip: false)
+    %strong
+      = commit_author_link(commit, avatar: true, size: 24)
+    - if commit.description.present?
+      %pre.commit-description<
+        = preserve(markdown_field(commit, :description))
+
+= render 'projects/diffs/diffs', diffs: @diffs
+= render 'shared/wikis/sidebar'

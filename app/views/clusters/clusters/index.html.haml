@@ -12,15 +12,14 @@
         = s_('ClusterIntegration|Kubernetes clusters can be used to deploy applications and to provide Review Apps for this project')
       = render 'clusters/clusters/buttons'
 
-    - if @has_ancestor_clusters
-      .bs-callout.bs-callout-info
-        = s_('ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters.')
-        %strong
-          = link_to _('More information'), help_page_path('user/group/clusters/index', anchor: 'cluster-precedence')
-
     - if Feature.enabled?(:clusters_list_redesign)
       #js-clusters-list-app{ data: js_clusters_list_data(clusterable.index_path(format: :json)) }
     - else
+      - if @has_ancestor_clusters
+        .bs-callout.bs-callout-info
+          = s_('ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters.')
+          %strong
+            = link_to _('More information'), help_page_path('user/group/clusters/index', anchor: 'cluster-precedence')
       .clusters-table.js-clusters-list
         .gl-responsive-table-row.table-row-header{ role: "row" }
           .table-section.section-60{ role: "rowheader" }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Build::Preparing do
+RSpec.describe Gitlab::Ci::Status::Build::Preparing do
   subject do
     described_class.new(double('subject'))
   end

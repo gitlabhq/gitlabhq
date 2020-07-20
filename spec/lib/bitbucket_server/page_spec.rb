@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BitbucketServer::Page do
+RSpec.describe BitbucketServer::Page do
   let(:response) { { 'values' => [{ 'description' => 'Test' }], 'isLastPage' => false, 'nextPageStart' => 2 } }
 
   before do

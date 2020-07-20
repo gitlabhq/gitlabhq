@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AuthorizedProjectUpdate::ProjectCreateService do
+RSpec.describe AuthorizedProjectUpdate::ProjectCreateService do
   let_it_be(:group_parent) { create(:group, :private) }
   let_it_be(:group) { create(:group, :private, parent: group_parent) }
   let_it_be(:group_child) { create(:group, :private, parent: group) }

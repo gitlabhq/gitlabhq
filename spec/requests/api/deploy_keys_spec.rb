@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::DeployKeys do
+RSpec.describe API::DeployKeys do
   let(:user)        { create(:user) }
   let(:maintainer)  { create(:user) }
   let(:admin)       { create(:admin) }

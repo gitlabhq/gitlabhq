@@ -5,6 +5,7 @@ import SidebarMediator from '~/sidebar/sidebar_mediator';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
+import * as Emoji from '~/emoji';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
@@ -29,7 +30,7 @@ export function membersBeforeSave(members) {
     const imgAvatar = `<img src="${member.avatar_url}" alt="${member.username}" class="avatar ${rectAvatarClass} avatar-inline center s26"/>`;
     const txtAvatar = `<div class="avatar ${rectAvatarClass} center avatar-inline s26">${autoCompleteAvatar}</div>`;
     const avatarIcon = member.mentionsDisabled
-      ? spriteIcon('notifications-off', 's16 vertical-align-middle prepend-left-5')
+      ? spriteIcon('notifications-off', 's16 vertical-align-middle gl-ml-2')
       : '';
 
     return {
@@ -88,7 +89,6 @@ class GfmAutoComplete {
     if (this.enableMap.labels) this.setupLabels($input);
     if (this.enableMap.snippets) this.setupSnippets($input);
 
-    // We don't instantiate the quick actions autocomplete for note and issue/MR edit forms
     $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
       alias: 'commands',
@@ -109,8 +109,10 @@ class GfmAutoComplete {
           tpl += ' <small class="params"><%- params.join(" ") %></small>';
         }
         if (value.warning && value.icon && value.icon === 'confidential') {
-          tpl +=
-            '<small class="description"><em><i class="fa fa-eye-slash" aria-hidden="true"/><%- warning %></em></small>';
+          tpl += `<small class="description gl-display-flex gl-align-items-center">${spriteIcon(
+            'eye-slash',
+            's16 gl-mr-2',
+          )}<em><%- warning %></em></small>`;
         } else if (value.warning) {
           tpl += '<small class="description"><em><%- warning %></em></small>';
         } else if (value.description !== '') {
@@ -587,14 +589,12 @@ class GfmAutoComplete {
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
-      import(/* webpackChunkName: 'emoji' */ './emoji')
-        .then(({ validEmojiNames, glEmojiTag }) => {
-          this.loadData($input, at, validEmojiNames);
-          GfmAutoComplete.glEmojiTag = glEmojiTag;
+      Emoji.initEmojiMap()
+        .then(() => {
+          this.loadData($input, at, Emoji.getValidEmojiNames());
+          GfmAutoComplete.glEmojiTag = Emoji.glEmojiTag;
         })
-        .catch(() => {
-          this.isLoadingData[at] = false;
-        });
+        .catch(() => {});
     } else if (dataSource) {
       AjaxCache.retrieve(dataSource, true)
         .then(data => {

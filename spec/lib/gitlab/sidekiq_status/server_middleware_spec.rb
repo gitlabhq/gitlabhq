@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqStatus::ServerMiddleware do
+RSpec.describe Gitlab::SidekiqStatus::ServerMiddleware do
   describe '#call' do
     it 'stops tracking of a job upon completion' do
       expect(Gitlab::SidekiqStatus).to receive(:unset).with('123')

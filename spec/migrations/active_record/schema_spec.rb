@@ -5,7 +5,7 @@ require 'spec_helper'
 # Check consistency of db/structure.sql version, migrations' timestamps, and the latest migration timestamp
 # stored in the database's schema_migrations table.
 
-describe ActiveRecord::Schema, schema: :latest do
+RSpec.describe ActiveRecord::Schema, schema: :latest do
   let(:all_migrations) do
     migrations_paths = %w[db/migrate db/post_migrate]
       .map { |path| Rails.root.join(*path, '*') }
@@ -25,6 +25,6 @@ describe ActiveRecord::Schema, schema: :latest do
   it 'the schema_migrations table contains all schema versions' do
     versions = ActiveRecord::Base.connection.execute('SELECT version FROM schema_migrations ORDER BY version').map { |m| Integer(m['version']) }
 
-    expect(versions).to eq(all_migrations)
+    expect(versions).to match_array(all_migrations)
   end
 end

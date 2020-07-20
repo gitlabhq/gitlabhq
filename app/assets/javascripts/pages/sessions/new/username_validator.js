@@ -39,7 +39,7 @@ export default class UsernameValidator extends InputValidator {
   static validateUsernameInput(inputDomElement) {
     const username = inputDomElement.value;
 
-    if (inputDomElement.checkValidity() && username.length > 0) {
+    if (inputDomElement.checkValidity() && username.length > 1) {
       UsernameValidator.setMessageVisibility(inputDomElement, pendingMessageSelector);
       UsernameValidator.fetchUsernameAvailability(username)
         .then(usernameTaken => {

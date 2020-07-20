@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Deployments::SuccessWorker do
+RSpec.describe Deployments::SuccessWorker do
   subject { described_class.new.perform(deployment&.id) }
 
   context 'when successful deployment' do

@@ -6,6 +6,8 @@ module TestEnv
 
   ComponentFailedToInstallError = Class.new(StandardError)
 
+  SHA_REGEX = /\A[0-9a-f]{5,40}\z/i.freeze
+
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
     'signed-commits'                     => '6101e87',
@@ -29,6 +31,10 @@ module TestEnv
     'gitattributes'                      => '5a62481',
     'expand-collapse-diffs'              => '4842455',
     'symlink-expand-diff'                => '81e6355',
+    'diff-files-symlink-to-image'        => '8cfca84',
+    'diff-files-image-to-symlink'        => '3e94fda',
+    'diff-files-symlink-to-text'         => '689815e',
+    'diff-files-text-to-symlink'         => '5e2c270',
     'expand-collapse-files'              => '025db92',
     'expand-collapse-lines'              => '238e82d',
     'pages-deploy'                       => '7897d5b',
@@ -165,8 +171,9 @@ module TestEnv
       task: "gitlab:gitaly:install[#{install_gitaly_args}]") do
         Gitlab::SetupHelper::Gitaly.create_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
         Gitlab::SetupHelper::Praefect.create_configuration(gitaly_dir, { 'praefect' => repos_path }, force: true)
-        start_gitaly(gitaly_dir)
       end
+
+    start_gitaly(gitaly_dir)
   end
 
   def gitaly_socket_path
@@ -459,7 +466,6 @@ module TestEnv
   end
 
   def component_timed_setup(component, install_dir:, version:, task:)
-    puts "\n==> Setting up #{component}..."
     start = Time.now
 
     ensure_component_dir_name_is_correct!(component, install_dir)
@@ -468,22 +474,22 @@ module TestEnv
     return if File.exist?(install_dir) && ci?
 
     if component_needs_update?(install_dir, version)
+      puts "\n==> Setting up #{component}..."
       # Cleanup the component entirely to ensure we start fresh
       FileUtils.rm_rf(install_dir)
 
       unless system('rake', task)
         raise ComponentFailedToInstallError
       end
+
+      yield if block_given?
+
+      puts "    #{component} set up in #{Time.now - start} seconds...\n"
     end
-
-    yield if block_given?
-
   rescue ComponentFailedToInstallError
     puts "\n#{component} failed to install, cleaning up #{install_dir}!\n"
     FileUtils.rm_rf(install_dir)
     exit 1
-  ensure
-    puts "    #{component} set up in #{Time.now - start} seconds...\n"
   end
 
   def ci?
@@ -504,6 +510,8 @@ module TestEnv
     # Allow local overrides of the component for tests during development
     return false if Rails.env.test? && File.symlink?(component_folder)
 
+    return false if component_matches_git_sha?(component_folder, expected_version)
+
     version = File.read(File.join(component_folder, 'VERSION')).strip
 
     # Notice that this will always yield true when using branch versions
@@ -512,6 +520,16 @@ module TestEnv
     version != expected_version
   rescue Errno::ENOENT
     true
+  end
+
+  def component_matches_git_sha?(component_folder, expected_version)
+    # Not a git SHA, so return early
+    return false unless expected_version =~ SHA_REGEX
+
+    sha, exit_status = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} rev-parse HEAD), component_folder)
+    return false if exit_status != 0
+
+    expected_version == sha.chomp
   end
 end
 

@@ -25,4 +25,4 @@
             = yield :create_access_levels
 
     .card-footer
-      = f.submit 'Protect', class: 'btn-success btn', disabled: true
+      = f.submit 'Protect', class: 'btn-success btn', disabled: true, data: { qa_selector: 'protect_tag_button' }

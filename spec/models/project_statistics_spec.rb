@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectStatistics do
+RSpec.describe ProjectStatistics do
   let(:project) { create :project }
   let(:statistics) { project.statistics }
 
@@ -32,7 +32,8 @@ describe ProjectStatistics do
         repository_size: 2.exabytes,
         wiki_size: 1.exabytes,
         lfs_objects_size: 2.exabytes,
-        build_artifacts_size: 3.exabytes - 1
+        build_artifacts_size: 2.exabytes - 1,
+        snippets_size: 1.exabyte
       )
 
       statistics.reload
@@ -41,8 +42,9 @@ describe ProjectStatistics do
       expect(statistics.repository_size).to eq(2.exabytes)
       expect(statistics.wiki_size).to eq(1.exabytes)
       expect(statistics.lfs_objects_size).to eq(2.exabytes)
-      expect(statistics.build_artifacts_size).to eq(3.exabytes - 1)
+      expect(statistics.build_artifacts_size).to eq(2.exabytes - 1)
       expect(statistics.storage_size).to eq(8.exabytes - 1)
+      expect(statistics.snippets_size).to eq(1.exabyte)
     end
   end
 
@@ -52,14 +54,37 @@ describe ProjectStatistics do
       statistics.wiki_size = 6
       statistics.lfs_objects_size = 3
       statistics.build_artifacts_size = 4
+      statistics.snippets_size = 5
 
       expect(statistics.total_repository_size).to eq 5
     end
   end
 
   describe '#wiki_size' do
-    it "is initialized with not null value" do
+    it 'is initialized with not null value' do
+      expect(statistics.attributes['wiki_size']).to be_zero
+      expect(statistics.wiki_size).to be_zero
+    end
+
+    it 'coerces any nil value to 0' do
+      statistics.update!(wiki_size: nil)
+
+      expect(statistics.attributes['wiki_size']).to be_nil
       expect(statistics.wiki_size).to eq 0
+    end
+  end
+
+  describe '#snippets_size' do
+    it 'is initialized with not null value' do
+      expect(statistics.attributes['snippets_size']).to be_zero
+      expect(statistics.snippets_size).to be_zero
+    end
+
+    it 'coerces any nil value to 0' do
+      statistics.update!(snippets_size: nil)
+
+      expect(statistics.attributes['snippets_size']).to be_nil
+      expect(statistics.snippets_size).to eq 0
     end
   end
 
@@ -69,6 +94,7 @@ describe ProjectStatistics do
       allow(statistics).to receive(:update_repository_size)
       allow(statistics).to receive(:update_wiki_size)
       allow(statistics).to receive(:update_lfs_objects_size)
+      allow(statistics).to receive(:update_snippets_size)
       allow(statistics).to receive(:update_storage_size)
     end
 
@@ -82,6 +108,7 @@ describe ProjectStatistics do
         expect(statistics).to have_received(:update_repository_size)
         expect(statistics).to have_received(:update_wiki_size)
         expect(statistics).to have_received(:update_lfs_objects_size)
+        expect(statistics).to have_received(:update_snippets_size)
       end
     end
 
@@ -95,6 +122,7 @@ describe ProjectStatistics do
         expect(statistics).not_to have_received(:update_commit_count)
         expect(statistics).not_to have_received(:update_repository_size)
         expect(statistics).not_to have_received(:update_wiki_size)
+        expect(statistics).not_to have_received(:update_snippets_size)
       end
     end
 
@@ -108,9 +136,11 @@ describe ProjectStatistics do
         expect(statistics).to have_received(:update_commit_count)
         expect(statistics).to have_received(:update_repository_size)
         expect(statistics).to have_received(:update_wiki_size)
+        expect(statistics).to have_received(:update_snippets_size)
         expect(statistics.repository_size).to eq(0)
         expect(statistics.commit_count).to eq(0)
         expect(statistics.wiki_size).to eq(0)
+        expect(statistics.snippets_size).to eq(0)
       end
     end
 
@@ -130,9 +160,11 @@ describe ProjectStatistics do
         expect(statistics).to have_received(:update_commit_count)
         expect(statistics).to have_received(:update_repository_size)
         expect(statistics).to have_received(:update_wiki_size)
+        expect(statistics).to have_received(:update_snippets_size)
         expect(statistics.repository_size).to eq(0)
         expect(statistics.commit_count).to eq(0)
         expect(statistics.wiki_size).to eq(0)
+        expect(statistics.snippets_size).to eq(0)
       end
     end
 
@@ -202,6 +234,33 @@ describe ProjectStatistics do
     end
   end
 
+  describe '#update_snippets_size' do
+    before do
+      create_list(:project_snippet, 2, project: project)
+      SnippetStatistics.update_all(repository_size: 10)
+    end
+
+    it 'stores the size of snippets' do
+      # Snippet not associated with the project
+      snippet = create(:project_snippet)
+      snippet.statistics.update!(repository_size: 40)
+
+      statistics.update_snippets_size
+
+      expect(statistics.update_snippets_size).to eq 20
+    end
+
+    context 'when not all snippets has statistics' do
+      it 'stores the size of snippets with statistics' do
+        SnippetStatistics.last.delete
+
+        statistics.update_snippets_size
+
+        expect(statistics.update_snippets_size).to eq 10
+      end
+    end
+  end
+
   describe '#update_lfs_objects_size' do
     let!(:lfs_object1) { create(:lfs_object, size: 23.megabytes) }
     let!(:lfs_object2) { create(:lfs_object, size: 34.megabytes) }
@@ -222,12 +281,13 @@ describe ProjectStatistics do
       statistics.update!(
         repository_size: 2,
         wiki_size: 4,
-        lfs_objects_size: 3
+        lfs_objects_size: 3,
+        snippets_size: 2
       )
 
       statistics.reload
 
-      expect(statistics.storage_size).to eq 9
+      expect(statistics.storage_size).to eq 11
     end
 
     it 'works during wiki_size backfill' do
@@ -240,6 +300,21 @@ describe ProjectStatistics do
       statistics.reload
 
       expect(statistics.storage_size).to eq 5
+    end
+
+    context 'when nullable columns are nil' do
+      it 'does not raise any error' do
+        expect do
+          statistics.update!(
+            repository_size: 2,
+            wiki_size: nil,
+            lfs_objects_size: 3,
+            snippets_size: nil
+          )
+        end.not_to raise_error
+
+        expect(statistics.storage_size).to eq 5
+      end
     end
   end
 

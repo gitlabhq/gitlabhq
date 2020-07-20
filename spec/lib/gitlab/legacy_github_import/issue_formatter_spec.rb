@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::IssueFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
   let(:client) { double }
   let!(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }

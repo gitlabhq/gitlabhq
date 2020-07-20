@@ -1,0 +1,65 @@
+{
+  "type": "object",
+  "required": [
+    "packages"
+  ],
+  "properties": {
+    "packages": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Za-z_]+"
+      },
+      "patternProperties": {
+        "^[A-Za-z_]+": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[A-Za-z_0-9.]+"
+          },
+          "patternProperties": {
+            "^[A-Za-z_0-9.]+": {
+              "type": "object",
+              "required": [
+                "dist",
+                "uid",
+                "version"
+              ],
+              "properties": {
+                "uid": {
+                  "type": "integer"
+                },
+                "version": {
+                  "type": "string"
+                },
+                "dist": {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "url",
+                    "reference",
+                    "shasum"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "reference": {
+                      "type": "string"
+                    },
+                    "shasum": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

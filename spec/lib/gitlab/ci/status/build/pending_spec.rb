@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Build::Pending do
+RSpec.describe Gitlab::Ci::Status::Build::Pending do
   let(:user) { create(:user) }
 
   subject do

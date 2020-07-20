@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe VariableDuplicatesValidator do
+RSpec.describe VariableDuplicatesValidator do
   let(:validator) { described_class.new(attributes: [:variables], **options) }
 
   describe '#validate_each' do

@@ -10,17 +10,25 @@ module Gitlab
       def generate(data)
         return unless data.present?
 
-        if data.is_a?(Array)
-          data = flatten_array(data)
-        end
+        string = case data
+                 when Array then flatten_array(data)
+                 when Hash then flatten_hash(data)
+                 else
+                   data.to_s
+                 end
 
-        Digest::SHA1.hexdigest(data.to_s)
+        Digest::SHA1.hexdigest(string)
       end
 
       private
 
       def flatten_array(array)
         array.flatten.map!(&:to_s).join
+      end
+
+      def flatten_hash(hash)
+        # Sort hash so SHA generated is the same
+        Gitlab::Utils::SafeInlineHash.merge_keys!(hash).sort.to_s
       end
     end
   end

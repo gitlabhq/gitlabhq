@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlobPresenter, :seed_helper do
+RSpec.describe BlobPresenter, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
 
   let(:git_blob) do

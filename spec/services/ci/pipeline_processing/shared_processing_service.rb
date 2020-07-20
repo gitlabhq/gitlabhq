@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'Pipeline Processing Service' do
+RSpec.shared_examples 'Pipeline Processing Service' do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 

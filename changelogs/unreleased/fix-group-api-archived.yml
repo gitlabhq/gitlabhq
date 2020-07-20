@@ -1,0 +1,5 @@
+---
+title: Remove default "archived" parameter value from Groups API's projects endpoint
+merge_request: 34018
+author: Justin Sleep
+type: fixed

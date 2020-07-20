@@ -1,5 +1,6 @@
 import { __ } from '~/locale';
-import { generateToolbarItem } from './editor_service';
+import { generateToolbarItem } from './services/editor_service';
+import buildCustomHTMLRenderer from './services/build_custom_renderer';
 
 export const CUSTOM_EVENTS = {
   openAddImageModal: 'gl_openAddImageModal',
@@ -31,6 +32,7 @@ const TOOLBAR_ITEM_CONFIGS = [
 
 export const EDITOR_OPTIONS = {
   toolbarItems: TOOLBAR_ITEM_CONFIGS.map(config => generateToolbarItem(config)),
+  customHTMLRenderer: buildCustomHTMLRenderer(),
 };
 
 export const EDITOR_TYPES = {
@@ -41,3 +43,7 @@ export const EDITOR_TYPES = {
 export const EDITOR_HEIGHT = '100%';
 
 export const EDITOR_PREVIEW_STYLE = 'horizontal';
+
+export const IMAGE_TABS = { UPLOAD_TAB: 0, URL_TAB: 1 };
+
+export const MAX_FILE_SIZE = 2097152; // 2Mb

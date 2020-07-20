@@ -7,16 +7,12 @@ class ProjectStatistics < ApplicationRecord
   belongs_to :namespace
 
   default_value_for :wiki_size, 0
-
-  # older migrations fail due to non-existent attribute without this
-  def wiki_size
-    has_attribute?(:wiki_size) ? super : 0
-  end
+  default_value_for :snippets_size, 0
 
   before_save :update_storage_size
 
-  COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count].freeze
-  INCREMENTABLE_COLUMNS = { build_artifacts_size: %i[storage_size], packages_size: %i[storage_size] }.freeze
+  COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size].freeze
+  INCREMENTABLE_COLUMNS = { build_artifacts_size: %i[storage_size], packages_size: %i[storage_size], snippets_size: %i[storage_size] }.freeze
   NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size].freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
@@ -54,17 +50,37 @@ class ProjectStatistics < ApplicationRecord
     self.wiki_size = project.wiki.repository.size * 1.megabyte
   end
 
+  def update_snippets_size
+    self.snippets_size = project.snippets.with_statistics.sum(:repository_size)
+  end
+
   def update_lfs_objects_size
     self.lfs_objects_size = project.lfs_objects.sum(:size)
   end
 
-  # older migrations fail due to non-existent attribute without this
-  def packages_size
-    has_attribute?(:packages_size) ? super : 0
+  # `wiki_size` and `snippets_size` have no default value in the database
+  # and the column can be nil.
+  # This means that, when the columns were added, all rows had nil
+  # values on them.
+  # Therefore, any call to any of those methods will return nil instead
+  # of 0, because `default_value_for` works with new records, not existing ones.
+  #
+  # These two methods provide consistency and avoid returning nil.
+  def wiki_size
+    super.to_i
+  end
+
+  def snippets_size
+    super.to_i
   end
 
   def update_storage_size
-    self.storage_size = repository_size + wiki_size.to_i + lfs_objects_size + build_artifacts_size + packages_size
+    storage_size = repository_size + wiki_size + lfs_objects_size + build_artifacts_size + packages_size
+    # The `snippets_size` column was added on 20200622095419 but db/post_migrate/20190527194900_schedule_calculate_wiki_sizes.rb
+    # might try to update project statistics before the `snippets_size` column has been created.
+    storage_size += snippets_size if self.class.column_names.include?('snippets_size')
+
+    self.storage_size = storage_size
   end
 
   # Since this incremental update method does not call update_storage_size above,

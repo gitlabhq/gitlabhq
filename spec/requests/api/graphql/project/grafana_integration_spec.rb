@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'Getting Grafana Integration' do
+RSpec.describe 'Getting Grafana Integration' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }

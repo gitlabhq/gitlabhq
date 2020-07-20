@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PagesDomains::CreateAcmeOrderService do
+RSpec.describe PagesDomains::CreateAcmeOrderService do
   include LetsEncryptHelpers
 
   let(:pages_domain) { create(:pages_domain) }

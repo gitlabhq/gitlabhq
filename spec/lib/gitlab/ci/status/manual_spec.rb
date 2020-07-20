@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Manual do
+RSpec.describe Gitlab::Ci::Status::Manual do
   subject do
     described_class.new(double('subject'), double('user'))
   end

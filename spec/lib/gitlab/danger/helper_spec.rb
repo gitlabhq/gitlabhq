@@ -6,7 +6,7 @@ require_relative 'danger_spec_helper'
 
 require 'gitlab/danger/helper'
 
-describe Gitlab::Danger::Helper do
+RSpec.describe Gitlab::Danger::Helper do
   using RSpec::Parameterized::TableSyntax
   include DangerSpecHelper
 
@@ -165,125 +165,152 @@ describe Gitlab::Danger::Helper do
     end
   end
 
-  describe '#category_for_file' do
-    where(:path, :expected_category) do
-      'doc/foo'         | :none
-      'CONTRIBUTING.md' | :none
-      'LICENSE'         | :none
-      'MAINTENANCE.md'  | :none
-      'PHILOSOPHY.md'   | :none
-      'PROCESS.md'      | :none
-      'README.md'       | :none
+  describe '#categories_for_file' do
+    before do
+      allow(fake_git).to receive(:diff_for_file).with('usage_data.rb') { double(:diff, patch: "+ count(User.active)") }
+    end
 
-      'ee/doc/foo'      | :unknown
-      'ee/README'       | :unknown
+    where(:path, :expected_categories) do
+      'usage_data.rb'   | [:database, :backend]
+      'doc/foo.md'      | [:docs]
+      'CONTRIBUTING.md' | [:docs]
+      'LICENSE'         | [:docs]
+      'MAINTENANCE.md'  | [:docs]
+      'PHILOSOPHY.md'   | [:docs]
+      'PROCESS.md'      | [:docs]
+      'README.md'       | [:docs]
 
-      'app/assets/foo'       | :frontend
-      'app/views/foo'        | :frontend
-      'public/foo'           | :frontend
-      'scripts/frontend/foo' | :frontend
-      'spec/javascripts/foo' | :frontend
-      'spec/frontend/bar'    | :frontend
-      'vendor/assets/foo'    | :frontend
-      'babel.config.js'      | :frontend
-      'jest.config.js'       | :frontend
-      'package.json'         | :frontend
-      'yarn.lock'            | :frontend
-      'config/foo.js'        | :frontend
-      'config/deep/foo.js'   | :frontend
+      'ee/doc/foo'      | [:unknown]
+      'ee/README'       | [:unknown]
 
-      'ee/app/assets/foo'       | :frontend
-      'ee/app/views/foo'        | :frontend
-      'ee/spec/javascripts/foo' | :frontend
-      'ee/spec/frontend/bar'    | :frontend
+      'app/assets/foo'       | [:frontend]
+      'app/views/foo'        | [:frontend]
+      'public/foo'           | [:frontend]
+      'scripts/frontend/foo' | [:frontend]
+      'spec/javascripts/foo' | [:frontend]
+      'spec/frontend/bar'    | [:frontend]
+      'vendor/assets/foo'    | [:frontend]
+      'babel.config.js'      | [:frontend]
+      'jest.config.js'       | [:frontend]
+      'package.json'         | [:frontend]
+      'yarn.lock'            | [:frontend]
+      'config/foo.js'        | [:frontend]
+      'config/deep/foo.js'   | [:frontend]
 
-      'app/models/foo' | :backend
-      'bin/foo'        | :backend
-      'config/foo'     | :backend
-      'lib/foo'        | :backend
-      'rubocop/foo'    | :backend
-      'spec/foo'       | :backend
-      'spec/foo/bar'   | :backend
+      'ee/app/assets/foo'       | [:frontend]
+      'ee/app/views/foo'        | [:frontend]
+      'ee/spec/javascripts/foo' | [:frontend]
+      'ee/spec/frontend/bar'    | [:frontend]
 
-      'ee/app/foo'      | :backend
-      'ee/bin/foo'      | :backend
-      'ee/spec/foo'     | :backend
-      'ee/spec/foo/bar' | :backend
+      '.gitlab/ci/frontend.gitlab-ci.yml' | %i[frontend engineering_productivity]
 
-      'generator_templates/foo' | :backend
-      'vendor/languages.yml'    | :backend
-      'vendor/licenses.csv'     | :backend
-      'file_hooks/examples/'    | :backend
+      'app/models/foo' | [:backend]
+      'bin/foo'        | [:backend]
+      'config/foo'     | [:backend]
+      'lib/foo'        | [:backend]
+      'rubocop/foo'    | [:backend]
+      'spec/foo'       | [:backend]
+      'spec/foo/bar'   | [:backend]
 
-      'Gemfile'        | :backend
-      'Gemfile.lock'   | :backend
-      'Rakefile'       | :backend
-      'FOO_VERSION'    | :backend
+      'ee/app/foo'      | [:backend]
+      'ee/bin/foo'      | [:backend]
+      'ee/spec/foo'     | [:backend]
+      'ee/spec/foo/bar' | [:backend]
 
-      'Dangerfile'                                            | :engineering_productivity
-      'danger/commit_messages/Dangerfile'                     | :engineering_productivity
-      'ee/danger/commit_messages/Dangerfile'                  | :engineering_productivity
-      'danger/commit_messages/'                               | :engineering_productivity
-      'ee/danger/commit_messages/'                            | :engineering_productivity
-      '.gitlab-ci.yml'                                        | :engineering_productivity
-      '.gitlab/ci/cng.gitlab-ci.yml'                          | :engineering_productivity
-      '.gitlab/ci/ee-specific-checks.gitlab-ci.yml'           | :engineering_productivity
-      'scripts/foo'                                           | :engineering_productivity
-      'lib/gitlab/danger/foo'                                 | :engineering_productivity
-      'ee/lib/gitlab/danger/foo'                              | :engineering_productivity
-      '.overcommit.yml.example'                               | :engineering_productivity
-      '.editorconfig'                                         | :engineering_productivity
-      'tooling/overcommit/foo'                                | :engineering_productivity
-      '.codeclimate.yml'                                      | :engineering_productivity
+      'generator_templates/foo' | [:backend]
+      'vendor/languages.yml'    | [:backend]
+      'vendor/licenses.csv'     | [:backend]
+      'file_hooks/examples/'    | [:backend]
 
-      'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | :backend
+      'Gemfile'        | [:backend]
+      'Gemfile.lock'   | [:backend]
+      'Rakefile'       | [:backend]
+      'FOO_VERSION'    | [:backend]
 
-      'ee/FOO_VERSION' | :unknown
+      'Dangerfile'                                            | [:engineering_productivity]
+      'danger/commit_messages/Dangerfile'                     | [:engineering_productivity]
+      'ee/danger/commit_messages/Dangerfile'                  | [:engineering_productivity]
+      'danger/commit_messages/'                               | [:engineering_productivity]
+      'ee/danger/commit_messages/'                            | [:engineering_productivity]
+      '.gitlab-ci.yml'                                        | [:engineering_productivity]
+      '.gitlab/ci/cng.gitlab-ci.yml'                          | [:engineering_productivity]
+      '.gitlab/ci/ee-specific-checks.gitlab-ci.yml'           | [:engineering_productivity]
+      'scripts/foo'                                           | [:engineering_productivity]
+      'lib/gitlab/danger/foo'                                 | [:engineering_productivity]
+      'ee/lib/gitlab/danger/foo'                              | [:engineering_productivity]
+      '.overcommit.yml.example'                               | [:engineering_productivity]
+      '.editorconfig'                                         | [:engineering_productivity]
+      'tooling/overcommit/foo'                                | [:engineering_productivity]
+      '.codeclimate.yml'                                      | [:engineering_productivity]
 
-      'db/schema.rb'                                              | :database
-      'db/structure.sql'                                          | :database
-      'db/migrate/foo'                                            | :database
-      'db/post_migrate/foo'                                       | :database
-      'ee/db/migrate/foo'                                         | :database
-      'ee/db/post_migrate/foo'                                    | :database
-      'ee/db/geo/migrate/foo'                                     | :database
-      'ee/db/geo/post_migrate/foo'                                | :database
-      'app/models/project_authorization.rb'                       | :database
-      'app/services/users/refresh_authorized_projects_service.rb' | :database
-      'lib/gitlab/background_migration.rb'                        | :database
-      'lib/gitlab/background_migration/foo'                       | :database
-      'ee/lib/gitlab/background_migration/foo'                    | :database
-      'lib/gitlab/database.rb'                                    | :database
-      'lib/gitlab/database/foo'                                   | :database
-      'ee/lib/gitlab/database/foo'                                | :database
-      'lib/gitlab/github_import.rb'                               | :database
-      'lib/gitlab/github_import/foo'                              | :database
-      'lib/gitlab/sql/foo'                                        | :database
-      'rubocop/cop/migration/foo'                                 | :database
+      'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | [:backend]
 
-      'db/fixtures/foo.rb'                                 | :backend
-      'ee/db/fixtures/foo.rb'                              | :backend
+      'ee/FOO_VERSION' | [:unknown]
 
-      'qa/foo' | :qa
-      'ee/qa/foo' | :qa
+      'db/schema.rb'                                              | [:database]
+      'db/structure.sql'                                          | [:database]
+      'db/migrate/foo'                                            | [:database]
+      'db/post_migrate/foo'                                       | [:database]
+      'ee/db/migrate/foo'                                         | [:database]
+      'ee/db/post_migrate/foo'                                    | [:database]
+      'ee/db/geo/migrate/foo'                                     | [:database]
+      'ee/db/geo/post_migrate/foo'                                | [:database]
+      'app/models/project_authorization.rb'                       | [:database]
+      'app/services/users/refresh_authorized_projects_service.rb' | [:database]
+      'lib/gitlab/background_migration.rb'                        | [:database]
+      'lib/gitlab/background_migration/foo'                       | [:database]
+      'ee/lib/gitlab/background_migration/foo'                    | [:database]
+      'lib/gitlab/database.rb'                                    | [:database]
+      'lib/gitlab/database/foo'                                   | [:database]
+      'ee/lib/gitlab/database/foo'                                | [:database]
+      'lib/gitlab/github_import.rb'                               | [:database]
+      'lib/gitlab/github_import/foo'                              | [:database]
+      'lib/gitlab/sql/foo'                                        | [:database]
+      'rubocop/cop/migration/foo'                                 | [:database]
 
-      'changelogs/foo'    | :none
-      'ee/changelogs/foo' | :none
-      'locale/gitlab.pot' | :none
+      'db/fixtures/foo.rb'                                 | [:backend]
+      'ee/db/fixtures/foo.rb'                              | [:backend]
 
-      'FOO'          | :unknown
-      'foo'          | :unknown
+      'qa/foo' | [:qa]
+      'ee/qa/foo' | [:qa]
 
-      'foo/bar.rb'  | :backend
-      'foo/bar.js'  | :frontend
-      'foo/bar.txt' | :none
-      'foo/bar.md'  | :none
+      'changelogs/foo'    | [:none]
+      'ee/changelogs/foo' | [:none]
+      'locale/gitlab.pot' | [:none]
+
+      'FOO'          | [:unknown]
+      'foo'          | [:unknown]
+
+      'foo/bar.rb'  | [:backend]
+      'foo/bar.js'  | [:frontend]
+      'foo/bar.txt' | [:none]
+      'foo/bar.md'  | [:none]
     end
 
     with_them do
-      subject { helper.category_for_file(path) }
+      subject { helper.categories_for_file(path) }
 
-      it { is_expected.to eq(expected_category) }
+      it { is_expected.to eq(expected_categories) }
+    end
+
+    context 'having specific changes' do
+      it 'has database and backend categories' do
+        allow(fake_git).to receive(:diff_for_file).with('usage_data.rb') { double(:diff, patch: "+ count(User.active)") }
+
+        expect(helper.categories_for_file('usage_data.rb')).to eq([:database, :backend])
+      end
+
+      it 'has backend category' do
+        allow(fake_git).to receive(:diff_for_file).with('usage_data.rb') { double(:diff, patch: "+ alt_usage_data(User.active)") }
+
+        expect(helper.categories_for_file('usage_data.rb')).to eq([:backend])
+      end
+
+      it 'has backend category for changes outside usage_data files' do
+        allow(fake_git).to receive(:diff_for_file).with('user.rb') { double(:diff, patch: "+ count(User.active)") }
+
+        expect(helper.categories_for_file('user.rb')).to eq([:backend])
+      end
     end
   end
 
@@ -296,6 +323,7 @@ describe Gitlab::Danger::Helper do
       :frontend  | '~frontend'
       :none      | ''
       :qa        | '~QA'
+      :engineering_productivity | '~"Engineering Productivity" for CI, Danger'
     end
 
     with_them do
@@ -335,6 +363,11 @@ describe Gitlab::Danger::Helper do
     where(:mr_title, :expected_mr_title) do
       'My MR title'      | 'My MR title'
       'WIP: My MR title' | 'My MR title'
+      'Draft: My MR title' | 'My MR title'
+      '(Draft) My MR title' | 'My MR title'
+      '[Draft] My MR title' | 'My MR title'
+      '[DRAFT] My MR title' | 'My MR title'
+      'DRAFT: My MR title' | 'My MR title'
     end
 
     with_them do
@@ -363,6 +396,69 @@ describe Gitlab::Danger::Helper do
         .and_return('web_url' => 'https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/1')
 
       expect(helper).to be_security_mr
+    end
+  end
+
+  describe '#cherry_pick_mr?' do
+    it 'returns false when `gitlab_helper` is unavailable' do
+      expect(helper).to receive(:gitlab_helper).and_return(nil)
+
+      expect(helper).not_to be_cherry_pick_mr
+    end
+
+    context 'when MR title does not mention a cherry-pick' do
+      it 'returns false' do
+        expect(fake_gitlab).to receive(:mr_json)
+          .and_return('title' => 'Add feature xyz')
+
+        expect(helper).not_to be_cherry_pick_mr
+      end
+    end
+
+    context 'when MR title mentions a cherry-pick' do
+      [
+        'Cherry Pick !1234',
+        'cherry-pick !1234',
+        'CherryPick !1234'
+      ].each do |mr_title|
+        it 'returns true' do
+          expect(fake_gitlab).to receive(:mr_json)
+            .and_return('title' => mr_title)
+
+          expect(helper).to be_cherry_pick_mr
+        end
+      end
+    end
+  end
+
+  describe '#stable_branch?' do
+    it 'returns false when `gitlab_helper` is unavailable' do
+      expect(helper).to receive(:gitlab_helper).and_return(nil)
+
+      expect(helper).not_to be_stable_branch
+    end
+
+    context 'when MR target branch is not a stable branch' do
+      it 'returns false' do
+        expect(fake_gitlab).to receive(:mr_json)
+          .and_return('target_branch' => 'my-feature-branch')
+
+        expect(helper).not_to be_stable_branch
+      end
+    end
+
+    context 'when MR target branch is a stable branch' do
+      %w[
+        13-1-stable-ee
+        13-1-stable-ee-patch-1
+      ].each do |target_branch|
+        it 'returns true' do
+          expect(fake_gitlab).to receive(:mr_json)
+            .and_return('target_branch' => target_branch)
+
+          expect(helper).to be_stable_branch
+        end
+      end
     end
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Users' do
+RSpec.describe 'Users' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user, created_at: 1.day.ago) }

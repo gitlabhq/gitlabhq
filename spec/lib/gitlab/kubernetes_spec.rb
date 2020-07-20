@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes do
+RSpec.describe Gitlab::Kubernetes do
   include KubernetesHelpers
   include described_class
 

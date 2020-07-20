@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::DesignRepoSaver do
+RSpec.describe Gitlab::ImportExport::DesignRepoSaver do
   describe 'bundle a design Git repo' do
     let_it_be(:user) { create(:user) }
     let_it_be(:design) { create(:design, :with_file, versions_count: 1) }

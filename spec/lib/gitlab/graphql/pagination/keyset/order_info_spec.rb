@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Pagination::Keyset::OrderInfo do
+RSpec.describe Gitlab::Graphql::Pagination::Keyset::OrderInfo do
   describe '#build_order_list' do
     let(:order_list) { described_class.build_order_list(relation) }
 

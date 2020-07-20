@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OmniAuth::Strategies::Jwt do
+RSpec.describe OmniAuth::Strategies::Jwt do
   include Rack::Test::Methods
   include DeviseHelpers
 

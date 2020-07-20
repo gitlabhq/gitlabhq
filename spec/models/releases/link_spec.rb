@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Releases::Link do
+RSpec.describe Releases::Link do
   let(:release) { create(:release, project: project) }
   let(:project) { create(:project) }
 

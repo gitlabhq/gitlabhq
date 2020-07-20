@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Cleanup::OrphanJobArtifactFilesBatch do
+RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFilesBatch do
   let(:batch_size) { 10 }
   let(:dry_run) { true }
 

@@ -4,6 +4,7 @@ import emojiRegex from 'emoji-regex';
 import createFlash from '~/flash';
 import EmojiMenu from './emoji_menu';
 import { __ } from '~/locale';
+import * as Emoji from '~/emoji';
 
 const defaultStatusEmoji = 'speech_balloon';
 
@@ -55,8 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  import(/* webpackChunkName: 'emoji' */ '~/emoji')
-    .then(Emoji => {
+  Emoji.initEmojiMap()
+    .then(() => {
       const emojiMenu = new EmojiMenu(
         Emoji,
         toggleEmojiMenuButtonSelector,

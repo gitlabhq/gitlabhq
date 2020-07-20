@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupsHelper do
+RSpec.describe GroupsHelper do
   include ApplicationHelper
 
   describe 'group_icon_url' do

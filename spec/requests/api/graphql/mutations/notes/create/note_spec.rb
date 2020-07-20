@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Adding a Note' do
+RSpec.describe 'Adding a Note' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -13,7 +13,8 @@ describe 'Adding a Note' do
     variables = {
       noteable_id: GitlabSchema.id_from_object(noteable).to_s,
       discussion_id: (GitlabSchema.id_from_object(discussion).to_s if discussion),
-      body: 'Body text'
+      body: 'Body text',
+      confidential: true
     }
 
     graphql_mutation(:create_note, variables)
@@ -40,6 +41,7 @@ describe 'Adding a Note' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(mutation_response['note']['body']).to eq('Body text')
+      expect(mutation_response['note']['confidential']).to eq(true)
     end
 
     describe 'creating Notes in reply to a discussion' do

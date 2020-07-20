@@ -45,6 +45,9 @@ class Snippet < ApplicationRecord
   has_many :user_mentions, class_name: "SnippetUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_one :snippet_repository, inverse_of: :snippet
 
+  # We need to add the `dependent` in order to call the after_destroy callback
+  has_one :statistics, class_name: 'SnippetStatistics', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :author, presence: true
@@ -68,6 +71,7 @@ class Snippet < ApplicationRecord
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 
   after_save :store_mentions!, if: :any_mentionable_attributes_changed?
+  after_create :create_statistics
 
   # Scopes
   scope :are_internal, -> { where(visibility_level: Snippet::INTERNAL) }
@@ -77,6 +81,7 @@ class Snippet < ApplicationRecord
   scope :fresh, -> { order("created_at DESC") }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> { includes(author: :status) }
+  scope :with_statistics, -> { joins(:statistics) }
 
   attr_mentionable :description
 
@@ -331,7 +336,13 @@ class Snippet < ApplicationRecord
   def file_name_on_repo
     return if repository.empty?
 
-    repository.ls_files(repository.root_ref).first
+    list_files(repository.root_ref).first
+  end
+
+  def list_files(ref = nil)
+    return [] if repository.empty?
+
+    repository.ls_files(ref)
   end
 
   class << self

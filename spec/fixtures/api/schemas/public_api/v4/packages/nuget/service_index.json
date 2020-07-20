@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": ["version", "resources"],
+  "properties": {
+    "version": { "const": "3.0.0" },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["@id", "@type", "comment"],
+        "properties": {
+          "@id": { "type": "string" },
+          "@type": { "type": "string" },
+          "comment": { "type": "string" }
+        }
+      }
+    }
+  }
+}

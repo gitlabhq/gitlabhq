@@ -9,12 +9,19 @@ export default class MergeRequestStore {
     this.sha = data.diff_head_sha;
     this.gitlabLogo = data.gitlabLogo;
 
+    this.apiApprovalsPath = data.api_approvals_path;
+    this.apiApprovePath = data.api_approve_path;
+    this.apiUnapprovePath = data.api_unapprove_path;
+    this.hasApprovalsAvailable = data.has_approvals_available;
+
     this.setPaths(data);
 
     this.setData(data);
   }
 
   setData(data, isRebased) {
+    this.initApprovals();
+
     if (isRebased) {
       this.sha = data.diff_head_sha;
     }
@@ -22,7 +29,10 @@ export default class MergeRequestStore {
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
 
     this.squash = data.squash;
+    this.squashIsEnabledByDefault = data.squash_enabled_by_default;
+    this.squashIsReadonly = data.squash_readonly;
     this.enableSquashBeforeMerge = this.enableSquashBeforeMerge || true;
+    this.squashIsSelected = data.squash_readonly ? data.squash_on_merge : data.squash;
 
     this.iid = data.iid;
     this.title = data.title;
@@ -49,6 +59,7 @@ export default class MergeRequestStore {
     this.squashCommitMessage = data.default_squash_commit_message;
     this.rebaseInProgress = data.rebase_in_progress;
     this.mergeRequestDiffsPath = data.diffs_path;
+    this.approvalsWidgetType = data.approvals_widget_type;
 
     if (data.issues_links) {
       const links = data.issues_links;
@@ -160,7 +171,8 @@ export default class MergeRequestStore {
   setPaths(data) {
     // Paths are set on the first load of the page and not auto-refreshed
     this.squashBeforeMergeHelpPath = data.squash_before_merge_help_path;
-    this.troubleshootingDocsPath = data.troubleshooting_docs_path;
+    this.mrTroubleshootingDocsPath = data.mr_troubleshooting_docs_path;
+    this.ciTroubleshootingDocsPath = data.ci_troubleshooting_docs_path;
     this.pipelineMustSucceedDocsPath = data.pipeline_must_succeed_docs_path;
     this.mergeRequestBasicPath = data.merge_request_basic_path;
     this.mergeRequestWidgetPath = data.merge_request_widget_path;
@@ -177,10 +189,18 @@ export default class MergeRequestStore {
     this.securityApprovalsHelpPagePath = data.security_approvals_help_page_path;
     this.eligibleApproversDocsPath = data.eligible_approvers_docs_path;
     this.mergeImmediatelyDocsPath = data.merge_immediately_docs_path;
+    this.approvalsHelpPath = data.approvals_help_path;
     this.mergeRequestAddCiConfigPath = data.merge_request_add_ci_config_path;
     this.pipelinesEmptySvgPath = data.pipelines_empty_svg_path;
     this.humanAccess = data.human_access;
     this.newPipelinePath = data.new_project_pipeline_path;
+
+    // codeclimate
+    const blobPath = data.blob_path || {};
+    this.headBlobPath = blobPath.head_path || '';
+    this.baseBlobPath = blobPath.base_path || '';
+    this.codequalityHelpPath = data.codequality_help_path;
+    this.codeclimate = data.codeclimate;
   }
 
   get isNothingToMergeState() {
@@ -239,5 +259,15 @@ export default class MergeRequestStore {
     }
 
     return undefined;
+  }
+
+  initApprovals() {
+    this.isApproved = this.isApproved || false;
+    this.approvals = this.approvals || null;
+  }
+
+  setApprovals(data) {
+    this.approvals = data;
+    this.isApproved = data.approved || false;
   }
 }

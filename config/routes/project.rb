@@ -25,6 +25,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Use this scope for all new project routes.
       scope '-' do
         get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
+        get 'metrics(/:dashboard_path)', constraints: { dashboard_path: /.+\.yml/ },
+          to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
 
         resources :artifacts, only: [:index, :destroy]
 
@@ -80,6 +82,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :operations, only: [:show, :update] do
             member do
               post :reset_alerting_token
+              post :reset_pagerduty_token
             end
           end
 
@@ -181,7 +184,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :releases, only: [:index, :show, :edit], param: :tag, constraints: { tag: %r{[^/]+} } do
+        resources :releases, only: [:index, :new, :show, :edit], param: :tag, constraints: { tag: %r{[^/]+} } do
           member do
             get :downloads, path: 'downloads/*filepath', format: false
             scope module: :releases do
@@ -257,7 +260,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             # This route is also defined in gitlab-workhorse. Make sure to update accordingly.
             get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', format: false
 
-            get '/prometheus/api/v1/*proxy_path', to: 'environments/prometheus_api#proxy', as: :prometheus_api
+            get '/prometheus/api/v1/*proxy_path', to: 'environments/prometheus_api#prometheus_proxy', as: :prometheus_api
 
             get '/sample_metrics', to: 'environments/sample_metrics#query'
           end
@@ -313,6 +316,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        get '/snippets/:snippet_id/raw/:ref/*path',
+          to: 'snippets/blobs#raw',
+          format: false,
+          as: :snippet_blob_raw,
+          constraints: { snippet_id: /\d+/ }
+
         draw :issues
         draw :merge_requests
         draw :pipelines
@@ -331,6 +340,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       # All new routes should go under /-/ scope.
       # Look for scope '-' at the top of the file.
+
+      #
+      # Service Desk
+      #
+      get '/service_desk' => 'service_desk#show', as: :service_desk
+      put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
 
       #
       # Templates
@@ -363,6 +378,19 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      # Serve snippet routes under /-/snippets.
+      # To ensure an old unscoped routing is used for the UI we need to
+      # add prefix 'as' to the scope routing and place it below original routing.
+      # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/29572
+      scope '-', as: :scoped do
+        resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do # rubocop: disable Cop/PutProjectRoutesUnderScope
+          member do
+            get :raw
+            post :mark_as_spam
+          end
+        end
+      end
+
       namespace :prometheus do
         resources :alerts, constraints: { id: /\d+/ }, only: [:index, :create, :show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           post :notify, on: :collection
@@ -378,6 +406,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       post 'alerts/notify', to: 'alerting/notifications#create'
+
+      post 'incidents/pagerduty', to: 'incident_management/pager_duty_incidents#create'
 
       draw :legacy_builds
 

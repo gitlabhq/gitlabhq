@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Boards::Issues::MoveService do
+RSpec.describe Boards::Issues::MoveService do
   describe '#execute' do
     context 'when parent is a project' do
       let(:user) { create(:user) }

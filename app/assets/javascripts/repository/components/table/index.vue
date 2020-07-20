@@ -80,7 +80,7 @@ export default {
         <table-header v-once />
         <tbody>
           <parent-row
-            v-show="showParentRow"
+            v-if="showParentRow"
             :commit-ref="escapedRef"
             :path="path"
             :loading-path="loadingPath"
@@ -97,6 +97,7 @@ export default {
               :path="entry.flatPath"
               :type="entry.type"
               :url="entry.webUrl"
+              :mode="entry.mode"
               :submodule-tree-url="entry.treeUrl"
               :lfs-oid="entry.lfsOid"
               :loading-path="loadingPath"

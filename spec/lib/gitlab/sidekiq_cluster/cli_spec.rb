@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-describe Gitlab::SidekiqCluster::CLI do
+RSpec.describe Gitlab::SidekiqCluster::CLI do
   let(:cli) { described_class.new('/dev/null') }
   let(:timeout) { described_class::DEFAULT_SOFT_TIMEOUT_SECONDS }
   let(:default_options) do

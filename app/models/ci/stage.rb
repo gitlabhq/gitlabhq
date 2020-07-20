@@ -4,10 +4,10 @@ module Ci
   class Stage < ApplicationRecord
     extend Gitlab::Ci::Model
     include Importable
-    include HasStatus
+    include Ci::HasStatus
     include Gitlab::OptimisticLocking
 
-    enum status: HasStatus::STATUSES_ENUM
+    enum status: Ci::HasStatus::STATUSES_ENUM
 
     belongs_to :project
     belongs_to :pipeline
@@ -98,7 +98,7 @@ module Ci
         when 'scheduled' then delay
         when 'skipped', nil then skip
         else
-          raise HasStatus::UnknownStatusError,
+          raise Ci::HasStatus::UnknownStatusError,
                 "Unknown status `#{new_status}`"
         end
       end

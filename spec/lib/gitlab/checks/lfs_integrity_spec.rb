@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Checks::LfsIntegrity do
+RSpec.describe Gitlab::Checks::LfsIntegrity do
   include ProjectForksHelper
 
   let!(:time_left) { 50 }

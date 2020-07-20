@@ -2,7 +2,7 @@
 * None Syntax Colors
 */
 
-@import "../common";
+@import '../common';
 
 @mixin match-line {
   color: $black-transparent;
@@ -10,7 +10,7 @@
 }
 
 .code.none {
-    // Line numbers
+  // Line numbers
   .line-numbers,
   .diff-line-num {
     background-color: $gray-light;
@@ -44,7 +44,6 @@
   $none-expanded-bg: #e0e0e0;
 
   .line_holder {
-
     &.match .line_content,
     .new-nonewline.line_content,
     .old-nonewline.line_content {
@@ -149,12 +148,12 @@
     background-color: $white-normal;
   }
 
-    // Search result highlight
+  // Search result highlight
   span.highlight_word {
     background-color: $white-normal;
   }
 
-    // Links to URLs, emails, or dependencies
+  // Links to URLs, emails, or dependencies
   .line a {
     color: $gl-text-color;
     text-decoration: underline;

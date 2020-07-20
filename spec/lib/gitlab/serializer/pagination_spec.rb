@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Serializer::Pagination do
+RSpec.describe Gitlab::Serializer::Pagination do
   let(:request) { double(url: "#{Gitlab.config.gitlab.url}:8080/api/v4/projects?#{query.to_query}", query_parameters: query) }
   let(:response) { spy('response') }
   let(:headers) { spy('headers') }

@@ -335,6 +335,15 @@ module ApplicationHelper
     }
   end
 
+  def page_startup_api_calls
+    @api_startup_calls
+  end
+
+  def add_page_startup_api_call(api_path, options: {})
+    @api_startup_calls ||= {}
+    @api_startup_calls[api_path] = options
+  end
+
   def autocomplete_data_sources(object, noteable_type)
     return {} unless object && noteable_type
 

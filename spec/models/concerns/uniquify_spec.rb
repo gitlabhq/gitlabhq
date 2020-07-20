@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Uniquify do
+RSpec.describe Uniquify do
   let(:uniquify) { described_class.new }
 
   describe "#string" do

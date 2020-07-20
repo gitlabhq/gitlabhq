@@ -18,6 +18,8 @@ module Tags
           .new(project, current_user, tag: tag_name)
           .execute
 
+        unlock_artifacts(tag_name)
+
         success('Tag was removed')
       else
         error('Failed to remove tag')
@@ -32,6 +34,12 @@ module Tags
 
     def success(message)
       super().merge(message: message)
+    end
+
+    private
+
+    def unlock_artifacts(tag_name)
+      Ci::RefDeleteUnlockArtifactsWorker.perform_async(project.id, current_user.id, "#{::Gitlab::Git::TAG_REF_PREFIX}#{tag_name}")
     end
   end
 end

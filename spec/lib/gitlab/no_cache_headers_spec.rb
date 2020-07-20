@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::NoCacheHeaders do
+RSpec.describe Gitlab::NoCacheHeaders do
   before do
     stub_const('NoCacheTester', Class.new)
     NoCacheTester.class_eval do

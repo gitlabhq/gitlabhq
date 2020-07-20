@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TriggerVariableEntity do
+RSpec.describe TriggerVariableEntity do
   let(:project) { create(:project) }
   let(:request) { double('request') }
   let(:user) { create(:user) }

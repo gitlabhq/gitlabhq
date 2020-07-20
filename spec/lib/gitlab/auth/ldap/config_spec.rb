@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::Ldap::Config do
+RSpec.describe Gitlab::Auth::Ldap::Config do
   include LdapHelpers
 
   let(:config) { described_class.new('ldapmain') }

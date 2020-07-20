@@ -145,7 +145,7 @@ export default {
 
     deleteEnvironment(environment) {
       const endpoint = environment.delete_path;
-      const mountedToShow = environment.mounted_to_show;
+      const { onSingleEnvironmentPage } = environment;
       const errorMessage = s__(
         'Environments|An error occurred while deleting the environment. Check if the environment stopped; if not, stop it and try again.',
       );
@@ -153,7 +153,7 @@ export default {
       this.service
         .deleteAction(endpoint)
         .then(() => {
-          if (!mountedToShow) {
+          if (!onSingleEnvironmentPage) {
             // Reload as a first solution to bust the ETag cache
             window.location.reload();
             return;

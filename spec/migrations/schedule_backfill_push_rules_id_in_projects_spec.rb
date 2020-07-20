@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require Rails.root.join('db', 'post_migrate', '20200325162730_schedule_backfill_push_rules_id_in_projects.rb')
 
-describe ScheduleBackfillPushRulesIdInProjects do
+RSpec.describe ScheduleBackfillPushRulesIdInProjects do
   let(:push_rules) { table(:push_rules) }
 
   it 'adds global rule association to application settings' do

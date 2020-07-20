@@ -48,12 +48,9 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   end
 
   def set_pipeline_variables
-    @pipelines =
-      if can?(current_user, :read_pipeline, @merge_request.source_project)
-        @merge_request.all_pipelines
-      else
-        Ci::Pipeline.none
-      end
+    @pipelines = Ci::PipelinesForMergeRequestFinder
+      .new(@merge_request, current_user)
+      .execute
   end
 
   def close_merge_request_if_no_source_project

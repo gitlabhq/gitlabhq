@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Session do
+RSpec.describe Gitlab::Session do
   it 'uses the current thread as a data store' do
     Thread.current[:session_storage] = { a: :b }
 

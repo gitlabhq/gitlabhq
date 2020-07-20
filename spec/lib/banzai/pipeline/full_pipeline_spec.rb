@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Pipeline::FullPipeline do
+RSpec.describe Banzai::Pipeline::FullPipeline do
   describe 'References' do
     let(:project) { create(:project, :public) }
     let(:issue)   { create(:issue, project: project) }

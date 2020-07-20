@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'ci/status/_badge' do
+RSpec.describe 'ci/status/_badge' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :private) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

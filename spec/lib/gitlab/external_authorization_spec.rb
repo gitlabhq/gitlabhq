@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ExternalAuthorization, :request_store do
+RSpec.describe Gitlab::ExternalAuthorization, :request_store do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { build(:user) }

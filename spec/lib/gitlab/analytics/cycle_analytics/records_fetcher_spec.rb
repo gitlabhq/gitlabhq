@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
+RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
   around do |example|
     Timecop.freeze { example.run }
   end

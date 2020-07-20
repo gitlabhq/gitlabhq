@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Email::Hook::SmimeSignatureInterceptor do
+RSpec.describe Gitlab::Email::Hook::SmimeSignatureInterceptor do
   include SmimeHelper
 
   # certs generation is an expensive operation and they are used read-only,

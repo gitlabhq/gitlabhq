@@ -10,8 +10,6 @@ module WikiPages
     end
 
     def execute(slug, page, action)
-      return ServiceResponse.success(message: 'No event created as `wiki_events` feature is disabled') unless ::Feature.enabled?(:wiki_events)
-
       event = Event.transaction do
         wiki_page_meta = WikiPage::Meta.find_or_create(slug, page)
 

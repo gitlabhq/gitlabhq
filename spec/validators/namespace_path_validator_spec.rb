@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NamespacePathValidator do
+RSpec.describe NamespacePathValidator do
   let(:validator) { described_class.new(attributes: [:path]) }
 
   describe '.valid_path?' do

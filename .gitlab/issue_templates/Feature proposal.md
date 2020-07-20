@@ -43,7 +43,14 @@ https://about.gitlab.com/handbook/engineering/ux/ux-research-training/user-story
 
 ### Permissions and Security
 
-<!-- What permissions are required to perform the described actions? Are they consistent with the existing permissions as documented for users, groups, and projects as appropriate? Is the proposed behavior consistent between the UI, API, and other access methods (e.g. email replies)?-->
+<!-- What permissions are required to perform the described actions? Are they consistent with the existing permissions as documented for users, groups, and projects as appropriate? Is the proposed behavior consistent between the UI, API, and other access methods (e.g. email replies)?
+Consider adding checkboxes and expectations of users with certain levels of membership https://docs.gitlab.com/ee/user/permissions.html
+* [ ] Add expected impact to members with no access (0)
+* [ ] Add expected impact to Guest (10) members
+* [ ] Add expected impact to Reporter (20) members
+* [ ] Add expected impact to Developer (30) members 
+* [ ] Add expected impact to Maintainer (40) members
+* [ ] Add expected impact to Owner (50) members -->
 
 ### Documentation
 

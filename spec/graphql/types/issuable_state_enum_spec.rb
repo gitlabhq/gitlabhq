@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['IssuableState'] do
+RSpec.describe GitlabSchema.types['IssuableState'] do
   specify { expect(described_class.graphql_name).to eq('IssuableState') }
 
   it_behaves_like 'issuable state'

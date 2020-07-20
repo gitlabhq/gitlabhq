@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
+RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: head_sha) }
@@ -134,7 +134,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
           it_behaves_like 'foo/bar directory key'
         end
 
-        context 'with directories ending in slash star', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/222356' do
+        context 'with directories ending in slash star' do
           let(:files) { ['foo/bar/*'] }
 
           it_behaves_like 'foo/bar directory key'

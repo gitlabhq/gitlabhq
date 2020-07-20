@@ -332,12 +332,6 @@ The current permissions on the Project Value Stream Analytics dashboard are:
 
 You can [read more about permissions](../../ci/yaml/README.md) in general.
 
-NOTE: **Note:**
-As of GitLab 12.3, the project-level page is deprecated. You should access
-project-level Value Stream Analytics from **Analytics > Value Stream Analytics** in the top
-navigation bar. We will ensure that the same project-level functionality is available
-to CE users in the new analytics space.
-
 For Value Stream Analytics functionality introduced in GitLab 12.3 and later:
 
 - Users must have Reporter access or above.

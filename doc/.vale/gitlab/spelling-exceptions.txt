@@ -83,6 +83,7 @@ compilable
 composable
 Conda
 Consul
+Contentful
 Corosync
 cron
 crons
@@ -224,6 +225,7 @@ LDAP
 ldapsearch
 Leiningen
 Libravatar
+liveness
 Lograge
 Logstash
 lookahead
@@ -247,6 +249,7 @@ memoization
 memoize
 memoized
 memoizing
+Memorystore
 mergeable
 Microsoft
 middleware
@@ -334,8 +337,7 @@ Puma
 Python
 Qualys
 Rackspace
-Raketask
-Raketasks
+Raspbian
 reachability
 rebase
 rebased
@@ -423,6 +425,7 @@ storages
 strace
 strikethrough
 strikethroughs
+stunnel
 subpath
 subfolder
 subfolders

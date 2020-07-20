@@ -5,11 +5,11 @@ module QA
     module Project
       module Pipeline
         class Index < QA::Page::Base
-          view 'app/assets/javascripts/pipelines/components/pipeline_url.vue' do
+          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipeline_url.vue' do
             element :pipeline_url_link
           end
 
-          view 'app/assets/javascripts/pipelines/components/pipelines_table_row.vue' do
+          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipelines_table_row.vue' do
             element :pipeline_commit_status
             element :pipeline_retry_button
           end

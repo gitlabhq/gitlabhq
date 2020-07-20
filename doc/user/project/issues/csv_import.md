@@ -7,7 +7,8 @@ Issues can be imported to a project by uploading a CSV file with the columns
 
 The user uploading the CSV file will be set as the author of the imported issues.
 
-NOTE: **Note:** A permission level of [Developer](../../permissions.md), or higher, is required
+NOTE: **Note:**
+A permission level of [Developer](../../permissions.md), or higher, is required
 to import issues.
 
 ## Prepare for the import

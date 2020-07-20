@@ -22,23 +22,8 @@ class Import::BitbucketController < Import::BaseController
     redirect_to status_import_bitbucket_url
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def status
-    return super if Feature.enabled?(:new_import_ui)
-
-    bitbucket_client = Bitbucket::Client.new(credentials)
-    repos = bitbucket_client.repos(filter: sanitized_filter_param)
-    @repos, @incompatible_repos = repos.partition { |repo| repo.valid? }
-
-    @already_added_projects = find_already_added_projects('bitbucket')
-    already_added_projects_names = @already_added_projects.pluck(:import_source)
-
-    @repos.to_a.reject! { |repo| already_added_projects_names.include?(repo.full_name) }
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  def jobs
-    render json: find_jobs('bitbucket')
+    super
   end
 
   def realtime_changes

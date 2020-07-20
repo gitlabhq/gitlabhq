@@ -43,6 +43,7 @@
 
 @for $i from 1 through 12 {
   #{'.tab-width-#{$i}'} {
+    /* stylelint-disable-next-line property-no-vendor-prefix */
     -moz-tab-size: $i;
     tab-size: $i;
   }
@@ -99,4 +100,24 @@
 // move this to GitLab UI once onboarding experiment is considered a success
 .gl-pl-7 {
   padding-left: $gl-spacing-scale-7;
+}
+
+.gl-transition-property-stroke-opacity {
+  transition-property: stroke-opacity;
+}
+
+.gl-transition-property-stroke {
+  transition-property: stroke;
+}
+
+.gl-top-66vh {
+  top: 66vh;
+}
+
+// Remove when https://gitlab.com/gitlab-org/gitlab-ui/-/issues/871
+// gets fixed on GitLab UI
+.gl-sm-w-auto\! {
+  @media (min-width: $breakpoint-sm) {
+    width: auto !important;
+  }
 }

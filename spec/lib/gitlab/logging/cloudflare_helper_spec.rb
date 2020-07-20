@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Logging::CloudflareHelper do
+RSpec.describe Gitlab::Logging::CloudflareHelper do
   let(:helper) do
     Class.new do
       include Gitlab::Logging::CloudflareHelper

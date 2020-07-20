@@ -11,6 +11,7 @@ import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptio
 import Translate from '../vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 import { store } from '~/notes/stores';
+import { isInIssuePage } from '~/lib/utils/common_utils';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -43,7 +44,7 @@ function mountAssigneesComponent(mediator) {
           projectPath: fullPath,
           field: el.dataset.field,
           signedIn: el.hasAttribute('data-signed-in'),
-          issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
+          issuableType: isInIssuePage() ? 'issue' : 'merge_request',
         },
       }),
   });
@@ -52,20 +53,30 @@ function mountAssigneesComponent(mediator) {
 function mountConfidentialComponent(mediator) {
   const el = document.getElementById('js-confidential-entry-point');
 
+  const { fullPath, iid } = getSidebarOptions();
+
   if (!el) return;
 
   const dataNode = document.getElementById('js-confidential-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
-  const ConfidentialComp = Vue.extend(ConfidentialIssueSidebar);
-
-  new ConfidentialComp({
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
     store,
-    propsData: {
-      isEditable: initialData.is_editable,
-      service: mediator.service,
+    components: {
+      ConfidentialIssueSidebar,
     },
-  }).$mount(el);
+    render: createElement =>
+      createElement('confidential-issue-sidebar', {
+        props: {
+          iid: String(iid),
+          fullPath,
+          isEditable: initialData.is_editable,
+          service: mediator.service,
+        },
+      }),
+  });
 }
 
 function mountLockComponent(mediator) {
@@ -83,7 +94,7 @@ function mountLockComponent(mediator) {
       isLocked: initialData.is_locked,
       isEditable: initialData.is_editable,
       mediator,
-      issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
+      issuableType: isInIssuePage() ? 'issue' : 'merge_request',
     },
   }).$mount(el);
 }

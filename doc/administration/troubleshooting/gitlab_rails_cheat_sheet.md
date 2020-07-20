@@ -11,13 +11,13 @@ having an issue with GitLab, it is highly recommended that you check your
 [support options](https://about.gitlab.com/support/) first, before attempting to use
 this information.
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 Please note that some of these scripts could be damaging if not run correctly,
 or under the right conditions. We highly recommend running them under the
 guidance of a Support Engineer, or running them in a test environment with a
 backup of the instance ready to be restored, just in case.
 
-CAUTION: **CAUTION:**
+CAUTION: **Caution:**
 Please also note that as GitLab changes, changes to the code are inevitable,
 and so some scripts may not work as they once used to. These are not kept
 up-to-date as these scripts/commands were added as they were found/needed. As
@@ -199,6 +199,20 @@ project.repository_read_only = true; project.save
 
 # OR
 project.update!(repository_read_only: true)
+```
+
+### Transfer project from one namespace to another
+
+```ruby
+ p= Project.find_by_full_path('')
+
+ # To set the owner of the project
+ current_user= p.creator
+
+# Namespace where you want this to be moved.
+namespace = Namespace.find_by_full_path("")
+
+::Projects::TransferService.new(p, current_user).execute(namespace)
 ```
 
 ### Bulk update service integration password for _all_ projects
@@ -447,7 +461,7 @@ group = Group.find_by_path_or_name("groupname")
 # Count users from subgroup and up (inherited)
 group.members_with_parents.count
 
-# Count users from parent group and down (specific grants)
+# Count users from the parent group and down (specific grants)
 parent.members_with_descendants.count
 ```
 

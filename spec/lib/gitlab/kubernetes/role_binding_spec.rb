@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::RoleBinding, '#generate' do
+RSpec.describe Gitlab::Kubernetes::RoleBinding, '#generate' do
   let(:role_name) { 'edit' }
   let(:role_kind) { 'ClusterRole' }
   let(:namespace) { 'my-namespace' }

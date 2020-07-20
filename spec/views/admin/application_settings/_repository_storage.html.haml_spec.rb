@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'admin/application_settings/_repository_storage.html.haml' do
+RSpec.describe 'admin/application_settings/_repository_storage.html.haml' do
   let(:app_settings) { create(:application_setting) }
   let(:repository_storages_weighted_attributes) { [:repository_storages_weighted_default, :repository_storages_weighted_mepmep, :repository_storages_weighted_foobar]}
   let(:repository_storages_weighted) do

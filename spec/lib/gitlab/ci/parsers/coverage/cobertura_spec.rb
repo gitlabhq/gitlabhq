@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Parsers::Coverage::Cobertura do
+RSpec.describe Gitlab::Ci::Parsers::Coverage::Cobertura do
   describe '#parse!' do
     subject { described_class.new.parse!(cobertura, coverage_report) }
 

@@ -14,8 +14,15 @@ Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
 milestones.
 
-<!-- Possibly swap this file with one of a single epic -->
-![epics list view](img/epics_list_view_v12.5.png)
+An epic's page contains the following tabs:
+
+- **Epics and Issues**: epics and issues added to this epic. Child epics, and their issues, are
+  shown in a tree view.
+  - Click the chevron (**>**) next to a parent epic to reveal the child epics and issues.
+  - Hover over the total counts to see a breakdown of open and closed items.
+- **Roadmap**: a roadmap view of child epics which have start and due dates.
+
+![epic view](img/epic_view_v13.0.png)
 
 ## Use cases
 
@@ -28,6 +35,7 @@ milestones.
 To learn what you can do with an epic, see [Manage epics](manage_epics.md). Possible actions include:
 
 - [Create an epic](manage_epics.md#create-an-epic)
+- [Edit an epic](manage_epics.md#edit-an-epic)
 - [Bulk-edit epics](../bulk_editing/index.md#bulk-edit-epics)
 - [Delete an epic](manage_epics.md#delete-an-epic)
 - [Close an epic](manage_epics.md#close-an-epic)
@@ -164,6 +172,19 @@ Once you write your comment, you can either:
 
 - Click **Comment**, and your comment will be published.
 - Click **Start thread**, and you will start a thread within that epic's discussion.
+
+### Activity sort order
+
+> [Introduced](https://https://gitlab.com/gitlab-org/gitlab/-/issues/214364) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+You can reverse the default order and interact with the activity feed sorted by most recent items
+at the top. Your preference is saved via local storage and automatically applied to every issue
+you view.
+
+To change the activity sort order, click the **Oldest first** dropdown menu and select either oldest
+or newest items to be shown first.
+
+![Issue activity sort order dropdown button](img/epic_activity_sort_order_v13_2.png)
 
 ## Award emoji
 

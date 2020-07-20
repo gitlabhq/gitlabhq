@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryRemoveRemoteWorker do
+RSpec.describe RepositoryRemoveRemoteWorker do
   include ExclusiveLeaseHelpers
   include GitHelpers
 
@@ -32,7 +32,7 @@ describe RepositoryRemoveRemoteWorker do
 
         expect(subject)
           .to receive(:log_error)
-          .with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
+          .with("Cannot obtain an exclusive lease for #{subject.class.name}. There must be another instance already in execution.")
 
         subject.perform(project.id, remote_name)
       end

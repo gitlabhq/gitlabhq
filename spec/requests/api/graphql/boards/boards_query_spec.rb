@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'get list of boards' do
+RSpec.describe 'get list of boards' do
   include GraphqlHelpers
 
   include_context 'group and project boards query context'

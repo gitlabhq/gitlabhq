@@ -4,6 +4,8 @@ textarea {
 
 input {
   border-radius: $border-radius-base;
+  color: $gl-text-color;
+  background-color: $input-bg;
 }
 
 input[type='text'].danger {
@@ -124,10 +126,6 @@ label {
 
 .form-control-inline {
   display: inline;
-}
-
-.wiki-content {
-  margin-top: 35px;
 }
 
 .form-control::placeholder {

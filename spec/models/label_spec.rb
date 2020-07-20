@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Label do
+RSpec.describe Label do
   describe 'modules' do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Subscribable) }

@@ -11,7 +11,7 @@
   - if issuable.respond_to?(:work_in_progress?)
     .form-text.text-muted
       .js-wip-explanation
-        %a.js-toggle-wip{ href: '', tabindex: -1 }
+        %a.js-toggle-wip{ href: '' }
           Remove the
           %code WIP:
           prefix from the title
@@ -22,7 +22,7 @@
         - if has_wip_commits
           It looks like you have some WIP commits in this branch.
           %br
-        %a.js-toggle-wip{ href: '', tabindex: -1 }
+        %a.js-toggle-wip{ href: '' }
           Start the title with
           %code WIP:
         to prevent a

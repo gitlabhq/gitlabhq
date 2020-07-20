@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe API::Markdown do
+RSpec.describe API::Markdown do
   describe "POST /markdown" do
     let(:user) {} # No-op. It gets overwritten in the contexts below.
 

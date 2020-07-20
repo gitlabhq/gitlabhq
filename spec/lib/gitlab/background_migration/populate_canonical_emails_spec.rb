@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PopulateCanonicalEmails, :migration, schema: 20200312053852 do
+RSpec.describe Gitlab::BackgroundMigration::PopulateCanonicalEmails, :migration, schema: 20200312053852 do
   let(:migration) { described_class.new }
 
   let_it_be(:users_table) { table(:users) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::TransferService do
+RSpec.describe Projects::TransferService do
   include GitHelpers
 
   let(:user) { create(:user) }

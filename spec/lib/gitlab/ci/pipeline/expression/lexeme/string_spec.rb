@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Expression::Lexeme::String do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::String do
   describe '.build' do
     it 'creates a new instance of the token' do
       expect(described_class.build('"my string"'))

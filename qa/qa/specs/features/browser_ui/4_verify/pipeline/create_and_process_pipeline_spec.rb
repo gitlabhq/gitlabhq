@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Verify', :docker, :runner do
+  RSpec.describe 'Verify', :docker, :runner do
     describe 'Pipeline creation and processing' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:max_wait) { 30 }

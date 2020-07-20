@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['CommitActionMode'] do
+RSpec.describe GitlabSchema.types['CommitActionMode'] do
   it { expect(described_class.graphql_name).to eq('CommitActionMode') }
 
   it 'exposes all the existing commit actions' do

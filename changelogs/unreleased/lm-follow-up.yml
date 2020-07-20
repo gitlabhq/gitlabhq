@@ -1,0 +1,5 @@
+---
+title: Removes ci_ensure_scheduling_type feature flag
+merge_request: 36140
+author:
+type: other

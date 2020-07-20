@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::PostgresqlAdapter::SchemaVersionsCopyMixin do
+RSpec.describe Gitlab::Database::PostgresqlAdapter::SchemaVersionsCopyMixin do
   let(:schema_migration) { double('schem_migration', table_name: table_name, all_versions: versions) }
   let(:versions) { %w(5 2 1000 200 4 93 2) }
   let(:table_name) { "schema_migrations" }

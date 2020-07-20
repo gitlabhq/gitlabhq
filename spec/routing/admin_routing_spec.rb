@@ -11,7 +11,7 @@ require 'spec_helper'
 #             admin_user GET    /admin/users/:id(.:format)             admin/users#show
 #                        PUT    /admin/users/:id(.:format)             admin/users#update
 #                        DELETE /admin/users/:id(.:format)             admin/users#destroy
-describe Admin::UsersController, "routing" do
+RSpec.describe Admin::UsersController, "routing" do
   it "to #block" do
     expect(put("/admin/users/1/block")).to route_to('admin/users#block', id: '1')
   end
@@ -58,7 +58,7 @@ end
 #             admin_project GET    /admin/projects/:id(.:format)             admin/projects#show {id: /[^\/]+/}
 #                           PUT    /admin/projects/:id(.:format)             admin/projects#update {id: /[^\/]+/}
 #                           DELETE /admin/projects/:id(.:format)             admin/projects#destroy {id: /[^\/]+/}
-describe Admin::ProjectsController, "routing" do
+RSpec.describe Admin::ProjectsController, "routing" do
   it "to #index" do
     expect(get("/admin/projects")).to route_to('admin/projects#index')
   end
@@ -75,7 +75,7 @@ end
 #      admin_hook DELETE /admin/hooks/:id(.:format)           admin/hooks#destroy
 #                 PUT    /admin/hooks/:id(.:format)           admin/hooks#update
 # edit_admin_hook GET    /admin/hooks/:id(.:format)           admin/hooks#edit
-describe Admin::HooksController, "routing" do
+RSpec.describe Admin::HooksController, "routing" do
   it "to #test" do
     expect(post("/admin/hooks/1/test")).to route_to('admin/hooks#test', id: '1')
   end
@@ -103,7 +103,7 @@ end
 
 # admin_hook_hook_log_retry POST    /admin/hooks/:hook_id/hook_logs/:id/retry(.:format) admin/hook_logs#retry
 # admin_hook_hook_log       GET    /admin/hooks/:hook_id/hook_logs/:id(.:format)       admin/hook_logs#show
-describe Admin::HookLogsController, 'routing' do
+RSpec.describe Admin::HookLogsController, 'routing' do
   it 'to #retry' do
     expect(post('/admin/hooks/1/hook_logs/1/retry')).to route_to('admin/hook_logs#retry', hook_id: '1', id: '1')
   end
@@ -114,27 +114,27 @@ describe Admin::HookLogsController, 'routing' do
 end
 
 # admin_background_jobs GET    /admin/background_jobs(.:format) admin/background_jobs#show
-describe Admin::BackgroundJobsController, "routing" do
+RSpec.describe Admin::BackgroundJobsController, "routing" do
   it "to #show" do
     expect(get("/admin/background_jobs")).to route_to('admin/background_jobs#show')
   end
 end
 
 # admin_root        /admin(.:format) admin/dashboard#index
-describe Admin::DashboardController, "routing" do
+RSpec.describe Admin::DashboardController, "routing" do
   it "to #index" do
     expect(get("/admin")).to route_to('admin/dashboard#index')
   end
 end
 
 # admin_health_check GET    /admin/health_check(.:format) admin/health_check#show
-describe Admin::HealthCheckController, "routing" do
+RSpec.describe Admin::HealthCheckController, "routing" do
   it "to #show" do
     expect(get("/admin/health_check")).to route_to('admin/health_check#show')
   end
 end
 
-describe Admin::GroupsController, "routing" do
+RSpec.describe Admin::GroupsController, "routing" do
   let(:name) { 'complex.group-namegit' }
 
   it "to #index" do
@@ -151,7 +151,7 @@ describe Admin::GroupsController, "routing" do
   end
 end
 
-describe Admin::SessionsController, "routing" do
+RSpec.describe Admin::SessionsController, "routing" do
   it "to #new" do
     expect(get("/admin/session/new")).to route_to('admin/sessions#new')
   end

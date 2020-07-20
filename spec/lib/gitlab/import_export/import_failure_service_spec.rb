@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::ImportFailureService do
+RSpec.describe Gitlab::ImportExport::ImportFailureService do
   let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
   let(:label) { create(:label) }
   let(:subject) { described_class.new(importable) }

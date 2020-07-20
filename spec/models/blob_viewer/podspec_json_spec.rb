@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlobViewer::PodspecJson do
+RSpec.describe BlobViewer::PodspecJson do
   include FakeBlobHelpers
 
   let(:project) { build_stubbed(:project) }

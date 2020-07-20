@@ -273,6 +273,38 @@ module SystemNoteService
 
     ::SystemNotes::DesignManagementService.new(noteable: design.issue, project: design.project, author: discussion_note.author).design_discussion_added(discussion_note)
   end
+
+  # Called when the merge request is approved by user
+  #
+  # noteable - Noteable object
+  # user     - User performing approve
+  #
+  # Example Note text:
+  #
+  #   "approved this merge request"
+  #
+  # Returns the created Note object
+  def approve_mr(noteable, user)
+    merge_requests_service(noteable, noteable.project, user).approve_mr
+  end
+
+  def unapprove_mr(noteable, user)
+    merge_requests_service(noteable, noteable.project, user).unapprove_mr
+  end
+
+  def change_alert_status(alert, author)
+    ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project, author: author).change_alert_status(alert)
+  end
+
+  def new_alert_issue(alert, issue, author)
+    ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project, author: author).new_alert_issue(alert, issue)
+  end
+
+  private
+
+  def merge_requests_service(noteable, project, author)
+    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author)
+  end
 end
 
 SystemNoteService.prepend_if_ee('EE::SystemNoteService')

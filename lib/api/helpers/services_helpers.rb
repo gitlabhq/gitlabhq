@@ -234,18 +234,6 @@ module API
               name: :project_url,
               type: String,
               desc: 'Project URL'
-            },
-            {
-              required: false,
-              name: :description,
-              type: String,
-              desc: 'Description'
-            },
-            {
-              required: false,
-              name: :title,
-              type: String,
-              desc: 'Title'
             }
           ],
           'buildkite' => [
@@ -288,6 +276,14 @@ module API
               desc: 'Campfire room'
             }
           ],
+          'confluence' => [
+            {
+              required: true,
+              name: :confluence_url,
+              type: String,
+              desc: 'The URL of the Confluence Cloud Workspace hosted on atlassian.net'
+            }
+          ],
           'custom-issue-tracker' => [
             {
               required: true,
@@ -306,18 +302,6 @@ module API
               name: :project_url,
               type: String,
               desc: 'Project URL'
-            },
-            {
-              required: false,
-              name: :description,
-              type: String,
-              desc: 'Description'
-            },
-            {
-              required: false,
-              name: :title,
-              type: String,
-              desc: 'Title'
             }
           ],
           'discord' => [
@@ -757,6 +741,7 @@ module API
           ::BambooService,
           ::BugzillaService,
           ::BuildkiteService,
+          ::ConfluenceService,
           ::CampfireService,
           ::CustomIssueTrackerService,
           ::DiscordService,

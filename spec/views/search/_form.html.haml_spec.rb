@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'search/_form' do
+RSpec.describe 'search/_form' do
   context 'when the search page is opened' do
     it 'displays the correct elements' do
       render

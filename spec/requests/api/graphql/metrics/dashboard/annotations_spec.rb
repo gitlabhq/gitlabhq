@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Getting Metrics Dashboard Annotations' do
+RSpec.describe 'Getting Metrics Dashboard Annotations' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

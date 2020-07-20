@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Toggling an AwardEmoji' do
+RSpec.describe 'Toggling an AwardEmoji' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -15,11 +15,11 @@ describe 'Toggling an AwardEmoji' do
       name: emoji_name
     }
 
-    graphql_mutation(:toggle_award_emoji, variables)
+    graphql_mutation(:award_emoji_toggle, variables)
   end
 
   def mutation_response
-    graphql_mutation_response(:toggle_award_emoji)
+    graphql_mutation_response(:award_emoji_toggle)
   end
 
   shared_examples 'a mutation that does not create or destroy an AwardEmoji' do

@@ -135,8 +135,7 @@ module DiffHelper
 
   def diff_file_html_data(project, diff_file_path, diff_commit_id)
     {
-      blob_diff_path: project_blob_diff_path(project,
-                                                       tree_join(diff_commit_id, diff_file_path)),
+      blob_diff_path: project_blob_diff_path(project, tree_join(diff_commit_id, diff_file_path)),
       view: diff_view
     }
   end
@@ -173,6 +172,10 @@ module DiffHelper
     diff_files.overflow?.tap do |overflown|
       Gitlab::Metrics.add_event(:diffs_overflow_collection_limits) if overflown
     end
+  end
+
+  def apply_diff_view_cookie!
+    set_secure_cookie(:diff_view, params.delete(:view), type: CookiesHelper::COOKIE_TYPE_PERMANENT) if params[:view].present?
   end
 
   private

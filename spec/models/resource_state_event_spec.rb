@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResourceStateEvent, type: :model do
+RSpec.describe ResourceStateEvent, type: :model do
   subject { build(:resource_state_event, issue: issue) }
 
   let(:issue) { create(:issue) }

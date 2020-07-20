@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PrepareBuildService do
+RSpec.describe Ci::PrepareBuildService do
   describe '#execute' do
     let(:build) { create(:ci_build, :preparing) }
 

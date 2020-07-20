@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::MergeRequests::SetLocked do
+RSpec.describe Mutations::MergeRequests::SetLocked do
   let(:merge_request) { create(:merge_request) }
   let(:user) { create(:user) }
 

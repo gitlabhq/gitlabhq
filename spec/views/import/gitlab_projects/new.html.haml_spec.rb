@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'import/gitlab_projects/new.html.haml' do
+RSpec.describe 'import/gitlab_projects/new.html.haml' do
   include Devise::Test::ControllerHelpers
 
   let(:namespace) { build_stubbed(:namespace) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerExpirationPolicies::UpdateService do
+RSpec.describe ContainerExpirationPolicies::UpdateService do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project, reload: true) { create(:project) }

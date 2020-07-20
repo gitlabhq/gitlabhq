@@ -28,7 +28,7 @@ describe('Remove cluster confirmation modal', () => {
 
   describe('split button dropdown', () => {
     const findModal = () => wrapper.find(GlModal).vm;
-    const findSplitButton = () => wrapper.find(SplitButton).vm;
+    const findSplitButton = () => wrapper.find(SplitButton);
 
     beforeEach(() => {
       createComponent({ clusterName: 'my-test-cluster' });
@@ -36,7 +36,7 @@ describe('Remove cluster confirmation modal', () => {
     });
 
     it('opens modal with "cleanup" option', () => {
-      findSplitButton().$emit('remove-cluster-and-cleanup');
+      findSplitButton().vm.$emit('remove-cluster-and-cleanup');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findModal().show).toHaveBeenCalled();
@@ -45,11 +45,22 @@ describe('Remove cluster confirmation modal', () => {
     });
 
     it('opens modal without "cleanup" option', () => {
-      findSplitButton().$emit('remove-cluster');
+      findSplitButton().vm.$emit('remove-cluster');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findModal().show).toHaveBeenCalled();
         expect(wrapper.vm.confirmCleanup).toEqual(false);
+      });
+    });
+
+    describe('with cluster management project', () => {
+      beforeEach(() => {
+        createComponent({ hasManagementProject: true });
+      });
+
+      it('renders regular button instead', () => {
+        expect(findSplitButton().exists()).toBe(false);
+        expect(wrapper.find('[data-testid="btnRemove"]').exists()).toBe(true);
       });
     });
   });

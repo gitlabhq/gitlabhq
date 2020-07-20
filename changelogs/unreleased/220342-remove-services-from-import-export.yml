@@ -1,0 +1,5 @@
+---
+title: Exclude integrations (services) from Project Import/Export
+merge_request: 35249
+author:
+type: changed

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SafeZip::ExtractParams do
+RSpec.describe SafeZip::ExtractParams do
   let(:target_path) { Dir.mktmpdir("safe-zip") }
   let(:params) { described_class.new(directories: directories, to: target_path) }
   let(:directories) { %w(public folder/with/subfolder) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ImportIssuesCsvWorker do
+RSpec.describe ImportIssuesCsvWorker do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:upload) { create(:upload) }

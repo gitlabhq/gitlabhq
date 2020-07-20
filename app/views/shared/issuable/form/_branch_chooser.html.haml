@@ -18,7 +18,7 @@
     - elsif issuable.for_fork?
       %code= issuable.target_project_path + ":"
   - unless issuable.new_record?
-    %span.dropdown.prepend-left-5.d-inline-block
+    %span.dropdown.gl-ml-2.d-inline-block
       = form.hidden_field(:target_branch,
         { class: 'target_branch js-target-branch-select ref-name mw-xl',
           data: { placeholder: _('Select branch'), endpoint: refs_project_path(@project, sort: 'updated_desc', find: 'branches') }})

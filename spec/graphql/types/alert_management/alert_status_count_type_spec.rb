@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['AlertManagementAlertStatusCountsType'] do
+RSpec.describe GitlabSchema.types['AlertManagementAlertStatusCountsType'] do
   specify { expect(described_class.graphql_name).to eq('AlertManagementAlertStatusCountsType') }
 
   it 'exposes the expected fields' do

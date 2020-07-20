@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ChatNameToken do
+RSpec.describe Gitlab::ChatNameToken do
   context 'when using unknown token' do
     let(:token) { }
 

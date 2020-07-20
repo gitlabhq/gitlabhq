@@ -1,6 +1,6 @@
 /* https://gist.github.com/qguv/7936275 */
 
-@import "../common";
+@import '../common';
 
 /*
 * Solarized light syntax colors
@@ -252,13 +252,19 @@ $solarized-light-il: #2aa198;
   .c1 { color: $solarized-light-c1; } /* Comment.Single */
   .cs { color: $solarized-light-cs; } /* Comment.Special */
   .gd { color: $solarized-light-gd; } /* Generic.Deleted */
-  .ge { color: $solarized-light-ge; font-style: italic; } /* Generic.Emph */
+  .ge { /* Generic.Emph */
+    color: $solarized-light-ge;
+    font-style: italic;
+  }
   .gr { color: $solarized-light-gr; } /* Generic.Error */
   .gh { color: $solarized-light-gh; } /* Generic.Heading */
   .gi { color: $solarized-light-gi; } /* Generic.Inserted */
   .go { color: $solarized-light-go; } /* Generic.Output */
   .gp { color: $solarized-light-gp; } /* Generic.Prompt */
-  .gs { color: $solarized-light-gs; font-weight: $gl-font-weight-bold; } /* Generic.Strong */
+  .gs { /* Generic.Strong */
+    color: $solarized-light-gs;
+    font-weight: $gl-font-weight-bold;
+  }
   .gu { color: $solarized-light-gu; } /* Generic.Subheading */
   .gt { color: $solarized-light-gt; } /* Generic.Traceback */
   .kc { color: $solarized-light-kc; } /* Keyword.Constant */

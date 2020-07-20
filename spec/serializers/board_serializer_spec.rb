@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BoardSerializer do
+RSpec.describe BoardSerializer do
   let(:resource) { create(:board) }
   let(:json_entity) do
     described_class.new

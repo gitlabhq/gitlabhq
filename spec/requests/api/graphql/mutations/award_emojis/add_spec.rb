@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Adding an AwardEmoji' do
+RSpec.describe 'Adding an AwardEmoji' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -15,11 +15,11 @@ describe 'Adding an AwardEmoji' do
       name: emoji_name
     }
 
-    graphql_mutation(:add_award_emoji, variables)
+    graphql_mutation(:award_emoji_add, variables)
   end
 
   def mutation_response
-    graphql_mutation_response(:add_award_emoji)
+    graphql_mutation_response(:award_emoji_add)
   end
 
   shared_examples 'a mutation that does not create an AwardEmoji' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::DeployTokens::CreateService do
+RSpec.describe Projects::DeployTokens::CreateService do
   it_behaves_like 'a deploy token creation service' do
     let(:entity) { create(:project) }
     let(:deploy_token_class) { ProjectDeployToken }

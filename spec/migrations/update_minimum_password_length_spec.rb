@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20191205084057_update_minimum_password_length')
 
-describe UpdateMinimumPasswordLength do
+RSpec.describe UpdateMinimumPasswordLength do
   let(:application_settings) { table(:application_settings) }
   let(:application_setting) do
     application_settings.create!(

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200526000407_seed_repository_storages_weighted.rb')
 
-describe SeedRepositoryStoragesWeighted do
+RSpec.describe SeedRepositoryStoragesWeighted do
   let(:storages) { { "foo" => {}, "baz" => {} } }
   let(:application_settings) do
     table(:application_settings).tap do |klass|

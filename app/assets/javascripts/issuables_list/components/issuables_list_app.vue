@@ -12,8 +12,10 @@ import {
 import { __ } from '~/locale';
 import initManualOrdering from '~/manual_ordering';
 import Issuable from './issuable.vue';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import {
   sortOrderMap,
+  availableSortOptionsJira,
   RELATIVE_POSITION,
   PAGE_SIZE,
   PAGE_SIZE_MANUAL,
@@ -29,6 +31,7 @@ export default {
     GlPagination,
     GlSkeletonLoading,
     Issuable,
+    FilteredSearchBar,
   },
   props: {
     canBulkEdit: {
@@ -50,7 +53,17 @@ export default {
       type: String,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     sortKey: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    type: {
       type: String,
       required: false,
       default: '',
@@ -58,6 +71,7 @@ export default {
   },
   data() {
     return {
+      availableSortOptionsJira,
       filters: {},
       isBulkEditing: false,
       issuables: [],
@@ -117,6 +131,45 @@ export default {
     },
     baseUrl() {
       return window.location.href.replace(/(\?.*)?(#.*)?$/, '');
+    },
+    paginationNext() {
+      return this.page + 1;
+    },
+    paginationPrev() {
+      return this.page - 1;
+    },
+    paginationProps() {
+      const paginationProps = { value: this.page };
+
+      if (this.totalItems) {
+        return {
+          ...paginationProps,
+          perPage: this.itemsPerPage,
+          totalItems: this.totalItems,
+        };
+      }
+
+      return {
+        ...paginationProps,
+        prevPage: this.paginationPrev,
+        nextPage: this.paginationNext,
+      };
+    },
+    isJira() {
+      return this.type === 'jira';
+    },
+    initialFilterValue() {
+      const value = [];
+      const { search } = this.getQueryObject();
+
+      if (search) {
+        value.push(search);
+      }
+      return value;
+    },
+    initialSortBy() {
+      const { sort } = this.getQueryObject();
+      return sort || 'created_desc';
     },
   },
   watch: {
@@ -222,8 +275,12 @@ export default {
       const {
         label_name: labels,
         milestone_title: milestoneTitle,
+        'not[label_name]': excludedLabels,
+        'not[milestone_title]': excludedMilestone,
         ...filters
       } = this.getQueryObject();
+
+      // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/227880
 
       if (milestoneTitle) {
         filters.milestone = milestoneTitle;
@@ -235,58 +292,104 @@ export default {
         filters.state = 'opened';
       }
 
+      if (excludedLabels) {
+        filters['not[labels]'] = excludedLabels;
+      }
+
+      if (excludedMilestone) {
+        filters['not[milestone]'] = excludedMilestone;
+      }
+
       Object.assign(filters, sortOrderMap[this.sortKey]);
 
       this.filters = filters;
+    },
+    refetchIssuables() {
+      const ignored = ['utf8'];
+      const params = omit(this.filters, ignored);
+
+      historyPushState(setUrlParams(params, window.location.href, true, true));
+      this.fetchIssuables();
+    },
+    handleFilter(filters) {
+      let search = null;
+
+      filters.forEach(filter => {
+        if (typeof filter === 'string') {
+          search = filter;
+        }
+      });
+
+      this.filters.search = search;
+      this.page = 1;
+
+      this.refetchIssuables();
+    },
+    handleSort(sort) {
+      this.filters.sort = sort;
+      this.page = 1;
+
+      this.refetchIssuables();
     },
   },
 };
 </script>
 
 <template>
-  <ul v-if="loading" class="content-list">
-    <li v-for="n in $options.LOADING_LIST_ITEMS_LENGTH" :key="n" class="issue gl-px-5! gl-py-5!">
-      <gl-skeleton-loading />
-    </li>
-  </ul>
-  <div v-else-if="issuables.length">
-    <div v-if="isBulkEditing" class="issue px-3 py-3 border-bottom border-light">
-      <input type="checkbox" :checked="allIssuablesSelected" class="mr-2" @click="onSelectAll" />
-      <strong>{{ __('Select all') }}</strong>
-    </div>
-    <ul
-      class="content-list issuable-list issues-list"
-      :class="{ 'manual-ordering': isManualOrdering }"
-    >
-      <issuable
-        v-for="issuable in issuables"
-        :key="issuable.id"
-        class="pr-3"
-        :class="{ 'user-can-drag': isManualOrdering }"
-        :issuable="issuable"
-        :is-bulk-editing="isBulkEditing"
-        :selected="isSelected(issuable.id)"
-        :base-url="baseUrl"
-        @select="onSelectIssuable"
-      />
+  <div>
+    <filtered-search-bar
+      v-if="isJira"
+      :namespace="projectPath"
+      :search-input-placeholder="__('Search Jira issues')"
+      :tokens="[]"
+      :sort-options="availableSortOptionsJira"
+      :initial-filter-value="initialFilterValue"
+      :initial-sort-by="initialSortBy"
+      class="row-content-block"
+      @onFilter="handleFilter"
+      @onSort="handleSort"
+    />
+    <ul v-if="loading" class="content-list">
+      <li v-for="n in $options.LOADING_LIST_ITEMS_LENGTH" :key="n" class="issue gl-px-5! gl-py-5!">
+        <gl-skeleton-loading />
+      </li>
     </ul>
-    <div class="mt-3">
-      <gl-pagination
-        v-if="totalItems"
-        :value="page"
-        :per-page="itemsPerPage"
-        :total-items="totalItems"
-        class="justify-content-center"
-        @input="onPaginate"
-      />
+    <div v-else-if="issuables.length">
+      <div v-if="isBulkEditing" class="issue px-3 py-3 border-bottom border-light">
+        <input type="checkbox" :checked="allIssuablesSelected" class="mr-2" @click="onSelectAll" />
+        <strong>{{ __('Select all') }}</strong>
+      </div>
+      <ul
+        class="content-list issuable-list issues-list"
+        :class="{ 'manual-ordering': isManualOrdering }"
+      >
+        <issuable
+          v-for="issuable in issuables"
+          :key="issuable.id"
+          class="pr-3"
+          :class="{ 'user-can-drag': isManualOrdering }"
+          :issuable="issuable"
+          :is-bulk-editing="isBulkEditing"
+          :selected="isSelected(issuable.id)"
+          :base-url="baseUrl"
+          @select="onSelectIssuable"
+        />
+      </ul>
+      <div class="mt-3">
+        <gl-pagination
+          v-bind="paginationProps"
+          class="gl-justify-content-center"
+          @input="onPaginate"
+        />
+      </div>
     </div>
+    <gl-empty-state
+      v-else
+      :title="emptyState.title"
+      :description="emptyState.description"
+      :svg-path="emptySvgPath"
+      :primary-button-link="emptyState.primaryLink"
+      :primary-button-text="emptyState.primaryText"
+    />
   </div>
-  <gl-empty-state
-    v-else
-    :title="emptyState.title"
-    :description="emptyState.description"
-    :svg-path="emptySvgPath"
-    :primary-button-link="emptyState.primaryLink"
-    :primary-button-text="emptyState.primaryText"
-  />
 </template>

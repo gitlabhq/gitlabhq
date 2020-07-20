@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ProjectAuthorizations do
+RSpec.describe Gitlab::ProjectAuthorizations do
   def map_access_levels(rows)
     rows.each_with_object({}) do |row, hash|
       hash[row.project_id] = row.access_level

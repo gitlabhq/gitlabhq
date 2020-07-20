@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-describe API::Files do
+RSpec.describe API::Files do
+  include RepoHelpers
+
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace ) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }
@@ -181,6 +183,26 @@ describe API::Files do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type).to eq('application/json')
+      end
+
+      context 'with filename with pathspec characters' do
+        let(:file_path) { ':wq' }
+        let(:newrev) { project.repository.commit('master').sha }
+
+        before do
+          create_file_in_repo(project, 'master', 'master', file_path, 'Test file')
+        end
+
+        it 'returns JSON wth commit SHA' do
+          params[:ref] = 'master'
+
+          get api(route(file_path), api_user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['file_path']).to eq(file_path)
+          expect(json_response['file_name']).to eq(file_path)
+          expect(json_response['last_commit_id']).to eq(newrev)
+        end
       end
 
       it 'returns file by commit sha' do

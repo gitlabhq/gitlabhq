@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Aws::VerifyProvisionStatusService do
+RSpec.describe Clusters::Aws::VerifyProvisionStatusService do
   describe '#execute' do
     let(:provider) { create(:cluster_provider_aws) }
 

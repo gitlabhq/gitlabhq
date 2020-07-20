@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqLogging::ExceptionHandler do
+RSpec.describe Gitlab::SidekiqLogging::ExceptionHandler do
   describe '#call' do
     let(:job) do
       {

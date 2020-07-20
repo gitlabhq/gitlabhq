@@ -19,7 +19,7 @@ module Users
     private
 
     def after_block_hook(user)
-      # overriden by EE module
+      # overridden by EE module
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::Ldap::Adapter do
+RSpec.describe Gitlab::Auth::Ldap::Adapter do
   include LdapHelpers
 
   let(:ldap) { double(:ldap) }

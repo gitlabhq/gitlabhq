@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan', :reliable do
+  RSpec.describe 'Plan', :reliable do
     describe 'issue suggestions' do
       let(:issue_title) { 'Issue Lists are awesome' }
 

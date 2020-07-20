@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DraftNote do
+RSpec.describe DraftNote do
   include RepoHelpers
 
   let(:project)       { create(:project, :repository) }

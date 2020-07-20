@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NotificationRecipient do
+RSpec.describe NotificationRecipient do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:target) { create(:issue, project: project) }

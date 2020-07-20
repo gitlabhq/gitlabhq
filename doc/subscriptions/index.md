@@ -22,13 +22,13 @@ When choosing a subscription, consider the following factors:
 
 ### Choosing a GitLab tier
 
-Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose the features which fit your budget. See the [feature comparison](https://about.gitlab.com/pricing/gitlab-com/feature-comparison/) for information on what features are available at each tier.
+Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose the features which fit your budget. See the [GitLab.com feature comparison](https://about.gitlab.com/pricing/gitlab-com/feature-comparison/) and the [self-managed feature comparison](https://about.gitlab.com/pricing/self-managed/feature-comparison/) for information on what features are available at each tier for each product.
 
 ### Choosing between GitLab.com or self-managed
 
 There are some differences in how a subscription applies, depending if you use GitLab.com or a self-managed instance.
 
-- [GitLab.com](#gitlabcom): GitLab's software-as-a-service offering. You don't need to install anything to use GitLab.com, you only need to [sign up](https://gitlab.com/users/sign_in) and start using GitLab straight away.
+- [GitLab.com](#gitlabcom): GitLab's software-as-a-service offering. You don't need to install anything to use GitLab.com, you only need to [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
 - [GitLab self-managed](#self-managed): Install, administer, and maintain your own GitLab instance.
 
 On a self-managed instance, a GitLab subscription provides the same set of features for all users. On GitLab.com you can apply a subscription to either a group or a personal namespace.
@@ -103,10 +103,11 @@ To subscribe to GitLab.com:
 1. Select the **Bronze**, **Silver**, or **Gold** GitLab.com plan through the
    [Customers Portal](https://customers.gitlab.com/).
 1. Link your GitLab.com account with your Customers Portal account.
-   Once signed into the Customers Portal, if your account is not
+   Once a plan has been selected, if your account is not
    already linked, you will be prompted to link your account with a
-   **Link my GitLab Account** button.
-1. Associate the group with the subscription.
+   **Sign in to GitLab.com** button.
+1. Select the namespace from the drop-down list to associate the subscription.
+1. Proceed to checkout.
 
 TIP: **Tip:**
 You can also go to the [**My Account**](https://customers.gitlab.com/customers/edit)
@@ -129,19 +130,20 @@ instance, ensure you're purchasing enough seats to
 
 With the [Customers Portal](https://customers.gitlab.com/) you can:
 
-- [Change billing information](#change-billing-information)
+- [Change billing and company information](#change-billing-information)
 - [Change the payment method](#change-payment-method)
 - [Change the linked account](#change-the-linked-account)
 - [Change the associated namespace](#change-the-associated-namespace)
+- [Change customers portal account password](#change-customer-portal-account-password)
 
 ### Change billing information
 
 To change billing information:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Go to the **My Account** page.
+1. Select the **My account** drop-down and click on **Payment methods**.
 1. Make the required changes to the **Account Details** information.
-1. Click **Update Account**.
+1. Click **Save changes**.
 
 NOTE: **Note:**
 Future purchases will use the information in this section.
@@ -159,17 +161,17 @@ To change payment method or update credit card information:
 
 ### Change the linked account
 
-To change the GitLab.com account associated with a Customers Portal
+To change the GitLab.com account associated with your Customers Portal
 account:
 
 1. Log in to the
    [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Go to [GitLab.com](https://gitlab.com) in a separate browser tab. Ensure you
+1. In a separate browser tab, go to [GitLab.com](https://gitlab.com) and ensure you
    are not logged in.
-1. On the Customers Portal page, click
-   [**My Account**](https://customers.gitlab.com/customers/edit) in the top menu.
-1. Under **Your GitLab.com account**, click **Change linked account** button.
-1. Log in to the [GitLab.com](https://gitlab.com) account you want to link to the Customers Portal.
+1. On the Customers Portal page, click **My account > Account details**.
+1. Under **Your GitLab.com account**, click **Change linked account**.
+1. Log in to the [GitLab.com](https://gitlab.com) account you want to link to the Customers Portal
+   account.
 
 ### Change the associated namespace
 
@@ -177,11 +179,20 @@ With a linked GitLab.com account:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Navigate to the **Manage Purchases** page.
-1. Click **Change linked group**.
+1. Click **Change linked namespace**.
 1. Select the desired group from the **This subscription is for** dropdown.
 1. Click **Proceed to checkout**.
 
 Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, you will be charged for the additional users.
+
+### Change customer portal account password
+
+To change the password for this customers portal account:
+
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select the **My account** drop-down and click on **Account details**.
+1. Make the required changes to the **Your password** section.
+1. Click **Save changes**.
 
 ## View your subscription
 
@@ -224,8 +235,8 @@ To renew your subscription, [prepare for renewal by reviewing your account](#pre
 
 The [Customers Portal](https://customers.gitlab.com/customers/sign_in) is your tool for renewing and modifying your subscription. Before going ahead with renewal, log in and verify or update:
 
-- The invoice contact details on the **My Account** page.
-- The credit card on file in the **Payment Methods** page.
+- The invoice contact details on the **Account details** page.
+- The credit card on file on the **Payment Methods** page.
 
 TIP: **Tip:**
 Contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) if you need assistance accessing the Customers Portal or if you need to change the contact person who manages your subscription.
@@ -241,7 +252,7 @@ A GitLab subscription is valid for a specific number of users. For details, see 
 
 ##### Purchase additional seats for GitLab.com
 
-There is no self-service option for purchasing additional seats. You must request a quotation from GitLab Sales. To do so, contact GitLab via our [support form](https://support.gitlab.com/hc/en-us/requests/new) and select **Licensing and Renewals Problems** from the menu.
+There is no self-service option for purchasing additional seats. You must request a quotation from GitLab Sales. To do so, contact GitLab via our [support form](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
 
 The amount charged per seat is calculated by one of the following methods:
 
@@ -255,8 +266,8 @@ Self-managed instances can add users to a subscription any time during the subsc
 To add users to a subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/).
-1. Select **Manage Purchases**.
-1. Select **Add more seats**.
+1. Navigate to the **Manage Purchases** page.
+1. Select **Add more seats** on the relevant subscription card.
 1. Enter the number of additional users.
 1. Select **Proceed to checkout**.
 1. Review the **Subscription Upgrade Detail**. The system lists the total price for all users on the system and a credit for what you've already paid. You will only be charged for the net change.
@@ -264,7 +275,7 @@ To add users to a subscription:
 
 The following will be emailed to you:
 
-- A payment receipt. You can also access this information in the Customers Portal under **Payment History**.
+- A payment receipt. You can also access this information in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
 - A new license. [Upload this license](../user/admin_area/license.md#uploading-your-license) to your instance to use it.
 
 ### Seat Link
@@ -273,7 +284,7 @@ The following will be emailed to you:
 
 Seat Link allows us to provide our self-managed customers with prorated charges for user growth throughout the year using a quarterly reconciliation process.
 
-Seat Link sends to GitLab daily a count of all users in connected self-managed instances. That information is used to automate prorated reconciliations. The data is sent securely through an encrypted HTTPS connection.
+Seat Link daily sends a count of all users in connected self-managed instances to GitLab. That information is used to automate prorated reconciliations. The data is sent securely through an encrypted HTTPS connection.
 
 Seat Link provides **only** the following information to GitLab:
 
@@ -333,7 +344,7 @@ Sg0KU1hNMGExaE9SVGR2V2pKQlBUMWNiaUo5DQo=',
 
 You can view the exact JSON payload in the administration panel. To view the payload:
 
-1. Navigate to **Admin Area > Settings > Metrics and profiling** and expand **Seat Links**.
+1. Navigate to **Admin Area > Settings > Metrics and profiling** and expand **Seat Link**.
 1. Click **Preview payload**.
 
 #### Disable Seat Link
@@ -343,7 +354,7 @@ You can view the exact JSON payload in the administration panel. To view the pay
 Seat Link is enabled by default.
 
 To disable this feature, go to
-**{admin}** **Admin Area > Settings > Metrics and profiling** and clear the **Seat Link** checkbox.
+**{admin}** **Admin Area > Settings > Metrics and profiling**, uncheck the **Enable Seat Link** checkbox > **Save changes**.
 
 To disable Seat Link in an Omnibus GitLab installation, and prevent it from
 being configured in the future through the administration panel, set the following in
@@ -379,7 +390,7 @@ To view or change automatic subscription renewal (at the same tier as the previo
 - If you see **Cancel subscription**, your subscription is set to automatically renew at the end of the subscription period. Click it to cancel automatic renewal.
 
 With automatic renewal enabled, the subscription will automatically renew on the expiration date and there will be no gap in available service.
-An invoice will be generated for the renewal and available for viewing or download in the [Payment History](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
+An invoice will be generated for the renewal and available for viewing or download in the [View invoices](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 
 ### Renew a self-managed subscription
 
@@ -410,10 +421,10 @@ We recommend following these steps during renewal:
    | Users over license | The number of users that exceed the `Users in License` for the current license term. Charges for this number of users will be incurred at the next renewal. |
 
 1. Review your renewal details and complete the payment process.
-1. A license for the renewal term will be available on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page beneath your new subscription details.
-1. [Upload](../user/admin_area/license.md) your new license to your instance.
+1. A license for the renewal term will be available for download on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy license to clipboard** or **Download license** to get a copy.
+1. [Upload](../user/admin_area/license.md#uploading-your-license) your new license to your instance.
 
-An invoice will be generated for the renewal and available for viewing or download in the [Payment History](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
+An invoice will be generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 
 ## Upgrade your subscription tier
 
@@ -424,7 +435,7 @@ The process for upgrading differs depending on whether you're a GitLab.com or se
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select **Upgrade** under your subscription on the [My Account](https://customers.gitlab.com/subscriptions) page.
+1. Select the **Upgrade** button on the relevant subscription card on the [Manage purchases](https://customers.gitlab.com/subscriptions) page.
 1. Select the desired upgrade.
 1. Confirm the active form of payment, or add a new form of payment.
 1. Check the **I accept the Privacy Policy and Terms of Service** checkbox.
@@ -436,8 +447,7 @@ When the purchase has been processed, you receive confirmation of your new subsc
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team as this
 can't be done in the Customers Portal. You can either send an email to `renewals@gitlab.com`, or
-complete the [**Contact Sales**](https://about.gitlab.com/sales/) form. Include in your message
-details of which subscription you want to upgrade, and the desired tier.
+complete the [**Contact Sales**](https://about.gitlab.com/sales/) form. Include details of which subscription you want to upgrade and the desired tier in your message.
 
 After messaging the sales team, the workflow is as follows:
 
@@ -458,7 +468,7 @@ If you renew or upgrade, your data will again be accessible.
 
 ### Self-managed GitLab data
 
-For self-managed customers, there is a two-week grace period when your features
+For self-managed customers, there is a 14-day grace period when your features
 will continue to work as-is, after which the entire instance will become read
 only.
 
@@ -467,19 +477,24 @@ features, and the instance will be read / write again.
 
 ## CI pipeline minutes
 
-CI pipeline minutes are the execution time for your [pipelines](../ci/pipelines/index.md) on GitLab's shared runners. Each [GitLab.com tier](https://about.gitlab.com/pricing/) includes a monthly quota of CI pipeline minutes.
+CI pipeline minutes are the execution time for your [pipelines](../ci/pipelines/index.md) on GitLab's shared runners. Each [GitLab.com tier](https://about.gitlab.com/pricing/) includes a monthly quota of CI pipeline minutes:
+
+- Free: 2,000 minutes
+- Bronze: 2,000 minutes
+- Silver: 10,000 minutes
+- Gold: 50,000 minutes
 
 Quotas apply to:
 
-- Groups, where the minutes are shared across all members of the group, its subgroups, and nested projects. To view the group's usage, navigate to the group, then **{settings}** **Settings > Usage Quotas**.
-- Your personal account, where the minutes are available for your personal projects. To view and buy personal minutes, click your avatar, then **{settings}** **Settings > Pipeline quota**.
+- Groups, where the minutes are shared across all members of the group, its subgroups, and nested projects. To view the group's usage, navigate to the group, then **{settings}** **Settings** > **Usage Quotas**.
+- Your personal account, where the minutes are available for your personal projects. To view and buy personal minutes, click your avatar, then **{settings}** **Settings** > **[Usage Quotas](https://gitlab.com/profile/usage_quotas#pipelines-quota-tab)**.
 
 Only pipeline minutes for GitLab shared runners are restricted. If you have a specific runner set up for your projects, there is no limit to your build time on GitLab.com.
 
 The available quota is reset on the first of each calendar month at midnight UTC.
 
 When the CI minutes are depleted, an email is sent automatically to notify the owner(s)
-of the group/namespace. You can [purchase additional CI minutes](#purchasing-additional-ci-minutes), or upgrade your account to [Silver or Gold](https://about.gitlab.com/pricing/). Your own runners can still be used even if you reach your limits.
+of the namespace. You can [purchase additional CI minutes](#purchasing-additional-ci-minutes), or upgrade your account to [Silver or Gold](https://about.gitlab.com/pricing/). Your own runners can still be used even if you reach your limits.
 
 ### Purchasing additional CI minutes
 
@@ -493,16 +508,20 @@ main quota. You can find pricing for additional CI/CD minutes in the [GitLab Cus
 To purchase additional minutes for your group on GitLab.com:
 
 1. From your group, go to **{settings}** **Settings > Usage Quotas**.
+1. Select **Buy additional minutes** and you will be directed to the Customers Portal.
 1. Locate the subscription card that's linked to your group on GitLab.com, click **Buy more CI minutes**, and complete the details about the transaction.
-1. Once we have processed your payment, the extra CI minutes will be synced to your group.
+1. Once we have processed your payment, the extra CI minutes will be synced to your group namespace.
 1. To confirm the available CI minutes, go to your group, then **{settings}** **Settings > Usage Quotas**.
+
    The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any minutes rolled over from last month.
 
 To purchase additional minutes for your personal namespace:
 
-1. Click your avatar, then go to **Settings > Pipeline quota**.
-1. Locate the subscription card that's linked to your personal namespace on GitLab.com, click **Buy more CI minutes**, and complete the details about the transaction. Once we have processed your payment, the extra CI minutes will be synced to your Group.
-1. To confirm the available CI minutes for your personal projects, click your avatar, then go to **Settings > Pipeline quota**.
+1. Click your avatar, then go to **Settings > Usage Quotas**.
+1. Select **Buy additional minutes** and you will be directed to the Customers Portal.
+1. Locate the subscription card that's linked to your personal namespace on GitLab.com, click **Buy more CI minutes**, and complete the details about the transaction. Once we have processed your payment, the extra CI minutes will be synced to your personal namespace.
+1. To confirm the available CI minutes for your personal projects, click your avatar, then go to **Settings > Usage Quotas**.
+
    The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any minutes rolled over from last month.
 
 Be aware that:

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlobViewer::RouteMap do
+RSpec.describe BlobViewer::RouteMap do
   include FakeBlobHelpers
 
   let(:project) { build_stubbed(:project) }

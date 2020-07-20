@@ -32,6 +32,9 @@ export default {
     // Clear current pod options
     state.pods.current = null;
     state.pods.options = [];
+
+    // Clear current managedApps options
+    state.managedApps.current = null;
   },
   [types.REQUEST_ENVIRONMENTS_DATA](state) {
     state.environments.options = [];
@@ -106,5 +109,25 @@ export default {
   },
   [types.RECEIVE_PODS_DATA_ERROR](state) {
     state.pods.options = [];
+  },
+  // Managed apps data
+  [types.RECEIVE_MANAGED_APPS_DATA_SUCCESS](state, apps) {
+    state.managedApps.options = apps;
+    state.managedApps.isLoading = false;
+  },
+  [types.RECEIVE_MANAGED_APPS_DATA_ERROR](state) {
+    state.managedApps.options = [];
+    state.managedApps.isLoading = false;
+    state.managedApps.fetchError = true;
+  },
+  [types.SET_MANAGED_APP](state, managedApp) {
+    state.managedApps.current = managedApp;
+
+    // Clear current pod options
+    state.pods.current = null;
+    state.pods.options = [];
+
+    // Clear current environment options
+    state.environments.current = null;
   },
 };

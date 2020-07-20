@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SshHostKey do
+RSpec.describe SshHostKey do
   using RSpec::Parameterized::TableSyntax
   include ReactiveCachingHelpers
 

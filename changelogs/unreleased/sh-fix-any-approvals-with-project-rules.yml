@@ -1,0 +1,5 @@
+---
+title: Fix approval rule type when project rule has users/groups
+merge_request: 34026
+author:
+type: fixed

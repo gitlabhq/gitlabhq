@@ -19,6 +19,7 @@ class Notify < ApplicationMailer
   include Emails::Releases
   include Emails::Groups
   include Emails::Reviews
+  include Emails::ServiceDesk
 
   helper TimeboxesHelper
   helper MergeRequestsHelper

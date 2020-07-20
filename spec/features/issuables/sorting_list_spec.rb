@@ -10,6 +10,10 @@ RSpec.describe 'Sort Issuable List' do
   let(:first_updated_issuable) { issuables.order_updated_asc.first }
   let(:last_updated_issuable) { issuables.order_updated_desc.first }
 
+  before do
+    stub_feature_flags(vue_issuables_list: false)
+  end
+
   context 'for merge requests' do
     include MergeRequestHelpers
 

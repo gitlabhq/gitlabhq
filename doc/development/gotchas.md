@@ -20,7 +20,7 @@ Consider the following API spec:
 ```ruby
 require 'spec_helper'
 
-describe API::Labels do
+RSpec.describe API::Labels do
   it 'creates a first label' do
     create(:label)
 
@@ -71,7 +71,7 @@ Following is the fixed API spec:
 ```ruby
 require 'spec_helper'
 
-describe API::Labels do
+RSpec.describe API::Labels do
   it 'creates a first label' do
     create(:label, title: 'foo')
 

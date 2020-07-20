@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Subscriptions < Grape::API
+  class Subscriptions < Grape::API::Instance
     helpers ::API::Helpers::LabelHelpers
 
     before { authenticate! }

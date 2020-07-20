@@ -15,7 +15,7 @@ module Types
               null: true,
               connection: false,
               extensions: [Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension],
-              description: 'List of Jira projects fetched through Jira REST API',
+              description: 'List of all Jira projects fetched through Jira REST API',
               resolver: Resolvers::Projects::JiraProjectsResolver
       end
     end

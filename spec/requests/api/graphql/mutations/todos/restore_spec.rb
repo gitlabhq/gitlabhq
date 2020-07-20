@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Restoring Todos' do
+RSpec.describe 'Restoring Todos' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

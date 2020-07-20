@@ -56,7 +56,7 @@ export default {
 </script>
 
 <template>
-  <div class="ide-stage card prepend-top-default">
+  <div class="ide-stage card gl-mt-3">
     <div
       ref="cardHeader"
       :class="{

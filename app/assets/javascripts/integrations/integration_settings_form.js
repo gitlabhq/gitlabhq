@@ -22,7 +22,10 @@ export default class IntegrationSettingsForm {
 
   init() {
     // Init Vue component
-    initForm(document.querySelector('.js-vue-integration-settings'));
+    initForm(
+      document.querySelector('.js-vue-integration-settings'),
+      document.querySelector('.js-vue-admin-integration-settings'),
+    );
     eventHub.$on('toggle', active => {
       this.formActive = active;
       this.handleServiceToggle();

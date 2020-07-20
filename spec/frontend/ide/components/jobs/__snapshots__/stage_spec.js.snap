@@ -2,7 +2,7 @@
 
 exports[`IDE pipeline stage renders stage details & icon 1`] = `
 <div
-  class="ide-stage card prepend-top-default"
+  class="ide-stage card gl-mt-3"
 >
   <div
     class="card-header"

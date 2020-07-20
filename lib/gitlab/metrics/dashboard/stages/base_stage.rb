@@ -48,6 +48,14 @@ module Gitlab
             end
           end
 
+          def for_variables
+            return unless dashboard.dig(:templating, :variables).is_a?(Hash)
+
+            dashboard.dig(:templating, :variables).each do |variable_name, variable|
+              yield variable_name, variable
+            end
+          end
+
           def for_panel_groups
             dashboard[:panel_groups].each do |panel_group|
               yield panel_group

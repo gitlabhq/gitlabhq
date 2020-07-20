@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::OAuth::IdentityLinker do
+RSpec.describe Gitlab::Auth::OAuth::IdentityLinker do
   let(:user) { create(:user) }
   let(:provider) { 'twitter' }
   let(:uid) { user.email }

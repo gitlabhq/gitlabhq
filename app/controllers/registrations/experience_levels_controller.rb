@@ -33,12 +33,13 @@ module Registrations
 
     def hide_advanced_issues
       return unless current_user.user_preference.novice?
+      return unless learn_gitlab.available?
 
-      settings = cookies[:onboarding_issues_settings]
-      return unless settings
+      Boards::UpdateService.new(learn_gitlab.project, current_user, label_ids: [learn_gitlab.label.id]).execute(learn_gitlab.board)
+    end
 
-      modified_settings = Gitlab::Json.parse(settings).merge(hideAdvanced: true)
-      cookies[:onboarding_issues_settings] = modified_settings.to_json
+    def learn_gitlab
+      @learn_gitlab ||= LearnGitlab.new(current_user)
     end
   end
 end

@@ -15,6 +15,7 @@ unless Gitlab::Runtime.sidekiq?
       data[:db_duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:db)) if data[:db]
       data[:view_duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:view)) if data[:view]
       data[:duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:duration)) if data[:duration]
+      data.merge!(::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload)
 
       data
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Validations::Validators::FilePath do
+RSpec.describe API::Validations::Validators::FilePath do
   include ApiValidatorsHelpers
 
   subject do

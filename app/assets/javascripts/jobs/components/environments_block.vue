@@ -274,7 +274,7 @@ export default {
 };
 </script>
 <template>
-  <div class="prepend-top-default append-bottom-default js-environment-container">
+  <div class="gl-mt-3 gl-mb-3 js-environment-container">
     <div class="environment-information">
       <ci-icon :status="iconStatus" />
       <p class="inline gl-mb-0" v-html="environment"></p>

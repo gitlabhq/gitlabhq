@@ -6,7 +6,7 @@ import { chartHeight, legendLayoutTypes } from '../../constants';
 import { s__ } from '~/locale';
 import { graphDataValidatorForValues } from '../../utils';
 import { getTimeAxisOptions, axisTypes } from './options';
-import { timezones } from '../../format_date';
+import { formats, timezones } from '../../format_date';
 
 export default {
   components: {
@@ -97,7 +97,7 @@ export default {
     chartOptions() {
       return {
         xAxis: {
-          ...getTimeAxisOptions({ timezone: this.timezone }),
+          ...getTimeAxisOptions({ timezone: this.timezone, format: formats.shortTime }),
           type: this.xAxisType,
         },
         dataZoom: [this.dataZoomConfig],

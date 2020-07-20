@@ -19,6 +19,7 @@ Personal access tokens expire on the date you define, at midnight UTC.
 
 - GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that will expire in under seven days. The owners of these tokens are notified by email.
 - In GitLab Ultimate, administrators may [limit the lifetime of personal access tokens](../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens-ultimate-only).
+- In GitLab Ultimate, administrators may [toggle enforcement of personal access token expiry](../admin_area/settings/account_and_limit_settings.md#optional-enforcement-of-personal-access-token-expiry-ultimate-only).
 
 For examples of how you can use a personal access token to authenticate with the API, see the following section from our [API Docs](../../api/README.md#personalproject-access-tokens).
 
@@ -42,6 +43,10 @@ profile.
 
 At any time, you can revoke any personal access token by clicking the
 respective **Revoke** button under the **Active Personal Access Token** area.
+
+### Token activity
+
+You can see when a token was last used from the **Personal Access Tokens** page. Updates to the token usage is fixed at once per 24 hours. Requests to [API resources](../../api/api_resources.md) and the [GraphQL API](../../api/graphql/index.md) will update a token's usage.
 
 ## Limiting scopes of a personal access token
 

@@ -1,22 +1,10 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectClusters < Grape::API
+  class ProjectClusters < Grape::API::Instance
     include PaginationParams
 
     before { authenticate! }
-
-    # EE::API::ProjectClusters will
-    # override these methods
-    helpers do
-      params :create_params_ee do
-      end
-
-      params :update_params_ee do
-      end
-    end
-
-    prepend_if_ee('EE::API::ProjectClusters') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
     params do
       requires :id, type: String, desc: 'The ID of the project'
@@ -56,6 +44,7 @@ module API
         requires :name, type: String, desc: 'Cluster name'
         optional :enabled, type: Boolean, default: true, desc: 'Determines if cluster is active or not, defaults to true'
         optional :domain, type: String, desc: 'Cluster base domain'
+        optional :environment_scope, default: '*', type: String, desc: 'The associated environment to the cluster'
         optional :management_project_id, type: Integer, desc: 'The ID of the management project'
         optional :managed, type: Boolean, default: true, desc: 'Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to true'
         requires :platform_kubernetes_attributes, type: Hash, desc: %q(Platform Kubernetes data) do
@@ -65,7 +54,6 @@ module API
           optional :namespace, type: String, desc: 'Unique namespace related to Project'
           optional :authorization_type, type: String, values: ::Clusters::Platforms::Kubernetes.authorization_types.keys, default: 'rbac', desc: 'Cluster authorization type, defaults to RBAC'
         end
-        use :create_params_ee
       end
       post ':id/clusters/user' do
         authorize! :add_cluster, user_project
@@ -89,6 +77,7 @@ module API
         requires :cluster_id, type: Integer, desc: 'The cluster ID'
         optional :name, type: String, desc: 'Cluster name'
         optional :domain, type: String, desc: 'Cluster base domain'
+        optional :environment_scope, type: String, desc: 'The associated environment to the cluster'
         optional :management_project_id, type: Integer, desc: 'The ID of the management project'
         optional :platform_kubernetes_attributes, type: Hash, desc: %q(Platform Kubernetes data) do
           optional :api_url, type: String, desc: 'URL to access the Kubernetes API'
@@ -96,7 +85,6 @@ module API
           optional :ca_cert, type: String, desc: 'TLS certificate (needed if API is using a self-signed TLS certificate)'
           optional :namespace, type: String, desc: 'Unique namespace related to Project'
         end
-        use :update_params_ee
       end
       put ':id/clusters/:cluster_id' do
         authorize! :update_cluster, cluster

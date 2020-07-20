@@ -14,18 +14,18 @@ To enable the GitLab Prometheus metrics:
 1. [Restart GitLab](../../restart_gitlab.md#omnibus-gitlab-restart) for the changes to take effect.
 
 NOTE: **Note:**
-For installations from source you'll have to configure it yourself.
+For installations from source you must configure it yourself.
 
 ## Collecting the metrics
 
 GitLab monitors its own internal service metrics, and makes them available at the
 `/-/metrics` endpoint. Unlike other [Prometheus](https://prometheus.io) exporters, to access
-it, the client IP address needs to be [explicitly allowed](../ip_whitelist.md).
+the metrics, the client IP address must be [explicitly allowed](../ip_whitelist.md).
 
 For [Omnibus GitLab](https://docs.gitlab.com/omnibus/) and Chart installations,
 these metrics are enabled and collected as of
 [GitLab 9.4](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1702).
-For source installations or earlier versions, these metrics must be enabled
+For source installations, these metrics must be enabled
 manually and collected by a Prometheus server.
 
 For enabling and viewing metrics from Sidekiq nodes, see [Sidekiq metrics](#sidekiq-metrics).
@@ -40,7 +40,7 @@ The following metrics are available:
 | `gitlab_banzai_cacheless_render_real_duration_seconds`         | Histogram |                    9.4 | Duration of rendering Markdown into HTML when cached output does not exist                          | `controller`, `action`                              |
 | `gitlab_cache_misses_total`                                    | Counter   |                   10.2 | Cache read miss                                                                                     | `controller`, `action`                              |
 | `gitlab_cache_operation_duration_seconds`                      | Histogram |                   10.2 | Cache access time                                                                                   |                                                     |
-| `gitlab_cache_operations_total`                                | Counter   |                   12.2 | Cache operations by controller/action                                                               | `controller`, `action`, `operation`                 |
+| `gitlab_cache_operations_total`                                | Counter   |                   12.2 | Cache operations by controller or action                                                               | `controller`, `action`, `operation`                 |
 | `gitlab_ci_pipeline_creation_duration_seconds`                 | Histogram |                   13.0 | Time in seconds it takes to create a CI/CD pipeline                                                 |                                                     |
 | `gitlab_ci_pipeline_size_builds`                               | Histogram |                   13.1 | Total number of builds within a pipeline grouped by a pipeline source                               | `source`                                            |
 | `job_waiter_started_total`                                     | Counter   |                   12.9 | Number of batches of jobs started where a web request is waiting for the jobs to complete           | `worker`                                            |
@@ -92,16 +92,16 @@ The following metrics are available:
 | `gitlab_view_rendering_duration_seconds`                       | Histogram |                   10.2 | Duration for views (histogram)                                                                      | `controller`, `action`, `view`                      |
 | `http_requests_total`                                          | Counter   |                    9.4 | Rack request count                                                                                  | `method`                                            |
 | `http_request_duration_seconds`                                | Histogram |                    9.4 | HTTP response time from rack middleware                                                             | `method`, `status`                                  |
-| `gitlab_transaction_db_count_total`                            | Counter   |                   13.1 | Counter for total number of sql calls                                                               | `controller`, `action`                              |
-| `gitlab_transaction_db_write_count_total`                      | Counter   |                   13.1 | Counter for total number of write sql calls                                                         | `controller`, `action`                              |
-| `gitlab_transaction_db_cached_count_total`                     | Counter   |                   13.1 | Counter for total number of cached sql calls                                                        | `controller`, `action`                              |
+| `gitlab_transaction_db_count_total`                            | Counter   |                   13.1 | Counter for total number of SQL calls                                                               | `controller`, `action`                              |
+| `gitlab_transaction_db_write_count_total`                      | Counter   |                   13.1 | Counter for total number of write SQL calls                                                         | `controller`, `action`                              |
+| `gitlab_transaction_db_cached_count_total`                     | Counter   |                   13.1 | Counter for total number of cached SQL calls                                                        | `controller`, `action`                              |
 | `http_redis_requests_duration_seconds`                         | Histogram |                   13.1 | Redis requests duration during web transactions                                                     | `controller`, `action`                              |
 | `http_redis_requests_total`                                    | Counter   |                   13.1 | Redis requests count during web transactions                                                        | `controller`, `action`                              |
 | `http_elasticsearch_requests_duration_seconds` **(STARTER)**   | Histogram |                   13.1 | Elasticsearch requests duration during web transactions                                             | `controller`, `action`                              |
 | `http_elasticsearch_requests_total` **(STARTER)**              | Counter   |                   13.1 | Elasticsearch requests count during web transactions                                                | `controller`, `action`                              |
 | `pipelines_created_total`                                      | Counter   |                    9.4 | Counter of pipelines created                                                                        |                                                     |
 | `rack_uncaught_errors_total`                                   | Counter   |                    9.4 | Rack connections handling uncaught errors count                                                     |                                                     |
-| `user_session_logins_total`                                    | Counter   |                    9.4 | Counter of how many users have logged in                                                            |                                                     |
+| `user_session_logins_total`                                    | Counter   |                    9.4 | Counter of how many users have logged in since GitLab was started or restarted                                                            |                                                     |
 | `upload_file_does_not_exist`                                   | Counter   | 10.7 in EE, 11.5 in CE | Number of times an upload record could not find its file                                            |                                                     |
 | `failed_login_captcha_total`                                   | Gauge     |                   11.0 | Counter of failed CAPTCHA attempts during login                                                     |                                                     |
 | `successful_login_captcha_total`                               | Gauge     |                   11.0 | Counter of successful CAPTCHA attempts during login                                                 |                                                     |
@@ -120,7 +120,7 @@ The following metrics can be controlled by feature flags:
 ## Sidekiq metrics
 
 Sidekiq jobs may also gather metrics, and these metrics can be accessed if the
-Sidekiq exporter is enabled (for example, using the `monitoring.sidekiq_exporter`
+Sidekiq exporter is enabled: for example, using the `monitoring.sidekiq_exporter`
 configuration option in `gitlab.yml`. These metrics are served from the
 `/metrics` path on the configured port.
 
@@ -173,6 +173,7 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_repositories_retrying_verification_count` | Gauge   | 11.2  | Number of repositories verification failures that Geo is actively trying to correct on secondary  | `url` |
 | `geo_wikis_retrying_verification_count`        | Gauge   | 11.2  | Number of wikis verification failures that Geo is actively trying to correct on secondary | `url` |
 | `global_search_bulk_cron_queue_size`           | Gauge   | 12.10 | Number of database records waiting to be synchronized to Elasticsearch | |
+| `global_search_awaiting_indexing_queue_size`   | Gauge   | 13.2  | Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused | |
 | `package_files_count`                          | Gauge   | 13.0  | Number of package files on primary | `url` |
 | `package_files_checksummed_count`              | Gauge   | 13.0  | Number of package files checksummed on primary | `url` |
 | `package_files_checksum_failed_count`          | Gauge   | 13.0  | Number of package files failed to calculate the checksum on primary
@@ -187,16 +188,16 @@ The following metrics are available:
 
 ## Connection pool metrics
 
-These metrics record the status of the database [connection pools](https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html).
+These metrics record the status of the database
+[connection pools](https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html),
+and the metrics all have these labels:
 
-They all have these labels:
-
-1. `class` - the Ruby class being recorded.
-    1. `ActiveRecord::Base` is the main database connection.
-    1. `Geo::TrackingBase` is the connection to the Geo tracking database, if
-       enabled.
-1. `host` - the host name used to connect to the database.
-1. `port` - the port used to connect to the database.
+- `class` - the Ruby class being recorded.
+  - `ActiveRecord::Base` is the main database connection.
+  - `Geo::TrackingBase` is the connection to the Geo tracking database, if
+    enabled.
+- `host` - the host name used to connect to the database.
+- `port` - the port used to connect to the database.
 
 | Metric                                        | Type  | Since | Description                                       |
 |:----------------------------------------------|:------|:------|:--------------------------------------------------|
@@ -251,15 +252,29 @@ When Puma is used instead of Unicorn, the following metrics are available:
 | `puma_idle_threads`               | Gauge   | 12.0  | Number of spawned threads which are not processing a request |
 | `puma_killer_terminations_total`  | Gauge   | 12.0  | Number of workers terminated by PumaWorkerKiller |
 
+## Redis metrics
+
+These client metrics are meant to complement Redis server metrics.
+These metrics are broken down per [Redis
+instance](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances).
+These metrics all have a `storage` label which indicates the Redis
+instance (`cache`, `shared_state` etc.).
+
+| Metric                            | Type    | Since | Description |
+|:--------------------------------- |:------- |:----- |:----------- |
+| `gitlab_redis_client_exceptions_total`                    | Counter   | 13.2  | Number of Redis client exceptions, broken down by exception class |
+| `gitlab_redis_client_requests_total`                    | Counter   | 13.2  | Number of Redis client requests |
+| `gitlab_redis_client_requests_duration_seconds`                    | Histogram   | 13.2  | Redis request latency, excluding blocking commands |
+
 ## Metrics shared directory
 
 GitLab's Prometheus client requires a directory to store metrics data shared between multi-process services.
 Those files are shared among all instances running under Unicorn server.
 The directory must be accessible to all running Unicorn's processes, or
-metrics won't function correctly.
+metrics can't function correctly.
 
 This directory's location is configured using environment variable `prometheus_multiproc_dir`.
 For best performance, create this directory in `tmpfs`.
 
 If GitLab is installed using [Omnibus GitLab](https://docs.gitlab.com/omnibus/)
-and `tmpfs` is available, then the metrics directory will be configured for you.
+and `tmpfs` is available, then GitLab configures the metrics directory for you.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'help/show' do
+RSpec.describe 'help/show' do
   describe 'Markdown rendering' do
     before do
       assign(:path, 'ssh/README')

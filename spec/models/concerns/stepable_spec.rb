@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Stepable do
+RSpec.describe Stepable do
   let(:described_class) do
     Class.new do
       include Stepable

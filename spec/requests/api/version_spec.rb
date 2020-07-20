@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Version do
+RSpec.describe API::Version do
   shared_examples_for 'GET /version' do
     context 'when unauthenticated' do
       it 'returns authentication error' do

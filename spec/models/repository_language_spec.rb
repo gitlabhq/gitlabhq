@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryLanguage do
+RSpec.describe RepositoryLanguage do
   let(:repository_language) { build(:repository_language) }
 
   describe 'associations' do

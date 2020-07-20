@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Todo'] do
+RSpec.describe GitlabSchema.types['Todo'] do
   it 'has the correct fields' do
     expected_fields = [:id, :project, :group, :author, :action, :target_type, :body, :state, :created_at]
 

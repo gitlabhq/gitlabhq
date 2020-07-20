@@ -45,8 +45,19 @@ be found in `/var/opt/gitlab/gitlab-rails/shared/pages` if using Omnibus).
 
 ## Preflight checks
 
-Follow these steps before scheduling a planned failover to ensure the process
-will go smoothly.
+Run this command to list out all preflight checks and automatically check if replication and verification are complete before scheduling a planned failover to ensure the process will go smoothly:
+
+```shell
+gitlab-ctl promotion-preflight-checks
+```
+
+You can run this command in `force` mode to promote to primary even if preflight checks fail:
+
+```shell
+sudo gitlab-ctl promotion-preflight-checks --force
+```
+
+Each step is described in more detail below.
 
 ### Object storage
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BitbucketImport::ProjectCreator do
+RSpec.describe Gitlab::BitbucketImport::ProjectCreator do
   let(:user) { create(:user) }
 
   let(:repo) do

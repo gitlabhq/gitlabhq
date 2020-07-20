@@ -3,7 +3,7 @@
 #
 # Checks for unexpanded acronyms.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: conditional
 message: '"%s" has no definition.'
 link: https://about.gitlab.com/handbook/marketing/growth-marketing/content/editorial-team/#acronyms
@@ -18,12 +18,15 @@ exceptions:
   - ARN
   - ASCII
   - AWS
+  - CLI
   - CNAME
   - CPU
+  - CORE
   - CSS
   - CSV
   - DNS
   - EKS
+  - FAQ
   - GDK
   - GET
   - GNU
@@ -33,21 +36,28 @@ exceptions:
   - HTTP
   - HTTPS
   - IAM
+  - IBM
   - IDE
+  - IRC
+  - ISO
   - JSON
   - LDAP
   - LDAPS
   - LESS
   - LFS
+  - LRU
   - NFS
   - NGINX
   - NOTE
+  - NPM
   - ONLY
+  - PDF
   - PGP
   - PHP
   - POST
   - PUT
   - RPC
+  - RAM
   - RSA
   - RSS
   - SAML
@@ -58,13 +68,17 @@ exceptions:
   - SSH
   - SSL
   - SSO
+  - SVN
+  - TCP
   - TIP
   - TLS
   - TODO
   - TOML
   - UNIX
+  - USB
   - URI
   - URL
+  - UUID
   - VPC
   - WIP
   - XML

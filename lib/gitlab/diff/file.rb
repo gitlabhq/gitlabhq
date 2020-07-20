@@ -230,11 +230,15 @@ module Gitlab
       end
 
       def added_lines
-        @stats&.additions || diff_lines.count(&:added?)
+        strong_memoize(:added_lines) do
+          @stats&.additions || diff_lines.count(&:added?)
+        end
       end
 
       def removed_lines
-        @stats&.deletions || diff_lines.count(&:removed?)
+        strong_memoize(:removed_lines) do
+          @stats&.deletions || diff_lines.count(&:removed?)
+        end
       end
 
       def file_identifier

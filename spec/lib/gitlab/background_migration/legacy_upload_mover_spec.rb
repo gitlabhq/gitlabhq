@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 # rubocop: disable RSpec/FactoriesInMigrationSpecs
-describe Gitlab::BackgroundMigration::LegacyUploadMover do
+RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
   let(:test_dir) { FileUploader.options['storage_path'] }
   let(:filename) { 'image.png' }
 

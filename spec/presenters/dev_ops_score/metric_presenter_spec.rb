@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DevOpsScore::MetricPresenter do
+RSpec.describe DevOpsScore::MetricPresenter do
   subject { described_class.new(metric) }
 
   let(:metric) { build(:dev_ops_score_metric) }

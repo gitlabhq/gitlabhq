@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Shard do
+RSpec.describe Shard do
   describe '.populate!' do
     it 'creates shards based on the config file' do
       expect(described_class.all).to be_empty

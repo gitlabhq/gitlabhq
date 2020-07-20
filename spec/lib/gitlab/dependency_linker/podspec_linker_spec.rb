@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::PodspecLinker do
+RSpec.describe Gitlab::DependencyLinker::PodspecLinker do
   describe '.support?' do
     it 'supports *.podspec' do
       expect(described_class.support?('Reachability.podspec')).to be_truthy

@@ -1,0 +1,5 @@
+---
+title: Add :section to approval_merge_request_rule unique index
+merge_request: 34680
+author:
+type: other

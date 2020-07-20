@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserProjectAccessChangedService do
+RSpec.describe UserProjectAccessChangedService do
   describe '#execute' do
     it 'schedules the user IDs' do
       expect(AuthorizedProjectsWorker).to receive(:bulk_perform_and_wait)

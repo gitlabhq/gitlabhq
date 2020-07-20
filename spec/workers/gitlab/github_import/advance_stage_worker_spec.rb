@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::AdvanceStageWorker, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::GithubImport::AdvanceStageWorker, :clean_gitlab_redis_shared_state do
   let(:project) { create(:project) }
   let(:import_state) { create(:import_state, project: project, jid: '123') }
   let(:worker) { described_class.new }

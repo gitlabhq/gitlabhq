@@ -65,19 +65,8 @@ RSpec.describe 'Pipelines', :js do
           expect(page.find('.js-pipelines-tab-all .badge').text).to include('1')
         end
 
-        it 'shows a tab for Pending pipelines and count' do
-          expect(page.find('.js-pipelines-tab-pending').text).to include('Pending')
-          expect(page.find('.js-pipelines-tab-pending .badge').text).to include('0')
-        end
-
-        it 'shows a tab for Running pipelines and count' do
-          expect(page.find('.js-pipelines-tab-running').text).to include('Running')
-          expect(page.find('.js-pipelines-tab-running .badge').text).to include('1')
-        end
-
         it 'shows a tab for Finished pipelines and count' do
           expect(page.find('.js-pipelines-tab-finished').text).to include('Finished')
-          expect(page.find('.js-pipelines-tab-finished .badge').text).to include('0')
         end
 
         it 'shows a tab for Branches' do
@@ -89,9 +78,9 @@ RSpec.describe 'Pipelines', :js do
         end
 
         it 'updates content when tab is clicked' do
-          page.find('.js-pipelines-tab-pending').click
+          page.find('.js-pipelines-tab-finished').click
           wait_for_requests
-          expect(page).to have_content('There are currently no pending pipelines.')
+          expect(page).to have_content('There are currently no finished pipelines.')
         end
       end
 
@@ -539,7 +528,7 @@ RSpec.describe 'Pipelines', :js do
         end
 
         it 'renders a mini pipeline graph' do
-          expect(page).to have_selector('.js-mini-pipeline-graph')
+          expect(page).to have_selector('[data-testid="widget-mini-pipeline-graph"]')
           expect(page).to have_selector('.js-builds-dropdown-button')
         end
 

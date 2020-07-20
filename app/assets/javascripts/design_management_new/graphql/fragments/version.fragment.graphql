@@ -1,0 +1,4 @@
+fragment VersionListItem on DesignVersion {
+  id
+  sha
+}

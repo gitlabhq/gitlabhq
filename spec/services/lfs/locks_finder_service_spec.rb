@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Lfs::LocksFinderService do
+RSpec.describe Lfs::LocksFinderService do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:params)  { {} }

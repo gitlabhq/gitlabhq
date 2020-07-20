@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Dashboard::SnippetsController do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -26,5 +26,7 @@ RSpec.describe Dashboard::SnippetsController do
 
       get :index
     end
+
+    it_behaves_like 'snippets sort order'
   end
 end

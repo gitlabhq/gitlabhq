@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetUserMention do
+RSpec.describe SnippetUserMention do
   describe 'associations' do
     it { is_expected.to belong_to(:snippet) }
     it { is_expected.to belong_to(:note) }

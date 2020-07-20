@@ -108,7 +108,7 @@ export default {
       />
     </ci-header>
 
-    <gl-loading-icon v-if="isLoading" size="lg" class="prepend-top-default append-bottom-default" />
+    <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3 gl-mb-3" />
 
     <gl-modal
       :modal-id="$options.DELETE_MODAL_ID"

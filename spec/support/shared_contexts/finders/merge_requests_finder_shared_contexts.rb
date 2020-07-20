@@ -23,12 +23,12 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
   # We cannot use `let_it_be` here otherwise we get:
   #   Failure/Error: allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
   #   The use of doubles or partial doubles from rspec-mocks outside of the per-test lifecycle is not supported.
-  let(:project2) do
+  let!(:project2) do
     allow_gitaly_n_plus_1 do
       fork_project(project1, user)
     end
   end
-  let(:project3) do
+  let!(:project3) do
     allow_gitaly_n_plus_1 do
       fork_project(project1, user).tap do |project|
         project.update!(archived: true)
@@ -44,6 +44,9 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
   let_it_be(:project6, reload: true) do
     allow_gitaly_n_plus_1 { create(:project, group: subgroup) }
   end
+
+  let!(:label) { create(:label, project: project1) }
+  let!(:label2) { create(:label, project: project1) }
 
   let!(:merge_request1) do
     create(:merge_request, assignees: [user], author: user,
@@ -71,6 +74,9 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
            source_project: project4, target_project: project4,
            title: '[WIP]')
   end
+
+  let!(:label_link) { create(:label_link, label: label, target: merge_request2) }
+  let!(:label_link2) { create(:label_link, label: label2, target: merge_request3) }
 
   before do
     project1.add_maintainer(user)

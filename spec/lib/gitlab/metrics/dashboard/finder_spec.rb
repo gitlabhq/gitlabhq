@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_caching do
+RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
   let_it_be(:project) { create(:project) }
@@ -118,7 +118,7 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
   end
 
   describe '.find_raw' do
-    let(:dashboard) { YAML.load_file(Rails.root.join('config', 'prometheus', 'common_metrics.yml')) }
+    let(:dashboard) { load_dashboard_yaml(File.read(Rails.root.join('config', 'prometheus', 'common_metrics.yml'))) }
     let(:params) { {} }
 
     subject { described_class.find_raw(project, **params) }
@@ -132,7 +132,7 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
     end
 
     context 'when an existing project dashboard is specified' do
-      let(:dashboard) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')) }
+      let(:dashboard) { load_sample_dashboard }
       let(:params) { { dashboard_path: '.gitlab/dashboards/test.yml' } }
       let(:project) { project_with_dashboard(params[:dashboard_path]) }
 
@@ -142,7 +142,7 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
 
   describe '.find_all_paths' do
     let(:all_dashboard_paths) { described_class.find_all_paths(project) }
-    let(:system_dashboard) { { path: system_dashboard_path, display_name: 'Default dashboard', default: true, system_dashboard: true } }
+    let(:system_dashboard) { { path: system_dashboard_path, display_name: 'Default dashboard', default: true, system_dashboard: true, out_of_the_box_dashboard: true } }
 
     it 'includes only the system dashboard by default' do
       expect(all_dashboard_paths).to eq([system_dashboard])
@@ -153,7 +153,7 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
       let(:project) { project_with_dashboard(dashboard_path) }
 
       it 'includes system and project dashboards' do
-        project_dashboard = { path: dashboard_path, display_name: 'test.yml', default: false, system_dashboard: false }
+        project_dashboard = { path: dashboard_path, display_name: 'test.yml', default: false, system_dashboard: false, out_of_the_box_dashboard: false }
 
         expect(all_dashboard_paths).to contain_exactly(system_dashboard, project_dashboard)
       end
@@ -165,7 +165,8 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
           path: self_monitoring_dashboard_path,
           display_name: 'Default dashboard',
           default: true,
-          system_dashboard: false
+          system_dashboard: false,
+          out_of_the_box_dashboard: true
         }
       end
       let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
@@ -180,7 +181,8 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
           path: dashboard_path,
           display_name: 'test.yml',
           default: false,
-          system_dashboard: false
+          system_dashboard: false,
+          out_of_the_box_dashboard: false
         }
 
         expect(all_dashboard_paths).to contain_exactly(self_monitoring_dashboard, project_dashboard)

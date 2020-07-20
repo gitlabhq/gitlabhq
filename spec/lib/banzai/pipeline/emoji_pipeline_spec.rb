@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Pipeline::EmojiPipeline do
+RSpec.describe Banzai::Pipeline::EmojiPipeline do
   def parse(text)
     described_class.to_html(text, {})
   end

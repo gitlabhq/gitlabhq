@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::HashedStorage::MigrationService do
+RSpec.describe Projects::HashedStorage::MigrationService do
   let(:project) { create(:project, :empty_repo, :wiki_repo, :legacy_storage) }
   let(:logger) { double }
   let!(:project_attachment) { build(:file_uploader, project: project) }

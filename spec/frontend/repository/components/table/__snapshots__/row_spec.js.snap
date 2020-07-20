@@ -1,5 +1,58 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Repository table row component renders a symlink table row 1`] = `
+<tr
+  class="tree-item"
+>
+  <td
+    class="tree-item-file-name cursor-default position-relative"
+  >
+    <a
+      class="tree-item-link str-truncated"
+      data-qa-selector="file_name_link"
+      href="https://test.com"
+    >
+      <file-icon-stub
+        class="mr-1 position-relative text-secondary"
+        cssclasses="position-relative file-icon"
+        filemode="120000"
+        filename="test"
+        size="16"
+      />
+      <span
+        class="position-relative"
+      >
+        test
+      </span>
+    </a>
+     
+    <!---->
+     
+    <!---->
+     
+    <!---->
+  </td>
+   
+  <td
+    class="d-none d-sm-table-cell tree-commit cursor-default"
+  >
+    <gl-skeleton-loading-stub
+      class="h-auto"
+      lines="1"
+    />
+  </td>
+   
+  <td
+    class="tree-time-ago text-right cursor-default"
+  >
+    <gl-skeleton-loading-stub
+      class="ml-auto h-auto w-50"
+      lines="1"
+    />
+  </td>
+</tr>
+`;
+
 exports[`Repository table row component renders table row 1`] = `
 <tr
   class="tree-item"
@@ -15,6 +68,7 @@ exports[`Repository table row component renders table row 1`] = `
       <file-icon-stub
         class="mr-1 position-relative text-secondary"
         cssclasses="position-relative file-icon"
+        filemode=""
         filename="test"
         size="16"
       />
@@ -67,6 +121,7 @@ exports[`Repository table row component renders table row for path with special 
       <file-icon-stub
         class="mr-1 position-relative text-secondary"
         cssclasses="position-relative file-icon"
+        filemode=""
         filename="test"
         size="16"
       />

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SearchContext::ControllerConcern, type: :controller do
+RSpec.describe Gitlab::SearchContext::ControllerConcern, type: :controller do
   controller(ApplicationController) do
     include Gitlab::SearchContext::ControllerConcern
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Transaction do
+RSpec.describe Gitlab::Metrics::Transaction do
   let(:transaction) { described_class.new }
 
   let(:sensitive_tags) do
@@ -112,17 +112,6 @@ describe Gitlab::Metrics::Transaction do
       expect(described_class).to receive(:fetch_metric).with(:gauge, :gitlab_transaction_meow_total).and_return(prometheus_metric)
 
       transaction.set(:meow, 1)
-    end
-  end
-
-  describe '#get' do
-    let(:prometheus_metric) { instance_double(Prometheus::Client::Counter, get: nil) }
-
-    it 'gets a metric' do
-      expect(described_class).to receive(:fetch_metric).with(:counter, :gitlab_transaction_meow_total).and_return(prometheus_metric)
-      expect(prometheus_metric).to receive(:get)
-
-      transaction.get(:meow, :counter)
     end
   end
 end

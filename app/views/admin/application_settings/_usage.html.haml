@@ -31,7 +31,7 @@
             %pre.usage-data.js-usage-ping-payload.js-syntax-highlight.code.highlight.mt-2.d-none{ data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
           - else
             = _('The usage ping is disabled, and cannot be configured through this form.')
-            - deactivating_usage_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'deactivate-the-usage-ping')
+            - deactivating_usage_ping_path = help_page_path('development/telemetry/usage_ping', anchor: 'disable-usage-ping')
             - deactivating_usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: deactivating_usage_ping_path }
             = s_('For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}.').html_safe % { deactivating_usage_ping_link_start: deactivating_usage_ping_link_start, deactivating_usage_ping_link_end: '</a>'.html_safe }
     .form-group.mt-3

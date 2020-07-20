@@ -72,7 +72,8 @@ Heroku buildpacks, with the following caveats:
 - The `/bin/herokuish` command is not present in the resulting image, and prefixing
   commands with `/bin/herokuish procfile exec` is no longer required (nor possible).
 
-NOTE: **Note**: Auto Test still uses Herokuish, as test suite detection is not
+NOTE: **Note:**
+Auto Test still uses Herokuish, as test suite detection is not
 yet part of the Cloud Native Buildpack specification. For more information, see
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
 
@@ -294,7 +295,8 @@ You can disable DAST:
 
 > Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
 
-Auto Browser Performance Testing measures the performance of a web page with the
+Auto [Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md)
+measures the browser performance of a web page with the
 [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/),
 creates a JSON report including the overall performance score for each page, and
 uploads the report as an artifact. By default, it tests the root page of your Review and
@@ -307,8 +309,25 @@ file named `.gitlab-urls.txt` in the root directory, one file per line. For exam
 /direction
 ```
 
-Any performance differences between the source and target branches are also
+Any browser performance differences between the source and target branches are also
 [shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
+
+## Auto Load Performance Testing **(PREMIUM)**
+
+> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+Auto [Load Performance Testing](../../user/project/merge_requests/load_performance_testing.md)
+measures the server performance of an application with the
+[k6 container](https://hub.docker.com/r/loadimpact/k6/),
+creates a JSON report including several key result metrics, and
+uploads the report as an artifact.
+
+Some initial setup is required. A [k6](https://k6.io/) test needs to be
+written that's tailored to your specific application. The test also needs to be
+configured so it can pick up the environment's dynamic URL via an environment variable.
+
+Any load performance test result differences between the source and target branches are also
+[shown in the merge request widget](../../user/project/merge_requests/load_performance_testing.md).
 
 ## Auto Deploy
 
@@ -372,7 +391,7 @@ as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
 > - Support for deploying a PostgreSQL version that supports Kubernetes 1.16+ was [introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/49) in GitLab 12.9.
 > - Supported out of the box for new deployments as of GitLab 13.0.
 
-CAUTION: **Deprecation**
+CAUTION: **Deprecation:**
 The default value for the `deploymentApiVersion` setting was changed from
 `extensions/v1beta` to `apps/v1` in [GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/issues/47).
 
@@ -398,7 +417,8 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster:
 1. If you are deploying your application for the first time and are using
    GitLab 12.9 or 12.10, set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`.
 
-DANGER: **Danger:** On GitLab 12.9 and 12.10, opting into
+DANGER: **Danger:**
+On GitLab 12.9 and 12.10, opting into
 `AUTO_DEVOPS_POSTGRES_CHANNEL` version `2` deletes the version `1` PostgreSQL
 database. Follow the [guide to upgrading PostgreSQL](upgrading_postgresql.md)
 to back up and restore your database before opting into version `2` (On
@@ -437,6 +457,10 @@ Herokuish, and you must prefix commands run in these images with
 `/bin/herokuish procfile exec` to replicate the environment where your application
 will run.
 
+### Upgrade auto-deploy-app Chart
+
+You can upgrade auto-deploy-app chart by following the [upgrade guide](upgrading_chart.md).
+
 ### Workers
 
 Some web applications must run extra deployments for "worker processes". For
@@ -469,16 +493,16 @@ workers:
   sidekiq:
     replicaCount: 1
     command:
-    - /bin/herokuish
-    - procfile
-    - exec
-    - sidekiq
+      - /bin/herokuish
+      - procfile
+      - exec
+      - sidekiq
     preStopCommand:
-    - /bin/herokuish
-    - procfile
-    - exec
-    - sidekiqctl
-    - quiet
+      - /bin/herokuish
+      - procfile
+      - exec
+      - sidekiqctl
+      - quiet
     terminationGracePeriodSeconds: 60
 ```
 
@@ -524,12 +548,12 @@ networkPolicy:
       matchLabels:
         app.gitlab.com/env: staging
     ingress:
-    - from:
-      - podSelector:
-          matchLabels: {}
-      - namespaceSelector:
-          matchLabels:
-            app.gitlab.com/managed_by: gitlab
+      - from:
+        - podSelector:
+            matchLabels: {}
+        - namespaceSelector:
+            matchLabels:
+              app.gitlab.com/managed_by: gitlab
 ```
 
 For more information on installing Network Policies, see

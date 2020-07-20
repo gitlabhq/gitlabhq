@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Helpers::Pagination do
+RSpec.describe API::Helpers::Pagination do
   subject { Class.new.include(described_class).new }
 
   let(:paginator) { double('paginator') }

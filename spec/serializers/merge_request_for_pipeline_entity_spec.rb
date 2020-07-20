@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestForPipelineEntity do
+RSpec.describe MergeRequestForPipelineEntity do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:request) { EntityRequest.new(project: project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DroneCiService, :use_clean_rails_memory_store_caching do
+RSpec.describe DroneCiService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   describe 'associations' do

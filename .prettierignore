@@ -3,6 +3,7 @@
 /public/
 /vendor/
 /tmp/
+doc/api/graphql/reference/gitlab_schema.graphql
 
 # ignore stylesheets for now as this clashes with our linter
 *.css

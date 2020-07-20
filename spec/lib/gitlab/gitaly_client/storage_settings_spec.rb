@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::StorageSettings do
+RSpec.describe Gitlab::GitalyClient::StorageSettings do
   describe "#initialize" do
     context 'when the storage contains no path' do
       it 'raises an error' do

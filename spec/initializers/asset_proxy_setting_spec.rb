@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Asset proxy settings initialization' do
+RSpec.describe 'Asset proxy settings initialization' do
   describe '#asset_proxy' do
     it 'defaults to disabled' do
       expect(Banzai::Filter::AssetProxyFilter).to receive(:initialize_settings)

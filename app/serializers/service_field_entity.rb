@@ -11,6 +11,8 @@ class ServiceFieldEntity < Grape::Entity
 
     if field[:type] == 'password' && value.present?
       'true'
+    elsif field[:type] == 'checkbox'
+      ActiveRecord::Type::Boolean.new.deserialize(value).to_s
     else
       value
     end

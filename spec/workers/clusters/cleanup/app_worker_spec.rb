@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Cleanup::AppWorker do
+RSpec.describe Clusters::Cleanup::AppWorker do
   describe '#perform' do
     subject { worker_instance.perform(cluster.id) }
 

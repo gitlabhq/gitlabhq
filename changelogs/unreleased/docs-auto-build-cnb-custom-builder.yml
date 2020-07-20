@@ -1,0 +1,5 @@
+---
+title: Customize the Cloud Native Buildpack builder used with Auto Build
+merge_request: 32691
+author:
+type: added

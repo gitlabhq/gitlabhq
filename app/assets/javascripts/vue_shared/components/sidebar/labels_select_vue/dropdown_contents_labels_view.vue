@@ -36,7 +36,7 @@ export default {
       'footerCreateLabelTitle',
       'footerManageLabelTitle',
     ]),
-    ...mapGetters(['selectedLabelsList', 'isDropdownVariantSidebar']),
+    ...mapGetters(['selectedLabelsList', 'isDropdownVariantSidebar', 'isDropdownVariantEmbedded']),
     visibleLabels() {
       if (this.searchKey) {
         return this.labels.filter(label =>
@@ -126,16 +126,19 @@ export default {
   <div class="labels-select-contents-list js-labels-list" @keydown="handleKeyDown">
     <gl-loading-icon
       v-if="labelsFetchInProgress"
-      class="labels-fetch-loading position-absolute d-flex align-items-center w-100 h-100"
+      class="labels-fetch-loading position-absolute gl-display-flex gl-align-items-center w-100 h-100"
       size="md"
     />
-    <div v-if="isDropdownVariantSidebar" class="dropdown-title d-flex align-items-center pt-0 pb-2">
+    <div
+      v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded"
+      class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
+    >
       <span class="flex-grow-1">{{ labelsListTitle }}</span>
       <gl-button
         :aria-label="__('Close')"
         variant="link"
         size="small"
-        class="dropdown-header-button p-0"
+        class="dropdown-header-button gl-p-0!"
         icon="close"
         @click="toggleDropdownContents"
       />
@@ -165,17 +168,21 @@ export default {
         </li>
       </smart-virtual-list>
     </div>
-    <div v-if="isDropdownVariantSidebar" class="dropdown-footer">
+    <div v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded" class="dropdown-footer">
       <ul class="list-unstyled">
         <li v-if="allowLabelCreate">
           <gl-link
-            class="d-flex w-100 flex-row text-break-word label-item"
+            class="gl-display-flex w-100 flex-row text-break-word label-item"
             @click="toggleDropdownContentsCreateView"
-            >{{ footerCreateLabelTitle }}</gl-link
           >
+            {{ footerCreateLabelTitle }}
+          </gl-link>
         </li>
         <li>
-          <gl-link :href="labelsManagePath" class="d-flex flex-row text-break-word label-item">
+          <gl-link
+            :href="labelsManagePath"
+            class="gl-display-flex flex-row text-break-word label-item"
+          >
             {{ footerManageLabelTitle }}
           </gl-link>
         </li>

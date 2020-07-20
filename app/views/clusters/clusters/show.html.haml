@@ -32,7 +32,7 @@
   ingress_mod_security_help_path: help_page_path('user/clusters/applications.md', anchor: 'web-application-firewall-modsecurity'),
   environments_help_path: help_page_path('ci/environments/index.md', anchor: 'defining-environments'),
   clusters_help_path: help_page_path('user/project/clusters/index.md', anchor: 'deploying-to-a-kubernetes-cluster'),
-  deploy_boards_help_path: help_page_path('user/project/deploy_boards.html', anchor: 'enabling-deploy-boards'),
+  deploy_boards_help_path: help_page_path('user/project/deploy_boards.md', anchor: 'enabling-deploy-boards'),
   cloud_run_help_path: help_page_path('user/project/clusters/add_remove_clusters.md', anchor: 'cloud-run-for-anthos'),
   manage_prometheus_path: manage_prometheus_path,
   cluster_id: @cluster.id } }
@@ -55,7 +55,7 @@
       %ul.nav-links.mobile-separator.nav.nav-tabs{ role: 'tablist' }
         = render 'details_tab'
         = render_if_exists 'clusters/clusters/environments_tab'
-        = render_if_exists 'clusters/clusters/health_tab'
+        = render 'clusters/clusters/health_tab'
         = render 'applications_tab'
         = render 'advanced_settings_tab'
 

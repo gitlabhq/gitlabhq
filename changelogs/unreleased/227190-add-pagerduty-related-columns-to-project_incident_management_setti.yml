@@ -1,0 +1,5 @@
+---
+title: Add PagerDuty integration columns to `project_incident_management_settings` table.
+merge_request: 36277
+author:
+type: added

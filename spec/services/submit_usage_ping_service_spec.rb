@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SubmitUsagePingService do
+RSpec.describe SubmitUsagePingService do
   include StubRequests
   include UsageDataHelpers
 

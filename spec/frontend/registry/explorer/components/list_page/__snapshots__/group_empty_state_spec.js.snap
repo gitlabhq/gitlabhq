@@ -2,13 +2,10 @@
 
 exports[`Registry Group Empty state to match the default snapshot 1`] = `
 <div
-  class="container-message"
   svg-path="foo"
   title="There are no container images available in this group"
 >
-  <p
-    class="js-no-container-images-text"
-  >
+  <p>
     With the Container Registry, every project can have its own space to store its Docker images. Push at least one Docker image in one of this group's projects in order to show up here. 
     <gl-link-stub
       href="baz"

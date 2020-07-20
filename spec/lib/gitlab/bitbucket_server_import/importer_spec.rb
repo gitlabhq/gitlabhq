@@ -2,10 +2,13 @@
 
 require 'spec_helper'
 
-describe Gitlab::BitbucketServerImport::Importer do
+RSpec.describe Gitlab::BitbucketServerImport::Importer do
   include ImportSpecHelper
 
-  let(:project) { create(:project, :repository, import_url: 'http://my-bitbucket') }
+  let(:import_url) { 'http://my-bitbucket' }
+  let(:user) { 'bitbucket' }
+  let(:password) { 'test' }
+  let(:project) { create(:project, :repository, import_url: import_url) }
   let(:now) { Time.now.utc.change(usec: 0) }
   let(:project_key) { 'TEST' }
   let(:repo_slug) { 'rouge' }
@@ -16,7 +19,7 @@ describe Gitlab::BitbucketServerImport::Importer do
   before do
     data = project.create_or_update_import_data(
       data: { project_key: project_key, repo_slug: repo_slug },
-      credentials: { base_uri: 'http://my-bitbucket', user: 'bitbucket', password: 'test' }
+      credentials: { base_uri: import_url, user: user, password: password }
     )
     data.save
     project.save
@@ -123,6 +126,48 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect(note.author).to eq(project.owner)
       expect(note.created_at).to eq(@pr_note.created_at)
       expect(note.updated_at).to eq(@pr_note.created_at)
+    end
+
+    context 'metrics' do
+      let(:histogram) { double(:histogram) }
+      let(:counter) { double('counter', increment: true) }
+
+      before do
+        allow(Gitlab::Metrics).to receive(:counter) { counter }
+        allow(Gitlab::Metrics).to receive(:histogram) { histogram }
+        allow(subject.client).to receive(:activities).and_return([@merge_event])
+      end
+
+      it 'counts and measures duration of imported projects' do
+        expect(Gitlab::Metrics).to receive(:counter).with(
+          :bitbucket_server_importer_imported_projects_total,
+          'The number of imported projects'
+        )
+
+        expect(Gitlab::Metrics).to receive(:histogram).with(
+          :bitbucket_server_importer_total_duration_seconds,
+          'Total time spent importing projects, in seconds',
+          {},
+          Gitlab::Import::Metrics::IMPORT_DURATION_BUCKETS
+        )
+
+        expect(counter).to receive(:increment)
+        expect(histogram).to receive(:observe).with({ importer: :bitbucket_server_importer }, anything)
+
+        subject.execute
+      end
+
+      it 'counts imported pull requests' do
+        expect(Gitlab::Metrics).to receive(:counter).with(
+          :bitbucket_server_importer_imported_merge_requests_total,
+          'The number of imported merge (pull) requests'
+        )
+
+        expect(counter).to receive(:increment)
+        allow(histogram).to receive(:observe).with({ importer: :bitbucket_server_importer }, anything)
+
+        subject.execute
+      end
     end
 
     it 'imports threaded discussions' do

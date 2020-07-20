@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BaseContainerService do
+RSpec.describe BaseContainerService do
   let(:project) { Project.new }
   let(:user) { User.new }
 

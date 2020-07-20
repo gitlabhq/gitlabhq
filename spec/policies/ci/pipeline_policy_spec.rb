@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelinePolicy, :models do
+RSpec.describe Ci::PipelinePolicy, :models do
   let(:user) { create(:user) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 

@@ -2,7 +2,7 @@
 - merge_project = merge_request_source_project_for_project(@project)
 - new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
 
-- page_title "Merge Requests"
+- page_title _("Merge Requests")
 - new_merge_request_email = @project.new_issuable_address(current_user, 'merge_request')
 
 = render 'projects/last_push'

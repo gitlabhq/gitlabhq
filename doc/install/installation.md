@@ -310,8 +310,7 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 ## 6. Database
 
 NOTE: **Note:**
-Starting from GitLab 12.1, only PostgreSQL is supported. Because we need to make
-use of extensions and concurrent index removal, you need at least PostgreSQL 9.2.
+Starting from GitLab 12.1, only PostgreSQL is supported. Since GitLab 13.0, we require PostgreSQL 11+.
 
 1. Install the database packages:
 
@@ -426,9 +425,18 @@ cd /home/git
 
 ### Clone the Source
 
+Clone Community Edition:
+
 ```shell
 # Clone GitLab repository
 sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-foss.git -b X-Y-stable gitlab
+```
+
+Clone Enterprise Edition:
+
+```shell
+# Clone GitLab repository
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ee.git -b X-Y-stable gitlab
 ```
 
 Make sure to replace `X-Y-stable` with the stable branch that matches the
@@ -601,7 +609,7 @@ You can specify a different Git repository by providing it as an extra parameter
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 ```
 
-### Install GitLab-Elasticsearch-indexer
+### Install GitLab-Elasticsearch-indexer on Enterprise Edition
 
 GitLab-Elasticsearch-Indexer uses [GNU Make](https://www.gnu.org/software/make/). The
 following command-line will install GitLab-Elasticsearch-Indexer in `/home/git/gitlab-elasticsearch-indexer`
@@ -619,6 +627,9 @@ sudo -u git -H bundle exec rake "gitlab:indexer:install[/home/git/gitlab-elastic
 
 The source code will first be fetched to the path specified by the first parameter. Then a binary will be built under its `bin` directory.
 You will then need to update `gitlab.yml`'s `production -> elasticsearch -> indexer_path` setting to point to that binary.
+
+NOTE: **Note:**
+Elasticsearch is a feature of GitLab Enterprise Edition and isn't included in GitLab Community Edition.
 
 ### Install GitLab Pages
 

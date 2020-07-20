@@ -17,11 +17,8 @@ module Routable
 
     after_validation :set_path_errors
 
-    before_validation do
-      if full_path_changed? || full_name_changed?
-        prepare_route
-      end
-    end
+    before_validation :prepare_route
+    before_save :prepare_route # in case validation is skipped
   end
 
   class_methods do
@@ -118,6 +115,8 @@ module Routable
   end
 
   def prepare_route
+    return unless full_path_changed? || full_name_changed?
+
     route || build_route(source: self)
     route.path = build_full_path
     route.name = build_full_name

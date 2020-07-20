@@ -1,6 +1,8668 @@
 SET search_path=public;
 
+CREATE SCHEMA gitlab_partitions_dynamic;
+
+COMMENT ON SCHEMA gitlab_partitions_dynamic IS 'Schema to hold partitions managed dynamically from the application, e.g. for time space partitioning.';
+
+CREATE SCHEMA gitlab_partitions_static;
+
+COMMENT ON SCHEMA gitlab_partitions_static IS 'Schema to hold static partitions, e.g. for hash partitioning';
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
+
+CREATE TABLE public.product_analytics_events_experimental (
+    id bigint NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+)
+PARTITION BY HASH (project_id);
+
+CREATE SEQUENCE public.product_analytics_events_experimental_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.product_analytics_events_experimental_id_seq OWNED BY public.product_analytics_events_experimental.id;
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_00 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_00 FOR VALUES WITH (modulus 64, remainder 0);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_01 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_01 FOR VALUES WITH (modulus 64, remainder 1);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_02 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_02 FOR VALUES WITH (modulus 64, remainder 2);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_03 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_03 FOR VALUES WITH (modulus 64, remainder 3);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_04 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_04 FOR VALUES WITH (modulus 64, remainder 4);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_05 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_05 FOR VALUES WITH (modulus 64, remainder 5);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_06 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_06 FOR VALUES WITH (modulus 64, remainder 6);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_07 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_07 FOR VALUES WITH (modulus 64, remainder 7);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_08 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_08 FOR VALUES WITH (modulus 64, remainder 8);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_09 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_09 FOR VALUES WITH (modulus 64, remainder 9);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_10 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_10 FOR VALUES WITH (modulus 64, remainder 10);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_11 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_11 FOR VALUES WITH (modulus 64, remainder 11);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_12 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_12 FOR VALUES WITH (modulus 64, remainder 12);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_13 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_13 FOR VALUES WITH (modulus 64, remainder 13);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_14 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_14 FOR VALUES WITH (modulus 64, remainder 14);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_15 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_15 FOR VALUES WITH (modulus 64, remainder 15);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_16 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_16 FOR VALUES WITH (modulus 64, remainder 16);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_17 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_17 FOR VALUES WITH (modulus 64, remainder 17);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_18 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_18 FOR VALUES WITH (modulus 64, remainder 18);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_19 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_19 FOR VALUES WITH (modulus 64, remainder 19);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_20 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_20 FOR VALUES WITH (modulus 64, remainder 20);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_21 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_21 FOR VALUES WITH (modulus 64, remainder 21);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_22 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_22 FOR VALUES WITH (modulus 64, remainder 22);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_23 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_23 FOR VALUES WITH (modulus 64, remainder 23);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_24 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_24 FOR VALUES WITH (modulus 64, remainder 24);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_25 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_25 FOR VALUES WITH (modulus 64, remainder 25);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_26 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_26 FOR VALUES WITH (modulus 64, remainder 26);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_27 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_27 FOR VALUES WITH (modulus 64, remainder 27);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_28 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_28 FOR VALUES WITH (modulus 64, remainder 28);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_29 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_29 FOR VALUES WITH (modulus 64, remainder 29);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_30 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_30 FOR VALUES WITH (modulus 64, remainder 30);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_31 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_31 FOR VALUES WITH (modulus 64, remainder 31);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_32 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_32 FOR VALUES WITH (modulus 64, remainder 32);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_33 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_33 FOR VALUES WITH (modulus 64, remainder 33);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_34 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_34 FOR VALUES WITH (modulus 64, remainder 34);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_35 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_35 FOR VALUES WITH (modulus 64, remainder 35);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_36 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_36 FOR VALUES WITH (modulus 64, remainder 36);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_37 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_37 FOR VALUES WITH (modulus 64, remainder 37);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_38 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_38 FOR VALUES WITH (modulus 64, remainder 38);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_39 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_39 FOR VALUES WITH (modulus 64, remainder 39);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_40 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_40 FOR VALUES WITH (modulus 64, remainder 40);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_41 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_41 FOR VALUES WITH (modulus 64, remainder 41);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_42 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_42 FOR VALUES WITH (modulus 64, remainder 42);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_43 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_43 FOR VALUES WITH (modulus 64, remainder 43);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_44 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_44 FOR VALUES WITH (modulus 64, remainder 44);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_45 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_45 FOR VALUES WITH (modulus 64, remainder 45);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_46 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_46 FOR VALUES WITH (modulus 64, remainder 46);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_47 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_47 FOR VALUES WITH (modulus 64, remainder 47);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_48 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_48 FOR VALUES WITH (modulus 64, remainder 48);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_49 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_49 FOR VALUES WITH (modulus 64, remainder 49);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_50 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_50 FOR VALUES WITH (modulus 64, remainder 50);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_51 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_51 FOR VALUES WITH (modulus 64, remainder 51);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_52 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_52 FOR VALUES WITH (modulus 64, remainder 52);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_53 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_53 FOR VALUES WITH (modulus 64, remainder 53);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_54 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_54 FOR VALUES WITH (modulus 64, remainder 54);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_55 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_55 FOR VALUES WITH (modulus 64, remainder 55);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_56 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_56 FOR VALUES WITH (modulus 64, remainder 56);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_57 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_57 FOR VALUES WITH (modulus 64, remainder 57);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_58 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_58 FOR VALUES WITH (modulus 64, remainder 58);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_59 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_59 FOR VALUES WITH (modulus 64, remainder 59);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_60 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_60 FOR VALUES WITH (modulus 64, remainder 60);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_61 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_61 FOR VALUES WITH (modulus 64, remainder 61);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_62 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62 FOR VALUES WITH (modulus 64, remainder 62);
+
+CREATE TABLE gitlab_partitions_static.product_analytics_events_experimental_63 (
+    id bigint DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass) NOT NULL,
+    project_id integer NOT NULL,
+    platform character varying(255),
+    etl_tstamp timestamp with time zone,
+    collector_tstamp timestamp with time zone NOT NULL,
+    dvce_created_tstamp timestamp with time zone,
+    event character varying(128),
+    event_id character(36) NOT NULL,
+    txn_id integer,
+    name_tracker character varying(128),
+    v_tracker character varying(100),
+    v_collector character varying(100) NOT NULL,
+    v_etl character varying(100) NOT NULL,
+    user_id character varying(255),
+    user_ipaddress character varying(45),
+    user_fingerprint character varying(50),
+    domain_userid character varying(36),
+    domain_sessionidx smallint,
+    network_userid character varying(38),
+    geo_country character(2),
+    geo_region character(3),
+    geo_city character varying(75),
+    geo_zipcode character varying(15),
+    geo_latitude double precision,
+    geo_longitude double precision,
+    geo_region_name character varying(100),
+    ip_isp character varying(100),
+    ip_organization character varying(100),
+    ip_domain character varying(100),
+    ip_netspeed character varying(100),
+    page_url text,
+    page_title character varying(2000),
+    page_referrer text,
+    page_urlscheme character varying(16),
+    page_urlhost character varying(255),
+    page_urlport integer,
+    page_urlpath character varying(3000),
+    page_urlquery character varying(6000),
+    page_urlfragment character varying(3000),
+    refr_urlscheme character varying(16),
+    refr_urlhost character varying(255),
+    refr_urlport integer,
+    refr_urlpath character varying(6000),
+    refr_urlquery character varying(6000),
+    refr_urlfragment character varying(3000),
+    refr_medium character varying(25),
+    refr_source character varying(50),
+    refr_term character varying(255),
+    mkt_medium character varying(255),
+    mkt_source character varying(255),
+    mkt_term character varying(255),
+    mkt_content character varying(500),
+    mkt_campaign character varying(255),
+    se_category character varying(1000),
+    se_action character varying(1000),
+    se_label character varying(1000),
+    se_property character varying(1000),
+    se_value double precision,
+    tr_orderid character varying(255),
+    tr_affiliation character varying(255),
+    tr_total numeric(18,2),
+    tr_tax numeric(18,2),
+    tr_shipping numeric(18,2),
+    tr_city character varying(255),
+    tr_state character varying(255),
+    tr_country character varying(255),
+    ti_orderid character varying(255),
+    ti_sku character varying(255),
+    ti_name character varying(255),
+    ti_category character varying(255),
+    ti_price numeric(18,2),
+    ti_quantity integer,
+    pp_xoffset_min integer,
+    pp_xoffset_max integer,
+    pp_yoffset_min integer,
+    pp_yoffset_max integer,
+    useragent character varying(1000),
+    br_name character varying(50),
+    br_family character varying(50),
+    br_version character varying(50),
+    br_type character varying(50),
+    br_renderengine character varying(50),
+    br_lang character varying(255),
+    br_features_pdf boolean,
+    br_features_flash boolean,
+    br_features_java boolean,
+    br_features_director boolean,
+    br_features_quicktime boolean,
+    br_features_realplayer boolean,
+    br_features_windowsmedia boolean,
+    br_features_gears boolean,
+    br_features_silverlight boolean,
+    br_cookies boolean,
+    br_colordepth character varying(12),
+    br_viewwidth integer,
+    br_viewheight integer,
+    os_name character varying(50),
+    os_family character varying(50),
+    os_manufacturer character varying(50),
+    os_timezone character varying(50),
+    dvce_type character varying(50),
+    dvce_ismobile boolean,
+    dvce_screenwidth integer,
+    dvce_screenheight integer,
+    doc_charset character varying(128),
+    doc_width integer,
+    doc_height integer,
+    tr_currency character(3),
+    tr_total_base numeric(18,2),
+    tr_tax_base numeric(18,2),
+    tr_shipping_base numeric(18,2),
+    ti_currency character(3),
+    ti_price_base numeric(18,2),
+    base_currency character(3),
+    geo_timezone character varying(64),
+    mkt_clickid character varying(128),
+    mkt_network character varying(64),
+    etl_tags character varying(500),
+    dvce_sent_tstamp timestamp with time zone,
+    refr_domain_userid character varying(36),
+    refr_dvce_tstamp timestamp with time zone,
+    domain_sessionid character(36),
+    derived_tstamp timestamp with time zone,
+    event_vendor character varying(1000),
+    event_name character varying(1000),
+    event_format character varying(128),
+    event_version character varying(128),
+    event_fingerprint character varying(128),
+    true_tstamp timestamp with time zone
+);
+ALTER TABLE ONLY public.product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63 FOR VALUES WITH (modulus 64, remainder 63);
 
 CREATE TABLE public.abuse_reports (
     id integer NOT NULL,
@@ -74,6 +8736,8 @@ CREATE TABLE public.alert_management_alerts (
     monitoring_tool text,
     hosts text[] DEFAULT '{}'::text[] NOT NULL,
     payload jsonb DEFAULT '{}'::jsonb NOT NULL,
+    prometheus_alert_id integer,
+    environment_id integer,
     CONSTRAINT check_2df3e2fdc1 CHECK ((char_length(monitoring_tool) <= 100)),
     CONSTRAINT check_5e9e57cadb CHECK ((char_length(description) <= 1000)),
     CONSTRAINT check_bac14dddde CHECK ((char_length(service) <= 100)),
@@ -136,7 +8800,8 @@ CREATE TABLE public.analytics_cycle_analytics_group_stages (
     end_event_label_id bigint,
     hidden boolean DEFAULT false NOT NULL,
     custom boolean DEFAULT true NOT NULL,
-    name character varying(255) NOT NULL
+    name character varying(255) NOT NULL,
+    group_value_stream_id bigint NOT NULL
 );
 
 CREATE SEQUENCE public.analytics_cycle_analytics_group_stages_id_seq
@@ -147,6 +8812,24 @@ CREATE SEQUENCE public.analytics_cycle_analytics_group_stages_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.analytics_cycle_analytics_group_stages_id_seq OWNED BY public.analytics_cycle_analytics_group_stages.id;
+
+CREATE TABLE public.analytics_cycle_analytics_group_value_streams (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    group_id bigint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_bc1ed5f1f7 CHECK ((char_length(name) <= 100))
+);
+
+CREATE SEQUENCE public.analytics_cycle_analytics_group_value_streams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.analytics_cycle_analytics_group_value_streams_id_seq OWNED BY public.analytics_cycle_analytics_group_value_streams.id;
 
 CREATE TABLE public.analytics_cycle_analytics_project_stages (
     id bigint NOT NULL,
@@ -466,7 +9149,7 @@ CREATE TABLE public.application_settings (
     namespace_storage_size_limit bigint DEFAULT 0 NOT NULL,
     seat_link_enabled boolean DEFAULT true NOT NULL,
     container_expiration_policies_enable_historic_entries boolean DEFAULT false NOT NULL,
-    issues_create_limit integer DEFAULT 300 NOT NULL,
+    issues_create_limit integer DEFAULT 0 NOT NULL,
     push_rule_id bigint,
     group_owners_can_manage_default_branch_protection boolean DEFAULT true NOT NULL,
     container_registry_vendor text DEFAULT ''::text NOT NULL,
@@ -478,6 +9161,19 @@ CREATE TABLE public.application_settings (
     repository_storages_weighted jsonb DEFAULT '{}'::jsonb NOT NULL,
     max_import_size integer DEFAULT 50 NOT NULL,
     enforce_pat_expiration boolean DEFAULT true NOT NULL,
+    compliance_frameworks smallint[] DEFAULT '{}'::smallint[] NOT NULL,
+    notify_on_unknown_sign_in boolean DEFAULT true NOT NULL,
+    default_branch_name text,
+    project_import_limit integer DEFAULT 6 NOT NULL,
+    project_export_limit integer DEFAULT 6 NOT NULL,
+    project_download_export_limit integer DEFAULT 1 NOT NULL,
+    group_import_limit integer DEFAULT 6 NOT NULL,
+    group_export_limit integer DEFAULT 6 NOT NULL,
+    group_download_export_limit integer DEFAULT 1 NOT NULL,
+    maintenance_mode boolean DEFAULT false NOT NULL,
+    maintenance_mode_message text,
+    CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
+    CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))
@@ -698,7 +9394,11 @@ CREATE TABLE public.audit_events (
     details text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    ip_address inet
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255))
 );
 
 CREATE SEQUENCE public.audit_events_id_seq
@@ -735,6 +9435,42 @@ CREATE TABLE public.aws_roles (
     updated_at timestamp with time zone NOT NULL,
     role_arn character varying(2048) NOT NULL,
     role_external_id character varying(64) NOT NULL
+);
+
+CREATE TABLE public.background_migration_jobs (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    class_name text NOT NULL,
+    arguments jsonb NOT NULL,
+    CONSTRAINT check_b0de0a5852 CHECK ((char_length(class_name) <= 200))
+);
+
+CREATE SEQUENCE public.background_migration_jobs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.background_migration_jobs_id_seq OWNED BY public.background_migration_jobs.id;
+
+CREATE TABLE public.backup_labels (
+    id integer NOT NULL,
+    title character varying,
+    color character varying,
+    project_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    template boolean DEFAULT false,
+    description character varying,
+    description_html text,
+    type character varying,
+    group_id integer,
+    cached_markdown_version integer,
+    restore_action integer,
+    new_title character varying
 );
 
 CREATE TABLE public.badges (
@@ -1051,7 +9787,8 @@ CREATE TABLE public.ci_builds (
     resource_group_id bigint,
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
-    scheduling_type smallint
+    scheduling_type smallint,
+    CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE SEQUENCE public.ci_builds_id_seq
@@ -1074,7 +9811,8 @@ CREATE TABLE public.ci_builds_metadata (
     config_variables jsonb,
     has_exposed_artifacts boolean,
     environment_auto_stop_in character varying(255),
-    expanded_environment_name character varying(255)
+    expanded_environment_name character varying(255),
+    secrets jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE public.ci_builds_metadata_id_seq
@@ -1121,26 +9859,6 @@ CREATE SEQUENCE public.ci_daily_build_group_report_results_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.ci_daily_build_group_report_results_id_seq OWNED BY public.ci_daily_build_group_report_results.id;
-
-CREATE TABLE public.ci_daily_report_results (
-    id bigint NOT NULL,
-    date date NOT NULL,
-    project_id bigint NOT NULL,
-    last_pipeline_id bigint NOT NULL,
-    value double precision NOT NULL,
-    param_type bigint NOT NULL,
-    ref_path character varying NOT NULL,
-    title character varying NOT NULL
-);
-
-CREATE SEQUENCE public.ci_daily_report_results_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE public.ci_daily_report_results_id_seq OWNED BY public.ci_daily_report_results.id;
 
 CREATE TABLE public.ci_freeze_periods (
     id bigint NOT NULL,
@@ -1221,7 +9939,8 @@ CREATE TABLE public.ci_job_artifacts (
     file_sha256 bytea,
     file_format smallint,
     file_location smallint,
-    locked boolean
+    locked boolean,
+    CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL))
 );
 
 CREATE SEQUENCE public.ci_job_artifacts_id_seq
@@ -1267,6 +9986,23 @@ CREATE SEQUENCE public.ci_pipeline_chat_data_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.ci_pipeline_chat_data_id_seq OWNED BY public.ci_pipeline_chat_data.id;
+
+CREATE TABLE public.ci_pipeline_messages (
+    id bigint NOT NULL,
+    severity smallint DEFAULT 0 NOT NULL,
+    pipeline_id integer NOT NULL,
+    content text NOT NULL,
+    CONSTRAINT check_58ca2981b2 CHECK ((char_length(content) <= 10000))
+);
+
+CREATE SEQUENCE public.ci_pipeline_messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.ci_pipeline_messages_id_seq OWNED BY public.ci_pipeline_messages.id;
 
 CREATE TABLE public.ci_pipeline_schedule_variables (
     id integer NOT NULL,
@@ -1361,7 +10097,9 @@ CREATE TABLE public.ci_pipelines (
     source_sha bytea,
     target_sha bytea,
     external_pull_request_id bigint,
-    ci_ref_id bigint
+    ci_ref_id bigint,
+    locked smallint DEFAULT 0 NOT NULL,
+    CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE TABLE public.ci_pipelines_config (
@@ -1546,7 +10284,8 @@ CREATE TABLE public.ci_stages (
     name character varying,
     status integer,
     lock_version integer DEFAULT 0,
-    "position" integer
+    "position" integer,
+    CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE SEQUENCE public.ci_stages_id_seq
@@ -1788,6 +10527,24 @@ CREATE SEQUENCE public.clusters_applications_cert_managers_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.clusters_applications_cert_managers_id_seq OWNED BY public.clusters_applications_cert_managers.id;
+
+CREATE TABLE public.clusters_applications_cilium (
+    id bigint NOT NULL,
+    cluster_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status integer NOT NULL,
+    status_reason text
+);
+
+CREATE SEQUENCE public.clusters_applications_cilium_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.clusters_applications_cilium_id_seq OWNED BY public.clusters_applications_cilium.id;
 
 CREATE TABLE public.clusters_applications_crossplane (
     id integer NOT NULL,
@@ -2113,6 +10870,63 @@ CREATE SEQUENCE public.conversational_development_index_metrics_id_seq
 
 ALTER SEQUENCE public.conversational_development_index_metrics_id_seq OWNED BY public.conversational_development_index_metrics.id;
 
+CREATE TABLE public.custom_emoji (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    file text NOT NULL,
+    CONSTRAINT check_8c586dd507 CHECK ((char_length(name) <= 36)),
+    CONSTRAINT check_dd5d60f1fb CHECK ((char_length(file) <= 255))
+);
+
+CREATE SEQUENCE public.custom_emoji_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.custom_emoji_id_seq OWNED BY public.custom_emoji.id;
+
+CREATE TABLE public.dast_site_profiles (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    dast_site_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_6cfab17b48 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE public.dast_site_profiles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.dast_site_profiles_id_seq OWNED BY public.dast_site_profiles.id;
+
+CREATE TABLE public.dast_sites (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    url text NOT NULL,
+    CONSTRAINT check_46df8b449c CHECK ((char_length(url) <= 255))
+);
+
+CREATE SEQUENCE public.dast_sites_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.dast_sites_id_seq OWNED BY public.dast_sites.id;
+
 CREATE TABLE public.dependency_proxy_blobs (
     id integer NOT NULL,
     group_id integer NOT NULL,
@@ -2368,6 +11182,33 @@ CREATE SEQUENCE public.draft_notes_id_seq
 
 ALTER SEQUENCE public.draft_notes_id_seq OWNED BY public.draft_notes.id;
 
+CREATE TABLE public.elastic_reindexing_tasks (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    documents_count integer,
+    state smallint DEFAULT 0 NOT NULL,
+    in_progress boolean DEFAULT true NOT NULL,
+    index_name_from text,
+    index_name_to text,
+    elastic_task text,
+    error_message text,
+    documents_count_target integer,
+    CONSTRAINT check_04151aca42 CHECK ((char_length(index_name_from) <= 255)),
+    CONSTRAINT check_7f64acda8e CHECK ((char_length(error_message) <= 255)),
+    CONSTRAINT check_85ebff7124 CHECK ((char_length(index_name_to) <= 255)),
+    CONSTRAINT check_942e5aae53 CHECK ((char_length(elastic_task) <= 255))
+);
+
+CREATE SEQUENCE public.elastic_reindexing_tasks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.elastic_reindexing_tasks_id_seq OWNED BY public.elastic_reindexing_tasks.id;
+
 CREATE TABLE public.elasticsearch_indexed_namespaces (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -2505,7 +11346,8 @@ CREATE TABLE public.epics (
     start_date_sourcing_epic_id integer,
     due_date_sourcing_epic_id integer,
     confidential boolean DEFAULT false NOT NULL,
-    external_key character varying(255)
+    external_key character varying(255),
+    CONSTRAINT check_fcfb4a93ff CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE SEQUENCE public.epics_id_seq
@@ -3199,6 +12041,23 @@ CREATE TABLE public.group_deploy_keys (
     CONSTRAINT check_f58fa0a0f7 CHECK ((char_length(key) <= 4096))
 );
 
+CREATE TABLE public.group_deploy_keys_groups (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    group_id bigint NOT NULL,
+    group_deploy_key_id bigint NOT NULL
+);
+
+CREATE SEQUENCE public.group_deploy_keys_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.group_deploy_keys_groups_id_seq OWNED BY public.group_deploy_keys_groups.id;
+
 CREATE SEQUENCE public.group_deploy_keys_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -3531,7 +12390,8 @@ CREATE TABLE public.issues (
     promoted_to_epic_id integer,
     health_status smallint,
     external_key character varying(255),
-    sprint_id bigint
+    sprint_id bigint,
+    CONSTRAINT check_fba63f706d CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE SEQUENCE public.issues_id_seq
@@ -3634,7 +12494,10 @@ CREATE TABLE public.jira_tracker_data (
     encrypted_username_iv character varying,
     encrypted_password character varying,
     encrypted_password_iv character varying,
-    jira_issue_transition_id character varying
+    jira_issue_transition_id character varying,
+    project_key text,
+    issues_enabled boolean DEFAULT false NOT NULL,
+    CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255))
 );
 
 CREATE SEQUENCE public.jira_tracker_data_id_seq
@@ -3774,7 +12637,8 @@ CREATE TABLE public.lfs_objects (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     file character varying,
-    file_store integer DEFAULT 1
+    file_store integer DEFAULT 1,
+    CONSTRAINT check_eecfc5717d CHECK ((file_store IS NOT NULL))
 );
 
 CREATE SEQUENCE public.lfs_objects_id_seq
@@ -4110,7 +12974,8 @@ CREATE TABLE public.merge_requests (
     state_id smallint DEFAULT 1 NOT NULL,
     rebase_jid character varying,
     squash_commit_sha bytea,
-    sprint_id bigint
+    sprint_id bigint,
+    CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 
 CREATE TABLE public.merge_requests_closing_issues (
@@ -4236,6 +13101,13 @@ CREATE TABLE public.namespace_aggregation_schedules (
     namespace_id integer NOT NULL
 );
 
+CREATE TABLE public.namespace_limits (
+    additional_purchased_storage_size bigint DEFAULT 0 NOT NULL,
+    additional_purchased_storage_ends_on date,
+    namespace_id integer NOT NULL,
+    temporary_storage_increase_ends_on date
+);
+
 CREATE TABLE public.namespace_root_storage_statistics (
     namespace_id integer NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -4244,7 +13116,14 @@ CREATE TABLE public.namespace_root_storage_statistics (
     wiki_size bigint DEFAULT 0 NOT NULL,
     build_artifacts_size bigint DEFAULT 0 NOT NULL,
     storage_size bigint DEFAULT 0 NOT NULL,
-    packages_size bigint DEFAULT 0 NOT NULL
+    packages_size bigint DEFAULT 0 NOT NULL,
+    snippets_size bigint DEFAULT 0 NOT NULL
+);
+
+CREATE TABLE public.namespace_settings (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id integer NOT NULL
 );
 
 CREATE TABLE public.namespace_statistics (
@@ -4308,7 +13187,11 @@ CREATE TABLE public.namespaces (
     default_branch_protection smallint,
     unlock_membership_to_ldap boolean,
     max_personal_access_token_lifetime integer,
-    push_rule_id bigint
+    push_rule_id bigint,
+    shared_runners_enabled boolean DEFAULT true NOT NULL,
+    allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL,
+    traversal_ids integer[] DEFAULT '{}'::integer[] NOT NULL,
+    delayed_project_removal boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.namespaces_id_seq
@@ -4957,7 +13840,8 @@ CREATE TABLE public.personal_access_tokens (
 '::character varying NOT NULL,
     impersonation boolean DEFAULT false NOT NULL,
     token_digest character varying,
-    expire_notification_delivered boolean DEFAULT false NOT NULL
+    expire_notification_delivered boolean DEFAULT false NOT NULL,
+    last_used_at timestamp with time zone
 );
 
 CREATE SEQUENCE public.personal_access_tokens_id_seq
@@ -4980,7 +13864,34 @@ CREATE TABLE public.plan_limits (
     ci_project_subscriptions integer DEFAULT 2 NOT NULL,
     ci_pipeline_schedules integer DEFAULT 10 NOT NULL,
     offset_pagination_limit integer DEFAULT 50000 NOT NULL,
-    ci_instance_level_variables integer DEFAULT 25 NOT NULL
+    ci_instance_level_variables integer DEFAULT 25 NOT NULL,
+    storage_size_limit integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_lsif integer DEFAULT 20 NOT NULL,
+    ci_max_artifact_size_archive integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_metadata integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_trace integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_junit integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_sast integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_dependency_scanning integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_container_scanning integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_dast integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_codequality integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_license_management integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_license_scanning integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_performance integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_metrics integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_metrics_referee integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_network_referee integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_dotenv integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_cobertura integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_terraform integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_accessibility integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_cluster_applications integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_secret_detection integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_requirements integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_coverage_fuzzing integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_browser_performance integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_load_performance integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE public.plan_limits_id_seq
@@ -5276,7 +14187,12 @@ CREATE TABLE public.project_incident_management_settings (
     project_id integer NOT NULL,
     create_issue boolean DEFAULT false NOT NULL,
     send_email boolean DEFAULT false NOT NULL,
-    issue_template_key text
+    issue_template_key text,
+    pagerduty_active boolean DEFAULT false NOT NULL,
+    encrypted_pagerduty_token bytea,
+    encrypted_pagerduty_token_iv bytea,
+    CONSTRAINT pagerduty_token_iv_length_constraint CHECK ((octet_length(encrypted_pagerduty_token_iv) <= 12)),
+    CONSTRAINT pagerduty_token_length_constraint CHECK ((octet_length(encrypted_pagerduty_token) <= 255))
 );
 
 CREATE SEQUENCE public.project_incident_management_settings_project_id_seq
@@ -5410,6 +14326,8 @@ CREATE TABLE public.project_settings (
     push_rule_id bigint,
     show_default_award_emojis boolean DEFAULT true,
     allow_merge_on_skipped_pipeline boolean,
+    squash_option smallint DEFAULT 3,
+    has_confluence boolean DEFAULT false NOT NULL,
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL))
 );
 
@@ -5425,7 +14343,8 @@ CREATE TABLE public.project_statistics (
     shared_runners_seconds bigint DEFAULT 0 NOT NULL,
     shared_runners_seconds_last_reset timestamp without time zone,
     packages_size bigint DEFAULT 0 NOT NULL,
-    wiki_size bigint
+    wiki_size bigint,
+    snippets_size bigint
 );
 
 CREATE SEQUENCE public.project_statistics_id_seq
@@ -5637,7 +14556,8 @@ CREATE TABLE public.protected_branch_push_access_levels (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     user_id integer,
-    group_id integer
+    group_id integer,
+    deploy_key_id integer
 );
 
 CREATE SEQUENCE public.protected_branch_push_access_levels_id_seq
@@ -5989,6 +14909,11 @@ CREATE TABLE public.resource_state_events (
     created_at timestamp with time zone NOT NULL,
     state smallint NOT NULL,
     epic_id integer,
+    source_commit text,
+    close_after_error_tracking_resolve boolean DEFAULT false NOT NULL,
+    close_auto_resolve_prometheus_alert boolean DEFAULT false NOT NULL,
+    source_merge_request_id bigint,
+    CONSTRAINT check_f0bcfaa3a2 CHECK ((char_length(source_commit) <= 40)),
     CONSTRAINT state_events_must_belong_to_issue_or_merge_request_or_epic CHECK ((((issue_id <> NULL::bigint) AND (merge_request_id IS NULL) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id <> NULL::bigint) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id IS NULL) AND (epic_id <> NULL::integer))))
 );
 
@@ -6305,6 +15230,13 @@ CREATE TABLE public.snippet_repositories (
     snippet_id bigint NOT NULL,
     shard_id bigint NOT NULL,
     disk_path character varying(80) NOT NULL
+);
+
+CREATE TABLE public.snippet_statistics (
+    snippet_id bigint NOT NULL,
+    repository_size bigint DEFAULT 0 NOT NULL,
+    file_count bigint DEFAULT 0 NOT NULL,
+    commit_count bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE public.snippet_user_mentions (
@@ -6708,7 +15640,8 @@ CREATE TABLE public.uploads (
     created_at timestamp without time zone NOT NULL,
     store integer DEFAULT 1,
     mount_point character varying,
-    secret character varying
+    secret character varying,
+    CONSTRAINT check_5e9547379c CHECK ((store IS NOT NULL))
 );
 
 CREATE SEQUENCE public.uploads_id_seq
@@ -6794,7 +15727,11 @@ ALTER SEQUENCE public.user_custom_attributes_id_seq OWNED BY public.user_custom_
 CREATE TABLE public.user_details (
     user_id bigint NOT NULL,
     job_title character varying(200) DEFAULT ''::character varying NOT NULL,
-    bio character varying(255) DEFAULT ''::character varying NOT NULL
+    bio character varying(255) DEFAULT ''::character varying NOT NULL,
+    bio_html text,
+    cached_markdown_version integer,
+    webauthn_xid text,
+    CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100))
 );
 
 CREATE SEQUENCE public.user_details_user_id_seq
@@ -6841,7 +15778,8 @@ CREATE TABLE public.user_preferences (
     render_whitespace_in_code boolean,
     tab_width smallint,
     feature_filter_type bigint,
-    experience_level smallint
+    experience_level smallint,
+    view_diffs_file_by_file boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.user_preferences_id_seq
@@ -7245,7 +16183,8 @@ CREATE TABLE public.vulnerability_scanners (
     updated_at timestamp with time zone NOT NULL,
     project_id integer NOT NULL,
     external_id character varying NOT NULL,
-    name character varying NOT NULL
+    name character varying NOT NULL,
+    vendor text DEFAULT 'GitLab'::text NOT NULL
 );
 
 CREATE SEQUENCE public.vulnerability_scanners_id_seq
@@ -7256,6 +16195,30 @@ CREATE SEQUENCE public.vulnerability_scanners_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.vulnerability_scanners_id_seq OWNED BY public.vulnerability_scanners.id;
+
+CREATE TABLE public.vulnerability_statistics (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    total integer DEFAULT 0 NOT NULL,
+    critical integer DEFAULT 0 NOT NULL,
+    high integer DEFAULT 0 NOT NULL,
+    medium integer DEFAULT 0 NOT NULL,
+    low integer DEFAULT 0 NOT NULL,
+    unknown integer DEFAULT 0 NOT NULL,
+    info integer DEFAULT 0 NOT NULL,
+    letter_grade smallint NOT NULL
+);
+
+CREATE SEQUENCE public.vulnerability_statistics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.vulnerability_statistics_id_seq OWNED BY public.vulnerability_statistics.id;
 
 CREATE TABLE public.vulnerability_user_mentions (
     id bigint NOT NULL,
@@ -7335,6 +16298,28 @@ CREATE SEQUENCE public.web_hooks_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.web_hooks_id_seq OWNED BY public.web_hooks.id;
+
+CREATE TABLE public.webauthn_registrations (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    counter bigint DEFAULT 0 NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    credential_xid text NOT NULL,
+    name text NOT NULL,
+    public_key text NOT NULL,
+    CONSTRAINT check_242f0cc65c CHECK ((char_length(credential_xid) <= 255)),
+    CONSTRAINT check_2f02e74321 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE public.webauthn_registrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.webauthn_registrations_id_seq OWNED BY public.webauthn_registrations.id;
 
 CREATE TABLE public.wiki_page_meta (
     id integer NOT NULL,
@@ -7462,6 +16447,8 @@ ALTER TABLE ONLY public.allowed_email_domains ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY public.analytics_cycle_analytics_group_stages ALTER COLUMN id SET DEFAULT nextval('public.analytics_cycle_analytics_group_stages_id_seq'::regclass);
 
+ALTER TABLE ONLY public.analytics_cycle_analytics_group_value_streams ALTER COLUMN id SET DEFAULT nextval('public.analytics_cycle_analytics_group_value_streams_id_seq'::regclass);
+
 ALTER TABLE ONLY public.analytics_cycle_analytics_project_stages ALTER COLUMN id SET DEFAULT nextval('public.analytics_cycle_analytics_project_stages_id_seq'::regclass);
 
 ALTER TABLE ONLY public.appearances ALTER COLUMN id SET DEFAULT nextval('public.appearances_id_seq'::regclass);
@@ -7495,6 +16482,8 @@ ALTER TABLE ONLY public.approvers ALTER COLUMN id SET DEFAULT nextval('public.ap
 ALTER TABLE ONLY public.audit_events ALTER COLUMN id SET DEFAULT nextval('public.audit_events_id_seq'::regclass);
 
 ALTER TABLE ONLY public.award_emoji ALTER COLUMN id SET DEFAULT nextval('public.award_emoji_id_seq'::regclass);
+
+ALTER TABLE ONLY public.background_migration_jobs ALTER COLUMN id SET DEFAULT nextval('public.background_migration_jobs_id_seq'::regclass);
 
 ALTER TABLE ONLY public.badges ALTER COLUMN id SET DEFAULT nextval('public.badges_id_seq'::regclass);
 
@@ -7532,8 +16521,6 @@ ALTER TABLE ONLY public.ci_builds_runner_session ALTER COLUMN id SET DEFAULT nex
 
 ALTER TABLE ONLY public.ci_daily_build_group_report_results ALTER COLUMN id SET DEFAULT nextval('public.ci_daily_build_group_report_results_id_seq'::regclass);
 
-ALTER TABLE ONLY public.ci_daily_report_results ALTER COLUMN id SET DEFAULT nextval('public.ci_daily_report_results_id_seq'::regclass);
-
 ALTER TABLE ONLY public.ci_freeze_periods ALTER COLUMN id SET DEFAULT nextval('public.ci_freeze_periods_id_seq'::regclass);
 
 ALTER TABLE ONLY public.ci_group_variables ALTER COLUMN id SET DEFAULT nextval('public.ci_group_variables_id_seq'::regclass);
@@ -7545,6 +16532,8 @@ ALTER TABLE ONLY public.ci_job_artifacts ALTER COLUMN id SET DEFAULT nextval('pu
 ALTER TABLE ONLY public.ci_job_variables ALTER COLUMN id SET DEFAULT nextval('public.ci_job_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY public.ci_pipeline_chat_data ALTER COLUMN id SET DEFAULT nextval('public.ci_pipeline_chat_data_id_seq'::regclass);
+
+ALTER TABLE ONLY public.ci_pipeline_messages ALTER COLUMN id SET DEFAULT nextval('public.ci_pipeline_messages_id_seq'::regclass);
 
 ALTER TABLE ONLY public.ci_pipeline_schedule_variables ALTER COLUMN id SET DEFAULT nextval('public.ci_pipeline_schedule_variables_id_seq'::regclass);
 
@@ -7596,6 +16585,8 @@ ALTER TABLE ONLY public.clusters ALTER COLUMN id SET DEFAULT nextval('public.clu
 
 ALTER TABLE ONLY public.clusters_applications_cert_managers ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_cert_managers_id_seq'::regclass);
 
+ALTER TABLE ONLY public.clusters_applications_cilium ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_cilium_id_seq'::regclass);
+
 ALTER TABLE ONLY public.clusters_applications_crossplane ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_crossplane_id_seq'::regclass);
 
 ALTER TABLE ONLY public.clusters_applications_elastic_stacks ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_elastic_stacks_id_seq'::regclass);
@@ -7622,6 +16613,12 @@ ALTER TABLE ONLY public.container_repositories ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY public.conversational_development_index_metrics ALTER COLUMN id SET DEFAULT nextval('public.conversational_development_index_metrics_id_seq'::regclass);
 
+ALTER TABLE ONLY public.custom_emoji ALTER COLUMN id SET DEFAULT nextval('public.custom_emoji_id_seq'::regclass);
+
+ALTER TABLE ONLY public.dast_site_profiles ALTER COLUMN id SET DEFAULT nextval('public.dast_site_profiles_id_seq'::regclass);
+
+ALTER TABLE ONLY public.dast_sites ALTER COLUMN id SET DEFAULT nextval('public.dast_sites_id_seq'::regclass);
+
 ALTER TABLE ONLY public.dependency_proxy_blobs ALTER COLUMN id SET DEFAULT nextval('public.dependency_proxy_blobs_id_seq'::regclass);
 
 ALTER TABLE ONLY public.dependency_proxy_group_settings ALTER COLUMN id SET DEFAULT nextval('public.dependency_proxy_group_settings_id_seq'::regclass);
@@ -7645,6 +16642,8 @@ ALTER TABLE ONLY public.design_user_mentions ALTER COLUMN id SET DEFAULT nextval
 ALTER TABLE ONLY public.diff_note_positions ALTER COLUMN id SET DEFAULT nextval('public.diff_note_positions_id_seq'::regclass);
 
 ALTER TABLE ONLY public.draft_notes ALTER COLUMN id SET DEFAULT nextval('public.draft_notes_id_seq'::regclass);
+
+ALTER TABLE ONLY public.elastic_reindexing_tasks ALTER COLUMN id SET DEFAULT nextval('public.elastic_reindexing_tasks_id_seq'::regclass);
 
 ALTER TABLE ONLY public.emails ALTER COLUMN id SET DEFAULT nextval('public.emails_id_seq'::regclass);
 
@@ -7723,6 +16722,8 @@ ALTER TABLE ONLY public.grafana_integrations ALTER COLUMN id SET DEFAULT nextval
 ALTER TABLE ONLY public.group_custom_attributes ALTER COLUMN id SET DEFAULT nextval('public.group_custom_attributes_id_seq'::regclass);
 
 ALTER TABLE ONLY public.group_deploy_keys ALTER COLUMN id SET DEFAULT nextval('public.group_deploy_keys_id_seq'::regclass);
+
+ALTER TABLE ONLY public.group_deploy_keys_groups ALTER COLUMN id SET DEFAULT nextval('public.group_deploy_keys_groups_id_seq'::regclass);
 
 ALTER TABLE ONLY public.group_deploy_tokens ALTER COLUMN id SET DEFAULT nextval('public.group_deploy_tokens_id_seq'::regclass);
 
@@ -7881,6 +16882,8 @@ ALTER TABLE ONLY public.plan_limits ALTER COLUMN id SET DEFAULT nextval('public.
 ALTER TABLE ONLY public.plans ALTER COLUMN id SET DEFAULT nextval('public.plans_id_seq'::regclass);
 
 ALTER TABLE ONLY public.pool_repositories ALTER COLUMN id SET DEFAULT nextval('public.pool_repositories_id_seq'::regclass);
+
+ALTER TABLE ONLY public.product_analytics_events_experimental ALTER COLUMN id SET DEFAULT nextval('public.product_analytics_events_experimental_id_seq'::regclass);
 
 ALTER TABLE ONLY public.programming_languages ALTER COLUMN id SET DEFAULT nextval('public.programming_languages_id_seq'::regclass);
 
@@ -8076,11 +17079,15 @@ ALTER TABLE ONLY public.vulnerability_occurrences ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY public.vulnerability_scanners ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_scanners_id_seq'::regclass);
 
+ALTER TABLE ONLY public.vulnerability_statistics ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_statistics_id_seq'::regclass);
+
 ALTER TABLE ONLY public.vulnerability_user_mentions ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_user_mentions_id_seq'::regclass);
 
 ALTER TABLE ONLY public.web_hook_logs ALTER COLUMN id SET DEFAULT nextval('public.web_hook_logs_id_seq'::regclass);
 
 ALTER TABLE ONLY public.web_hooks ALTER COLUMN id SET DEFAULT nextval('public.web_hooks_id_seq'::regclass);
+
+ALTER TABLE ONLY public.webauthn_registrations ALTER COLUMN id SET DEFAULT nextval('public.webauthn_registrations_id_seq'::regclass);
 
 ALTER TABLE ONLY public.wiki_page_meta ALTER COLUMN id SET DEFAULT nextval('public.wiki_page_meta_id_seq'::regclass);
 
@@ -8093,6 +17100,201 @@ ALTER TABLE ONLY public.x509_commit_signatures ALTER COLUMN id SET DEFAULT nextv
 ALTER TABLE ONLY public.x509_issuers ALTER COLUMN id SET DEFAULT nextval('public.x509_issuers_id_seq'::regclass);
 
 ALTER TABLE ONLY public.zoom_meetings ALTER COLUMN id SET DEFAULT nextval('public.zoom_meetings_id_seq'::regclass);
+
+ALTER TABLE ONLY public.product_analytics_events_experimental
+    ADD CONSTRAINT product_analytics_events_experimental_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_00
+    ADD CONSTRAINT product_analytics_events_experimental_00_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_01
+    ADD CONSTRAINT product_analytics_events_experimental_01_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_02
+    ADD CONSTRAINT product_analytics_events_experimental_02_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_03
+    ADD CONSTRAINT product_analytics_events_experimental_03_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_04
+    ADD CONSTRAINT product_analytics_events_experimental_04_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_05
+    ADD CONSTRAINT product_analytics_events_experimental_05_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_06
+    ADD CONSTRAINT product_analytics_events_experimental_06_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_07
+    ADD CONSTRAINT product_analytics_events_experimental_07_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_08
+    ADD CONSTRAINT product_analytics_events_experimental_08_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_09
+    ADD CONSTRAINT product_analytics_events_experimental_09_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_10
+    ADD CONSTRAINT product_analytics_events_experimental_10_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_11
+    ADD CONSTRAINT product_analytics_events_experimental_11_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_12
+    ADD CONSTRAINT product_analytics_events_experimental_12_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_13
+    ADD CONSTRAINT product_analytics_events_experimental_13_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_14
+    ADD CONSTRAINT product_analytics_events_experimental_14_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_15
+    ADD CONSTRAINT product_analytics_events_experimental_15_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_16
+    ADD CONSTRAINT product_analytics_events_experimental_16_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_17
+    ADD CONSTRAINT product_analytics_events_experimental_17_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_18
+    ADD CONSTRAINT product_analytics_events_experimental_18_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_19
+    ADD CONSTRAINT product_analytics_events_experimental_19_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_20
+    ADD CONSTRAINT product_analytics_events_experimental_20_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_21
+    ADD CONSTRAINT product_analytics_events_experimental_21_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_22
+    ADD CONSTRAINT product_analytics_events_experimental_22_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_23
+    ADD CONSTRAINT product_analytics_events_experimental_23_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_24
+    ADD CONSTRAINT product_analytics_events_experimental_24_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_25
+    ADD CONSTRAINT product_analytics_events_experimental_25_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_26
+    ADD CONSTRAINT product_analytics_events_experimental_26_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_27
+    ADD CONSTRAINT product_analytics_events_experimental_27_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_28
+    ADD CONSTRAINT product_analytics_events_experimental_28_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_29
+    ADD CONSTRAINT product_analytics_events_experimental_29_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_30
+    ADD CONSTRAINT product_analytics_events_experimental_30_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_31
+    ADD CONSTRAINT product_analytics_events_experimental_31_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_32
+    ADD CONSTRAINT product_analytics_events_experimental_32_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_33
+    ADD CONSTRAINT product_analytics_events_experimental_33_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_34
+    ADD CONSTRAINT product_analytics_events_experimental_34_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_35
+    ADD CONSTRAINT product_analytics_events_experimental_35_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_36
+    ADD CONSTRAINT product_analytics_events_experimental_36_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_37
+    ADD CONSTRAINT product_analytics_events_experimental_37_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_38
+    ADD CONSTRAINT product_analytics_events_experimental_38_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_39
+    ADD CONSTRAINT product_analytics_events_experimental_39_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_40
+    ADD CONSTRAINT product_analytics_events_experimental_40_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_41
+    ADD CONSTRAINT product_analytics_events_experimental_41_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_42
+    ADD CONSTRAINT product_analytics_events_experimental_42_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_43
+    ADD CONSTRAINT product_analytics_events_experimental_43_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_44
+    ADD CONSTRAINT product_analytics_events_experimental_44_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_45
+    ADD CONSTRAINT product_analytics_events_experimental_45_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_46
+    ADD CONSTRAINT product_analytics_events_experimental_46_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_47
+    ADD CONSTRAINT product_analytics_events_experimental_47_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_48
+    ADD CONSTRAINT product_analytics_events_experimental_48_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_49
+    ADD CONSTRAINT product_analytics_events_experimental_49_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_50
+    ADD CONSTRAINT product_analytics_events_experimental_50_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_51
+    ADD CONSTRAINT product_analytics_events_experimental_51_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_52
+    ADD CONSTRAINT product_analytics_events_experimental_52_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_53
+    ADD CONSTRAINT product_analytics_events_experimental_53_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_54
+    ADD CONSTRAINT product_analytics_events_experimental_54_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_55
+    ADD CONSTRAINT product_analytics_events_experimental_55_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_56
+    ADD CONSTRAINT product_analytics_events_experimental_56_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_57
+    ADD CONSTRAINT product_analytics_events_experimental_57_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_58
+    ADD CONSTRAINT product_analytics_events_experimental_58_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_59
+    ADD CONSTRAINT product_analytics_events_experimental_59_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_60
+    ADD CONSTRAINT product_analytics_events_experimental_60_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_61
+    ADD CONSTRAINT product_analytics_events_experimental_61_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_62
+    ADD CONSTRAINT product_analytics_events_experimental_62_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_63
+    ADD CONSTRAINT product_analytics_events_experimental_63_pkey PRIMARY KEY (id, project_id);
 
 ALTER TABLE ONLY public.abuse_reports
     ADD CONSTRAINT abuse_reports_pkey PRIMARY KEY (id);
@@ -8114,6 +17316,9 @@ ALTER TABLE ONLY public.allowed_email_domains
 
 ALTER TABLE ONLY public.analytics_cycle_analytics_group_stages
     ADD CONSTRAINT analytics_cycle_analytics_group_stages_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.analytics_cycle_analytics_group_value_streams
+    ADD CONSTRAINT analytics_cycle_analytics_group_value_streams_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.analytics_cycle_analytics_project_stages
     ADD CONSTRAINT analytics_cycle_analytics_project_stages_pkey PRIMARY KEY (id);
@@ -8172,6 +17377,12 @@ ALTER TABLE ONLY public.award_emoji
 ALTER TABLE ONLY public.aws_roles
     ADD CONSTRAINT aws_roles_pkey PRIMARY KEY (user_id);
 
+ALTER TABLE ONLY public.background_migration_jobs
+    ADD CONSTRAINT background_migration_jobs_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.backup_labels
+    ADD CONSTRAINT backup_labels_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.badges
     ADD CONSTRAINT badges_pkey PRIMARY KEY (id);
 
@@ -8205,14 +17416,8 @@ ALTER TABLE ONLY public.chat_teams
 ALTER TABLE public.design_management_designs
     ADD CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)) NOT VALID;
 
-ALTER TABLE public.ci_job_artifacts
-    ADD CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)) NOT VALID;
-
-ALTER TABLE public.uploads
-    ADD CONSTRAINT check_5e9547379c CHECK ((store IS NOT NULL)) NOT VALID;
-
-ALTER TABLE public.lfs_objects
-    ADD CONSTRAINT check_eecfc5717d CHECK ((file_store IS NOT NULL)) NOT VALID;
+ALTER TABLE public.vulnerability_scanners
+    ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
 ALTER TABLE ONLY public.ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
@@ -8238,9 +17443,6 @@ ALTER TABLE ONLY public.ci_builds_runner_session
 ALTER TABLE ONLY public.ci_daily_build_group_report_results
     ADD CONSTRAINT ci_daily_build_group_report_results_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY public.ci_daily_report_results
-    ADD CONSTRAINT ci_daily_report_results_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY public.ci_freeze_periods
     ADD CONSTRAINT ci_freeze_periods_pkey PRIMARY KEY (id);
 
@@ -8258,6 +17460,9 @@ ALTER TABLE ONLY public.ci_job_variables
 
 ALTER TABLE ONLY public.ci_pipeline_chat_data
     ADD CONSTRAINT ci_pipeline_chat_data_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.ci_pipeline_messages
+    ADD CONSTRAINT ci_pipeline_messages_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.ci_pipeline_schedule_variables
     ADD CONSTRAINT ci_pipeline_schedule_variables_pkey PRIMARY KEY (id);
@@ -8331,6 +17536,9 @@ ALTER TABLE ONLY public.cluster_providers_gcp
 ALTER TABLE ONLY public.clusters_applications_cert_managers
     ADD CONSTRAINT clusters_applications_cert_managers_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.clusters_applications_cilium
+    ADD CONSTRAINT clusters_applications_cilium_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.clusters_applications_crossplane
     ADD CONSTRAINT clusters_applications_crossplane_pkey PRIMARY KEY (id);
 
@@ -8376,6 +17584,15 @@ ALTER TABLE ONLY public.container_repositories
 ALTER TABLE ONLY public.conversational_development_index_metrics
     ADD CONSTRAINT conversational_development_index_metrics_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.custom_emoji
+    ADD CONSTRAINT custom_emoji_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.dast_site_profiles
+    ADD CONSTRAINT dast_site_profiles_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.dast_sites
+    ADD CONSTRAINT dast_sites_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.dependency_proxy_blobs
     ADD CONSTRAINT dependency_proxy_blobs_pkey PRIMARY KEY (id);
 
@@ -8414,6 +17631,9 @@ ALTER TABLE ONLY public.diff_note_positions
 
 ALTER TABLE ONLY public.draft_notes
     ADD CONSTRAINT draft_notes_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.elastic_reindexing_tasks
+    ADD CONSTRAINT elastic_reindexing_tasks_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.emails
     ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
@@ -8531,6 +17751,9 @@ ALTER TABLE ONLY public.group_custom_attributes
 
 ALTER TABLE ONLY public.group_deletion_schedules
     ADD CONSTRAINT group_deletion_schedules_pkey PRIMARY KEY (group_id);
+
+ALTER TABLE ONLY public.group_deploy_keys_groups
+    ADD CONSTRAINT group_deploy_keys_groups_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.group_deploy_keys
     ADD CONSTRAINT group_deploy_keys_pkey PRIMARY KEY (id);
@@ -8673,8 +17896,14 @@ ALTER TABLE ONLY public.milestones
 ALTER TABLE ONLY public.namespace_aggregation_schedules
     ADD CONSTRAINT namespace_aggregation_schedules_pkey PRIMARY KEY (namespace_id);
 
+ALTER TABLE ONLY public.namespace_limits
+    ADD CONSTRAINT namespace_limits_pkey PRIMARY KEY (namespace_id);
+
 ALTER TABLE ONLY public.namespace_root_storage_statistics
     ADD CONSTRAINT namespace_root_storage_statistics_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY public.namespace_settings
+    ADD CONSTRAINT namespace_settings_pkey PRIMARY KEY (namespace_id);
 
 ALTER TABLE ONLY public.namespace_statistics
     ADD CONSTRAINT namespace_statistics_pkey PRIMARY KEY (id);
@@ -8991,6 +18220,9 @@ ALTER TABLE ONLY public.smartcard_identities
 ALTER TABLE ONLY public.snippet_repositories
     ADD CONSTRAINT snippet_repositories_pkey PRIMARY KEY (snippet_id);
 
+ALTER TABLE ONLY public.snippet_statistics
+    ADD CONSTRAINT snippet_statistics_pkey PRIMARY KEY (snippet_id);
+
 ALTER TABLE ONLY public.snippet_user_mentions
     ADD CONSTRAINT snippet_user_mentions_pkey PRIMARY KEY (id);
 
@@ -9117,6 +18349,9 @@ ALTER TABLE ONLY public.vulnerability_occurrences
 ALTER TABLE ONLY public.vulnerability_scanners
     ADD CONSTRAINT vulnerability_scanners_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.vulnerability_statistics
+    ADD CONSTRAINT vulnerability_statistics_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.vulnerability_user_mentions
     ADD CONSTRAINT vulnerability_user_mentions_pkey PRIMARY KEY (id);
 
@@ -9125,6 +18360,9 @@ ALTER TABLE ONLY public.web_hook_logs
 
 ALTER TABLE ONLY public.web_hooks
     ADD CONSTRAINT web_hooks_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.webauthn_registrations
+    ADD CONSTRAINT webauthn_registrations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.wiki_page_meta
     ADD CONSTRAINT wiki_page_meta_pkey PRIMARY KEY (id);
@@ -9144,6 +18382,136 @@ ALTER TABLE ONLY public.x509_issuers
 ALTER TABLE ONLY public.zoom_meetings
     ADD CONSTRAINT zoom_meetings_pkey PRIMARY KEY (id);
 
+CREATE INDEX index_product_analytics_events_experimental_project_and_time ON ONLY public.product_analytics_events_experimental USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx10 ON gitlab_partitions_static.product_analytics_events_experimental_10 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx11 ON gitlab_partitions_static.product_analytics_events_experimental_11 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx12 ON gitlab_partitions_static.product_analytics_events_experimental_12 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx13 ON gitlab_partitions_static.product_analytics_events_experimental_13 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx14 ON gitlab_partitions_static.product_analytics_events_experimental_14 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx15 ON gitlab_partitions_static.product_analytics_events_experimental_15 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx16 ON gitlab_partitions_static.product_analytics_events_experimental_16 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx17 ON gitlab_partitions_static.product_analytics_events_experimental_17 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx18 ON gitlab_partitions_static.product_analytics_events_experimental_18 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx19 ON gitlab_partitions_static.product_analytics_events_experimental_19 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx20 ON gitlab_partitions_static.product_analytics_events_experimental_20 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx21 ON gitlab_partitions_static.product_analytics_events_experimental_21 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx22 ON gitlab_partitions_static.product_analytics_events_experimental_22 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx23 ON gitlab_partitions_static.product_analytics_events_experimental_23 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx24 ON gitlab_partitions_static.product_analytics_events_experimental_24 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx25 ON gitlab_partitions_static.product_analytics_events_experimental_25 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx26 ON gitlab_partitions_static.product_analytics_events_experimental_26 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx27 ON gitlab_partitions_static.product_analytics_events_experimental_27 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx28 ON gitlab_partitions_static.product_analytics_events_experimental_28 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx29 ON gitlab_partitions_static.product_analytics_events_experimental_29 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx30 ON gitlab_partitions_static.product_analytics_events_experimental_30 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx31 ON gitlab_partitions_static.product_analytics_events_experimental_31 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx32 ON gitlab_partitions_static.product_analytics_events_experimental_32 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx33 ON gitlab_partitions_static.product_analytics_events_experimental_33 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx34 ON gitlab_partitions_static.product_analytics_events_experimental_34 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx35 ON gitlab_partitions_static.product_analytics_events_experimental_35 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx36 ON gitlab_partitions_static.product_analytics_events_experimental_36 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx37 ON gitlab_partitions_static.product_analytics_events_experimental_37 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx38 ON gitlab_partitions_static.product_analytics_events_experimental_38 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx39 ON gitlab_partitions_static.product_analytics_events_experimental_39 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx40 ON gitlab_partitions_static.product_analytics_events_experimental_40 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx41 ON gitlab_partitions_static.product_analytics_events_experimental_41 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx42 ON gitlab_partitions_static.product_analytics_events_experimental_42 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx43 ON gitlab_partitions_static.product_analytics_events_experimental_43 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx44 ON gitlab_partitions_static.product_analytics_events_experimental_44 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx45 ON gitlab_partitions_static.product_analytics_events_experimental_45 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx46 ON gitlab_partitions_static.product_analytics_events_experimental_46 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx47 ON gitlab_partitions_static.product_analytics_events_experimental_47 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx48 ON gitlab_partitions_static.product_analytics_events_experimental_48 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx49 ON gitlab_partitions_static.product_analytics_events_experimental_49 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx50 ON gitlab_partitions_static.product_analytics_events_experimental_50 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx51 ON gitlab_partitions_static.product_analytics_events_experimental_51 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx52 ON gitlab_partitions_static.product_analytics_events_experimental_52 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx53 ON gitlab_partitions_static.product_analytics_events_experimental_53 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx54 ON gitlab_partitions_static.product_analytics_events_experimental_54 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx55 ON gitlab_partitions_static.product_analytics_events_experimental_55 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx56 ON gitlab_partitions_static.product_analytics_events_experimental_56 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx57 ON gitlab_partitions_static.product_analytics_events_experimental_57 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx58 ON gitlab_partitions_static.product_analytics_events_experimental_58 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx59 ON gitlab_partitions_static.product_analytics_events_experimental_59 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx60 ON gitlab_partitions_static.product_analytics_events_experimental_60 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx61 ON gitlab_partitions_static.product_analytics_events_experimental_61 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx62 ON gitlab_partitions_static.product_analytics_events_experimental_62 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx63 ON gitlab_partitions_static.product_analytics_events_experimental_63 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx1 ON gitlab_partitions_static.product_analytics_events_experimental_01 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx2 ON gitlab_partitions_static.product_analytics_events_experimental_02 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx3 ON gitlab_partitions_static.product_analytics_events_experimental_03 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx4 ON gitlab_partitions_static.product_analytics_events_experimental_04 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx5 ON gitlab_partitions_static.product_analytics_events_experimental_05 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx6 ON gitlab_partitions_static.product_analytics_events_experimental_06 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx7 ON gitlab_partitions_static.product_analytics_events_experimental_07 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx8 ON gitlab_partitions_static.product_analytics_events_experimental_08 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx9 ON gitlab_partitions_static.product_analytics_events_experimental_09 USING btree (project_id, collector_tstamp);
+
+CREATE INDEX product_analytics_events_experi_project_id_collector_tstamp_idx ON gitlab_partitions_static.product_analytics_events_experimental_00 USING btree (project_id, collector_tstamp);
+
 CREATE INDEX analytics_index_audit_events_on_created_at_and_author_id ON public.audit_events USING btree (created_at, author_id);
 
 CREATE INDEX analytics_index_events_on_created_at_and_author_id ON public.events USING btree (created_at, author_id);
@@ -9156,7 +18524,21 @@ CREATE UNIQUE INDEX any_approver_merge_request_rule_type_unique_index ON public.
 
 CREATE UNIQUE INDEX any_approver_project_rule_type_unique_index ON public.approval_project_rules USING btree (project_id) WHERE (rule_type = 3);
 
-CREATE UNIQUE INDEX approval_rule_name_index_for_code_owners ON public.approval_merge_request_rules USING btree (merge_request_id, code_owner, name) WHERE (code_owner = true);
+CREATE UNIQUE INDEX approval_rule_name_index_for_code_owners ON public.approval_merge_request_rules USING btree (merge_request_id, code_owner, name) WHERE ((code_owner = true) AND (section IS NULL));
+
+CREATE UNIQUE INDEX backup_labels_group_id_project_id_title_idx ON public.backup_labels USING btree (group_id, project_id, title);
+
+CREATE INDEX backup_labels_group_id_title_idx ON public.backup_labels USING btree (group_id, title) WHERE (project_id = NULL::integer);
+
+CREATE INDEX backup_labels_project_id_idx ON public.backup_labels USING btree (project_id);
+
+CREATE UNIQUE INDEX backup_labels_project_id_title_idx ON public.backup_labels USING btree (project_id, title) WHERE (group_id = NULL::integer);
+
+CREATE INDEX backup_labels_template_idx ON public.backup_labels USING btree (template) WHERE template;
+
+CREATE INDEX backup_labels_title_idx ON public.backup_labels USING btree (title);
+
+CREATE INDEX backup_labels_type_project_id_idx ON public.backup_labels USING btree (type, project_id);
 
 CREATE INDEX ci_builds_gitlab_monitor_metrics ON public.ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
 
@@ -9171,6 +18553,8 @@ CREATE INDEX design_user_mentions_on_design_id_and_note_id_index ON public.desig
 CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_and_note_id_index ON public.epic_user_mentions USING btree (epic_id, note_id);
 
 CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_index ON public.epic_user_mentions USING btree (epic_id) WHERE (note_id IS NULL);
+
+CREATE INDEX idx_ci_pipelines_artifacts_locked ON public.ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
 
 CREATE INDEX idx_deployment_clusters_on_cluster_id_and_kubernetes_namespace ON public.deployment_clusters USING btree (cluster_id, kubernetes_namespace);
 
@@ -9222,6 +18606,10 @@ CREATE UNIQUE INDEX idx_project_id_payload_key_self_managed_prometheus_alert_eve
 
 CREATE INDEX idx_project_repository_check_partial ON public.projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
 
+CREATE INDEX idx_projects_id_created_at_disable_overriding_approvers_false ON public.projects USING btree (id, created_at) WHERE ((disable_overriding_approvers_per_merge_request = false) OR (disable_overriding_approvers_per_merge_request IS NULL));
+
+CREATE INDEX idx_projects_id_created_at_disable_overriding_approvers_true ON public.projects USING btree (id, created_at) WHERE (disable_overriding_approvers_per_merge_request = true);
+
 CREATE INDEX idx_projects_on_repository_storage_last_repository_updated_at ON public.projects USING btree (id, repository_storage, last_repository_updated_at);
 
 CREATE INDEX idx_repository_states_on_last_repository_verification_ran_at ON public.project_repository_states USING btree (project_id, last_repository_verification_ran_at) WHERE ((repository_verification_checksum IS NOT NULL) AND (last_repository_verification_failure IS NULL));
@@ -9250,11 +18638,13 @@ CREATE INDEX index_alert_assignees_on_alert_id ON public.alert_management_alert_
 
 CREATE UNIQUE INDEX index_alert_assignees_on_user_id_and_alert_id ON public.alert_management_alert_assignees USING btree (user_id, alert_id);
 
+CREATE INDEX index_alert_management_alerts_on_environment_id ON public.alert_management_alerts USING btree (environment_id) WHERE (environment_id IS NOT NULL);
+
 CREATE INDEX index_alert_management_alerts_on_issue_id ON public.alert_management_alerts USING btree (issue_id);
 
-CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_fingerprint ON public.alert_management_alerts USING btree (project_id, fingerprint);
-
 CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_iid ON public.alert_management_alerts USING btree (project_id, iid);
+
+CREATE INDEX index_alert_management_alerts_on_prometheus_alert_id ON public.alert_management_alerts USING btree (prometheus_alert_id) WHERE (prometheus_alert_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id ON public.alert_management_alert_user_mentions USING btree (alert_management_alert_id) WHERE (note_id IS NULL);
 
@@ -9275,6 +18665,10 @@ CREATE UNIQUE INDEX index_analytics_ca_group_stages_on_group_id_and_name ON publ
 CREATE INDEX index_analytics_ca_group_stages_on_relative_position ON public.analytics_cycle_analytics_group_stages USING btree (relative_position);
 
 CREATE INDEX index_analytics_ca_group_stages_on_start_event_label_id ON public.analytics_cycle_analytics_group_stages USING btree (start_event_label_id);
+
+CREATE INDEX index_analytics_ca_group_stages_on_value_stream_id ON public.analytics_cycle_analytics_group_stages USING btree (group_value_stream_id);
+
+CREATE UNIQUE INDEX index_analytics_ca_group_value_streams_on_group_id_and_name ON public.analytics_cycle_analytics_group_value_streams USING btree (group_id, name);
 
 CREATE INDEX index_analytics_ca_project_stages_on_end_event_label_id ON public.analytics_cycle_analytics_project_stages USING btree (end_event_label_id);
 
@@ -9334,7 +18728,9 @@ CREATE UNIQUE INDEX index_approval_project_rules_users_1 ON public.approval_proj
 
 CREATE INDEX index_approval_project_rules_users_2 ON public.approval_project_rules_users USING btree (user_id);
 
-CREATE UNIQUE INDEX index_approval_rule_name_for_code_owners_rule_type ON public.approval_merge_request_rules USING btree (merge_request_id, name) WHERE (rule_type = 2);
+CREATE UNIQUE INDEX index_approval_rule_name_for_code_owners_rule_type ON public.approval_merge_request_rules USING btree (merge_request_id, name) WHERE ((rule_type = 2) AND (section IS NULL));
+
+CREATE UNIQUE INDEX index_approval_rule_name_for_sectional_code_owners_rule_type ON public.approval_merge_request_rules USING btree (merge_request_id, name, section) WHERE (rule_type = 2);
 
 CREATE INDEX index_approval_rules_code_owners_rule_type ON public.approval_merge_request_rules USING btree (merge_request_id) WHERE (rule_type = 2);
 
@@ -9350,9 +18746,7 @@ CREATE INDEX index_approvers_on_target_id_and_target_type ON public.approvers US
 
 CREATE INDEX index_approvers_on_user_id ON public.approvers USING btree (user_id);
 
-CREATE INDEX index_audit_events_on_entity_id_and_entity_type_and_id_desc ON public.audit_events USING btree (entity_id, entity_type, id DESC);
-
-CREATE INDEX index_audit_events_on_ruby_object_in_details ON public.audit_events USING btree (id) WHERE (details ~~ '%ruby/object%'::text);
+CREATE INDEX index_audit_events_on_entity_id_entity_type_id_desc_author_id ON public.audit_events USING btree (entity_id, entity_type, id DESC, author_id);
 
 CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON public.award_emoji USING btree (awardable_type, awardable_id);
 
@@ -9361,6 +18755,12 @@ CREATE INDEX index_award_emoji_on_user_id_and_name ON public.award_emoji USING b
 CREATE UNIQUE INDEX index_aws_roles_on_role_external_id ON public.aws_roles USING btree (role_external_id);
 
 CREATE UNIQUE INDEX index_aws_roles_on_user_id ON public.aws_roles USING btree (user_id);
+
+CREATE INDEX index_background_migration_jobs_for_partitioning_migrations ON public.background_migration_jobs USING btree (((arguments ->> 2))) WHERE (class_name = 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable'::text);
+
+CREATE INDEX index_background_migration_jobs_on_class_name_and_arguments ON public.background_migration_jobs USING btree (class_name, arguments);
+
+CREATE INDEX index_background_migration_jobs_on_class_name_and_status_and_id ON public.background_migration_jobs USING btree (class_name, status, id);
 
 CREATE INDEX index_badges_on_group_id ON public.badges USING btree (group_id);
 
@@ -9482,15 +18882,11 @@ CREATE UNIQUE INDEX index_ci_builds_runner_session_on_build_id ON public.ci_buil
 
 CREATE INDEX index_ci_daily_build_group_report_results_on_last_pipeline_id ON public.ci_daily_build_group_report_results USING btree (last_pipeline_id);
 
-CREATE INDEX index_ci_daily_report_results_on_last_pipeline_id ON public.ci_daily_report_results USING btree (last_pipeline_id);
-
 CREATE INDEX index_ci_freeze_periods_on_project_id ON public.ci_freeze_periods USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_group_variables_on_group_id_and_key ON public.ci_group_variables USING btree (group_id, key);
 
 CREATE UNIQUE INDEX index_ci_instance_variables_on_key ON public.ci_instance_variables USING btree (key);
-
-CREATE INDEX index_ci_job_artifacts_file_store_is_null ON public.ci_job_artifacts USING btree (id) WHERE (file_store IS NULL);
 
 CREATE INDEX index_ci_job_artifacts_for_terraform_reports ON public.ci_job_artifacts USING btree (project_id, id) WHERE (file_type = 18);
 
@@ -9511,6 +18907,8 @@ CREATE UNIQUE INDEX index_ci_job_variables_on_key_and_job_id ON public.ci_job_va
 CREATE INDEX index_ci_pipeline_chat_data_on_chat_name_id ON public.ci_pipeline_chat_data USING btree (chat_name_id);
 
 CREATE UNIQUE INDEX index_ci_pipeline_chat_data_on_pipeline_id ON public.ci_pipeline_chat_data USING btree (pipeline_id);
+
+CREATE INDEX index_ci_pipeline_messages_on_pipeline_id ON public.ci_pipeline_messages USING btree (pipeline_id);
 
 CREATE UNIQUE INDEX index_ci_pipeline_schedule_variables_on_schedule_id_and_key ON public.ci_pipeline_schedule_variables USING btree (pipeline_schedule_id, key);
 
@@ -9553,6 +18951,8 @@ CREATE INDEX index_ci_pipelines_on_project_id_and_user_id_and_status_and_ref ON 
 CREATE INDEX index_ci_pipelines_on_project_idandrefandiddesc ON public.ci_pipelines USING btree (project_id, ref, id DESC);
 
 CREATE INDEX index_ci_pipelines_on_status ON public.ci_pipelines USING btree (status);
+
+CREATE INDEX index_ci_pipelines_on_user_id_and_created_at_and_config_source ON public.ci_pipelines USING btree (user_id, created_at, config_source);
 
 CREATE INDEX index_ci_pipelines_on_user_id_and_created_at_and_source ON public.ci_pipelines USING btree (user_id, created_at, source);
 
@@ -9642,6 +19042,8 @@ CREATE UNIQUE INDEX index_cluster_providers_gcp_on_cluster_id ON public.cluster_
 
 CREATE UNIQUE INDEX index_clusters_applications_cert_managers_on_cluster_id ON public.clusters_applications_cert_managers USING btree (cluster_id);
 
+CREATE UNIQUE INDEX index_clusters_applications_cilium_on_cluster_id ON public.clusters_applications_cilium USING btree (cluster_id);
+
 CREATE UNIQUE INDEX index_clusters_applications_crossplane_on_cluster_id ON public.clusters_applications_crossplane USING btree (cluster_id);
 
 CREATE UNIQUE INDEX index_clusters_applications_elastic_stacks_on_cluster_id ON public.clusters_applications_elastic_stacks USING btree (cluster_id);
@@ -9692,13 +19094,21 @@ CREATE UNIQUE INDEX index_container_repositories_on_project_id_and_name ON publi
 
 CREATE INDEX index_container_repository_on_name_trigram ON public.container_repositories USING gin (name public.gin_trgm_ops);
 
+CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON public.custom_emoji USING btree (namespace_id, name);
+
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON public.ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
-CREATE UNIQUE INDEX index_daily_report_results_unique_columns ON public.ci_daily_report_results USING btree (project_id, ref_path, param_type, date, title);
+CREATE INDEX index_dast_site_profiles_on_dast_site_id ON public.dast_site_profiles USING btree (dast_site_id);
+
+CREATE UNIQUE INDEX index_dast_site_profiles_on_project_id_and_name ON public.dast_site_profiles USING btree (project_id, name);
+
+CREATE UNIQUE INDEX index_dast_sites_on_project_id_and_url ON public.dast_sites USING btree (project_id, url);
 
 CREATE INDEX index_dependency_proxy_blobs_on_group_id_and_file_name ON public.dependency_proxy_blobs USING btree (group_id, file_name);
 
 CREATE INDEX index_dependency_proxy_group_settings_on_group_id ON public.dependency_proxy_group_settings USING btree (group_id);
+
+CREATE INDEX index_deploy_key_id_on_protected_branch_push_access_levels ON public.protected_branch_push_access_levels USING btree (deploy_key_id);
 
 CREATE INDEX index_deploy_keys_projects_on_deploy_key_id ON public.deploy_keys_projects USING btree (deploy_key_id);
 
@@ -9726,7 +19136,7 @@ CREATE INDEX index_deployments_on_environment_id_and_iid_and_project_id ON publi
 
 CREATE INDEX index_deployments_on_environment_id_and_status ON public.deployments USING btree (environment_id, status);
 
-CREATE INDEX index_deployments_on_id_and_status ON public.deployments USING btree (id, status);
+CREATE INDEX index_deployments_on_id_and_status_and_created_at ON public.deployments USING btree (id, status, created_at);
 
 CREATE INDEX index_deployments_on_id_where_cluster_id_present ON public.deployments USING btree (id) WHERE (cluster_id IS NOT NULL);
 
@@ -9775,6 +19185,10 @@ CREATE INDEX index_draft_notes_on_author_id ON public.draft_notes USING btree (a
 CREATE INDEX index_draft_notes_on_discussion_id ON public.draft_notes USING btree (discussion_id);
 
 CREATE INDEX index_draft_notes_on_merge_request_id ON public.draft_notes USING btree (merge_request_id);
+
+CREATE UNIQUE INDEX index_elastic_reindexing_tasks_on_in_progress ON public.elastic_reindexing_tasks USING btree (in_progress) WHERE in_progress;
+
+CREATE INDEX index_elastic_reindexing_tasks_on_state ON public.elastic_reindexing_tasks USING btree (state);
 
 CREATE INDEX index_elasticsearch_indexed_namespaces_on_created_at ON public.elasticsearch_indexed_namespaces USING btree (created_at);
 
@@ -9833,8 +19247,6 @@ CREATE INDEX index_epics_on_group_id_and_iid_varchar_pattern ON public.epics USI
 CREATE INDEX index_epics_on_iid ON public.epics USING btree (iid);
 
 CREATE INDEX index_epics_on_last_edited_by_id ON public.epics USING btree (last_edited_by_id);
-
-CREATE INDEX index_epics_on_lock_version ON public.epics USING btree (lock_version) WHERE (lock_version IS NULL);
 
 CREATE INDEX index_epics_on_parent_id ON public.epics USING btree (parent_id);
 
@@ -9992,6 +19404,10 @@ CREATE INDEX index_group_deletion_schedules_on_marked_for_deletion_on ON public.
 
 CREATE INDEX index_group_deletion_schedules_on_user_id ON public.group_deletion_schedules USING btree (user_id);
 
+CREATE UNIQUE INDEX index_group_deploy_keys_group_on_group_deploy_key_and_group_ids ON public.group_deploy_keys_groups USING btree (group_id, group_deploy_key_id);
+
+CREATE INDEX index_group_deploy_keys_groups_on_group_deploy_key_id ON public.group_deploy_keys_groups USING btree (group_deploy_key_id);
+
 CREATE UNIQUE INDEX index_group_deploy_keys_on_fingerprint ON public.group_deploy_keys USING btree (fingerprint);
 
 CREATE INDEX index_group_deploy_keys_on_fingerprint_sha256 ON public.group_deploy_keys USING btree (fingerprint_sha256);
@@ -10078,8 +19494,6 @@ CREATE INDEX index_issues_on_duplicated_to_id ON public.issues USING btree (dupl
 
 CREATE INDEX index_issues_on_last_edited_by_id ON public.issues USING btree (last_edited_by_id);
 
-CREATE INDEX index_issues_on_lock_version ON public.issues USING btree (lock_version) WHERE (lock_version IS NULL);
-
 CREATE INDEX index_issues_on_milestone_id ON public.issues USING btree (milestone_id);
 
 CREATE INDEX index_issues_on_moved_to_id ON public.issues USING btree (moved_to_id) WHERE (moved_to_id IS NOT NULL);
@@ -10140,7 +19554,7 @@ CREATE INDEX index_labels_on_group_id_and_title ON public.labels USING btree (gr
 
 CREATE INDEX index_labels_on_project_id ON public.labels USING btree (project_id);
 
-CREATE INDEX index_labels_on_project_id_and_title ON public.labels USING btree (project_id, title) WHERE (group_id = NULL::integer);
+CREATE UNIQUE INDEX index_labels_on_project_id_and_title_unique ON public.labels USING btree (project_id, title) WHERE (group_id IS NULL);
 
 CREATE INDEX index_labels_on_template ON public.labels USING btree (template) WHERE template;
 
@@ -10151,8 +19565,6 @@ CREATE INDEX index_labels_on_type_and_project_id ON public.labels USING btree (t
 CREATE UNIQUE INDEX index_lfs_file_locks_on_project_id_and_path ON public.lfs_file_locks USING btree (project_id, path);
 
 CREATE INDEX index_lfs_file_locks_on_user_id ON public.lfs_file_locks USING btree (user_id);
-
-CREATE INDEX index_lfs_objects_file_store_is_null ON public.lfs_objects USING btree (id) WHERE (file_store IS NULL);
 
 CREATE INDEX index_lfs_objects_on_file_store ON public.lfs_objects USING btree (file_store);
 
@@ -10212,8 +19624,6 @@ CREATE INDEX index_merge_request_diffs_on_merge_request_id_and_id ON public.merg
 
 CREATE INDEX index_merge_request_diffs_on_merge_request_id_and_id_partial ON public.merge_request_diffs USING btree (merge_request_id, id) WHERE ((NOT stored_externally) OR (stored_externally IS NULL));
 
-CREATE INDEX index_merge_request_metrics ON public.merge_request_metrics USING btree (merge_request_id);
-
 CREATE INDEX index_merge_request_metrics_on_first_deployed_to_production_at ON public.merge_request_metrics USING btree (first_deployed_to_production_at);
 
 CREATE INDEX index_merge_request_metrics_on_latest_closed_at ON public.merge_request_metrics USING btree (latest_closed_at) WHERE (latest_closed_at IS NOT NULL);
@@ -10245,8 +19655,6 @@ CREATE INDEX index_merge_requests_on_description_trigram ON public.merge_request
 CREATE INDEX index_merge_requests_on_head_pipeline_id ON public.merge_requests USING btree (head_pipeline_id);
 
 CREATE INDEX index_merge_requests_on_latest_merge_request_diff_id ON public.merge_requests USING btree (latest_merge_request_diff_id);
-
-CREATE INDEX index_merge_requests_on_lock_version ON public.merge_requests USING btree (lock_version) WHERE (lock_version IS NULL);
 
 CREATE INDEX index_merge_requests_on_merge_user_id ON public.merge_requests USING btree (merge_user_id) WHERE (merge_user_id IS NOT NULL);
 
@@ -10488,6 +19896,8 @@ CREATE INDEX index_pages_domains_on_verified_at_and_enabled_until ON public.page
 
 CREATE INDEX index_pages_domains_on_wildcard ON public.pages_domains USING btree (wildcard);
 
+CREATE UNIQUE INDEX index_partial_am_alerts_on_project_id_and_fingerprint ON public.alert_management_alerts USING btree (project_id, fingerprint) WHERE (status <> 2);
+
 CREATE UNIQUE INDEX index_partitioned_foreign_keys_unique_index ON public.partitioned_foreign_keys USING btree (to_table, from_table, from_column);
 
 CREATE INDEX index_pat_on_user_id_and_expires_at ON public.personal_access_tokens USING btree (user_id, expires_at);
@@ -10589,6 +19999,12 @@ CREATE UNIQUE INDEX index_project_settings_on_push_rule_id ON public.project_set
 CREATE INDEX index_project_statistics_on_namespace_id ON public.project_statistics USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_project_statistics_on_project_id ON public.project_statistics USING btree (project_id);
+
+CREATE INDEX index_project_statistics_on_repository_size_and_project_id ON public.project_statistics USING btree (repository_size, project_id);
+
+CREATE INDEX index_project_statistics_on_storage_size_and_project_id ON public.project_statistics USING btree (storage_size, project_id);
+
+CREATE INDEX index_project_statistics_on_wiki_size_and_project_id ON public.project_statistics USING btree (wiki_size, project_id);
 
 CREATE UNIQUE INDEX index_project_tracing_settings_on_project_id ON public.project_tracing_settings USING btree (project_id);
 
@@ -10692,7 +20108,9 @@ CREATE INDEX index_prometheus_metrics_on_common ON public.prometheus_metrics USI
 
 CREATE INDEX index_prometheus_metrics_on_group ON public.prometheus_metrics USING btree ("group");
 
-CREATE UNIQUE INDEX index_prometheus_metrics_on_identifier ON public.prometheus_metrics USING btree (identifier);
+CREATE UNIQUE INDEX index_prometheus_metrics_on_identifier_and_null_project ON public.prometheus_metrics USING btree (identifier) WHERE (project_id IS NULL);
+
+CREATE UNIQUE INDEX index_prometheus_metrics_on_identifier_and_project_id ON public.prometheus_metrics USING btree (identifier, project_id);
 
 CREATE INDEX index_prometheus_metrics_on_project_id ON public.prometheus_metrics USING btree (project_id);
 
@@ -10810,6 +20228,8 @@ CREATE INDEX index_resource_state_events_on_issue_id_and_created_at ON public.re
 
 CREATE INDEX index_resource_state_events_on_merge_request_id ON public.resource_state_events USING btree (merge_request_id);
 
+CREATE INDEX index_resource_state_events_on_source_merge_request_id ON public.resource_state_events USING btree (source_merge_request_id);
+
 CREATE INDEX index_resource_state_events_on_user_id ON public.resource_state_events USING btree (user_id);
 
 CREATE INDEX index_resource_weight_events_on_issue_id_and_created_at ON public.resource_weight_events USING btree (issue_id, created_at);
@@ -10841,6 +20261,8 @@ CREATE UNIQUE INDEX index_scim_identities_on_lower_extern_uid_and_group_id ON pu
 CREATE UNIQUE INDEX index_scim_identities_on_user_id_and_group_id ON public.scim_identities USING btree (user_id, group_id);
 
 CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypted ON public.scim_oauth_access_tokens USING btree (group_id, token_encrypted);
+
+CREATE INDEX index_secure_ci_builds_on_user_id_created_at ON public.ci_builds USING btree (user_id, created_at) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text])));
 
 CREATE INDEX index_security_ci_builds_on_name_and_id ON public.ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('license_scanning'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 
@@ -10899,6 +20321,8 @@ CREATE INDEX index_snippets_on_created_at ON public.snippets USING btree (create
 CREATE INDEX index_snippets_on_description_trigram ON public.snippets USING gin (description public.gin_trgm_ops);
 
 CREATE INDEX index_snippets_on_file_name_trigram ON public.snippets USING gin (file_name public.gin_trgm_ops);
+
+CREATE INDEX index_snippets_on_id_and_created_at ON public.snippets USING btree (id, created_at);
 
 CREATE INDEX index_snippets_on_id_and_type ON public.snippets USING btree (id, type);
 
@@ -11011,8 +20435,6 @@ CREATE INDEX index_uploads_on_model_id_and_model_type ON public.uploads USING bt
 CREATE INDEX index_uploads_on_store ON public.uploads USING btree (store);
 
 CREATE INDEX index_uploads_on_uploader_and_path ON public.uploads USING btree (uploader, path);
-
-CREATE INDEX index_uploads_store_is_null ON public.uploads USING btree (id) WHERE (store IS NULL);
 
 CREATE INDEX index_user_agent_details_on_subject_id_and_subject_type ON public.user_agent_details USING btree (subject_id, subject_type);
 
@@ -11158,6 +20580,10 @@ CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON public.vulne
 
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON public.vulnerability_scanners USING btree (project_id, external_id);
 
+CREATE INDEX index_vulnerability_statistics_on_letter_grade ON public.vulnerability_statistics USING btree (letter_grade);
+
+CREATE UNIQUE INDEX index_vulnerability_statistics_on_unique_project_id ON public.vulnerability_statistics USING btree (project_id);
+
 CREATE UNIQUE INDEX index_vulnerability_user_mentions_on_note_id ON public.vulnerability_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id ON public.vulnerability_user_mentions USING btree (vulnerability_id) WHERE (note_id IS NULL);
@@ -11173,6 +20599,10 @@ CREATE INDEX index_web_hooks_on_group_id ON public.web_hooks USING btree (group_
 CREATE INDEX index_web_hooks_on_project_id ON public.web_hooks USING btree (project_id);
 
 CREATE INDEX index_web_hooks_on_type ON public.web_hooks USING btree (type);
+
+CREATE UNIQUE INDEX index_webauthn_registrations_on_credential_xid ON public.webauthn_registrations USING btree (credential_xid);
+
+CREATE INDEX index_webauthn_registrations_on_user_id ON public.webauthn_registrations USING btree (user_id);
 
 CREATE INDEX index_wiki_page_meta_on_project_id ON public.wiki_page_meta USING btree (project_id);
 
@@ -11248,17 +20678,271 @@ CREATE INDEX tmp_build_stage_position_index ON public.ci_builds USING btree (sta
 
 CREATE INDEX tmp_idx_on_user_id_where_bio_is_filled ON public.users USING btree (id) WHERE ((COALESCE(bio, ''::character varying))::text IS DISTINCT FROM ''::text);
 
-CREATE INDEX tmp_index_ci_builds_lock_version ON public.ci_builds USING btree (id) WHERE (lock_version IS NULL);
+CREATE INDEX tmp_index_for_email_unconfirmation_migration ON public.emails USING btree (id) WHERE (confirmed_at IS NOT NULL);
 
-CREATE INDEX tmp_index_ci_pipelines_lock_version ON public.ci_pipelines USING btree (id) WHERE (lock_version IS NULL);
-
-CREATE INDEX tmp_index_ci_stages_lock_version ON public.ci_stages USING btree (id) WHERE (lock_version IS NULL);
+CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON public.merge_request_metrics USING btree (merge_request_id);
 
 CREATE UNIQUE INDEX users_security_dashboard_projects_unique_index ON public.users_security_dashboard_projects USING btree (project_id, user_id);
 
 CREATE UNIQUE INDEX vulnerability_feedback_unique_idx ON public.vulnerability_feedback USING btree (project_id, category, feedback_type, project_fingerprint);
 
 CREATE UNIQUE INDEX vulnerability_occurrence_pipelines_on_unique_keys ON public.vulnerability_occurrence_pipelines USING btree (occurrence_id, pipeline_id);
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx10;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx11;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx12;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx13;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx14;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx15;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx16;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx17;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx18;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx19;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx20;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx21;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx22;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx23;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx24;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx25;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx26;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx27;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx28;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx29;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx30;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx31;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx32;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx33;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx34;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx35;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx36;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx37;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx38;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx39;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx40;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx41;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx42;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx43;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx44;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx45;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx46;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx47;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx48;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx49;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx50;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx51;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx52;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx53;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx54;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx55;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx56;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx57;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx58;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx59;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx60;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx61;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx62;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx63;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx1;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx2;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx3;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx4;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx5;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx6;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx7;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx8;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_exper_project_id_collector_tstamp_idx9;
+
+ALTER INDEX public.index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experi_project_id_collector_tstamp_idx;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_00_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_01_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_02_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_03_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_04_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_05_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_06_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_07_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_08_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_09_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_10_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_11_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_12_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_13_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_14_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_15_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_16_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_17_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_18_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_19_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_20_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_21_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_22_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_23_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_24_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_25_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_26_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_27_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_28_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_29_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_30_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_31_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_32_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_33_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_34_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_35_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_36_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_37_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_38_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_39_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_40_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_41_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_42_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_43_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_44_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_45_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_46_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_47_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_48_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_49_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_50_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_51_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_52_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_53_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_54_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_55_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_56_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_57_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_58_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_59_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_60_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_61_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62_pkey;
+
+ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
 
 ALTER TABLE ONLY public.chat_names
     ADD CONSTRAINT fk_00797a2bf9 FOREIGN KEY (service_id) REFERENCES public.services(id) ON DELETE CASCADE;
@@ -11298,6 +20982,9 @@ ALTER TABLE ONLY public.vulnerabilities
 
 ALTER TABLE ONLY public.vulnerabilities
     ADD CONSTRAINT fk_131d289c65 FOREIGN KEY (milestone_id) REFERENCES public.milestones(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.protected_branch_push_access_levels
+    ADD CONSTRAINT fk_15d2a7a4ae FOREIGN KEY (deploy_key_id) REFERENCES public.keys(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.internal_ids
     ADD CONSTRAINT fk_162941d509 FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
@@ -11422,6 +21109,9 @@ ALTER TABLE ONLY public.geo_event_log
 ALTER TABLE ONLY public.ci_build_trace_sections
     ADD CONSTRAINT fk_4ebe41f502 FOREIGN KEY (build_id) REFERENCES public.ci_builds(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.alert_management_alerts
+    ADD CONSTRAINT fk_51ab4b6089 FOREIGN KEY (prometheus_alert_id) REFERENCES public.prometheus_alerts(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.path_locks
     ADD CONSTRAINT fk_5265c98f24 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -11507,6 +21197,9 @@ ALTER TABLE ONLY public.vulnerabilities
     ADD CONSTRAINT fk_7c5bb22a22 FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES public.milestones(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.labels
+    ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.backup_labels
     ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.merge_requests
@@ -11629,6 +21322,9 @@ ALTER TABLE ONLY public.merge_requests
 ALTER TABLE ONLY public.epics
     ADD CONSTRAINT fk_aa5798e761 FOREIGN KEY (closed_by_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.alert_management_alerts
+    ADD CONSTRAINT fk_aad61aedca FOREIGN KEY (environment_id) REFERENCES public.environments(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.identities
     ADD CONSTRAINT fk_aade90f0fc FOREIGN KEY (saml_provider_id) REFERENCES public.saml_providers(id) ON DELETE CASCADE;
 
@@ -11643,6 +21339,9 @@ ALTER TABLE ONLY public.ci_variables
 
 ALTER TABLE ONLY public.merge_request_metrics
     ADD CONSTRAINT fk_ae440388cc FOREIGN KEY (latest_closed_by_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.analytics_cycle_analytics_group_stages
+    ADD CONSTRAINT fk_analytics_cycle_analytics_group_stages_group_value_stream_id FOREIGN KEY (group_value_stream_id) REFERENCES public.analytics_cycle_analytics_group_value_streams(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.fork_network_members
     ADD CONSTRAINT fk_b01280dae4 FOREIGN KEY (forked_from_project_id) REFERENCES public.projects(id) ON DELETE SET NULL;
@@ -12088,6 +21787,9 @@ ALTER TABLE ONLY public.analytics_cycle_analytics_project_stages
 ALTER TABLE ONLY public.issue_user_mentions
     ADD CONSTRAINT fk_rails_3861d9fefa FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.namespace_settings
+    ADD CONSTRAINT fk_rails_3896d4fae5 FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_3936dadc62 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -12223,6 +21925,9 @@ ALTER TABLE ONLY public.project_repository_storage_moves
 ALTER TABLE ONLY public.x509_commit_signatures
     ADD CONSTRAINT fk_rails_53fe41188f FOREIGN KEY (x509_certificate_id) REFERENCES public.x509_certificates(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.analytics_cycle_analytics_group_value_streams
+    ADD CONSTRAINT fk_rails_540627381a FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.geo_node_namespace_links
     ADD CONSTRAINT fk_rails_546bf08d3e FOREIGN KEY (geo_node_id) REFERENCES public.geo_nodes(id) ON DELETE CASCADE;
 
@@ -12241,6 +21946,9 @@ ALTER TABLE ONLY public.issue_user_mentions
 ALTER TABLE ONLY public.merge_request_assignees
     ADD CONSTRAINT fk_rails_579d375628 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.clusters_applications_cilium
+    ADD CONSTRAINT fk_rails_59dc12eea6 FOREIGN KEY (cluster_id) REFERENCES public.clusters(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_rails_5a22f40223 FOREIGN KEY (start_event_label_id) REFERENCES public.labels(id) ON DELETE CASCADE;
 
@@ -12252,6 +21960,9 @@ ALTER TABLE ONLY public.resource_label_events
 
 ALTER TABLE ONLY public.approval_merge_request_rules_groups
     ADD CONSTRAINT fk_rails_5b2ecf6139 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES public.approval_merge_request_rules(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.namespace_limits
+    ADD CONSTRAINT fk_rails_5b3f2bc334 FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_rails_5b9f6970fe FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
@@ -12364,6 +22075,9 @@ ALTER TABLE ONLY public.project_compliance_framework_settings
 ALTER TABLE ONLY public.users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_6f6cf8e66e FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.dast_sites
+    ADD CONSTRAINT fk_rails_6febb6ea9c FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.ci_builds_runner_session
     ADD CONSTRAINT fk_rails_70707857d3 FOREIGN KEY (build_id) REFERENCES public.ci_builds(id) ON DELETE CASCADE;
 
@@ -12375,6 +22089,12 @@ ALTER TABLE ONLY public.project_custom_attributes
 
 ALTER TABLE ONLY public.slack_integrations
     ADD CONSTRAINT fk_rails_73db19721a FOREIGN KEY (service_id) REFERENCES public.services(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.custom_emoji
+    ADD CONSTRAINT fk_rails_745925b412 FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.dast_site_profiles
+    ADD CONSTRAINT fk_rails_747dc64abc FOREIGN KEY (dast_site_id) REFERENCES public.dast_sites(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.merge_request_context_commit_diff_files
     ADD CONSTRAINT fk_rails_74a00a1787 FOREIGN KEY (merge_request_context_commit_id) REFERENCES public.merge_request_context_commits(id) ON DELETE CASCADE;
@@ -12418,6 +22138,9 @@ ALTER TABLE ONLY public.operations_scopes
 ALTER TABLE ONLY public.milestone_releases
     ADD CONSTRAINT fk_rails_7ae0756a2d FOREIGN KEY (milestone_id) REFERENCES public.milestones(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT fk_rails_7ddc5f7457 FOREIGN KEY (source_merge_request_id) REFERENCES public.merge_requests(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.application_settings
     ADD CONSTRAINT fk_rails_7e112a9599 FOREIGN KEY (instance_administration_project_id) REFERENCES public.projects(id) ON DELETE SET NULL;
 
@@ -12426,6 +22149,9 @@ ALTER TABLE ONLY public.clusters_kubernetes_namespaces
 
 ALTER TABLE ONLY public.approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_80e6801803 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES public.approval_merge_request_rules(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.dast_site_profiles
+    ADD CONSTRAINT fk_rails_83e309d69e FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.deployment_merge_requests
     ADD CONSTRAINT fk_rails_86a6d8bf12 FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
@@ -12468,6 +22194,9 @@ ALTER TABLE ONLY public.packages_conan_metadata
 
 ALTER TABLE ONLY public.vulnerability_feedback
     ADD CONSTRAINT fk_rails_8c77e5891a FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.ci_pipeline_messages
+    ADD CONSTRAINT fk_rails_8d3b04e3e1 FOREIGN KEY (pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.approval_merge_request_rules_approved_approvers
     ADD CONSTRAINT fk_rails_8dc94cff4d FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
@@ -12628,8 +22357,14 @@ ALTER TABLE ONLY public.metrics_dashboard_annotations
 ALTER TABLE ONLY public.pool_repositories
     ADD CONSTRAINT fk_rails_af3f8c5d62 FOREIGN KEY (shard_id) REFERENCES public.shards(id) ON DELETE RESTRICT;
 
+ALTER TABLE ONLY public.vulnerability_statistics
+    ADD CONSTRAINT fk_rails_af61a7df4c FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.resource_label_events
     ADD CONSTRAINT fk_rails_b126799f57 FOREIGN KEY (label_id) REFERENCES public.labels(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.webauthn_registrations
+    ADD CONSTRAINT fk_rails_b15c016782 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.packages_build_infos
     ADD CONSTRAINT fk_rails_b18868292d FOREIGN KEY (package_id) REFERENCES public.packages_packages(id) ON DELETE CASCADE;
@@ -12697,6 +22432,9 @@ ALTER TABLE ONLY public.serverless_domain_cluster
 ALTER TABLE ONLY public.labels
     ADD CONSTRAINT fk_rails_c1ac5161d8 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.backup_labels
+    ADD CONSTRAINT fk_rails_c1ac5161d8 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.project_feature_usages
     ADD CONSTRAINT fk_rails_c22a50024b FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -12708,6 +22446,9 @@ ALTER TABLE ONLY public.project_repositories
 
 ALTER TABLE ONLY public.packages_nuget_dependency_link_metadata
     ADD CONSTRAINT fk_rails_c3313ee2e4 FOREIGN KEY (dependency_link_id) REFERENCES public.packages_dependency_links(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.group_deploy_keys_groups
+    ADD CONSTRAINT fk_rails_c3854f19f5 FOREIGN KEY (group_deploy_key_id) REFERENCES public.group_deploy_keys(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.merge_request_user_mentions
     ADD CONSTRAINT fk_rails_c440b9ea31 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
@@ -12744,9 +22485,6 @@ ALTER TABLE ONLY public.gpg_signatures
 
 ALTER TABLE ONLY public.board_group_recent_visits
     ADD CONSTRAINT fk_rails_ca04c38720 FOREIGN KEY (board_id) REFERENCES public.boards(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY public.ci_daily_report_results
-    ADD CONSTRAINT fk_rails_cc5caec7d9 FOREIGN KEY (last_pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.issues_self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_cc5d88bbb0 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
@@ -12847,6 +22585,9 @@ ALTER TABLE ONLY public.merge_request_metrics
 ALTER TABLE ONLY public.draft_notes
     ADD CONSTRAINT fk_rails_e753681674 FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.group_deploy_keys_groups
+    ADD CONSTRAINT fk_rails_e87145115d FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.description_versions
     ADD CONSTRAINT fk_rails_e8f4caf9c7 FOREIGN KEY (epic_id) REFERENCES public.epics(id) ON DELETE CASCADE;
 
@@ -12862,8 +22603,8 @@ ALTER TABLE ONLY public.protected_branch_unprotect_access_levels
 ALTER TABLE ONLY public.alert_management_alert_user_mentions
     ADD CONSTRAINT fk_rails_eb2de0cdef FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY public.ci_daily_report_results
-    ADD CONSTRAINT fk_rails_ebc2931b90 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.snippet_statistics
+    ADD CONSTRAINT fk_rails_ebc283ccf1 FOREIGN KEY (snippet_id) REFERENCES public.snippets(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.cluster_providers_aws
     ADD CONSTRAINT fk_rails_ed1fdfaeb2 FOREIGN KEY (created_by_user_id) REFERENCES public.users(id) ON DELETE SET NULL;
@@ -12970,6 +22711,9 @@ ALTER TABLE ONLY public.timelogs
 ALTER TABLE ONLY public.u2f_registrations
     ADD CONSTRAINT fk_u2f_registrations_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
+ALTER TABLE public.product_analytics_events_experimental
+    ADD CONSTRAINT product_analytics_events_experimental_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 COPY "schema_migrations" (version) FROM STDIN;
 20181228175414
 20190102152410
@@ -12998,7 +22742,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20190220150130
 20190222051615
 20190225152525
-20190225160300
 20190225160301
 20190228192410
 20190301081611
@@ -13377,6 +23120,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20191112105448
 20191112115247
 20191112115317
+20191112212815
 20191112214305
 20191112221821
 20191112232338
@@ -13653,6 +23397,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200227164113
 20200227165129
 20200228160542
+20200229171700
 20200302142052
 20200302152516
 20200303055348
@@ -13671,6 +23416,10 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200304160801
 20200304160823
 20200304211738
+20200305020458
+20200305020459
+20200305082754
+20200305082858
 20200305121159
 20200305151736
 20200305200641
@@ -13877,6 +23626,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200424043515
 20200424050250
 20200424101920
+20200424102023
 20200424135319
 20200427064130
 20200428134356
@@ -13904,6 +23654,11 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200508140959
 20200508203901
 20200509203901
+20200510181937
+20200510182218
+20200510182556
+20200510182824
+20200510183128
 20200511080113
 20200511083541
 20200511092246
@@ -13946,22 +23701,28 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200519141534
 20200519171058
 20200519194042
+20200519201128
 20200520103514
 20200521022725
 20200521225327
 20200521225337
 20200521225346
+20200522205606
 20200522235146
+20200524104346
 20200525114553
 20200525121014
 20200525144525
 20200526000407
 20200526013844
+20200526115436
 20200526120714
 20200526142550
 20200526153844
 20200526164946
 20200526164947
+20200526193555
+20200526231421
 20200527092027
 20200527094322
 20200527095401
@@ -13971,6 +23732,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200527152657
 20200527170649
 20200527211000
+20200527211605
 20200528054112
 20200528123703
 20200528125905
@@ -13981,23 +23743,126 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200602143020
 20200603073101
 20200603180338
+20200604001128
 20200604143628
 20200604145731
 20200604174544
 20200604174558
 20200605003204
 20200605093113
+20200605160806
+20200605160836
+20200605160851
 20200608072931
 20200608075553
+20200608195222
+20200608203426
+20200608205813
+20200608212030
+20200608212435
+20200608212549
+20200608212652
+20200608212807
+20200608212824
 20200608214008
 20200609002841
+20200609012539
 20200609142506
 20200609142507
 20200609142508
 20200609212701
+20200610130002
+20200613104045
 20200615083635
+20200615111857
 20200615121217
 20200615123055
+20200615141554
+20200615193524
 20200615232735
+20200615234047
+20200616124338
+20200616145031
+20200617000757
+20200617001001
+20200617001118
+20200617001637
+20200617001848
+20200617002030
+20200617150041
+20200617205000
+20200618105638
+20200618134223
+20200618134723
+20200618152212
+20200619000316
+20200619154527
+20200619154528
+20200622040750
+20200622070606
+20200622070620
+20200622095419
+20200622103836
+20200622104923
+20200622235737
+20200623000148
+20200623000320
+20200623073431
+20200623090030
+20200623121135
+20200623141217
+20200623141544
+20200623142159
+20200623170000
+20200623185440
+20200624075411
+20200624142107
+20200624142207
+20200624222443
+20200625045442
+20200625082258
+20200625113337
+20200625174052
+20200625190458
+20200626060151
+20200626130220
+20200628210938
+20200629192638
+20200630091656
+20200630110826
+20200701064756
+20200701070435
+20200701091253
+20200701093859
+20200701190523
+20200701205710
+20200702123805
+20200702201039
+20200703064117
+20200703121557
+20200703124823
+20200703125016
+20200703154822
+20200704143633
+20200704161600
+20200706005325
+20200706035141
+20200706154619
+20200706170536
+20200707071941
+20200707094341
+20200707095849
+20200708080631
+20200709101408
+20200710102418
+20200710102846
+20200710105332
+20200710130234
+20200712084655
+20200712235622
+20200713071042
+20200713152443
+20200716044023
+20200716120419
 \.
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Checks::TagCheck do
+RSpec.describe Gitlab::Checks::TagCheck do
   include_context 'change access checks context'
 
   describe '#validate!' do

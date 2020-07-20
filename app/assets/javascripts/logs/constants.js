@@ -8,4 +8,10 @@ export const tracking = {
   TIME_RANGE_SET: 'time_range_set',
   ENVIRONMENT_SELECTED: 'environment_selected',
   REFRESH_POD_LOGS: 'refresh_pod_logs',
+  MANAGED_APP_SELECTED: 'managed_app_selected',
+};
+
+export const logExplorerOptions = {
+  environments: 'environments',
+  managedApps: 'managedApps',
 };

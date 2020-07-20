@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::TabWidth, lib: true do
+RSpec.describe Gitlab::TabWidth, lib: true do
   describe '.css_class_for_user' do
     it 'returns default CSS class when user is nil' do
       css_class = described_class.css_class_for_user(nil)

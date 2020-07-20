@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::CheckUpgradeProgressService do
+RSpec.describe Clusters::Applications::CheckUpgradeProgressService do
   reschedule_phashes = ::Gitlab::Kubernetes::Pod::PHASES -
     [::Gitlab::Kubernetes::Pod::SUCCEEDED, ::Gitlab::Kubernetes::Pod::FAILED, ::Gitlab].freeze
 

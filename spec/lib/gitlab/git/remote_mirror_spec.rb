@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::RemoteMirror do
+RSpec.describe Gitlab::Git::RemoteMirror do
   describe '#update' do
     let(:project) { create(:project, :repository) }
     let(:repository) { project.repository }

@@ -41,7 +41,8 @@ export default {
     },
     totalResults: {
       type: Number,
-      required: true,
+      required: false,
+      default: 0,
     },
   },
   data() {
@@ -87,6 +88,7 @@ export default {
       type="search"
       class="mb-3"
       autofocus
+      data-qa-selector="project_search_field"
       @input="onInput"
     />
     <div class="d-flex flex-column">
@@ -106,6 +108,7 @@ export default {
               :project="project"
               :matcher="searchQuery"
               class="js-project-list-item"
+              data-qa-selector="project_list_item"
               @click="projectClicked(project)"
             />
           </div>

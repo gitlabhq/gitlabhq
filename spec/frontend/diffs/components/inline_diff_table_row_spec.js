@@ -1,27 +1,31 @@
-import Vue from 'vue';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
 import { createStore } from '~/mr_notes/stores';
 import InlineDiffTableRow from '~/diffs/components/inline_diff_table_row.vue';
 import diffFileMockData from '../mock_data/diff_file';
 
 describe('InlineDiffTableRow', () => {
+  let wrapper;
   let vm;
   const thisLine = diffFileMockData.highlighted_diff_lines[0];
 
   beforeEach(() => {
-    vm = createComponentWithStore(Vue.extend(InlineDiffTableRow), createStore(), {
-      line: thisLine,
-      fileHash: diffFileMockData.file_hash,
-      filePath: diffFileMockData.file_path,
-      contextLinesPath: 'contextLinesPath',
-      isHighlighted: false,
-    }).$mount();
+    wrapper = shallowMount(InlineDiffTableRow, {
+      store: createStore(),
+      propsData: {
+        line: thisLine,
+        fileHash: diffFileMockData.file_hash,
+        filePath: diffFileMockData.file_path,
+        contextLinesPath: 'contextLinesPath',
+        isHighlighted: false,
+      },
+    });
+    vm = wrapper.vm;
   });
 
   it('does not add hll class to line content when line does not match highlighted row', done => {
     vm.$nextTick()
       .then(() => {
-        expect(vm.$el.querySelector('.line_content').classList).not.toContain('hll');
+        expect(wrapper.find('.line_content').classes('hll')).toBe(false);
       })
       .then(done)
       .catch(done.fail);
@@ -35,10 +39,17 @@ describe('InlineDiffTableRow', () => {
         return vm.$nextTick();
       })
       .then(() => {
-        expect(vm.$el.querySelector('.line_content').classList).toContain('hll');
+        expect(wrapper.find('.line_content').classes('hll')).toBe(true);
       })
       .then(done)
       .catch(done.fail);
+  });
+
+  it('adds hll class to lineContent when line is part of a multiline comment', () => {
+    wrapper.setProps({ isCommented: true });
+    return vm.$nextTick().then(() => {
+      expect(wrapper.find('.line_content').classes('hll')).toBe(true);
+    });
   });
 
   describe('sets coverage title and class', () => {
@@ -53,10 +64,10 @@ describe('InlineDiffTableRow', () => {
           return vm.$nextTick();
         })
         .then(() => {
-          const coverage = vm.$el.querySelector('.line-coverage');
+          const coverage = wrapper.find('.line-coverage');
 
-          expect(coverage.title).toContain('Test coverage: 5 hits');
-          expect(coverage.classList).toContain('coverage');
+          expect(coverage.attributes('title')).toContain('Test coverage: 5 hits');
+          expect(coverage.classes('coverage')).toBe(true);
         })
         .then(done)
         .catch(done.fail);
@@ -73,10 +84,10 @@ describe('InlineDiffTableRow', () => {
           return vm.$nextTick();
         })
         .then(() => {
-          const coverage = vm.$el.querySelector('.line-coverage');
+          const coverage = wrapper.find('.line-coverage');
 
-          expect(coverage.title).toContain('No test coverage');
-          expect(coverage.classList).toContain('no-coverage');
+          expect(coverage.attributes('title')).toContain('No test coverage');
+          expect(coverage.classes('no-coverage')).toBe(true);
         })
         .then(done)
         .catch(done.fail);
@@ -90,11 +101,11 @@ describe('InlineDiffTableRow', () => {
           return vm.$nextTick();
         })
         .then(() => {
-          const coverage = vm.$el.querySelector('.line-coverage');
+          const coverage = wrapper.find('.line-coverage');
 
-          expect(coverage.title).not.toContain('Coverage');
-          expect(coverage.classList).not.toContain('coverage');
-          expect(coverage.classList).not.toContain('no-coverage');
+          expect(coverage.attributes('title')).toBeUndefined();
+          expect(coverage.classes('coverage')).toBe(false);
+          expect(coverage.classes('no-coverage')).toBe(false);
         })
         .then(done)
         .catch(done.fail);

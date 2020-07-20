@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['JiraImport'] do
+RSpec.describe GitlabSchema.types['JiraImport'] do
   specify { expect(described_class.graphql_name).to eq('JiraImport') }
 
   it 'has the expected fields' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Checks::PushCheck do
+RSpec.describe Gitlab::Checks::PushCheck do
   include_context 'change access checks context'
 
   describe '#validate!' do

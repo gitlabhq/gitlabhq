@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab CI/CD YAML includes
+# GitLab CI/CD include examples
 
 In addition to the [`includes` examples](README.md#include) listed in the
 [GitLab CI YAML reference](README.md), this page lists more variations of `include`

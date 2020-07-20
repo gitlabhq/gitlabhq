@@ -63,7 +63,10 @@ Dark theme currently only works with the 'Dark' syntax highlighting.
 
 NOTE: **Note:**
 GitLab uses the [rouge Ruby library](http://rouge.jneen.net/ "Rouge website")
-for syntax highlighting. For a list of supported languages visit the rouge website.
+for syntax highlighting outside of any Editor context. The WebIDE (like Snippets)
+uses [Monaco Editor](https://microsoft.github.io/monaco-editor/) and it's provided [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) library for
+syntax highlighting. For a list of supported languages, visit the documentation of
+the respective libraries.
 
 Changing this setting allows you to customize the color theme when viewing any
 syntax highlighted code on GitLab.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Email::Handler::CreateIssueHandler do
+RSpec.describe Gitlab::Email::Handler::CreateIssueHandler do
   include_context :email_shared_context
   it_behaves_like :reply_processing_shared_examples
 

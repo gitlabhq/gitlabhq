@@ -4,7 +4,7 @@ require 'rack'
 require 'request_store'
 require_relative '../../../support/helpers/next_instance_of'
 
-describe Gitlab::Middleware::RequestContext do
+RSpec.describe Gitlab::Middleware::RequestContext do
   include NextInstanceOf
 
   let(:app) { -> (env) {} }

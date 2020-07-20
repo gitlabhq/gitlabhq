@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WaitableWorker do
+RSpec.describe WaitableWorker do
   let(:worker) do
     Class.new do
       def self.name

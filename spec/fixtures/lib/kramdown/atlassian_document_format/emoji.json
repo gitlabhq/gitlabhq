@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "type": "doc",
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Grinning with unicode "
+        },
+        {
+          "type": "emoji",
+          "attrs": {
+            "shortName": ":grinning:",
+            "text": "😀"
+          }
+        },
+        {
+          "type": "text",
+          "text": " and heart eyes with raw unicode "
+        },
+        {
+          "type": "emoji",
+          "attrs": {
+            "shortName": ":heart_eyes:",
+            "id": "1f60d",
+            "text": "\uD83D\uDE0D"
+          }
+        },
+        {
+          "type": "text",
+          "text": ", non-standard Atlassian "
+        },
+        {
+          "type": "emoji",
+          "attrs": {
+            "shortName": ":awthanks:",
+            "id": "atlassian-awthanks",
+            "text": ":awthanks:"
+          }
+        },
+        {
+          "type": "text",
+          "text": ", non-standard customer emoji "
+        },
+        {
+          "type": "emoji",
+          "attrs": {
+            "shortName": ":thumbsup::skin-tone-2:"
+          }
+        },
+        {
+          "type": "text",
+          "text": ", and invalid is ignored "
+        },
+        {
+          "type": "emoji",
+          "attrs": {
+            "id": "1f44d"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'ActionMailer hooks' do
+RSpec.describe 'ActionMailer hooks' do
   describe 'smime signature interceptor' do
     before do
       class_spy(ActionMailer::Base).as_stubbed_const

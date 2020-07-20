@@ -4,7 +4,7 @@
     "type", "options"
   ],
   "properties": {
-    "type": { "type": "string" },
+    "type": { "enum": ["text"] },
     "label": { "type": "string" },
     "options": { "$ref": "text_variable_options.json" }
   },

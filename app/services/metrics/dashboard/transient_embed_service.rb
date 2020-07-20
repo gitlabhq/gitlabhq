@@ -30,7 +30,7 @@ module Metrics
 
       override :sequence
       def sequence
-        [STAGES::EndpointInserter]
+        [STAGES::MetricEndpointInserter]
       end
 
       override :identifiers
@@ -39,7 +39,7 @@ module Metrics
       end
 
       def invalid_embed_json!(message)
-        raise DashboardProcessingError.new("Parsing error for param :embed_json. #{message}")
+        raise DashboardProcessingError.new(_("Parsing error for param :embed_json. %{message}") % { message: message })
       end
     end
   end

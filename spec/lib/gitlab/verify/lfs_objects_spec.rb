@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Verify::LfsObjects do
+RSpec.describe Gitlab::Verify::LfsObjects do
   include GitlabVerifyHelpers
 
   it_behaves_like 'Gitlab::Verify::BatchVerifier subclass' do

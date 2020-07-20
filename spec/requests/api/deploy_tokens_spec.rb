@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::DeployTokens do
+RSpec.describe API::DeployTokens do
   let_it_be(:user)          { create(:user) }
   let_it_be(:creator)       { create(:user) }
   let_it_be(:project)       { create(:project, creator_id: creator.id) }

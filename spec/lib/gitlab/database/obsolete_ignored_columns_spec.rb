@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::ObsoleteIgnoredColumns do
+RSpec.describe Gitlab::Database::ObsoleteIgnoredColumns do
   before do
     stub_const('Testing', Module.new)
     stub_const('Testing::MyBase', Class.new(ActiveRecord::Base))

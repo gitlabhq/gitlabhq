@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::MergeOrchestrationService do
+RSpec.describe MergeRequests::MergeOrchestrationService do
   let_it_be(:maintainer) { create(:user) }
   let(:merge_params) { { sha: merge_request.diff_head_sha } }
   let(:user) { maintainer }

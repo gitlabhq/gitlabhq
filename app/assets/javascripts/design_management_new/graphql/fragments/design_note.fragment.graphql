@@ -1,0 +1,29 @@
+#import "./diff_refs.fragment.graphql"
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+#import "./note_permissions.fragment.graphql"
+
+fragment DesignNote on Note {
+  id
+  author {
+    ...Author
+  }
+  body
+  bodyHtml
+  createdAt
+  resolved
+  position {
+    diffRefs {
+      ...DesignDiffRefs
+    }
+    x
+    y
+    height
+    width
+  }
+  userPermissions {
+    ...DesignNotePermissions
+  }
+  discussion {
+    id
+  }
+}

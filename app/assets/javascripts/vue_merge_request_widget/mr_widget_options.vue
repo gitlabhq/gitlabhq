@@ -2,6 +2,7 @@
 import { isEmpty } from 'lodash';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
+import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
@@ -36,7 +37,8 @@ import CheckingState from './components/states/mr_widget_checking.vue';
 import eventHub from './event_hub';
 import notify from '~/lib/utils/notify';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
-import TerraformPlan from './components/mr_widget_terraform_plan.vue';
+import TerraformPlan from './components/terraform/mr_widget_terraform_container.vue';
+import GroupedCodequalityReportsApp from '../reports/codequality_report/grouped_codequality_reports_app.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
 import { setFaviconOverlay } from '../lib/utils/common_utils';
 import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
@@ -75,9 +77,11 @@ export default {
     'mr-widget-auto-merge-failed': AutoMergeFailed,
     'mr-widget-rebase': RebaseState,
     SourceBranchRemovalStatus,
+    GroupedCodequalityReportsApp,
     GroupedTestReportsApp,
     TerraformPlan,
     GroupedAccessibilityReportsApp,
+    MrWidgetApprovals,
   },
   props: {
     mrData: {
@@ -96,6 +100,9 @@ export default {
     };
   },
   computed: {
+    shouldRenderApprovals() {
+      return this.mr.state !== 'nothingToMerge';
+    },
     componentName() {
       return stateMaps.stateToComponentMap[this.mr.state];
     },
@@ -110,6 +117,9 @@ export default {
     },
     shouldSuggestPipelines() {
       return gon.features?.suggestPipeline && !this.mr.hasCI && this.mr.mergeRequestAddCiConfigPath;
+    },
+    shouldRenderCodeQuality() {
+      return this.mr?.codeclimate?.head_path;
     },
     shouldRenderRelatedLinks() {
       return Boolean(this.mr.relatedLinks) && !this.mr.isNothingToMergeState;
@@ -216,6 +226,9 @@ export default {
         mergeRequestCachedWidgetPath: store.mergeRequestCachedWidgetPath,
         mergeActionsContentPath: store.mergeActionsContentPath,
         rebasePath: store.rebasePath,
+        apiApprovalsPath: store.apiApprovalsPath,
+        apiApprovePath: store.apiApprovePath,
+        apiUnapprovePath: store.apiUnapprovePath,
       };
     },
     createService(store) {
@@ -365,7 +378,7 @@ export default {
 };
 </script>
 <template>
-  <div v-if="mr" class="mr-state-widget prepend-top-default">
+  <div v-if="mr" class="mr-state-widget gl-mt-3">
     <mr-widget-header :mr="mr" />
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
@@ -379,11 +392,27 @@ export default {
       class="mr-widget-workflow"
       :mr="mr"
     />
+    <mr-widget-approvals
+      v-if="shouldRenderApprovals"
+      class="mr-widget-workflow"
+      :mr="mr"
+      :service="service"
+    />
     <div class="mr-section-container mr-widget-workflow">
+      <grouped-codequality-reports-app
+        v-if="shouldRenderCodeQuality"
+        :base-path="mr.codeclimate.base_path"
+        :head-path="mr.codeclimate.head_path"
+        :head-blob-path="mr.headBlobPath"
+        :base-blob-path="mr.baseBlobPath"
+        :codequality-help-path="mr.codequalityHelpPath"
+      />
+
       <grouped-test-reports-app
         v-if="mr.testResultsPath"
         class="js-reports-container"
         :endpoint="mr.testResultsPath"
+        :pipeline-path="mr.pipeline.path"
       />
 
       <terraform-plan v-if="mr.terraformReportsPath" :endpoint="mr.terraformReportsPath" />

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'CI YML Templates' do
+RSpec.describe 'CI YML Templates' do
   subject { Gitlab::Ci::YamlProcessor.new(content) }
 
   let(:all_templates) { Gitlab::Template::GitlabCiYmlTemplate.all.map(&:full_name) }

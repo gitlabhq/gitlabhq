@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Pagination::Keyset::Connection do
+RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
   let(:nodes) { Project.all.order(id: :asc) }
   let(:arguments) { {} }
   let(:query_type) { GraphQL::ObjectType.new }

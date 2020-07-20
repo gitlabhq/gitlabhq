@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SpamLog do
+RSpec.describe SpamLog do
   let_it_be(:admin) { create(:admin) }
 
   describe 'associations' do

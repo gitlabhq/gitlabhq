@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AuthorizedProjectUpdate::ProjectCreateWorker do
+RSpec.describe AuthorizedProjectUpdate::ProjectCreateWorker do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:group_project) { create(:project, group: group) }
   let_it_be(:group_user) { create(:user) }
@@ -27,7 +27,7 @@ describe AuthorizedProjectUpdate::ProjectCreateWorker do
 
   context 'idempotence' do
     before do
-      create(:group_member, access_level: Gitlab::Access::MAINTAINER, group: group, user: group_user)
+      create(:group_member, access_level: access_level, group: group, user: group_user)
       ProjectAuthorization.delete_all
     end
 

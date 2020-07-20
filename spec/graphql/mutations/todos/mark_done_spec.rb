@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::Todos::MarkDone do
+RSpec.describe Mutations::Todos::MarkDone do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Regex do
+RSpec.describe Gitlab::Regex do
   shared_examples_for 'project/group name regex' do
     it { is_expected.to match('gitlab-ce') }
     it { is_expected.to match('GitLab CE') }
@@ -260,6 +260,39 @@ describe Gitlab::Regex do
     it { is_expected.not_to match('@foo/@/bar') }
     it { is_expected.not_to match('my package name') }
     it { is_expected.not_to match('!!()()') }
+  end
+
+  describe '.maven_version_regex' do
+    subject { described_class.maven_version_regex }
+
+    it { is_expected.to match('0')}
+    it { is_expected.to match('1') }
+    it { is_expected.to match('03') }
+    it { is_expected.to match('2.0') }
+    it { is_expected.to match('01.2') }
+    it { is_expected.to match('10.2.3-beta')}
+    it { is_expected.to match('1.2-SNAPSHOT') }
+    it { is_expected.to match('20') }
+    it { is_expected.to match('20.3') }
+    it { is_expected.to match('1.2.1') }
+    it { is_expected.to match('1.4.2-12') }
+    it { is_expected.to match('1.2-beta-2') }
+    it { is_expected.to match('12.1.2-2-1') }
+    it { is_expected.to match('1.1-beta-2') }
+    it { is_expected.to match('1.3.350.v20200505-1744') }
+    it { is_expected.to match('2.0.0.v200706041905-7C78EK9E_EkMNfNOd2d8qq') }
+    it { is_expected.to match('1.2-alpha-1-20050205.060708-1') }
+    it { is_expected.to match('703220b4e2cea9592caeb9f3013f6b1e5335c293') }
+    it { is_expected.to match('RELEASE') }
+    it { is_expected.not_to match('..1.2.3') }
+    it { is_expected.not_to match('  1.2.3') }
+    it { is_expected.not_to match("1.2.3  \r\t") }
+    it { is_expected.not_to match("\r\t 1.2.3") }
+    it { is_expected.not_to match('1./2.3') }
+    it { is_expected.not_to match('1.2.3-4/../../') }
+    it { is_expected.not_to match('1.2.3-4%2e%2e%') }
+    it { is_expected.not_to match('../../../../../1.2.3') }
+    it { is_expected.not_to match('%2e%2e%2f1.2.3') }
   end
 
   describe '.semver_regex' do

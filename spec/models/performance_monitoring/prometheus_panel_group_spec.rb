@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PerformanceMonitoring::PrometheusPanelGroup do
+RSpec.describe PerformanceMonitoring::PrometheusPanelGroup do
   let(:json_content) do
     {
       "group" => "Group Title",

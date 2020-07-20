@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Deployments::OlderDeploymentsDropService do
+RSpec.describe Deployments::OlderDeploymentsDropService do
   let(:environment) { create(:environment) }
   let(:deployment) { create(:deployment, environment: environment) }
   let(:service) { described_class.new(deployment) }

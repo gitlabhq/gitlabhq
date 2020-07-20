@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20191002031332_schedule_pages_metadata_migration')
 
-describe SchedulePagesMetadataMigration do
+RSpec.describe SchedulePagesMetadataMigration do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RssHelper do
+RSpec.describe RssHelper do
   describe '#rss_url_options' do
     context 'when signed in' do
       it "includes the current_user's feed_token" do

@@ -18,9 +18,11 @@ Using Credentials inventory, GitLab administrators can see all the personal acce
 - Who they belong to.
 - Their access scope.
 - Their usage pattern.
+- When they expire. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214809) in GitLab 13.2.
+- When they were revoked. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214809) in GitLab 13.2.
 
 To access the Credentials inventory, navigate to **Admin Area > Credentials**.
 
 The following is an example of the Credentials inventory page:
 
-![Credentials inventory page](img/credentials_inventory_v12_6.png)
+![Credentials inventory page](img/credentials_inventory_v13_2.png)

@@ -76,8 +76,14 @@ module Types
             description: 'Commit the error was last seen'
       field :first_release_short_version, GraphQL::STRING_TYPE,
             null: true,
-            description: 'Release version the error was first seen'
+            description: 'Release short version the error was first seen'
       field :last_release_short_version, GraphQL::STRING_TYPE,
+            null: true,
+            description: 'Release short version the error was last seen'
+      field :first_release_version, GraphQL::STRING_TYPE,
+            null: true,
+            description: 'Release version the error was first seen'
+      field :last_release_version, GraphQL::STRING_TYPE,
             null: true,
             description: 'Release version the error was last seen'
       field :gitlab_commit, GraphQL::STRING_TYPE,

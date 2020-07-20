@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'forked project import' do
+RSpec.describe 'forked project import' do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

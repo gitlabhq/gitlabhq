@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Chat::Responder::Base do
+RSpec.describe Gitlab::Chat::Responder::Base do
   let(:project) { double(:project) }
   let(:pipeline) { double(:pipeline, project: project) }
   let(:build) { double(:build, pipeline: pipeline) }

@@ -1,0 +1,5 @@
+---
+title: Remove optimized_count_users_by_group_id feature flag
+merge_request: 36953
+author:
+type: performance

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::BaseEventFetcher do
+RSpec.describe Gitlab::CycleAnalytics::BaseEventFetcher do
   let(:max_events) { 2 }
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user, :admin) }

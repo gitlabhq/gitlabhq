@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::Knative do
+RSpec.describe Clusters::Applications::Knative do
   let(:knative) { create(:clusters_applications_knative) }
 
   include_examples 'cluster application core specs', :clusters_applications_knative

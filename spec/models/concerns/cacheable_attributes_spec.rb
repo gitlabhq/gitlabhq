@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CacheableAttributes do
+RSpec.describe CacheableAttributes do
   let(:minimal_test_class) do
     Class.new do
       include ActiveModel::Model

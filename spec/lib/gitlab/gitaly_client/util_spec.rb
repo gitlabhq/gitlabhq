@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::Util do
+RSpec.describe Gitlab::GitalyClient::Util do
   describe '.repository' do
     let(:repository_storage) { 'default' }
     let(:relative_path) { 'my/repo.git' }

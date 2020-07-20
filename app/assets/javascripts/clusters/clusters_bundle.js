@@ -222,7 +222,7 @@ export default class Clusters {
   initRemoveClusterActions() {
     const el = document.querySelector('#js-cluster-remove-actions');
     if (el && el.dataset) {
-      const { clusterName, clusterPath } = el.dataset;
+      const { clusterName, clusterPath, hasManagementProject } = el.dataset;
 
       this.removeClusterAction = new Vue({
         el,
@@ -231,6 +231,7 @@ export default class Clusters {
             props: {
               clusterName,
               clusterPath,
+              hasManagementProject,
             },
           });
         },

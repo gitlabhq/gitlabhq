@@ -2,22 +2,38 @@
 
 module JiraImport
   class StartImportService
-    attr_reader :user, :project, :jira_project_key
+    attr_reader :user, :project, :jira_project_key, :users_mapping
 
-    def initialize(user, project, jira_project_key)
+    def initialize(user, project, jira_project_key, users_mapping)
       @user = user
       @project = project
       @jira_project_key = jira_project_key
+      @users_mapping = users_mapping
     end
 
     def execute
       validation_response = validate
       return validation_response if validation_response&.error?
 
+      store_users_mapping
       create_and_schedule_import
     end
 
     private
+
+    def store_users_mapping
+      return if users_mapping.blank?
+
+      mapping = users_mapping.map do |map|
+        next if !map[:jira_account_id] || !map[:gitlab_id]
+
+        [map[:jira_account_id], map[:gitlab_id]]
+      end.compact.to_h
+
+      return if mapping.blank?
+
+      Gitlab::JiraImport.cache_users_mapping(project.id, mapping)
+    end
 
     def create_and_schedule_import
       jira_import = build_jira_import

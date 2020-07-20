@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::OmniauthInitializer do
+RSpec.describe Gitlab::OmniauthInitializer do
   let(:devise_config) { class_double(Devise) }
 
   subject { described_class.new(devise_config) }

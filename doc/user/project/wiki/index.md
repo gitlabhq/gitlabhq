@@ -134,47 +134,68 @@ The changes of a wiki page over time are recorded in the wiki's Git repository,
 and you can view them by clicking the **Page history** button.
 
 From the history page you can see the revision of the page (Git commit SHA), its
-author, the commit message, when it was last updated, and the page markup format.
+author, the commit message, and when it was last updated.
 To see how a previous version of the page looked like, click on a revision
-number.
+number in the **Page version** column.
 
 ![Wiki page history](img/wiki_page_history.png)
 
+### Viewing the changes between page versions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15242) in GitLab 13.2.
+
+Similar to versioned diff file views, you can see the changes made in a given Wiki page version:
+
+1. Navigate to the Wiki page you're interested in.
+1. Click on **Page history** to see all page versions.
+1. Click on the commit message in the **Changes** column for the version you're interested in:
+
+   ![Wiki page changes](img/wiki_page_diffs_v13_2.png)
+
 ## Wiki activity records
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14902) in GitLab 12.10.
-> - It's deployed behind a feature flag, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14902) in **GitLab 12.10.**
+> - Git events were [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216014) in **GitLab 13.0.**
 > - It's enabled on GitLab.com.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-wiki-events-core-only). **(CORE ONLY)**
+> - Git access activity creation is managed by a feature flag.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-wiki-events-in-git-core-only). **(CORE ONLY)**
 
 Wiki events (creation, deletion, and updates) are tracked by GitLab and
 displayed on the [user profile](../../profile/index.md#user-profile),
 [group](../../group/index.md#view-group-activity),
 and [project](../index.md#project-activity) activity pages.
 
-### Limitations
+### Enable or disable Wiki events in Git **(CORE ONLY)**
 
-Only edits made in the browser or through the API have their activity recorded.
-Edits made and pushed through Git are not currently listed in the activity list.
-
-### Enable or disable Wiki Events **(CORE ONLY)**
-
-Wiki event activity is under development and not ready for production use. It is
+Tracking wiki events through Git is under development and not ready for production use. It is
 deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session)
-can enable it for your instance. You're welcome to test it, but use it at your
-own risk.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance.
 
 To enable it:
 
 ```ruby
-Feature.enable(:wiki_events)
+Feature.enable(:wiki_events_on_git_push)
+```
+
+To enable for just a particular project:
+
+```ruby
+project = Project.find_by_full_path('your-group/your-project')
+Feature.enable(:wiki_events_on_git_push, project)
 ```
 
 To disable it:
 
 ```ruby
-Feature.disable(:wiki_events)
+Feature.disable(:wiki_events_on_git_push)
+```
+
+To disable for just a particular project:
+
+```ruby
+project = Project.find_by_full_path('your-group/your-project')
+Feature.disable(:wiki_events_on_git_push, project)
 ```
 
 ## Adding and editing wiki pages locally

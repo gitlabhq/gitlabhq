@@ -1,10 +1,10 @@
 - supports_quick_actions = local_assigns.fetch(:supports_quick_actions, false)
 .comment-toolbar.clearfix
   .toolbar-text
-    = link_to _('Markdown'), help_page_path('user/markdown'), target: '_blank', tabindex: -1
+    = link_to _('Markdown'), help_page_path('user/markdown'), target: '_blank'
     - if supports_quick_actions
       and
-      = link_to _('quick actions'), help_page_path('user/project/quick_actions'), target: '_blank', tabindex: -1
+      = link_to _('quick actions'), help_page_path('user/project/quick_actions'), target: '_blank'
       are
     - else
       is
@@ -12,24 +12,23 @@
 
   %span.uploading-container
     %span.uploading-progress-container.hide
-      = icon('file-image-o', class: 'toolbar-button-icon')
+      = sprite_icon('media', size: 16, css_class: 'gl-icon gl-vertical-align-text-bottom')
       %span.attaching-file-message
         -# Populated by app/assets/javascripts/dropzone_input.js
       %span.uploading-progress 0%
-      %span.uploading-spinner
-        .toolbar-button-icon.spinner.align-text-top
+      = loading_icon(css_class: 'align-text-bottom gl-mr-2')
 
     %span.uploading-error-container.hide
       %span.uploading-error-icon
-        = icon('file-image-o', class: 'toolbar-button-icon')
+        = sprite_icon('media', size: 16, css_class: 'gl-icon gl-vertical-align-text-bottom')
       %span.uploading-error-message
         -# Populated by app/assets/javascripts/dropzone_input.js
       %button.retry-uploading-link{ type: 'button' }= _("Try again")
       or
       %button.attach-new-file.markdown-selector{ type: 'button' }= _("attach a new file")
 
-    %button.markdown-selector.button-attach-file.btn-link{ type: 'button', tabindex: '-1' }
-      = icon('file-image-o', class: 'toolbar-button-icon')
+    %button.btn.markdown-selector.button-attach-file.btn-link{ type: 'button', tabindex: '-1' }
+      = sprite_icon('media', size: 16)
       %span.text-attach-file<>
         = _("Attach a file")
 

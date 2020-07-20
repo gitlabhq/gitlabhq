@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'includes Spam constants' do
+RSpec.shared_context 'includes Spam constants' do
   before do
     stub_const('CONDITIONAL_ALLOW', Spam::SpamConstants::CONDITIONAL_ALLOW)
     stub_const('DISALLOW', Spam::SpamConstants::DISALLOW)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Settings::DeployKeysPresenter do
+RSpec.describe Projects::Settings::DeployKeysPresenter do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Ansi2json do
+RSpec.describe Gitlab::Ci::Ansi2json do
   subject { described_class }
 
   describe 'lines' do

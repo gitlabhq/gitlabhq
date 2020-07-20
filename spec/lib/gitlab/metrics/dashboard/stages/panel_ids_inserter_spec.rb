@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter do
+RSpec.describe Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter do
+  include MetricsDashboardHelpers
+
   let(:project) { build_stubbed(:project) }
 
   def fetch_panel_ids(dashboard_hash)
@@ -12,7 +14,7 @@ describe Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter do
   describe '#transform!' do
     subject(:transform!) { described_class.new(project, dashboard, nil).transform! }
 
-    let(:dashboard) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')).deep_symbolize_keys }
+    let(:dashboard) { load_sample_dashboard.deep_symbolize_keys }
 
     context 'when dashboard panels are present' do
       it 'assigns unique ids to each panel using PerformanceMonitoring::PrometheusPanel', :aggregate_failures do

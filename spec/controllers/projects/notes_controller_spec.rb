@@ -38,9 +38,9 @@ RSpec.describe Projects::NotesController do
     end
 
     it 'passes last_fetched_at from headers to NotesFinder and MergeIntoNotesService' do
-      last_fetched_at = 3.hours.ago.to_i
+      last_fetched_at = Time.zone.at(3.hours.ago.to_i) # remove nanoseconds
 
-      request.headers['X-Last-Fetched-At'] = last_fetched_at
+      request.headers['X-Last-Fetched-At'] = microseconds(last_fetched_at)
 
       expect(NotesFinder).to receive(:new)
         .with(anything, hash_including(last_fetched_at: last_fetched_at))
@@ -81,6 +81,81 @@ RSpec.describe Projects::NotesController do
         expect(ResourceEvents::MergeIntoNotesService).not_to receive(:new)
 
         get :index, params: request_params
+      end
+    end
+
+    context 'for multiple pages of notes', :aggregate_failures do
+      # 3 pages worth: 1 normal page, 1 oversized due to clashing updated_at,
+      # and a final, short page
+      let!(:page_1) { create_list(:note, 2, noteable: issue, project: project, updated_at: 3.days.ago) }
+      let!(:page_2) { create_list(:note, 3, noteable: issue, project: project, updated_at: 2.days.ago) }
+      let!(:page_3) { create_list(:note, 2, noteable: issue, project: project, updated_at: 1.day.ago) }
+
+      # Include a resource event in the middle page as well
+      let!(:resource_event) { create(:resource_state_event, issue: issue, user: user, created_at: 2.days.ago) }
+
+      let(:page_1_boundary) { microseconds(page_1.last.updated_at + NotesFinder::FETCH_OVERLAP) }
+      let(:page_2_boundary) { microseconds(page_2.last.updated_at + NotesFinder::FETCH_OVERLAP) }
+
+      around do |example|
+        Timecop.freeze do
+          example.run
+        end
+      end
+
+      before do
+        stub_const('Gitlab::UpdatedNotesPaginator::LIMIT', 2)
+      end
+
+      context 'feature flag enabled' do
+        before do
+          stub_feature_flags(paginated_notes: true)
+        end
+
+        it 'returns the first page of notes' do
+          get :index, params: request_params
+
+          expect(json_response['notes'].count).to eq(page_1.count)
+          expect(json_response['more']).to be_truthy
+          expect(json_response['last_fetched_at']).to eq(page_1_boundary)
+          expect(response.headers['Poll-Interval'].to_i).to eq(1)
+        end
+
+        it 'returns the second page of notes' do
+          request.headers['X-Last-Fetched-At'] = page_1_boundary
+
+          get :index, params: request_params
+
+          expect(json_response['notes'].count).to eq(page_2.count + 1) # resource event
+          expect(json_response['more']).to be_truthy
+          expect(json_response['last_fetched_at']).to eq(page_2_boundary)
+          expect(response.headers['Poll-Interval'].to_i).to eq(1)
+        end
+
+        it 'returns the final page of notes' do
+          request.headers['X-Last-Fetched-At'] = page_2_boundary
+
+          get :index, params: request_params
+
+          expect(json_response['notes'].count).to eq(page_3.count)
+          expect(json_response['more']).to be_falsy
+          expect(json_response['last_fetched_at']).to eq(microseconds(Time.zone.now))
+          expect(response.headers['Poll-Interval'].to_i).to be > 1
+        end
+      end
+
+      context 'feature flag disabled' do
+        before do
+          stub_feature_flags(paginated_notes: false)
+        end
+
+        it 'returns all notes' do
+          get :index, params: request_params
+
+          expect(json_response['notes'].count).to eq((page_1 + page_2 + page_3).size + 1)
+          expect(json_response['more']).to be_falsy
+          expect(json_response['last_fetched_at']).to eq(microseconds(Time.zone.now))
+        end
       end
     end
 
@@ -869,5 +944,10 @@ RSpec.describe Projects::NotesController do
         end
       end
     end
+  end
+
+  # Convert a time to an integer number of microseconds
+  def microseconds(time)
+    (time.to_i * 1_000_000) + time.usec
   end
 end

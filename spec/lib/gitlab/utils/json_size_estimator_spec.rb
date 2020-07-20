@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Utils::JsonSizeEstimator do
+RSpec.describe Gitlab::Utils::JsonSizeEstimator do
   RSpec::Matchers.define :match_json_bytesize_of do |expected|
     match do |actual|
       actual == expected.to_json.bytesize

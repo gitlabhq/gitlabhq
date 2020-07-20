@@ -176,9 +176,9 @@ The name of a branch might be dictated by organizational standards.
 When you are done or want to discuss the code, open a merge request.
 A merge request is an online place to discuss the change and review the code.
 
-If you open the merge request but do not assign it to anyone, it is a "Work In Progress" merge request.
+If you open the merge request but do not assign it to anyone, it is a [draft merge request](../user/project/merge_requests/work_in_progress_merge_requests.md).
 These are used to discuss the proposed implementation but are not ready for inclusion in the `master` branch yet.
-Start the title of the merge request with `[WIP]` or `WIP:` to prevent it from being merged before it's ready.
+Start the title of the merge request with `[Draft]`, `Draft:` or `(Draft)` to prevent it from being merged before it's ready.
 
 When you think the code is ready, assign the merge request to a reviewer.
 The reviewer can merge the changes when they think the code is ready for inclusion in the `master` branch.

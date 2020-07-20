@@ -1,0 +1,5 @@
+---
+title: Display confirmation modal when user exits SSE and there are unsaved changes
+merge_request: 33103
+author:
+type: added

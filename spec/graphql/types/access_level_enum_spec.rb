@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['AccessLevelEnum'] do
+RSpec.describe GitlabSchema.types['AccessLevelEnum'] do
   specify { expect(described_class.graphql_name).to eq('AccessLevelEnum') }
 
   it 'exposes all the existing access levels' do

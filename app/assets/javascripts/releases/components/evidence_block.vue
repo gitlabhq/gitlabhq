@@ -59,7 +59,7 @@ export default {
 
 <template>
   <div>
-    <div class="card-text prepend-top-default">
+    <div class="card-text gl-mt-3">
       <b>{{ __('Evidence collection') }}</b>
     </div>
     <div v-for="(evidence, index) in evidences" :key="evidenceTitle(index)" class="mb-2">

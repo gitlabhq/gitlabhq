@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Reports::TerraformReports do
+RSpec.describe Gitlab::Ci::Reports::TerraformReports do
   it 'initializes plans with and empty hash' do
     expect(subject.plans).to eq({})
   end

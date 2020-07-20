@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ButtonHelper do
+RSpec.describe ButtonHelper do
   describe 'http_clone_button' do
     let(:user) { create(:user) }
     let(:project) { build_stubbed(:project) }

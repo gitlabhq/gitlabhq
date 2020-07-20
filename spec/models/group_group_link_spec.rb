@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupGroupLink do
+RSpec.describe GroupGroupLink do
   let_it_be(:group) { create(:group) }
   let_it_be(:shared_group) { create(:group) }
   let_it_be(:group_group_link) do

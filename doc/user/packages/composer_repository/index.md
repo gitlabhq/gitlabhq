@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Composer Repository **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
 With the GitLab Composer Repository, every project can have its own space to store [Composer](https://getcomposer.org/) packages.
 
@@ -19,7 +19,7 @@ This option is available only if your GitLab administrator has
 After the Composer Repository is enabled, it will be available for all new projects
 by default. To enable it for existing projects, or if you want to disable it:
 
-1. Navigate to your project's **Settings > General > Permissions**.
+1. Navigate to your project's **Settings > General > Visibility, project features, permissions**.
 1. Find the Packages feature and enable or disable it.
 1. Click on **Save changes** for the changes to take effect.
 

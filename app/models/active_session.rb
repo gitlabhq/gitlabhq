@@ -91,8 +91,11 @@ class ActiveSession
     key_names = session_ids.map { |session_id| key_name(user.id, session_id.public_id) }
 
     redis.srem(lookup_key_name(user.id), session_ids.map(&:public_id))
-    redis.del(key_names)
-    redis.del(rack_session_keys(session_ids))
+
+    Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+      redis.del(key_names)
+      redis.del(rack_session_keys(session_ids))
+    end
   end
 
   def self.cleanup(user)
@@ -136,8 +139,10 @@ class ActiveSession
       session_keys = rack_session_keys(session_ids)
 
       session_keys.each_slice(SESSION_BATCH_SIZE).flat_map do |session_keys_batch|
-        redis.mget(session_keys_batch).compact.map do |raw_session|
-          load_raw_session(raw_session)
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          redis.mget(session_keys_batch).compact.map do |raw_session|
+            load_raw_session(raw_session)
+          end
         end
       end
     end
@@ -178,7 +183,9 @@ class ActiveSession
 
     entry_keys = session_ids.map { |session_id| key_name(user_id, session_id) }
 
-    redis.mget(entry_keys)
+    Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+      redis.mget(entry_keys)
+    end
   end
 
   def self.active_session_entries(session_ids, user_id, redis)

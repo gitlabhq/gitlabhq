@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe LfsObjectUploader do
+RSpec.describe LfsObjectUploader do
   let(:lfs_object) { create(:lfs_object, :with_file) }
   let(:uploader) { described_class.new(lfs_object, :file) }
   let(:path) { Gitlab.config.lfs.storage_path }

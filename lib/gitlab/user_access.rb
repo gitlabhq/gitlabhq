@@ -92,12 +92,6 @@ module Gitlab
       end
     end
 
-    def can_read_project?
-      return false unless can_access_git?
-
-      user.can?(:read_project, project)
-    end
-
     private
 
     def permission_cache

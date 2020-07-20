@@ -20,13 +20,15 @@ class MergeRequest < ApplicationRecord
   include IgnorableColumns
   include MilestoneEventable
   include StateEventable
+  include ApprovableBase
+
+  extend ::Gitlab::Utils::Override
 
   sha_attribute :squash_commit_sha
 
   self.reactive_cache_key = ->(model) { [model.project.id, model.iid] }
   self.reactive_cache_refresh_interval = 10.minutes
   self.reactive_cache_lifetime = 10.minutes
-  self.reactive_cache_hard_limit = 20.megabytes
 
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
@@ -103,6 +105,7 @@ class MergeRequest < ApplicationRecord
 
   after_create :ensure_merge_request_diff
   after_update :clear_memoized_shas
+  after_update :clear_memoized_source_branch_exists
   after_update :reload_diff_if_branch_changed
   after_commit :ensure_metrics, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
@@ -260,6 +263,7 @@ class MergeRequest < ApplicationRecord
             *PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
             metrics: [:latest_closed_by, :merged_by])
   }
+
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))
   end
@@ -386,25 +390,27 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  WIP_REGEX = /\A*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
+  # WIP is deprecated in favor of Draft. Currently both options are supported
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/227426
+  DRAFT_REGEX = /\A*#{Regexp.union(Gitlab::Regex.merge_request_wip, Gitlab::Regex.merge_request_draft)}+\s*/i.freeze
 
   def self.work_in_progress?(title)
-    !!(title =~ WIP_REGEX)
+    !!(title =~ DRAFT_REGEX)
   end
 
   def self.wipless_title(title)
-    title.sub(WIP_REGEX, "")
+    title.sub(DRAFT_REGEX, "")
   end
 
   def self.wip_title(title)
-    work_in_progress?(title) ? title : "WIP: #{title}"
+    work_in_progress?(title) ? title : "Draft: #{title}"
   end
 
   def committers
     @committers ||= commits.committers
   end
 
-  # Verifies if title has changed not taking into account WIP prefix
+  # Verifies if title has changed not taking into account Draft prefix
   # for merge requests.
   def wipless_title_changed(old_title)
     self.class.wipless_title(old_title) != self.wipless_title
@@ -858,6 +864,10 @@ class MergeRequest < ApplicationRecord
     clear_memoization(:target_branch_head)
   end
 
+  def clear_memoized_source_branch_exists
+    clear_memoization(:source_branch_exists)
+  end
+
   def reload_diff_if_branch_changed
     if (saved_change_to_source_branch? || saved_change_to_target_branch?) &&
         (source_branch_head && target_branch_head)
@@ -946,7 +956,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def can_remove_source_branch?(current_user)
-    !ProtectedBranch.protected?(source_project, source_branch) &&
+    source_project &&
+      !ProtectedBranch.protected?(source_project, source_branch) &&
       !source_project.root_ref?(source_branch) &&
       Ability.allowed?(current_user, :push_code, source_project) &&
       diff_head_sha == source_branch_head.try(:sha)
@@ -1015,6 +1026,10 @@ class MergeRequest < ApplicationRecord
 
   def for_fork?
     target_project != source_project
+  end
+
+  def for_same_project?
+    target_project == source_project
   end
 
   # If the merge request closes any issues, save this information in the
@@ -1104,9 +1119,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def source_branch_exists?
-    return false unless self.source_project
+    strong_memoize(:source_branch_exists) do
+      next false unless self.source_project
 
-    self.source_project.repository.branch_exists?(self.source_branch)
+      self.source_project.repository.branch_exists?(self.source_branch)
+    end
   end
 
   def target_branch_exists?
@@ -1140,6 +1157,13 @@ class MergeRequest < ApplicationRecord
     strong_memoize(:default_squash_commit_message) do
       recent_commits.without_merge_commits.reverse_each.find(&:description?)&.safe_message || title
     end
+  end
+
+  def squash_on_merge?
+    return true if target_project.squash_always?
+    return false if target_project.squash_never?
+
+    squash?
   end
 
   def has_ci?
@@ -1273,7 +1297,7 @@ class MergeRequest < ApplicationRecord
 
   def all_pipelines
     strong_memoize(:all_pipelines) do
-      Ci::PipelinesForMergeRequestFinder.new(self).all
+      Ci::PipelinesForMergeRequestFinder.new(self, nil).all
     end
   end
 
@@ -1374,9 +1398,9 @@ class MergeRequest < ApplicationRecord
   # TODO: consider renaming this as with exposed artifacts we generate reports,
   # not always compare
   # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
-  def compare_reports(service_class, current_user = nil)
-    with_reactive_cache(service_class.name, current_user&.id) do |data|
-      unless service_class.new(project, current_user, id: id)
+  def compare_reports(service_class, current_user = nil, report_type = nil )
+    with_reactive_cache(service_class.name, current_user&.id, report_type) do |data|
+      unless service_class.new(project, current_user, id: id, report_type: report_type)
         .latest?(base_pipeline, actual_head_pipeline, data)
         raise InvalidateReactiveCache
       end
@@ -1385,7 +1409,7 @@ class MergeRequest < ApplicationRecord
     end || { status: :parsing }
   end
 
-  def calculate_reactive_cache(identifier, current_user_id = nil, *args)
+  def calculate_reactive_cache(identifier, current_user_id = nil, report_type = nil, *args)
     service_class = identifier.constantize
 
     # TODO: the type check should change to something that includes exposed artifacts service
@@ -1393,7 +1417,7 @@ class MergeRequest < ApplicationRecord
     raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
 
     current_user = User.find_by(id: current_user_id)
-    service_class.new(project, current_user, id: id).execute(base_pipeline, actual_head_pipeline)
+    service_class.new(project, current_user, id: id, report_type: report_type).execute(base_pipeline, actual_head_pipeline)
   end
 
   def all_commits
@@ -1580,6 +1604,23 @@ class MergeRequest < ApplicationRecord
 
   def banzai_render_context(field)
     super.merge(label_url_method: :project_merge_requests_url)
+  end
+
+  override :ensure_metrics
+  def ensure_metrics
+    MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id).tap do |metrics_record|
+      # Make sure we refresh the loaded association object with the newly created/loaded item.
+      # This is needed in order to have the exact functionality than before.
+      #
+      # Example:
+      #
+      # merge_request.metrics.destroy
+      # merge_request.ensure_metrics
+      # merge_request.metrics # should return the metrics record and not nil
+      # merge_request.metrics.merge_request # should return the same MR record
+      metrics_record.association(:merge_request).target = self
+      association(:metrics).target = metrics_record
+    end
   end
 
   private

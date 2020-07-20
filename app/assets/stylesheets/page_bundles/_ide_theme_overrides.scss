@@ -146,7 +146,7 @@
   }
 
   pre {
-    border-color: var(--ide-border-color-alt, $gray-200);
+    border-color: var(--ide-border-color-alt, $gray-100);
 
     code {
       background-color: var(--ide-border-color, inherit);
@@ -216,7 +216,7 @@
     color: var(--ide-text-color, $gl-text-color);
 
     &:hover {
-      background-color: var(--ide-input-border, $gray-200);
+      background-color: var(--ide-input-border, $gray-100);
     }
   }
 
@@ -300,8 +300,8 @@
     }
 
     .divider {
-      background-color: var(--ide-dropdown-hover-background, $gray-200);
-      border-color: var(--ide-dropdown-hover-background, $gray-200);
+      background-color: var(--ide-dropdown-hover-background, $gray-100);
+      border-color: var(--ide-dropdown-hover-background, $gray-100);
     }
 
     li > a:not(.disable-hover):hover,
@@ -316,7 +316,7 @@
 
   .dropdown-title,
   .dropdown-input {
-    border-color: var(--ide-dropdown-hover-background, $gray-200) !important;
+    border-color: var(--ide-dropdown-hover-background, $gray-100) !important;
   }
 
   .btn-primary,
@@ -356,7 +356,7 @@
 
   .btn[disabled] {
     background-color: var(--ide-btn-default-background, $gray-light) !important;
-    border: 1px solid var(--ide-btn-disabled-border, $gray-200) !important;
+    border: 1px solid var(--ide-btn-disabled-border, $gray-100) !important;
     color: var(--ide-btn-disabled-color, $gl-text-color-disabled) !important;
   }
 

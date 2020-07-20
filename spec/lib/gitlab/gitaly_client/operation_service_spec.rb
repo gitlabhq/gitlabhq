@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::OperationService do
+RSpec.describe Gitlab::GitalyClient::OperationService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
   let(:repository) { project.repository.raw }
@@ -190,6 +190,20 @@ describe Gitlab::GitalyClient::OperationService do
       let(:response) { Gitaly::UserFFBranchResponse.new }
 
       it { expect(subject).to be_nil }
+    end
+
+    context "when the pre-receive hook fails" do
+      let(:response) do
+        Gitaly::UserFFBranchResponse.new(
+          branch_update: nil,
+          pre_receive_error: "pre-receive hook error message\n"
+        )
+      end
+
+      it "raises the error" do
+        # the PreReceiveError class strips the GL-HOOK-ERR prefix from this error
+        expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "pre-receive hook failed.")
+      end
     end
   end
 

@@ -1,0 +1,5 @@
+---
+title: Resolve Misleading message displays when MR request is first submitted
+merge_request: 34958
+author:
+type: fixed

@@ -31,15 +31,16 @@ export default {
       type: String,
       required: true,
     },
-    contextLinesPath: {
-      type: String,
-      required: true,
-    },
     line: {
       type: Object,
       required: true,
     },
     isBottom: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isCommented: {
       type: Boolean,
       required: false,
       default: false,
@@ -55,6 +56,8 @@ export default {
     ...mapGetters('diffs', ['fileLineCoverage']),
     ...mapState({
       isHighlighted(state) {
+        if (this.isCommented) return true;
+
         const lineCode =
           (this.line.left && this.line.left.line_code) ||
           (this.line.right && this.line.right.line_code);
@@ -144,7 +147,6 @@ export default {
     <template v-if="line.left && !isMatchLineLeft">
       <diff-table-cell
         :file-hash="fileHash"
-        :context-lines-path="contextLinesPath"
         :line="line.left"
         :line-type="oldLineType"
         :is-bottom="isBottom"
@@ -172,7 +174,6 @@ export default {
     <template v-if="line.right && !isMatchLineRight">
       <diff-table-cell
         :file-hash="fileHash"
-        :context-lines-path="contextLinesPath"
         :line="line.right"
         :line-type="newLineType"
         :is-bottom="isBottom"

@@ -1,9 +1,7 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import JiraImportSetup from '~/jira_import/components/jira_import_setup.vue';
-
-const illustration = 'illustration.svg';
-const jiraIntegrationPath = 'gitlab-org/gitlab-test/-/services/jira/edit';
+import { illustration, jiraIntegrationPath } from '../mock_data';
 
 describe('JiraImportSetup', () => {
   let wrapper;

@@ -26,8 +26,6 @@ class CreateProjectRepositoryStorageMoves < ActiveRecord::Migration[6.0]
     remove_check_constraint(:project_repository_storage_moves, 'project_repository_storage_moves_source_storage_name')
     remove_check_constraint(:project_repository_storage_moves, 'project_repository_storage_moves_destination_storage_name')
 
-    # rubocop:disable Migration/DropTable
     drop_table :project_repository_storage_moves
-    # rubocop:enable Migration/DropTable
   end
 end

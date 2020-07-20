@@ -2,10 +2,12 @@
 
 require 'spec_helper'
 
-describe MergeRequests::PostMergeService do
+RSpec.describe MergeRequests::PostMergeService do
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request, assignees: [user]) }
   let(:project) { merge_request.project }
+
+  subject { described_class.new(project, user).execute(merge_request) }
 
   before do
     project.add_maintainer(user)
@@ -19,10 +21,7 @@ describe MergeRequests::PostMergeService do
       project.open_merge_requests_count
       merge_request.update!(state: 'merged')
 
-      service = described_class.new(project, user, {})
-
-      expect { service.execute(merge_request) }
-        .to change { project.open_merge_requests_count }.from(1).to(0)
+      expect { subject }.to change { project.open_merge_requests_count }.from(1).to(0)
     end
 
     it 'updates metrics' do
@@ -35,7 +34,7 @@ describe MergeRequests::PostMergeService do
 
       expect(metrics_service).to receive(:merge)
 
-      described_class.new(project, user, {}).execute(merge_request)
+      subject
     end
 
     it 'deletes non-latest diffs' do
@@ -45,7 +44,7 @@ describe MergeRequests::PostMergeService do
         .to receive(:new).with(merge_request)
         .and_return(diff_removal_service)
 
-      described_class.new(project, user, {}).execute(merge_request)
+      subject
 
       expect(diff_removal_service).to have_received(:execute)
     end
@@ -56,21 +55,63 @@ describe MergeRequests::PostMergeService do
 
       issue = create(:issue, project: project)
       allow(merge_request).to receive(:visible_closing_issues_for).and_return([issue])
-      expect_next_instance_of(Issues::CloseService) do |service|
-        allow(service).to receive(:execute).with(issue, commit: merge_request).and_raise(RuntimeError)
+      expect_next_instance_of(Issues::CloseService) do |close_service|
+        allow(close_service).to receive(:execute).with(issue, commit: merge_request).and_raise(RuntimeError)
       end
 
-      expect { described_class.new(project, user).execute(merge_request) }.to raise_error(RuntimeError)
+      expect { subject }.to raise_error(RuntimeError)
 
       expect(merge_request.reload).to be_merged
     end
 
     it 'clean up environments for the merge request' do
-      expect_next_instance_of(Ci::StopEnvironmentsService) do |service|
-        expect(service).to receive(:execute_for_merge_request).with(merge_request)
+      expect_next_instance_of(Ci::StopEnvironmentsService) do |stop_environment_service|
+        expect(stop_environment_service).to receive(:execute_for_merge_request).with(merge_request)
       end
 
-      described_class.new(project, user).execute(merge_request)
+      subject
+    end
+
+    context 'when the merge request has review apps' do
+      it 'cancels all review app deployments' do
+        pipeline = create(:ci_pipeline,
+          source: :merge_request_event,
+          merge_request: merge_request,
+          project: project,
+          sha: merge_request.diff_head_sha,
+          merge_requests_as_head_pipeline: [merge_request])
+
+        review_env_a = create(:environment, project: project, state: :available, name: 'review/a')
+        review_env_b = create(:environment, project: project, state: :available, name: 'review/b')
+        review_env_c = create(:environment, project: project, state: :stopped, name: 'review/c')
+        deploy_env = create(:environment, project: project, state: :available, name: 'deploy')
+
+        review_job_a1 = create(:ci_build, :with_deployment, :start_review_app,
+          pipeline: pipeline, project: project, environment: review_env_a.name)
+        review_job_a2 = create(:ci_build, :with_deployment, :start_review_app,
+          pipeline: pipeline, project: project, environment: review_env_a.name)
+        finished_review_job_a = create(:ci_build, :with_deployment, :start_review_app,
+          pipeline: pipeline, project: project, status: :success, environment: review_env_a.name)
+        review_job_b1 = create(:ci_build, :with_deployment, :start_review_app,
+          pipeline: pipeline, project: project, environment: review_env_b.name)
+        review_job_b2 = create(:ci_build, :start_review_app,
+          pipeline: pipeline, project: project, environment: review_env_b.name)
+        review_job_c1 = create(:ci_build, :with_deployment, :start_review_app,
+          pipeline: pipeline, project: project, environment: review_env_c.name)
+        deploy_job = create(:ci_build, :with_deployment, :deploy_to_production,
+          pipeline: pipeline, project: project, environment: deploy_env.name)
+
+        subject
+
+        expect(review_job_a1.reload.canceled?).to be true
+        expect(review_job_a2.reload.canceled?).to be true
+        expect(finished_review_job_a.reload.status).to eq "success"
+        expect(finished_review_job_a.reload.canceled?).to be false
+        expect(review_job_b1.reload.canceled?).to be true
+        expect(review_job_b2.reload.canceled?).to be false
+        expect(review_job_c1.reload.canceled?).to be false
+        expect(deploy_job.reload.canceled?).to be false
+      end
     end
   end
 end

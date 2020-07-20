@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Import::GithubController < Import::BaseController
+  extend ::Gitlab::Utils::Override
+
   include ImportHelper
   include ActionView::Helpers::SanitizeHelper
 
@@ -34,18 +36,11 @@ class Import::GithubController < Import::BaseController
     # Improving in https://gitlab.com/gitlab-org/gitlab-foss/issues/55585
     client_repos
 
-    respond_to do |format|
-      format.json do
-        render json: { imported_projects: serialized_imported_projects,
-                       provider_repos: serialized_provider_repos,
-                       namespaces: serialized_namespaces }
-      end
-      format.html
-    end
+    super
   end
 
   def create
-    result = Import::GithubService.new(client, current_user, import_params).execute(access_params, provider)
+    result = Import::GithubService.new(client, current_user, import_params).execute(access_params, provider_name)
 
     if result[:status] == :success
       render json: serialized_imported_projects(result[:project])
@@ -55,9 +50,37 @@ class Import::GithubController < Import::BaseController
   end
 
   def realtime_changes
-    Gitlab::PollingInterval.set_header(response, interval: 3_000)
+    super
+  end
 
-    render json: already_added_projects.to_json(only: [:id], methods: [:import_status])
+  protected
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  override :importable_repos
+  def importable_repos
+    already_added_projects_names = already_added_projects.pluck(:import_source)
+
+    client_repos.reject { |repo| already_added_projects_names.include?(repo.full_name) }
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  override :incompatible_repos
+  def incompatible_repos
+    []
+  end
+
+  override :provider_name
+  def provider_name
+    :github
+  end
+
+  override :provider_url
+  def provider_url
+    strong_memoize(:provider_url) do
+      provider = Gitlab::Auth::OAuth::Provider.config_for('github')
+
+      provider&.dig('url').presence || 'https://github.com'
+    end
   end
 
   private
@@ -72,27 +95,6 @@ class Import::GithubController < Import::BaseController
 
   def serialized_imported_projects(projects = already_added_projects)
     ProjectSerializer.new.represent(projects, serializer: :import, provider_url: provider_url)
-  end
-
-  def serialized_provider_repos
-    repos = client_repos.reject { |repo| already_added_project_names.include? repo.full_name }
-    Import::ProviderRepoSerializer.new(current_user: current_user).represent(repos, provider: provider, provider_url: provider_url)
-  end
-
-  def serialized_namespaces
-    NamespaceSerializer.new.represent(namespaces)
-  end
-
-  def already_added_projects
-    @already_added_projects ||= filtered(find_already_added_projects(provider))
-  end
-
-  def already_added_project_names
-    @already_added_projects_names ||= already_added_projects.pluck(:import_source) # rubocop:disable CodeReuse/ActiveRecord
-  end
-
-  def namespaces
-    current_user.manageable_groups_with_routes
   end
 
   def expire_etag_cache
@@ -118,29 +120,29 @@ class Import::GithubController < Import::BaseController
   end
 
   def import_enabled?
-    __send__("#{provider}_import_enabled?") # rubocop:disable GitlabSecurity/PublicSend
+    __send__("#{provider_name}_import_enabled?") # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def realtime_changes_path
-    public_send("realtime_changes_import_#{provider}_path", format: :json) # rubocop:disable GitlabSecurity/PublicSend
+    public_send("realtime_changes_import_#{provider_name}_path", format: :json) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def new_import_url
-    public_send("new_import_#{provider}_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
+    public_send("new_import_#{provider_name}_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def status_import_url
-    public_send("status_import_#{provider}_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
+    public_send("status_import_#{provider_name}_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def callback_import_url
-    public_send("users_import_#{provider}_callback_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
+    public_send("users_import_#{provider_name}_callback_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def provider_unauthorized
     session[access_token_key] = nil
     redirect_to new_import_url,
-      alert: "Access denied to your #{Gitlab::ImportSources.title(provider.to_s)} account."
+      alert: "Access denied to your #{Gitlab::ImportSources.title(provider_name.to_s)} account."
   end
 
   def provider_rate_limit(exception)
@@ -151,29 +153,16 @@ class Import::GithubController < Import::BaseController
   end
 
   def access_token_key
-    :"#{provider}_access_token"
+    :"#{provider_name}_access_token"
   end
 
   def access_params
     { github_access_token: session[access_token_key] }
   end
 
-  # The following methods are overridden in subclasses
-  def provider
-    :github
-  end
-
-  def provider_url
-    strong_memoize(:provider_url) do
-      provider = Gitlab::Auth::OAuth::Provider.config_for('github')
-
-      provider&.dig('url').presence || 'https://github.com'
-    end
-  end
-
   # rubocop: disable CodeReuse/ActiveRecord
   def logged_in_with_provider?
-    current_user.identities.exists?(provider: provider)
+    current_user.identities.exists?(provider: provider_name)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -201,12 +190,6 @@ class Import::GithubController < Import::BaseController
 
   def filter_attribute
     :name
-  end
-
-  def filtered(collection)
-    return collection unless sanitized_filter_param
-
-    collection.select { |item| item[filter_attribute].include?(sanitized_filter_param) }
   end
 end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../../config/initializers/doorkeeper'
 
-describe Doorkeeper.configuration do
+RSpec.describe Doorkeeper.configuration do
   describe '#default_scopes' do
     it 'matches Gitlab::Auth::DEFAULT_SCOPES' do
       expect(subject.default_scopes).to eq Gitlab::Auth::DEFAULT_SCOPES

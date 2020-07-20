@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Config::Normalizer do
+RSpec.describe Gitlab::Ci::Config::Normalizer do
   let(:job_name) { :rspec }
   let(:job_config) { { script: 'rspec', parallel: 5, name: 'rspec' } }
   let(:config) { { job_name => job_config } }

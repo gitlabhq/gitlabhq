@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Entities::Release do
+RSpec.describe API::Entities::Release do
   let_it_be(:project) { create(:project) }
   let(:release) { create(:release, project: project) }
   let(:evidence) { release.evidences.first }

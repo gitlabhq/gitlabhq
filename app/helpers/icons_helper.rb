@@ -28,10 +28,12 @@ module IconsHelper
   end
 
   def sprite_icon_path
-    # SVG Sprites currently don't work across domains, so in the case of a CDN
-    # we have to set the current path deliberately to prevent addition of asset_host
-    sprite_base_url = Gitlab.config.gitlab.url if ActionController::Base.asset_host
-    ActionController::Base.helpers.image_path('icons.svg', host: sprite_base_url)
+    @sprite_icon_path ||= begin
+      # SVG Sprites currently don't work across domains, so in the case of a CDN
+      # we have to set the current path deliberately to prevent addition of asset_host
+      sprite_base_url = Gitlab.config.gitlab.url if ActionController::Base.asset_host
+      ActionController::Base.helpers.image_path('icons.svg', host: sprite_base_url)
+    end
   end
 
   def sprite_file_icons_path
@@ -51,6 +53,15 @@ module IconsHelper
     css_classes << "s#{size}" if size
     css_classes << "#{css_class}" unless css_class.blank?
     content_tag(:svg, content_tag(:use, "", { "xlink:href" => "#{sprite_icon_path}##{icon_name}" } ), class: css_classes.empty? ? nil : css_classes.join(' '))
+  end
+
+  def loading_icon(container: false, color: 'orange', size: 'sm', css_class: nil)
+    css_classes = ['gl-spinner', "gl-spinner-#{color}", "gl-spinner-#{size}"]
+    css_classes << "#{css_class}" unless css_class.blank?
+
+    spinner = content_tag(:span, "", { class: css_classes.join(' '), aria: { label: _('Loading') } })
+
+    container == true ? content_tag(:div, spinner, { class: 'gl-spinner-container' }) : spinner
   end
 
   def external_snippet_icon(name)

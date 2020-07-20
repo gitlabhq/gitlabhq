@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Milestones::PromoteService do
+RSpec.describe Milestones::PromoteService do
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
   let(:user) { create(:user) }

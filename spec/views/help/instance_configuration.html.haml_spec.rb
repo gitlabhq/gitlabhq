@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'help/instance_configuration' do
+RSpec.describe 'help/instance_configuration' do
   describe 'General Sections:' do
     let(:instance_configuration) { build(:instance_configuration)}
     let(:settings) { instance_configuration.settings }

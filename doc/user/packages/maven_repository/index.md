@@ -23,7 +23,7 @@ After the Packages feature is enabled, the Maven Repository will be available fo
 all new projects by default. To enable it for existing projects, or if you want
 to disable it:
 
-1. Navigate to your project's **Settings > General > Permissions**.
+1. Navigate to your project's **Settings > General > Visibility, project features, permissions**.
 1. Find the Packages feature and enable or disable it.
 1. Click on **Save changes** for the changes to take effect.
 
@@ -820,6 +820,16 @@ The next time the `deploy` job runs, it will copy `ci_settings.xml` to the
 user's home location (in this case the user is `root` since it runs in a
 Docker container), and Maven will use the configured CI
 [environment variables](../../../ci/variables/README.md#predefined-environment-variables).
+
+### Version validation
+
+The version string is validated using the following regex.
+
+```ruby
+\A(\.?[\w\+-]+\.?)+\z
+```
+
+You can play around with the regex and try your version strings on [this regular expression editor](https://rubular.com/r/rrLQqUXjfKEoL6).
 
 ## Troubleshooting
 

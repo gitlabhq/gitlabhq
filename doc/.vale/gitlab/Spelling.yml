@@ -9,7 +9,7 @@
 # Commands, like `git clone` must use backticks, and must not be added to the
 # exceptions.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: spelling
 message: 'Spelling check: "%s"?'
 level: warning

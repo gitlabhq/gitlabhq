@@ -18,6 +18,11 @@ module QA
             element :export_issues_modal
           end
 
+          view 'app/views/projects/issues/import_csv/_button.html.haml' do
+            element :import_issues_button
+            element :import_from_jira_link
+          end
+
           view 'app/views/projects/issues/_issue.html.haml' do
             element :issue
             element :issue_link, 'link_to issue.title' # rubocop:disable QA/ElementWithPattern
@@ -51,8 +56,23 @@ module QA
             click_element(:export_issues_button)
           end
 
+          def click_import_from_jira_link
+            click_element(:import_from_jira_link)
+          end
+
+          def click_import_issues_dropdown
+            # When there are no issues, the image that loads causes the buttons to jump
+            has_loaded_all_images?
+            click_element(:import_issues_button)
+          end
+
           def export_issues_modal
             find_element(:export_issues_modal)
+          end
+
+          def go_to_jira_import_form
+            click_import_issues_dropdown
+            click_import_from_jira_link
           end
 
           def has_assignee_link_count?(count)

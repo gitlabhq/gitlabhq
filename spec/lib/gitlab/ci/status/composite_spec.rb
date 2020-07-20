@@ -2,15 +2,15 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Composite do
+RSpec.describe Gitlab::Ci::Status::Composite do
   let_it_be(:pipeline) { create(:ci_pipeline) }
 
   before_all do
-    @statuses = HasStatus::STATUSES_ENUM.map do |status, idx|
+    @statuses = Ci::HasStatus::STATUSES_ENUM.map do |status, idx|
       [status, create(:ci_build, pipeline: pipeline, status: status, importing: true)]
     end.to_h
 
-    @statuses_with_allow_failure = HasStatus::STATUSES_ENUM.map do |status, idx|
+    @statuses_with_allow_failure = Ci::HasStatus::STATUSES_ENUM.map do |status, idx|
       [status, create(:ci_build, pipeline: pipeline, status: status, allow_failure: true, importing: true)]
     end.to_h
   end
@@ -26,7 +26,7 @@ describe Gitlab::Ci::Status::Composite do
     end
 
     shared_examples 'validate all combinations' do |perms|
-      HasStatus::STATUSES_ENUM.keys.combination(perms).each do |statuses|
+      Ci::HasStatus::STATUSES_ENUM.keys.combination(perms).each do |statuses|
         context "with #{statuses.join(",")}" do
           it_behaves_like 'compares composite with SQL status' do
             let(:all_statuses) do
@@ -38,7 +38,7 @@ describe Gitlab::Ci::Status::Composite do
             end
           end
 
-          HasStatus::STATUSES_ENUM.each do |allow_failure_status, _|
+          Ci::HasStatus::STATUSES_ENUM.each do |allow_failure_status, _|
             context "and allow_failure #{allow_failure_status}" do
               it_behaves_like 'compares composite with SQL status' do
                 let(:all_statuses) do

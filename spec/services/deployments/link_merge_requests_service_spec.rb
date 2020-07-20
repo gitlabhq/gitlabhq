@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Deployments::LinkMergeRequestsService do
+RSpec.describe Deployments::LinkMergeRequestsService do
   let(:project) { create(:project, :repository) }
 
   # *   ddd0f15 Merge branch 'po-fix-test-env-path' into 'master'

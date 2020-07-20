@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerExpirationPolicyWorker do
+RSpec.describe ContainerExpirationPolicyWorker do
   include ExclusiveLeaseHelpers
 
   subject { described_class.new.perform }

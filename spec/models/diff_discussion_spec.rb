@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffDiscussion do
+RSpec.describe DiffDiscussion do
   include RepoHelpers
 
   subject { described_class.new([diff_note]) }

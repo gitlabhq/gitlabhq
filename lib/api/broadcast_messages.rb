@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class BroadcastMessages < Grape::API
+  class BroadcastMessages < Grape::API::Instance
     include PaginationParams
 
     resource :broadcast_messages do

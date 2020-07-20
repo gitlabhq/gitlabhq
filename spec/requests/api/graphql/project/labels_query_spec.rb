@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'getting project label information' do
+RSpec.describe 'getting project label information' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :public) }

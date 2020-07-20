@@ -1,0 +1,5 @@
+---
+title: Fix to display speech bubble on hover over image on commits page
+merge_request: 36470
+author: Adam Alvis @adamalvis
+type: fixed

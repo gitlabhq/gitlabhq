@@ -55,6 +55,7 @@ describe('IDE store merge request actions', () => {
               expect(service.getProjectMergeRequests).toHaveBeenCalledWith(TEST_PROJECT, {
                 source_branch: 'bar',
                 source_project_id: TEST_PROJECT_ID,
+                state: 'opened',
                 order_by: 'created_at',
                 per_page: 1,
               });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Users::RefreshAuthorizedProjectsService do
+RSpec.describe Users::RefreshAuthorizedProjectsService do
   include ExclusiveLeaseHelpers
 
   # We're using let! here so that any expectations for the service class are not

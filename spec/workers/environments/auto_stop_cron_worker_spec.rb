@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Environments::AutoStopCronWorker do
+RSpec.describe Environments::AutoStopCronWorker do
   subject { worker.perform }
 
   let(:worker) { described_class.new }

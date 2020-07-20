@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::TreeResolver do
+RSpec.describe Resolvers::TreeResolver do
   include GraphqlHelpers
 
   let(:repository) { create(:project, :repository).repository }

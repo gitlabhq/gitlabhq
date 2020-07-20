@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectExportJob, type: :model do
+RSpec.describe ProjectExportJob, type: :model do
   let(:project) { create(:project) }
   let!(:job1) { create(:project_export_job, project: project, status: 0) }
   let!(:job2) { create(:project_export_job, project: project, status: 2) }

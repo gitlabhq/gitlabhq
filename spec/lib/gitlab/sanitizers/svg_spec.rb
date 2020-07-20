@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Sanitizers::SVG do
+RSpec.describe Gitlab::Sanitizers::SVG do
   let(:scrubber) { Gitlab::Sanitizers::SVG::Scrubber.new }
   let(:namespace) { double(Nokogiri::XML::Namespace, prefix: 'xlink', href: 'http://www.w3.org/1999/xlink') }
   let(:namespaced_attr) { double(Nokogiri::XML::Attr, name: 'href', namespace: namespace, value: '#awesome_id') }

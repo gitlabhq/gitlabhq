@@ -84,8 +84,12 @@ module Projects
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.full_name}\"")
 
+      # Skip writing the config for project imports/forks because it
+      # will always fail since the Git directory doesn't exist until
+      # a background job creates it (see Project#add_import_job).
+      @project.write_repository_config unless @project.import?
+
       unless @project.gitlab_project_import?
-        @project.write_repository_config
         @project.create_wiki unless skip_wiki?
       end
 
@@ -103,12 +107,13 @@ module Projects
       create_readme if @initialize_with_readme
     end
 
-    # Refresh the current user's authorizations inline (so they can access the
-    # project immediately after this request completes), and any other affected
-    # users in the background
+    # Add an authorization for the current user authorizations inline
+    # (so they can access the project immediately after this request
+    # completes), and any other affected users in the background
     def setup_authorizations
       if @project.group
-        current_user.refresh_authorized_projects
+        current_user.project_authorizations.create!(project: @project,
+                                                    access_level: @project.group.max_member_access_for_user(current_user))
 
         if Feature.enabled?(:specialized_project_authorization_workers)
           AuthorizedProjectUpdate::ProjectCreateWorker.perform_async(@project.id)
@@ -131,7 +136,7 @@ module Projects
 
     def create_readme
       commit_attrs = {
-        branch_name: 'master',
+        branch_name:  Gitlab::CurrentSettings.default_branch_name.presence || 'master',
         commit_message: 'Initial commit',
         file_path: 'README.md',
         file_content: "# #{@project.name}\n\n#{@project.description}"

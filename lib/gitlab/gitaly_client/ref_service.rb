@@ -15,14 +15,12 @@ module Gitlab
       def branches
         request = Gitaly::FindAllBranchesRequest.new(repository: @gitaly_repo)
         response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request, timeout: GitalyClient.fast_timeout)
-
         consume_find_all_branches_response(response)
       end
 
       def remote_branches(remote_name)
         request = Gitaly::FindAllRemoteBranchesRequest.new(repository: @gitaly_repo, remote_name: remote_name)
-        response = GitalyClient.call(@repository.storage, :ref_service, :find_all_remote_branches, request, timeout: GitalyClient.medium_timeout)
-
+        response = GitalyClient.call(@storage, :ref_service, :find_all_remote_branches, request, timeout: GitalyClient.medium_timeout)
         consume_find_all_remote_branches_response(remote_name, response)
       end
 
@@ -33,7 +31,6 @@ module Gitlab
           merged_branches: branch_names.map { |s| encode_binary(s) }
         )
         response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request, timeout: GitalyClient.fast_timeout)
-
         consume_find_all_branches_response(response)
       end
 
@@ -71,10 +68,9 @@ module Gitlab
           commit_id: newrev
         )
 
-        response = GitalyClient
-          .call(@storage, :ref_service, :list_new_commits, request, timeout: GitalyClient.medium_timeout)
-
         commits = []
+
+        response = GitalyClient.call(@storage, :ref_service, :list_new_commits, request, timeout: GitalyClient.medium_timeout)
         response.each do |msg|
           msg.commits.each do |c|
             commits << Gitlab::Git::Commit.new(@repository, c)
@@ -98,9 +94,7 @@ module Gitlab
             GitalyClient.medium_timeout
           end
 
-        response = GitalyClient
-          .call(@storage, :ref_service, :list_new_blobs, request, timeout: timeout)
-
+        response = GitalyClient.call(@storage, :ref_service, :list_new_blobs, request, timeout: timeout)
         response.flat_map do |msg|
           # Returns an Array of Gitaly::NewBlobObject objects
           # Available methods are: #size, #oid and #path
@@ -116,8 +110,8 @@ module Gitlab
         branch_names.count
       end
 
-      def local_branches(sort_by: nil)
-        request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
+      def local_branches(sort_by: nil, pagination_params: nil)
+        request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo, pagination_params: pagination_params)
         request.sort_by = sort_by_param(sort_by) if sort_by
         response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request, timeout: GitalyClient.fast_timeout)
         consume_find_local_branches_response(response)
@@ -171,9 +165,8 @@ module Gitlab
           limit: limit
         )
 
-        stream = GitalyClient.call(@repository.storage, :ref_service, :list_tag_names_containing_commit, request, timeout: GitalyClient.medium_timeout)
-
-        consume_ref_contains_sha_response(stream, :tag_names)
+        response = GitalyClient.call(@storage, :ref_service, :list_tag_names_containing_commit, request, timeout: GitalyClient.medium_timeout)
+        consume_ref_contains_sha_response(response, :tag_names)
       end
 
       # Limit: 0 implies no limit, thus all tag names will be returned
@@ -184,18 +177,16 @@ module Gitlab
           limit: limit
         )
 
-        stream = GitalyClient.call(@repository.storage, :ref_service, :list_branch_names_containing_commit, request, timeout: GitalyClient.medium_timeout)
-
-        consume_ref_contains_sha_response(stream, :branch_names)
+        response = GitalyClient.call(@storage, :ref_service, :list_branch_names_containing_commit, request, timeout: GitalyClient.medium_timeout)
+        consume_ref_contains_sha_response(response, :branch_names)
       end
 
       def get_tag_messages(tag_ids)
         request = Gitaly::GetTagMessagesRequest.new(repository: @gitaly_repo, tag_ids: tag_ids)
-        response = GitalyClient.call(@repository.storage, :ref_service, :get_tag_messages, request, timeout: GitalyClient.fast_timeout)
-
         messages = Hash.new { |h, k| h[k] = +''.b }
         current_tag_id = nil
 
+        response = GitalyClient.call(@storage, :ref_service, :get_tag_messages, request, timeout: GitalyClient.fast_timeout)
         response.each do |rpc_message|
           current_tag_id = rpc_message.tag_id if rpc_message.tag_id.present?
 

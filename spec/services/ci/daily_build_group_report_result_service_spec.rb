@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DailyBuildGroupReportResultService, '#execute' do
+RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
   let!(:pipeline) { create(:ci_pipeline, created_at: '2020-02-06 00:01:10') }
   let!(:rspec_job) { create(:ci_build, pipeline: pipeline, name: '3/3 rspec', coverage: 80) }
   let!(:karma_job) { create(:ci_build, pipeline: pipeline, name: '2/2 karma', coverage: 90) }

@@ -1,0 +1,5 @@
+---
+title: Remove non-unique index on `merge_request_metrics.merge_request_id` column
+merge_request: 36170
+author:
+type: changed

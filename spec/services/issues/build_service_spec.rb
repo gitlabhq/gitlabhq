@@ -2,7 +2,7 @@
 
 require 'spec_helper.rb'
 
-describe Issues::BuildService do
+RSpec.describe Issues::BuildService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

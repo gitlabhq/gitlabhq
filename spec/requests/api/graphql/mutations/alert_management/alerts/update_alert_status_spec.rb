@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Setting the status of an alert' do
+RSpec.describe 'Setting the status of an alert' do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

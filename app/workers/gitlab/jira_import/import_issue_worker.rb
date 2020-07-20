@@ -62,7 +62,7 @@ module Gitlab
       end
 
       def build_label_attrs(issue_id, label_id)
-        time = Time.now
+        time = Time.current
         {
           label_id: label_id,
           target_id: issue_id,

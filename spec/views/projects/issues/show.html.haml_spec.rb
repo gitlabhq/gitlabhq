@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/issues/show' do
+RSpec.describe 'projects/issues/show' do
   include_context 'project show action'
 
   context 'when the issue is closed' do
@@ -23,7 +23,7 @@ describe 'projects/issues/show' do
           project.add_developer(user)
         end
 
-        it 'shows "Closed (moved)" if an issue has been moved' do
+        it 'shows "Closed (moved)" if an issue has been moved and closed' do
           render
 
           expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (moved)')
@@ -40,6 +40,14 @@ describe 'projects/issues/show' do
           render
 
           expect(rendered).to have_selector("a[href=\"#{issue_path(new_issue)}\"]", text: 'moved')
+        end
+
+        it 'does not show "closed (moved)" if an issue has been moved and reopened (not closed)' do
+          allow(issue).to receive(:closed?).and_return(false)
+
+          render
+
+          expect(rendered).not_to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (moved)')
         end
       end
 

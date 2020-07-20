@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
+RSpec.describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
   describe '#unmet?' do
     let(:build) { create(:ci_build) }
 

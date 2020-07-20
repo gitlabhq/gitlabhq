@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'Multiplexed queries' do
+RSpec.describe 'Multiplexed queries' do
   include GraphqlHelpers
 
   it 'returns responses for multiple queries' do

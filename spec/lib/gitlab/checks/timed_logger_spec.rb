@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Checks::TimedLogger do
+RSpec.describe Gitlab::Checks::TimedLogger do
   let!(:timeout) { 50.seconds }
   let!(:start) { Time.now }
   let!(:ref) { "bar" }

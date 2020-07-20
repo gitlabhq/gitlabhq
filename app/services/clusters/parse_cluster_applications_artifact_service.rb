@@ -5,7 +5,7 @@ module Clusters
     include Gitlab::Utils::StrongMemoize
 
     MAX_ACCEPTABLE_ARTIFACT_SIZE = 5.kilobytes
-    RELEASE_NAMES = %w[prometheus].freeze
+    RELEASE_NAMES = %w[prometheus cilium].freeze
 
     def initialize(job, current_user)
       @job = job

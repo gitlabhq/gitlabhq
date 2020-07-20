@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Download merge request patch and diff' do
       before(:context) do
         @merge_request = Resource::MergeRequest.fabricate_via_api! do |merge_request|

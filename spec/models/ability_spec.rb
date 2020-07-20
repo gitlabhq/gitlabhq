@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ability do
+RSpec.describe Ability do
   context 'using a nil subject' do
     it 'has no permissions' do
       expect(described_class.policy_for(nil, nil)).to be_banned

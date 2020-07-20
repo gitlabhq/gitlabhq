@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::ExtractSectionsFromBuildTraceService, '#execute' do
+RSpec.describe Ci::ExtractSectionsFromBuildTraceService, '#execute' do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:build) { create(:ci_build, project: project) }

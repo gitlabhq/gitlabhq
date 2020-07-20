@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ApplicationSetting do
+RSpec.describe ApplicationSetting do
   using RSpec::Parameterized::TableSyntax
 
   subject(:setting) { described_class.create_from_defaults }

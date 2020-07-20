@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ImportErrorFilter do
+RSpec.describe Projects::ImportErrorFilter do
   it 'filters any full paths' do
     message = 'Error importing into /my/folder Permission denied @ unlink_internal - /var/opt/gitlab/gitlab-rails/shared/a/b/c/uploads/file'
 

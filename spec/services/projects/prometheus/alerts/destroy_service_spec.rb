@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Prometheus::Alerts::DestroyService do
+RSpec.describe Projects::Prometheus::Alerts::DestroyService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:alert) { create(:prometheus_alert, project: project) }

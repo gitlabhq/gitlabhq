@@ -5,7 +5,7 @@ require 'spec_helper'
 require 'fileutils'
 require 'excon'
 
-describe 'Puma' do
+RSpec.describe 'Puma' do
   before(:all) do
     project_root = Rails.root.to_s
     config_lines = File.read(Rails.root.join('config/puma.example.development.rb'))

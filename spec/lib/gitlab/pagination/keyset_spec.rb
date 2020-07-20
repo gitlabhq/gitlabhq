@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Pagination::Keyset do
+RSpec.describe Gitlab::Pagination::Keyset do
   describe '.available_for_type?' do
     subject { described_class }
 

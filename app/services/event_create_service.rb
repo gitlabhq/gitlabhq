@@ -11,44 +11,30 @@ class EventCreateService
   IllegalActionError = Class.new(StandardError)
 
   def open_issue(issue, current_user)
-    create_resource_event(issue, current_user, :opened)
-
     create_record_event(issue, current_user, :created)
   end
 
   def close_issue(issue, current_user)
-    create_resource_event(issue, current_user, :closed)
-
     create_record_event(issue, current_user, :closed)
   end
 
   def reopen_issue(issue, current_user)
-    create_resource_event(issue, current_user, :reopened)
-
     create_record_event(issue, current_user, :reopened)
   end
 
   def open_mr(merge_request, current_user)
-    create_resource_event(merge_request, current_user, :opened)
-
     create_record_event(merge_request, current_user, :created)
   end
 
   def close_mr(merge_request, current_user)
-    create_resource_event(merge_request, current_user, :closed)
-
     create_record_event(merge_request, current_user, :closed)
   end
 
   def reopen_mr(merge_request, current_user)
-    create_resource_event(merge_request, current_user, :reopened)
-
     create_record_event(merge_request, current_user, :reopened)
   end
 
   def merge_mr(merge_request, current_user)
-    create_resource_event(merge_request, current_user, :merged)
-
     create_record_event(merge_request, current_user, :merged)
   end
 
@@ -97,23 +83,13 @@ class EventCreateService
   end
 
   def save_designs(current_user, create: [], update: [])
-    created = create.group_by(&:project).flat_map do |project, designs|
-      Feature.enabled?(:design_activity_events, project) ? designs : []
-    end.to_set
-    updated = update.group_by(&:project).flat_map do |project, designs|
-      Feature.enabled?(:design_activity_events, project) ? designs : []
-    end.to_set
-    return [] if created.empty? && updated.empty?
-
-    records = created.zip([:created].cycle) + updated.zip([:updated].cycle)
+    records = create.zip([:created].cycle) + update.zip([:updated].cycle)
+    return [] if records.empty?
 
     create_record_events(records, current_user)
   end
 
   def destroy_designs(designs, current_user)
-    designs = designs.select do |design|
-      Feature.enabled?(:design_activity_events, design.project)
-    end
     return [] unless designs.present?
 
     create_record_events(designs.zip([:destroyed].cycle), current_user)
@@ -127,8 +103,6 @@ class EventCreateService
   #
   # @return a tuple of event and either :found or :created
   def wiki_event(wiki_page_meta, author, action)
-    return unless Feature.enabled?(:wiki_events)
-
     raise IllegalActionError, action unless Event::WIKI_ACTIONS.include?(action)
 
     if duplicate = existing_wiki_event(wiki_page_meta, action)
@@ -142,7 +116,13 @@ class EventCreateService
       event.update_columns(updated_at: time_stamp, created_at: time_stamp)
     end
 
+    Gitlab::UsageDataCounters::TrackUniqueActions.track_action(event_action: action, event_target: wiki_page_meta.class, author_id: author.id)
+
     event
+  end
+
+  def approve_mr(merge_request, current_user)
+    create_record_event(merge_request, current_user, :approved)
   end
 
   private
@@ -182,7 +162,13 @@ class EventCreateService
         .merge(action: action, target_id: record.id, target_type: record.class.name)
     end
 
-    Event.insert_all(attribute_sets, returning: %w[id])
+    result = Event.insert_all(attribute_sets, returning: %w[id])
+
+    pairs.each do |record, status|
+      Gitlab::UsageDataCounters::TrackUniqueActions.track_action(event_action: status, event_target: record.class, author_id: current_user.id)
+    end
+
+    result
   end
 
   def create_push_event(service_class, project, current_user, push_data)
@@ -196,6 +182,8 @@ class EventCreateService
 
       new_event
     end
+
+    Gitlab::UsageDataCounters::TrackUniqueActions.track_action(event_action: :pushed, event_target: Project, author_id: current_user.id)
 
     Users::LastPushEventService.new(current_user)
       .cache_last_push_event(event)
@@ -224,18 +212,6 @@ class EventCreateService
     return {} unless resource_parent_attr
 
     { resource_parent_attr => resource_parent.id }
-  end
-
-  def create_resource_event(issuable, current_user, status)
-    return unless state_change_tracking_enabled?(issuable)
-
-    ResourceEvents::ChangeStateService.new(resource: issuable, user: current_user)
-      .execute(status)
-  end
-
-  def state_change_tracking_enabled?(issuable)
-    issuable&.respond_to?(:resource_state_events) &&
-      ::Feature.enabled?(:track_resource_state_change_events, issuable&.project)
   end
 end
 

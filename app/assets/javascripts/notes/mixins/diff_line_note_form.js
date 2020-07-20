@@ -4,6 +4,7 @@ import { TEXT_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/const
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
+import { formatLineRange } from '~/notes/components/multiline_comment_utils';
 
 export default {
   computed: {
@@ -45,6 +46,9 @@ export default {
         });
     },
     addToReview(note) {
+      const lineRange =
+        (this.line && this.commentLineStart && formatLineRange(this.commentLineStart, this.line)) ||
+        {};
       const positionType = this.diffFileCommentForm
         ? IMAGE_DIFF_POSITION_TYPE
         : TEXT_DIFF_POSITION_TYPE;
@@ -60,6 +64,7 @@ export default {
         linePosition: this.position,
         positionType,
         ...this.diffFileCommentForm,
+        lineRange,
       });
 
       const diffFileHeadSha = this.commit && this?.diffFile?.diff_refs?.head_sha;

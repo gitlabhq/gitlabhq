@@ -1,0 +1,11 @@
+= icon_for_profile_event(event)
+
+= event_user_info(event)
+
+.event-title.d-flex.flex-wrap
+  = inline_event_icon(event)
+  %span.event-type.d-inline-block.gl-mr-2{ class: event.action_name }
+    = event.action_name
+  = event_design_title_html(event)
+  = render "events/event_scope", event: event
+

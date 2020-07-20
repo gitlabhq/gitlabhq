@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ConfigChecker::PumaRuggedChecker do
+RSpec.describe Gitlab::ConfigChecker::PumaRuggedChecker do
   describe '#check' do
     subject { described_class.check }
 

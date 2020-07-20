@@ -54,6 +54,13 @@ module Types
           description: 'Indicates if the merge has been set to be merged when its pipeline succeeds (MWPS)'
     field :diff_head_sha, GraphQL::STRING_TYPE, null: true,
           description: 'Diff head SHA of the merge request'
+    field :diff_stats, [Types::DiffStatsType], null: true, calls_gitaly: true,
+          description: 'Details about which files were changed in this merge request' do
+      argument :path, GraphQL::STRING_TYPE, required: false, description: 'A specific file-path'
+    end
+
+    field :diff_stats_summary, Types::DiffStatsSummaryType, null: true, calls_gitaly: true,
+          description: 'Summary of which files were changed in this merge request'
     field :merge_commit_sha, GraphQL::STRING_TYPE, null: true,
           description: 'SHA of the merge request commit (set once merged)'
     field :user_notes_count, GraphQL::INT_TYPE, null: true,
@@ -134,5 +141,24 @@ module Types
     end
     field :task_completion_status, Types::TaskCompletionStatus, null: false,
           description: Types::TaskCompletionStatus.description
+
+    def diff_stats(path: nil)
+      stats = Array.wrap(object.diff_stats&.to_a)
+
+      if path.present?
+        stats.select { |s| s.path == path }
+      else
+        stats
+      end
+    end
+
+    def diff_stats_summary
+      nil_stats = { additions: 0, deletions: 0, file_count: 0 }
+      return nil_stats unless object.diff_stats.present?
+
+      object.diff_stats.each_with_object(nil_stats) do |status, hash|
+        hash.merge!(additions: status.additions, deletions: status.deletions, file_count: 1) { |_, x, y| x + y }
+      end
+    end
   end
 end

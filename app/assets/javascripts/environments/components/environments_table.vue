@@ -188,7 +188,7 @@ export default {
 
       <template v-if="shouldRenderFolderContent(model)">
         <div v-if="model.isLoadingFolderContent" :key="`loading-item-${i}`">
-          <gl-loading-icon size="md" class="prepend-top-16" />
+          <gl-loading-icon size="md" class="gl-mt-5" />
         </div>
 
         <template v-else>

@@ -1,0 +1,5 @@
+---
+title: Update Auto deploy image to v0.16.1, introducing support for AUTO_DEVOPS_DEPLOY_DEBUG
+merge_request: 33799
+author:
+type: changed

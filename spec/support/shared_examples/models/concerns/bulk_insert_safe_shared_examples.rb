@@ -7,17 +7,17 @@ RSpec.shared_examples 'a BulkInsertSafe model' do |klass|
   let(:target_class) { klass.dup }
 
   # We consider all callbacks unsafe for bulk insertions unless we have explicitly
-  # whitelisted them (esp. anything related to :save, :create, :commit etc.)
-  let(:callback_method_blacklist) do
+  # allowed them (especially anything related to :save, :create, :commit, etc.)
+  let(:unsafe_callbacks) do
     ActiveRecord::Callbacks::CALLBACKS.reject do |callback|
       cb_name = callback.to_s.gsub(/(before_|after_|around_)/, '').to_sym
-      BulkInsertSafe::CALLBACK_NAME_WHITELIST.include?(cb_name)
+      BulkInsertSafe::ALLOWED_CALLBACKS.include?(cb_name)
     end.to_set
   end
 
   context 'when calling class methods directly' do
     it 'raises an error when method is not bulk-insert safe' do
-      callback_method_blacklist.each do |m|
+      unsafe_callbacks.each do |m|
         expect { target_class.send(m, nil) }.to(
           raise_error(BulkInsertSafe::MethodNotAllowedError),
           "Expected call to #{m} to raise an error, but it didn't"
@@ -26,7 +26,7 @@ RSpec.shared_examples 'a BulkInsertSafe model' do |klass|
     end
 
     it 'does not raise an error when method is bulk-insert safe' do
-      BulkInsertSafe::CALLBACK_NAME_WHITELIST.each do |name|
+      BulkInsertSafe::ALLOWED_CALLBACKS.each do |name|
         expect { target_class.set_callback(name) {} }.not_to raise_error
       end
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Sanitizers::Exif do
+RSpec.describe Gitlab::Sanitizers::Exif do
   let(:sanitizer) { described_class.new }
 
   describe '#batch_clean' do

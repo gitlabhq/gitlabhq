@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GrapeLogging::Loggers::QueueDurationLogger do
+RSpec.describe Gitlab::GrapeLogging::Loggers::QueueDurationLogger do
   subject { described_class.new }
 
   describe ".parameters" do

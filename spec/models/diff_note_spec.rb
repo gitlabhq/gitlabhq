@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffNote do
+RSpec.describe DiffNote do
   include RepoHelpers
 
   let_it_be(:merge_request) { create(:merge_request) }

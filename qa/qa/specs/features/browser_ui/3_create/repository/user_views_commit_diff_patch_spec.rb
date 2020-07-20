@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Commit data' do
       before(:context) do
         # Get the user's details to confirm they're included in the email patch

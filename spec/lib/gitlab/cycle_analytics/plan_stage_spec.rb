@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::PlanStage do
+RSpec.describe Gitlab::CycleAnalytics::PlanStage do
   let(:stage_name) { :plan }
   let(:project) { create(:project) }
   let!(:issue_1) { create(:issue, project: project, created_at: 90.minutes.ago) }

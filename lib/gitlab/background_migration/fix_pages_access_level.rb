@@ -16,7 +16,7 @@ module Gitlab
       end
 
       # Namespace
-      class Namespace < ApplicationRecord
+      class Namespace < ActiveRecord::Base
         self.table_name = 'namespaces'
         self.inheritance_column = :_type_disabled
 

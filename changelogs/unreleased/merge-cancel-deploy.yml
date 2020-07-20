@@ -1,0 +1,5 @@
+---
+title: Cancel review app deployment when MR is merged
+merge_request: 34960
+author:
+type: fixed

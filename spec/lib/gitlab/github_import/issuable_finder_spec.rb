@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_cache do
   let(:project) { double(:project, id: 4) }
   let(:issue) do
     double(:issue, issuable_type: MergeRequest, iid: 1)

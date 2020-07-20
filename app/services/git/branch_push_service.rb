@@ -29,6 +29,7 @@ module Git
       perform_housekeeping
 
       stop_environments
+      unlock_artifacts
 
       true
     end
@@ -58,6 +59,12 @@ module Git
       return unless removing_branch?
 
       Ci::StopEnvironmentsService.new(project, current_user).execute(branch_name)
+    end
+
+    def unlock_artifacts
+      return unless removing_branch?
+
+      Ci::RefDeleteUnlockArtifactsWorker.perform_async(project.id, current_user.id, ref)
     end
 
     def execute_related_hooks

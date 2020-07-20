@@ -1,5 +1,5 @@
 import getDesignListQuery from '../graphql/queries/get_design_list.query.graphql';
-import appDataQuery from '../graphql/queries/appData.query.graphql';
+import appDataQuery from '../graphql/queries/app_data.query.graphql';
 import { findVersionId } from '../utils/design_management_utils';
 
 export default {

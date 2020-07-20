@@ -1,0 +1,5 @@
+---
+title: Rework hardening CI pipelines usage data queries with an index
+merge_request: 35494
+author:
+type: performance

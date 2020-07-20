@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqMiddleware::Monitor do
+RSpec.describe Gitlab::SidekiqMiddleware::Monitor do
   let(:monitor) { described_class.new }
 
   describe '#call' do

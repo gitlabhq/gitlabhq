@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-describe Gitlab::Suggestions::FileSuggestion do
-  def create_suggestion(new_line, to_content)
+RSpec.describe Gitlab::Suggestions::FileSuggestion do
+  def create_suggestion(new_line, to_content, lines_above = 0, lines_below = 0)
     position = Gitlab::Diff::Position.new(old_path: file_path,
                                           new_path: file_path,
                                           old_line: nil,
@@ -18,6 +18,8 @@ describe Gitlab::Suggestions::FileSuggestion do
     create(:suggestion,
            :content_from_repo,
            note: diff_note,
+           lines_above: lines_above,
+           lines_below: lines_below,
            to_content: to_content)
   end
 
@@ -39,27 +41,9 @@ describe Gitlab::Suggestions::FileSuggestion do
     create_suggestion(15, "      *** SUGGESTION 2 ***\n")
   end
 
-  let(:file_suggestion) { described_class.new }
+  let(:suggestions) { [suggestion1, suggestion2] }
 
-  describe '#add_suggestion' do
-    it 'succeeds when adding a suggestion for the same file as the original' do
-      file_suggestion.add_suggestion(suggestion1)
-
-      expect { file_suggestion.add_suggestion(suggestion2) }.not_to raise_error
-    end
-
-    it 'raises an error when adding a suggestion for a different file' do
-      allow(suggestion2)
-        .to(receive_message_chain(:diff_file, :file_path)
-        .and_return('path/to/different/file'))
-
-      file_suggestion.add_suggestion(suggestion1)
-
-      expect { file_suggestion.add_suggestion(suggestion2) }.to(
-        raise_error(described_class::SuggestionForDifferentFileError)
-      )
-    end
-  end
+  let(:file_suggestion) { described_class.new(file_path, suggestions) }
 
   describe '#line_conflict' do
     def stub_suggestions(line_index_spans)
@@ -175,67 +159,296 @@ describe Gitlab::Suggestions::FileSuggestion do
   end
 
   describe '#new_content' do
-    it 'returns a blob with the suggestions applied to it' do
-      file_suggestion.add_suggestion(suggestion1)
-      file_suggestion.add_suggestion(suggestion2)
+    context 'with two suggestions' do
+      let(:suggestions) { [suggestion1, suggestion2] }
 
-      expected_content = <<-CONTENT.strip_heredoc
-        require 'fileutils'
-        require 'open3'
+      it 'returns a blob with the suggestions applied to it' do
+        expected_content = <<-CONTENT.strip_heredoc
+          require 'fileutils'
+          require 'open3'
 
-        module Popen
-          extend self
+          module Popen
+            extend self
 
-          def popen(cmd, path=nil)
-            unless cmd.is_a?(Array)
-              *** SUGGESTION 1 ***
+            def popen(cmd, path=nil)
+              unless cmd.is_a?(Array)
+                *** SUGGESTION 1 ***
+              end
+
+              path ||= Dir.pwd
+
+              vars = {
+                *** SUGGESTION 2 ***
+              }
+
+              options = {
+                chdir: path
+              }
+
+              unless File.directory?(path)
+                FileUtils.mkdir_p(path)
+              end
+
+              @cmd_output = ""
+              @cmd_status = 0
+
+              Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+                @cmd_output << stdout.read
+                @cmd_output << stderr.read
+                @cmd_status = wait_thr.value.exitstatus
+              end
+
+              return @cmd_output, @cmd_status
             end
-
-            path ||= Dir.pwd
-
-            vars = {
-              *** SUGGESTION 2 ***
-            }
-
-            options = {
-              chdir: path
-            }
-
-            unless File.directory?(path)
-              FileUtils.mkdir_p(path)
-            end
-
-            @cmd_output = ""
-            @cmd_status = 0
-
-            Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
-              @cmd_output << stdout.read
-              @cmd_output << stderr.read
-              @cmd_status = wait_thr.value.exitstatus
-            end
-
-            return @cmd_output, @cmd_status
           end
+        CONTENT
+
+        expect(file_suggestion.new_content).to eq(expected_content)
+      end
+    end
+
+    context 'when no suggestions have been added' do
+      let(:suggestions) { [] }
+
+      it 'returns an empty string' do
+        expect(file_suggestion.new_content).to eq('')
+      end
+    end
+
+    context 'with multiline suggestions' do
+      let(:suggestions) { [multi_suggestion1, multi_suggestion2, multi_suggestion3] }
+
+      context 'when the previous suggestion increases the line count' do
+        let!(:multi_suggestion1) do
+          create_suggestion(9, "      *** SUGGESTION 1 ***\n      *** SECOND LINE ***\n      *** THIRD LINE ***\n")
         end
-      CONTENT
 
-      expect(file_suggestion.new_content).to eq(expected_content)
-    end
+        let!(:multi_suggestion2) do
+          create_suggestion(15, "      *** SUGGESTION 2 ***\n      *** SECOND LINE ***\n")
+        end
 
-    it 'returns an empty string when no suggestions have been added' do
-      expect(file_suggestion.new_content).to eq('')
-    end
-  end
+        let!(:multi_suggestion3) do
+          create_suggestion(19, "      chdir: *** SUGGESTION 3 ***\n")
+        end
 
-  describe '#file_path' do
-    it 'returns the path of the file associated with the suggestions' do
-      file_suggestion.add_suggestion(suggestion1)
+        it 'returns a blob with the suggestions applied to it' do
+          expected_content = <<-CONTENT.strip_heredoc
+          require 'fileutils'
+          require 'open3'
 
-      expect(file_suggestion.file_path).to eq(file_path)
-    end
+          module Popen
+            extend self
 
-    it 'returns nil if no suggestions have been added' do
-      expect(file_suggestion.file_path).to be(nil)
+            def popen(cmd, path=nil)
+              unless cmd.is_a?(Array)
+                *** SUGGESTION 1 ***
+                *** SECOND LINE ***
+                *** THIRD LINE ***
+              end
+
+              path ||= Dir.pwd
+
+              vars = {
+                *** SUGGESTION 2 ***
+                *** SECOND LINE ***
+              }
+
+              options = {
+                chdir: *** SUGGESTION 3 ***
+              }
+
+              unless File.directory?(path)
+                FileUtils.mkdir_p(path)
+              end
+
+              @cmd_output = ""
+              @cmd_status = 0
+
+              Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+                @cmd_output << stdout.read
+                @cmd_output << stderr.read
+                @cmd_status = wait_thr.value.exitstatus
+              end
+
+              return @cmd_output, @cmd_status
+            end
+          end
+          CONTENT
+
+          expect(file_suggestion.new_content).to eq(expected_content)
+        end
+      end
+
+      context 'when the previous suggestion decreases and increases the line count' do
+        let!(:multi_suggestion1) do
+          create_suggestion(9, "    *** SUGGESTION 1 ***\n", 1, 1)
+        end
+
+        let!(:multi_suggestion2) do
+          create_suggestion(15, "      *** SUGGESTION 2 ***\n      *** SECOND LINE ***\n")
+        end
+
+        let!(:multi_suggestion3) do
+          create_suggestion(19, "      chdir: *** SUGGESTION 3 ***\n")
+        end
+
+        it 'returns a blob with the suggestions applied to it' do
+          expected_content = <<-CONTENT.strip_heredoc
+          require 'fileutils'
+          require 'open3'
+
+          module Popen
+            extend self
+
+            def popen(cmd, path=nil)
+              *** SUGGESTION 1 ***
+
+              path ||= Dir.pwd
+
+              vars = {
+                *** SUGGESTION 2 ***
+                *** SECOND LINE ***
+              }
+
+              options = {
+                chdir: *** SUGGESTION 3 ***
+              }
+
+              unless File.directory?(path)
+                FileUtils.mkdir_p(path)
+              end
+
+              @cmd_output = ""
+              @cmd_status = 0
+
+              Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+                @cmd_output << stdout.read
+                @cmd_output << stderr.read
+                @cmd_status = wait_thr.value.exitstatus
+              end
+
+              return @cmd_output, @cmd_status
+            end
+          end
+          CONTENT
+
+          expect(file_suggestion.new_content).to eq(expected_content)
+        end
+      end
+
+      context 'when the previous suggestion replaces with the same number of lines' do
+        let!(:multi_suggestion1) do
+          create_suggestion(9, "    *** SUGGESTION 1 ***\n    *** SECOND LINE ***\n    *** THIRD LINE ***\n", 1, 1)
+        end
+
+        let!(:multi_suggestion2) do
+          create_suggestion(15, "      *** SUGGESTION 2 ***\n")
+        end
+
+        let!(:multi_suggestion3) do
+          create_suggestion(19, "      chdir: *** SUGGESTION 3 ***\n")
+        end
+
+        it 'returns a blob with the suggestions applied to it' do
+          expected_content = <<-CONTENT.strip_heredoc
+          require 'fileutils'
+          require 'open3'
+
+          module Popen
+            extend self
+
+            def popen(cmd, path=nil)
+              *** SUGGESTION 1 ***
+              *** SECOND LINE ***
+              *** THIRD LINE ***
+
+              path ||= Dir.pwd
+
+              vars = {
+                *** SUGGESTION 2 ***
+              }
+
+              options = {
+                chdir: *** SUGGESTION 3 ***
+              }
+
+              unless File.directory?(path)
+                FileUtils.mkdir_p(path)
+              end
+
+              @cmd_output = ""
+              @cmd_status = 0
+
+              Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+                @cmd_output << stdout.read
+                @cmd_output << stderr.read
+                @cmd_status = wait_thr.value.exitstatus
+              end
+
+              return @cmd_output, @cmd_status
+            end
+          end
+          CONTENT
+
+          expect(file_suggestion.new_content).to eq(expected_content)
+        end
+      end
+
+      context 'when the previous suggestion replaces multiple lines and the suggestions were applied out of order' do
+        let(:suggestions) { [multi_suggestion1, multi_suggestion3, multi_suggestion2] }
+
+        let!(:multi_suggestion1) do
+          create_suggestion(9, "    *** SUGGESTION 1 ***\n    *** SECOND LINE ***\n    *** THIRD LINE ***\n", 1, 1)
+        end
+
+        let!(:multi_suggestion3) do
+          create_suggestion(19, "    *** SUGGESTION 3 ***\n", 1, 1)
+        end
+
+        let!(:multi_suggestion2) do
+          create_suggestion(15, "    *** SUGGESTION 2 ***\n", 1, 1)
+        end
+
+        it 'returns a blob with the suggestions applied to it' do
+          expected_content = <<-CONTENT.strip_heredoc
+          require 'fileutils'
+          require 'open3'
+
+          module Popen
+            extend self
+
+            def popen(cmd, path=nil)
+              *** SUGGESTION 1 ***
+              *** SECOND LINE ***
+              *** THIRD LINE ***
+
+              path ||= Dir.pwd
+
+              *** SUGGESTION 2 ***
+
+              *** SUGGESTION 3 ***
+
+              unless File.directory?(path)
+                FileUtils.mkdir_p(path)
+              end
+
+              @cmd_output = ""
+              @cmd_status = 0
+
+              Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+                @cmd_output << stdout.read
+                @cmd_output << stderr.read
+                @cmd_status = wait_thr.value.exitstatus
+              end
+
+              return @cmd_output, @cmd_status
+            end
+          end
+          CONTENT
+
+          expect(file_suggestion.new_content).to eq(expected_content)
+        end
+      end
     end
   end
 end

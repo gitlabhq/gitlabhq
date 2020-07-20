@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::WebIdeConfigService do
+RSpec.describe Ci::WebIdeConfigService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let(:sha) { 'sha' }

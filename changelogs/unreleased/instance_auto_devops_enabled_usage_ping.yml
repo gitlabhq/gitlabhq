@@ -1,0 +1,5 @@
+---
+title: Add whether instance has Auto DevOps enabled to usage ping
+merge_request: 33811
+author:
+type: changed

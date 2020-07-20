@@ -9,7 +9,7 @@ module Gitlab
       end
 
       def labels
-        { controller: @worker_class.name, action: 'perform' }
+        { controller: @worker_class.name, action: 'perform', feature_category: @worker_class.try(:get_feature_category).to_s }
       end
     end
   end

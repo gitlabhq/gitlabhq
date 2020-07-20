@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Testing
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: index
 description: "Test your code and display reports in merge requests"
 ---
@@ -11,8 +14,9 @@ or link to useful information directly from merge requests:
 | Feature                                                                                                | Description                                                                                                                                                                                               |
 |--------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Accessibility Testing](accessibility_testing.md)                                                      | Automatically report A11y violations for changed pages in merge requests.                                                                                                                                |
-| [Browser Performance Testing](browser_performance_testing.md) **(PREMIUM)**                            | Quickly determine the performance impact of pending code changes.                                                                                                                                         |
-| [Code Quality](code_quality.md) **(STARTER)**                                                          | Analyze your source code quality using the [Code Climate](https://codeclimate.com/) analyzer and show the Code Climate report right in the merge request widget area.                                     |
+| [Browser Performance Testing](browser_performance_testing.md) **(PREMIUM)**                            | Quickly determine the browser performance impact of pending code changes.                                                                                                                                         |
+| [Load Performance Testing](load_performance_testing.md) **(PREMIUM)**                                  | Quickly determine the server performance impact of pending code changes.                                                                                                                                         |
+| [Code Quality](code_quality.md)                                                                        | Analyze your source code quality using the [Code Climate](https://codeclimate.com/) analyzer and show the Code Climate report right in the merge request widget area.                                     |
 | [Display arbitrary job artifacts](../../../ci/yaml/README.md#artifactsexpose_as)                       | Configure CI pipelines with the `artifacts:expose_as` parameter to directly link to selected [artifacts](../../../ci/pipelines/job_artifacts.md) in merge requests.                                                |
 | [GitLab CI/CD](../../../ci/README.md)                                                                  | Build, test, and deploy your code in a per-branch basis with built-in CI/CD.                                                                                                                              |
 | [JUnit test reports](../../../ci/junit_test_reports.md)                                                | Configure your CI jobs to use JUnit test reports, and let GitLab display a report on the merge request so that it’s easier and faster to identify the failure without having to check the entire job log. |

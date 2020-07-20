@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Chat::Command do
+RSpec.describe Gitlab::Chat::Command do
   let(:chat_name) { create(:chat_name) }
 
   let(:command) do

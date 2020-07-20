@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EmailsHelper do
+RSpec.describe EmailsHelper do
   describe 'closure_reason_text' do
     context 'when given a MergeRequest' do
       let(:merge_request) { create(:merge_request) }

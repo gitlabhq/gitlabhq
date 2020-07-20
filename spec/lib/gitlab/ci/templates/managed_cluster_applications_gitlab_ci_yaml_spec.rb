@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Managed-Cluster-Applications.gitlab-ci.yml' do
+RSpec.describe 'Managed-Cluster-Applications.gitlab-ci.yml' do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Managed-Cluster-Applications') }
 
   describe 'the created pipeline' do

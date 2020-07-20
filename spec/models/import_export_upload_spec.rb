@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ImportExportUpload do
+RSpec.describe ImportExportUpload do
   subject { described_class.new(project: create(:project)) }
 
   shared_examples 'stores the Import/Export file' do |method|

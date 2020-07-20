@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'OAuth Tokens requests' do
+RSpec.describe 'OAuth Tokens requests' do
   let(:user) { create :user }
   let(:application) { create :oauth_application, scopes: 'api' }
 

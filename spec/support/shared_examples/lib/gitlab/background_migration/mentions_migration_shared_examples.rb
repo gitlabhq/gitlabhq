@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'resource mentions migration' do |migration_class, resource_class|
+RSpec.shared_examples 'resource mentions migration' do |migration_class, resource_class|
   it 'migrates resource mentions' do
     join = migration_class::JOIN
     conditions = migration_class::QUERY_CONDITIONS
@@ -21,7 +21,7 @@ shared_examples 'resource mentions migration' do |migration_class, resource_clas
   end
 end
 
-shared_examples 'resource notes mentions migration' do |migration_class, resource_class|
+RSpec.shared_examples 'resource notes mentions migration' do |migration_class, resource_class|
   it 'migrates mentions from note' do
     join = migration_class::JOIN
     conditions = migration_class::QUERY_CONDITIONS
@@ -56,7 +56,7 @@ shared_examples 'resource notes mentions migration' do |migration_class, resourc
   end
 end
 
-shared_examples 'schedules resource mentions migration' do |resource_class, is_for_notes|
+RSpec.shared_examples 'schedules resource mentions migration' do |resource_class, is_for_notes|
   before do
     stub_const("#{described_class.name}::BATCH_SIZE", 1)
   end

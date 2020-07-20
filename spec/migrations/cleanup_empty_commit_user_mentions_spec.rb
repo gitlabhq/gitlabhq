@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200128133510_cleanup_empty_commit_user_mentions')
 
-describe CleanupEmptyCommitUserMentions, :migration, :sidekiq do
+RSpec.describe CleanupEmptyCommitUserMentions, :migration, :sidekiq do
   let(:users) { table(:users) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

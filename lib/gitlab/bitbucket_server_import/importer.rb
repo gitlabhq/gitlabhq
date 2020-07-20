@@ -43,6 +43,7 @@ module Gitlab
         import_pull_requests
         delete_temp_branches
         handle_errors
+        metrics.track_finished_import
 
         log_info(stage: "complete")
 
@@ -219,7 +220,11 @@ module Gitlab
         creator = Gitlab::Import::MergeRequestCreator.new(project)
         merge_request = creator.execute(attributes)
 
-        import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
+        if merge_request.persisted?
+          import_pull_request_comments(pull_request, merge_request)
+
+          metrics.merge_requests_counter.increment
+        end
 
         log_info(stage: 'import_bitbucket_pull_requests', message: 'finished', iid: pull_request.iid)
       end
@@ -387,6 +392,10 @@ module Gitlab
           project_id: project.id,
           project_path: project.full_path
         }
+      end
+
+      def metrics
+        @metrics ||= Gitlab::Import::Metrics.new(:bitbucket_server_importer, @project)
       end
     end
   end

@@ -1,21 +1,22 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     include Support::Api
 
     describe 'Jira integration', :jira, :orchestrated, :requires_admin do
       let(:jira_project_key) { 'JITP' }
+      let(:project) do
+        Resource::Project.fabricate_via_api! do |project|
+          project.name = "project_with_jira_integration"
+        end
+      end
 
-      before(:all) do
+      before do
         page.visit Vendor::Jira::JiraAPI.perform(&:base_url)
 
         QA::Support::Retrier.retry_until(sleep_interval: 3, reload_page: page, max_attempts: 20, raise_on_failure: true) do
           page.has_text? 'Welcome to Jira'
-        end
-
-        @project = Resource::Project.fabricate_via_api! do |project|
-          project.name = "project_with_jira_integration"
         end
 
         # Retry is required because allow_local_requests_from_web_hooks_and_services
@@ -27,7 +28,7 @@ module QA
           page.visit Runtime::Scenario.gitlab_address
           Flow::Login.sign_in_unless_signed_in
 
-          @project.visit!
+          project.visit!
 
           Page::Project::Menu.perform(&:go_to_integrations_settings)
           QA::Page::Project::Settings::Integrations.perform(&:click_jira_link)
@@ -67,9 +68,11 @@ module QA
         expect_issue_done(issue_key)
       end
 
+      private
+
       def create_mr_with_description(description)
         Resource::MergeRequest.fabricate! do |merge_request|
-          merge_request.project = @project
+          merge_request.project = project
           merge_request.target_new_branch = !master_branch_exists?
           merge_request.description = description
         end
@@ -80,7 +83,7 @@ module QA
           push.branch_name = 'master'
           push.commit_message = commit_message
           push.file_content = commit_message
-          push.project = @project
+          push.project = project
           push.new_branch = !master_branch_exists?
         end
       end
@@ -98,7 +101,7 @@ module QA
       end
 
       def master_branch_exists?
-        @project.repository_branches.map { |item| item[:name] }.include?("master")
+        project.repository_branches.map { |item| item[:name] }.include?("master")
       end
     end
   end

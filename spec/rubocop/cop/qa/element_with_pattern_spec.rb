@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 require 'rubocop'
 require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/qa/element_with_pattern'
 
-describe RuboCop::Cop::QA::ElementWithPattern do
+RSpec.describe RuboCop::Cop::QA::ElementWithPattern, type: :rubocop do
   include CopHelper
 
   let(:source_file) { 'qa/page.rb' }

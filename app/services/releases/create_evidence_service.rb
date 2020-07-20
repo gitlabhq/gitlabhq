@@ -10,7 +10,7 @@ module Releases
     def execute
       evidence = release.evidences.build
 
-      summary = Evidences::EvidenceSerializer.new.represent(evidence) # rubocop: disable CodeReuse/Serializer
+      summary = ::Evidences::EvidenceSerializer.new.represent(evidence, evidence_options) # rubocop: disable CodeReuse/Serializer
       evidence.summary = summary
       # TODO: fix the sha generating https://gitlab.com/gitlab-org/gitlab/-/issues/209000
       evidence.summary_sha = Gitlab::CryptoHelper.sha256(summary)
@@ -20,6 +20,12 @@ module Releases
 
     private
 
-    attr_reader :release
+    attr_reader :release, :pipeline
+
+    def evidence_options
+      {}
+    end
   end
 end
+
+Releases::CreateEvidenceService.prepend_if_ee('EE::Releases::CreateEvidenceService')

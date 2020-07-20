@@ -2,18 +2,18 @@
 
 require 'spec_helper'
 
-describe SnippetInputAction do
+RSpec.describe SnippetInputAction do
   describe 'validations' do
     using RSpec::Parameterized::TableSyntax
 
     where(:action, :file_path, :content, :previous_path, :allowed_actions, :is_valid, :invalid_field) do
       :create  | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
-      :move    | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
+      :move    | 'foobar'  | 'foobar' | 'foo1'   | nil                | true  | nil
       :delete  | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
       :update  | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
       :foo     | 'foobar'  | 'foobar' | 'foobar' | nil                | false | :action
       'create' | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
-      'move'   | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
+      'move'   | 'foobar'  | 'foobar' | 'foo1'   | nil                | true  | nil
       'delete' | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
       'update' | 'foobar'  | 'foobar' | 'foobar' | nil                | true  | nil
       'foo'    | 'foobar'  | 'foobar' | 'foobar' | nil                | false | :action
@@ -21,10 +21,16 @@ describe SnippetInputAction do
       ''       | 'foobar'  | 'foobar' | 'foobar' | nil                | false | :action
       :move    | 'foobar'  | 'foobar' | nil      | nil                | false | :previous_path
       :move    | 'foobar'  | 'foobar' | ''       | nil                | false | :previous_path
+      :move    | 'foobar'  | 'foobar' | 'foobar' | nil                | false | :file_path
+      :move    | nil       | 'foobar' | 'foobar' | nil                | false | :file_path
+      :move    | ''        | 'foobar' | 'foobar' | nil                | false | :file_path
+      :move    | nil       | 'foobar' | 'foo1'   | nil                | false | :file_path
+      :move    | 'foobar'  | nil      | 'foo1'   | nil                | true  | nil
+      :move    | 'foobar'  | ''       | 'foo1'   | nil                | true  | nil
       :create  | 'foobar'  | nil      | 'foobar' | nil                | false | :content
       :create  | 'foobar'  | ''       | 'foobar' | nil                | false | :content
-      :create  | nil       | 'foobar' | 'foobar' | nil                | false | :file_path
-      :create  | ''        | 'foobar' | 'foobar' | nil                | false | :file_path
+      :create  | nil       | 'foobar' | 'foobar' | nil                | true  | nil
+      :create  | ''        | 'foobar' | 'foobar' | nil                | true  | nil
       :update  | 'foobar'  | nil      | 'foobar' | nil                | false | :content
       :update  | 'foobar'  | ''       | 'foobar' | nil                | false | :content
       :update  | 'other'   | 'foobar' | 'foobar' | nil                | false | :file_path

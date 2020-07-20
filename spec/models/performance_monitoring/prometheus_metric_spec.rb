@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PerformanceMonitoring::PrometheusMetric do
+RSpec.describe PerformanceMonitoring::PrometheusMetric do
   let(:json_content) do
     {
       "id" => "metric_of_ages",

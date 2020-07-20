@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe InstanceClusterablePresenter do
+RSpec.describe InstanceClusterablePresenter do
   include Gitlab::Routing.url_helpers
 
   let(:presenter) { described_class.new(instance) }
@@ -25,5 +25,11 @@ describe InstanceClusterablePresenter do
     subject { presenter.clear_cluster_cache_path(cluster) }
 
     it { is_expected.to eq(clear_cache_admin_cluster_path(cluster)) }
+  end
+
+  describe '#metrics_dashboard_path' do
+    subject { presenter.metrics_dashboard_path(cluster) }
+
+    it { is_expected.to eq(metrics_dashboard_admin_cluster_path(cluster)) }
   end
 end

@@ -4,10 +4,11 @@ import mutations from '~/monitoring/stores/mutations';
 import * as types from '~/monitoring/stores/mutation_types';
 import { metricStates } from '~/monitoring/constants';
 import {
+  customDashboardBasePath,
   environmentData,
   metricsResult,
   dashboardGitResponse,
-  mockTemplatingDataResponses,
+  storeVariables,
   mockLinks,
 } from '../mock_data';
 import {
@@ -27,7 +28,10 @@ describe('Monitoring store Getters', () => {
       const { metricId } = state.dashboard.panelGroups[group].panels[panel].metrics[metric];
       mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, {
         metricId,
-        result,
+        data: {
+          resultType: 'matrix',
+          result,
+        },
       });
     };
 
@@ -340,19 +344,21 @@ describe('Monitoring store Getters', () => {
     });
 
     it('transforms the variables object to an array in the [variable, variable_value] format for all variable types', () => {
-      mutations[types.SET_VARIABLES](state, mockTemplatingDataResponses.allVariableTypes);
+      state.variables = storeVariables;
       const variablesArray = getters.getCustomVariablesParams(state);
 
       expect(variablesArray).toEqual({
-        'variables[advCustomNormal]': 'value2',
-        'variables[advText]': 'default',
-        'variables[simpleCustom]': 'value1',
-        'variables[simpleText]': 'Simple text',
+        'variables[textSimple]': 'My default value',
+        'variables[textAdvanced]': 'A default value',
+        'variables[customSimple]': 'value1',
+        'variables[customAdvanced]': 'value2',
+        'variables[customAdvancedWithoutLabel]': 'value2',
+        'variables[customAdvancedWithoutOptText]': 'value2',
       });
     });
 
     it('transforms the variables object to an empty array when no keys are present', () => {
-      mutations[types.SET_VARIABLES](state, {});
+      state.variables = [];
       const variablesArray = getters.getCustomVariablesParams(state);
 
       expect(variablesArray).toEqual({});
@@ -361,45 +367,53 @@ describe('Monitoring store Getters', () => {
 
   describe('selectedDashboard', () => {
     const { selectedDashboard } = getters;
+    const localGetters = state => ({
+      fullDashboardPath: getters.fullDashboardPath(state),
+    });
 
     it('returns a dashboard', () => {
       const state = {
         allDashboards: dashboardGitResponse,
         currentDashboard: dashboardGitResponse[0].path,
+        customDashboardBasePath,
       };
-      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[0]);
+      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[0]);
     });
 
     it('returns a non-default dashboard', () => {
       const state = {
         allDashboards: dashboardGitResponse,
         currentDashboard: dashboardGitResponse[1].path,
+        customDashboardBasePath,
       };
-      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[1]);
+      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[1]);
     });
 
     it('returns a default dashboard when no dashboard is selected', () => {
       const state = {
         allDashboards: dashboardGitResponse,
         currentDashboard: null,
+        customDashboardBasePath,
       };
-      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[0]);
+      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[0]);
     });
 
     it('returns a default dashboard when dashboard cannot be found', () => {
       const state = {
         allDashboards: dashboardGitResponse,
         currentDashboard: 'wrong_path',
+        customDashboardBasePath,
       };
-      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[0]);
+      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[0]);
     });
 
     it('returns null when no dashboards are present', () => {
       const state = {
         allDashboards: [],
         currentDashboard: dashboardGitResponse[0].path,
+        customDashboardBasePath,
       };
-      expect(selectedDashboard(state)).toEqual(null);
+      expect(selectedDashboard(state, localGetters(state))).toEqual(null);
     });
   });
 

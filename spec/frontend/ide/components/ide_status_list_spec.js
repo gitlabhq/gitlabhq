@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { GlLink } from '@gitlab/ui';
 import IdeStatusList from '~/ide/components/ide_status_list.vue';
 import TerminalSyncStatusSafe from '~/ide/components/terminal_sync/terminal_sync_status_safe.vue';
 
@@ -9,6 +10,7 @@ const TEST_FILE = {
   editorColumn: 23,
   fileLanguage: 'markdown',
   content: 'abc\nndef',
+  permalink: '/lorem.md',
 };
 
 const localVue = createLocalVue();
@@ -19,6 +21,7 @@ describe('ide/components/ide_status_list', () => {
   let store;
   let wrapper;
 
+  const findLink = () => wrapper.find(GlLink);
   const createComponent = (options = {}) => {
     store = new Vuex.Store({
       getters: {
@@ -51,8 +54,9 @@ describe('ide/components/ide_status_list', () => {
       createComponent();
     });
 
-    it('shows file name', () => {
-      expect(wrapper.text()).toContain(TEST_FILE.name);
+    it('shows a link to the file that contains the file name', () => {
+      expect(findLink().attributes('href')).toBe(TEST_FILE.permalink);
+      expect(findLink().text()).toBe(TEST_FILE.name);
     });
 
     it('shows file eol', () => {

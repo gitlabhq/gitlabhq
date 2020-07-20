@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PreviewMarkdownService do
+RSpec.describe PreviewMarkdownService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

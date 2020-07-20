@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['ReleaseAssets'] do
+RSpec.describe GitlabSchema.types['ReleaseAssets'] do
   it { expect(described_class).to require_graphql_authorizations(:read_release) }
 
   it 'has the expected fields' do
     expected_fields = %w[
-      assets_count links sources
+      count links sources
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -16,7 +16,7 @@ describe GitlabSchema.types['ReleaseAssets'] do
   describe 'links field' do
     subject { described_class.fields['links'] }
 
-    it { is_expected.to have_graphql_type(Types::ReleaseLinkType.connection_type) }
+    it { is_expected.to have_graphql_type(Types::ReleaseAssetLinkType.connection_type) }
   end
 
   describe 'sources field' do

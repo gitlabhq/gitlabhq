@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::VideoLinkFilter do
+RSpec.describe Banzai::Filter::VideoLinkFilter do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       project: project

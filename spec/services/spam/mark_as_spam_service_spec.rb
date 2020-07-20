@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Spam::MarkAsSpamService do
+RSpec.describe Spam::MarkAsSpamService do
   let(:user_agent_detail) { build(:user_agent_detail) }
   let(:spammable) { build(:issue, user_agent_detail: user_agent_detail) }
   let(:fake_akismet_service) { double(:akismet_service, submit_spam: true) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DetailedStatusEntity do
+RSpec.describe DetailedStatusEntity do
   let(:entity) { described_class.new(status) }
 
   let(:status) do

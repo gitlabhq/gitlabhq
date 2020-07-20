@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
+RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
   include StubRequests
 
   before do

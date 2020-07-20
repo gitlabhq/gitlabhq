@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Pagination::Keyset::Pager do
+RSpec.describe Gitlab::Pagination::Keyset::Pager do
   let(:relation) { Project.all.order(id: :asc) }
   let(:request) { double('request', page: page, apply_headers: nil) }
   let(:page) { Gitlab::Pagination::Keyset::Page.new(order_by: { id: :asc }, per_page: 3) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ProjectTransfer do
+RSpec.describe Gitlab::ProjectTransfer do
   before do
     @root_dir = File.join(Rails.root, "public", "uploads")
     @project_transfer = described_class.new

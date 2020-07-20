@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'layouts/nav/sidebar/_admin' do
+RSpec.describe 'layouts/nav/sidebar/_admin' do
   shared_examples 'page has active tab' do |title|
     it "activates #{title} tab" do
       render

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class PagesDomains < Grape::API
+  class PagesDomains < Grape::API::Instance
     include PaginationParams
 
     PAGES_DOMAINS_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(domain: API::NO_SLASH_URL_PART_REGEX)

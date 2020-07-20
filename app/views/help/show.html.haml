@@ -1,5 +1,5 @@
 - page_title @path.split("/").reverse.map(&:humanize)
 - @content_class = "limit-container-width" unless fluid_layout
 
-.documentation.md.prepend-top-default
+.documentation.md.gl-mt-3
   = markdown @markdown

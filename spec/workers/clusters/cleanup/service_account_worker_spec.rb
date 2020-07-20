@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Cleanup::ServiceAccountWorker do
+RSpec.describe Clusters::Cleanup::ServiceAccountWorker do
   describe '#perform' do
     let!(:cluster) { create(:cluster, :cleanup_removing_service_account) }
 

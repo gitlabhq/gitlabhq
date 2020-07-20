@@ -5,9 +5,11 @@ fragment AlertDetailItem on AlertManagementAlert {
   ...AlertListItem
   createdAt
   monitoringTool
+  metricsDashboardUrl
   service
   description
   updatedAt
+  endedAt
   details
   notes {
     nodes {

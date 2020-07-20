@@ -545,6 +545,99 @@ In order to ensure that a clean wrapper object and DOM are being used in each te
 
 See also the [Vue Test Utils documentation on `destroy`](https://vue-test-utils.vuejs.org/api/wrapper/#destroy).
 
+### Jest best practices
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34209) in GitLab 13.2.
+
+#### Prefer `toBe` over `toEqual` when comparing primitive values
+
+Jest has [`toBe`](https://jestjs.io/docs/en/expect#tobevalue) and
+[`toEqual`](https://jestjs.io/docs/en/expect#toequalvalue) matchers.
+As [`toBe`](https://jestjs.io/docs/en/expect#tobevalue) uses
+[`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)
+to compare values, it's faster (by default) than using `toEqual`.
+While the latter will eventually fallback to leverage [`Object.is`](https://github.com/facebook/jest/blob/master/packages/expect/src/jasmineUtils.ts#L91),
+for primitive values, it should only be used when complex objects need a comparison.
+
+Examples:
+
+```javascript
+const foo = 1;
+
+// good
+expect(foo).toBe(1);
+
+// bad
+expect(foo).toEqual(1);
+```
+
+#### Prefer more befitting matchers
+
+Jest provides useful matchers like `toHaveLength` or `toBeUndefined` to make your tests more
+readable and to produce more understandable error messages. Check their docs for the
+[full list of matchers](https://jestjs.io/docs/en/expect#methods).
+
+Examples:
+
+```javascript
+const arr = [1, 2];
+
+// prints:
+// Expected length: 1
+// Received length: 2
+expect(arr).toHaveLength(1);
+
+// prints:
+// Expected: 1
+// Received: 2
+expect(arr.length).toBe(1);
+
+// prints:
+// expect(received).toBe(expected) // Object.is equality
+// Expected: undefined
+// Received: "bar"
+const foo = 'bar';
+expect(foo).toBe(undefined);
+
+// prints:
+// expect(received).toBeUndefined()
+// Received: "bar"
+const foo = 'bar';
+expect(foo).toBeUndefined();
+```
+
+#### Avoid using `toBeTruthy` or `toBeFalsy`
+
+Jest also provides following matchers: `toBeTruthy` and `toBeFalsy`. We should not use them because
+they make tests weaker and produce false-positive results.
+
+For example, `expect(someBoolean).toBeFalsy()` passes when `someBoolean === null`, and when
+`someBoolean === false`.
+
+#### Tricky `toBeDefined` matcher
+
+Jest has the tricky `toBeDefined` matcher that can produce false positive test. Because it
+[validates](https://github.com/facebook/jest/blob/master/packages/expect/src/matchers.ts#L204)
+the given value for `undefined` only.
+
+```javascript
+// good
+expect(wrapper.find('foo').exists()).toBe(true);
+
+// bad
+// if finder returns null, the test will pass
+expect(wrapper.find('foo')).toBeDefined();
+```
+
+#### Avoid using `setImmediate`
+
+Try to avoid using `setImmediate`. `setImmediate` is an ad-hoc solution to run your callback after
+the I/O completes. And it's not part of the Web API, hence, we target NodeJS environments in our
+unit tests.
+
+Instead of `setImmediate`, use `jest.runAllTimers` or `jest.runOnlyPendingTimers` to run pending timers.
+The latter is useful when you have `setInterval` in the code. **Remember:** our Jest configuration uses fake timers.
+
 ## Factories
 
 TBU
@@ -856,7 +949,8 @@ Some regressions only affect a specific browser version. We can install and test
 
 [BrowserStack](https://www.browserstack.com/) allows you to test more than 1200 mobile devices and browsers.
 You can use it directly through the [live app](https://www.browserstack.com/live) or you can install the [chrome extension](https://chrome.google.com/webstore/detail/browserstack/nkihdmlheodkdfojglpcjjmioefjahjb) for easy access.
-You can find the credentials on 1Password, under `frontendteam@gitlab.com`.
+Sign in to BrowserStack with the credentials saved in the **Engineering** vault of GitLab's
+[shared 1Password account](https://about.gitlab.com/handbook/security/#1password-guide).
 
 ### Firefox
 

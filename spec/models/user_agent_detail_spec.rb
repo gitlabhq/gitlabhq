@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserAgentDetail do
+RSpec.describe UserAgentDetail do
   describe '.submittable?' do
     it 'is submittable when not already submitted' do
       detail = build(:user_agent_detail)

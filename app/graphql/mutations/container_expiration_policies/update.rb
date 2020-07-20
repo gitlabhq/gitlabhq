@@ -34,6 +34,16 @@ module Mutations
                required: false,
                description: copy_field_description(Types::ContainerExpirationPolicyType, :keep_n)
 
+      argument :name_regex,
+               Types::UntrustedRegexp,
+               required: false,
+               description: copy_field_description(Types::ContainerExpirationPolicyType, :name_regex)
+
+      argument :name_regex_keep,
+               Types::UntrustedRegexp,
+               required: false,
+               description: copy_field_description(Types::ContainerExpirationPolicyType, :name_regex_keep)
+
       field :container_expiration_policy,
             Types::ContainerExpirationPolicyType,
             null: true,

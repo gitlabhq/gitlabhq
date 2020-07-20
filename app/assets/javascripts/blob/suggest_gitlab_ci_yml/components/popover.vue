@@ -2,7 +2,6 @@
 import { GlPopover, GlSprintf, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { parseBoolean, scrollToElement, setCookie, getCookie } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
-import { glEmojiTag } from '~/emoji';
 import Tracking from '~/tracking';
 
 const trackingMixin = Tracking.mixin();
@@ -11,14 +10,16 @@ const popoverStates = {
   suggest_gitlab_ci_yml: {
     title: s__(`suggestPipeline|1/2: Choose a template`),
     content: s__(
-      `suggestPipeline|We recommend the %{boldStart}Code Quality%{boldEnd} template, which will add a report widget to your Merge Requests. This way you’ll learn about code quality degradations much sooner. %{footerStart} Goodbye technical debt! %{footerEnd}`,
+      `suggestPipeline|We’re adding a GitLab CI configuration file to add a pipeline to the project. You could create it manually, but we recommend that you start with a GitLab template that works out of the box.`,
     ),
-    emoji: glEmojiTag('wave'),
+    footer: s__(
+      `suggestPipeline|Choose %{boldStart}Code Quality%{boldEnd} to add a pipeline that tests the quality of your code.`,
+    ),
   },
   suggest_commit_first_project_gitlab_ci_yml: {
     title: s__(`suggestPipeline|2/2: Commit your changes`),
     content: s__(
-      `suggestPipeline|Commit the changes and your pipeline will automatically run for the first time.`,
+      `suggestPipeline|The template is ready! You can now commit it to create your first pipeline.`,
     ),
   },
 };
@@ -65,6 +66,9 @@ export default {
     },
     suggestContent() {
       return popoverStates[this.trackLabel].content || '';
+    },
+    suggestFooter() {
+      return popoverStates[this.trackLabel].footer || '';
     },
     emoji() {
       return popoverStates[this.trackLabel].emoji || '';
@@ -123,16 +127,13 @@ export default {
       </span>
     </template>
 
-    <gl-sprintf :message="suggestContent">
-      <template #bold="{content}">
-        <strong> {{ content }} </strong>
-      </template>
-      <template #footer="{content}">
-        <div class="mt-3">
-          {{ content }}
-          <span v-html="emoji"></span>
-        </div>
-      </template>
-    </gl-sprintf>
+    <gl-sprintf :message="suggestContent" />
+    <div class="mt-3">
+      <gl-sprintf :message="suggestFooter">
+        <template #bold="{ content }">
+          <strong> {{ content }} </strong>
+        </template>
+      </gl-sprintf>
+    </div>
   </gl-popover>
 </template>

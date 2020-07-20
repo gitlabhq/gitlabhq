@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Loaders::BatchRootStorageStatisticsLoader do
+RSpec.describe Gitlab::Graphql::Loaders::BatchRootStorageStatisticsLoader do
   describe '#find' do
     it 'only queries once for project statistics' do
       stats = create_list(:namespace_root_storage_statistics, 2)

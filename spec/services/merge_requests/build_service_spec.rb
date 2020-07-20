@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe MergeRequests::BuildService do
+RSpec.describe MergeRequests::BuildService do
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
   include ProjectForksHelper
@@ -189,8 +189,8 @@ describe MergeRequests::BuildService do
 
       it_behaves_like 'allows the merge request to be created'
 
-      it 'adds a WIP prefix to the merge request title' do
-        expect(merge_request.title).to eq('WIP: Feature branch')
+      it 'adds a Draft prefix to the merge request title' do
+        expect(merge_request.title).to eq('Draft: Feature branch')
       end
     end
 

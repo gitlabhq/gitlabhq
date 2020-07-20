@@ -27,7 +27,10 @@ module TriggerHelpers
     expected_timing, expected_events = fires_on.first
     expect(timing).to eq(expected_timing.to_s)
     expect(events).to match_array(Array.wrap(expected_events))
-    expect(definition).to eq("execute procedure #{fn_name}()")
+
+    # TODO: Update CREATE TRIGGER syntax to use EXECUTE FUNCTION
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/227089
+    expect(definition).to match(%r{execute (?:procedure|function) #{fn_name}()})
   end
 
   private

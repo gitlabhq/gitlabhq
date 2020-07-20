@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Triggers < Grape::API
+  class Triggers < Grape::API::Instance
     include PaginationParams
 
     HTTP_GITLAB_EVENT_HEADER = "HTTP_#{WebHookService::GITLAB_EVENT_HEADER}".underscore.upcase
@@ -32,7 +32,7 @@ module API
         project = find_project(params[:id])
         not_found! unless project
 
-        result = Ci::PipelineTriggerService.new(project, nil, params).execute
+        result = ::Ci::PipelineTriggerService.new(project, nil, params).execute
         not_found! unless result
 
         if result[:http_status]

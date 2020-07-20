@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, schema: 20180816161409 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }

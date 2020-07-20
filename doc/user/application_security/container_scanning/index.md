@@ -32,7 +32,7 @@ You can enable container scanning by doing one of the following:
 GitLab compares the found vulnerabilities between the source and target branches, and shows the
 information directly in the merge request.
 
-![Container Scanning Widget](img/container_scanning_v13_0.png)
+![Container Scanning Widget](img/container_scanning_v13_2.png)
 
 <!-- NOTE: The container scanning tool references the following heading in the code, so if you
            make a change to this heading, make sure to update the documentation URLs used in the
@@ -58,10 +58,10 @@ To enable Container Scanning in your pipeline, you need the following:
 
   ```yaml
   build:
-    image: docker:19.03.11
+    image: docker:19.03.12
     stage: build
     services:
-      - docker:19.03.11-dind
+      - docker:19.03.12-dind
     variables:
       IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
     script:
@@ -114,7 +114,7 @@ build:
   image: docker:stable
   stage: build
   services:
-    - docker:19.03.11-dind
+    - docker:19.03.12-dind
   variables:
     IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
   script:
@@ -141,7 +141,7 @@ enables verbose output from Clair by setting the `CLAIR_OUTPUT` environment vari
 
 ```yaml
 include:
-  template: Container-Scanning.gitlab-ci.yml
+  - template: Container-Scanning.gitlab-ci.yml
 
 variables:
   CLAIR_OUTPUT: High
@@ -174,6 +174,7 @@ using environment variables.
 | `CLAIR_DB_IMAGE_TAG`           | (**DEPRECATED - use `CLAIR_DB_IMAGE` instead**) The Docker image tag for the [PostgreSQL server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db). It can be useful to override this value with a specific version, for example, to provide a consistent set of vulnerabilities for integration testing purposes.                                                                                                                                                                                                                                                                                                                                                                                                                                   | `latest`                                                                                                        |
 | `DOCKERFILE_PATH`              | The path to the `Dockerfile` to be used for generating remediations. By default, the scanner will look for a file named `Dockerfile` in the root directory of the project, so this variable should only be configured if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details.                                                                                                                                                                                                                                                                                                                                                                          | `Dockerfile`                                                                                                    |
 | `ADDITIONAL_CA_CERT_BUNDLE`    | Bundle of CA certs that you want to trust. | "" |
+| `SECURE_LOG_LEVEL`             | The log levels available are: `fatal`, `error`, `warn`, `info`, `debug` | `info` |
 
 ### Overriding the Container Scanning template
 
@@ -183,7 +184,7 @@ specify any additional keys. For example:
 
 ```yaml
 include:
-  template: Container-Scanning.gitlab-ci.yml
+  - template: Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -195,15 +196,15 @@ GitLab 13.0 and later doesn't support [`only` and `except`](../../../ci/yaml/REA
 When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules)
 instead.
 
-### Vulnerability whitelisting
+### Vulnerability allowlisting
 
-To whitelist specific vulnerabilities, follow these steps:
+To allowlist specific vulnerabilities, follow these steps:
 
 1. Set `GIT_STRATEGY: fetch` in your `.gitlab-ci.yml` file by following the instructions in
    [overriding the Container Scanning template](#overriding-the-container-scanning-template).
-1. Define the whitelisted vulnerabilities in a YAML file named `clair-whitelist.yml`. This must use
-   the format described in the [whitelist example file](https://github.com/arminc/clair-scanner/blob/v12/example-whitelist.yaml).
-1. Add the `clair-whitelist.yml` file to your project's Git repository.
+1. Define the allowlisted vulnerabilities in a YAML file named `vulnerability-allowlist.yml`. This must use
+   the format described in the [allowlist example file](https://gitlab.com/gitlab-org/security-products/analyzers/klar/-/raw/master/testdata/vulnerability-allowlist.yml).
+1. Add the `vulnerability-allowlist.yml` file to your project's Git repository.
 
 ### Running Container Scanning in an offline environment
 
@@ -282,7 +283,7 @@ stages:
 build_latest_vulnerabilities:
   stage: build
   services:
-    - docker:19.03.11-dind
+    - docker:19.03.12-dind
   script:
     - docker pull arminc/clair-db:latest
     - docker tag arminc/clair-db:latest $CI_REGISTRY/namespace/clair-vulnerabilities-db

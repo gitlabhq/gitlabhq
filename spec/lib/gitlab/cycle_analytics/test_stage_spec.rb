@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::TestStage do
+RSpec.describe Gitlab::CycleAnalytics::TestStage do
   let(:stage_name) { :test }
   let(:project) { create(:project) }
   let(:stage_options) { { from: 2.days.ago, current_user: project.creator, project: project } }

@@ -19,7 +19,7 @@ module Gitlab
       begin
         Rugged::Reference.valid_name?("refs/heads/#{ref_name}")
       rescue ArgumentError
-        return false
+        false
       end
     end
 
@@ -35,7 +35,7 @@ module Gitlab
       begin
         Rugged::Reference.valid_name?(expanded_name)
       rescue ArgumentError
-        return false
+        false
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Verify::JobArtifacts do
+RSpec.describe Gitlab::Verify::JobArtifacts do
   include GitlabVerifyHelpers
 
   it_behaves_like 'Gitlab::Verify::BatchVerifier subclass' do

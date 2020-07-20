@@ -1,0 +1,5 @@
+---
+title: Fix failing dashboard schema validation calls
+merge_request: 37108
+author:
+type: fixed

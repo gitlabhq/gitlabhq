@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectHook do
+RSpec.describe ProjectHook do
   describe 'associations' do
     it { is_expected.to belong_to :project }
   end

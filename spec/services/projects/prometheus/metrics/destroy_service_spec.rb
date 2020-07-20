@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::Prometheus::Metrics::DestroyService do
+RSpec.describe Projects::Prometheus::Metrics::DestroyService do
   let(:metric) { create(:prometheus_metric) }
 
   subject { described_class.new(metric) }

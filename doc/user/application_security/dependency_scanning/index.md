@@ -27,7 +27,7 @@ GitLab checks the Dependency Scanning report, compares the found vulnerabilities
 between the source and target branches, and shows the information on the
 merge request.
 
-![Dependency Scanning Widget](img/dependency_scanning_v13_0.png)
+![Dependency Scanning Widget](img/dependency_scanning_v13_2.png)
 
 The results are sorted by the severity of the vulnerability:
 
@@ -61,7 +61,7 @@ The following languages and dependency managers are supported:
 | Language (package managers)  | Supported files | Scan tool(s) |
 |----------------------------- | --------------- | ------------ |
 | Java ([Gradle](https://gradle.org/), [Maven](https://maven.apache.org/)) | `build.gradle`, `build.gradle.kts`, `pom.xml` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| JavaScript ([npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/en/)) | `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js) |
+| JavaScript ([npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/)) | `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js/) |
 | Go ([Golang](https://golang.org/)) | `go.sum` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | PHP ([Composer](https://getcomposer.org/))  | `composer.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | Python ([setuptools](https://setuptools.readthedocs.io/en/latest/), [pip](https://pip.pypa.io/en/stable/), [Pipenv](https://pipenv.pypa.io/en/latest/)) | `setup.py`, `requirements.txt`, `requirements.pip`, `requires.txt`, `Pipfile` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
@@ -72,7 +72,7 @@ Plans are underway for supporting the following languages, dependency managers, 
 
 | Language (package managers)  | Supported files | Scan tool(s) | Issue |
 |----------------------------- | --------------- | ------------ | ----- |
-| Python ([Poetry](https://poetry.eustace.io/)) | `poetry.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#7006](https://gitlab.com/gitlab-org/gitlab/issues/7006) |
+| Python ([Poetry](https://python-poetry.org/)) | `poetry.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#7006](https://gitlab.com/gitlab-org/gitlab/-/issues/7006) |
 | Python ([Pipenv](https://pipenv.pypa.io/en/latest/)) | `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) | [GitLab#11756](https://gitlab.com/gitlab-org/gitlab/-/issues/11756) |
 
 ## Contribute your scanner
@@ -151,11 +151,11 @@ The following variables allow configuration of global dependency scanning settin
 | Environment variable                    | Description |
 | --------------------------------------- |------------ |
 | `SECURE_ANALYZERS_PREFIX`               | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
-| `DS_ANALYZER_IMAGE_PREFIX`              | **DEPRECATED:** Use `SECURE_ANALYZERS_PREFIX` instead. |
 | `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
 | `DS_DISABLE_DIND`                       | Disable Docker-in-Docker and run analyzers [individually](#enabling-docker-in-docker). This variable is `true` by default. |
 | `ADDITIONAL_CA_CERT_BUNDLE`             | Bundle of CA certs to trust. |
 | `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"` |
+| `SECURE_LOG_LEVEL`                      | Default log level is `info`, you can set it to any of the following strings: `fatal`, `error`, `warn`, `info`, `debug`. |
 
 #### Configuring Docker-in-Docker orchestrator
 
@@ -186,6 +186,7 @@ The following variables are used for configuring specific analyzers (used for a 
 | `DS_PIP_VERSION`                        | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12811) in GitLab 12.7) |
 | `DS_PIP_DEPENDENCY_PATH`                | `gemnasium-python` |                              | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12412) in GitLab 12.2) |
 | `DS_PYTHON_VERSION`                     | `retire.js`        |                              | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12296) in GitLab 12.1)|
+| `DS_JAVA_VERSION`                       | `gemnasium-maven`  | `11`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`. Maven and Gradle will use the Java version specified by this value. |
 | `MAVEN_CLI_OPTS`                        | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that will be passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repos). |
 | `GRADLE_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command line arguments that will be passed to `gradle` by the analyzer. |
 | `SBT_CLI_OPTS`                          | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer will pass to `sbt`. |
@@ -428,14 +429,14 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 ### Set Dependency Scanning CI job variables to use local Dependency Scanning analyzers
 
 Add the following configuration to your `.gitlab-ci.yml` file. You must replace
-`DS_ANALYZER_IMAGE_PREFIX` to refer to your local Docker container registry:
+`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
 
 ```yaml
 include:
   - template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_ANALYZER_IMAGE_PREFIX: "docker-registry.example.com/analyzers"
+  SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
   GEMNASIUM_DB_REMOTE_URL: "gitlab.example.com/gemnasium-db.git"
   GIT_SSL_NO_VERIFY: "true"
 ```

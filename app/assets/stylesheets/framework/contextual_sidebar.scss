@@ -98,11 +98,11 @@
     width: $contextual-sidebar-collapsed-width - 1px;
 
     .collapse-text,
-    .icon-angle-double-left {
+    .icon-chevron-double-lg-left {
       display: none;
     }
 
-    .icon-angle-double-right {
+    .icon-chevron-double-lg-right {
       display: block;
       margin: 0;
     }
@@ -381,7 +381,7 @@
     margin-right: 8px;
   }
 
-  .icon-angle-double-right {
+  .icon-chevron-double-lg-right {
     display: none;
   }
 

@@ -1,0 +1,5 @@
+---
+title: Update container expiration policy database defaults
+merge_request: 32600
+author:
+type: fixed

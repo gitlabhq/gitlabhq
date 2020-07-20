@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/destroy_all'
 
-describe RuboCop::Cop::DestroyAll do
+RSpec.describe RuboCop::Cop::DestroyAll, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

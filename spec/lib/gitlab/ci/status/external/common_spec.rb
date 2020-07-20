@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::External::Common do
+RSpec.describe Gitlab::Ci::Status::External::Common do
   let(:user) { create(:user) }
   let(:project) { external_status.project }
   let(:external_target_url) { 'http://example.gitlab.com/status' }

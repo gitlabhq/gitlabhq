@@ -17,7 +17,7 @@ import {
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
-import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
+import NoteableWarning from '../../vue_shared/components/notes/noteable_warning.vue';
 import markdownField from '../../vue_shared/components/markdown/field.vue';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import loadingButton from '../../vue_shared/components/loading_button.vue';
@@ -28,8 +28,7 @@ import issuableStateMixin from '../mixins/issuable_state';
 export default {
   name: 'CommentForm',
   components: {
-    issueWarning,
-    epicWarning: () => import('ee_component/vue_shared/components/epic/epic_warning.vue'),
+    NoteableWarning,
     noteSignedOutWidget,
     discussionLockedWidget,
     markdownField,
@@ -126,8 +125,12 @@ export default {
     canToggleIssueState() {
       return (
         this.getNoteableData.current_user.can_update &&
-        this.getNoteableData.state !== constants.MERGED
+        this.getNoteableData.state !== constants.MERGED &&
+        !this.closedAndLocked
       );
+    },
+    closedAndLocked() {
+      return !this.isOpen && this.isLocked(this.getNoteableData);
     },
     endpoint() {
       return this.getNoteableData.create_note_path;
@@ -350,14 +353,15 @@ export default {
           <form ref="commentForm" class="new-note common-note-form gfm-form js-main-target-form">
             <div class="error-alert"></div>
 
-            <issue-warning
-              v-if="hasWarning(getNoteableData) && isIssueType"
+            <noteable-warning
+              v-if="hasWarning(getNoteableData)"
               :is-locked="isLocked(getNoteableData)"
               :is-confidential="isConfidential(getNoteableData)"
-              :locked-issue-docs-path="lockedIssueDocsPath"
-              :confidential-issue-docs-path="confidentialIssueDocsPath"
+              :noteable-type="noteableType"
+              :locked-noteable-docs-path="lockedIssueDocsPath"
+              :confidential-noteable-docs-path="confidentialIssueDocsPath"
             />
-            <epic-warning :is-confidential="isConfidential(getNoteableData)" />
+
             <markdown-field
               ref="markdownField"
               :is-submitting="isSubmitting"
@@ -374,20 +378,18 @@ export default {
                 dir="auto"
                 :disabled="isSubmitting"
                 name="note[note]"
-                class="note-textarea js-vue-comment-form js-note-text
-js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
+                class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
                 data-supports-quick-actions="true"
                 :aria-label="__('Description')"
                 :placeholder="__('Write a comment or drag your files here…')"
                 @keydown.up="editCurrentUserLastNote()"
                 @keydown.meta.enter="handleSave()"
                 @keydown.ctrl.enter="handleSave()"
-              >
-              </textarea>
+              ></textarea>
             </markdown-field>
             <gl-alert
               v-if="isToggleBlockedIssueWarning"
-              class="prepend-top-16"
+              class="gl-mt-5"
               :title="__('Are you sure you want to close this blocked issue?')"
               :primary-button-text="__('Yes, close issue')"
               :secondary-button-text="__('Cancel')"
@@ -417,13 +419,11 @@ js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
             </gl-alert>
             <div class="note-form-actions">
               <div
-                class="btn-group
-append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
+                class="btn-group gl-mr-3 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               >
                 <button
                   :disabled="isSubmitButtonDisabled"
-                  class="btn btn-success js-comment-button js-comment-submit-button
-                    qa-comment-button"
+                  class="btn btn-success js-comment-button js-comment-submit-button qa-comment-button"
                   type="submit"
                   :data-track-label="trackingLabel"
                   data-track-event="click_button"
@@ -440,7 +440,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                   data-toggle="dropdown"
                   :aria-label="__('Open comment type dropdown')"
                 >
-                  <i aria-hidden="true" class="fa fa-caret-down toggle-icon"> </i>
+                  <i aria-hidden="true" class="fa fa-caret-down toggle-icon"></i>
                 </button>
 
                 <ul class="note-type-dropdown dropdown-open-top dropdown-menu">
@@ -450,7 +450,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                       class="btn btn-transparent"
                       @click.prevent="setNoteType('comment')"
                     >
-                      <i aria-hidden="true" class="fa fa-check icon"> </i>
+                      <i aria-hidden="true" class="fa fa-check icon"></i>
                       <div class="description">
                         <strong>{{ __('Comment') }}</strong>
                         <p>
@@ -470,7 +470,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                       class="btn btn-transparent qa-discussion-option"
                       @click.prevent="setNoteType('discussion')"
                     >
-                      <i aria-hidden="true" class="fa fa-check icon"> </i>
+                      <i aria-hidden="true" class="fa fa-check icon"></i>
                       <div class="description">
                         <strong>{{ __('Start thread') }}</strong>
                         <p>{{ startDiscussionDescription }}</p>

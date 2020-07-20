@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-# Rollback DB to 10.5 (later than this was originally written for) because it still needs to work.
-describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, schema: 20180208183958 do
+RSpec.describe Gitlab::BackgroundMigration::PopulateUntrackedUploads do
   include MigrationsHelpers::TrackUntrackedUploadsHelpers
 
   subject { described_class.new }

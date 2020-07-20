@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BuildArtifactEntity do
+RSpec.describe BuildArtifactEntity do
   let(:job) { create(:ci_build) }
   let(:artifact) { create(:ci_job_artifact, :codequality, expire_at: 1.hour.from_now, job: job) }
 

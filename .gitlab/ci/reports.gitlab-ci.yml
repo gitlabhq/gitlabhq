@@ -15,7 +15,7 @@ code_quality:
   stage: test
   needs: []
   variables:
-    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.9"
+    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.10"
   script:
     - |
       if ! docker info &>/dev/null; then
@@ -59,6 +59,7 @@ code_quality:
     SAST_ANALYZER_IMAGE_TAG: 2
     SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
     SAST_EXCLUDED_PATHS: qa,spec,doc,ee/spec  # GitLab-specific
+    SAST_DISABLE_BABEL: "true"
   script:
     - /analyzer run
 
@@ -72,11 +73,10 @@ eslint-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
 
-# Temporary disabled as it's constantly failing. See https://gitlab.com/gitlab-org/gitlab/-/issues/213769.
-# nodejs-scan-sast:
-#   extends: .sast
-#   image:
-#     name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
+nodejs-scan-sast:
+  extends: .sast
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
 
 secrets-sast:
   extends: .sast
@@ -172,6 +172,7 @@ dependency_scanning:
 #    # - 'export DAST_AUTH_URL="${DAST_WEBSITE}/users/sign_in"'
 #    # - 'export DAST_PASSWORD="${REVIEW_APPS_ROOT_PASSWORD}"'
 #    - /analyze -t $DAST_WEBSITE
+#  timeout: 4h
 #  artifacts:
 #    paths:
 #      - gl-dast-report.json  # GitLab-specific

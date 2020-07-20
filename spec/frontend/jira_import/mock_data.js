@@ -70,3 +70,56 @@ export const jiraImportMutationResponse = {
     __typename: 'JiraImportStartPayload',
   },
 };
+
+export const issuesPath = 'gitlab-org/gitlab-test/-/issues';
+
+export const jiraIntegrationPath = 'gitlab-org/gitlab-test/-/services/jira/edit';
+
+export const illustration = 'illustration.svg';
+
+export const jiraProjects = [
+  { text: 'My Jira Project (MJP)', value: 'MJP' },
+  { text: 'My Second Jira Project (MSJP)', value: 'MSJP' },
+  { text: 'Migrate to GitLab (MTG)', value: 'MTG' },
+];
+
+export const imports = [
+  {
+    jiraProjectKey: 'MTG',
+    scheduledAt: '2020-04-08T10:11:12+00:00',
+    scheduledBy: {
+      name: 'John Doe',
+    },
+  },
+  {
+    jiraProjectKey: 'MSJP',
+    scheduledAt: '2020-04-09T13:14:15+00:00',
+    scheduledBy: {
+      name: 'Jimmy Doe',
+    },
+  },
+  {
+    jiraProjectKey: 'MTG',
+    scheduledAt: '2020-04-09T16:17:18+00:00',
+    scheduledBy: {
+      name: 'Jane Doe',
+    },
+  },
+];
+
+export const userMappings = [
+  {
+    jiraAccountId: 'aei23f98f-q23fj98qfj',
+    jiraDisplayName: 'Jane Doe',
+    jiraEmail: 'janedoe@example.com',
+    gitlabId: 15,
+    gitlabUsername: 'janedoe',
+  },
+  {
+    jiraAccountId: 'fu39y8t34w-rq3u289t3h4i',
+    jiraDisplayName: 'Fred Chopin',
+    jiraEmail: 'fredchopin@example.com',
+    gitlabId: undefined,
+    gitlabUsername: undefined,
+  },
+];

@@ -21,5 +21,7 @@ module Types
           description: 'Packages size of the project'
     field :wiki_size, GraphQL::FLOAT_TYPE, null: true,
           description: 'Wiki size of the project'
+    field :snippets_size, GraphQL::FLOAT_TYPE, null: true,
+          description: 'Snippets size of the project'
   end
 end

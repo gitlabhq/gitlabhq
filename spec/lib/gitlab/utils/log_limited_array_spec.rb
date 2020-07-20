@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Utils::LogLimitedArray do
+RSpec.describe Gitlab::Utils::LogLimitedArray do
   describe '.log_limited_array' do
     context 'when the argument is not an array' do
       it 'returns an empty array' do

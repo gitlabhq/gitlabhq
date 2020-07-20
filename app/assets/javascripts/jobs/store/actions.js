@@ -195,7 +195,7 @@ export const receiveTraceError = ({ dispatch }) => {
   flash(__('An error occurred while fetching the job log.'));
 };
 /**
- * When the user clicks a collpasible line in the job
+ * When the user clicks a collapsible line in the job
  * log, we commit a mutation to update the state
  *
  * @param {Object} section

@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": ["@id", "@type", "dependencies"],
+  "properties": {
+    "@id": { "type": "string" },
+    "@type": { "const": "PackageDependencyGroup" },
+    "targetFramework": { "type": "string" },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["@id", "@type", "id", "range"],
+        "properties": {
+          "@id": { "type": "string" },
+          "@type": { "const": "PackageDependency" },
+          "id": { "type": "string" },
+          "range": { "type": "string" }
+        }
+      }
+    }
+  }
+}

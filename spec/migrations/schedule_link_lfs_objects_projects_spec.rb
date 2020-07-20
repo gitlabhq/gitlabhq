@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200310075115_schedule_link_lfs_objects_projects.rb')
 
-describe ScheduleLinkLfsObjectsProjects, :migration, :sidekiq do
+RSpec.describe ScheduleLinkLfsObjectsProjects, :migration, :sidekiq do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:fork_networks) { table(:fork_networks) }

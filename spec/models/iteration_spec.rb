@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Iteration do
+RSpec.describe Iteration do
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
 
@@ -43,6 +43,14 @@ describe Iteration do
         let(:due_date) { 3.weeks.from_now }
 
         it { is_expected.to be_valid }
+      end
+
+      context 'when updated iteration dates overlap with its own dates' do
+        it 'is valid' do
+          existing_iteration.start_date = 5.days.from_now
+
+          expect(existing_iteration).to be_valid
+        end
       end
 
       context 'when dates overlap' do
@@ -134,6 +142,25 @@ describe Iteration do
           expect(subject).not_to be_valid
           expect(subject.errors[:due_date]).to include('cannot be more than 500 years in the future')
         end
+      end
+    end
+  end
+
+  context 'time scopes' do
+    let_it_be(:project) { create(:project, :empty_repo) }
+    let_it_be(:iteration_1) { create(:iteration, :skip_future_date_validation, project: project, start_date: 3.days.ago, due_date: 1.day.from_now) }
+    let_it_be(:iteration_2) { create(:iteration, :skip_future_date_validation, project: project, start_date: 10.days.ago, due_date: 4.days.ago) }
+    let_it_be(:iteration_3) { create(:iteration, project: project, start_date: 4.days.from_now, due_date: 1.week.from_now) }
+
+    describe 'start_date_passed' do
+      it 'returns iterations where start_date is in the past but due_date is in the future' do
+        expect(described_class.start_date_passed).to contain_exactly(iteration_1)
+      end
+    end
+
+    describe 'due_date_passed' do
+      it 'returns iterations where due date is in the past' do
+        expect(described_class.due_date_passed).to contain_exactly(iteration_2)
       end
     end
   end

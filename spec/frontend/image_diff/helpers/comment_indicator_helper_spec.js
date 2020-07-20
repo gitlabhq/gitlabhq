@@ -1,5 +1,6 @@
 import * as commentIndicatorHelper from '~/image_diff/helpers/comment_indicator_helper';
 import * as mockData from '../mock_data';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('commentIndicatorHelper', () => {
   const { coordinate } = mockData;
@@ -52,7 +53,7 @@ describe('commentIndicatorHelper', () => {
       beforeEach(() => {
         containerEl.innerHTML = `
           <div class="comment-indicator" style="left:${coordinate.x}px; top: ${coordinate.y}px;">
-            <img src="${gl.TEST_HOST}/image.png">
+            <img src="${TEST_HOST}/image.png">
           </div>
         `;
         result = commentIndicatorHelper.removeCommentIndicator(containerEl);

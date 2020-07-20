@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'users with note access' do
+RSpec.shared_examples 'users with note access' do
   it 'returns true' do
     users.each do |user|
       expect(note.system_note_with_references_visible_for?(user)).to be_truthy
@@ -9,7 +9,7 @@ shared_examples 'users with note access' do
   end
 end
 
-shared_examples 'users without note access' do
+RSpec.shared_examples 'users without note access' do
   it 'returns false' do
     users.each do |user|
       expect(note.system_note_with_references_visible_for?(user)).to be_falsy

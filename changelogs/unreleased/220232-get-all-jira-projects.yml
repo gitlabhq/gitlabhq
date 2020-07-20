@@ -1,0 +1,5 @@
+---
+title: Expose all Jira projects endpoint through a GraphQL
+merge_request: 33861
+author:
+type: added

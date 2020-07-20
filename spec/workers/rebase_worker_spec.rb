@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RebaseWorker, '#perform' do
+RSpec.describe RebaseWorker, '#perform' do
   include ProjectForksHelper
 
   context 'when rebasing an MR from a fork where upstream has protected branches' do

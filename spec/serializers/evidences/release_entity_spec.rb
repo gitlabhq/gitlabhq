@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Evidences::ReleaseEntity do
+RSpec.describe Evidences::ReleaseEntity do
   let(:release) { build(:release) }
   let(:entity) { described_class.new(release) }
 

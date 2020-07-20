@@ -90,9 +90,7 @@ module Gitlab
         end
 
         def ordered_and_limited_query
-          query
-            .reorder(stage.end_event.timestamp_projection.desc)
-            .limit(MAX_RECORDS)
+          order_by_end_event(query).limit(MAX_RECORDS)
         end
 
         def records

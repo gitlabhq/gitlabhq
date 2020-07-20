@@ -1,0 +1,6 @@
+---
+title: When clicking multiple times to leave a single comment, the input field should
+  remain focused
+merge_request: 33742
+author:
+type: fixed

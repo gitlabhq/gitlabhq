@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe HangoutsChatService do
+RSpec.describe HangoutsChatService do
   it_behaves_like "chat service", "Hangouts Chat" do
     let(:client) { HangoutsChat::Sender }
     let(:client_arguments) { webhook_url }

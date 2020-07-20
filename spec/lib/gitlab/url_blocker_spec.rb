@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
+RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
   include StubRequests
 
   describe '#validate!' do

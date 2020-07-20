@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DagPipelineSerializer do
+RSpec.describe Ci::DagPipelineSerializer do
   describe '#represent' do
     subject { described_class.new.represent(pipeline) }
 
@@ -12,6 +12,10 @@ describe Ci::DagPipelineSerializer do
     it 'includes stages' do
       expect(subject[:stages]).to be_present
       expect(subject[:stages].size).to eq 1
+    end
+
+    it 'matches schema' do
+      expect(subject.to_json).to match_schema('entities/dag_pipeline')
     end
   end
 end

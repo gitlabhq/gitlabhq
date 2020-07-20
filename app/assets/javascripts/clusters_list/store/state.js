@@ -1,9 +1,11 @@
 export default (initialState = {}) => ({
+  ancestorHelperPath: initialState.ancestorHelpPath,
   endpoint: initialState.endpoint,
   hasAncestorClusters: false,
-  loading: true,
   clusters: [],
   clustersPerPage: 0,
+  loadingClusters: true,
+  loadingNodes: true,
   page: 1,
   providers: {
     aws: { path: initialState.imgTagsAwsPath, text: initialState.imgTagsAwsText },

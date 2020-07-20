@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/ci/lints/show' do
+RSpec.describe 'projects/ci/lints/show' do
   include Devise::Test::ControllerHelpers
   let(:project) { create(:project, :repository) }
   let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }

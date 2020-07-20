@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::Importer do
+RSpec.describe Gitlab::ImportExport::Importer do
   let(:user) { create(:user) }
   let(:test_path) { "#{Dir.tmpdir}/importer_spec" }
   let(:shared) { project.import_export_shared }

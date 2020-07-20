@@ -81,6 +81,10 @@ class InstanceClusterablePresenter < ClusterablePresenter
   def learn_more_link
     link_to(s_('ClusterIntegration|Learn more about instance Kubernetes clusters'), help_page_path('user/instance/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
   end
+
+  def metrics_dashboard_path(cluster)
+    metrics_dashboard_admin_cluster_path(cluster)
+  end
 end
 
 InstanceClusterablePresenter.prepend_if_ee('EE::InstanceClusterablePresenter')

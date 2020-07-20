@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe StorageHelper do
+RSpec.describe StorageHelper do
   describe "#storage_counter" do
     it "formats bytes to one decimal place" do
       expect(helper.storage_counter(1.23.megabytes)).to eq("1.2 MB")
@@ -30,10 +30,11 @@ describe StorageHelper do
                                repository_size:      10.kilobytes,
                                wiki_size:            10.bytes,
                                lfs_objects_size:     20.gigabytes,
-                               build_artifacts_size: 30.megabytes))
+                               build_artifacts_size: 30.megabytes,
+                               snippets_size:        40.megabytes))
     end
 
-    let(:message) { 'Repository: 10 KB / Wikis: 10 Bytes / Build Artifacts: 30 MB / LFS: 20 GB' }
+    let(:message) { 'Repository: 10 KB / Wikis: 10 Bytes / Build Artifacts: 30 MB / LFS: 20 GB / Snippets: 40 MB' }
 
     it 'works on ProjectStatistics' do
       expect(helper.storage_counters_details(project.statistics)).to eq(message)

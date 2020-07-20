@@ -26,7 +26,7 @@ of the project shows some basic resource usage charts, such as CPU and memory us
 of each server in [Omnibus GitLab](https://docs.gitlab.com/omnibus/) installations.
 
 You can also use the project to configure your own
-[custom metrics](../../../user/project/integrations/prometheus.md#adding-custom-metrics) using
+[custom metrics](../../../operations/metrics/index.md#adding-custom-metrics) using
 metrics exposed by the [GitLab exporter](../prometheus/gitlab_metrics.md#metrics-available).
 
 ## Creating the self monitoring project
@@ -47,6 +47,19 @@ project. If you create the project again, it will be created in its default stat
    It can take a few seconds for it to be deleted.
 1. After the project is deleted, GitLab displays a message confirming your action.
 
+## Dashboards available in Omnibus GitLab
+
+Omnibus GitLab provides a dashboard that displays CPU and memory usage
+of each GitLab server. To select the servers to be displayed in the
+panels, provide a regular expression in the **Instance label regex** field.
+The dashboard uses metrics available in
+[Omnibus GitLab](https://docs.gitlab.com/omnibus/) installations.
+
+![GitLab self monitoring default dashboard](img/self_monitoring_default_dashboard.png)
+
+You can also
+[create your own dashboards](../../../operations/metrics/dashboards/index.md#defining-custom-dashboards-per-project).
+
 ## Connection to Prometheus
 
 The project will be automatically configured to connect to the
@@ -60,18 +73,18 @@ you should
 
 ## Taking action on Prometheus alerts **(ULTIMATE)**
 
-You can [add a webhook](../../../user/project/integrations/prometheus.md#external-prometheus-instances)
+You can [add a webhook](../../../operations/metrics/alerts.md#external-prometheus-instances)
 to the Prometheus configuration in order for GitLab to receive notifications of any alerts.
 
 Once the webhook is setup, you can
-[take action on incoming alerts](../../../user/project/integrations/prometheus.md#taking-action-on-incidents-ultimate).
+[take action on incoming alerts](../../../operations/metrics/alerts.md#trigger-actions-from-alerts-ultimate).
 
 ## Adding custom metrics to the self monitoring project
 
 You can add custom metrics in the self monitoring project by:
 
-1. [Duplicating](../../../user/project/integrations/prometheus.md#duplicating-a-gitlab-defined-dashboard) the default dashboard.
-1. [Editing](../../../user/project/integrations/prometheus.md#view-and-edit-the-source-file-of-a-custom-dashboard) the newly created dashboard file and configuring it with [dashboard YAML properties](../../../user/project/integrations/prometheus.md#dashboard-yaml-properties).
+1. [Duplicating](../../../operations/metrics/dashboards/index.md#duplicating-a-gitlab-defined-dashboard) the default dashboard.
+1. [Editing](../../../operations/metrics/dashboards/index.md#view-and-edit-the-source-file-of-a-custom-dashboard) the newly created dashboard file and configuring it with [dashboard YAML properties](../../../operations/metrics/dashboards/yaml.md).
 
 ## Troubleshooting
 

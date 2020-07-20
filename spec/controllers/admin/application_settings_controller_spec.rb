@@ -128,6 +128,13 @@ RSpec.describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.repository_storages_weighted_default).to eq(75)
     end
 
+    it "updates default_branch_name setting" do
+      put :update, params: { application_setting: { default_branch_name: "example_branch_name" } }
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+      expect(ApplicationSetting.current.default_branch_name).to eq("example_branch_name")
+    end
+
     context 'external policy classification settings' do
       let(:settings) do
         {

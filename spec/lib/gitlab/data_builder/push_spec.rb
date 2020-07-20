@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DataBuilder::Push do
+RSpec.describe Gitlab::DataBuilder::Push do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

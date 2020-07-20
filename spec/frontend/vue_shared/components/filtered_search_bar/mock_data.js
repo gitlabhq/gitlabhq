@@ -44,6 +44,29 @@ export const mockAuthorToken = {
 
 export const mockAvailableTokens = [mockAuthorToken];
 
+export const mockHistoryItems = [
+  [
+    {
+      type: 'author_username',
+      value: {
+        data: 'toby',
+        operator: '=',
+      },
+    },
+    'duo',
+  ],
+  [
+    {
+      type: 'author_username',
+      value: {
+        data: 'root',
+        operator: '=',
+      },
+    },
+    'si',
+  ],
+];
+
 export const mockSortOptions = [
   {
     id: 1,

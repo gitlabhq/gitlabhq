@@ -21,8 +21,8 @@ function UsersSelect(currentUser, els, options = {}) {
   const $els = $(els || '.js-user-search');
   this.users = this.users.bind(this);
   this.user = this.user.bind(this);
-  this.usersPath = '/autocomplete/users.json';
-  this.userPath = '/autocomplete/users/:id.json';
+  this.usersPath = '/-/autocomplete/users.json';
+  this.userPath = '/-/autocomplete/users/:id.json';
   if (currentUser != null) {
     if (typeof currentUser === 'object') {
       this.currentUser = currentUser;
@@ -263,7 +263,7 @@ function UsersSelect(currentUser, els, options = {}) {
               const userId = parseInt(input.value, 10);
               const { avatarUrl, avatar_url, name, username, canMerge } = input.dataset;
               return {
-                avatar_url: avatarUrl || avatar_url,
+                avatar_url: avatarUrl || avatar_url || gon.default_avatar_url,
                 id: userId,
                 name,
                 username,

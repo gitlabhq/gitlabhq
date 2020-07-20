@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::RequestContext, :request_store do
+RSpec.describe Gitlab::RequestContext, :request_store do
   subject { described_class.instance }
 
   before do

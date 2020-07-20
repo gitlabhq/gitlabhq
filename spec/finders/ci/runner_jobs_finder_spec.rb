@@ -21,13 +21,13 @@ RSpec.describe Ci::RunnerJobsFinder do
     end
 
     context 'when params contains status' do
-      HasStatus::AVAILABLE_STATUSES.each do |target_status|
+      Ci::HasStatus::AVAILABLE_STATUSES.each do |target_status|
         context "when status is #{target_status}" do
           let(:params) { { status: target_status } }
           let!(:job) { create(:ci_build, runner: runner, project: project, status: target_status) }
 
           before do
-            exception_status = HasStatus::AVAILABLE_STATUSES - [target_status]
+            exception_status = Ci::HasStatus::AVAILABLE_STATUSES - [target_status]
             create(:ci_build, runner: runner, project: project, status: exception_status.first)
           end
 

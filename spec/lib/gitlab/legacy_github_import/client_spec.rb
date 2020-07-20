@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::Client do
+RSpec.describe Gitlab::LegacyGithubImport::Client do
   let(:token) { '123456' }
   let(:github_provider) { Settingslogic.new('app_id' => 'asd123', 'app_secret' => 'asd123', 'name' => 'github', 'args' => { 'client_options' => {} }) }
   let(:wait_for_rate_limit_reset) { true }

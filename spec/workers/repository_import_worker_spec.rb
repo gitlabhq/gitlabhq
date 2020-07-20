@@ -2,13 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryImportWorker do
-  describe 'modules' do
-    it 'includes ProjectImportOptions' do
-      expect(described_class).to include_module(ProjectImportOptions)
-    end
-  end
-
+RSpec.describe RepositoryImportWorker do
   describe '#perform' do
     let(:project) { create(:project, :import_scheduled) }
     let(:import_state) { project.import_state }

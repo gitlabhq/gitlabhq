@@ -1,0 +1,5 @@
+---
+title: Ensure we always generate a valid wiki event URL
+merge_request: 34191
+author:
+type: fixed

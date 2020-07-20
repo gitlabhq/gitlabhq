@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::PerformanceBar do
+RSpec.describe Gitlab::PerformanceBar do
   it { expect(described_class.l1_cache_backend).to eq(Gitlab::ProcessMemoryCache.cache_backend) }
   it { expect(described_class.l2_cache_backend).to eq(Rails.cache) }
 

@@ -91,6 +91,8 @@ describe('Discussion navigation mixin', () => {
         beforeEach(() => {
           window.mrTabs.currentAction = 'show';
           wrapper.vm[fn](...args);
+
+          return wrapper.vm.$nextTick();
         });
 
         it('sets current discussion', () => {
@@ -112,6 +114,8 @@ describe('Discussion navigation mixin', () => {
         beforeEach(() => {
           window.mrTabs.currentAction = 'diffs';
           wrapper.vm[fn](...args);
+
+          return wrapper.vm.$nextTick();
         });
 
         it('sets current discussion', () => {
@@ -137,6 +141,8 @@ describe('Discussion navigation mixin', () => {
         beforeEach(() => {
           window.mrTabs.currentAction = 'other';
           wrapper.vm[fn](...args);
+
+          return wrapper.vm.$nextTick();
         });
 
         it('sets current discussion', () => {

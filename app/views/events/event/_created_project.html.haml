@@ -4,7 +4,7 @@
 
 .event-title.d-flex.flex-wrap
   = inline_event_icon(event)
-  %span.event-type.d-inline-block.append-right-4{ class: event.action_name }
+  %span.event-type.d-inline-block.gl-mr-2{ class: event.action_name }
     = event_action_name(event)
 
   - if event.project

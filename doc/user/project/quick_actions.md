@@ -7,14 +7,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Quick Actions
 
+> - Introduced in [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26672):
+>   once an action is executed, an alert appears when a quick action is successfully applied.
+> - In [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/16877) and later, you can use
+>   quick actions when updating the description of issues, epics, and merge requests.
+
 Quick actions are textual shortcuts for common actions on issues, epics, merge requests,
 and commits that are usually done by clicking buttons or dropdowns in GitLab's UI.
-You can enter these commands while creating a new issue or merge request, or
-in comments of issues, epics, merge requests, and commits. Each command should be
-on a separate line in order to be properly detected and executed.
-
-> From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26672), once an
-> action is executed, an alert appears when a quick action is successfully applied.
+You can enter these commands in the description or in comments of issues, epics, merge requests, and commits.
+Each command should be on a separate line in order to be properly detected and executed.
 
 ## Quick Actions for issues, merge requests and epics
 
@@ -40,7 +41,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/create_merge_request <branch name>` | ✓     |               |      | Create a new merge request starting from the current issue.                                                                      |
 | `/done`                               | ✓     | ✓             | ✓    | Mark To-Do as done.                                                                                                              |
 | `/due <date>`                         | ✓     |               |      | Set due date. Examples of valid `<date>` include `in 2 days`, `this Friday` and `December 31st`.                                 |
-| `/duplicate <#issue>`                 | ✓     |               |      | Mark this issue as a duplicate of another issue and mark them as related. **(STARTER)**                                          |
+| `/duplicate <#issue>`                 | ✓     |               |      | Close this issue and mark as a duplicate of another issue. **(CORE)** Also, mark both as related. **(STARTER)**                                          |
 | `/epic <epic>`                        | ✓     |               |      | Add to epic `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. **(PREMIUM)**  |
 | `/estimate <<W>w <DD>d <hh>h <mm>m>`  | ✓     | ✓             |      | Set time estimate. For example, `/estimate 1w 3d 2h 14m`.                                                                        |
 | `/iteration *iteration:iteration`     | ✓     |               |      | Set iteration ([Introduced in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/196795)) **(STARTER)** |

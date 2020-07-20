@@ -11,3 +11,5 @@ module Evidences
     expose :milestones, using: Evidences::MilestoneEntity
   end
 end
+
+Evidences::ReleaseEntity.prepend_if_ee('EE::Evidences::ReleaseEntity')

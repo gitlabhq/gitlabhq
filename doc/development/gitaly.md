@@ -1,7 +1,14 @@
-# GitLab Developers Guide to Working with Gitaly
+---
+stage: Create
+group: Gitaly
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: reference
+---
 
-[Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab CE/EE,
-Workhorse and GitLab-Shell.
+# Gitaly developers guide
+
+[Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab Rails,
+Workhorse and GitLab Shell.
 
 ## Deep Dive
 
@@ -114,7 +121,8 @@ bundle exec rake gitlab:features:disable_rugged
 
 Most of this code exists in the `lib/gitlab/git/rugged_impl` directory.
 
-NOTE: **Note:** You should NOT need to add or modify code related to
+NOTE: **Note:**
+You should NOT need to add or modify code related to
 Rugged unless explicitly discussed with the [Gitaly
 Team](https://gitlab.com/groups/gl-gitaly/group_members). This code will
 NOT work on GitLab.com or other GitLab instances that do not use NFS.

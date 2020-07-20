@@ -77,6 +77,4 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
 
   config.eager_load = true
-
-  config.allow_concurrency = Gitlab::Runtime.multi_threaded?
 end

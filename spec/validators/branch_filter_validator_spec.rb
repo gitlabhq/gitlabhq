@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BranchFilterValidator do
+RSpec.describe BranchFilterValidator do
   let(:validator) { described_class.new(attributes: [:push_events_branch_filter]) }
   let(:hook) { build(:project_hook) }
 

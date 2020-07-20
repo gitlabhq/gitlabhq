@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Updating a Snippet' do
+RSpec.describe 'Updating a Snippet' do
   include GraphqlHelpers
 
   let_it_be(:original_content) { 'Initial content' }
@@ -16,8 +16,8 @@ describe 'Updating a Snippet' do
   let(:current_user) { snippet.author }
 
   let(:snippet_gid) { GitlabSchema.id_from_object(snippet).to_s }
-  let(:mutation) do
-    variables = {
+  let(:mutation_vars) do
+    {
       id: snippet_gid,
       content: updated_content,
       description: updated_description,
@@ -25,8 +25,9 @@ describe 'Updating a Snippet' do
       file_name: updated_file_name,
       title: updated_title
     }
-
-    graphql_mutation(:update_snippet, variables)
+  end
+  let(:mutation) do
+    graphql_mutation(:update_snippet, mutation_vars)
   end
 
   def mutation_response
@@ -101,7 +102,6 @@ describe 'Updating a Snippet' do
     end
 
     it_behaves_like 'graphql update actions'
-
     it_behaves_like 'when the snippet is not found'
   end
 
@@ -147,5 +147,41 @@ describe 'Updating a Snippet' do
     end
 
     it_behaves_like 'when the snippet is not found'
+  end
+
+  context 'when using the files params' do
+    let!(:snippet) { create(:personal_snippet, :private, :repository) }
+    let(:updated_content) { 'updated_content' }
+    let(:updated_file) { 'CHANGELOG' }
+    let(:deleted_file) { 'README' }
+    let(:mutation_vars) do
+      {
+        id: snippet_gid,
+        files: [
+          { action: :update, filePath: updated_file, content: updated_content },
+          { action: :delete, filePath: deleted_file }
+        ]
+      }
+    end
+
+    it 'updates the Snippet' do
+      blob_to_update = blob_at(updated_file)
+      expect(blob_to_update.data).not_to eq updated_content
+
+      blob_to_delete = blob_at(deleted_file)
+      expect(blob_to_delete).to be_present
+
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      blob_to_update = blob_at(updated_file)
+      expect(blob_to_update.data).to eq updated_content
+
+      blob_to_delete = blob_at(deleted_file)
+      expect(blob_to_delete).to be_nil
+    end
+
+    def blob_at(filename)
+      snippet.repository.blob_at('HEAD', filename)
+    end
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::Graphql::CallsGitaly::Instrumentation do
+RSpec.describe Gitlab::Graphql::CallsGitaly::Instrumentation do
   subject { described_class.new }
 
   describe '#calls_gitaly_check' do

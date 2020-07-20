@@ -153,7 +153,7 @@ export default {
           v-gl-tooltip
           name="issue-block"
           :title="__('Blocked issue')"
-          class="issue-blocked-icon append-right-4"
+          class="issue-blocked-icon gl-mr-2"
           :aria-label="__('Blocked issue')"
         />
         <icon
@@ -161,7 +161,7 @@ export default {
           v-gl-tooltip
           name="eye-slash"
           :title="__('Confidential')"
-          class="confidential-icon append-right-4"
+          class="confidential-icon gl-mr-2"
           :aria-label="__('Confidential')"
         />
         <a :href="issue.path" :title="issue.title" class="js-no-trigger" @mousemove.stop>{{

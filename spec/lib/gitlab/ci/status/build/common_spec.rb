@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Build::Common do
+RSpec.describe Gitlab::Ci::Status::Build::Common do
   let(:user) { create(:user) }
   let(:build) { create(:ci_build) }
   let(:project) { build.project }

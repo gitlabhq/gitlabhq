@@ -1,8 +1,0 @@
-mutation ($projectPath: ID!, $iid: String!) {
-    createAlertIssue(input: { iid: $iid,  projectPath: $projectPath }) {
-        errors
-        issue {
-            iid
-        }
-    }
-}

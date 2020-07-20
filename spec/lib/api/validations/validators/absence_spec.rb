@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Validations::Validators::Absence do
+RSpec.describe API::Validations::Validators::Absence do
   include ApiValidatorsHelpers
 
   subject do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Config::Entry::Boolean do
+RSpec.describe Gitlab::Config::Entry::Boolean do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do

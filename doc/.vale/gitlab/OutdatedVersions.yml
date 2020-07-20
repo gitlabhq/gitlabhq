@@ -1,0 +1,21 @@
+---
+# Warning: gitlab.OutdatedVersions
+#
+# Checks for references to versions of GitLab that are no longer supported.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: existence
+message: 'Can this reference to "%s" be refactored?'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#importance-of-referencing-gitlab-versions-and-tiers
+level: warning
+nonword: true
+ignorecase: true
+tokens:
+  - "GitLab (v)?2."
+  - "GitLab (v)?3."
+  - "GitLab (v)?4."
+  - "GitLab (v)?5."
+  - "GitLab (v)?6."
+  - "GitLab (v)?7."
+  - "GitLab (v)?8."
+  - "GitLab (v)?9."

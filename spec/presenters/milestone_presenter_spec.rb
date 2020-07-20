@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MilestonePresenter do
+RSpec.describe MilestonePresenter do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:milestone) { create(:milestone, group: group) }

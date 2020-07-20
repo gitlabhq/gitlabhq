@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Namespace::RootStorageStatistics < ApplicationRecord
-  STATISTICS_ATTRIBUTES = %w(storage_size repository_size wiki_size lfs_objects_size build_artifacts_size packages_size).freeze
+  SNIPPETS_SIZE_STAT_NAME = 'snippets_size'.freeze
+  STATISTICS_ATTRIBUTES = %W(storage_size repository_size wiki_size lfs_objects_size build_artifacts_size packages_size #{SNIPPETS_SIZE_STAT_NAME}).freeze
 
   self.primary_key = :namespace_id
 
@@ -13,10 +14,14 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   delegate :all_projects, to: :namespace
 
   def recalculate!
-    update!(attributes_from_project_statistics)
+    update!(merged_attributes)
   end
 
   private
+
+  def merged_attributes
+    attributes_from_project_statistics.merge!(attributes_from_personal_snippets) { |key, v1, v2| v1 + v2 }
+  end
 
   def attributes_from_project_statistics
     from_project_statistics
@@ -34,7 +39,22 @@ class Namespace::RootStorageStatistics < ApplicationRecord
         'COALESCE(SUM(ps.wiki_size), 0) AS wiki_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
         'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
-        'COALESCE(SUM(ps.packages_size), 0) AS packages_size'
+        'COALESCE(SUM(ps.packages_size), 0) AS packages_size',
+        "COALESCE(SUM(ps.snippets_size), 0) AS #{SNIPPETS_SIZE_STAT_NAME}"
       )
+  end
+
+  def attributes_from_personal_snippets
+    # Return if the type of namespace does not belong to a user
+    return {} unless namespace.type.nil?
+
+    from_personal_snippets.take.slice(SNIPPETS_SIZE_STAT_NAME)
+  end
+
+  def from_personal_snippets
+    PersonalSnippet
+      .joins('INNER JOIN snippet_statistics s ON s.snippet_id = snippets.id')
+      .where(author: namespace.owner_id)
+      .select("COALESCE(SUM(s.repository_size), 0) AS #{SNIPPETS_SIZE_STAT_NAME}")
   end
 end

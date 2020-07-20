@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design note pin component should match the snapshot of note when repositioning 1`] = `
+<button
+  aria-label="Comment form position"
+  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center btn-transparent comment-indicator"
+  style="left: 10px; top: 10px; cursor: move;"
+  type="button"
+>
+  <icon-stub
+    name="image-comment-dark"
+    size="16"
+  />
+</button>
+`;
+
+exports[`Design note pin component should match the snapshot of note with index 1`] = `
+<button
+  aria-label="Comment '1' position"
+  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center js-image-badge badge badge-pill"
+  style="left: 10px; top: 10px;"
+  type="button"
+>
+  
+    1
+  
+</button>
+`;
+
+exports[`Design note pin component should match the snapshot of note without index 1`] = `
+<button
+  aria-label="Comment form position"
+  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center btn-transparent comment-indicator"
+  style="left: 10px; top: 10px;"
+  type="button"
+>
+  <icon-stub
+    name="image-comment-dark"
+    size="16"
+  />
+</button>
+`;

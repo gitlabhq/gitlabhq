@@ -26,6 +26,6 @@ reportFiles
 
 const context = createContext({ coverageMap: coverageMap, dir: 'coverage-frontend' });
 
-['json', 'lcov', 'text-summary', 'clover'].forEach(reporter => {
+['json', 'lcov', 'text-summary', 'clover', 'cobertura'].forEach(reporter => {
   create(reporter, {}).execute(context);
 });

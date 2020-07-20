@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 module ClustersHelper
-  # EE overrides this
-  def has_multiple_clusters?
-    false
-  end
-
   def create_new_cluster_label(provider: nil)
     case provider
     when 'aws'
@@ -19,6 +14,7 @@ module ClustersHelper
 
   def js_clusters_list_data(path = nil)
     {
+      ancestor_help_path: help_page_path('user/group/clusters/index', anchor: 'cluster-precedence'),
       endpoint: path,
       img_tags: {
         aws: { path: image_path('illustrations/logos/amazon_eks.svg'), text: s_('ClusterIntegration|Amazon EKS') },
@@ -95,5 +91,3 @@ module ClustersHelper
     can?(user, :admin_cluster, cluster)
   end
 end
-
-ClustersHelper.prepend_if_ee('EE::ClustersHelper')

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Middleware::RailsQueueDuration do
+RSpec.describe Gitlab::Middleware::RailsQueueDuration do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:env) { {} }

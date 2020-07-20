@@ -7,6 +7,7 @@ import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
 } from '~/registry/shared/constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import { stringifiedFormOptions } from '../../shared/mock_data';
 
 describe('Settings Form', () => {
@@ -36,11 +37,16 @@ describe('Settings Form', () => {
   const findSaveButton = () => wrapper.find({ ref: 'save-button' });
   const findLoadingIcon = (parent = wrapper) => parent.find(GlLoadingIcon);
 
-  const mountComponent = () => {
+  const mountComponent = (data = {}) => {
     wrapper = shallowMount(component, {
       stubs: {
         GlCard,
         GlLoadingIcon,
+      },
+      data() {
+        return {
+          ...data,
+        };
       },
       mocks: {
         $toast: {
@@ -55,7 +61,6 @@ describe('Settings Form', () => {
     store = createStore();
     store.dispatch('setInitialState', stringifiedFormOptions);
     dispatchSpy = jest.spyOn(store, 'dispatch');
-    mountComponent();
     jest.spyOn(Tracking, 'event');
   });
 
@@ -63,18 +68,28 @@ describe('Settings Form', () => {
     wrapper.destroy();
   });
 
+  describe('data binding', () => {
+    it('v-model change update the settings property', () => {
+      mountComponent();
+      findFields().vm.$emit('input', { newValue: 'foo' });
+      expect(dispatchSpy).toHaveBeenCalledWith('updateSettings', { settings: 'foo' });
+    });
+
+    it('v-model change update the api error property', () => {
+      const apiErrors = { baz: 'bar' };
+      mountComponent({ apiErrors });
+      expect(findFields().props('apiErrors')).toEqual(apiErrors);
+      findFields().vm.$emit('input', { newValue: 'foo', modified: 'baz' });
+      expect(findFields().props('apiErrors')).toEqual({});
+    });
+  });
+
   describe('form', () => {
     let form;
     beforeEach(() => {
+      mountComponent();
       form = findForm();
       dispatchSpy.mockReturnValue();
-    });
-
-    describe('data binding', () => {
-      it('v-model change update the settings property', () => {
-        findFields().vm.$emit('input', 'foo');
-        expect(dispatchSpy).toHaveBeenCalledWith('updateSettings', { settings: 'foo' });
-      });
     });
 
     describe('form reset event', () => {
@@ -108,23 +123,39 @@ describe('Settings Form', () => {
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'submit_form', trackingPayload);
       });
 
-      it('show a success toast when submit succeed', () => {
+      it('show a success toast when submit succeed', async () => {
         dispatchSpy.mockResolvedValue();
         form.trigger('submit');
-        return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE, {
-            type: 'success',
-          });
+        await waitForPromises();
+        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_SUCCESS_MESSAGE, {
+          type: 'success',
         });
       });
 
-      it('show an error toast when submit fails', () => {
-        dispatchSpy.mockRejectedValue();
-        form.trigger('submit');
-        return wrapper.vm.$nextTick().then(() => {
+      describe('when submit fails', () => {
+        it('shows an error', async () => {
+          dispatchSpy.mockRejectedValue({ response: {} });
+          form.trigger('submit');
+          await waitForPromises();
           expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(UPDATE_SETTINGS_ERROR_MESSAGE, {
             type: 'error',
           });
+        });
+
+        it('parses the error messages', async () => {
+          dispatchSpy.mockRejectedValue({
+            response: {
+              data: {
+                message: {
+                  foo: 'bar',
+                  'container_expiration_policy.name': ['baz'],
+                },
+              },
+            },
+          });
+          form.trigger('submit');
+          await waitForPromises();
+          expect(findFields().props('apiErrors')).toEqual({ name: 'baz' });
         });
       });
     });
@@ -134,6 +165,7 @@ describe('Settings Form', () => {
     describe('cancel button', () => {
       beforeEach(() => {
         store.commit('SET_SETTINGS', { foo: 'bar' });
+        mountComponent();
       });
 
       it('has type reset', () => {
@@ -165,6 +197,7 @@ describe('Settings Form', () => {
     describe('when isLoading is true', () => {
       beforeEach(() => {
         store.commit('TOGGLE_LOADING');
+        mountComponent();
       });
       afterEach(() => {
         store.commit('TOGGLE_LOADING');

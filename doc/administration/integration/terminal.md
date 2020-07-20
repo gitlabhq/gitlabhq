@@ -45,7 +45,8 @@ detail below.
 
 ## Enabling and disabling terminal support
 
-NOTE: **Note:** AWS Elastic Load Balancers (ELBs) do not support web sockets.
+NOTE: **Note:**
+AWS Elastic Load Balancers (ELBs) do not support web sockets.
 AWS Application Load Balancers (ALBs) must be used if you want web terminals
 to work. See [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
 for more information.

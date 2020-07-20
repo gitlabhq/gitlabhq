@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-describe ObjectStorage::DirectUpload do
+RSpec.describe ObjectStorage::DirectUpload do
   let(:region) { 'us-east-1' }
   let(:path_style) { false }
   let(:use_iam_profile) { false }
+  let(:consolidated_settings) { false }
   let(:credentials) do
     {
       provider: 'AWS',
@@ -23,7 +24,7 @@ describe ObjectStorage::DirectUpload do
   let(:object_name) { 'tmp/uploads/my-file' }
   let(:maximum_size) { 1.gigabyte }
 
-  let(:direct_upload) { described_class.new(credentials, bucket_name, object_name, has_length: has_length, maximum_size: maximum_size) }
+  let(:direct_upload) { described_class.new(credentials, bucket_name, object_name, has_length: has_length, maximum_size: maximum_size, consolidated_settings: consolidated_settings) }
 
   before do
     Fog.unmock!
@@ -56,6 +57,38 @@ describe ObjectStorage::DirectUpload do
         it "raises an error" do
           expect { direct_upload }.to raise_error /maximum_size has to be specified if length is unknown/
         end
+      end
+    end
+  end
+
+  describe '#get_url' do
+    subject { described_class.new(credentials, bucket_name, object_name, has_length: true) }
+
+    context 'when AWS is used' do
+      it 'calls the proper method' do
+        expect_next_instance_of(::Fog::Storage, credentials) do |connection|
+          expect(connection).to receive(:get_object_url).once
+        end
+
+        subject.get_url
+      end
+    end
+
+    context 'when Google is used' do
+      let(:credentials) do
+        {
+          provider: 'Google',
+          google_storage_access_key_id: 'GOOGLE_ACCESS_KEY_ID',
+          google_storage_secret_access_key: 'GOOGLE_SECRET_ACCESS_KEY'
+        }
+      end
+
+      it 'calls the proper method' do
+        expect_next_instance_of(::Fog::Storage, credentials) do |connection|
+          expect(connection).to receive(:get_object_https_url).once
+        end
+
+        subject.get_url
       end
     end
   end
@@ -107,6 +140,14 @@ describe ObjectStorage::DirectUpload do
 
         it 'enables the Workhorse client for instance profiles' do
           expect(subject[:UseWorkhorseClient]).to eq(use_iam_profile)
+        end
+      end
+
+      context 'when consolidated settings are used' do
+        let(:consolidated_settings) { true }
+
+        it 'enables the Workhorse client' do
+          expect(subject[:UseWorkhorseClient]).to be true
         end
       end
     end

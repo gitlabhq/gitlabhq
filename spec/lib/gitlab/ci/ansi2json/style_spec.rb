@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Ansi2json::Style do
+RSpec.describe Gitlab::Ci::Ansi2json::Style do
   describe '#set?' do
     subject { described_class.new(params).set? }
 

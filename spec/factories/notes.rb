@@ -159,6 +159,11 @@ FactoryBot.define do
       system { true }
     end
 
+    trait :with_system_note_metadata do
+      system
+      system_note_metadata
+    end
+
     trait :downvote do
       note { "thumbsdown" }
     end

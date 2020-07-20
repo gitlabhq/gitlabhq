@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Groups < Grape::API
+  class Groups < Grape::API::Instance
     include PaginationParams
     include Helpers::CustomAttributes
 
@@ -16,7 +16,7 @@ module API
 
       params :group_list_params do
         use :statistics_params
-        optional :skip_groups, type: Array[Integer], desc: 'Array of group ids to exclude from list'
+        optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
         optional :search, type: String, desc: 'Search for a specific group'
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
@@ -76,9 +76,6 @@ module API
           params: project_finder_params,
           options: finder_options
         ).execute
-        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
-        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
-        projects = projects.visible_to_user_and_access_level(current_user, params[:min_access_level]) if params[:min_access_level]
         projects = reorder_projects(projects)
         paginate(projects)
       end
@@ -221,7 +218,7 @@ module API
         success Entities::Project
       end
       params do
-        optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+        optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
@@ -258,7 +255,7 @@ module API
         success Entities::Project
       end
       params do
-        optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+        optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'

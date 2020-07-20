@@ -42,7 +42,7 @@ module Gitlab
       end
     end
 
-    # Overriden in Gitlab::WikiFileFinder
+    # Overridden in Gitlab::WikiFileFinder
     def search_paths(query)
       repository.search_files_by_name(query, ref)
     end

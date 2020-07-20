@@ -1,0 +1,6 @@
+---
+title: Rename GraphQL AwardEmoji mutations to follow naming conventions, deprecating
+  the old mutations
+merge_request: 34798
+author:
+type: changed

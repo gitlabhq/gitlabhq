@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ImportExportUploader do
+RSpec.describe ImportExportUploader do
   let(:model) { build_stubbed(:import_export_upload) }
   let(:upload) { create(:upload, model: model) }
   let(:import_export_upload) { ImportExportUpload.new }

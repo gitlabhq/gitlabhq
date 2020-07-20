@@ -6,6 +6,20 @@ module Gitlab
       class Store
         EXPIRES_IN = 1.day
 
+        def self.bulk_read(subjects)
+          results = {}
+
+          Gitlab::Redis::Cache.with do |r|
+            r.pipelined do
+              subjects.each do |subject|
+                results[subject.cache_key] = new(subject).read
+              end
+            end
+          end
+
+          results
+        end
+
         def initialize(subject)
           @subject = subject
           @loaded = false
@@ -23,13 +37,9 @@ module Gitlab
         def read
           @loaded = true
 
-          results = Gitlab::Redis::Cache.with do |r|
+          Gitlab::Redis::Cache.with do |r|
             r.mapped_hmget(markdown_cache_key, *fields)
           end
-          # The value read from redis is a string, so we're converting it back
-          # to an int.
-          results[:cached_markdown_version] = results[:cached_markdown_version].to_i
-          results
         end
 
         def loaded?

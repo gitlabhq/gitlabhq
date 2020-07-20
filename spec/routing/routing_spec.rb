@@ -9,7 +9,7 @@ require 'spec_helper'
 # user_snippets              GET    /users/:username/snippets(.:format)
 # user_calendar              GET    /users/:username/calendar(.:format)
 # user_calendar_activities   GET    /users/:username/calendar_activities(.:format)
-describe UsersController, "routing" do
+RSpec.describe UsersController, "routing" do
   it "to #show" do
     allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
 
@@ -32,6 +32,13 @@ describe UsersController, "routing" do
     expect(get("/users/User/snippets")).to route_to('users#snippets', username: 'User')
   end
 
+  # get all the ssh-keys of a user
+  it "to #get_keys" do
+    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
+
+    expect(get("/User.keys")).to route_to('users#ssh_keys', username: 'User')
+  end
+
   it "to #calendar" do
     expect(get("/users/User/calendar")).to route_to('users#calendar', username: 'User')
   end
@@ -42,7 +49,7 @@ describe UsersController, "routing" do
 end
 
 # search GET    /search(.:format) search#show
-describe SearchController, "routing" do
+RSpec.describe SearchController, "routing" do
   it "to #show" do
     expect(get("/search")).to route_to('search#show')
   end
@@ -50,7 +57,7 @@ end
 
 # gitlab_api /api         API::API
 #            /:path       Grack
-describe "Mounted Apps", "routing" do
+RSpec.describe "Mounted Apps", "routing" do
   it "to API" do
     expect(get("/api/issues")).to be_routable
   end
@@ -67,7 +74,7 @@ end
 #      snippet GET    /snippets/:id(.:format)      snippets#show
 #          PUT    /snippets/:id(.:format)      snippets#update
 #          DELETE /snippets/:id(.:format)      snippets#destroy
-describe SnippetsController, "routing" do
+RSpec.describe SnippetsController, "routing" do
   it "to #raw" do
     expect(get("/snippets/1/raw")).to route_to('snippets#raw', id: '1')
   end
@@ -99,13 +106,17 @@ describe SnippetsController, "routing" do
   it "to #destroy" do
     expect(delete("/snippets/1")).to route_to('snippets#destroy', id: '1')
   end
+
+  it 'to #show from scope routing' do
+    expect(get("/-/snippets/1")).to route_to('snippets#show', id: '1')
+  end
 end
 
 #            help GET /help(.:format)                 help#index
 #       help_page GET /help/*path(.:format)           help#show
 #  help_shortcuts GET /help/shortcuts(.:format)       help#shortcuts
 #         help_ui GET /help/ui(.:format)              help#ui
-describe HelpController, "routing" do
+RSpec.describe HelpController, "routing" do
   it "to #index" do
     expect(get("/help")).to route_to('help#index')
   end
@@ -132,7 +143,7 @@ end
 #               profile_token GET    /profile/token(.:format)               profile#token
 #                     profile GET    /profile(.:format)                     profile#show
 #              profile_update PUT    /profile/update(.:format)              profile#update
-describe ProfilesController, "routing" do
+RSpec.describe ProfilesController, "routing" do
   it "to #account" do
     expect(get("/profile/account")).to route_to('profiles/accounts#show')
   end
@@ -153,7 +164,7 @@ end
 # profile_preferences GET      /profile/preferences(.:format) profiles/preferences#show
 #                     PATCH    /profile/preferences(.:format) profiles/preferences#update
 #                     PUT      /profile/preferences(.:format) profiles/preferences#update
-describe Profiles::PreferencesController, 'routing' do
+RSpec.describe Profiles::PreferencesController, 'routing' do
   it 'to #show' do
     expect(get('/profile/preferences')).to route_to('profiles/preferences#show')
   end
@@ -170,7 +181,7 @@ end
 #      key GET    /keys/:id(.:format)      keys#show
 #          PUT    /keys/:id(.:format)      keys#update
 #          DELETE /keys/:id(.:format)      keys#destroy
-describe Profiles::KeysController, "routing" do
+RSpec.describe Profiles::KeysController, "routing" do
   it "to #index" do
     expect(get("/profile/keys")).to route_to('profiles/keys#index')
   end
@@ -186,19 +197,12 @@ describe Profiles::KeysController, "routing" do
   it "to #destroy" do
     expect(delete("/profile/keys/1")).to route_to('profiles/keys#destroy', id: '1')
   end
-
-  # get all the ssh-keys of a user
-  it "to #get_keys" do
-    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
-
-    expect(get("/foo.keys")).to route_to('profiles/keys#get_keys', username: 'foo')
-  end
 end
 
 #   emails GET    /emails(.:format)        emails#index
 #          POST   /keys(.:format)          emails#create
 #          DELETE /keys/:id(.:format)      keys#destroy
-describe Profiles::EmailsController, "routing" do
+RSpec.describe Profiles::EmailsController, "routing" do
   it "to #index" do
     expect(get("/profile/emails")).to route_to('profiles/emails#index')
   end
@@ -213,7 +217,7 @@ describe Profiles::EmailsController, "routing" do
 end
 
 # profile_avatar DELETE /profile/avatar(.:format) profiles/avatars#destroy
-describe Profiles::AvatarsController, "routing" do
+RSpec.describe Profiles::AvatarsController, "routing" do
   it "to #destroy" do
     expect(delete("/profile/avatar")).to route_to('profiles/avatars#destroy')
   end
@@ -222,7 +226,7 @@ end
 #                dashboard GET    /dashboard(.:format)                dashboard#show
 #         dashboard_issues GET    /dashboard/issues(.:format)         dashboard#issues
 # dashboard_merge_requests GET    /dashboard/merge_requests(.:format) dashboard#merge_requests
-describe DashboardController, "routing" do
+RSpec.describe DashboardController, "routing" do
   it "to #index" do
     expect(get("/dashboard")).to route_to('dashboard/projects#index')
   end
@@ -241,13 +245,13 @@ describe DashboardController, "routing" do
 end
 
 #                     root        /                                   root#show
-describe RootController, 'routing' do
+RSpec.describe RootController, 'routing' do
   it 'to #index' do
     expect(get('/')).to route_to('root#index')
   end
 end
 
-describe "Authentication", "routing" do
+RSpec.describe "Authentication", "routing" do
   it "GET /users/sign_in" do
     expect(get("/users/sign_in")).to route_to('sessions#new')
   end
@@ -304,7 +308,7 @@ describe "Authentication", "routing" do
   end
 end
 
-describe HealthCheckController, 'routing' do
+RSpec.describe HealthCheckController, 'routing' do
   it 'to #index' do
     expect(get('/health_check')).to route_to('health_check#index')
   end
@@ -314,7 +318,7 @@ describe HealthCheckController, 'routing' do
   end
 end
 
-describe InvitesController, 'routing' do
+RSpec.describe InvitesController, 'routing' do
   let_it_be(:member) { create(:project_member, :invited) }
 
   it 'to #show' do
@@ -326,7 +330,7 @@ describe InvitesController, 'routing' do
   end
 end
 
-describe AbuseReportsController, 'routing' do
+RSpec.describe AbuseReportsController, 'routing' do
   let_it_be(:user) { create(:user) }
 
   it 'to #new' do
@@ -338,14 +342,14 @@ describe AbuseReportsController, 'routing' do
   end
 end
 
-describe SentNotificationsController, 'routing' do
+RSpec.describe SentNotificationsController, 'routing' do
   it 'to #unsubscribe' do
     expect(get("/-/sent_notifications/4bee17d4a63ed60cf5db53417e9aeb4c/unsubscribe"))
       .to route_to('sent_notifications#unsubscribe', id: '4bee17d4a63ed60cf5db53417e9aeb4c')
   end
 end
 
-describe AutocompleteController, 'routing' do
+RSpec.describe AutocompleteController, 'routing' do
   it 'to #users' do
     expect(get("/-/autocomplete/users")).to route_to('autocomplete#users')
   end
@@ -366,5 +370,12 @@ describe AutocompleteController, 'routing' do
     expect(get("/autocomplete/users")).to route_to('autocomplete#users')
     expect(get("/autocomplete/projects")).to route_to('autocomplete#projects')
     expect(get("/autocomplete/award_emojis")).to route_to('autocomplete#award_emojis')
+  end
+end
+
+RSpec.describe Snippets::BlobsController, "routing" do
+  it "to #raw" do
+    expect(get('/-/snippets/1/raw/master/lib/version.rb'))
+      .to route_to('snippets/blobs#raw', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
   end
 end

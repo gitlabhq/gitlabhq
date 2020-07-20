@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 require 'rubocop'
 require 'rubocop/rspec/support'
 
 require_relative '../../../rubocop/cop/ban_catch_throw'
 
-describe RuboCop::Cop::BanCatchThrow do
+RSpec.describe RuboCop::Cop::BanCatchThrow, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

@@ -12,8 +12,6 @@ RSpec.describe 'Project navbar' do
   let_it_be(:project) { create(:project, :repository) }
 
   before do
-    stub_licensed_features(service_desk: false)
-
     project.add_maintainer(user)
     sign_in(user)
   end

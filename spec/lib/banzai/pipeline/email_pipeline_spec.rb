@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Pipeline::EmailPipeline do
+RSpec.describe Banzai::Pipeline::EmailPipeline do
   describe '.filters' do
     it 'returns the expected type' do
       expect(described_class.filters).to be_kind_of(Banzai::FilterArray)

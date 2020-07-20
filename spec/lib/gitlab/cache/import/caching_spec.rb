@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
   describe '.read' do
     it 'reads a value from the cache' do
       described_class.write('foo', 'bar')

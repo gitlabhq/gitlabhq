@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitaly::Server do
+RSpec.describe Gitaly::Server do
   let(:server) { described_class.new('default') }
 
   describe '.all' do

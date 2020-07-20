@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Adding a DiffNote' do
+RSpec.describe 'Adding a DiffNote' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

@@ -4,7 +4,7 @@
 # Checks for use of some of the top misused terms at GitLab.
 # For substitutions only flagged as warnings, see SubstitutionWarning.yml
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: substitution
 message: 'Use "%s" instead of "%s".'
 link: https://about.gitlab.com/handbook/communication/#top-misused-terms

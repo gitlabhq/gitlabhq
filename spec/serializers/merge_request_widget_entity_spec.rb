@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-describe MergeRequestWidgetEntity do
+RSpec.describe MergeRequestWidgetEntity do
   include ProjectForksHelper
 
   let(:project) { create :project, :repository }
   let(:resource) { create(:merge_request, source_project: project, target_project: project) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let(:user) { create(:user) }
 
   let(:request) { double('request', current_user: user, project: project) }
@@ -51,6 +52,42 @@ describe MergeRequestWidgetEntity do
   it 'has plain_diff_path' do
     expect(subject[:plain_diff_path])
       .to eq("/#{resource.project.full_path}/-/merge_requests/#{resource.iid}.diff")
+  end
+
+  it 'has blob path data' do
+    allow(resource).to receive_messages(
+      base_pipeline: pipeline,
+      head_pipeline: pipeline
+    )
+
+    expect(subject).to include(:blob_path)
+    expect(subject[:blob_path]).to include(:base_path)
+    expect(subject[:blob_path]).to include(:head_path)
+  end
+
+  describe 'codequality report artifacts', :request_store do
+    before do
+      project.add_developer(user)
+
+      allow(resource).to receive_messages(
+        base_pipeline: pipeline,
+        head_pipeline: pipeline
+      )
+    end
+
+    context "with report artifacts" do
+      let(:pipeline) { create(:ci_pipeline, :with_codequality_report, project: project) }
+
+      it "has data entry" do
+        expect(subject).to include(:codeclimate)
+      end
+    end
+
+    context "without artifacts" do
+      it "does not have data entry" do
+        expect(subject).not_to include(:codeclimate)
+      end
+    end
   end
 
   describe 'merge_request_add_ci_config_path' do
@@ -152,6 +189,36 @@ describe MergeRequestWidgetEntity do
           end
 
           it 'has no path' do
+            expect(subject[:merge_request_add_ci_config_path]).to be_nil
+          end
+        end
+
+        context 'when merge request is merged' do
+          before do
+            resource.mark_as_merged!
+          end
+
+          it 'returns a blank ci config path' do
+            expect(subject[:merge_request_add_ci_config_path]).to be_nil
+          end
+        end
+
+        context 'when merge request is closed' do
+          before do
+            resource.close!
+          end
+
+          it 'returns a blank ci config path' do
+            expect(subject[:merge_request_add_ci_config_path]).to be_nil
+          end
+        end
+
+        context 'when source branch does not exist' do
+          before do
+            resource.source_project.repository.rm_branch(user, resource.source_branch)
+          end
+
+          it 'returns a blank ci config path' do
             expect(subject[:merge_request_add_ci_config_path]).to be_nil
           end
         end

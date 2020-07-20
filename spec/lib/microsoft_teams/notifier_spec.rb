@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MicrosoftTeams::Notifier do
+RSpec.describe MicrosoftTeams::Notifier do
   subject { described_class.new(webhook_url) }
 
   let(:webhook_url) { 'https://example.gitlab.com/'}

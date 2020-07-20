@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'devise/shared/_signin_box' do
+RSpec.describe 'devise/shared/_signin_box' do
   describe 'Crowd form' do
     before do
       stub_devise

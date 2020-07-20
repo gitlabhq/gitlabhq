@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DatabaseImporters::CommonMetrics::Importer do
+RSpec.describe Gitlab::DatabaseImporters::CommonMetrics::Importer do
   subject { described_class.new }
 
   context "does import common_metrics.yml" do

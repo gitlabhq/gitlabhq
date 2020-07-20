@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IncidentManagement::CreateIssueService do
+RSpec.describe IncidentManagement::CreateIssueService do
   let(:project) { create(:project, :repository, :private) }
   let_it_be(:user) { User.alert_bot }
   let(:service) { described_class.new(project, alert_payload) }
@@ -199,80 +199,7 @@ describe IncidentManagement::CreateIssueService do
     end
 
     describe "label `incident`" do
-      let(:title) { 'incident' }
-      let(:color) { '#CC0033' }
-      let(:description) do
-        <<~DESCRIPTION.chomp
-          Denotes a disruption to IT services and \
-          the associated issues require immediate attention
-        DESCRIPTION
-      end
-
-      shared_examples 'existing label' do
-        it 'adds the existing label' do
-          expect { subject }.not_to change(Label, :count)
-
-          expect(issue.labels).to eq([label])
-        end
-      end
-
-      shared_examples 'new label' do
-        it 'adds newly created label' do
-          expect { subject }.to change(Label, :count).by(1)
-
-          label = project.reload.labels.last
-          expect(issue.labels).to eq([label])
-          expect(label.title).to eq(title)
-          expect(label.color).to eq(color)
-          expect(label.description).to eq(description)
-        end
-      end
-
-      context 'with predefined project label' do
-        it_behaves_like 'existing label' do
-          let!(:label) { create(:label, project: project, title: title) }
-        end
-      end
-
-      context 'with predefined group label' do
-        let(:project) { create(:project, group: group) }
-        let(:group) { create(:group) }
-
-        it_behaves_like 'existing label' do
-          let!(:label) { create(:group_label, group: group, title: title) }
-        end
-      end
-
-      context 'without label' do
-        it_behaves_like 'new label'
-      end
-
-      context 'with duplicate labels', issue: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/65042' do
-        before do
-          # Replicate race condition to create duplicates
-          build(:label, project: project, title: title).save!(validate: false)
-          build(:label, project: project, title: title).save!(validate: false)
-        end
-
-        it 'create an issue without labels' do
-          # Verify we have duplicates
-          expect(project.labels.size).to eq(2)
-          expect(project.labels.map(&:title)).to all(eq(title))
-
-          message = <<~MESSAGE.chomp
-            Cannot create incident issue with labels ["#{title}"] for \
-            "#{project.full_name}": Labels is invalid.
-            Retrying without labels.
-          MESSAGE
-
-          expect(service)
-            .to receive(:log_info)
-            .with(message)
-
-          expect(subject).to include(status: :success)
-          expect(issue.labels).to be_empty
-        end
-      end
+      it_behaves_like 'create alert issue sets issue labels'
     end
   end
 
@@ -281,22 +208,12 @@ describe IncidentManagement::CreateIssueService do
       setting.update!(create_issue: false)
     end
 
-    context 'when skip_settings_check is false (default)' do
-      it 'returns an error' do
-        expect(service)
-          .to receive(:log_error)
-          .with(error_message('setting disabled'))
+    it 'returns an error' do
+      expect(service)
+        .to receive(:log_error)
+        .with(error_message('setting disabled'))
 
-        expect(subject).to eq(status: :error, message: 'setting disabled')
-      end
-    end
-
-    context 'when skip_settings_check is true' do
-      subject { service.execute(skip_settings_check: true) }
-
-      it 'creates an issue' do
-        expect { subject }.to change(Issue, :count).by(1)
-      end
+      expect(subject).to eq(status: :error, message: 'setting disabled')
     end
   end
 

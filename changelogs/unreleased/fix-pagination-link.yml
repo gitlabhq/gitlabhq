@@ -1,0 +1,5 @@
+---
+title: Fix pagination link header
+merge_request: 33714
+author: Max Wittig
+type: fixed

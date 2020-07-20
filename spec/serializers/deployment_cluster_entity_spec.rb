@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeploymentClusterEntity do
+RSpec.describe DeploymentClusterEntity do
   describe '#as_json' do
     subject { described_class.new(deployment, request: request).as_json }
 

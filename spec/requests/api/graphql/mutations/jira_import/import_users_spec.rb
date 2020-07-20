@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Importing Jira Users' do
+RSpec.describe 'Importing Jira Users' do
   include JiraServiceHelper
   include GraphqlHelpers
 

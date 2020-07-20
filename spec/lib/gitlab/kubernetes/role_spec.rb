@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::Role do
+RSpec.describe Gitlab::Kubernetes::Role do
   let(:role) { described_class.new(name: name, namespace: namespace, rules: rules) }
   let(:name) { 'example-name' }
   let(:namespace) { 'example-namespace' }

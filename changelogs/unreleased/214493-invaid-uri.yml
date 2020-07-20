@@ -1,0 +1,5 @@
+---
+title: Return 404 response when redirecting request with invalid url.
+merge_request: 33492
+author:
+type: fixed

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issues::UpdateService, :mailer do
+RSpec.describe Issues::UpdateService, :mailer do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
@@ -865,6 +865,11 @@ describe Issues::UpdateService, :mailer do
           update_issue(update_params)
         end
       end
+    end
+
+    it_behaves_like 'issuable record that supports quick actions' do
+      let(:existing_issue) { create(:issue, project: project) }
+      let(:issuable) { described_class.new(project, user, params).execute(existing_issue) }
     end
   end
 end

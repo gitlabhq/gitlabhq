@@ -1,0 +1,5 @@
+---
+title: Use applogger in merge_service.rb
+merge_request: 32196
+author: Rajendra Kadam
+type: fixed

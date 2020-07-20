@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Todo do
+RSpec.describe Todo do
   let(:issue) { create(:issue) }
 
   describe 'relationships' do

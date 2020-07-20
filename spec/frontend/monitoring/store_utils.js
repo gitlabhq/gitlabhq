@@ -8,7 +8,10 @@ export const setMetricResult = ({ store, result, group = 0, panel = 0, metric = 
 
   store.commit(`monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`, {
     metricId,
-    result,
+    data: {
+      resultType: 'matrix',
+      result,
+    },
   });
 };
 
@@ -32,12 +35,6 @@ export const setupStoreWithDashboard = store => {
   );
 };
 
-export const setupStoreWithVariable = store => {
-  store.commit(`monitoringDashboard/${types.SET_VARIABLES}`, {
-    label1: 'pod',
-  });
-};
-
 export const setupStoreWithLinks = store => {
   store.commit(`monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`, {
     ...metricsDashboardPayload,
@@ -59,4 +56,25 @@ export const setupStoreWithData = store => {
   setMetricResult({ store, result: metricsResult, panel: 2 });
 
   setEnvironmentData(store);
+};
+
+export const setupStoreWithDataForPanelCount = (store, panelCount) => {
+  const payloadPanelGroup = metricsDashboardPayload.panel_groups[0];
+
+  const panelGroupCustom = {
+    ...payloadPanelGroup,
+    panels: payloadPanelGroup.panels.slice(0, panelCount),
+  };
+
+  const metricsDashboardPayloadCustom = {
+    ...metricsDashboardPayload,
+    panel_groups: [panelGroupCustom],
+  };
+
+  store.commit(
+    `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
+    metricsDashboardPayloadCustom,
+  );
+
+  setMetricResult({ store, result: metricsResult, panel: 0 });
 };

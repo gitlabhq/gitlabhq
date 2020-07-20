@@ -5,9 +5,10 @@ import {
   parseAnnotationsResponse,
   removeLeadingSlash,
   mapToDashboardViewModel,
-  normalizeQueryResult,
+  normalizeQueryResponseData,
   convertToGrafanaTimeRange,
   addDashboardMetaDataToLink,
+  normalizeCustomDashboardPath,
 } from '~/monitoring/stores/utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { annotationsData } from '../mock_data';
@@ -21,7 +22,7 @@ describe('mapToDashboardViewModel', () => {
       dashboard: '',
       panelGroups: [],
       links: [],
-      variables: {},
+      variables: [],
     });
   });
 
@@ -51,7 +52,7 @@ describe('mapToDashboardViewModel', () => {
     expect(mapToDashboardViewModel(response)).toEqual({
       dashboard: 'Dashboard Name',
       links: [],
-      variables: {},
+      variables: [],
       panelGroups: [
         {
           group: 'Group 1',
@@ -423,22 +424,20 @@ describe('mapToDashboardViewModel', () => {
 
       urlUtils.queryToObject.mockReturnValueOnce();
 
-      expect(mapToDashboardViewModel(response)).toMatchObject({
-        dashboard: 'Dashboard Name',
-        links: [],
-        variables: {
-          pod: {
-            label: 'pod',
-            type: 'text',
-            value: 'kubernetes',
-          },
-          pod_2: {
-            label: 'pod_2',
-            type: 'text',
-            value: 'kubernetes-2',
-          },
+      expect(mapToDashboardViewModel(response).variables).toEqual([
+        {
+          name: 'pod',
+          label: 'pod',
+          type: 'text',
+          value: 'kubernetes',
         },
-      });
+        {
+          name: 'pod_2',
+          label: 'pod_2',
+          type: 'text',
+          value: 'kubernetes-2',
+        },
+      ]);
     });
 
     it('sets variables as-is from yml file if URL has no matching variables', () => {
@@ -457,22 +456,20 @@ describe('mapToDashboardViewModel', () => {
         'var-environment': 'POD',
       });
 
-      expect(mapToDashboardViewModel(response)).toMatchObject({
-        dashboard: 'Dashboard Name',
-        links: [],
-        variables: {
-          pod: {
-            label: 'pod',
-            type: 'text',
-            value: 'kubernetes',
-          },
-          pod_2: {
-            label: 'pod_2',
-            type: 'text',
-            value: 'kubernetes-2',
-          },
+      expect(mapToDashboardViewModel(response).variables).toEqual([
+        {
+          label: 'pod',
+          name: 'pod',
+          type: 'text',
+          value: 'kubernetes',
         },
-      });
+        {
+          label: 'pod_2',
+          name: 'pod_2',
+          type: 'text',
+          value: 'kubernetes-2',
+        },
+      ]);
     });
 
     it('merges variables from URL with the ones from yml file', () => {
@@ -493,44 +490,20 @@ describe('mapToDashboardViewModel', () => {
         'var-pod_2': 'POD2',
       });
 
-      expect(mapToDashboardViewModel(response)).toMatchObject({
-        dashboard: 'Dashboard Name',
-        links: [],
-        variables: {
-          pod: {
-            label: 'pod',
-            type: 'text',
-            value: 'POD1',
-          },
-          pod_2: {
-            label: 'pod_2',
-            type: 'text',
-            value: 'POD2',
-          },
+      expect(mapToDashboardViewModel(response).variables).toEqual([
+        {
+          label: 'pod',
+          name: 'pod',
+          type: 'text',
+          value: 'POD1',
         },
-      });
-    });
-  });
-});
-
-describe('normalizeQueryResult', () => {
-  const testData = {
-    metric: {
-      __name__: 'up',
-      job: 'prometheus',
-      instance: 'localhost:9090',
-    },
-    values: [[1435781430.781, '1'], [1435781445.781, '1'], [1435781460.781, '1']],
-  };
-
-  it('processes a simple matrix result', () => {
-    expect(normalizeQueryResult(testData)).toEqual({
-      metric: { __name__: 'up', job: 'prometheus', instance: 'localhost:9090' },
-      values: [
-        ['2015-07-01T20:10:30.781Z', 1],
-        ['2015-07-01T20:10:45.781Z', 1],
-        ['2015-07-01T20:11:00.781Z', 1],
-      ],
+        {
+          label: 'pod_2',
+          name: 'pod_2',
+          type: 'text',
+          value: 'POD2',
+        },
+      ]);
     });
   });
 });
@@ -718,5 +691,189 @@ describe('user-defined links utils', () => {
         url: 'https://gitlab.com?from=1591632781995&to=1591650752243',
       });
     });
+  });
+});
+
+describe('normalizeQueryResponseData', () => {
+  // Data examples from
+  // https://prometheus.io/docs/prometheus/latest/querying/api/#expression-queries
+
+  it('processes a string result', () => {
+    const mockScalar = {
+      resultType: 'string',
+      result: [1435781451.781, '1'],
+    };
+
+    expect(normalizeQueryResponseData(mockScalar)).toEqual([
+      {
+        metric: {},
+        value: ['2015-07-01T20:10:51.781Z', '1'],
+        values: [['2015-07-01T20:10:51.781Z', '1']],
+      },
+    ]);
+  });
+
+  it('processes a scalar result', () => {
+    const mockScalar = {
+      resultType: 'scalar',
+      result: [1435781451.781, '1'],
+    };
+
+    expect(normalizeQueryResponseData(mockScalar)).toEqual([
+      {
+        metric: {},
+        value: ['2015-07-01T20:10:51.781Z', 1],
+        values: [['2015-07-01T20:10:51.781Z', 1]],
+      },
+    ]);
+  });
+
+  it('processes a vector result', () => {
+    const mockVector = {
+      resultType: 'vector',
+      result: [
+        {
+          metric: {
+            __name__: 'up',
+            job: 'prometheus',
+            instance: 'localhost:9090',
+          },
+          value: [1435781451.781, '1'],
+        },
+        {
+          metric: {
+            __name__: 'up',
+            job: 'node',
+            instance: 'localhost:9100',
+          },
+          value: [1435781451.781, '0'],
+        },
+      ],
+    };
+
+    expect(normalizeQueryResponseData(mockVector)).toEqual([
+      {
+        metric: { __name__: 'up', job: 'prometheus', instance: 'localhost:9090' },
+        value: ['2015-07-01T20:10:51.781Z', 1],
+        values: [['2015-07-01T20:10:51.781Z', 1]],
+      },
+      {
+        metric: { __name__: 'up', job: 'node', instance: 'localhost:9100' },
+        value: ['2015-07-01T20:10:51.781Z', 0],
+        values: [['2015-07-01T20:10:51.781Z', 0]],
+      },
+    ]);
+  });
+
+  it('processes a matrix result', () => {
+    const mockMatrix = {
+      resultType: 'matrix',
+      result: [
+        {
+          metric: {
+            __name__: 'up',
+            job: 'prometheus',
+            instance: 'localhost:9090',
+          },
+          values: [[1435781430.781, '1'], [1435781445.781, '2'], [1435781460.781, '3']],
+        },
+        {
+          metric: {
+            __name__: 'up',
+            job: 'node',
+            instance: 'localhost:9091',
+          },
+          values: [[1435781430.781, '4'], [1435781445.781, '5'], [1435781460.781, '6']],
+        },
+      ],
+    };
+
+    expect(normalizeQueryResponseData(mockMatrix)).toEqual([
+      {
+        metric: { __name__: 'up', instance: 'localhost:9090', job: 'prometheus' },
+        value: ['2015-07-01T20:11:00.781Z', 3],
+        values: [
+          ['2015-07-01T20:10:30.781Z', 1],
+          ['2015-07-01T20:10:45.781Z', 2],
+          ['2015-07-01T20:11:00.781Z', 3],
+        ],
+      },
+      {
+        metric: { __name__: 'up', instance: 'localhost:9091', job: 'node' },
+        value: ['2015-07-01T20:11:00.781Z', 6],
+        values: [
+          ['2015-07-01T20:10:30.781Z', 4],
+          ['2015-07-01T20:10:45.781Z', 5],
+          ['2015-07-01T20:11:00.781Z', 6],
+        ],
+      },
+    ]);
+  });
+
+  it('processes a scalar result with a NaN result', () => {
+    // Queries may return "NaN" string values.
+    // e.g. when Prometheus cannot find a metric the query
+    // `scalar(does_not_exist)` will return a "NaN" value.
+
+    const mockScalar = {
+      resultType: 'scalar',
+      result: [1435781451.781, 'NaN'],
+    };
+
+    expect(normalizeQueryResponseData(mockScalar)).toEqual([
+      {
+        metric: {},
+        value: ['2015-07-01T20:10:51.781Z', NaN],
+        values: [['2015-07-01T20:10:51.781Z', NaN]],
+      },
+    ]);
+  });
+
+  it('processes a matrix result with a "NaN" value', () => {
+    // Queries may return "NaN" string values.
+    const mockMatrix = {
+      resultType: 'matrix',
+      result: [
+        {
+          metric: {
+            __name__: 'up',
+            job: 'prometheus',
+            instance: 'localhost:9090',
+          },
+          values: [[1435781430.781, '1'], [1435781460.781, 'NaN']],
+        },
+      ],
+    };
+
+    expect(normalizeQueryResponseData(mockMatrix)).toEqual([
+      {
+        metric: { __name__: 'up', instance: 'localhost:9090', job: 'prometheus' },
+        value: ['2015-07-01T20:11:00.781Z', NaN],
+        values: [['2015-07-01T20:10:30.781Z', 1], ['2015-07-01T20:11:00.781Z', NaN]],
+      },
+    ]);
+  });
+});
+
+describe('normalizeCustomDashboardPath', () => {
+  it.each`
+    input                                                               | expected
+    ${[undefined]}                                                      | ${''}
+    ${[null]}                                                           | ${''}
+    ${[]}                                                               | ${''}
+    ${['links.yml']}                                                    | ${'links.yml'}
+    ${['links.yml', '.gitlab/dashboards']}                              | ${'.gitlab/dashboards/links.yml'}
+    ${['config/prometheus/common_metrics.yml']}                         | ${'config/prometheus/common_metrics.yml'}
+    ${['config/prometheus/common_metrics.yml', '.gitlab/dashboards']}   | ${'config/prometheus/common_metrics.yml'}
+    ${['dir1/links.yml', '.gitlab/dashboards']}                         | ${'.gitlab/dashboards/dir1/links.yml'}
+    ${['dir1/dir2/links.yml', '.gitlab/dashboards']}                    | ${'.gitlab/dashboards/dir1/dir2/links.yml'}
+    ${['.gitlab/dashboards/links.yml']}                                 | ${'.gitlab/dashboards/links.yml'}
+    ${['.gitlab/dashboards/links.yml', '.gitlab/dashboards']}           | ${'.gitlab/dashboards/links.yml'}
+    ${['.gitlab/dashboards/dir1/links.yml', '.gitlab/dashboards']}      | ${'.gitlab/dashboards/dir1/links.yml'}
+    ${['.gitlab/dashboards/dir1/dir2/links.yml', '.gitlab/dashboards']} | ${'.gitlab/dashboards/dir1/dir2/links.yml'}
+    ${['config/prometheus/pod_metrics.yml', '.gitlab/dashboards']}      | ${'config/prometheus/pod_metrics.yml'}
+    ${['config/prometheus/pod_metrics.yml']}                            | ${'config/prometheus/pod_metrics.yml'}
+  `(`normalizeCustomDashboardPath returns $expected for $input`, ({ input, expected }) => {
+    expect(normalizeCustomDashboardPath(...input)).toEqual(expected);
   });
 });

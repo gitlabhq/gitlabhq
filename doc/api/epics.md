@@ -38,11 +38,11 @@ are paginated.
 
 Read more on [pagination](README.md#pagination).
 
-CAUTION: **Deprecation**
+CAUTION: **Deprecation:**
 > `reference` attribute in response is deprecated in favour of `references`.
 > Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
 
-NOTE: **Note**
+NOTE: **Note:**
 > `references.relative` is relative to the group that the epic is being requested. When epic is fetched from its origin group
 > `relative` format would be the same as `short` format and when requested cross groups it is expected to be the same as `full` format.
 

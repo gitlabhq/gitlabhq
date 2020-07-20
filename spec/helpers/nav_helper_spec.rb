@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NavHelper, :do_not_mock_admin_mode do
+RSpec.describe NavHelper, :do_not_mock_admin_mode do
   describe '#header_links' do
     include_context 'custom session'
 

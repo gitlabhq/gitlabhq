@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::ResourceGroups::AssignResourceFromResourceGroupWorker do
+RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupWorker do
   let(:worker) { described_class.new }
 
   describe '#perform' do

@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies do
+RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies do
   describe '.for' do
     it 'returns the right class for `until_executing`' do
       expect(described_class.for(:until_executing)).to eq(described_class::UntilExecuting)

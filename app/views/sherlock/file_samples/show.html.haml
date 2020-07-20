@@ -12,7 +12,7 @@
     = t('sherlock.file_sample')
     = @file_sample.id
 
-.prepend-top-default
+.gl-mt-3
   %p
     %span.light
       #{t('sherlock.time')}:
@@ -32,7 +32,7 @@
       = @file_sample.file
   .code.file-content.js-syntax-highlight
     .line-numbers
-      %table.sherlock-line-samples-table
+      %table.sherlock-line-samples-table.gl-mb-0
         %thead
           %tr
             %th= t('sherlock.line_capitalized')

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::FileHook do
+RSpec.describe Gitlab::FileHook do
   let(:file_hook) { Rails.root.join('file_hooks', 'test.rb') }
   let(:tmp_file) { Tempfile.new('file_hook-dump') }
 

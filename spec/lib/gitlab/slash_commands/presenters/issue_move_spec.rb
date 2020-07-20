@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Presenters::IssueMove do
+RSpec.describe Gitlab::SlashCommands::Presenters::IssueMove do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:other_project) { create(:project) }

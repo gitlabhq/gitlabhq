@@ -34,26 +34,13 @@ class Feature
     def persisted_names
       return [] unless Gitlab::Database.exists?
 
-      if Gitlab::Utils.to_boolean(ENV['FF_LEGACY_PERSISTED_NAMES'])
-        # To be removed:
-        # This uses a legacy persisted names that are know to work (always)
-        Gitlab::SafeRequestStore[:flipper_persisted_names] ||=
-          begin
-            # We saw on GitLab.com, this database request was called 2300
-            # times/s. Let's cache it for a minute to avoid that load.
-            Gitlab::ProcessMemoryCache.cache_backend.fetch('flipper:persisted_names', expires_in: 1.minute) do
-              FlipperFeature.feature_names
-            end.to_set
-          end
-      else
-        # This loads names of all stored feature flags
-        # and returns a stable Set in the following order:
-        # - Memoized: using Gitlab::SafeRequestStore or @flipper
-        # - L1: using Process cache
-        # - L2: using Redis cache
-        # - DB: using a single SQL query
-        flipper.adapter.features
-      end
+      # This loads names of all stored feature flags
+      # and returns a stable Set in the following order:
+      # - Memoized: using Gitlab::SafeRequestStore or @flipper
+      # - L1: using Process cache
+      # - L2: using Redis cache
+      # - DB: using a single SQL query
+      flipper.adapter.features
     end
 
     def persisted_name?(feature_name)
@@ -67,12 +54,14 @@ class Feature
     # unless set explicitly.  The default is `disabled`
     # TODO: remove the `default_enabled:` and read it from the `defintion_yaml`
     # check: https://gitlab.com/gitlab-org/gitlab/-/issues/30228
-    def enabled?(key, thing = nil, default_enabled: false)
+    def enabled?(key, thing = nil, type: :development, default_enabled: false)
       if check_feature_flags_definition?
         if thing && !thing.respond_to?(:flipper_id)
           raise InvalidFeatureFlagError,
             "The thing '#{thing.class.name}' for feature flag '#{key}' needs to include `FeatureGate` or implement `flipper_id`"
         end
+
+        Feature::Definition.valid_usage!(key, type: type, default_enabled: default_enabled)
       end
 
       # During setup the database does not exist yet. So we haven't stored a value
@@ -88,9 +77,9 @@ class Feature
       !default_enabled || Feature.persisted_name?(feature.name) ? feature.enabled?(thing) : true
     end
 
-    def disabled?(key, thing = nil, default_enabled: false)
+    def disabled?(key, thing = nil, type: :development, default_enabled: false)
       # we need to make different method calls to make it easy to mock / define expectations in test mode
-      thing.nil? ? !enabled?(key, default_enabled: default_enabled) : !enabled?(key, thing, default_enabled: default_enabled)
+      thing.nil? ? !enabled?(key, type: type, default_enabled: default_enabled) : !enabled?(key, thing, type: type, default_enabled: default_enabled)
     end
 
     def enable(key, thing = true)
@@ -140,6 +129,12 @@ class Feature
     # to register Flipper groups.
     # See https://docs.gitlab.com/ee/development/feature_flags.html#feature-groups
     def register_feature_groups
+    end
+
+    def register_definitions
+      return unless check_feature_flags_definition?
+
+      Feature::Definition.load_all!
     end
 
     private

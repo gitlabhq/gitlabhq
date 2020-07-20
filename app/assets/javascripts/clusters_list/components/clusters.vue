@@ -1,14 +1,15 @@
 <script>
-import * as Sentry from '@sentry/browser';
 import { mapState, mapActions } from 'vuex';
 import {
   GlDeprecatedBadge as GlBadge,
   GlLink,
   GlLoadingIcon,
   GlPagination,
+  GlSkeletonLoading,
   GlSprintf,
   GlTable,
 } from '@gitlab/ui';
+import AncestorNotice from './ancestor_notice.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { CLUSTER_TYPES, STATUSES } from '../constants';
 import { __, sprintf } from '~/locale';
@@ -17,10 +18,12 @@ export default {
   nodeMemoryText: __('%{totalMemory} (%{freeSpacePercentage}%{percentSymbol} free)'),
   nodeCpuText: __('%{totalCpu} (%{freeSpacePercentage}%{percentSymbol} free)'),
   components: {
+    AncestorNotice,
     GlBadge,
     GlLink,
     GlLoadingIcon,
     GlPagination,
+    GlSkeletonLoading,
     GlSprintf,
     GlTable,
   },
@@ -28,7 +31,18 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapState(['clusters', 'clustersPerPage', 'loading', 'page', 'providers', 'totalCulsters']),
+    ...mapState([
+      'clusters',
+      'clustersPerPage',
+      'loadingClusters',
+      'loadingNodes',
+      'page',
+      'providers',
+      'totalCulsters',
+    ]),
+    contentAlignClasses() {
+      return 'gl-display-flex gl-align-items-center gl-justify-content-end gl-justify-content-md-start';
+    },
     currentPage: {
       get() {
         return this.page;
@@ -75,7 +89,7 @@ export default {
     this.fetchClusters();
   },
   methods: {
-    ...mapActions(['fetchClusters', 'setPage']),
+    ...mapActions(['fetchClusters', 'reportSentryError', 'setPage']),
     k8sQuantityToGb(quantity) {
       if (!quantity) {
         return 0;
@@ -137,7 +151,7 @@ export default {
           };
         }
       } catch (error) {
-        Sentry.captureException(error);
+        this.reportSentryError({ error, tag: 'totalMemoryAndUsageError' });
       }
 
       return { totalMemory: null, freeSpacePercentage: null };
@@ -170,7 +184,7 @@ export default {
           };
         }
       } catch (error) {
-        Sentry.captureException(error);
+        this.reportSentryError({ error, tag: 'totalCpuAndUsageError' });
       }
 
       return { totalCpu: null, freeSpacePercentage: null };
@@ -180,14 +194,14 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="loading" size="md" class="mt-3" />
+  <gl-loading-icon v-if="loadingClusters" size="md" class="gl-mt-3" />
 
   <section v-else>
+    <ancestor-notice />
+
     <gl-table :items="clusters" :fields="fields" stacked="md" class="qa-clusters-table">
       <template #cell(name)="{ item }">
-        <div
-          class="gl-display-flex gl-align-items-center gl-justify-content-end gl-justify-content-md-start js-status"
-        >
+        <div :class="[contentAlignClasses, 'js-status']">
           <img
             :src="selectedProvider(item.provider_type).path"
             :alt="selectedProvider(item.provider_type).text"
@@ -214,6 +228,9 @@ export default {
 
       <template #cell(node_size)="{ item }">
         <span v-if="item.nodes">{{ item.nodes.length }}</span>
+
+        <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
+
         <small v-else class="gl-font-sm gl-font-style-italic gl-text-gray-400">{{
           __('Unknown')
         }}</small>
@@ -231,6 +248,8 @@ export default {
             >
           </gl-sprintf>
         </span>
+
+        <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
       </template>
 
       <template #cell(total_memory)="{ item }">
@@ -245,6 +264,8 @@ export default {
             >
           </gl-sprintf>
         </span>
+
+        <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
       </template>
 
       <template #cell(cluster_type)="{value}">

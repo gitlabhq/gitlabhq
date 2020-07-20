@@ -16,6 +16,7 @@ class PrometheusAlert < ApplicationRecord
 
   has_many :prometheus_alert_events, inverse_of: :prometheus_alert
   has_many :related_issues, through: :prometheus_alert_events
+  has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :prometheus_alert
 
   after_save :clear_prometheus_adapter_cache!
   after_destroy :clear_prometheus_adapter_cache!

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Badge do
+RSpec.describe Badge do
   let(:placeholder_url) { 'http://www.example.com/%{project_path}/%{project_id}/%{default_branch}/%{commit_sha}' }
 
   describe 'validations' do

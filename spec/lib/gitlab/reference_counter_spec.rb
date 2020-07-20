@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ReferenceCounter, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::ReferenceCounter, :clean_gitlab_redis_shared_state do
   let(:reference_counter) { described_class.new('project-1') }
 
   describe '#increase' do

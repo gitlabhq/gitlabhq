@@ -4,6 +4,7 @@ import ReleaseBlockAssets from '~/releases/components/release_block_assets.vue';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
 import { trimText } from 'helpers/text_helper';
 import { assets } from '../mock_data';
+import { cloneDeep } from 'lodash';
 
 describe('Release block assets', () => {
   let wrapper;
@@ -30,7 +31,7 @@ describe('Release block assets', () => {
     wrapper.findAll('h5').filter(h5 => h5.text() === sections[type]);
 
   beforeEach(() => {
-    defaultProps = { assets };
+    defaultProps = { assets: cloneDeep(assets) };
   });
 
   describe('with default props', () => {
@@ -93,6 +94,35 @@ describe('Release block assets', () => {
       const sectionHeadings = findSectionHeading(typeToExclude);
 
       expect(sectionHeadings).toHaveLength(0);
+    });
+  });
+
+  describe('sources', () => {
+    const testSources = ({ shouldSourcesBeRendered }) => {
+      assets.sources.forEach(s => {
+        expect(wrapper.find(`a[href="${s.url}"]`).exists()).toBe(shouldSourcesBeRendered);
+      });
+    };
+
+    describe('when the release has sources', () => {
+      beforeEach(() => {
+        createComponent(defaultProps);
+      });
+
+      it('renders sources', () => {
+        testSources({ shouldSourcesBeRendered: true });
+      });
+    });
+
+    describe('when the release does not have sources', () => {
+      beforeEach(() => {
+        delete defaultProps.assets.sources;
+        createComponent(defaultProps);
+      });
+
+      it('does not render any sources', () => {
+        testSources({ shouldSourcesBeRendered: false });
+      });
     });
   });
 

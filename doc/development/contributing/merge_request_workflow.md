@@ -119,8 +119,7 @@ document from the Kubernetes team also has some great points regarding this.
 When writing commit messages, please follow the guidelines below:
 
 - The commit subject must contain at least 3 words.
-- The commit subject should ideally contain up to 50 characters,
-  and must not be longer than 72 characters.
+- The commit subject must not be longer than 72 characters.
 - The commit subject must start with a capital letter.
 - The commit subject must not end with a period.
 - The commit subject and body must be separated by a blank line.

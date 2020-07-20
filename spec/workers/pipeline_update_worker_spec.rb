@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PipelineUpdateWorker do
+RSpec.describe PipelineUpdateWorker do
   describe '#perform' do
     context 'when pipeline exists' do
       let(:pipeline) { create(:ci_pipeline) }
@@ -11,6 +11,14 @@ describe PipelineUpdateWorker do
         expect_any_instance_of(Ci::Pipeline).to receive(:set_status).with('skipped')
 
         described_class.new.perform(pipeline.id)
+      end
+
+      include_examples 'an idempotent worker' do
+        let(:job_args) { [pipeline.id] }
+
+        it 'sets pipeline status to skipped' do
+          expect { subject }.to change { pipeline.reload.status }.from('pending').to('skipped')
+        end
       end
     end
 

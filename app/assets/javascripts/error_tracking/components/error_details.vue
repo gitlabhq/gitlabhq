@@ -2,7 +2,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import createFlash from '~/flash';
 import {
-  GlDeprecatedButton,
+  GlButton,
   GlFormInput,
   GlLink,
   GlLoadingIcon,
@@ -33,7 +33,7 @@ const SENTRY_TIMEOUT = 10000;
 
 export default {
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlFormInput,
     GlLink,
     GlLoadingIcon,
@@ -106,6 +106,7 @@ export default {
       errorPollTimeout: 0,
       issueCreationInProgress: false,
       isAlertVisible: false,
+      isStacktraceEmptyAlertVisible: true,
       closedIssueId: null,
     };
   },
@@ -119,10 +120,10 @@ export default {
     ]),
     ...mapGetters('details', ['stacktrace']),
     firstReleaseLink() {
-      return `${this.error.externalBaseUrl}/releases/${this.error.firstReleaseShortVersion}`;
+      return `${this.error.externalBaseUrl}/releases/${this.error.firstReleaseVersion}`;
     },
     lastReleaseLink() {
-      return `${this.error.externalBaseUrl}/releases/${this.error.lastReleaseShortVersion}`;
+      return `${this.error.externalBaseUrl}/releases/${this.error.lastReleaseVersion}`;
     },
     showStacktrace() {
       return Boolean(this.stacktrace?.length);
@@ -166,6 +167,9 @@ export default {
     },
     resolveBtnLabel() {
       return this.errorStatus !== errorStatus.RESOLVED ? __('Resolve') : __('Unresolve');
+    },
+    showEmptyStacktraceAlert() {
+      return !this.loadingStacktrace && !this.showStacktrace && this.isStacktraceEmptyAlertVisible;
     },
   },
   watch: {
@@ -254,6 +258,10 @@ export default {
         </gl-sprintf>
       </gl-alert>
 
+      <gl-alert v-if="showEmptyStacktraceAlert" @dismiss="isStacktraceEmptyAlertVisible = false">
+        {{ __('No stack trace for this error') }}
+      </gl-alert>
+
       <div class="error-details-header d-flex py-2 justify-content-between">
         <div
           v-if="!loadingStacktrace && stacktrace"
@@ -271,22 +279,24 @@ export default {
         </div>
         <div class="error-details-actions">
           <div class="d-inline-flex bv-d-sm-down-none">
-            <gl-deprecated-button
+            <gl-button
               :loading="updatingIgnoreStatus"
               data-testid="update-ignore-status-btn"
               @click="onIgnoreStatusUpdate"
             >
               {{ ignoreBtnLabel }}
-            </gl-deprecated-button>
-            <gl-deprecated-button
-              class="btn-outline-info ml-2"
+            </gl-button>
+            <gl-button
+              class="ml-2"
+              category="secondary"
+              variant="info"
               :loading="updatingResolveStatus"
               data-testid="update-resolve-status-btn"
               @click="onResolveStatusUpdate"
             >
               {{ resolveBtnLabel }}
-            </gl-deprecated-button>
-            <gl-deprecated-button
+            </gl-button>
+            <gl-button
               v-if="error.gitlabIssuePath"
               class="ml-2"
               data-testid="view_issue_button"
@@ -294,7 +304,7 @@ export default {
               variant="success"
             >
               {{ __('View issue') }}
-            </gl-deprecated-button>
+            </gl-button>
             <form
               ref="sentryIssueForm"
               :action="projectIssuesPath"
@@ -309,15 +319,16 @@ export default {
                 name="issue[sentry_issue_attributes][sentry_issue_identifier]"
               />
               <gl-form-input :value="csrfToken" class="hidden" name="authenticity_token" />
-              <gl-deprecated-button
+              <gl-button
                 v-if="!error.gitlabIssuePath"
-                class="btn-success"
+                category="primary"
+                variant="success"
                 :loading="issueCreationInProgress"
                 data-qa-selector="create_issue_button"
                 @click="createIssue"
               >
                 {{ __('Create issue') }}
-              </gl-deprecated-button>
+              </gl-button>
             </form>
           </div>
           <gl-dropdown
@@ -389,18 +400,18 @@ export default {
               <icon name="external-link" class="ml-1 flex-shrink-0" />
             </gl-link>
           </li>
-          <li v-if="error.firstReleaseShortVersion">
+          <li v-if="error.firstReleaseVersion">
             <strong class="bold">{{ __('First seen') }}:</strong>
             <time-ago-tooltip :time="error.firstSeen" />
             <gl-link :href="firstReleaseLink" target="_blank">
-              <span>{{ __('Release') }}: {{ error.firstReleaseShortVersion.substr(0, 10) }}</span>
+              <span>{{ __('Release') }}: {{ error.firstReleaseVersion }}</span>
             </gl-link>
           </li>
-          <li v-if="error.lastReleaseShortVersion">
+          <li v-if="error.lastReleaseVersion">
             <strong class="bold">{{ __('Last seen') }}:</strong>
             <time-ago-tooltip :time="error.lastSeen" />
             <gl-link :href="lastReleaseLink" target="_blank">
-              <span>{{ __('Release') }}: {{ error.lastReleaseShortVersion.substr(0, 10) }}</span>
+              <span>{{ __('Release') }}: {{ error.lastReleaseVersion }}</span>
             </gl-link>
           </li>
           <li>

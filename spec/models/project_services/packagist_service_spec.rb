@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PackagistService do
+RSpec.describe PackagistService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }

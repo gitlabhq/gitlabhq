@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::HookEnv do
+RSpec.describe Gitlab::Git::HookEnv do
   let(:gl_repository) { 'project-123' }
 
   describe ".set" do

@@ -1,4 +1,4 @@
-# Database Debugging and Troubleshooting
+# Troubleshooting and Debugging Database
 
 This section is to help give some copy-pasta you can use as a reference when you
 run into some head-banging database problems.

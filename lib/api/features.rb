@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Features < Grape::API
+  class Features < Grape::API::Instance
     before { authenticated_as_admin! }
 
     helpers do

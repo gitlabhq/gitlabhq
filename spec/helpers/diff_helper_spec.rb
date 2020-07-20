@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffHelper do
+RSpec.describe DiffHelper do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }
@@ -300,6 +300,20 @@ describe DiffHelper do
 
         expect(render_overflow_warning?(diffs_collection)).to be false
       end
+    end
+  end
+
+  describe '#diff_file_html_data' do
+    let(:project) { build(:project) }
+    let(:path) { 'path/to/file' }
+    let(:sha) { '1234567890' }
+
+    subject do
+      helper.diff_file_html_data(project, path, sha)
+    end
+
+    it 'returns data for project files' do
+      expect(subject).to include(blob_diff_path: helper.project_blob_diff_path(project, "#{sha}/#{path}"))
     end
   end
 

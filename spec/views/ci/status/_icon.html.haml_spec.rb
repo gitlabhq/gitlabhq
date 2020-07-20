@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'ci/status/_icon' do
+RSpec.describe 'ci/status/_icon' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :private) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

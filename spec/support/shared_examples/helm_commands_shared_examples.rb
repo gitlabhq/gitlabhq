@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'helm command generator' do
+RSpec.shared_examples 'helm command generator' do
   describe '#generate_script' do
     let(:helm_setup) do
       <<~EOS
@@ -14,7 +14,7 @@ shared_examples 'helm command generator' do
   end
 end
 
-shared_examples 'helm command' do
+RSpec.shared_examples 'helm command' do
   describe '#rbac?' do
     subject { command.rbac? }
 

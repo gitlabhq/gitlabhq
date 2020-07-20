@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PostReceive do
+RSpec.describe PostReceive do
   let(:changes) { "123456 789012 refs/heads/tést\n654321 210987 refs/tags/tag" }
   let(:wrongly_encoded_changes) { changes.encode("ISO-8859-1").force_encoding("UTF-8") }
   let(:base64_changes) { Base64.encode64(wrongly_encoded_changes) }
@@ -428,7 +428,12 @@ describe PostReceive do
           it 'expires the status cache' do
             expect(snippet.repository).to receive(:empty?).and_return(true)
             expect(snippet.repository).to receive(:expire_status_cache)
-            expect(snippet.repository).to receive(:expire_statistics_caches)
+
+            perform
+          end
+
+          it 'updates snippet statistics' do
+            expect(Snippets::UpdateStatisticsService).to receive(:new).with(snippet).and_call_original
 
             perform
           end

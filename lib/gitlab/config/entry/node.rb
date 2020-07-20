@@ -16,6 +16,7 @@ module Gitlab
           @config = config
           @metadata = metadata
           @entries = {}
+          @warnings = []
 
           yield(self) if block_given?
 
@@ -60,6 +61,14 @@ module Gitlab
           []
         end
 
+        def warnings
+          @warnings + descendants.flat_map(&:warnings)
+        end
+
+        def add_warning(message)
+          @warnings << "#{location} #{message}"
+        end
+
         def value
           if leaf?
             @config
@@ -68,7 +77,7 @@ module Gitlab
               value.specified? && value.relevant?
             end
 
-            Hash[meaningful.map { |key, entry| [key, entry.value] }]
+            meaningful.transform_values { |entry| entry.value }
           end
         end
 

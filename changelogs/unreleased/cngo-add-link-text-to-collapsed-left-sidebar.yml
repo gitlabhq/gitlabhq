@@ -1,0 +1,5 @@
+---
+title: Add link text to collapsed left sidebar links for screen readers
+merge_request: 33866
+author:
+type: fixed

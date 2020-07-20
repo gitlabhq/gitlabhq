@@ -10,7 +10,7 @@
   }
 
   .design-pin {
-    transition: opacity 0.5s ease;
+    transition: opacity $gl-transition-duration-medium $general-hover-transition-curve;
 
     &.inactive {
       @include gl-opacity-5;
@@ -98,7 +98,7 @@
 
     &::before {
       content: '';
-      border-left: 1px solid $gray-200;
+      border-left: 1px solid $gray-100;
       position: absolute;
       left: 28px;
       top: -18px;
@@ -108,6 +108,9 @@
     .design-note {
       padding: $gl-padding;
       list-style: none;
+      transition: background $gl-transition-duration-medium $general-hover-transition-curve;
+      border-top-left-radius: $border-radius-default; // same border radius used by .bordered-box
+      border-top-right-radius: $border-radius-default;
 
       a {
         color: inherit;
@@ -146,11 +149,12 @@
 }
 
 .design-dropzone-border {
-  border: 2px dashed $gray-200;
+  border: 2px dashed $gray-100;
 }
 
 .design-dropzone-card {
-  transition: border $general-hover-transition-duration $general-hover-transition-curve;
+  transition: border $gl-transition-duration-medium $general-hover-transition-curve;
+  color: $gl-text-color;
 
   &:focus,
   &:active {

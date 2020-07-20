@@ -45,8 +45,8 @@ All possible parameters can be found here: <https://github.com/travis-ci/dpl#her
 staging:
   stage: deploy
   script:
-  - gem install dpl
-  - dpl --provider=heroku --app=my-app-staging --api-key=$HEROKU_STAGING_API_KEY
+    - gem install dpl
+    - dpl --provider=heroku --app=my-app-staging --api-key=$HEROKU_STAGING_API_KEY
 ```
 
 In the above example we use Dpl to deploy `my-app-staging` to Heroku server with API key stored in `HEROKU_STAGING_API_KEY` secure variable.
@@ -64,12 +64,12 @@ You will have to install it:
 staging:
   stage: deploy
   script:
-  - apt-get update -yq
-  - apt-get install -y ruby-dev
-  - gem install dpl
-  - dpl --provider=heroku --app=my-app-staging --api-key=$HEROKU_STAGING_API_KEY
+    - apt-get update -yq
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=my-app-staging --api-key=$HEROKU_STAGING_API_KEY
   only:
-  - master
+    - master
 ```
 
 The first line `apt-get update -yq` updates the list of available packages,
@@ -89,18 +89,18 @@ The final `.gitlab-ci.yml` for that setup would look like this:
 staging:
   stage: deploy
   script:
-  - gem install dpl
-  - dpl --provider=heroku --app=my-app-staging --api-key=$HEROKU_STAGING_API_KEY
+    - gem install dpl
+    - dpl --provider=heroku --app=my-app-staging --api-key=$HEROKU_STAGING_API_KEY
   only:
-  - master
+    - master
 
 production:
   stage: deploy
   script:
-  - gem install dpl
-  - dpl --provider=heroku --app=my-app-production --api-key=$HEROKU_PRODUCTION_API_KEY
+    - gem install dpl
+    - dpl --provider=heroku --app=my-app-production --api-key=$HEROKU_PRODUCTION_API_KEY
   only:
-  - tags
+    - tags
 ```
 
 We created two deploy jobs that are executed on different events:

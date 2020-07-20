@@ -118,8 +118,8 @@ module API
 
         {
           repository: repository.gitaly_repository,
-          address: Gitlab::GitalyClient.address(container.repository_storage),
-          token: Gitlab::GitalyClient.token(container.repository_storage),
+          address: Gitlab::GitalyClient.address(repository.shard),
+          token: Gitlab::GitalyClient.token(repository.shard),
           features: Feature::Gitaly.server_feature_flags
         }
       end

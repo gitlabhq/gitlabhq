@@ -1,59 +1,54 @@
 # frozen_string_literal: true
 
-# Prepend `Gitlab::Import::Metrics` to a class in order
-# to measure and emit `Gitlab::Metrics` metrics of specified methods.
-#
-# @example
-#   class Importer
-#     prepend Gitlab::Import::Metrics
-#
-#     Gitlab::ImportExport::Metrics.measure :execute, metrics: {
-#       importer_counter: {
-#         type: :counter,
-#         description: 'counter'
-#       },
-#       importer_histogram: {
-#         type: :histogram,
-#         labels: { importer: 'importer' },
-#         description: 'histogram'
-#       }
-#     }
-#
-#     def execute
-#        ...
-#     end
-#   end
-#
-# Each call to `#execute` increments `importer_counter` as well as
-# measures `#execute` duration and reports histogram `importer_histogram`
 module Gitlab
   module Import
-    module Metrics
-      def self.measure(method_name, metrics:)
-        define_method "#{method_name}" do |*args|
-          start_time = Time.zone.now
+    class Metrics
+      IMPORT_DURATION_BUCKETS = [0.5, 1, 3, 5, 10, 60, 120, 240, 360, 720, 1440].freeze
 
-          result = super(*args)
+      attr_reader :importer
 
-          end_time = Time.zone.now
-
-          report_measurement_metrics(metrics, end_time - start_time)
-
-          result
-        end
+      def initialize(importer, project)
+        @importer = importer
+        @project = project
       end
 
-      def report_measurement_metrics(metrics, duration)
-        metrics.each do |metric_name, metric_value|
-          case metric_value[:type]
-          when :counter
-            Gitlab::Metrics.counter(metric_name, metric_value[:description]).increment
-          when :histogram
-            Gitlab::Metrics.histogram(metric_name, metric_value[:description]).observe(metric_value[:labels], duration)
-          else
-            nil
-          end
-        end
+      def track_finished_import
+        duration = Time.zone.now - @project.created_at
+
+        duration_histogram.observe({ importer: importer }, duration)
+        projects_counter.increment
+      end
+
+      def projects_counter
+        @projects_counter ||= Gitlab::Metrics.counter(
+          :"#{importer}_imported_projects_total",
+          'The number of imported projects'
+        )
+      end
+
+      def issues_counter
+        @issues_counter ||= Gitlab::Metrics.counter(
+          :"#{importer}_imported_issues_total",
+          'The number of imported issues'
+        )
+      end
+
+      def merge_requests_counter
+        @merge_requests_counter ||= Gitlab::Metrics.counter(
+          :"#{importer}_imported_merge_requests_total",
+          'The number of imported merge (pull) requests'
+        )
+      end
+
+      private
+
+      def duration_histogram
+        @duration_histogram ||= Gitlab::Metrics.histogram(
+          :"#{importer}_total_duration_seconds",
+          'Total time spent importing projects, in seconds',
+          {},
+          IMPORT_DURATION_BUCKETS
+        )
       end
     end
   end

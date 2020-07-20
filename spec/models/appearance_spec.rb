@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Appearance do
+RSpec.describe Appearance do
   subject { build(:appearance) }
 
   it { include(CacheableAttributes) }

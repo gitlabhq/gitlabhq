@@ -1,0 +1,5 @@
+---
+title: Align "External" access level row in the user admin form
+merge_request: 34455
+author: Eduardo Sanz @esanzgar
+type: fixed

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::Group::LegacyTreeSaver do
+RSpec.describe Gitlab::ImportExport::Group::LegacyTreeSaver do
   describe 'saves the group tree into a json object' do
     let(:shared) { Gitlab::ImportExport::Shared.new(group) }
     let(:group_tree_saver) { described_class.new(group: group, current_user: user, shared: shared) }

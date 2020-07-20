@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Policy::Refs do
+RSpec.describe Gitlab::Ci::Build::Policy::Refs do
   describe '#satisfied_by?' do
     context 'when matching ref' do
       let(:pipeline) { build_stubbed(:ci_pipeline, ref: 'master') }

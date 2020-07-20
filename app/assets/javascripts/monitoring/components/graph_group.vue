@@ -1,9 +1,10 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    Icon,
+    GlLoadingIcon,
+    GlIcon,
   },
   props: {
     name: {
@@ -14,6 +15,11 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     /**
      * Initial value of collapse on mount.
@@ -52,18 +58,21 @@ export default {
 </script>
 
 <template>
-  <div v-if="showPanels" ref="graph-group" class="card prometheus-panel" tabindex="0">
+  <div v-if="showPanels" ref="graph-group" class="card prometheus-panel">
     <div class="card-header d-flex align-items-center">
       <h4 class="flex-grow-1">{{ name }}</h4>
+      <gl-loading-icon v-if="isLoading" name="loading" />
       <a
         data-testid="group-toggle-button"
+        :aria-label="__('Toggle collapse')"
+        :icon="caretIcon"
         role="button"
-        class="js-graph-group-toggle gl-text-gray-900"
+        class="js-graph-group-toggle gl-display-flex gl-ml-2 gl-text-gray-900"
         tabindex="0"
         @click="collapse"
         @keyup.enter="collapse"
       >
-        <icon :size="16" :aria-label="__('Toggle collapse')" :name="caretIcon" />
+        <gl-icon :name="caretIcon" />
       </a>
     </div>
     <div

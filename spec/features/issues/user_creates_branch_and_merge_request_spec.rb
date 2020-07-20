@@ -31,7 +31,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
       end
 
       # In order to improve tests performance, all UI checks are placed in this test.
-      it 'shows elements', :quarantine do
+      it 'shows elements', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27993' do
         button_create_merge_request = find('.js-create-merge-request')
         button_toggle_dropdown = find('.create-mr-dropdown-wrap .dropdown-toggle')
 
@@ -71,7 +71,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
           perform_enqueued_jobs do
             select_dropdown_option('create-mr')
 
-            expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
+            expect(page).to have_content('Draft: Resolve "Cherry-Coloured Funk"')
             expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
 
             wait_for_requests
@@ -100,7 +100,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
           perform_enqueued_jobs do
             select_dropdown_option('create-mr', branch_name)
 
-            expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
+            expect(page).to have_content('Draft: Resolve "Cherry-Coloured Funk"')
             expect(page).to have_content('Request to merge custom-branch-name into')
             expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
 
@@ -141,7 +141,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
         visit project_issue_path(project, issue)
       end
 
-      it 'disables the create branch button', :quarantine do
+      it 'disables the create branch button', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27985' do
         expect(page).to have_css('.create-mr-dropdown-wrap .unavailable:not(.hidden)')
         expect(page).to have_css('.create-mr-dropdown-wrap .available.hidden', visible: false)
         expect(page).to have_content /Related merge requests/

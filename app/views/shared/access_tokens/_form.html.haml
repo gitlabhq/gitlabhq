@@ -30,5 +30,5 @@
     = f.label :scopes, _('Scopes'), class: 'label-bold'
     = render 'shared/tokens/scopes_form', prefix: prefix, token: token, scopes: scopes
 
-  .prepend-top-default
+  .gl-mt-3
     = f.submit _('Create %{type}') % { type: type }, class: 'btn btn-success', data: { qa_selector: 'create_token_button' }

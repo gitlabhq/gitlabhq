@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::PermissionTypes::Project do
+RSpec.describe Types::PermissionTypes::Project do
   it do
     expected_permissions = [
       :change_namespace, :change_visibility_level, :rename_project, :remove_project, :archive_project,

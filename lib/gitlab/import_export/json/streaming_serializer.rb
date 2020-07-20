@@ -7,7 +7,7 @@ module Gitlab
         include Gitlab::ImportExport::CommandLineUtil
 
         BATCH_SIZE = 100
-        SMALLER_BATCH_SIZE = 20
+        SMALLER_BATCH_SIZE = 2
 
         def self.batch_size(exportable)
           if Feature.enabled?(:export_reduce_relation_batch_size, exportable)
@@ -69,8 +69,16 @@ module Gitlab
             key_preloads = preloads&.dig(key)
             records = records.preload(key_preloads) if key_preloads
 
-            records.find_each(batch_size: batch_size) do |record|
-              items << Raw.new(record.to_json(options))
+            records.in_batches(of: batch_size) do |batch| # rubocop:disable Cop/InBatches
+              # order each batch by its primary key to ensure
+              # consistent and predictable ordering of each exported relation
+              # as additional `WHERE` clauses can impact the order in which data is being
+              # returned by database when no `ORDER` is specified
+              batch = batch.reorder(batch.klass.primary_key)
+
+              batch.each do |record|
+                items << Raw.new(record.to_json(options))
+              end
             end
           end
 

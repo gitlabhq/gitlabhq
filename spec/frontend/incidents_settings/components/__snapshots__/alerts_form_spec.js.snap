@@ -1,0 +1,99 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Alert integration settings form default state should match the default snapshot 1`] = `
+<div>
+  <p>
+    <gl-sprintf-stub
+      message="Action to take when receiving an alert. %{docsLink}"
+    />
+  </p>
+   
+  <form>
+    <gl-form-group-stub
+      class="gl-pl-0"
+    >
+      <gl-form-checkbox-stub
+        checked="true"
+        data-qa-selector="create_issue_checkbox"
+      >
+        <span>
+          Create an issue. Issues are created for each alert triggered.
+        </span>
+      </gl-form-checkbox-stub>
+    </gl-form-group-stub>
+     
+    <gl-form-group-stub
+      class="col-8 col-md-9 gl-px-6"
+      label-for="alert-integration-settings-issue-template"
+      label-size="sm"
+    >
+      <label
+        class="gl-display-inline-flex"
+        for="alert-integration-settings-issue-template"
+      >
+        
+        Issue template (optional)
+        
+        <gl-link-stub
+          href="/help/user/project/description_templates#creating-issue-templates"
+          target="_blank"
+        >
+          <gl-icon-stub
+            name="question"
+            size="12"
+          />
+        </gl-link-stub>
+      </label>
+       
+      <gl-new-dropdown-stub
+        block="true"
+        category="tertiary"
+        data-qa-selector="incident_templates_dropdown"
+        headertext=""
+        id="alert-integration-settings-issue-template"
+        size="medium"
+        text="selecte_tmpl"
+        variant="default"
+      >
+        <gl-new-dropdown-item-stub
+          avatarurl=""
+          data-qa-selector="incident_templates_item"
+          iconcolor=""
+          iconname=""
+          iconrightname=""
+          ischeckitem="true"
+          secondarytext=""
+        >
+          
+          No template selected
+        
+        </gl-new-dropdown-item-stub>
+      </gl-new-dropdown-stub>
+    </gl-form-group-stub>
+     
+    <gl-form-group-stub
+      class="gl-pl-0 gl-mb-5"
+    >
+      <gl-form-checkbox-stub>
+        <span>
+          Send a separate email notification to Developers.
+        </span>
+      </gl-form-checkbox-stub>
+    </gl-form-group-stub>
+     
+    <gl-button-stub
+      category="tertiary"
+      class="js-no-auto-disable"
+      data-qa-selector="save_changes_button"
+      icon=""
+      size="medium"
+      type="submit"
+      variant="success"
+    >
+      
+      Save changes
+    
+    </gl-button-stub>
+  </form>
+</div>
+`;

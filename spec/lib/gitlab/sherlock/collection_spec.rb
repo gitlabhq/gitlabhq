@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Sherlock::Collection do
+RSpec.describe Gitlab::Sherlock::Collection do
   let(:collection) { described_class.new }
 
   let(:transaction) do

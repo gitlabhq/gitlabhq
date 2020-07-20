@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Removing an AwardEmoji' do
+RSpec.describe 'Removing an AwardEmoji' do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }
@@ -12,11 +12,11 @@ describe 'Removing an AwardEmoji' do
   let(:input) { { awardable_id: GitlabSchema.id_from_object(awardable).to_s, name: emoji_name } }
 
   let(:mutation) do
-    graphql_mutation(:remove_award_emoji, input)
+    graphql_mutation(:award_emoji_remove, input)
   end
 
   def mutation_response
-    graphql_mutation_response(:remove_award_emoji)
+    graphql_mutation_response(:award_emoji_remove)
   end
 
   def create_award_emoji(user)

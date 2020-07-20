@@ -4,7 +4,7 @@
 - type_plural = _('personal access tokens')
 - @content_class = 'limit-container-width' unless fluid_layout
 
-.row.prepend-top-default
+.row.gl-mt-3
   .col-lg-4.profile-settings-sidebar
     %h4.gl-mt-0
       = page_title
@@ -33,7 +33,7 @@
         revoke_route_helper: ->(token) { revoke_profile_personal_access_token_path(token) }
 
 %hr
-.row.prepend-top-default
+.row.gl-mt-3
   .col-lg-4.profile-settings-sidebar
     %h4.gl-mt-0
       = s_('AccessTokens|Feed token')
@@ -51,7 +51,7 @@
 
 - if incoming_email_token_enabled?
   %hr
-  .row.prepend-top-default
+  .row.gl-mt-3
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0
         = s_('AccessTokens|Incoming email token')
@@ -69,7 +69,7 @@
 
 - if static_objects_external_storage_enabled?
   %hr
-  .row.prepend-top-default
+  .row.gl-mt-3
     .col-lg-4
       %h4.gl-mt-0
         = s_('AccessTokens|Static object token')

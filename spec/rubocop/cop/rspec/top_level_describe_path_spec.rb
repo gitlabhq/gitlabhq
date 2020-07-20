@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-
 require 'rubocop'
-require 'rubocop/rspec/support'
-
 require_relative '../../../../rubocop/cop/rspec/top_level_describe_path'
 
-describe RuboCop::Cop::RSpec::TopLevelDescribePath do
-  include RuboCop::RSpec::ExpectOffense
+RSpec.describe RuboCop::Cop::RSpec::TopLevelDescribePath, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Cluster::RackTimeoutObserver do
+RSpec.describe Gitlab::Cluster::RackTimeoutObserver do
   let(:counter) { Gitlab::Metrics::NullMetric.instance }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::UpdateBuildQueueService do
+RSpec.describe Ci::UpdateBuildQueueService do
   let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

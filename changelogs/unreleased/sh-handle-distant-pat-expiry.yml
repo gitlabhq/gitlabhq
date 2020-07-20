@@ -1,0 +1,5 @@
+---
+title: Avoid 500 errors with long expiration dates in tokens
+merge_request: 36657
+author:
+type: fixed

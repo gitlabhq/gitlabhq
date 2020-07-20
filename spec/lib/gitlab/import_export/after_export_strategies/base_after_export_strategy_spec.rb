@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy do
+RSpec.describe Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy do
   before do
     allow_next_instance_of(ProjectExportWorker) do |job|
       allow(job).to receive(:jid).and_return(SecureRandom.hex(8))

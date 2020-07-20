@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'sentry error tracking context' do
+RSpec.shared_context 'sentry error tracking context' do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 

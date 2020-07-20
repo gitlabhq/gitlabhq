@@ -1,28 +1,19 @@
 # frozen_string_literal: true
 
-require 'cgi'
-require 'set'
-
 module Gitlab
   module Danger
     class Teammate
-      attr_reader :name, :username, :role, :projects
+      attr_reader :username, :name, :role, :projects, :available, :tz_offset_hours
 
-      AT_CAPACITY_EMOJI = Set.new(%w[red_circle]).freeze
-      OOO_EMOJI = Set.new(%w[
-        palm_tree
-        beach beach_umbrella beach_with_umbrella
-      ]).freeze
-
+      # The options data are produced by https://gitlab.com/gitlab-org/gitlab-roulette/-/blob/master/lib/team_member.rb
       def initialize(options = {})
         @username = options['username']
-        @name = options['name'] || @username
+        @name = options['name']
+        @markdown_name = options['markdown_name']
         @role = options['role']
         @projects = options['projects']
-      end
-
-      def markdown_name
-        "[#{name}](https://gitlab.com/#{username}) (`@#{username}`)"
+        @available = options['available']
+        @tz_offset_hours = options['tz_offset_hours']
       end
 
       def in_project?(name)
@@ -43,40 +34,47 @@ module Gitlab
         has_capability?(project, category, :maintainer, labels)
       end
 
-      def status
-        return @status if defined?(@status)
+      def markdown_name(timezone_experiment: false, author: nil)
+        return @markdown_name unless timezone_experiment
 
-        @status ||=
-          begin
-            Gitlab::Danger::RequestHelper.http_get_json(status_api_endpoint)
-          rescue Gitlab::Danger::RequestHelper::HTTPError, JSON::ParserError
-            nil # better no status than a crashing Danger
-          end
+        "#{@markdown_name} (#{utc_offset_text(author)})"
       end
 
-      # @return [Boolean]
-      def available?
-        !out_of_office? && has_capacity?
+      def local_hour
+        (Time.now.utc + tz_offset_hours * 3600).hour
+      end
+
+      protected
+
+      def floored_offset_hours
+        floored_offset = tz_offset_hours.floor(0)
+
+        floored_offset == tz_offset_hours ? floored_offset : tz_offset_hours
       end
 
       private
 
-      def status_api_endpoint
-        "https://gitlab.com/api/v4/users/#{CGI.escape(username)}/status"
+      def utc_offset_text(author = nil)
+        offset_text =
+          if floored_offset_hours >= 0
+            "UTC+#{floored_offset_hours}"
+          else
+            "UTC#{floored_offset_hours}"
+          end
+
+        return offset_text unless author
+
+        "#{offset_text}, #{offset_diff_compared_to_author(author)}"
       end
 
-      def status_emoji
-        status&.dig("emoji")
-      end
+      def offset_diff_compared_to_author(author)
+        diff = floored_offset_hours - author.floored_offset_hours
+        return "same timezone as `@#{author.username}`" if diff.zero?
 
-      # @return [Boolean]
-      def out_of_office?
-        status&.dig("message")&.match?(/OOO/i) || OOO_EMOJI.include?(status_emoji)
-      end
+        ahead_or_behind = diff < 0 ? 'behind' : 'ahead'
+        pluralized_hours = pluralize(diff.abs, 'hour', 'hours')
 
-      # @return [Boolean]
-      def has_capacity?
-        !AT_CAPACITY_EMOJI.include?(status_emoji)
+        "#{pluralized_hours} #{ahead_or_behind} `@#{author.username}`"
       end
 
       def has_capability?(project, category, kind, labels)
@@ -97,6 +95,12 @@ module Gitlab
 
       def capabilities(project)
         Array(projects.fetch(project, []))
+      end
+
+      def pluralize(count, singular, plural)
+        word = count == 1 || count.to_s =~ /^1(\.0+)?$/ ? singular : plural
+
+        "#{count || 0} #{word}"
       end
     end
   end

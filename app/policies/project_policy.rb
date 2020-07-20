@@ -123,6 +123,9 @@ class ProjectPolicy < BasePolicy
     !@subject.design_management_enabled?
   end
 
+  with_scope :subject
+  condition(:service_desk_enabled) { @subject.service_desk_enabled? }
+
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
   # because it could be possible for a user to see an issuable-iid
   # (`:read_issue_iid` or `:read_merge_request_iid`) but then wouldn't be
@@ -151,6 +154,9 @@ class ProjectPolicy < BasePolicy
     ::Feature.enabled?(:build_service_proxy, @subject)
   end
 
+  with_scope :subject
+  condition(:packages_disabled) { !@subject.packages_enabled }
+
   features = %w[
     merge_requests
     issues
@@ -173,6 +179,7 @@ class ProjectPolicy < BasePolicy
   rule { guest | admin }.enable :read_project_for_iids
 
   rule { admin }.enable :update_max_artifacts_size
+  rule { can?(:read_all_resources) }.enable :read_confidential_issues
 
   rule { guest }.enable :guest_access
   rule { reporter }.enable :reporter_access
@@ -254,6 +261,8 @@ class ProjectPolicy < BasePolicy
     enable :read_prometheus
     enable :read_metrics_dashboard_annotation
     enable :metrics_dashboard
+    enable :read_confidential_issues
+    enable :read_package
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -290,12 +299,17 @@ class ProjectPolicy < BasePolicy
     enable :read_metrics_user_starred_dashboard
   end
 
+  rule { packages_disabled | repository_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:package))
+  end
+
   rule { owner | admin | guest | group_member }.prevent :request_access
   rule { ~request_access_enabled }.prevent :request_access
 
   rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
 
   rule { can?(:developer_access) }.policy do
+    enable :create_package
     enable :admin_board
     enable :admin_merge_request
     enable :admin_milestone
@@ -327,6 +341,7 @@ class ProjectPolicy < BasePolicy
     enable :update_alert_management_alert
     enable :create_design
     enable :destroy_design
+    enable :read_terraform_state
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -336,6 +351,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:maintainer_access) }.policy do
+    enable :destroy_package
     enable :admin_board
     enable :push_to_delete_protected_branch
     enable :update_snippet
@@ -470,6 +486,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:public_access) }.policy do
+    enable :read_package
     enable :read_project
     enable :read_board
     enable :read_list
@@ -545,11 +562,13 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:read_issue) }.policy do
     enable :read_design
+    enable :read_design_activity
   end
 
   # Design abilities could also be prevented in the issue policy.
   rule { design_management_disabled }.policy do
     prevent :read_design
+    prevent :read_design_activity
     prevent :create_design
     prevent :destroy_design
   end
@@ -574,6 +593,12 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:read_build) & can?(:read_pipeline) }.policy do
     enable :read_build_report_results
+  end
+
+  rule { support_bot }.enable :guest_access
+  rule { support_bot & ~service_desk_enabled }.policy do
+    prevent :create_note
+    prevent :read_project
   end
 
   private
@@ -624,6 +649,7 @@ class ProjectPolicy < BasePolicy
 
   def lookup_access_level!
     return ::Gitlab::Access::REPORTER if alert_bot?
+    return ::Gitlab::Access::REPORTER if support_bot? && service_desk_enabled?
 
     # NOTE: max_member_access has its own cache
     project.team.max_member_access(@user.id)
@@ -636,7 +662,7 @@ class ProjectPolicy < BasePolicy
     when ProjectFeature::DISABLED
       false
     when ProjectFeature::PRIVATE
-      admin? || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
+      can?(:read_all_resources) || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
     else
       true
     end

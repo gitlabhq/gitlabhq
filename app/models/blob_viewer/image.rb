@@ -8,7 +8,7 @@ module BlobViewer
     self.partial_name = 'image'
     self.extensions = UploaderHelper::SAFE_IMAGE_EXT
     self.binary = true
-    self.switcher_icon = 'picture-o'
+    self.switcher_icon = 'doc-image'
     self.switcher_title = 'image'
   end
 end

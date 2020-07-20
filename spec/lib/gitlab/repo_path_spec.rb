@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Gitlab::RepoPath do
+RSpec.describe ::Gitlab::RepoPath do
   include Gitlab::Routing
 
   let_it_be(:project) { create(:project, :repository) }

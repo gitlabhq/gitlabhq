@@ -1,0 +1,5 @@
+---
+title: Drop index of ruby objects in details on audit_events table
+merge_request: 36547
+author:
+type: other

@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["values"],
+  "properties": {
+    "values": {
+      "type": "array",
+      "items": { "$ref": "custom_variable_values.json" }
+    }
+  },
+  "additionalProperties": false
+}

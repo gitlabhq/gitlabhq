@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Gitlab::VersionInfo' do
+RSpec.describe 'Gitlab::VersionInfo' do
   before do
     @unknown = Gitlab::VersionInfo.new
     @v0_0_1 = Gitlab::VersionInfo.new(0, 0, 1)

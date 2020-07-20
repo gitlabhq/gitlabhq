@@ -186,7 +186,7 @@ git push origin squash_some_bugs
 - When you want feedback create a merge request.
 - Target is the ‘default’ branch (usually master).
 - Assign or mention the person you would like to review.
-- Add 'WIP' to the title if it's a work in progress.
+- Add `[Draft]` to the title if it's a work in progress.
 - When accepting, always delete the branch.
 - Anyone can comment, not just the assignee.
 - Push corrections to the same branch.

@@ -181,6 +181,7 @@ FactoryBot.define do
 
       transient do
         create_templates { nil }
+        create_branch { nil }
       end
 
       after :create do |project, evaluator|
@@ -205,6 +206,16 @@ FactoryBot.define do
             'feature_proposal',
             message: 'test 2',
             branch_name: 'master')
+        end
+
+        if evaluator.create_branch
+          project.repository.create_file(
+            project.creator,
+            'README.md',
+            "README on branch #{evaluator.create_branch}",
+            message: 'Add README.md',
+            branch_name: evaluator.create_branch)
+
         end
       end
     end
@@ -305,6 +316,14 @@ FactoryBot.define do
     end
   end
 
+  trait :service_desk_disabled do
+    service_desk_enabled { nil }
+  end
+
+  trait(:service_desk_enabled) do
+    service_desk_enabled { true }
+  end
+
   # Project with empty repository
   #
   # This is a case when you just created a project
@@ -361,6 +380,13 @@ FactoryBot.define do
           manual_configuration: true
         }
       )
+    end
+  end
+
+  factory :project_with_design, parent: :project do
+    after(:create) do |project|
+      issue = create(:issue, project: project)
+      create(:design, project: project, issue: issue)
     end
   end
 end

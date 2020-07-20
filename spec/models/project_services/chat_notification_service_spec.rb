@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ChatNotificationService do
+RSpec.describe ChatNotificationService do
   describe 'Associations' do
     before do
       allow(subject).to receive(:activated?).and_return(true)

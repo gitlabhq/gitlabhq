@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Evidences::MilestoneEntity do
+RSpec.describe Evidences::MilestoneEntity do
   let(:milestone) { build(:milestone) }
   let(:entity) { described_class.new(milestone) }
 

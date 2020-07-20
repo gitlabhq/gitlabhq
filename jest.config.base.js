@@ -82,7 +82,9 @@ module.exports = path => {
       '^.+\\.js$': 'babel-jest',
       '^.+\\.vue$': 'vue-jest',
     },
-    transformIgnorePatterns: ['node_modules/(?!(@gitlab/ui|bootstrap-vue|three|monaco-editor)/)'],
+    transformIgnorePatterns: [
+      'node_modules/(?!(@gitlab/ui|bootstrap-vue|three|monaco-editor|monaco-yaml)/)',
+    ],
     timers: 'fake',
     testEnvironment: '<rootDir>/spec/frontend/environment.js',
     testEnvironmentOptions: {

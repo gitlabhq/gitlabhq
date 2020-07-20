@@ -39,10 +39,10 @@
         = value
       %p.masking-validation-error.gl-field-error.hide
         = s_("CiVariables|Cannot use Masked Variable with current value")
-        = link_to icon('question-circle'), help_page_path('ci/variables/README', anchor: 'masked-variables'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to icon('question-circle'), help_page_path('ci/variables/README', anchor: 'mask-a-custom-variable'), target: '_blank', rel: 'noopener noreferrer'
     - unless only_key_value
       .ci-variable-body-item.ci-variable-protected-item.table-section.section-20.mr-0.border-top-0
-        .append-right-default
+        .gl-mr-3
           = s_("CiVariable|Protected")
         = render "shared/buttons/project_feature_toggle", is_checked: is_protected, label: s_("CiVariable|Toggle protected") do
           %input{ type: "hidden",
@@ -51,7 +51,7 @@
             value: is_protected,
             data: { default: is_protected_default.to_s } }
       .ci-variable-body-item.ci-variable-masked-item.table-section.section-20.mr-0.border-top-0
-        .append-right-default
+        .gl-mr-3
           = s_("CiVariable|Masked")
         = render "shared/buttons/project_feature_toggle", is_checked: is_masked, label: s_("CiVariable|Toggle masked"), class_list: "js-project-feature-toggle project-feature-toggle qa-variable-masked" do
           %input{ type: "hidden",

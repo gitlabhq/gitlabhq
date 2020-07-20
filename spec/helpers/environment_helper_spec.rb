@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EnvironmentHelper do
+RSpec.describe EnvironmentHelper do
   describe '#render_deployment_status' do
     context 'when using a manual deployment' do
       it 'renders a span tag' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Reports::TestReportsComparer do
+RSpec.describe Gitlab::Ci::Reports::TestReportsComparer do
   include TestReportsHelper
 
   let(:comparer) { described_class.new(base_reports, head_reports) }

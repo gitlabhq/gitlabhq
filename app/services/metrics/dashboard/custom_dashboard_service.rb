@@ -21,7 +21,8 @@ module Metrics
                 path: filepath,
                 display_name: name_for_path(filepath),
                 default: false,
-                system_dashboard: false
+                system_dashboard: false,
+                out_of_the_box_dashboard: out_of_the_box_dashboard?
               }
             end
         end
@@ -42,7 +43,7 @@ module Metrics
       def get_raw_dashboard
         yml = self.class.file_finder(project).read(dashboard_path)
 
-        YAML.safe_load(yml)
+        load_yaml(yml)
       end
 
       def cache_key

@@ -7,7 +7,7 @@ module Gitlab
       include Gitlab::Metrics::Methods
 
       # base labels shared among all transactions
-      BASE_LABELS = { controller: nil, action: nil }.freeze
+      BASE_LABELS = { controller: nil, action: nil, feature_category: nil }.freeze
       # labels that potentially contain sensitive information and will be filtered
       FILTERED_LABELS = [:branch, :path].freeze
 
@@ -90,12 +90,6 @@ module Gitlab
 
       def set(name, value, use_prometheus = true)
         self.class.transaction_metric(name, :gauge).set(labels, value) if use_prometheus
-      end
-
-      def get(name, type, tags = {})
-        metric = self.class.transaction_metric(name, type)
-
-        metric.get(filter_tags(tags).merge(labels))
       end
 
       def labels

@@ -2,34 +2,55 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CommitController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe 'Commit (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user)    { create(:user) }
-  let(:commit)        { project.commit("master") }
-
-  render_views
+  let_it_be(:commit)  { project.commit("master") }
 
   before(:all) do
     clean_frontend_fixtures('commit/')
+    clean_frontend_fixtures('api/commits/')
+
+    project.add_maintainer(user)
   end
 
   before do
-    project.add_maintainer(user)
-    sign_in(user)
     allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')
   end
 
-  it 'commit/show.html' do
-    params = {
-      namespace_id: project.namespace,
-      project_id: project,
-      id: commit.id
-    }
+  after(:all) do
+    remove_repository(project)
+  end
 
-    get :show, params: params
+  describe Projects::CommitController, '(JavaScript fixtures)', type: :controller do
+    render_views
 
-    expect(response).to be_successful
+    before do
+      sign_in(user)
+    end
+
+    it 'commit/show.html' do
+      params = {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: commit.id
+      }
+
+      get :show, params: params
+
+      expect(response).to be_successful
+    end
+  end
+
+  describe API::Commits, '(JavaScript fixtures)', type: :request do
+    include ApiHelpers
+
+    it 'api/commits/commit.json' do
+      get api("/projects/#{project.id}/repository/commits/#{commit.id}", user)
+
+      expect(response).to be_successful
+    end
   end
 end

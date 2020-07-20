@@ -1,19 +1,23 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Merge request squashing' do
-      it 'user squashes commits while merging' do
-        Flow::Login.sign_in
-
-        project = Resource::Project.fabricate_via_api! do |project|
+      let(:project) do
+        Resource::Project.fabricate_via_api! do |project|
           project.name = "squash-before-merge"
         end
+      end
 
-        merge_request = Resource::MergeRequest.fabricate! do |merge_request|
+      let(:merge_request) do
+        Resource::MergeRequest.fabricate_via_api! do |merge_request|
           merge_request.project = project
           merge_request.title = 'Squashing commits'
         end
+      end
+
+      before do
+        Flow::Login.sign_in
 
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
@@ -25,7 +29,9 @@ module QA
         end
 
         merge_request.visit!
+      end
 
+      it 'user squashes commits while merging' do
         Page::MergeRequest::Show.perform do |merge_request_page|
           merge_request_page.retry_on_exception(reload: true) do
             expect(merge_request_page).to have_text('to be squashed')
@@ -34,13 +40,9 @@ module QA
           merge_request_page.mark_to_squash
           merge_request_page.merge!
 
-          merge_request.project.visit!
-
           Git::Repository.perform do |repository|
-            repository.uri = merge_request.project.repository_http_location.uri
-
+            repository.uri = project.repository_http_location.uri
             repository.use_default_credentials
-
             repository.clone
 
             expect(repository.commits.size).to eq 3

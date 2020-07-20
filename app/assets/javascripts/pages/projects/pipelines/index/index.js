@@ -8,7 +8,7 @@ import {
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import PipelinesStore from '../../../../pipelines/stores/pipelines_store';
-import pipelinesComponent from '../../../../pipelines/components/pipelines.vue';
+import pipelinesComponent from '../../../../pipelines/components/pipelines_list/pipelines.vue';
 import Translate from '../../../../vue_shared/translate';
 
 Vue.use(Translate);
@@ -40,6 +40,7 @@ document.addEventListener(
           props: {
             store: this.store,
             endpoint: this.dataset.endpoint,
+            pipelineScheduleUrl: this.dataset.pipelineScheduleUrl,
             helpPagePath: this.dataset.helpPagePath,
             emptyStateSvgPath: this.dataset.emptyStateSvgPath,
             errorStateSvgPath: this.dataset.errorStateSvgPath,

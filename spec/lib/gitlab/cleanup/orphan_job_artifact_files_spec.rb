@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Cleanup::OrphanJobArtifactFiles do
+RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFiles do
   let(:null_logger) { Logger.new('/dev/null') }
 
   subject(:cleanup) { described_class.new(logger: null_logger) }

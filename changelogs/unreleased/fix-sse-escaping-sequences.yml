@@ -1,0 +1,5 @@
+---
+title: Fix incorrect text escaping in the Static Site Editor
+merge_request: 35671
+author:
+type: fixed

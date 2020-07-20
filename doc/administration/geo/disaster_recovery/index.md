@@ -122,16 +122,29 @@ Note the following when promoting a secondary:
    roles ['geo_secondary_role']
    ```
 
-1. Promote the **secondary** node to the **primary** node. Execute:
+1. Promote the **secondary** node to the **primary** node.
+
+   Before promoting a secondary node to primary, preflight checks should be run. They can be run separately or along with the promotion script.
+
+   To promote the secondary node to primary along with preflight checks:
 
    ```shell
    gitlab-ctl promote-to-primary-node
    ```
 
-   If you have already run the [preflight checks](planned_failover.md#preflight-checks), you can skip them with:
+   CAUTION: **Warning:**
+   Skipping preflight checks will promote the secondary to a primary without any further confirmation!
+
+   If you have already run the [preflight checks](planned_failover.md#preflight-checks) or don't want to run them, you can skip preflight checks with:
 
    ```shell
    gitlab-ctl promote-to-primary-node --skip-preflight-check
+   ```
+
+   You can also run preflight checks separately:
+
+   ```shell
+   gitlab-ctl promotion-preflight-checks
    ```
 
 1. Verify you can connect to the newly promoted **primary** node using the URL used
@@ -261,7 +274,7 @@ secondary domain, like changing Git remotes and API URLs.
    external_url 'https://<new_external_url>'
    ```
 
-   NOTE: **Note**
+   NOTE: **Note:**
    Changing `external_url` won't prevent access via the old secondary URL, as
    long as the secondary DNS records are still intact.
 

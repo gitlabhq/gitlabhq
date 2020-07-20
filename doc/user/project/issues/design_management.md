@@ -30,9 +30,11 @@ to be enabled:
   project level, navigate to your project's **Settings > General**, expand **Visibility, project features, permissions**
   and enable **Git Large File Storage**.
 
-Design Management requires that projects are using
-[hashed storage](../../../administration/repository_storage_types.md#hashed-storage)
-(the default storage type since v10.0).
+Design Management also requires that projects are using
+[hashed storage](../../../administration/raketasks/storage.md#migrate-to-hashed-storage). Since
+ GitLab 10.0, newly created projects use hashed storage by default. A GitLab admin can verify the storage type of a
+project by navigating to **Admin Area > Projects** and then selecting the project in question.
+A project can be identified as hashed-stored if its *Gitaly relative path* contains `@hashed`.
 
 If the requirements are not met, the **Designs** tab displays a message to the user.
 
@@ -47,6 +49,7 @@ and [PDFs](https://gitlab.com/gitlab-org/gitlab/-/issues/32811) is planned for a
 ## Limitations
 
 - Design uploads are limited to 10 files at a time.
+- From GitLab 13.1, Design filenames are limited to 255 characters.
 - Design Management data
   [isn't deleted when a project is destroyed](https://gitlab.com/gitlab-org/gitlab/-/issues/13429) yet.
 - Design Management data [won't be moved](https://gitlab.com/gitlab-org/gitlab/-/issues/13426)
@@ -57,20 +60,62 @@ and [PDFs](https://gitlab.com/gitlab-org/gitlab/-/issues/32811) is planned for a
 - Only the latest version of the designs can be deleted.
 - Deleted designs cannot be recovered but you can see them on previous designs versions.
 
-## The Design Management page
+## GitLab-Figma plugin
 
-Navigate to the **Design Management** page from any issue by clicking the **Designs** tab:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-figma-plugin/-/issues/2) in GitLab 13.2.
 
-![Designs tab](img/design_management_v12_3.png)
+Connect your design environment with your source code management in a seamless workflow. The GitLab-Figma plugin makes it quick and easy to collaborate in GitLab by bringing the work of product designers directly from Figma to GitLab Issues as uploaded Designs.
+
+To use the plugin, install it from the [Figma Directory](https://www.figma.com/community/plugin/860845891704482356)
+and connect to GitLab through a personal access token. The details are explained in the [plugin documentation](https://gitlab.com/gitlab-org/gitlab-figma-plugin/-/wikis/home).
+
+## The Design Management section
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223193) in GitLab 13.2, Designs are displayed directly on the issue description rather than on a separate tab.
+> - The new display is deployed behind a feature flag, enabled by default.
+> - It's enabled on GitLab.com.
+> - It cannot be enabled or disabled per-project.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-displaying-designs-on-the-issue-description-core-only). If disabled, it will move Designs back to the **Designs** tab.
+
+You can find to the **Design Management** section in the issue description:
+
+![Designs section](img/design_management_v13_2.png)
+
+### Enable or disable displaying Designs on the issue description **(CORE ONLY)**
+
+Displaying Designs on the issue description is under development but ready for
+production use. It is deployed behind a feature flag that is **enabled by
+default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable it for your instance.
+
+To disable it:
+
+```ruby
+Feature.disable(:design_management_moved)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:design_management_moved)
+```
+
+By disabling this feature, designs will be displayed on the **Designs** tab
+instead of directly on the issue description.
 
 ## Adding designs
 
-To upload design images, click the **Upload Designs** button and select images to upload.
+To upload Design images, drag files from your computer and drop them in the Design Management section,
+or click **upload** to select images from your file browser:
+
+![Designs empty state](img/design_management_upload_v13.2.png)
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9,
 you can drag and drop designs onto the dedicated drop zone to upload them.
 
-![Drag and drop design uploads](img/design_drag_and_drop_uploads_v12_9.png)
+![Drag and drop design uploads](img/design_drag_and_drop_uploads_v13_2.png)
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202634)
 in GitLab 12.10, you can also copy images from your file system and
@@ -239,3 +284,13 @@ To disable it:
 ```ruby
 Feature.disable(:design_management_reference_filter_gfm_pipeline)
 ```
+
+## Design activity records
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33051) in GitLab 13.1.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/225205) in GitLab 13.2.
+
+User activity events on designs (creation, deletion, and updates) are tracked by GitLab and
+displayed on the [user profile](../../profile/index.md#user-profile),
+[group](../../group/index.md#view-group-activity),
+and [project](../index.md#project-activity) activity pages.

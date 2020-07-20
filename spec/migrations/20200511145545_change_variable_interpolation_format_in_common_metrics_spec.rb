@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200511145545_change_variable_interpolation_format_in_common_metrics')
 
-describe ChangeVariableInterpolationFormatInCommonMetrics, :migration do
+RSpec.describe ChangeVariableInterpolationFormatInCommonMetrics, :migration do
   let(:prometheus_metrics) { table(:prometheus_metrics) }
 
   let!(:common_metric) do
@@ -23,9 +23,14 @@ describe ChangeVariableInterpolationFormatInCommonMetrics, :migration do
   end
 
   it 'updates query to use {{}}' do
-    expected_query = 'avg(sum(container_memory_usage_bytes{container_name!="POD",' \
-    'pod_name=~"^{{ci_environment_slug}}-(.*)",namespace="{{kube_namespace}}"})' \
-    ' by (job)) without (job)  /1024/1024/1024'
+    expected_query = <<~EOS.chomp
+    avg(sum(container_memory_usage_bytes{container!="POD",\
+    pod=~"^{{ci_environment_slug}}-(.*)",namespace="{{kube_namespace}}"}) \
+    by (job)) without (job)  /1024/1024/1024     OR      \
+    avg(sum(container_memory_usage_bytes{container_name!="POD",\
+    pod_name=~"^{{ci_environment_slug}}-(.*)",namespace="{{kube_namespace}}"}) \
+    by (job)) without (job)  /1024/1024/1024
+    EOS
 
     migrate!
 

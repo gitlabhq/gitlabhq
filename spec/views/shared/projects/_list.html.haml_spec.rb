@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'shared/projects/_list' do
+RSpec.describe 'shared/projects/_list' do
   let(:group) { create(:group) }
 
   before do

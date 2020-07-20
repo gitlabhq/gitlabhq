@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module Ci
-  describe RegisterJobService do
+  RSpec.describe RegisterJobService do
     let_it_be(:group) { create(:group) }
     let_it_be(:project, reload: true) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
@@ -109,12 +109,14 @@ module Ci
         end
 
         context 'shared runner' do
-          let(:build) { execute(shared_runner) }
+          let(:response) { described_class.new(shared_runner).execute }
+          let(:build) { response.build }
 
           it { expect(build).to be_kind_of(Build) }
           it { expect(build).to be_valid }
           it { expect(build).to be_running }
           it { expect(build.runner).to eq(shared_runner) }
+          it { expect(Gitlab::Json.parse(response.build_json)['id']).to eq(build.id) }
         end
 
         context 'specific runner' do
@@ -356,13 +358,8 @@ module Ci
       end
 
       context 'runner feature set is verified' do
-        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline) }
-
-        before do
-          expect_any_instance_of(Ci::Build).to receive(:runner_required_feature_names) do
-            [:runner_required_feature]
-          end
-        end
+        let(:options) { { artifacts: { reports: { junit: "junit.xml" } } } }
+        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline, options: options) }
 
         subject { execute(specific_runner, params) }
 
@@ -378,7 +375,7 @@ module Ci
 
         context 'when feature is supported by runner' do
           let(:params) do
-            { info: { features: { runner_required_feature: true } } }
+            { info: { features: { upload_multiple_artifacts: true } } }
           end
 
           it 'does pick job' do

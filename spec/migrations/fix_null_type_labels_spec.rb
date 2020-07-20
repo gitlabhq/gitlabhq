@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190131122559_fix_null_type_labels')
 
-describe FixNullTypeLabels do
+RSpec.describe FixNullTypeLabels do
   let(:migration) { described_class.new }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

@@ -1,0 +1,5 @@
+---
+title: Change default value in application_settings.issues_create_limit to be 0
+merge_request: 36558
+author:
+type: changed

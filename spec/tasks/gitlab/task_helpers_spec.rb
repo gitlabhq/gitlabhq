@@ -6,7 +6,7 @@ class TestHelpersTest
   include Gitlab::TaskHelpers
 end
 
-describe Gitlab::TaskHelpers do
+RSpec.describe Gitlab::TaskHelpers do
   subject { TestHelpersTest.new }
 
   let(:repo) { 'https://gitlab.com/gitlab-org/gitlab-test.git' }

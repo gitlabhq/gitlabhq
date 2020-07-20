@@ -63,6 +63,11 @@ GitLab provides two different options for the uploading mechanism: "Direct uploa
 
 [Read more about using object storage with GitLab](../object_storage.md).
 
+NOTE: **Note:**
+In GitLab 13.2 and later, we recommend using the
+[consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
+This section describes the earlier configuration format.
+
 **Option 1. Direct upload**
 
 1. User pushes an `lfs` file to the GitLab instance
@@ -86,53 +91,9 @@ The following general settings are supported.
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 
-The `connection` settings match those provided by [Fog](https://github.com/fog).
+See [the available connection settings for different providers](../object_storage.md#connection-settings).
 
 Here is a configuration example with S3.
-
-| Setting | Description | example |
-|---------|-------------|---------|
-| `provider` | The provider name | AWS |
-| `aws_access_key_id` | AWS credentials, or compatible | `ABC123DEF456` |
-| `aws_secret_access_key` | AWS credentials, or compatible | `ABC123DEF456ABC123DEF456ABC123DEF456` |
-| `aws_signature_version` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. | 4 |
-| `enable_signature_v4_streaming` | Set to true to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be false | true |
-| `region` | AWS region | us-east-1 |
-| `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
-| `endpoint` | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
-| `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
-| `use_iam_profile` | Set to true to use IAM profile instead of access keys | false
-
-Here is a configuration example with GCS.
-
-| Setting | Description | example |
-|---------|-------------|---------|
-| `provider` | The provider name | `Google` |
-| `google_project` | GCP project name | `gcp-project-12345` |
-| `google_client_email` | The email address of the service account | `foo@gcp-project-12345.iam.gserviceaccount.com` |
-| `google_json_key_location` | The JSON key path | `/path/to/gcp-project-12345-abcde.json` |
-
-NOTE: **Note:**
-The service account must have permission to access the bucket.
-[See more](https://cloud.google.com/storage/docs/authentication)
-
-Here is a configuration example with Rackspace Cloud Files.
-
-| Setting | Description | example |
-|---------|-------------|---------|
-| `provider` | The provider name | `Rackspace` |
-| `rackspace_username` | The username of the Rackspace account with access to the container | `joe.smith` |
-| `rackspace_api_key` | The API key of the Rackspace account with access to the container | `ABC123DEF456ABC123DEF456ABC123DE` |
-| `rackspace_region` | The Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://developer.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/) | `iad` |
-| `rackspace_temp_url_key` | The private key you have set in the Rackspace API for temporary URLs. Read more [here](https://developer.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl) | `ABC123DEF456ABC123DEF456ABC123DE` |
-
-NOTE: **Note:**
-Regardless of whether the container has public access enabled or disabled, Fog will
-use the TempURL method to grant access to LFS objects. If you see errors in logs referencing
-instantiating storage with a `temp-url-key`, ensure that you have set the key properly
-on the Rackspace API and in `gitlab.rb`. You can verify the value of the key Rackspace
-has set by sending a GET request with token header to the service access endpoint URL
-and comparing the output of the returned headers.
 
 ### Manual uploading to an object storage
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Group::Common do
+RSpec.describe Gitlab::Ci::Status::Group::Common do
   subject do
     Gitlab::Ci::Status::Core.new(double, double)
       .extend(described_class)

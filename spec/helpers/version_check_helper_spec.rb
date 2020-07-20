@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe VersionCheckHelper do
+RSpec.describe VersionCheckHelper do
   describe '#version_status_badge' do
     it 'returns nil if not dev environment and not enabled' do
       stub_rails_env('development')

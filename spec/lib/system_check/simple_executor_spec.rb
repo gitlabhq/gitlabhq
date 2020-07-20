@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-describe SystemCheck::SimpleExecutor do
+RSpec.describe SystemCheck::SimpleExecutor do
   before do
     stub_const('SimpleCheck', Class.new(SystemCheck::BaseCheck))
     stub_const('OtherCheck', Class.new(SystemCheck::BaseCheck))

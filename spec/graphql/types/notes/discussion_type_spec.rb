@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Discussion'] do
+RSpec.describe GitlabSchema.types['Discussion'] do
   it 'exposes the expected fields' do
     expected_fields = %i[
       created_at

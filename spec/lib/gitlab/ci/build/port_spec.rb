@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Port do
+RSpec.describe Gitlab::Ci::Build::Port do
   subject { described_class.new(port) }
 
   context 'when port is defined as an integer' do

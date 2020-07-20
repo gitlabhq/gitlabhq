@@ -6,30 +6,33 @@ module Metrics
   module Dashboard
     class CloneDashboardService < ::BaseService
       include Stepable
+      include Gitlab::Utils::StrongMemoize
 
       ALLOWED_FILE_TYPE = '.yml'
       USER_DASHBOARDS_DIR = ::Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
+      SEQUENCES = {
+        ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH => [
+          ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
+          ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
+          ::Gitlab::Metrics::Dashboard::Stages::Sorter
+        ].freeze,
+
+        ::Metrics::Dashboard::SelfMonitoringDashboardService::DASHBOARD_PATH => [
+          ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter
+        ].freeze,
+
+        ::Metrics::Dashboard::ClusterDashboardService::DASHBOARD_PATH => [
+          ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
+          ::Gitlab::Metrics::Dashboard::Stages::Sorter
+        ].freeze
+      }.freeze
 
       steps :check_push_authorized,
-        :check_branch_name,
-        :check_file_type,
-        :check_dashboard_template,
-        :create_file,
-        :refresh_repository_method_caches
-
-      class << self
-        def allowed_dashboard_templates
-          @allowed_dashboard_templates ||= Set[::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH].freeze
-        end
-
-        def sequences
-          @sequences ||= {
-            ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH => [::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-                                                                             ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
-                                                                             ::Gitlab::Metrics::Dashboard::Stages::Sorter].freeze
-          }.freeze
-        end
-      end
+            :check_branch_name,
+            :check_file_type,
+            :check_dashboard_template,
+            :create_file,
+            :refresh_repository_method_caches
 
       def execute
         execute_steps
@@ -56,8 +59,12 @@ module Metrics
         success(result)
       end
 
+      # Only allow out of the box metrics dashboards to be cloned. This can be
+      # changed to allow cloning of any metrics dashboard, if desired.
+      # However, only metrics dashboards should be allowed. If any file is
+      # allowed to be cloned, this will become a security risk.
       def check_dashboard_template(result)
-        return error(_('Not found.'), :not_found) unless self.class.allowed_dashboard_templates.include?(params[:dashboard])
+        return error(_('Not found.'), :not_found) unless dashboard_service&.out_of_the_box_dashboard?
 
         success(result)
       end
@@ -76,6 +83,12 @@ module Metrics
         repository.refresh_method_caches([:metrics_dashboard])
 
         success(result.merge(http_status: :created, dashboard: dashboard_details))
+      end
+
+      def dashboard_service
+        strong_memoize(:dashboard_service) do
+          Gitlab::Metrics::Dashboard::ServiceSelector.call(dashboard_service_options)
+        end
       end
 
       def dashboard_attrs
@@ -149,14 +162,19 @@ module Metrics
       end
 
       def raw_dashboard
-        YAML.safe_load(File.read(Rails.root.join(dashboard_template)))
+        dashboard_service.new(project, current_user, dashboard_service_options).raw_dashboard
+      end
+
+      def dashboard_service_options
+        {
+          embedded: false,
+          dashboard_path: dashboard_template
+        }
       end
 
       def sequence
-        self.class.sequences[dashboard_template]
+        SEQUENCES[dashboard_template] || []
       end
     end
   end
 end
-
-Metrics::Dashboard::CloneDashboardService.prepend_if_ee('EE::Metrics::Dashboard::CloneDashboardService')

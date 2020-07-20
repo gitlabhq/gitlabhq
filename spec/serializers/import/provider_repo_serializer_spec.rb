@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::ProviderRepoSerializer do
+RSpec.describe Import::ProviderRepoSerializer do
   using RSpec::Parameterized::TableSyntax
 
   describe '#represent' do

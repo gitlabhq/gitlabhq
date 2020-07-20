@@ -28,7 +28,7 @@ RSpec.describe 'Issue Detail', :js do
       visit project_issue_path(project, issue)
     end
 
-    it 'encodes the description to prevent xss issues', quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/207951' do
+    it 'encodes the description to prevent xss issues', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/207951' do
       page.within('.issuable-details .detail-page-description') do
         image = find('img.js-lazy-loaded')
 

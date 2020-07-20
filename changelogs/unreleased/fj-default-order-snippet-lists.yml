@@ -1,0 +1,5 @@
+---
+title: Reorder snippets in lists using `updated_at` column
+merge_request: 34393
+author: Dibyadarshi Dash @ddash2
+type: changed

@@ -4,21 +4,31 @@ exports[`Dashboard template matches the default snapshot 1`] = `
 <div
   class="prometheus-graphs"
   data-qa-selector="prometheus_graphs"
+  environmentstate="available"
+  metricsdashboardbasepath="/monitoring/monitor-project/-/environments/1/metrics"
+  metricsendpoint="/monitoring/monitor-project/-/environments/1/additional_metrics.json"
+  prometheusstatus=""
 >
   <div
     class="prometheus-graphs-header d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 border-bottom bg-gray-light"
   >
     <div
-      class="mb-2 pr-2 d-flex d-sm-block"
+      class="mb-2 mr-2 d-flex d-sm-block"
     >
       <dashboards-dropdown-stub
         class="flex-grow-1"
         data-qa-selector="dashboards_filter_dropdown"
         defaultbranch="master"
         id="monitor-dashboards-dropdown"
+        modalid="duplicateDashboard"
         toggle-class="dropdown-menu-toggle"
       />
     </div>
+     
+    <span
+      aria-hidden="true"
+      class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"
+    />
      
     <div
       class="mb-2 pr-2 d-flex d-sm-block"
@@ -80,17 +90,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     <div
       class="mb-2 pr-2 d-flex d-sm-block"
     >
-      <gl-deprecated-button-stub
-        class="flex-grow-1"
-        size="md"
-        title="Refresh dashboard"
-        variant="default"
-      >
-        <icon-stub
-          name="retry"
-          size="16"
-        />
-      </gl-deprecated-button-stub>
+      <refresh-button-stub />
     </div>
      
     <div
@@ -127,23 +127,30 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       <!---->
        
       <!---->
+       
+      <!---->
+       
+      <!---->
+       
+      <!---->
     </div>
+     
+    <duplicate-dashboard-modal-stub
+      defaultbranch="master"
+      modalid="duplicateDashboard"
+    />
   </div>
    
-  <!---->
-   
-  <!---->
-   
   <empty-state-stub
-    clusterspath="/path/to/clusters"
-    documentationpath="/path/to/docs"
-    emptygettingstartedsvgpath="/path/to/getting-started.svg"
-    emptyloadingsvgpath="/path/to/loading.svg"
-    emptynodatasmallsvgpath="/path/to/no-data-small.svg"
-    emptynodatasvgpath="/path/to/no-data.svg"
-    emptyunabletoconnectsvgpath="/path/to/unable-to-connect.svg"
+    clusterspath="/monitoring/monitor-project/-/clusters"
+    documentationpath="/help/administration/monitoring/prometheus/index.md"
+    emptygettingstartedsvgpath="/images/illustrations/monitoring/getting_started.svg"
+    emptyloadingsvgpath="/images/illustrations/monitoring/loading.svg"
+    emptynodatasmallsvgpath="/images/illustrations/chart-empty-state-small.svg"
+    emptynodatasvgpath="/images/illustrations/monitoring/no_data.svg"
+    emptyunabletoconnectsvgpath="/images/illustrations/monitoring/unable_to_connect.svg"
     selectedstate="gettingStarted"
-    settingspath="/path/to/settings"
+    settingspath="/monitoring/monitor-project/-/services/prometheus/edit"
   />
 </div>
 `;

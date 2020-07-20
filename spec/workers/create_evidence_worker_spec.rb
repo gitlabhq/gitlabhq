@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CreateEvidenceWorker do
+RSpec.describe CreateEvidenceWorker do
   let(:project) { create(:project, :repository) }
   let(:release) { create(:release, project: project) }
   let(:pipeline) { create(:ci_empty_pipeline, sha: release.sha, project: project) }

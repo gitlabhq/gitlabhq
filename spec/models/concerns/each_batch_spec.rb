@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EachBatch do
+RSpec.describe EachBatch do
   describe '.each_batch' do
     let(:model) do
       Class.new(ActiveRecord::Base) do

@@ -2,12 +2,16 @@
 import { debounce } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import {
+  GlButton,
   GlIcon,
   GlDeprecatedButton,
   GlDropdown,
   GlDropdownItem,
   GlDropdownHeader,
   GlDropdownDivider,
+  GlNewDropdown,
+  GlNewDropdownDivider,
+  GlNewDropdownItem,
   GlModal,
   GlLoadingIcon,
   GlSearchBoxByType,
@@ -22,6 +26,9 @@ import Icon from '~/vue_shared/components/icon.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
 import DashboardsDropdown from './dashboards_dropdown.vue';
+import RefreshButton from './refresh_button.vue';
+import CreateDashboardModal from './create_dashboard_modal.vue';
+import DuplicateDashboardModal from './duplicate_dashboard_modal.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { getAddMetricTrackingOptions, timeRangeToUrl } from '../utils';
@@ -31,6 +38,7 @@ import { timezones } from '../format_date';
 export default {
   components: {
     Icon,
+    GlButton,
     GlIcon,
     GlDeprecatedButton,
     GlDropdown,
@@ -38,12 +46,18 @@ export default {
     GlDropdownItem,
     GlDropdownHeader,
     GlDropdownDivider,
+    GlNewDropdown,
+    GlNewDropdownDivider,
+    GlNewDropdownItem,
     GlSearchBoxByType,
     GlModal,
     CustomMetricsFormFields,
 
     DateTimePicker,
     DashboardsDropdown,
+    RefreshButton,
+    DuplicateDashboardModal,
+    CreateDashboardModal,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -93,6 +107,10 @@ export default {
       type: Object,
       required: true,
     },
+    addDashboardDocumentationPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -101,20 +119,30 @@ export default {
   },
   computed: {
     ...mapState('monitoringDashboard', [
+      'emptyState',
       'environmentsLoading',
       'currentEnvironmentName',
       'isUpdatingStarredValue',
-      'showEmptyState',
       'dashboardTimezone',
+      'projectPath',
+      'canAccessOperationsSettings',
+      'operationsSettingsPath',
+      'currentDashboard',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'filteredEnvironments']),
+    isOutOfTheBoxDashboard() {
+      return this.selectedDashboard?.out_of_the_box_dashboard;
+    },
+    shouldShowEmptyState() {
+      return Boolean(this.emptyState);
+    },
     shouldShowEnvironmentsDropdownNoMatchedMsg() {
       return !this.environmentsLoading && this.filteredEnvironments.length === 0;
     },
     addingMetricsAvailable() {
       return (
         this.customMetricsAvailable &&
-        !this.showEmptyState &&
+        !this.shouldShowEmptyState &&
         // Custom metrics only avaialble on system dashboards because
         // they are stored in the database. This can be improved. See:
         // https://gitlab.com/gitlab-org/gitlab/-/issues/28241
@@ -122,23 +150,29 @@ export default {
       );
     },
     showRearrangePanelsBtn() {
-      return !this.showEmptyState && this.rearrangePanelsAvailable;
+      return !this.shouldShowEmptyState && this.rearrangePanelsAvailable;
     },
     displayUtc() {
       return this.dashboardTimezone === timezones.UTC;
     },
+    shouldShowActionsMenu() {
+      return Boolean(this.projectPath);
+    },
+    shouldShowSettingsButton() {
+      return this.canAccessOperationsSettings && this.operationsSettingsPath;
+    },
   },
   methods: {
-    ...mapActions('monitoringDashboard', [
-      'filterEnvironments',
-      'fetchDashboardData',
-      'toggleStarredValue',
-    ]),
+    ...mapActions('monitoringDashboard', ['filterEnvironments', 'toggleStarredValue']),
     selectDashboard(dashboard) {
-      const params = {
-        dashboard: dashboard.path,
-      };
-      redirectTo(mergeUrlParams(params, window.location.href));
+      // Once the sidebar See metrics link is updated to the new URL,
+      // this sort of hardcoding will not be necessary.
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/229277
+      const baseURL = `${this.projectPath}/-/metrics`;
+      const dashboardPath = encodeURIComponent(
+        dashboard.out_of_the_box_dashboard ? dashboard.path : dashboard.display_name,
+      );
+      redirectTo(`${baseURL}/${dashboardPath}`);
     },
     debouncedEnvironmentsSearch: debounce(function environmentsSearchOnInput(searchTerm) {
       this.filterEnvironments(searchTerm);
@@ -148,9 +182,6 @@ export default {
     },
     onDateTimePickerInvalid() {
       this.$emit('dateTimePickerInvalid');
-    },
-    refreshDashboard() {
-      this.fetchDashboardData();
     },
 
     toggleRearrangingPanels() {
@@ -166,14 +197,27 @@ export default {
     submitCustomMetricsForm() {
       this.$refs.customMetricsForm.submit();
     },
+    getEnvironmentPath(environment) {
+      // Once the sidebar See metrics link is updated to the new URL,
+      // this sort of hardcoding will not be necessary.
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/229277
+      const baseURL = `${this.projectPath}/-/metrics`;
+      const dashboardPath = encodeURIComponent(this.currentDashboard || '');
+      // The environment_metrics_spec.rb requires the URL to not have
+      // slashes. Hence, this additional check.
+      const url = dashboardPath ? `${baseURL}/${dashboardPath}` : baseURL;
+      return mergeUrlParams({ environment }, url);
+    },
   },
-  addMetric: {
-    title: s__('Metrics|Add metric'),
-    modalId: 'add-metric',
+  modalIds: {
+    addMetric: 'addMetric',
+    createDashboard: 'createDashboard',
+    duplicateDashboard: 'duplicateDashboard',
   },
   i18n: {
     starDashboard: s__('Metrics|Star dashboard'),
     unstarDashboard: s__('Metrics|Unstar dashboard'),
+    addMetric: s__('Metrics|Add metric'),
   },
   timeRanges,
 };
@@ -181,16 +225,19 @@ export default {
 
 <template>
   <div ref="prometheusGraphsHeader">
-    <div class="mb-2 pr-2 d-flex d-sm-block">
+    <div class="mb-2 mr-2 d-flex d-sm-block">
       <dashboards-dropdown
         id="monitor-dashboards-dropdown"
         data-qa-selector="dashboards_filter_dropdown"
         class="flex-grow-1"
         toggle-class="dropdown-menu-toggle"
         :default-branch="defaultBranch"
+        :modal-id="$options.modalIds.duplicateDashboard"
         @selectDashboard="selectDashboard"
       />
     </div>
+
+    <span aria-hidden="true" class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"></span>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">
       <gl-dropdown
@@ -223,7 +270,7 @@ export default {
               :key="environment.id"
               :active="environment.name === currentEnvironmentName"
               active-class="is-active"
-              :href="environment.metrics_path"
+              :href="getEnvironmentPath(environment.id)"
               >{{ environment.name }}</gl-dropdown-item
             >
           </div>
@@ -252,16 +299,7 @@ export default {
     </div>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">
-      <gl-deprecated-button
-        ref="refreshDashboardBtn"
-        v-gl-tooltip
-        class="flex-grow-1"
-        variant="default"
-        :title="s__('Metrics|Refresh dashboard')"
-        @click="refreshDashboard"
-      >
-        <icon name="retry" />
-      </gl-deprecated-button>
+      <refresh-button />
     </div>
 
     <div class="flex-grow-1"></div>
@@ -304,17 +342,17 @@ export default {
       <div v-if="addingMetricsAvailable" class="mb-2 mr-2 d-flex d-sm-block">
         <gl-deprecated-button
           ref="addMetricBtn"
-          v-gl-modal="$options.addMetric.modalId"
+          v-gl-modal="$options.modalIds.addMetric"
           variant="outline-success"
           data-qa-selector="add_metric_button"
           class="flex-grow-1"
         >
-          {{ $options.addMetric.title }}
+          {{ $options.i18n.addMetric }}
         </gl-deprecated-button>
         <gl-modal
           ref="addMetricModal"
-          :modal-id="$options.addMetric.modalId"
-          :title="$options.addMetric.title"
+          :modal-id="$options.modalIds.addMetric"
+          :title="$options.i18n.addMetric"
         >
           <form ref="customMetricsForm" :action="customMetricsPath" method="post">
             <custom-metrics-form-fields
@@ -353,7 +391,10 @@ export default {
         </gl-deprecated-button>
       </div>
 
-      <div v-if="externalDashboardUrl.length" class="mb-2 mr-2 d-flex d-sm-block">
+      <div
+        v-if="externalDashboardUrl && externalDashboardUrl.length"
+        class="mb-2 mr-2 d-flex d-sm-block"
+      >
         <gl-deprecated-button
           class="flex-grow-1 js-external-dashboard-link"
           variant="primary"
@@ -364,6 +405,63 @@ export default {
           {{ __('View full dashboard') }} <icon name="external-link" />
         </gl-deprecated-button>
       </div>
+
+      <!-- This separator should be displayed only if at least one of the action menu or settings button are displayed  -->
+      <span
+        v-if="shouldShowActionsMenu || shouldShowSettingsButton"
+        aria-hidden="true"
+        class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"
+      ></span>
+
+      <div v-if="shouldShowActionsMenu" class="gl-mb-3 gl-mr-3 d-flex d-sm-block">
+        <gl-new-dropdown
+          v-gl-tooltip
+          right
+          class="gl-flex-grow-1"
+          data-testid="actions-menu"
+          :title="s__('Metrics|Create dashboard')"
+          :icon="'plus-square'"
+        >
+          <gl-new-dropdown-item
+            v-gl-modal="$options.modalIds.createDashboard"
+            data-testid="action-create-dashboard"
+            >{{ s__('Metrics|Create new dashboard') }}</gl-new-dropdown-item
+          >
+
+          <create-dashboard-modal
+            data-testid="create-dashboard-modal"
+            :add-dashboard-documentation-path="addDashboardDocumentationPath"
+            :modal-id="$options.modalIds.createDashboard"
+            :project-path="projectPath"
+          />
+
+          <template v-if="isOutOfTheBoxDashboard">
+            <gl-new-dropdown-divider />
+            <gl-new-dropdown-item
+              ref="duplicateDashboardItem"
+              v-gl-modal="$options.modalIds.duplicateDashboard"
+              data-testid="action-duplicate-dashboard"
+            >
+              {{ s__('Metrics|Duplicate current dashboard') }}
+            </gl-new-dropdown-item>
+          </template>
+        </gl-new-dropdown>
+      </div>
+
+      <div v-if="shouldShowSettingsButton" class="mb-2 mr-2 d-flex d-sm-block">
+        <gl-button
+          v-gl-tooltip
+          data-testid="metrics-settings-button"
+          icon="settings"
+          :href="operationsSettingsPath"
+          :title="s__('Metrics|Metrics Settings')"
+        />
+      </div>
     </div>
+    <duplicate-dashboard-modal
+      :default-branch="defaultBranch"
+      :modal-id="$options.modalIds.duplicateDashboard"
+      @dashboardDuplicated="selectDashboard"
+    />
   </div>
 </template>

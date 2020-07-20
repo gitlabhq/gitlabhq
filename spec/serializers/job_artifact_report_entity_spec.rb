@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JobArtifactReportEntity do
+RSpec.describe JobArtifactReportEntity do
   let(:report) { create(:ci_job_artifact, :codequality) }
   let(:entity) { described_class.new(report, request: double) }
 

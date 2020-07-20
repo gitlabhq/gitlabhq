@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Artifacts::Metadata do
+RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata do
   def metadata(path = '', **opts)
     described_class.new(metadata_file_stream, path, **opts)
   end

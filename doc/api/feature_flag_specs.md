@@ -8,12 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
 
-CAUTION: **Deprecation**
+CAUTION: **Deprecation:**
 This API is deprecated and [scheduled for removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213369).
 
 The API for creating, updating, reading and deleting Feature Flag Specs.
 Automation engineers benefit from this API by being able to modify Feature Flag Specs without accessing user interface.
-To manage the [Feature Flag](../user/project/operations/feature_flags.md) resources via public API, please refer to the [Feature Flags API](feature_flags.md) document.
+To manage the [Feature Flag](../operations/feature_flags.md) resources via public API, please refer to the [Feature Flags API](feature_flags.md) document.
 
 Users with Developer or higher [permissions](../user/permissions.md) can access Feature Flag Specs API.
 
@@ -166,7 +166,7 @@ POST /projects/:id/feature_flags/:name/scopes
 | `name`              | string           | yes        | The name of the feature flag. |
 | `environment_scope` | string           | yes        | The [environment spec](../ci/environments/index.md#scoping-environments-with-specs) of the feature flag. |
 | `active`            | boolean          | yes        | Whether the spec is active. |
-| `strategies`        | json             | yes        | The [strategies](../user/project/operations/feature_flags.md#feature-flag-strategies) of the feature flag spec. |
+| `strategies`        | JSON             | yes        | The [strategies](../operations/feature_flags.md#feature-flag-strategies) of the feature flag spec. |
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects/1/feature_flags/new_live_trace/scopes" \
@@ -249,7 +249,7 @@ PUT /projects/:id/feature_flags/:name/scopes/:environment_scope
 | `name`              | string           | yes        | The name of the feature flag. |
 | `environment_scope` | string           | yes        | The URL-encoded [environment spec](../ci/environments/index.md#scoping-environments-with-specs) of the feature flag.  |
 | `active`            | boolean          | yes        | Whether the spec is active. |
-| `strategies`        | json             | yes        | The [strategies](../user/project/operations/feature_flags.md#feature-flag-strategies) of the feature flag spec. |
+| `strategies`        | JSON             | yes        | The [strategies](../operations/feature_flags.md#feature-flag-strategies) of the feature flag spec. |
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects/1/feature_flags/new_live_trace/scopes/production" \

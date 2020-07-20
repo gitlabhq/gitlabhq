@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Emails::AutoDevops do
+RSpec.describe Emails::AutoDevops do
   include EmailSpec::Matchers
 
   describe '#auto_devops_disabled_email' do

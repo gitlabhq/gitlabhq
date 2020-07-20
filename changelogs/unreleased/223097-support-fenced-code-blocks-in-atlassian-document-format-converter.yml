@@ -1,0 +1,5 @@
+---
+title: Support fenced code blocks in Atlassian Document Format converter
+merge_request: 35065
+author:
+type: fixed

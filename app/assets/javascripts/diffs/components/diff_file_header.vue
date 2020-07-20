@@ -2,7 +2,6 @@
 import { escape } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
 import { GlDeprecatedButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
-import { polyfillSticky } from '~/lib/utils/sticky';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -54,6 +53,11 @@ export default {
     canCurrentUserFork: {
       type: Boolean,
       required: true,
+    },
+    viewDiffsFileByFile: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -124,9 +128,6 @@ export default {
       return s__('MRDiff|Show full file');
     },
   },
-  mounted() {
-    polyfillSticky(this.$refs.header);
-  },
   methods: {
     ...mapActions('diffs', [
       'toggleFileDiscussions',
@@ -167,22 +168,17 @@ export default {
         :name="collapseIcon"
         :size="16"
         aria-hidden="true"
-        class="diff-toggle-caret append-right-5"
+        class="diff-toggle-caret gl-mr-2"
         @click.stop="handleToggleFile"
       />
       <a
-        v-once
         ref="titleWrapper"
-        class="append-right-4"
+        :v-once="!viewDiffsFileByFile"
+        class="gl-mr-2"
         :href="titleLink"
         @click="handleFileNameClick"
       >
-        <file-icon
-          :file-name="filePath"
-          :size="18"
-          aria-hidden="true"
-          css-classes="append-right-5"
-        />
+        <file-icon :file-name="filePath" :size="18" aria-hidden="true" css-classes="gl-mr-2" />
         <span v-if="isFileRenamed">
           <strong
             v-gl-tooltip
@@ -218,7 +214,7 @@ export default {
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 
-      <span v-if="isUsingLfs" class="label label-lfs append-right-5"> {{ __('LFS') }} </span>
+      <span v-if="isUsingLfs" class="label label-lfs gl-mr-2"> {{ __('LFS') }} </span>
     </div>
 
     <div

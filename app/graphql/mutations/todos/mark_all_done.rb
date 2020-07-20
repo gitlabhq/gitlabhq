@@ -10,7 +10,12 @@ module Mutations
       field :updated_ids,
             [GraphQL::ID_TYPE],
             null: false,
+            deprecated: { reason: 'Use todos', milestone: '13.2' },
             description: 'Ids of the updated todos'
+
+      field :todos, [::Types::TodoType],
+            null: false,
+            description: 'Updated todos'
 
       def resolve
         authorize!(current_user)
@@ -19,6 +24,7 @@ module Mutations
 
         {
           updated_ids: map_to_global_ids(updated_ids),
+          todos: Todo.id_in(updated_ids),
           errors: []
         }
       end

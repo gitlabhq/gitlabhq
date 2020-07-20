@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::AlertManagement::AlertParams do
+RSpec.describe Gitlab::AlertManagement::AlertParams do
   let_it_be(:project) { create(:project, :repository, :private) }
 
   describe '.from_generic_alert' do
@@ -88,7 +88,9 @@ describe Gitlab::AlertManagement::AlertParams do
         payload: payload,
         started_at: parsed_alert.starts_at,
         ended_at: parsed_alert.ends_at,
-        fingerprint: parsed_alert.gitlab_fingerprint
+        fingerprint: parsed_alert.gitlab_fingerprint,
+        environment: parsed_alert.environment,
+        prometheus_alert: parsed_alert.gitlab_alert
       )
     end
   end

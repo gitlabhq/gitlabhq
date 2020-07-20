@@ -26,7 +26,7 @@ module Projects
 
     def propagate_projects_with_template
       loop do
-        batch = Project.uncached { project_ids_without_integration }
+        batch = Project.uncached { Project.ids_without_integration(template, BATCH_SIZE) }
 
         bulk_create_from_template(batch) unless batch.empty?
 
@@ -49,22 +49,6 @@ module Projects
         run_callbacks(batch)
       end
     end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def project_ids_without_integration
-      services = Service
-        .select('1')
-        .where('services.project_id = projects.id')
-        .where(type: template.type)
-
-      Project
-        .where('NOT EXISTS (?)', services)
-        .where(pending_delete: false)
-        .where(archived: false)
-        .limit(BATCH_SIZE)
-        .pluck(:id)
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def bulk_insert(klass, columns, values_array)
       items_to_insert = values_array.map { |array| Hash[columns.zip(array)] }

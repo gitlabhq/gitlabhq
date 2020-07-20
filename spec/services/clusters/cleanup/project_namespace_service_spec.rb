@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Cleanup::ProjectNamespaceService do
+RSpec.describe Clusters::Cleanup::ProjectNamespaceService do
   describe '#execute' do
     subject { service.execute }
 

@@ -1,0 +1,5 @@
+---
+title: Fix Gitaly duration timings of BlobService RPCs
+merge_request: 34906
+author:
+type: other

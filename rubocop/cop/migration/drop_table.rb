@@ -17,6 +17,7 @@ module RuboCop
 
         def on_def(node)
           return unless in_deployment_migration?(node)
+          return if down_method?(node)
 
           node.each_descendant(:send) do |send_node|
             next unless offensible?(send_node)
@@ -26,6 +27,10 @@ module RuboCop
         end
 
         private
+
+        def down_method?(node)
+          node.method?(:down)
+        end
 
         def offensible?(node)
           drop_table?(node) || drop_table_in_execute?(node)

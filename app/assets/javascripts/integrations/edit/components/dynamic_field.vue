@@ -1,4 +1,5 @@
 <script>
+import { mapGetters } from 'vuex';
 import eventHub from '../event_hub';
 import { capitalize, lowerCase, isEmpty } from 'lodash';
 import { __, sprintf } from '~/locale';
@@ -59,6 +60,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isInheriting']),
     isCheckbox() {
       return this.type === 'checkbox';
     },
@@ -106,10 +108,12 @@ export default {
       return {
         id: this.fieldId,
         name: this.fieldName,
+        state: this.valid,
+        readonly: this.isInheriting,
       };
     },
     valid() {
-      return !this.required || !isEmpty(this.model) || !this.validated;
+      return !this.required || !isEmpty(this.model) || this.isNonEmptyPassword || !this.validated;
     },
   },
   created() {
@@ -135,15 +139,21 @@ export default {
     :label-for="fieldId"
     :invalid-feedback="__('This field is required.')"
     :state="valid"
-    :description="help"
   >
+    <template #description>
+      <span v-html="help"></span>
+    </template>
+
     <template v-if="isCheckbox">
-      <input :name="fieldName" type="hidden" value="false" />
-      <gl-form-checkbox v-model="model" v-bind="sharedProps">
+      <input :name="fieldName" type="hidden" :value="model || false" />
+      <gl-form-checkbox :id="fieldId" v-model="model" :disabled="isInheriting">
         {{ humanizedTitle }}
       </gl-form-checkbox>
     </template>
-    <gl-form-select v-else-if="isSelect" v-model="model" v-bind="sharedProps" :options="options" />
+    <template v-else-if="isSelect">
+      <input type="hidden" :name="fieldName" :value="model" />
+      <gl-form-select :id="fieldId" v-model="model" :options="options" :disabled="isInheriting" />
+    </template>
     <gl-form-textarea
       v-else-if="isTextarea"
       v-model="model"
@@ -159,6 +169,7 @@ export default {
       autocomplete="new-password"
       :placeholder="placeholder"
       :required="passwordRequired"
+      :data-qa-selector="`${fieldId}_field`"
     />
     <gl-form-input
       v-else
@@ -167,6 +178,7 @@ export default {
       :type="type"
       :placeholder="placeholder"
       :required="required"
+      :data-qa-selector="`${fieldId}_field`"
     />
   </gl-form-group>
 </template>

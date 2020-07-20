@@ -6,8 +6,13 @@ RSpec.describe "User views issues" do
   let!(:closed_issue) { create(:closed_issue, project: project) }
   let!(:open_issue1) { create(:issue, project: project) }
   let!(:open_issue2) { create(:issue, project: project) }
+  let!(:moved_open_issue) { create(:issue, project: project, moved_to: create(:issue)) }
 
   let_it_be(:user) { create(:user) }
+
+  before do
+    stub_feature_flags(vue_issuables_list: false)
+  end
 
   shared_examples "opens issue from list" do
     it "opens issue" do
@@ -32,6 +37,7 @@ RSpec.describe "User views issues" do
           .and have_content(open_issue1.title)
           .and have_content(open_issue2.title)
           .and have_no_content(closed_issue.title)
+          .and have_content(moved_open_issue.title)
           .and have_no_selector(".js-new-board-list")
       end
 
@@ -62,6 +68,7 @@ RSpec.describe "User views issues" do
           .and have_content(closed_issue.title)
           .and have_no_content(open_issue1.title)
           .and have_no_content(open_issue2.title)
+          .and have_no_content(moved_open_issue.title)
           .and have_no_selector(".js-new-board-list")
       end
 
@@ -82,6 +89,8 @@ RSpec.describe "User views issues" do
           .and have_content(closed_issue.title)
           .and have_content(open_issue1.title)
           .and have_content(open_issue2.title)
+          .and have_content(moved_open_issue.title)
+          .and have_no_content('CLOSED (MOVED)')
           .and have_no_selector(".js-new-board-list")
       end
 
@@ -115,5 +124,25 @@ RSpec.describe "User views issues" do
 
   context "when not signed in" do
     include_examples "public project"
+  end
+
+  context 'when vue_issuables_list feature is enabled', :js do
+    before do
+      stub_feature_flags(vue_issuables_list: true)
+    end
+
+    context 'when signed in' do
+      before do
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      include_examples "public project"
+      include_examples "internal project"
+    end
+
+    context 'when not signed in' do
+      include_examples "public project"
+    end
   end
 end

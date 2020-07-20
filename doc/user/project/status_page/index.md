@@ -34,10 +34,12 @@ Setting up a Status Page is pretty painless but there are a few things you need 
 
 To use GitLab Status Page you first need to set up your account details for your cloud provider in the operations settings page. Today, only AWS is supported.
 
-1. Within your AWS account, create an AWS access key.
-1. Add the following permissions policies:
+#### AWS Setup
+
+1. Within your AWS acccout, create two new IAM policies.
     - [Create bucket](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_create_policy.json).
     - [Update bucket contents](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_update_bucket_policy.json) (Remember replace `S3_BUCKET_NAME` with your bucket name).
+1. Create a new AWS access key with the permissions policies created in the first step.
 
 ### Status Page project
 

@@ -5,22 +5,26 @@ module Gitlab
     class PositionTracer
       class ImageStrategy < BaseStrategy
         def trace(position)
+          a_path = position.old_path
           b_path = position.new_path
+          diff_file = diff_file(position)
+          a_mode = diff_file&.a_mode
+          b_mode = diff_file&.b_mode
 
           # If file exists in B->D (e.g. updated, renamed, removed), let the
           # note become outdated.
-          bd_diff = bd_diffs.diff_file_with_old_path(b_path)
+          bd_diff = bd_diffs.diff_file_with_old_path(b_path, b_mode)
 
           return { position: new_position(position, bd_diff), outdated: true } if bd_diff
 
           # If file still exists in the new diff, update the position.
-          cd_diff = cd_diffs.diff_file_with_new_path(bd_diff&.new_path || b_path)
+          cd_diff = cd_diffs.diff_file_with_new_path(b_path, b_mode)
 
           return { position: new_position(position, cd_diff), outdated: false } if cd_diff
 
           # If file exists in A->C (e.g. rebased and same changes were present
           # in target branch), let the note become outdated.
-          ac_diff = ac_diffs.diff_file_with_old_path(position.old_path)
+          ac_diff = ac_diffs.diff_file_with_old_path(a_path, a_mode)
 
           return { position: new_position(position, ac_diff), outdated: true } if ac_diff
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::RefService do
+RSpec.describe Gitlab::GitalyClient::RefService do
   let(:project) { create(:project, :repository) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
@@ -34,7 +34,7 @@ describe Gitlab::GitalyClient::RefService do
       subject
     end
 
-    it 'concantes and returns the response branches as Gitlab::Git::Branch objects' do
+    it 'concatenates and returns the response branches as Gitlab::Git::Branch objects' do
       target_commits = create_list(:gitaly_commit, 4)
       response_branches = target_commits.each_with_index.map do |gitaly_commit, i|
         Gitaly::Branch.new(name: "#{remote_name}/#{i}", target_commit: gitaly_commit)
@@ -56,6 +56,17 @@ describe Gitlab::GitalyClient::RefService do
         expect(branch.name).to eq(i.to_s) # It removes the `remote/` prefix
         expect(branch.dereferenced_target).to eq(commit)
       end
+    end
+  end
+
+  describe '#merged_branches' do
+    it 'sends a find_all_branches message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_all_branches)
+        .with(gitaly_request_with_params(merged_only: true, merged_branches: ['test']), kind_of(Hash))
+        .and_return([])
+
+      client.merged_branches(%w(test))
     end
   end
 
@@ -132,6 +143,38 @@ describe Gitlab::GitalyClient::RefService do
 
     it 'raises an argument error if an invalid sort_by parameter is passed' do
       expect { client.local_branches(sort_by: 'invalid_sort') }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '#tags' do
+    it 'sends a find_all_tags message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_all_tags)
+        .and_return([])
+
+      client.tags
+    end
+  end
+
+  describe '#branch_names_contains_sha' do
+    it 'sends a list_branch_names_containing_commit message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:list_branch_names_containing_commit)
+        .with(gitaly_request_with_params(commit_id: '123', limit: 0), kind_of(Hash))
+        .and_return([])
+
+      client.branch_names_contains_sha('123')
+    end
+  end
+
+  describe '#get_tag_messages' do
+    it 'sends a get_tag_messages message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:get_tag_messages)
+        .with(gitaly_request_with_params(tag_ids: ['some_tag_id']), kind_of(Hash))
+        .and_return([])
+
+      client.get_tag_messages(['some_tag_id'])
     end
   end
 

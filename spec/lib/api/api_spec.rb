@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::API do
+RSpec.describe API::API do
   describe '.prefix' do
     it 'has a prefix defined' do
       expect(described_class.prefix).to eq :api

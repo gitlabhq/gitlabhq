@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::StringRangeMarker do
+RSpec.describe Gitlab::StringRangeMarker do
   describe '#mark' do
     def mark_diff(rich = nil)
       raw = 'abc <def>'

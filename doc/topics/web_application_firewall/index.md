@@ -1,3 +1,10 @@
+---
+stage: Defend
+group: Container Security
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
+
 # Web Application Firewall - ModSecurity
 
 A web application firewall (or WAF) filters, monitors, and blocks HTTP traffic to
@@ -18,7 +25,7 @@ applications which have an Ingress.
 
 The ModSecurity module runs with the [OWASP Core Rule Set (CRS)](https://coreruleset.org/) by default. The OWASP CRS will detect and log a wide range of common attacks.
 
-NOTE: **Note**
+NOTE: **Note:**
 The WAF is deployed in "Detection-only mode" by default and will only log attack
 attempts.
 
@@ -53,7 +60,7 @@ If you are using a self-managed instance of GitLab, you need to configure the
 [Google OAuth2 OmniAuth Provider](../../integration/google.md) before
 you can configure a cluster on GKE. Once this is set up, you can follow the steps on the [quick start guide](quick_start_guide.md) to get started.
 
-NOTE: **Note**
+NOTE: **Note:**
 This guide shows how the WAF can be deployed using Auto DevOps. The WAF
 is available by default to all applications no matter how they are deployed,
 as long as they are using Ingress.

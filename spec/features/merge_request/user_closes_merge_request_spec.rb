@@ -15,7 +15,7 @@ RSpec.describe 'User closes a merge requests', :js do
   end
 
   it 'closes a merge request' do
-    click_link('Close merge request', match: :first)
+    click_button('Close merge request', match: :first)
 
     expect(page).to have_content(merge_request.title)
     expect(page).to have_content('Closed by')

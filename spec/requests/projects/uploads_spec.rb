@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'File uploads' do
+RSpec.describe 'File uploads' do
   include WorkhorseHelpers
 
   let(:project) { create(:project, :public, :repository) }

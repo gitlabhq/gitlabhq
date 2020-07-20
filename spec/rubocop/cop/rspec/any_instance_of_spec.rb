@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 require_relative '../../../../rubocop/cop/rspec/any_instance_of'
 
-describe RuboCop::Cop::RSpec::AnyInstanceOf do
+RSpec.describe RuboCop::Cop::RSpec::AnyInstanceOf, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

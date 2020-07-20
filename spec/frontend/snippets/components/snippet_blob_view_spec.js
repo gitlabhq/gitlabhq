@@ -23,13 +23,17 @@ describe('Blob Embeddable', () => {
     id: 'gid://foo.bar/snippet',
     webUrl: 'https://foo.bar',
     visibilityLevel: SNIPPET_VISIBILITY_PUBLIC,
-    blob: BlobMock,
   };
   const dataMock = {
     activeViewerType: SimpleViewerMock.type,
   };
 
-  function createComponent(props = {}, data = dataMock, contentLoading = false) {
+  function createComponent({
+    snippetProps = {},
+    data = dataMock,
+    blob = BlobMock,
+    contentLoading = false,
+  } = {}) {
     const $apollo = {
       queries: {
         blobContent: {
@@ -44,8 +48,9 @@ describe('Blob Embeddable', () => {
       propsData: {
         snippet: {
           ...snippet,
-          ...props,
+          ...snippetProps,
         },
+        blob,
       },
       data() {
         return {
@@ -63,7 +68,6 @@ describe('Blob Embeddable', () => {
   describe('rendering', () => {
     it('renders correct components', () => {
       createComponent();
-      expect(wrapper.find(BlobEmbeddable).exists()).toBe(true);
       expect(wrapper.find(BlobHeader).exists()).toBe(true);
       expect(wrapper.find(BlobContent).exists()).toBe(true);
     });
@@ -72,18 +76,13 @@ describe('Blob Embeddable', () => {
       'does not render blob-embeddable by default',
       visibilityLevel => {
         createComponent({
-          visibilityLevel,
+          snippetProps: {
+            visibilityLevel,
+          },
         });
         expect(wrapper.find(BlobEmbeddable).exists()).toBe(false);
       },
     );
-
-    it('does render blob-embeddable for public snippet', () => {
-      createComponent({
-        visibilityLevel: SNIPPET_VISIBILITY_PUBLIC,
-      });
-      expect(wrapper.find(BlobEmbeddable).exists()).toBe(true);
-    });
 
     it('sets simple viewer correctly', () => {
       createComponent();
@@ -92,7 +91,9 @@ describe('Blob Embeddable', () => {
 
     it('sets rich viewer correctly', () => {
       const data = { ...dataMock, activeViewerType: RichViewerMock.type };
-      createComponent({}, data);
+      createComponent({
+        data,
+      });
       expect(wrapper.find(RichViewer).exists()).toBe(true);
     });
 
@@ -137,7 +138,9 @@ describe('Blob Embeddable', () => {
       });
 
       it('renders simple viewer by default if URL contains hash', () => {
-        createComponent({}, {});
+        createComponent({
+          data: {},
+        });
 
         expect(wrapper.vm.activeViewerType).toBe(SimpleViewerMock.type);
         expect(wrapper.find(SimpleViewer).exists()).toBe(true);
@@ -183,12 +186,11 @@ describe('Blob Embeddable', () => {
       });
 
       it(`sets '${SimpleViewerMock.type}' as active on ${BLOB_RENDER_EVENT_SHOW_SOURCE} event`, () => {
-        createComponent(
-          {},
-          {
+        createComponent({
+          data: {
             activeViewerType: RichViewerMock.type,
           },
-        );
+        });
 
         findContentEl().vm.$emit(BLOB_RENDER_EVENT_SHOW_SOURCE);
         expect(wrapper.vm.activeViewerType).toEqual(SimpleViewerMock.type);

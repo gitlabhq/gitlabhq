@@ -1,11 +1,11 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import CollpasibleLogSection from './collapsible_section.vue';
+import CollapsibleLogSection from './collapsible_section.vue';
 import LogLine from './line.vue';
 
 export default {
   components: {
-    CollpasibleLogSection,
+    CollapsibleLogSection,
     LogLine,
   },
   computed: {
@@ -51,7 +51,7 @@ export default {
 <template>
   <code class="job-log d-block" data-qa-selector="job_log_content">
     <template v-for="(section, index) in trace">
-      <collpasible-log-section
+      <collapsible-log-section
         v-if="section.isHeader"
         :key="`collapsible-${index}`"
         :section="section"

@@ -103,7 +103,6 @@ RSpec.configure do |config|
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
   config.include CycleAnalyticsHelpers
-  config.include ExpectOffense
   config.include FactoryBot::Syntax::Methods
   config.include FixtureHelpers
   config.include NonExistingRecordsHelpers
@@ -156,6 +155,9 @@ RSpec.configure do |config|
   config.before(:suite) do
     Timecop.safe_mode = true
     TestEnv.init
+
+    # Reload all feature flags definitions
+    Feature.register_definitions
   end
 
   config.after(:all) do
@@ -332,6 +334,8 @@ RSpec.configure do |config|
       Ability.allowed?(*args)
     end
   end
+
+  config.disable_monkey_patching!
 end
 
 ActiveRecord::Migration.maintain_test_schema!

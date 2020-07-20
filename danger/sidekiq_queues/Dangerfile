@@ -1,0 +1,27 @@
+# frozen_string_literal: true
+
+SCALABILITY_REVIEW_MESSAGE = <<~MSG
+## Sidekiq queue changes
+
+This merge request contains changes to Sidekiq queues. Please follow the [documentation on changing a queue's urgency](https://docs.gitlab.com/ee/development/sidekiq_style_guide.html#changing-a-queues-urgency).
+MSG
+
+ADDED_QUEUES_MESSAGE = <<~MSG
+These queues were added:
+MSG
+
+CHANGED_QUEUES_MESSAGE = <<~MSG
+These queues had their attributes changed:
+MSG
+
+if sidekiq_queues.added_queue_names.any? || sidekiq_queues.changed_queue_names.any?
+  markdown(SCALABILITY_REVIEW_MESSAGE)
+
+  if sidekiq_queues.added_queue_names.any?
+    markdown(ADDED_QUEUES_MESSAGE + helper.markdown_list(sidekiq_queues.added_queue_names))
+  end
+
+  if sidekiq_queues.changed_queue_names.any?
+    markdown(CHANGED_QUEUES_MESSAGE + helper.markdown_list(sidekiq_queues.changed_queue_names))
+  end
+end

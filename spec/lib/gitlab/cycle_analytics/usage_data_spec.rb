@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::UsageData do
+RSpec.describe Gitlab::CycleAnalytics::UsageData do
   describe '#to_json' do
     before do
       # Since git commits only have second precision, round up to the

@@ -2,13 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issuable list' do
+RSpec.describe 'issuable list', :js do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
 
   issuable_types = [:issue, :merge_request]
 
   before do
+    stub_feature_flags(vue_issuables_list: false)
+    # something is going on
     project.add_user(user, :developer)
     sign_in(user)
     issuable_types.each { |type| create_issuables(type) }
@@ -26,9 +28,9 @@ RSpec.describe 'issuable list' do
     it "counts upvotes, downvotes and notes count for each #{issuable_type.to_s.humanize}" do
       visit_issuable_list(issuable_type)
 
-      expect(first('.fa-thumbs-up').find(:xpath, '..')).to have_content(1)
-      expect(first('.fa-thumbs-down').find(:xpath, '..')).to have_content(1)
-      expect(first('.fa-comments').find(:xpath, '..')).to have_content(2)
+      expect(first('.issuable-upvotes')).to have_content(1)
+      expect(first('.issuable-downvotes')).to have_content(1)
+      expect(first('.issuable-comments')).to have_content(2)
     end
 
     it 'sorts labels alphabetically' do

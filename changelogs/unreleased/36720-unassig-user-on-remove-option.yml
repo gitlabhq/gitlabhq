@@ -1,0 +1,5 @@
+---
+title: Extend members REST API with the option to unassign Issues and Merge Requests when member leaves team
+merge_request: 34388
+author:
+type: changed

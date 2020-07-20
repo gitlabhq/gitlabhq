@@ -9,7 +9,7 @@ class Repositories::ShellDestroyService < Repositories::BaseService
 
     GitlabShellWorker.perform_in(delay,
                                  :remove_repository,
-                                 repository_storage,
+                                 repository.shard,
                                  removal_path)
   end
 end

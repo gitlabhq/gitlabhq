@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists do
+RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists do
   describe '#satisfied_by?' do
     let(:pipeline) { build(:ci_pipeline, project: project, sha: project.repository.head_commit.sha) }
 

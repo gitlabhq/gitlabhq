@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProtectedRefAccess do
+RSpec.describe ProtectedRefAccess do
   include ExternalAuthorizationServiceHelpers
 
   subject(:protected_ref_access) do

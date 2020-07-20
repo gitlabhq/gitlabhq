@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GraphqlHelpers do
+RSpec.describe GraphqlHelpers do
   include GraphqlHelpers
 
   describe '.graphql_mutation' do

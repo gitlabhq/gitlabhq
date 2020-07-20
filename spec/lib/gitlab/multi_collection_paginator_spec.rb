@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::MultiCollectionPaginator do
+RSpec.describe Gitlab::MultiCollectionPaginator do
   subject(:paginator) { described_class.new(Project.all.order(:id), Group.all.order(:id), per_page: 3) }
 
   it 'combines both collections' do

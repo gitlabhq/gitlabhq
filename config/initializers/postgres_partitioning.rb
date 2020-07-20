@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+# Make sure we have loaded partitioned models here
+# (even with eager loading disabled).
+
+begin
+  Gitlab::Database::Partitioning::PartitionCreator.new.create_partitions
+rescue ActiveRecord::ActiveRecordError, PG::Error
+  # ignore - happens when Rake tasks yet have to create a database, e.g. for testing
+end

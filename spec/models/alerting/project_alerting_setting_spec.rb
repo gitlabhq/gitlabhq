@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Alerting::ProjectAlertingSetting do
+RSpec.describe Alerting::ProjectAlertingSetting do
   let_it_be(:project) { create(:project) }
 
   subject { create(:project_alerting_setting, project: project) }

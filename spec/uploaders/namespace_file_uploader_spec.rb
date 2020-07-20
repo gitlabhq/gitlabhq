@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NamespaceFileUploader do
+RSpec.describe NamespaceFileUploader do
   let(:group) { build_stubbed(:group) }
   let(:uploader) { described_class.new(group) }
   let(:upload) { create(:upload, :namespace_upload, model: group) }

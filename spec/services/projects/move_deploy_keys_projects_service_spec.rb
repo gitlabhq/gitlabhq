@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::MoveDeployKeysProjectsService do
+RSpec.describe Projects::MoveDeployKeysProjectsService do
   let!(:user) { create(:user) }
   let!(:project_with_deploy_keys) { create(:project, namespace: user.namespace) }
   let!(:target_project) { create(:project, namespace: user.namespace) }

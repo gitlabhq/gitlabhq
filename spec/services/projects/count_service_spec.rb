@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::CountService do
+RSpec.describe Projects::CountService do
   let(:project) { build(:project, id: 1) }
   let(:service) { described_class.new(project) }
 

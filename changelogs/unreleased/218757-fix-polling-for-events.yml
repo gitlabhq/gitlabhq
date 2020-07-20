@@ -1,0 +1,5 @@
+---
+title: Fix polling for resource events
+merge_request: 33025
+author:
+type: fixed

@@ -1,0 +1,5 @@
+---
+title: Fix 404 when downloading a non-archive artifact
+merge_request: 32811
+author:
+type: fixed

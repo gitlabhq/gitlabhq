@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Snippets::CreateService do
+RSpec.describe Snippets::CreateService do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:admin) { create(:user, :admin) }
@@ -177,10 +177,8 @@ describe Snippets::CreateService do
         end
 
         it 'returns a generic error' do
-          response = subject
-
-          expect(response).to be_error
-          expect(response.payload[:snippet].errors[:repository]).to eq ['Error creating the snippet']
+          expect(subject).to be_error
+          expect(snippet.errors[:repository]).to eq ['Error creating the snippet']
         end
       end
 
@@ -230,15 +228,15 @@ describe Snippets::CreateService do
       end
     end
 
-    shared_examples 'when snippet_files param is present' do
+    shared_examples 'when snippet_actions param is present' do
       let(:file_path) { 'snippet_file_path.rb' }
       let(:content) { 'snippet_content' }
-      let(:snippet_files) { [{ action: 'create', file_path: file_path, content: content }] }
+      let(:snippet_actions) { [{ action: 'create', file_path: file_path, content: content }] }
       let(:base_opts) do
         {
           title: 'Test snippet',
           visibility_level: Gitlab::VisibilityLevel::PRIVATE,
-          snippet_files: snippet_files
+          snippet_actions: snippet_actions
         }
       end
 
@@ -250,7 +248,7 @@ describe Snippets::CreateService do
       end
 
       it 'commit the files to the repository' do
-        subject
+        expect(subject).to be_success
 
         blob = snippet.repository.blob_at('master', file_path)
 
@@ -261,26 +259,40 @@ describe Snippets::CreateService do
         let(:extra_opts) { { content: 'foo', file_name: 'path' } }
 
         it 'a validation error is raised' do
-          response = subject
-          snippet = response.payload[:snippet]
-
-          expect(response).to be_error
+          expect(subject).to be_error
           expect(snippet.errors.full_messages_for(:content)).to eq ['Content and snippet files cannot be used together']
           expect(snippet.errors.full_messages_for(:file_name)).to eq ['File name and snippet files cannot be used together']
           expect(snippet.repository.exists?).to be_falsey
         end
       end
 
-      context 'when snippet_files param is invalid' do
-        let(:snippet_files) { [{ action: 'invalid_action', file_path: 'snippet_file_path.rb', content: 'snippet_content' }] }
+      context 'when snippet_actions param is invalid' do
+        let(:snippet_actions) { [{ action: 'invalid_action', file_path: 'snippet_file_path.rb', content: 'snippet_content' }] }
 
         it 'a validation error is raised' do
-          response = subject
-          snippet = response.payload[:snippet]
-
-          expect(response).to be_error
-          expect(snippet.errors.full_messages_for(:snippet_files)).to eq ['Snippet files have invalid data']
+          expect(subject).to be_error
+          expect(snippet.errors.full_messages_for(:snippet_actions)).to eq ['Snippet actions have invalid data']
           expect(snippet.repository.exists?).to be_falsey
+        end
+      end
+
+      context 'when snippet_actions contain an action different from "create"' do
+        let(:snippet_actions) { [{ action: 'delete', file_path: 'snippet_file_path.rb' }] }
+
+        it 'a validation error is raised' do
+          expect(subject).to be_error
+          expect(snippet.errors.full_messages_for(:snippet_actions)).to eq ['Snippet actions have invalid data']
+          expect(snippet.repository.exists?).to be_falsey
+        end
+      end
+
+      context 'when "create" operation does not have file_path or is empty' do
+        let(:snippet_actions) { [{ action: 'create', content: content }, { action: 'create', content: content, file_path: '' }] }
+
+        it 'generates the file path for the files' do
+          expect(subject).to be_success
+          expect(snippet.repository.blob_at('master', 'snippetfile1.txt').data).to eq content
+          expect(snippet.repository.blob_at('master', 'snippetfile2.txt').data).to eq content
         end
       end
     end
@@ -299,7 +311,7 @@ describe Snippets::CreateService do
       it_behaves_like 'an error service response when save fails'
       it_behaves_like 'creates repository and files'
       it_behaves_like 'after_save callback to store_mentions', ProjectSnippet
-      it_behaves_like 'when snippet_files param is present'
+      it_behaves_like 'when snippet_actions param is present'
 
       context 'when uploaded files are passed to the service' do
         let(:extra_opts) { { files: ['foo'] } }
@@ -326,7 +338,7 @@ describe Snippets::CreateService do
       it_behaves_like 'an error service response when save fails'
       it_behaves_like 'creates repository and files'
       it_behaves_like 'after_save callback to store_mentions', PersonalSnippet
-      it_behaves_like 'when snippet_files param is present'
+      it_behaves_like 'when snippet_actions param is present'
 
       context 'when the snippet description contains files' do
         include FileMoverHelpers

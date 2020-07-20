@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
+RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
   let(:worker_class) do
     Class.new do
       def self.name

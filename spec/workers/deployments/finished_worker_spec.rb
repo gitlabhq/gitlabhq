@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Deployments::FinishedWorker do
+RSpec.describe Deployments::FinishedWorker do
   let(:worker) { described_class.new }
 
   describe '#perform' do

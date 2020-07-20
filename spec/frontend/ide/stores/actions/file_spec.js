@@ -51,35 +51,27 @@ describe('IDE store file actions', () => {
       store.state.entries[localFile.path] = localFile;
     });
 
-    it('closes open files', done => {
-      store
-        .dispatch('closeFile', localFile)
-        .then(() => {
-          expect(localFile.opened).toBeFalsy();
-          expect(localFile.active).toBeFalsy();
-          expect(store.state.openFiles.length).toBe(0);
-
-          done();
-        })
-        .catch(done.fail);
+    it('closes open files', () => {
+      return store.dispatch('closeFile', localFile).then(() => {
+        expect(localFile.opened).toBeFalsy();
+        expect(localFile.active).toBeFalsy();
+        expect(store.state.openFiles.length).toBe(0);
+      });
     });
 
-    it('closes file even if file has changes', done => {
+    it('closes file even if file has changes', () => {
       store.state.changedFiles.push(localFile);
 
-      store
+      return store
         .dispatch('closeFile', localFile)
         .then(Vue.nextTick)
         .then(() => {
           expect(store.state.openFiles.length).toBe(0);
           expect(store.state.changedFiles.length).toBe(1);
-
-          done();
-        })
-        .catch(done.fail);
+        });
     });
 
-    it('closes file & opens next available file', done => {
+    it('closes file & opens next available file', () => {
       const f = {
         ...file('newOpenFile'),
         url: '/newOpenFile',
@@ -88,31 +80,23 @@ describe('IDE store file actions', () => {
       store.state.openFiles.push(f);
       store.state.entries[f.path] = f;
 
-      store
+      return store
         .dispatch('closeFile', localFile)
         .then(Vue.nextTick)
         .then(() => {
           expect(router.push).toHaveBeenCalledWith(`/project${f.url}`);
-
-          done();
-        })
-        .catch(done.fail);
+        });
     });
 
-    it('removes file if it pending', done => {
+    it('removes file if it pending', () => {
       store.state.openFiles.push({
         ...localFile,
         pending: true,
       });
 
-      store
-        .dispatch('closeFile', localFile)
-        .then(() => {
-          expect(store.state.openFiles.length).toBe(0);
-
-          done();
-        })
-        .catch(done.fail);
+      return store.dispatch('closeFile', localFile).then(() => {
+        expect(store.state.openFiles.length).toBe(0);
+      });
     });
   });
 
@@ -264,61 +248,48 @@ describe('IDE store file actions', () => {
         );
       });
 
-      it('calls the service', done => {
-        store
-          .dispatch('getFileData', { path: localFile.path })
-          .then(() => {
-            expect(service.getFileData).toHaveBeenCalledWith(
-              `${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`,
-            );
-
-            done();
-          })
-          .catch(done.fail);
+      it('calls the service', () => {
+        return store.dispatch('getFileData', { path: localFile.path }).then(() => {
+          expect(service.getFileData).toHaveBeenCalledWith(
+            `${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`,
+          );
+        });
       });
 
-      it('sets document title with the branchId', done => {
-        store
-          .dispatch('getFileData', { path: localFile.path })
-          .then(() => {
-            expect(document.title).toBe(`${localFile.path} · master · test/test · GitLab`);
-            done();
-          })
-          .catch(done.fail);
+      it('sets document title with the branchId', () => {
+        return store.dispatch('getFileData', { path: localFile.path }).then(() => {
+          expect(document.title).toBe(`${localFile.path} · master · test/test · GitLab`);
+        });
       });
 
-      it('sets the file as active', done => {
-        store
-          .dispatch('getFileData', { path: localFile.path })
-          .then(() => {
-            expect(localFile.active).toBeTruthy();
-
-            done();
-          })
-          .catch(done.fail);
+      it('sets the file as active', () => {
+        return store.dispatch('getFileData', { path: localFile.path }).then(() => {
+          expect(localFile.active).toBeTruthy();
+        });
       });
 
-      it('sets the file not as active if we pass makeFileActive false', done => {
-        store
+      it('sets the file not as active if we pass makeFileActive false', () => {
+        return store
           .dispatch('getFileData', { path: localFile.path, makeFileActive: false })
           .then(() => {
             expect(localFile.active).toBeFalsy();
-
-            done();
-          })
-          .catch(done.fail);
+          });
       });
 
-      it('adds the file to open files', done => {
-        store
-          .dispatch('getFileData', { path: localFile.path })
+      it('does not update the page title with the path of the file if makeFileActive is false', () => {
+        document.title = 'dummy title';
+        return store
+          .dispatch('getFileData', { path: localFile.path, makeFileActive: false })
           .then(() => {
-            expect(store.state.openFiles.length).toBe(1);
-            expect(store.state.openFiles[0].name).toBe(localFile.name);
+            expect(document.title).toBe(`dummy title`);
+          });
+      });
 
-            done();
-          })
-          .catch(done.fail);
+      it('adds the file to open files', () => {
+        return store.dispatch('getFileData', { path: localFile.path }).then(() => {
+          expect(store.state.openFiles.length).toBe(1);
+          expect(store.state.openFiles[0].name).toBe(localFile.name);
+        });
       });
     });
 
@@ -342,15 +313,10 @@ describe('IDE store file actions', () => {
         );
       });
 
-      it('sets document title considering `prevPath` on a file', done => {
-        store
-          .dispatch('getFileData', { path: localFile.path })
-          .then(() => {
-            expect(document.title).toBe(`new-shiny-file · master · test/test · GitLab`);
-
-            done();
-          })
-          .catch(done.fail);
+      it('sets document title considering `prevPath` on a file', () => {
+        return store.dispatch('getFileData', { path: localFile.path }).then(() => {
+          expect(document.title).toBe(`new-shiny-file · master · test/test · GitLab`);
+        });
       });
     });
 
@@ -397,29 +363,19 @@ describe('IDE store file actions', () => {
         mock.onGet(/(.*)/).replyOnce(200, 'raw');
       });
 
-      it('calls getRawFileData service method', done => {
-        store
-          .dispatch('getRawFileData', { path: tmpFile.path })
-          .then(() => {
-            expect(service.getRawFileData).toHaveBeenCalledWith(tmpFile);
-
-            done();
-          })
-          .catch(done.fail);
+      it('calls getRawFileData service method', () => {
+        return store.dispatch('getRawFileData', { path: tmpFile.path }).then(() => {
+          expect(service.getRawFileData).toHaveBeenCalledWith(tmpFile);
+        });
       });
 
-      it('updates file raw data', done => {
-        store
-          .dispatch('getRawFileData', { path: tmpFile.path })
-          .then(() => {
-            expect(tmpFile.raw).toBe('raw');
-
-            done();
-          })
-          .catch(done.fail);
+      it('updates file raw data', () => {
+        return store.dispatch('getRawFileData', { path: tmpFile.path }).then(() => {
+          expect(tmpFile.raw).toBe('raw');
+        });
       });
 
-      it('calls also getBaseRawFileData service method', done => {
+      it('calls also getBaseRawFileData service method', () => {
         jest.spyOn(service, 'getBaseRawFileData').mockReturnValue(Promise.resolve('baseraw'));
 
         store.state.currentProjectId = 'gitlab-org/gitlab-ce';
@@ -436,15 +392,58 @@ describe('IDE store file actions', () => {
 
         tmpFile.mrChange = { new_file: false };
 
-        store
-          .dispatch('getRawFileData', { path: tmpFile.path })
-          .then(() => {
-            expect(service.getBaseRawFileData).toHaveBeenCalledWith(tmpFile, 'SHA');
-            expect(tmpFile.baseRaw).toBe('baseraw');
+        return store.dispatch('getRawFileData', { path: tmpFile.path }).then(() => {
+          expect(service.getBaseRawFileData).toHaveBeenCalledWith(tmpFile, 'SHA');
+          expect(tmpFile.baseRaw).toBe('baseraw');
+        });
+      });
 
-            done();
-          })
-          .catch(done.fail);
+      describe('sets file loading to true', () => {
+        let loadingWhenGettingRawData;
+        let loadingWhenGettingBaseRawData;
+
+        beforeEach(() => {
+          loadingWhenGettingRawData = undefined;
+          loadingWhenGettingBaseRawData = undefined;
+
+          jest.spyOn(service, 'getRawFileData').mockImplementation(f => {
+            loadingWhenGettingRawData = f.loading;
+            return Promise.resolve('raw');
+          });
+          jest.spyOn(service, 'getBaseRawFileData').mockImplementation(f => {
+            loadingWhenGettingBaseRawData = f.loading;
+            return Promise.resolve('rawBase');
+          });
+        });
+
+        it('when getting raw file data', async () => {
+          expect(tmpFile.loading).toBe(false);
+
+          await store.dispatch('getRawFileData', { path: tmpFile.path });
+
+          expect(loadingWhenGettingRawData).toBe(true);
+          expect(tmpFile.loading).toBe(false);
+        });
+
+        it('when getting base raw file data', async () => {
+          tmpFile.mrChange = { new_file: false };
+
+          expect(tmpFile.loading).toBe(false);
+
+          await store.dispatch('getRawFileData', { path: tmpFile.path });
+
+          expect(loadingWhenGettingBaseRawData).toBe(true);
+          expect(tmpFile.loading).toBe(false);
+        });
+
+        it('when file was already loading', async () => {
+          tmpFile.loading = true;
+
+          await store.dispatch('getRawFileData', { path: tmpFile.path });
+
+          expect(loadingWhenGettingRawData).toBe(true);
+          expect(tmpFile.loading).toBe(false);
+        });
       });
     });
 
@@ -453,15 +452,10 @@ describe('IDE store file actions', () => {
         mock.onGet(/(.*)/).replyOnce(200, JSON.stringify({ test: '123' }));
       });
 
-      it('does not parse returned JSON', done => {
-        store
-          .dispatch('getRawFileData', { path: tmpFile.path })
-          .then(() => {
-            expect(tmpFile.raw).toEqual('{"test":"123"}');
-
-            done();
-          })
-          .catch(done.fail);
+      it('does not parse returned JSON', () => {
+        return store.dispatch('getRawFileData', { path: tmpFile.path }).then(() => {
+          expect(tmpFile.raw).toEqual('{"test":"123"}');
+        });
       });
     });
 
@@ -489,6 +483,12 @@ describe('IDE store file actions', () => {
             });
           });
       });
+
+      it('toggles loading off after error', async () => {
+        await expect(store.dispatch('getRawFileData', { path: tmpFile.path })).rejects.toThrow();
+
+        expect(tmpFile.loading).toBe(false);
+      });
     });
   });
 
@@ -504,32 +504,25 @@ describe('IDE store file actions', () => {
       store.state.entries[tmpFile.path] = tmpFile;
     });
 
-    it('updates file content', done => {
-      callAction()
-        .then(() => {
-          expect(tmpFile.content).toBe('content\n');
-
-          done();
-        })
-        .catch(done.fail);
+    it('updates file content', () => {
+      return callAction().then(() => {
+        expect(tmpFile.content).toBe('content\n');
+      });
     });
 
-    it('adds file into stagedFiles array', done => {
-      store
+    it('adds file into stagedFiles array', () => {
+      return store
         .dispatch('changeFileContent', {
           path: tmpFile.path,
           content: 'content',
         })
         .then(() => {
           expect(store.state.stagedFiles.length).toBe(1);
-
-          done();
-        })
-        .catch(done.fail);
+        });
     });
 
-    it('adds file not more than once into stagedFiles array', done => {
-      store
+    it('adds file not more than once into stagedFiles array', () => {
+      return store
         .dispatch('changeFileContent', {
           path: tmpFile.path,
           content: 'content',
@@ -542,14 +535,11 @@ describe('IDE store file actions', () => {
         )
         .then(() => {
           expect(store.state.stagedFiles.length).toBe(1);
-
-          done();
-        })
-        .catch(done.fail);
+        });
     });
 
-    it('removes file from changedFiles array if not changed', done => {
-      store
+    it('removes file from changedFiles array if not changed', () => {
+      return store
         .dispatch('changeFileContent', {
           path: tmpFile.path,
           content: 'content\n',
@@ -562,10 +552,7 @@ describe('IDE store file actions', () => {
         )
         .then(() => {
           expect(store.state.changedFiles.length).toBe(0);
-
-          done();
-        })
-        .catch(done.fail);
+        });
     });
   });
 
@@ -723,52 +710,36 @@ describe('IDE store file actions', () => {
       store.state.entries[f.path] = f;
     });
 
-    it('makes file pending in openFiles', done => {
-      store
-        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
-        .then(() => {
-          expect(store.state.openFiles[0].pending).toBe(true);
-        })
-        .then(done)
-        .catch(done.fail);
+    it('makes file pending in openFiles', () => {
+      return store.dispatch('openPendingTab', { file: f, keyPrefix: 'pending' }).then(() => {
+        expect(store.state.openFiles[0].pending).toBe(true);
+      });
     });
 
-    it('returns true when opened', done => {
-      store
-        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
-        .then(added => {
-          expect(added).toBe(true);
-        })
-        .then(done)
-        .catch(done.fail);
+    it('returns true when opened', () => {
+      return store.dispatch('openPendingTab', { file: f, keyPrefix: 'pending' }).then(added => {
+        expect(added).toBe(true);
+      });
     });
 
-    it('returns false when already opened', done => {
+    it('returns false when already opened', () => {
       store.state.openFiles.push({
         ...f,
         active: true,
         key: `pending-${f.key}`,
       });
 
-      store
-        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
-        .then(added => {
-          expect(added).toBe(false);
-        })
-        .then(done)
-        .catch(done.fail);
+      return store.dispatch('openPendingTab', { file: f, keyPrefix: 'pending' }).then(added => {
+        expect(added).toBe(false);
+      });
     });
 
-    it('pushes router URL when added', done => {
+    it('pushes router URL when added', () => {
       store.state.currentBranchId = 'master';
 
-      store
-        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
-        .then(() => {
-          expect(router.push).toHaveBeenCalledWith('/project/123/tree/master/');
-        })
-        .then(done)
-        .catch(done.fail);
+      return store.dispatch('openPendingTab', { file: f, keyPrefix: 'pending' }).then(() => {
+        expect(router.push).toHaveBeenCalledWith('/project/123/tree/master/');
+      });
     });
   });
 
@@ -784,26 +755,18 @@ describe('IDE store file actions', () => {
       };
     });
 
-    it('removes pending file from open files', done => {
+    it('removes pending file from open files', () => {
       store.state.openFiles.push(f);
 
-      store
-        .dispatch('removePendingTab', f)
-        .then(() => {
-          expect(store.state.openFiles.length).toBe(0);
-        })
-        .then(done)
-        .catch(done.fail);
+      return store.dispatch('removePendingTab', f).then(() => {
+        expect(store.state.openFiles.length).toBe(0);
+      });
     });
 
-    it('emits event to dispose model', done => {
-      store
-        .dispatch('removePendingTab', f)
-        .then(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.dispose.${f.key}`);
-        })
-        .then(done)
-        .catch(done.fail);
+    it('emits event to dispose model', () => {
+      return store.dispatch('removePendingTab', f).then(() => {
+        expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.dispose.${f.key}`);
+      });
     });
   });
 
@@ -812,14 +775,10 @@ describe('IDE store file actions', () => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
-    it('emits event that files have changed', done => {
-      store
-        .dispatch('triggerFilesChange')
-        .then(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('ide.files.change');
-        })
-        .then(done)
-        .catch(done.fail);
+    it('emits event that files have changed', () => {
+      return store.dispatch('triggerFilesChange').then(() => {
+        expect(eventHub.$emit).toHaveBeenCalledWith('ide.files.change');
+      });
     });
   });
 });

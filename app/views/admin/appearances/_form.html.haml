@@ -1,6 +1,6 @@
 - parsed_with_gfm = "Content parsed with #{link_to('GitLab Flavored Markdown', help_page_path('user/markdown'), target: '_blank')}.".html_safe
 
-= form_for @appearance, url: admin_appearances_path, html: { class: 'prepend-top-default' } do |f|
+= form_for @appearance, url: admin_appearances_path, html: { class: 'gl-mt-3' } do |f|
   = form_errors(@appearance)
 
 
@@ -100,7 +100,7 @@
           .hint
             = parsed_with_gfm
 
-      .prepend-top-default.append-bottom-default
+      .gl-mt-3.gl-mb-3
         = f.submit 'Update appearance settings', class: 'btn btn-success'
         - if @appearance.persisted? || @appearance.updated_at
           .mt-4

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LanguageData do
+RSpec.describe Gitlab::LanguageData do
   describe '#extensions' do
     before do
       described_class.clear_extensions!

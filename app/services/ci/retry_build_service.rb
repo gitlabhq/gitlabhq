@@ -34,10 +34,6 @@ module Ci
 
       attributes[:user] = current_user
 
-      # TODO: we can probably remove this logic
-      # see: https://gitlab.com/gitlab-org/gitlab/-/issues/217930
-      attributes[:scheduling_type] ||= build.find_legacy_scheduling_type
-
       Ci::Build.transaction do
         # mark all other builds of that name as retried
         build.pipeline.builds.latest
@@ -59,7 +55,9 @@ module Ci
       build = project.builds.new(attributes)
       build.assign_attributes(::Gitlab::Ci::Pipeline::Seed::Build.environment_attributes_for(build))
       build.retried = false
-      build.save!
+      BulkInsertableAssociations.with_bulk_insert(enabled: ::Gitlab::Ci::Features.bulk_insert_on_create?(project)) do
+        build.save!
+      end
       build
     end
   end

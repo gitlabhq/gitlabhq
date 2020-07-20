@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-describe SystemCheck::App::HashedStorageEnabledCheck do
+RSpec.describe SystemCheck::App::HashedStorageEnabledCheck do
   before do
     silence_output
   end

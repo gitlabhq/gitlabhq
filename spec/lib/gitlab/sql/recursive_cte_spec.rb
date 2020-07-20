@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SQL::RecursiveCTE do
+RSpec.describe Gitlab::SQL::RecursiveCTE do
   let(:cte) { described_class.new(:cte_name) }
 
   describe '#to_arel' do

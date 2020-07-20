@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectAutoDevops do
+RSpec.describe ProjectAutoDevops do
   let_it_be(:project) { build(:project) }
 
   it_behaves_like 'having unique enum values'

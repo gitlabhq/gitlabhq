@@ -5,6 +5,8 @@ import JobItem from '~/pipelines/components/graph/job_item.vue';
 describe('pipeline graph job item', () => {
   let wrapper;
 
+  const findJobWithoutLink = () => wrapper.find('[data-testid="job-without-link"]');
+
   const createWrapper = propsData => {
     wrapper = mount(JobItem, {
       propsData,
@@ -57,7 +59,7 @@ describe('pipeline graph job item', () => {
   });
 
   describe('name without link', () => {
-    it('it should render status and name', () => {
+    beforeEach(() => {
       createWrapper({
         job: {
           id: 4257,
@@ -71,12 +73,21 @@ describe('pipeline graph job item', () => {
             has_details: false,
           },
         },
+        cssClassJobName: 'css-class-job-name',
+        jobHovered: 'test',
       });
+    });
 
+    it('it should render status and name', () => {
       expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
       expect(wrapper.find('a').exists()).toBe(false);
 
       expect(trimText(wrapper.find('.ci-status-text').text())).toEqual(mockJob.name);
+    });
+
+    it('should apply hover class and provided class name', () => {
+      expect(findJobWithoutLink().classes()).toContain('gl-inset-border-1-blue-500');
+      expect(findJobWithoutLink().classes()).toContain('css-class-job-name');
     });
   });
 

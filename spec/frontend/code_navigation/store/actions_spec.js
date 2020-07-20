@@ -69,7 +69,12 @@ describe('Code navigation actions', () => {
               payload: {
                 path: 'index.js',
                 normalizedData: {
-                  '0:0': { start_line: 0, start_char: 0, hover: { value: '123' } },
+                  '0:0': {
+                    definitionLineNumber: 0,
+                    start_line: 0,
+                    start_char: 0,
+                    hover: { value: '123' },
+                  },
                 },
               },
             },
@@ -91,7 +96,12 @@ describe('Code navigation actions', () => {
               payload: {
                 path: 'index.js',
                 normalizedData: {
-                  '0:0': { start_line: 0, start_char: 0, hover: { value: '123' } },
+                  '0:0': {
+                    definitionLineNumber: 0,
+                    start_line: 0,
+                    start_char: 0,
+                    hover: { value: '123' },
+                  },
                 },
               },
             },
@@ -159,7 +169,9 @@ describe('Code navigation actions', () => {
     let target;
 
     beforeEach(() => {
-      setFixtures('<div data-path="index.js"><div class="js-test"></div></div>');
+      setFixtures(
+        '<div data-path="index.js"><div class="line"><div class="js-test"></div></div></div>',
+      );
       target = document.querySelector('.js-test');
     });
 
@@ -186,7 +198,7 @@ describe('Code navigation actions', () => {
             payload: {
               blobPath: 'index.js',
               definition: { hover: 'test' },
-              position: { height: 0, x: 0, y: 0 },
+              position: { height: 0, x: 0, y: 0, lineIndex: 0 },
             },
           },
         ],
@@ -210,7 +222,7 @@ describe('Code navigation actions', () => {
             payload: {
               blobPath: 'index.js',
               definition: { hover: 'test' },
-              position: { height: 0, x: 0, y: 0 },
+              position: { height: 0, x: 0, y: 0, lineIndex: 0 },
             },
           },
         ],
@@ -235,7 +247,7 @@ describe('Code navigation actions', () => {
             payload: {
               blobPath: 'index.js',
               definition: { hover: 'test' },
-              position: { height: 0, x: 0, y: 0 },
+              position: { height: 0, x: 0, y: 0, lineIndex: 0 },
             },
           },
         ],

@@ -8,12 +8,16 @@ export default {
     GlIcon,
   },
   computed: {
-    ...mapGetters(['dropdownButtonText', 'isDropdownVariantStandalone']),
+    ...mapGetters([
+      'dropdownButtonText',
+      'isDropdownVariantStandalone',
+      'isDropdownVariantEmbedded',
+    ]),
   },
   methods: {
     ...mapActions(['toggleDropdownContents']),
     handleButtonClick(e) {
-      if (this.isDropdownVariantStandalone) {
+      if (this.isDropdownVariantStandalone || this.isDropdownVariantEmbedded) {
         this.toggleDropdownContents();
         e.stopPropagation();
       }

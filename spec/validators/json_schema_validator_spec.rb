@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JsonSchemaValidator do
+RSpec.describe JsonSchemaValidator do
   describe '#validates_each' do
     let(:build_report_result) { build(:ci_build_report_result, :with_junit_success) }
 

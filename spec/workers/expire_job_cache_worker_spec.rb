@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExpireJobCacheWorker do
+RSpec.describe ExpireJobCacheWorker do
   let_it_be(:pipeline) { create(:ci_empty_pipeline) }
   let(:project) { pipeline.project }
 

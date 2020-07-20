@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AppearancesHelper do
+RSpec.describe AppearancesHelper do
   before do
     user = create(:user)
     allow(helper).to receive(:current_user).and_return(user)

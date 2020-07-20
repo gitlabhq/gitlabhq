@@ -22,6 +22,8 @@ en:
         grafana_enabled: "Grafana integration enabled"
       user/user_detail:
         job_title: 'Job title'
+      user/user_detail:
+        bio: 'Bio'
   views:
     pagination:
       previous: "Prev"

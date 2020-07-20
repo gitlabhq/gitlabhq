@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe InstanceConfigurationHelper do
+RSpec.describe InstanceConfigurationHelper do
   describe '#instance_configuration_cell_html' do
     describe 'if not block is passed' do
       it 'returns the parameter if present' do

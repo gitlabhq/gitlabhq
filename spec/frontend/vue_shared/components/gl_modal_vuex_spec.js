@@ -38,6 +38,9 @@ describe('GlModalVuex', () => {
       localVue,
       store,
       propsData,
+      stubs: {
+        GlModal,
+      },
     });
   };
 
@@ -148,4 +151,29 @@ describe('GlModalVuex', () => {
       .then(done)
       .catch(done.fail);
   });
+
+  it.each(['ok', 'cancel'])(
+    'passes an "%s" handler to the "modal-footer" slot scope',
+    handlerName => {
+      state.isVisible = true;
+
+      const modalFooterSlotContent = jest.fn();
+
+      factory({
+        scopedSlots: {
+          'modal-footer': modalFooterSlotContent,
+        },
+      });
+
+      const handler = modalFooterSlotContent.mock.calls[0][0][handlerName];
+
+      expect(wrapper.emitted(handlerName)).toBeFalsy();
+      expect(actions.hide).not.toHaveBeenCalled();
+
+      handler();
+
+      expect(actions.hide).toHaveBeenCalledTimes(1);
+      expect(wrapper.emitted(handlerName)).toBeTruthy();
+    },
+  );
 });

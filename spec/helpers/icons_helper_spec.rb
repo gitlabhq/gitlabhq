@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IconsHelper do
+RSpec.describe IconsHelper do
   let(:icons_path) { ActionController::Base.helpers.image_path("icons.svg") }
 
   describe 'icon' do
@@ -22,8 +22,13 @@ describe IconsHelper do
 
   describe 'sprite_icon_path' do
     it 'returns relative path' do
-      expect(sprite_icon_path)
-        .to eq icons_path
+      expect(sprite_icon_path).to eq(icons_path)
+    end
+
+    it 'only calls image_path once when called multiple times' do
+      expect(ActionController::Base.helpers).to receive(:image_path).once.and_call_original
+
+      2.times { sprite_icon_path }
     end
 
     context 'when an asset_host is set in the config it will return an absolute local URL' do
@@ -233,6 +238,27 @@ describe IconsHelper do
     it 'returns external snippet icon' do
       expect(external_snippet_icon('download').to_s)
         .to eq("<span class=\"gl-snippet-icon gl-snippet-icon-download\"></span>")
+    end
+  end
+
+  describe 'loading_icon' do
+    it 'returns span with gl-spinner class and default configuration' do
+      expect(loading_icon.to_s)
+        .to eq '<span class="gl-spinner gl-spinner-orange gl-spinner-sm" aria-label="Loading"></span>'
+    end
+
+    context 'when css_class is provided' do
+      it 'appends css_class to gl-spinner element' do
+        expect(loading_icon(css_class: 'gl-mr-2').to_s)
+          .to eq '<span class="gl-spinner gl-spinner-orange gl-spinner-sm gl-mr-2" aria-label="Loading"></span>'
+      end
+    end
+
+    context 'when container is true' do
+      it 'creates a container that has the gl-spinner-container class selector' do
+        expect(loading_icon(container: true).to_s)
+        .to eq '<div class="gl-spinner-container"><span class="gl-spinner gl-spinner-orange gl-spinner-sm" aria-label="Loading"></span></div>'
+      end
     end
   end
 end

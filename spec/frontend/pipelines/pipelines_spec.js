@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import PipelinesComponent from '~/pipelines/components/pipelines.vue';
+import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';
 import { pipelineWithStages, stageReply, users, mockSearch, branches } from './mock_data';
 import { RAW_TEXT_WARNING } from '~/pipelines/constants';
@@ -343,11 +343,7 @@ describe('Pipelines', () => {
       });
 
       it('should render navigation tabs', () => {
-        expect(wrapper.find('.js-pipelines-tab-pending').text()).toContain('Pending');
-
         expect(wrapper.find('.js-pipelines-tab-all').text()).toContain('All');
-
-        expect(wrapper.find('.js-pipelines-tab-running').text()).toContain('Running');
 
         expect(wrapper.find('.js-pipelines-tab-finished').text()).toContain('Finished');
 
@@ -452,8 +448,6 @@ describe('Pipelines', () => {
       it('returns default tabs', () => {
         expect(wrapper.vm.tabs).toEqual([
           { name: 'All', scope: 'all', count: undefined, isActive: true },
-          { name: 'Pending', scope: 'pending', count: undefined, isActive: false },
-          { name: 'Running', scope: 'running', count: undefined, isActive: false },
           { name: 'Finished', scope: 'finished', count: undefined, isActive: false },
           { name: 'Branches', scope: 'branches', isActive: false },
           { name: 'Tags', scope: 'tags', isActive: false },
@@ -462,11 +456,11 @@ describe('Pipelines', () => {
     });
 
     describe('emptyTabMessage', () => {
-      it('returns message with scope', () => {
-        wrapper.vm.scope = 'pending';
+      it('returns message with finished scope', () => {
+        wrapper.vm.scope = 'finished';
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(wrapper.vm.emptyTabMessage).toEqual('There are currently no pending pipelines.');
+          expect(wrapper.vm.emptyTabMessage).toEqual('There are currently no finished pipelines.');
         });
       });
 

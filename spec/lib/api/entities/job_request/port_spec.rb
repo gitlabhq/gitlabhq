@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::API::Entities::JobRequest::Port do
+RSpec.describe ::API::Entities::JobRequest::Port do
   let(:port) { double(number: 80, protocol: 'http', name: 'name')}
   let(:entity) { described_class.new(port) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Direct upload support' do
+RSpec.describe 'Direct upload support' do
   subject do
     load Rails.root.join('config/initializers/direct_upload_support.rb')
   end

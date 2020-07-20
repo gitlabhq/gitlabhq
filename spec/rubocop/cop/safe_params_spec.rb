@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/safe_params'
 
-describe RuboCop::Cop::SafeParams do
+RSpec.describe RuboCop::Cop::SafeParams, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

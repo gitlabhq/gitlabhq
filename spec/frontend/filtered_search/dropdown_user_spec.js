@@ -48,13 +48,13 @@ describe('Dropdown User', () => {
       };
       const dropdown = new DropdownUser();
 
-      expect(dropdown.config.AjaxFilter.endpoint).toBe('/autocomplete/users.json');
+      expect(dropdown.config.AjaxFilter.endpoint).toBe('/-/autocomplete/users.json');
     });
 
     it('should return endpoint when relative_url_root is undefined', () => {
       const dropdown = new DropdownUser();
 
-      expect(dropdown.config.AjaxFilter.endpoint).toBe('/autocomplete/users.json');
+      expect(dropdown.config.AjaxFilter.endpoint).toBe('/-/autocomplete/users.json');
     });
 
     it('should return endpoint with relative url when available', () => {
@@ -63,7 +63,9 @@ describe('Dropdown User', () => {
       };
       const dropdown = new DropdownUser();
 
-      expect(dropdown.config.AjaxFilter.endpoint).toBe('/gitlab_directory/autocomplete/users.json');
+      expect(dropdown.config.AjaxFilter.endpoint).toBe(
+        '/gitlab_directory/-/autocomplete/users.json',
+      );
     });
 
     afterEach(() => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Board do
+RSpec.describe Board do
   let(:project) { create(:project) }
   let(:other_project) { create(:project) }
 

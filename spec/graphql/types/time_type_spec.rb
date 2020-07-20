@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Time'] do
+RSpec.describe GitlabSchema.types['Time'] do
   let(:iso) { "2018-06-04T15:23:50+02:00" }
   let(:time) { Time.parse(iso) }
 

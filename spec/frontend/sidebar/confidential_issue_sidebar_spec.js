@@ -7,6 +7,7 @@ import createFlash from '~/flash';
 import RecaptchaModal from '~/vue_shared/components/recaptcha_modal.vue';
 import createStore from '~/notes/stores';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import eventHub from '~/sidebar/event_hub';
 
 jest.mock('~/flash');
 jest.mock('~/sidebar/services/sidebar_service');
@@ -15,6 +16,9 @@ describe('Confidential Issue Sidebar Block', () => {
   useMockLocationHelper();
 
   let wrapper;
+  const mutate = jest
+    .fn()
+    .mockResolvedValue({ data: { issueSetConfidential: { issue: { confidential: true } } } });
 
   const findRecaptchaModal = () => wrapper.find(RecaptchaModal);
 
@@ -25,23 +29,31 @@ describe('Confidential Issue Sidebar Block', () => {
       wrapper.vm
         .$nextTick()
         .then(() => {
-          const editForm = wrapper.find(EditForm);
-          const { updateConfidentialAttribute } = editForm.props();
-          updateConfidentialAttribute();
+          eventHub.$emit('updateConfidentialAttribute');
         })
         // wait for reCAPTCHA modal to render
         .then(() => wrapper.vm.$nextTick())
     );
   };
 
-  const createComponent = propsData => {
+  const createComponent = ({ propsData, data = {} }) => {
     const store = createStore();
     const service = new SidebarService();
     wrapper = shallowMount(ConfidentialIssueSidebar, {
       store,
+      data() {
+        return data;
+      },
       propsData: {
         service,
+        iid: '',
+        fullPath: '',
         ...propsData,
+      },
+      mocks: {
+        $apollo: {
+          mutate,
+        },
       },
     });
   };
@@ -60,7 +72,9 @@ describe('Confidential Issue Sidebar Block', () => {
     'renders for confidential = $confidential and isEditable = $isEditable',
     ({ confidential, isEditable }) => {
       createComponent({
-        isEditable,
+        propsData: {
+          isEditable,
+        },
       });
       wrapper.vm.$store.state.noteableData.confidential = confidential;
 
@@ -73,7 +87,9 @@ describe('Confidential Issue Sidebar Block', () => {
   describe('if editable', () => {
     beforeEach(() => {
       createComponent({
-        isEditable: true,
+        propsData: {
+          isEditable: true,
+        },
       });
       wrapper.vm.$store.state.noteableData.confidential = true;
     });

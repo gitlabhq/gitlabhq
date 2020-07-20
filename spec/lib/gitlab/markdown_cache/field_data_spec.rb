@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::MarkdownCache::FieldData do
+RSpec.describe Gitlab::MarkdownCache::FieldData do
   subject(:field_data) { described_class.new }
 
   before do

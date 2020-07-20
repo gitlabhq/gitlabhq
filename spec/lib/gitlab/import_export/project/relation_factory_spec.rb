@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::Project::RelationFactory do
+RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
   let(:group)   { create(:group) }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }

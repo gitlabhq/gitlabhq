@@ -1,0 +1,5 @@
+---
+title: Fix displaying import errors from server
+merge_request: 37073
+author:
+type: fixed

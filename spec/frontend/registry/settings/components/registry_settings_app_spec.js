@@ -5,6 +5,11 @@ import SettingsForm from '~/registry/settings/components/settings_form.vue';
 import { createStore } from '~/registry/settings/store/';
 import { SET_SETTINGS, SET_INITIAL_STATE } from '~/registry/settings/store/mutation_types';
 import { FETCH_SETTINGS_ERROR_MESSAGE } from '~/registry/shared/constants';
+import {
+  UNAVAILABLE_FEATURE_INTRO_TEXT,
+  UNAVAILABLE_USER_FEATURE_TEXT,
+} from '~/registry/settings/constants';
+
 import { stringifiedFormOptions } from '../../shared/mock_data';
 
 describe('Registry Settings App', () => {
@@ -68,10 +73,8 @@ describe('Registry Settings App', () => {
 
     it('shows an alert', () => {
       const text = findAlert().text();
-      expect(text).toContain(
-        'The Container Registry tag expiration and retention policies for this project have not been enabled.',
-      );
-      expect(text).toContain('Please contact your administrator.');
+      expect(text).toContain(UNAVAILABLE_FEATURE_INTRO_TEXT);
+      expect(text).toContain(UNAVAILABLE_USER_FEATURE_TEXT);
     });
 
     describe('an admin is visiting the page', () => {

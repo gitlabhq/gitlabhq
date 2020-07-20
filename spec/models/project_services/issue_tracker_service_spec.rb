@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssueTrackerService do
+RSpec.describe IssueTrackerService do
   describe 'Validations' do
     let(:project) { create :project }
 

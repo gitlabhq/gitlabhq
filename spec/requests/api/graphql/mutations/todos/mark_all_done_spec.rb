@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Marking all todos done' do
+RSpec.describe 'Marking all todos done' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

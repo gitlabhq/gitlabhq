@@ -571,7 +571,8 @@ module Types
 end
 ```
 
-NOTE: **Note:** If the field's type already [has a particular
+NOTE: **Note:**
+If the field's type already [has a particular
 authorization](#type-authorization) then there is no need to add that
 same authorization to the field.
 
@@ -717,11 +718,48 @@ will be returned as the result of the mutation.
 
 ### Naming conventions
 
-Always provide a consistent GraphQL-name to the mutation, this name is
-used to generate the input types and the field the mutation is mounted
-on. The name should look like `<Resource being modified><Mutation
-class name>`, for example the `Mutations::MergeRequests::SetWip`
-mutation has GraphQL name `MergeRequestSetWip`.
+Each mutation must define a `graphql_name`, which is the name of the mutation in the GraphQL schema.
+
+Example:
+
+```ruby
+class UserUpdateMutation < BaseMutation
+  graphql_name 'UserUpdate'
+end
+```
+
+Our GraphQL mutation names are historically inconsistent, but new mutation names should follow the
+convention `'{Resource}{Action}'` or `'{Resource}{Action}{Attribute}'`.
+
+Mutations that **create** new resources should use the verb `Create`.
+
+Example:
+
+- `CommitCreate`
+
+Mutations that **update** data should use:
+
+- The verb `Update`.
+- A domain-specific verb like `Set`, `Add`, or `Toggle` if more appropriate.
+
+Examples:
+
+- `EpicTreeReorder`
+- `IssueSetWeight`
+- `IssueUpdate`
+- `TodoMarkDone`
+
+Mutations that **remove** data should use:
+
+- The verb `Delete` rather than `Destroy`.
+- A domain-specific verb like `Remove` if more appropriate.
+
+Examples:
+
+- `AwardEmojiRemove`
+- `NoteDelete`
+
+If you need advice for mutation naming, canvass the Slack `#graphql` channel for feedback.
 
 ### Arguments
 
@@ -974,6 +1012,34 @@ If the user does need to know about it, communicate with frontend developers
 to make sure the error information we are passing back is useful.
 
 See also the [frontend GraphQL guide](../development/fe_guide/graphql.md#handling-errors).
+
+### Aliasing and deprecating mutations
+
+The `#mount_aliased_mutation` helper allows us to alias a mutation as
+another name within `MutationType`.
+
+For example, to alias a mutation called `FooMutation` as `BarMutation`:
+
+```ruby
+mount_aliased_mutation 'BarMutation', Mutations::FooMutation
+```
+
+This allows us to rename a mutation and continue to support the old name,
+when coupled with the [`deprecated`](#deprecating-fields) argument.
+
+Example:
+
+```ruby
+mount_aliased_mutation 'UpdateFoo',
+                        Mutations::Foo::Update,
+                        deprecated: { reason: 'Use fooUpdate', milestone: '13.2' }
+```
+
+Deprecated mutations should be added to `Types::DeprecatedMutations` and
+tested for within the unit test of `Types::MutationType`. The merge request
+[!34798](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34798)
+can be referred to as an example of this, including the method of testing
+deprecated aliased mutations.
 
 ## Validating arguments
 

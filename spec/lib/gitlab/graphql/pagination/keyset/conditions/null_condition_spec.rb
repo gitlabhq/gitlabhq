@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Pagination::Keyset::Conditions::NullCondition do
+RSpec.describe Gitlab::Graphql::Pagination::Keyset::Conditions::NullCondition do
   describe '#build' do
     let(:values) { [nil, 500] }
     let(:operators) { [nil, '>'] }

@@ -11,7 +11,7 @@ GEM
     childprocess (3.0.0)
     concurrent-ruby (1.1.6)
     ffi (1.12.2)
-    gitlab-styles (4.2.0)
+    gitlab-styles (4.3.0)
       rubocop (~> 0.82.0)
       rubocop-gitlab-security (~> 0.1.0)
       rubocop-performance (~> 1.5.2)
@@ -83,7 +83,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  gitlab-styles (~> 4.2.0)
+  gitlab-styles (~> 4.3.0)
   haml_lint (~> 0.34.0)
   overcommit
   scss_lint (~> 0.56.0)

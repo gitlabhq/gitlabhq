@@ -61,6 +61,7 @@ export default {
   <gl-icon
     name="issues"
     :size="24"
+    class="class-name"
   />
 </template>
 ```
@@ -68,7 +69,7 @@ export default {
 - **name** Name of the Icon in the SVG Sprite ([Overview is available here](https://gitlab-org.gitlab.io/gitlab-svgs)).
 - **size (optional)** Number value for the size which is then mapped to a specific CSS class
   (Available Sizes: 8, 12, 16, 18, 24, 32, 48, 72 are mapped to `sXX` CSS classes)
-- **css-classes (optional)** Additional CSS Classes to add to the SVG tag.
+- **class (optional)** Additional CSS Classes to add to the SVG tag.
 
 ### Usage in HTML/JS
 

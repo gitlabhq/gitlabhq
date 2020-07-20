@@ -77,11 +77,11 @@ module Gitlab
         end
       end
 
-      def with_prometheus_client
-        if Gitlab::Prometheus::Internal.prometheus_enabled?
-          prometheus_address = Gitlab::Prometheus::Internal.uri
-          yield Gitlab::PrometheusClient.new(prometheus_address, allow_local_requests: true)
-        end
+      def with_prometheus_client(fallback: nil)
+        return fallback unless Gitlab::Prometheus::Internal.prometheus_enabled?
+
+        prometheus_address = Gitlab::Prometheus::Internal.uri
+        yield Gitlab::PrometheusClient.new(prometheus_address, allow_local_requests: true)
       end
 
       def measure_duration
@@ -90,6 +90,10 @@ module Gitlab
           result = yield
         end
         [result, duration]
+      end
+
+      def with_finished_at(key, &block)
+        yield.merge(key => Time.now)
       end
 
       private

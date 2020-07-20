@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FileUploader do
+RSpec.describe FileUploader do
   let(:group) { create(:group, name: 'awesome') }
   let(:project) { create(:project, :legacy_storage, namespace: group, name: 'project') }
   let(:uploader) { described_class.new(project, :avatar) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelineBridgeStatusWorker do
+RSpec.describe Ci::PipelineBridgeStatusWorker do
   describe '#perform' do
     subject { described_class.new.perform(pipeline_id) }
 

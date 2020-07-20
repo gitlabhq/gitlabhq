@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ClosingIssueExtractor do
+RSpec.describe Gitlab::ClosingIssueExtractor do
   let(:project) { create(:project) }
   let(:project2) { create(:project) }
   let(:forked_project) { Projects::ForkService.new(project, project2.creator).execute }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::DesignRepoRestorer do
+RSpec.describe Gitlab::ImportExport::DesignRepoRestorer do
   include GitHelpers
 
   describe 'bundle a design Git repo' do

@@ -1,0 +1,5 @@
+---
+title: Remove CI/CD variable validations on AWS keys
+merge_request: 36679
+author:
+type: fixed

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Prerequisite::Factory do
+RSpec.describe Gitlab::Ci::Build::Prerequisite::Factory do
   let(:build) { create(:ci_build) }
 
   describe '.for_build' do

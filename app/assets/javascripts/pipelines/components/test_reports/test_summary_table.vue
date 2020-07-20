@@ -2,7 +2,6 @@
 import { mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import store from '~/pipelines/stores/test_reports';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 export default {
@@ -14,12 +13,11 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  store,
   props: {
     heading: {
       type: String,
       required: false,
-      default: s__('TestReports|Test suites'),
+      default: s__('TestReports|Jobs'),
     },
   },
   computed: {
@@ -29,8 +27,8 @@ export default {
     },
   },
   methods: {
-    tableRowClick(suite) {
-      this.$emit('row-click', suite);
+    tableRowClick(index) {
+      this.$emit('row-click', index);
     },
   },
   maxShownRows: 20,
@@ -40,16 +38,16 @@ export default {
 
 <template>
   <div>
-    <div class="row prepend-top-default">
+    <div class="row gl-mt-3">
       <div class="col-12">
         <h4>{{ heading }}</h4>
       </div>
     </div>
 
-    <div v-if="hasSuites" class="test-reports-table append-bottom-default js-test-suites-table">
+    <div v-if="hasSuites" class="test-reports-table gl-mb-3 js-test-suites-table">
       <div role="row" class="gl-responsive-table-row table-row-header font-weight-bold">
         <div role="rowheader" class="table-section section-25 pl-3">
-          {{ __('Suite') }}
+          {{ __('Job') }}
         </div>
         <div role="rowheader" class="table-section section-25">
           {{ __('Duration') }}
@@ -84,7 +82,7 @@ export default {
           :class="{
             'gl-responsive-table-row-clickable cursor-pointer': !testSuite.suite_error,
           }"
-          @click="tableRowClick(testSuite)"
+          @click="tableRowClick(index)"
         >
           <div class="table-section section-25">
             <div role="rowheader" class="table-mobile-header font-weight-bold">

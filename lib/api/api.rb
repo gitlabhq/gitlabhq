@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class API < Grape::API
+  class API < Grape::API::Instance
     include APIGuard
 
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
@@ -46,6 +46,8 @@ module API
     end
 
     before do
+      coerce_nil_params_to_array!
+
       Gitlab::ApplicationContext.push(
         user: -> { @current_user },
         project: -> { @project },
@@ -108,6 +110,7 @@ module API
     end
 
     format :json
+    formatter :json, Gitlab::Json::GrapeFormatter
     content_type :txt, "text/plain"
 
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
@@ -122,6 +125,7 @@ module API
       # Keep in alphabetical order
       mount ::API::AccessRequests
       mount ::API::Admin::Ci::Variables
+      mount ::API::Admin::InstanceClusters
       mount ::API::Admin::Sidekiq
       mount ::API::Appearance
       mount ::API::Applications
@@ -131,6 +135,10 @@ module API
       mount ::API::Boards
       mount ::API::Branches
       mount ::API::BroadcastMessages
+      mount ::API::Ci::Pipelines
+      mount ::API::Ci::PipelineSchedules
+      mount ::API::Ci::Runner
+      mount ::API::Ci::Runners
       mount ::API::Commits
       mount ::API::CommitStatuses
       mount ::API::ContainerRegistryEvent
@@ -152,6 +160,7 @@ module API
       mount ::API::Groups
       mount ::API::GroupContainerRepositories
       mount ::API::GroupVariables
+      mount ::API::ImportBitbucketServer
       mount ::API::ImportGithub
       mount ::API::Issues
       mount ::API::JobArtifacts
@@ -163,6 +172,7 @@ module API
       mount ::API::Members
       mount ::API::MergeRequestDiffs
       mount ::API::MergeRequests
+      mount ::API::MergeRequestApprovals
       mount ::API::Metrics::Dashboard::Annotations
       mount ::API::Metrics::UserStarredDashboards
       mount ::API::Namespaces
@@ -170,11 +180,20 @@ module API
       mount ::API::Discussions
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceMilestoneEvents
+      mount ::API::ResourceStateEvents
       mount ::API::NotificationSettings
+      mount ::API::ProjectPackages
+      mount ::API::GroupPackages
+      mount ::API::PackageFiles
+      mount ::API::NugetPackages
+      mount ::API::PypiPackages
+      mount ::API::ComposerPackages
+      mount ::API::ConanPackages
+      mount ::API::MavenPackages
+      mount ::API::NpmPackages
+      mount ::API::GoProxy
       mount ::API::Pages
       mount ::API::PagesDomains
-      mount ::API::Pipelines
-      mount ::API::PipelineSchedules
       mount ::API::ProjectClusters
       mount ::API::ProjectContainerRepositories
       mount ::API::ProjectEvents
@@ -195,8 +214,6 @@ module API
       mount ::API::Release::Links
       mount ::API::RemoteMirrors
       mount ::API::Repositories
-      mount ::API::Runner
-      mount ::API::Runners
       mount ::API::Search
       mount ::API::Services
       mount ::API::Settings

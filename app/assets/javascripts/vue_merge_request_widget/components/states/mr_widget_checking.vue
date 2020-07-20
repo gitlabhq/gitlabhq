@@ -12,7 +12,7 @@ export default {
   <div class="mr-widget-body media">
     <status-icon :show-disabled-button="true" status="loading" />
     <div class="media-body space-children">
-      <span class="bold"> {{ s__('mrWidget|Checking ability to merge automatically…') }} </span>
+      <span class="bold"> {{ s__('mrWidget|Checking if merge request can be merged…') }} </span>
     </div>
   </div>
 </template>

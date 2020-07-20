@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Key do
+RSpec.describe Gitlab::Ci::Config::Entry::Key do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do

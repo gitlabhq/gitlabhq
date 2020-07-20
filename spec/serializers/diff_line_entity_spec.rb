@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffLineEntity do
+RSpec.describe DiffLineEntity do
   include RepoHelpers
 
   let(:code) { 'hello world' }

@@ -6,6 +6,7 @@ export default () => ({
   labelsCreateTitle: '',
   footerCreateLabelTitle: '',
   footerManageLabelTitle: '',
+  dropdownButtonText: '',
 
   // Paths
   namespace: '',

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildTraceSection, model: true do
+RSpec.describe Ci::BuildTraceSection, model: true do
   it { is_expected.to belong_to(:build)}
   it { is_expected.to belong_to(:project)}
   it { is_expected.to belong_to(:section_name)}

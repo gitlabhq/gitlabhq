@@ -9,17 +9,16 @@ import AlertWidget from '~/monitoring/components/alert_widget.vue';
 
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import {
-  anomalyMockGraphData,
   mockLogsHref,
   mockLogsPath,
   mockNamespace,
   mockNamespacedData,
   mockTimeRange,
-  singleStatMetricsResult,
   graphDataPrometheusQueryRangeMultiTrack,
   barMockData,
-  propsData,
 } from '../mock_data';
+import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
+import { anomalyGraphData, singleStatGraphData } from '../graph_data';
 
 import { panelTypes } from '~/monitoring/constants';
 
@@ -32,7 +31,6 @@ import MonitorColumnChart from '~/monitoring/components/charts/column.vue';
 import MonitorBarChart from '~/monitoring/components/charts/bar.vue';
 import MonitorStackedColumnChart from '~/monitoring/components/charts/stacked_column.vue';
 
-import { graphData, graphDataEmpty } from '../fixture_data';
 import { createStore, monitoringDashboard } from '~/monitoring/stores';
 import { createStore as createEmbedGroupStore } from '~/monitoring/stores/embed_group';
 
@@ -63,7 +61,7 @@ describe('Dashboard Panel', () => {
     wrapper = shallowMount(DashboardPanel, {
       propsData: {
         graphData,
-        settingsPath: propsData.settingsPath,
+        settingsPath: dashboardProps.settingsPath,
         ...props,
       },
       store,
@@ -136,10 +134,6 @@ describe('Dashboard Panel', () => {
     it('The Empty Chart component is rendered and is a Vue instance', () => {
       expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
       expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
-    });
-
-    it('does not contain a tabindex attribute', () => {
-      expect(wrapper.find(MonitorEmptyChart).contains('[tabindex]')).toBe(false);
     });
   });
 
@@ -233,23 +227,32 @@ describe('Dashboard Panel', () => {
         expect(wrapper.find(MonitorTimeSeriesChart).isVueInstance()).toBe(true);
       });
 
-      it.each`
-        data                                       | component
-        ${dataWithType(panelTypes.AREA_CHART)}     | ${MonitorTimeSeriesChart}
-        ${dataWithType(panelTypes.LINE_CHART)}     | ${MonitorTimeSeriesChart}
-        ${anomalyMockGraphData}                    | ${MonitorAnomalyChart}
-        ${dataWithType(panelTypes.COLUMN)}         | ${MonitorColumnChart}
-        ${dataWithType(panelTypes.STACKED_COLUMN)} | ${MonitorStackedColumnChart}
-        ${singleStatMetricsResult}                 | ${MonitorSingleStatChart}
-        ${graphDataPrometheusQueryRangeMultiTrack} | ${MonitorHeatmapChart}
-        ${barMockData}                             | ${MonitorBarChart}
-      `('wrapps a $data.type component binding attributes', ({ data, component }) => {
+      describe.each`
+        data                                       | component                    | hasCtxMenu
+        ${dataWithType(panelTypes.AREA_CHART)}     | ${MonitorTimeSeriesChart}    | ${true}
+        ${dataWithType(panelTypes.LINE_CHART)}     | ${MonitorTimeSeriesChart}    | ${true}
+        ${singleStatGraphData()}                   | ${MonitorSingleStatChart}    | ${true}
+        ${anomalyGraphData()}                      | ${MonitorAnomalyChart}       | ${false}
+        ${dataWithType(panelTypes.COLUMN)}         | ${MonitorColumnChart}        | ${false}
+        ${dataWithType(panelTypes.STACKED_COLUMN)} | ${MonitorStackedColumnChart} | ${false}
+        ${graphDataPrometheusQueryRangeMultiTrack} | ${MonitorHeatmapChart}       | ${false}
+        ${barMockData}                             | ${MonitorBarChart}           | ${false}
+      `('when $data.type data is provided', ({ data, component, hasCtxMenu }) => {
         const attrs = { attr1: 'attr1Value', attr2: 'attr2Value' };
-        createWrapper({ graphData: data }, { attrs });
 
-        expect(wrapper.find(component).exists()).toBe(true);
-        expect(wrapper.find(component).isVueInstance()).toBe(true);
-        expect(wrapper.find(component).attributes()).toMatchObject(attrs);
+        beforeEach(() => {
+          createWrapper({ graphData: data }, { attrs });
+        });
+
+        it(`renders the chart component and binds attributes`, () => {
+          expect(wrapper.find(component).exists()).toBe(true);
+          expect(wrapper.find(component).isVueInstance()).toBe(true);
+          expect(wrapper.find(component).attributes()).toMatchObject(attrs);
+        });
+
+        it(`contextual menu is ${hasCtxMenu ? '' : 'not '}shown`, () => {
+          expect(findCtxMenu().exists()).toBe(hasCtxMenu);
+        });
       });
     });
   });
@@ -307,7 +310,7 @@ describe('Dashboard Panel', () => {
 
       return wrapper.vm.$nextTick(() => {
         expect(findEditCustomMetricLink().text()).toBe('Edit metrics');
-        expect(findEditCustomMetricLink().attributes('href')).toBe(propsData.settingsPath);
+        expect(findEditCustomMetricLink().attributes('href')).toBe(dashboardProps.settingsPath);
       });
     });
   });
@@ -361,7 +364,7 @@ describe('Dashboard Panel', () => {
       });
     });
 
-    it('it is overriden when a datazoom event is received', () => {
+    it('it is overridden when a datazoom event is received', () => {
       state.logsPath = mockLogsPath;
       state.timeRange = mockTimeRange;
 
@@ -424,7 +427,7 @@ describe('Dashboard Panel', () => {
       wrapper = shallowMount(DashboardPanel, {
         propsData: {
           clipboardText: exampleText,
-          settingsPath: propsData.settingsPath,
+          settingsPath: dashboardProps.settingsPath,
           graphData: {
             y_label: 'metric',
             ...graphData,
@@ -474,7 +477,7 @@ describe('Dashboard Panel', () => {
       wrapper = shallowMount(DashboardPanel, {
         propsData: {
           graphData,
-          settingsPath: propsData.settingsPath,
+          settingsPath: dashboardProps.settingsPath,
           namespace: mockNamespace,
         },
         store,

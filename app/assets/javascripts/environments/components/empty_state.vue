@@ -2,14 +2,6 @@
 export default {
   name: 'EnvironmentsEmptyState',
   props: {
-    newPath: {
-      type: String,
-      required: true,
-    },
-    canCreateEnvironment: {
-      type: Boolean,
-      required: true,
-    },
     helpPath: {
       type: String,
       required: true,
@@ -28,18 +20,8 @@ export default {
           s__(`Environments|Environments are places where
         code gets deployed, such as staging or production.`)
         }}
-        <a :href="helpPath"> {{ s__('Environments|Read more about environments') }} </a>
+        <a :href="helpPath"> {{ s__('Environments|More information') }} </a>
       </p>
-
-      <div class="text-center">
-        <a
-          v-if="canCreateEnvironment"
-          :href="newPath"
-          class="btn btn-success js-new-environment-button"
-        >
-          {{ s__('Environments|New environment') }}
-        </a>
-      </div>
     </div>
   </div>
 </template>

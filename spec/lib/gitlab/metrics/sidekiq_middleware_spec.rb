@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::SidekiqMiddleware do
+RSpec.describe Gitlab::Metrics::SidekiqMiddleware do
   let(:middleware) { described_class.new }
   let(:message) { { 'args' => ['test'], 'enqueued_at' => Time.new(2016, 6, 23, 6, 59).to_f } }
 
@@ -18,8 +18,20 @@ describe Gitlab::Metrics::SidekiqMiddleware do
       middleware.call(worker, message, :test) do
         ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
       end
+    end
 
-      expect(message).to include(:db_count, :db_write_count, :db_cached_count)
+    it 'prevents database counters from leaking to the next transaction' do
+      worker = double(:worker, class: double(:class, name: 'TestWorker'))
+
+      2.times do
+        Gitlab::WithRequestStore.with_request_store do
+          middleware.call(worker, message, :test) do
+            ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
+          end
+        end
+      end
+
+      expect(message).to include(db_count: 1, db_write_count: 0, db_cached_count: 0)
     end
 
     it 'tracks the transaction (for messages without `enqueued_at`)', :aggregate_failures do
@@ -35,19 +47,20 @@ describe Gitlab::Metrics::SidekiqMiddleware do
       middleware.call(worker, {}, :test) { nil }
     end
 
-    it 'tracks any raised exceptions', :aggregate_failures do
+    it 'tracks any raised exceptions', :aggregate_failures, :request_store do
       worker = double(:worker, class: double(:class, name: 'TestWorker'))
-
-      expect_any_instance_of(Gitlab::Metrics::Transaction)
-        .to receive(:run).and_raise(RuntimeError)
 
       expect_any_instance_of(Gitlab::Metrics::Transaction)
         .to receive(:add_event).with(:sidekiq_exception)
 
-      expect { middleware.call(worker, message, :test) }
-        .to raise_error(RuntimeError)
+      expect do
+        middleware.call(worker, message, :test) do
+          ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
+          raise RuntimeError
+        end
+      end.to raise_error(RuntimeError)
 
-      expect(message).to include(:db_count, :db_write_count, :db_cached_count)
+      expect(message).to include(db_count: 1, db_write_count: 0, db_cached_count: 0)
     end
   end
 end

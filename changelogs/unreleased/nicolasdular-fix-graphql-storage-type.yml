@@ -1,0 +1,5 @@
+---
+title: Use FLOAT_TYPE for storage limit
+merge_request: 35559
+author:
+type: fixed

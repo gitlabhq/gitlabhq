@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GlRepository::Identifier do
+RSpec.describe Gitlab::GlRepository::Identifier do
   let_it_be(:project) { create(:project) }
   let_it_be(:personal_snippet) { create(:personal_snippet, author: project.owner) }
   let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.owner) }
@@ -14,12 +14,34 @@ describe Gitlab::GlRepository::Identifier do
       let(:expected_container) { project }
       let(:expected_type) { Gitlab::GlRepository::PROJECT }
     end
+
+    pending 'https://gitlab.com/gitlab-org/gitlab/-/issues/219192' do
+      it_behaves_like 'parsing gl_repository identifier' do
+        let(:record_id) { project.id }
+        let(:identifier) { "project-#{record_id}-code" }
+        let(:expected_container) { project }
+        let(:expected_type) { Gitlab::GlRepository::PROJECT }
+      end
+    end
+
+    it_behaves_like 'parsing gl_repository identifier' do
+      let(:identifier) { "project-1000000" }
+      let(:expected_container) { nil }
+      let(:expected_type) { Gitlab::GlRepository::PROJECT }
+    end
   end
 
   describe 'wiki' do
     it_behaves_like 'parsing gl_repository identifier' do
       let(:record_id) { project.id }
       let(:identifier) { "wiki-#{record_id}" }
+      let(:expected_container) { project }
+      let(:expected_type) { Gitlab::GlRepository::WIKI }
+    end
+
+    it_behaves_like 'parsing gl_repository identifier' do
+      let(:record_id) { project.id }
+      let(:identifier) { "project-#{record_id}-wiki" }
       let(:expected_container) { project }
       let(:expected_type) { Gitlab::GlRepository::WIKI }
     end
@@ -54,29 +76,30 @@ describe Gitlab::GlRepository::Identifier do
     end
   end
 
-  describe 'incorrect format' do
-    def expect_error_raised_for(identifier)
-      expect { described_class.new(identifier) }.to raise_error(ArgumentError)
+  context 'when the format is incorrect' do
+    where(:identifier) do
+      [
+        'wiki-noid',
+        'foo-2',
+        'project-0',
+        '2-project',
+        'snippet-2-wiki',
+        'project-wibble-wiki',
+        'wiki-1-project',
+        'snippet',
+        'project-1-wiki-bar'
+      ]
     end
 
-    it 'raises error for incorrect id' do
-      expect_error_raised_for('wiki-noid')
+    with_them do
+      it 'raises InvalidIdentifier' do
+        expect { described_class.parse(identifier) }.to raise_error(described_class::InvalidIdentifier)
+      end
     end
 
-    it 'raises error for incorrect type' do
-      expect_error_raised_for('foo-2')
-    end
-
-    it 'raises error for incorrect three-segment container' do
-      expect_error_raised_for('snippet-2-wiki')
-    end
-
-    it 'raises error for one segment' do
-      expect_error_raised_for('snippet')
-    end
-
-    it 'raises error for more than three segments' do
-      expect_error_raised_for('project-1-wiki-bar')
+    it 'raises InvalidIdentifier on project-1-project' do
+      pending 'https://gitlab.com/gitlab-org/gitlab/-/issues/219192'
+      expect { described_class.parse('project-1-project') }.to raise_error(described_class::InvalidIdentifier)
     end
   end
 end

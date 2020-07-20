@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::HttpIO do
+RSpec.describe Gitlab::HttpIO do
   include HttpIOHelpers
 
   let(:http_io) { described_class.new(url, size) }

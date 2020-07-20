@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shared_state do
+RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shared_state do
   shared_examples_for 'unmergeable merge request' do
     it 'updates or keeps merge status as cannot_be_merged' do
       subject

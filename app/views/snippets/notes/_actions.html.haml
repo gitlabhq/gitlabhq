@@ -8,7 +8,7 @@
 
   - if note_editable
     .note-actions-item
-      = button_tag title: _('Edit comment'), class: 'note-action-button js-note-edit has-tooltip btn btn-transparent', data: { container: 'body' } do
+      = button_tag title: _('Edit comment'), class: 'note-action-button js-note-edit has-tooltip btn btn-transparent', data: { container: 'body', qa_selector: 'edit_comment_button' } do
         %span.link-highlight
           = custom_icon('icon_pencil')
 

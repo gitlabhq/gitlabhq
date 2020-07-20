@@ -3,20 +3,18 @@
 class SyntheticNote < Note
   attr_accessor :resource_parent, :event
 
-  self.abstract_class = true
-
   def self.note_attributes(action, event, resource, resource_parent)
     resource ||= event.resource
 
     attrs = {
-        system: true,
-        author: event.user,
-        created_at: event.created_at,
-        discussion_id: event.discussion_id,
-        noteable: resource,
-        event: event,
-        system_note_metadata: ::SystemNoteMetadata.new(action: action),
-        resource_parent: resource_parent
+      system: true,
+      author: event.user,
+      created_at: event.created_at,
+      discussion_id: event.discussion_id,
+      noteable: resource,
+      event: event,
+      system_note_metadata: ::SystemNoteMetadata.new(action: action),
+      resource_parent: resource_parent
     }
 
     if resource_parent.is_a?(Project)

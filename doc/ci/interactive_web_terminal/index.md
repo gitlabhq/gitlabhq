@@ -38,10 +38,12 @@ but support [is planned](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/is
 
 ## Debugging a running job
 
-NOTE: **Note:** Not all executors are
+NOTE: **Note:**
+Not all executors are
 [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
 
-NOTE: **Note:** The `docker` executor does not keep running
+NOTE: **Note:**
+The `docker` executor does not keep running
 after the build script is finished. At that point, the terminal will automatically
 disconnect and will not wait for the user to finish. Please follow [this
 issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on
@@ -67,6 +69,6 @@ close the terminal window.
 
 ![finished job with terminal open](img/finished_job_with_terminal_open.png)
 
-## Interactive Web Terminals for the Web IDE **(ULTIMATE ONLY)**
+## Interactive Web Terminals for the Web IDE
 
-Read the Web IDE docs to learn how to run [Interactive Terminals through the Web IDE](../../user/project/web_ide/index.md).
+Read the Web IDE docs to learn how to run [Interactive Terminals through the Web IDE](../../user/project/web_ide/index.md#interactive-web-terminals-for-the-web-ide).

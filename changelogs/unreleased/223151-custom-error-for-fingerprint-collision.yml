@@ -1,0 +1,5 @@
+---
+title: Display informative error for status updates on duplicate alerts
+merge_request: 36527
+author:
+type: changed

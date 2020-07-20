@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::CustomStructure do
+RSpec.describe Gitlab::Database::CustomStructure do
   let_it_be(:structure) { described_class.new }
   let_it_be(:filepath) { Rails.root.join(described_class::CUSTOM_DUMP_FILE) }
   let_it_be(:file_header) do

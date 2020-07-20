@@ -245,6 +245,24 @@ describe('issue_note_form component', () => {
 
       expect(updateDraft).toHaveBeenCalledWith(dummyAutosaveKey, dummyContent);
     });
+
+    it('does not save draft when ctrl+enter is pressed', () => {
+      const options = {
+        noteBody: '',
+        autosaveKey: dummyAutosaveKey,
+      };
+
+      props = { ...props, ...options };
+      wrapper = createComponentWrapper();
+
+      wrapper.setData({ isSubmittingWithKeydown: true });
+
+      const textarea = wrapper.find('textarea');
+      textarea.setValue('some content');
+      textarea.trigger('keydown.enter', { metaKey: true });
+
+      expect(updateDraft).not.toHaveBeenCalled();
+    });
   });
 
   describe('with batch comments', () => {

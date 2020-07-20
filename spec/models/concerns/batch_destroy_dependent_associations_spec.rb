@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BatchDestroyDependentAssociations do
+RSpec.describe BatchDestroyDependentAssociations do
   class TestProject < ActiveRecord::Base
     self.table_name = 'projects'
 

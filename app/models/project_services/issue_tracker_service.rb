@@ -25,28 +25,6 @@ class IssueTrackerService < Service
     end
   end
 
-  # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
-  def title
-    if title_attribute = read_attribute(:title)
-      title_attribute
-    elsif self.properties && self.properties['title'].present?
-      self.properties['title']
-    else
-      default_title
-    end
-  end
-
-  # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
-  def description
-    if description_attribute = read_attribute(:description)
-      description_attribute
-    elsif self.properties && self.properties['description'].present?
-      self.properties['description']
-    else
-      default_description
-    end
-  end
-
   def handle_properties
     # this has been moved from initialize_properties and should be improved
     # as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
@@ -54,13 +32,6 @@ class IssueTrackerService < Service
 
     @legacy_properties_data = properties.dup
     data_values = properties.slice!('title', 'description')
-    properties.each do |key, _|
-      current_value = self.properties.delete(key)
-      value = attribute_changed?(key) ? attribute_change(key).last : current_value
-
-      write_attribute(key, value)
-    end
-
     data_values.reject! { |key| data_fields.changed.include?(key) }
     data_values.slice!(*data_fields.attributes.keys)
     data_fields.assign_attributes(data_values) if data_values.present?
@@ -102,7 +73,6 @@ class IssueTrackerService < Service
 
   def fields
     [
-      { type: 'text', name: 'description', placeholder: description },
       { type: 'text', name: 'project_url', placeholder: 'Project url', required: true },
       { type: 'text', name: 'issues_url', placeholder: 'Issue url', required: true },
       { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url', required: true }
@@ -116,8 +86,6 @@ class IssueTrackerService < Service
   # Initialize with default properties values
   def set_default_data
     return unless issues_tracker.present?
-
-    self.title ||= issues_tracker['title']
 
     # we don't want to override if we have set something
     return if project_url || issues_url || new_issue_url

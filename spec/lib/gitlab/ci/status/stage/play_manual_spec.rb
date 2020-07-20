@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Stage::PlayManual do
+RSpec.describe Gitlab::Ci::Status::Stage::PlayManual do
   let(:stage) { double('stage') }
   let(:play_manual) { described_class.new(stage) }
 

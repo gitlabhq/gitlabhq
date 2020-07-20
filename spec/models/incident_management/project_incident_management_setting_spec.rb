@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IncidentManagement::ProjectIncidentManagementSetting do
+RSpec.describe IncidentManagement::ProjectIncidentManagementSetting do
   let_it_be(:project) { create(:project, :repository, create_templates: :issue) }
 
   describe 'Associations' do
@@ -106,6 +106,44 @@ describe IncidentManagement::ProjectIncidentManagementSetting do
       end
 
       it_behaves_like 'no content'
+    end
+  end
+
+  describe '#pagerduty_token' do
+    let(:active) { true }
+
+    subject do
+      create(:project_incident_management_setting, project: project, pagerduty_active: active, pagerduty_token: token)
+    end
+
+    context 'when token already set' do
+      let(:token) { SecureRandom.hex }
+
+      it 'reads the token' do
+        expect(subject.pagerduty_token).to eq(token)
+        expect(subject.encrypted_pagerduty_token).not_to be_nil
+        expect(subject.encrypted_pagerduty_token_iv).not_to be_nil
+      end
+    end
+
+    context 'when not set' do
+      let(:token) { nil }
+
+      context 'when PagerDuty webhook is active' do
+        it 'generates a token before validation' do
+          expect(subject).to be_valid
+          expect(subject.pagerduty_token).to match(/\A\h{32}\z/)
+        end
+      end
+
+      context 'when PagerDuty webhook is not active' do
+        let(:active) { false }
+
+        it 'does not generate a token before validation' do
+          expect(subject).to be_valid
+          expect(subject.pagerduty_token).to be_nil
+        end
+      end
     end
   end
 end

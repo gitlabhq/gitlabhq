@@ -29,7 +29,7 @@ export default {
       <textarea
         :id="inputId"
         :value="value"
-        class="form-control js-gfm-input append-bottom-default commit-message-edit"
+        class="form-control js-gfm-input gl-mb-3 commit-message-edit"
         dir="auto"
         required="required"
         rows="7"

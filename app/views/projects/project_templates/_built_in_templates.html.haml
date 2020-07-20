@@ -1,6 +1,6 @@
 - Gitlab::ProjectTemplate.all.each do |template|
   .template-option.d-flex.align-items-center{ data: { qa_selector: 'template_option_row' } }
-    .logo.append-right-10.px-1
+    .logo.gl-mr-3.px-1
       = image_tag template.logo, size: 32, class: "btn-template-icon icon-#{template.name}"
     .description
       %strong
@@ -9,7 +9,7 @@
       .text-muted
         = template.description
     .controls.d-flex.align-items-center
-      %a.btn.btn-default.append-right-10{ href: template.preview, rel: 'noopener noreferrer', target: '_blank', data: { track_label: "template_preview", track_property: template.name, track_event: "click_button", track_value: "" } }
+      %a.btn.btn-default.gl-mr-3{ href: template.preview, rel: 'noopener noreferrer', target: '_blank', data: { track_label: "template_preview", track_property: template.name, track_event: "click_button", track_value: "" } }
         = _("Preview")
       %label.btn.btn-success.template-button.choose-template.gl-mb-0{ for: template.name }
         %input{ type: "radio", autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name, data: { track_label: "template_use", track_property: template.name, track_event: "click_button", track_value: "" } }

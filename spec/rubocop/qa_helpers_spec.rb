@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rubocop'
+require 'parser/current'
 require_relative '../../rubocop/qa_helpers'
 
-describe RuboCop::QAHelpers do
+RSpec.describe RuboCop::QAHelpers, type: :rubocop do
   def parse_source(source, path = 'foo.rb')
     buffer = Parser::Source::Buffer.new(path)
     buffer.source = source
@@ -23,13 +24,13 @@ describe RuboCop::QAHelpers do
 
   describe '#in_qa_file?' do
     it 'returns true for a node in the qa/ directory' do
-      node = parse_source('10', Rails.root.join('qa', 'qa', 'page', 'dashboard', 'groups.rb'))
+      node = parse_source('10', rails_root_join('qa', 'qa', 'page', 'dashboard', 'groups.rb'))
 
       expect(cop.in_qa_file?(node)).to eq(true)
     end
 
     it 'returns false for a node outside the qa/ directory' do
-      node = parse_source('10', Rails.root.join('app', 'foo', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
       expect(cop.in_qa_file?(node)).to eq(false)
     end

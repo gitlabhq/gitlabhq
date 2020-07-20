@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::PipelineTriggerService do
+RSpec.describe Ci::PipelineTriggerService do
   let(:project) { create(:project, :repository) }
 
   before do

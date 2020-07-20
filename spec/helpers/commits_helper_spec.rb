@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CommitsHelper do
+RSpec.describe CommitsHelper do
   describe 'commit_author_link' do
     it 'escapes the author email' do
       commit = double(
@@ -48,6 +48,20 @@ describe CommitsHelper do
         .to include('Foo &lt;script&gt;')
       expect(helper.commit_committer_link(commit, avatar: true))
         .to include('commit-committer-name', 'Foo &lt;script&gt;')
+    end
+  end
+
+  describe '#view_file_button' do
+    let(:project) { build(:project) }
+    let(:path) { 'path/to/file' }
+    let(:sha) { '1234567890' }
+
+    subject do
+      helper.view_file_button(sha, path, project)
+    end
+
+    it 'links to project files' do
+      expect(subject).to have_link('1234567', href: helper.project_blob_path(project, "#{sha}/#{path}"))
     end
   end
 

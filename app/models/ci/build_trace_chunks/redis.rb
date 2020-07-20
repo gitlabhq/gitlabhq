@@ -35,7 +35,10 @@ module Ci
         keys = keys.map { |key| key_raw(*key) }
 
         Gitlab::Redis::SharedState.with do |redis|
-          redis.del(keys)
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/224171
+          Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+            redis.del(keys)
+          end
         end
       end
 

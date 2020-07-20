@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ZoomMeeting do
+RSpec.describe ZoomMeeting do
   let(:project) { build(:project) }
 
   describe 'Factory' do

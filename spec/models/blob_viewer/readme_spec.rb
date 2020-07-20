@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlobViewer::Readme do
+RSpec.describe BlobViewer::Readme do
   include FakeBlobHelpers
 
   let(:project) { create(:project, :repository, :wiki_repo) }

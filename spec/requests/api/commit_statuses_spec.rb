@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::CommitStatuses do
+RSpec.describe API::CommitStatuses do
   let!(:project) { create(:project, :repository) }
   let(:commit) { project.repository.commit }
   let(:guest) { create_user(:guest) }

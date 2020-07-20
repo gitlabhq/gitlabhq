@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
+RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
   include TriggerHelpers
 
   let(:model) do

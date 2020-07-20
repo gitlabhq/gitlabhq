@@ -9,5 +9,11 @@ FactoryBot.define do
     trait :with_file do
       file { fixture_file_upload('spec/fixtures/terraform/terraform.tfstate', 'application/json') }
     end
+
+    trait :locked do
+      sequence(:lock_xid) { |n| "lock-#{n}" }
+      locked_at { Time.current }
+      locked_by_user { create(:user) }
+    end
   end
 end

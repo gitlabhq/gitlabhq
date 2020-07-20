@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RemoteMirrorNotificationWorker, :mailer do
+RSpec.describe RemoteMirrorNotificationWorker, :mailer do
   let_it_be(:project) { create(:project, :repository, :remote_mirror) }
   let_it_be(:mirror) { project.remote_mirrors.first }
 

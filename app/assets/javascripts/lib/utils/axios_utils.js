@@ -1,6 +1,7 @@
 import axios from 'axios';
 import csrf from './csrf';
 import suppressAjaxErrorsDuringNavigation from './suppress_ajax_errors_during_navigation';
+import setupAxiosStartupCalls from './axios_startup_calls';
 
 axios.defaults.headers.common[csrf.headerKey] = csrf.token;
 // Used by Rails to check if it is a valid XHR request
@@ -13,6 +14,8 @@ axios.interceptors.request.use(config => {
   window.pendingRequests += 1;
   return config;
 });
+
+setupAxiosStartupCalls(axios);
 
 // Remove the global counter
 axios.interceptors.response.use(

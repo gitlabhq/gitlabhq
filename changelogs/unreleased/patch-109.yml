@@ -1,0 +1,5 @@
+---
+title: Fixed issue (#198424) that prevented k8s authentication with intermediate certificates
+merge_request: 31254
+author: Abdelrahman Mohamed
+type: fixed

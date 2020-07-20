@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Gitlab::GlRepository do
+RSpec.describe ::Gitlab::GlRepository do
   describe '.parse' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:snippet) { create(:personal_snippet) }

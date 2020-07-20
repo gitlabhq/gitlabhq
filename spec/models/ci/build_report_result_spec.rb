@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildReportResult do
+RSpec.describe Ci::BuildReportResult do
   let(:build_report_result) { build(:ci_build_report_result, :with_junit_success) }
 
   describe 'associations' do

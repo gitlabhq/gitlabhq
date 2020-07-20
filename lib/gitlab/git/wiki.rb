@@ -101,6 +101,10 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_find_page(title: title, version: version, dir: dir)
         end
+      rescue Gitlab::Git::CommandError
+        # Return nil for invalid versions.
+        # This can be removed with https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2323 in place.
+        nil
       end
 
       def file(name, version)

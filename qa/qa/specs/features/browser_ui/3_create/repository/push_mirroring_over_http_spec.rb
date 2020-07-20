@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Push mirror a repository over HTTP' do
       it 'configures and syncs a (push) mirrored repository' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

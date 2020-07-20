@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::DestroyService, '#execute' do
+RSpec.describe Clusters::Applications::DestroyService, '#execute' do
   let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
   let(:user) { create(:user) }
   let(:params) { { application: 'prometheus' } }

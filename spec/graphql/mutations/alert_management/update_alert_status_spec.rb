@@ -39,7 +39,7 @@ RSpec.describe Mutations::AlertManagement::UpdateAlertStatus do
 
           allow(alert).to receive(:save).and_return(false)
           allow(alert).to receive(:errors).and_return(
-            double(full_messages: %w(foo bar))
+            double(full_messages: %w(foo bar), :[] => nil)
           )
           expect(resolve).to eq(
             alert: alert,

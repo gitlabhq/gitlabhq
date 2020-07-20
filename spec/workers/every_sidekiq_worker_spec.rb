@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Every Sidekiq worker' do
+RSpec.describe 'Every Sidekiq worker' do
   let(:workers_without_defaults) do
     Gitlab::SidekiqConfig.workers - Gitlab::SidekiqConfig::DEFAULT_WORKERS
   end
@@ -19,7 +19,7 @@ describe 'Every Sidekiq worker' do
     file_worker_queues = Gitlab::SidekiqConfig.worker_queues.to_set
 
     worker_queues = Gitlab::SidekiqConfig.workers.map(&:queue).to_set
-    worker_queues << ActionMailer::DeliveryJob.new.queue_name
+    worker_queues << ActionMailer::MailDeliveryJob.new.queue_name
     worker_queues << 'default'
 
     missing_from_file = worker_queues - file_worker_queues
@@ -53,7 +53,7 @@ describe 'Every Sidekiq worker' do
 
     # All Sidekiq worker classes should declare a valid `feature_category`
     # or explicitly be excluded with the `feature_category_not_owned!` annotation.
-    # Please see doc/development/sidekiq_style_guide.md#Feature-Categorization for more details.
+    # Please see doc/development/sidekiq_style_guide.md#feature-categorization for more details.
     it 'has a feature_category or feature_category_not_owned! attribute', :aggregate_failures do
       workers_without_defaults.each do |worker|
         expect(worker.get_feature_category).to be_a(Symbol), "expected #{worker.inspect} to declare a feature_category or feature_category_not_owned!"
@@ -62,7 +62,7 @@ describe 'Every Sidekiq worker' do
 
     # All Sidekiq worker classes should declare a valid `feature_category`.
     # The category should match a value in `config/feature_categories.yml`.
-    # Please see doc/development/sidekiq_style_guide.md#Feature-Categorization for more details.
+    # Please see doc/development/sidekiq_style_guide.md#feature-categorization for more details.
     it 'has a feature_category that maps to a value in feature_categories.yml', :aggregate_failures do
       workers_with_feature_categories = workers_without_defaults
                   .select(&:get_feature_category)

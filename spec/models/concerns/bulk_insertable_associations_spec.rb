@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BulkInsertableAssociations do
+RSpec.describe BulkInsertableAssociations do
   class BulkFoo < ApplicationRecord
     include BulkInsertSafe
 

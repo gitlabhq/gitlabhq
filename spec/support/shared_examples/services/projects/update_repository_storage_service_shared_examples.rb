@@ -25,19 +25,18 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
 
-      allow(project_repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(project_repository_double).to receive(:replicate)
         .with(project.repository.raw)
       allow(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
 
-      allow(repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(repository_double).to receive(:replicate)
         .with(repository.raw)
       allow(repository_double).to receive(:checksum)
         .and_return(repository_checksum)
+
+      expect(GitlabShellWorker).to receive(:perform_async).with(:mv_repository, 'default', anything, anything)
+        .twice.and_call_original
     end
 
     it "moves the project and its #{repository_type} repository to the new storage and unmarks the repository as read only" do
@@ -48,6 +47,7 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
       old_repository_path = repository.full_path
 
       result = subject.execute
+      project.reload
 
       expect(result).to be_success
       expect(project).not_to be_repository_read_only
@@ -101,15 +101,11 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
     it 'unmarks the repository as read-only without updating the repository storage' do
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
-      allow(project_repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(project_repository_double).to receive(:replicate)
         .with(project.repository.raw)
       allow(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
 
-      allow(repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(repository_double).to receive(:replicate)
         .with(repository.raw)
         .and_raise(Gitlab::Git::CommandError)
@@ -128,15 +124,11 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
     it 'unmarks the repository as read-only without updating the repository storage' do
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
-      allow(project_repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(project_repository_double).to receive(:replicate)
         .with(project.repository.raw)
       allow(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
 
-      allow(repository_double).to receive(:create_repository)
-        .and_return(true)
       allow(repository_double).to receive(:replicate)
         .with(repository.raw)
       allow(repository_double).to receive(:checksum)

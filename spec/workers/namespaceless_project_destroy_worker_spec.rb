@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NamespacelessProjectDestroyWorker do
+RSpec.describe NamespacelessProjectDestroyWorker do
   include ProjectForksHelper
 
   subject { described_class.new }

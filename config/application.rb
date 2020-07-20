@@ -17,6 +17,7 @@ module Gitlab
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab')
     require_dependency Rails.root.join('lib/gitlab/utils')
+    require_dependency Rails.root.join('lib/gitlab/action_cable/config')
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
     require_dependency Rails.root.join('lib/gitlab/redis/queues')
@@ -156,6 +157,8 @@ module Gitlab
 
     # Webpack dev server configuration is handled in initializers/static_files.rb
     config.webpack.dev_server.enabled = false
+
+    config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"
 
     # Enable the asset pipeline
     config.assets.enabled = true

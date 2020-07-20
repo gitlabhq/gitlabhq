@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Client do
+RSpec.describe Gitlab::GithubImport::Client do
   describe '#parallel?' do
     it 'returns true when the client is running in parallel mode' do
       client = described_class.new('foo', parallel: true)

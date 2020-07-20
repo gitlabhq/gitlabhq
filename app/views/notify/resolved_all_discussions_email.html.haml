@@ -1,2 +1,3 @@
 %p
-  All discussions on Merge Request #{@merge_request.to_reference} were resolved by #{sanitize_name(@resolved_by.name)}
+  All discussions on Merge Request #{merge_request_reference_link(@merge_request)}
+  were resolved by #{sanitize_name(@resolved_by.name)}

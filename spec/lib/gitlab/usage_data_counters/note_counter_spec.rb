@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UsageDataCounters::NoteCounter, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::UsageDataCounters::NoteCounter, :clean_gitlab_redis_shared_state do
   shared_examples 'a note usage counter' do |event, noteable_type|
     describe ".count(#{event})" do
       it "increments the Note #{event} counter by 1" do

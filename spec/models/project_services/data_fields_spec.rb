@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DataFields do
+RSpec.describe DataFields do
   let(:url) { 'http://url.com' }
   let(:username) { 'username_one' }
   let(:properties) do

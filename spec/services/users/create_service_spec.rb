@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Users::CreateService do
+RSpec.describe Users::CreateService do
   describe '#execute' do
     let(:admin_user) { create(:admin) }
 

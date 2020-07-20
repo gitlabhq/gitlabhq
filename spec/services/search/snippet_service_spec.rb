@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Search::SnippetService do
+RSpec.describe Search::SnippetService do
   let_it_be(:author) { create(:author) }
   let_it_be(:project) { create(:project, :public) }
 

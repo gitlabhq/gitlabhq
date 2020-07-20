@@ -2,6 +2,7 @@ import ImageDiff from '~/image_diff/image_diff';
 import * as imageUtility from '~/lib/utils/image_utility';
 import imageDiffHelper from '~/image_diff/helpers/index';
 import * as mockData from './mock_data';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('ImageDiff', () => {
   let element;
@@ -12,7 +13,7 @@ describe('ImageDiff', () => {
       <div id="element">
         <div class="diff-file">
           <div class="js-image-frame">
-            <img src="${gl.TEST_HOST}/image.png">
+            <img src="${TEST_HOST}/image.png">
             <div class="comment-indicator"></div>
             <div id="badge-1" class="badge">1</div>
             <div id="badge-2" class="badge">2</div>

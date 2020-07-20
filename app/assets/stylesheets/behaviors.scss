@@ -16,6 +16,7 @@
 .js-toggler-container {
   .turn-on { display: block; }
   .turn-off { display: none; }
+
   &.on {
     .turn-on { display: none; }
     .turn-off { display: block; }
@@ -23,6 +24,6 @@
 }
 
 // Hide element if Vue is still working on rendering it fully.
-[v-cloak="true"] {
+[v-cloak='true'] {
   display: none !important;
 }

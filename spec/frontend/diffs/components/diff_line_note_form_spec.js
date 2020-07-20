@@ -78,10 +78,18 @@ describe('DiffLineNoteForm', () => {
           .mockReturnValue(Promise.resolve());
 
         const lineRange = {
-          start_line_code: wrapper.vm.commentLineStart.lineCode,
-          start_line_type: wrapper.vm.commentLineStart.type,
-          end_line_code: wrapper.vm.line.line_code,
-          end_line_type: wrapper.vm.line.type,
+          start: {
+            line_code: wrapper.vm.commentLineStart.line_code,
+            type: wrapper.vm.commentLineStart.type,
+            new_line: 1,
+            old_line: null,
+          },
+          end: {
+            line_code: wrapper.vm.line.line_code,
+            type: wrapper.vm.line.type,
+            new_line: 1,
+            old_line: null,
+          },
         };
 
         const formData = {

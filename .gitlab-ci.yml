@@ -20,6 +20,8 @@ default:
     - gitlab-org
   # All jobs are interruptible by default
   interruptible: true
+  # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10520
+  timeout: 90m
 
 workflow:
   rules:
@@ -61,6 +63,7 @@ variables:
   DOCKER_VERSION: "19.03.0"
 
 include:
+  - local: .gitlab/ci/build-images.gitlab-ci.yml
   - local: .gitlab/ci/cache-repo.gitlab-ci.yml
   - local: .gitlab/ci/cng.gitlab-ci.yml
   - local: .gitlab/ci/docs.gitlab-ci.yml

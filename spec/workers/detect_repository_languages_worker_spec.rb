@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DetectRepositoryLanguagesWorker do
+RSpec.describe DetectRepositoryLanguagesWorker do
   let_it_be(:project) { create(:project) }
 
   subject { described_class.new }

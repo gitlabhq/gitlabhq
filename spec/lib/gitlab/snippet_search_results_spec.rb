@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SnippetSearchResults do
+RSpec.describe Gitlab::SnippetSearchResults do
   include SearchHelpers
 
   let_it_be(:snippet) { create(:snippet, content: 'foo', file_name: 'foo') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UsersStatistics do
+RSpec.describe UsersStatistics do
   let(:users_statistics) { build(:users_statistics) }
 
   describe 'scopes' do

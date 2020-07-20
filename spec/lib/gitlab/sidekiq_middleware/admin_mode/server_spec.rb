@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqMiddleware::AdminMode::Server, :do_not_mock_admin_mode, :request_store do
+RSpec.describe Gitlab::SidekiqMiddleware::AdminMode::Server, :do_not_mock_admin_mode, :request_store do
   include AdminModeHelper
 
   let(:worker) do

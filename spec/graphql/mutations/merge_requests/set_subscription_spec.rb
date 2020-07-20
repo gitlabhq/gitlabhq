@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::MergeRequests::SetSubscription do
+RSpec.describe Mutations::MergeRequests::SetSubscription do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:user) { create(:user) }

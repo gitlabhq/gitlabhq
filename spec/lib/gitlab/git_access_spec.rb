@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitAccess do
+RSpec.describe Gitlab::GitAccess do
   include TermsHelper
   include GitHelpers
 

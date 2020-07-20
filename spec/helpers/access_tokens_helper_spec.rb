@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe AccessTokensHelper do
+RSpec.describe AccessTokensHelper do
   describe "#scope_description" do
     using RSpec::Parameterized::TableSyntax
 

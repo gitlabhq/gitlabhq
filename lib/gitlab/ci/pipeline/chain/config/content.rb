@@ -9,6 +9,7 @@ module Gitlab
             include Chain::Helpers
 
             SOURCES = [
+              Gitlab::Ci::Pipeline::Chain::Config::Content::Parameter,
               Gitlab::Ci::Pipeline::Chain::Config::Content::Bridge,
               Gitlab::Ci::Pipeline::Chain::Config::Content::Repository,
               Gitlab::Ci::Pipeline::Chain::Config::Content::ExternalProject,

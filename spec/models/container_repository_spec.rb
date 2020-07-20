@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerRepository do
+RSpec.describe ContainerRepository do
   let(:group) { create(:group, name: 'group') }
   let(:project) { create(:project, path: 'test', group: group) }
 

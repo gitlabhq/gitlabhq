@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CommitPresenter do
+RSpec.describe CommitPresenter do
   let(:project) { create(:project, :repository) }
   let(:commit) { project.commit }
   let(:user) { create(:user) }

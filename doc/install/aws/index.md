@@ -7,8 +7,8 @@ type: howto
 This page offers a walkthrough of a common configuration
 for GitLab on AWS. You should customize it to accommodate your needs.
 
-NOTE: **Note**
-For organizations with 300 users or less, the recommended AWS installation method is to launch an EC2 single box [Omnibus Installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data.
+NOTE: **Note:**
+For organizations with 1,000 users or less, the recommended AWS installation method is to launch an EC2 single box [Omnibus Installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data. See the [1,000 user reference architecture](../../administration/reference_architectures/1k_users.md) for more.
 
 ## Introduction
 
@@ -30,7 +30,8 @@ In addition to having a basic familiarity with [AWS](https://docs.aws.amazon.com
 - A domain name for the GitLab instance
 - An SSL/TLS certificate to secure your domain. If you do not already own one, you can provision a free public SSL/TLS certificate through [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)(ACM) for use with the [Elastic Load Balancer](#load-balancer) we'll create.
 
-NOTE: **Note:** It can take a few hours to validate a certificate provisioned through ACM. To avoid delays later, request your certificate as soon as possible.
+NOTE: **Note:**
+It can take a few hours to validate a certificate provisioned through ACM. To avoid delays later, request your certificate as soon as possible.
 
 ## Architecture
 
@@ -230,7 +231,10 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 1. Click the **Create Load Balancer** button.
    1. Choose the **Classic Load Balancer**.
    1. Give it a name (we'll use `gitlab-loadbalancer`) and for the **Create LB Inside** option, select `gitlab-vpc` from the dropdown menu.
-   1. In the **Listeners** section, set HTTP port 80, HTTPS port 443, and TCP port 22 for both load balancer and instance protocols and ports.
+   1. In the **Listeners** section, set the following listeners:
+        - HTTP port 80 for both load balancer and instance protocol and ports
+        - TCP port 22 for both load balancer and instance protocols and ports
+        - HTTPS port 443 for load balancer protocol and ports, forwarding to HTTP port 80 on the instance (we will configure GitLab to listen on port 80 [later in the guide](#add-support-for-proxied-ssl))
    1. In the **Select Subnets** section, select both public subnets from the list so that the load balancer can route traffic to both availability zones.
 1. We'll add a security group for our load balancer to act as a firewall to control what traffic is allowed through. Click **Assign Security Groups** and select **Create a new security group**, give it a name
    (we'll use `gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
@@ -244,8 +248,7 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
    1. For **Ping Path**, enter `/users/sign_in`. (We use `/users/sign_in` as it's a public endpoint that does
    not require authorization.)
    1. Keep the default **Advanced Details** or adjust them according to your needs.
-1. Click **Add EC2 Instances** but, as we don't have any instances to add yet, come back
-to your load balancer after creating your GitLab instances and add them.
+1. Click **Add EC2 Instances** - don't add anything as we will create an Auto Scaling Group later to manage instances for us.
 1. Click **Add Tags** and add any tags you need.
 1. Click **Review and Create**, review all your settings, and click **Create** if you're happy.
 
@@ -302,7 +305,8 @@ We need a security group for our database that will allow inbound traffic from t
 
 ### Create the database
 
-DANGER: **Danger:** Avoid using burstable instances (t class instances) for the database as this could lead to performance issues due to CPU credits running out during sustained periods of high load.
+DANGER: **Danger:**
+Avoid using burstable instances (t class instances) for the database as this could lead to performance issues due to CPU credits running out during sustained periods of high load.
 
 Now, it's time to create the database:
 
@@ -360,7 +364,7 @@ persistence and is used to store session data, temporary cache information, and 
 
 1. Navigate back to the ElastiCache dashboard.
 1. Select **Redis** on the left menu and click **Create** to create a new
-   Redis cluster. Do not enable **Cluster Mode** as it is [not supported](../../administration/high_availability/redis.md#provide-your-own-redis-instance-core-only). Even without cluster mode on, you still get the
+   Redis cluster. Do not enable **Cluster Mode** as it is [not supported](../../administration/redis/replication_and_failover_external.md#requirements). Even without cluster mode on, you still get the
    chance to deploy Redis in multiple availability zones.
 1. In the settings section:
    1. Give the cluster a name (`gitlab-redis`) and a description.
@@ -384,7 +388,8 @@ persistence and is used to store session data, temporary cache information, and 
 
 Since our GitLab instances will be in private subnets, we need a way to connect to these instances via SSH to make configuration changes, perform upgrades, etc. One way of doing this is via a [bastion host](https://en.wikipedia.org/wiki/Bastion_host), sometimes also referred to as a jump box.
 
-TIP: **Tip:** If you do not want to maintain bastion hosts, you can set up [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) for access to instances. This is beyond the scope of this document.
+TIP: **Tip:**
+If you do not want to maintain bastion hosts, you can set up [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) for access to instances. This is beyond the scope of this document.
 
 ### Create Bastion Host A
 
@@ -540,7 +545,9 @@ gitlab=# \q
 
 #### Set up Gitaly
 
-CAUTION: **Caution:** In this architecture, having a single Gitaly server creates a single point of failure. This limitation will be removed once [Gitaly Cluster](https://gitlab.com/groups/gitlab-org/-/epics/1489) is released.
+CAUTION: **Caution:**
+In this architecture, having a single Gitaly server creates a single point of failure. Use
+[Gitaly Cluster](../../administration/gitaly/praefect.md) to remove this limitation.
 
 Gitaly is a service that provides high-level RPC access to Git repositories.
 It should be enabled and configured on a separate EC2 instance in one of the
@@ -566,7 +573,8 @@ Let's create an EC2 instance where we'll install Gitaly:
 1. Click **Review and launch** followed by **Launch** if you're happy with your settings.
 1. Finally, acknowledge that you have access to the selected private key file or create a new one. Click **Launch Instances**.
 
-NOTE: **Optional:** Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above. See the [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/). We do not recommend using EFS as it may negatively impact GitLab’s performance. You can review the [relevant documentation](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+NOTE: **Note:**
+Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above. See the [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/). We do not recommend using EFS as it may negatively impact GitLab’s performance. You can review the [relevant documentation](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/index.md#run-gitaly-on-its-own-server). Perform the client setup steps from that document on the [GitLab instance we created](#install-gitlab) above.
 
@@ -638,7 +646,7 @@ That concludes the configuration changes for our GitLab instance. Next, we'll cr
 
 On the EC2 dashboard:
 
-1. Select the `GitLab` instance we [created earlier](#install-gitLab).
+1. Select the `GitLab` instance we [created earlier](#install-gitlab).
 1. Click on **Actions**, scroll down to **Image** and click **Create Image**.
 1. Give your image a name and description (we'll use `GitLab-Source` for both).
 1. Leave everything else as default and click **Create Image**
@@ -737,7 +745,7 @@ To back up GitLab:
    sudo gitlab-backup create
    ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 ### Restoring GitLab from a backup
@@ -758,7 +766,7 @@ released, you can update your GitLab instance:
    sudo gitlab-backup create
    ```
 
-NOTE: **Note**
+NOTE: **Note:**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 1. Update the repositories and install GitLab:
@@ -794,14 +802,14 @@ to request additional material:
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support and to avoid doc comments with
-questions that you know someone might ask.
+### Instances are failing health checks
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+If your instances are failing the load balancer's health checks, verify that they are returning a status `200` from the health check endpoint we configured earlier. Any other status, including redirects (e.g. status `302`) will cause the health check to fail.
+
+You may have to set a password on the `root` user to prevent automatic redirects on the sign-in endpoint before health checks will pass.
+
+### "The change you requested was rejected (422)"
+
+If you see this page when trying to set a password via the web interface, make sure `external_url` in `gitlab.rb` matches the domain you are making a request from, and run `sudo gitlab-ctl reconfigure` after making any changes to it.

@@ -52,16 +52,12 @@ module Resolvers
     end
 
     def group_parameters(args)
-      return { group_ids: parent.id } unless include_descendants?(args)
+      return { group_ids: parent.id } unless args[:include_descendants].present?
 
       {
         group_ids: parent.self_and_descendants.public_or_visible_to_user(current_user).select(:id),
         project_ids: group_projects.with_issues_or_mrs_available_for_user(current_user)
       }
-    end
-
-    def include_descendants?(args)
-      args[:include_descendants].present? && Feature.enabled?(:group_milestone_descendants, parent)
     end
 
     def group_projects

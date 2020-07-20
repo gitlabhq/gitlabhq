@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupChildEntity do
+RSpec.describe GroupChildEntity do
   include ExternalAuthorizationServiceHelpers
   include Gitlab::Routing.url_helpers
 

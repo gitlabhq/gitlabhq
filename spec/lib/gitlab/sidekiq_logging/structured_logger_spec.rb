@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqLogging::StructuredLogger do
+RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
   describe '#call' do
     let(:timestamp) { Time.iso8601('2018-01-01T12:00:00.000Z') }
     let(:created_at) { timestamp - 1.second }

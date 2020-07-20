@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PreferencesHelper do
+RSpec.describe PreferencesHelper do
   describe '#dashboard_choices' do
     let(:user) { build(:user) }
 
@@ -117,13 +117,6 @@ describe PreferencesHelper do
         expect(helper.user_color_scheme)
           .to eq Gitlab::ColorSchemes.default.css_class
       end
-    end
-  end
-
-  describe '#language_choices' do
-    it 'returns an array of all available languages' do
-      expect(helper.language_choices).to be_an(Array)
-      expect(helper.language_choices.map(&:first)).to eq(Gitlab::I18n::AVAILABLE_LANGUAGES.values.sort)
     end
   end
 

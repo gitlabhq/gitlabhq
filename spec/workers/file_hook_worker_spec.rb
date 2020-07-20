@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe FileHookWorker do
+RSpec.describe FileHookWorker do
   include RepoHelpers
 
   let(:filename) { 'my_file_hook.rb' }

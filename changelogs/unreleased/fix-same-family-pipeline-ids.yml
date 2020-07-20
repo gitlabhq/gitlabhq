@@ -1,0 +1,5 @@
+---
+title: Use an array for fetching same_family_pipeline_ids
+merge_request: 36883
+author:
+type: fixed

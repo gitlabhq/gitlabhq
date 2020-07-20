@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Presenters::IssueShow do
+RSpec.describe Gitlab::SlashCommands::Presenters::IssueShow do
   let(:user) { create(:user, :with_avatar) }
   let(:project) { create(:project, creator: user) }
   let(:issue) { create(:issue, project: project) }

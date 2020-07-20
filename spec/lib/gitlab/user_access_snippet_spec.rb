@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UserAccessSnippet do
+RSpec.describe Gitlab::UserAccessSnippet do
   subject(:access) { described_class.new(user, snippet: snippet) }
 
   let_it_be(:project) { create(:project, :private) }

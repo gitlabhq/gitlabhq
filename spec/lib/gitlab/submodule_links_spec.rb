@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SubmoduleLinks do
+RSpec.describe Gitlab::SubmoduleLinks do
   let(:submodule_item) { double(id: 'hash', path: 'gitlab-foss') }
   let(:repo) { double }
   let(:links) { described_class.new(repo) }

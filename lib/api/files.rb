@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Files < Grape::API
+  class Files < Grape::API::Instance
     include APIGuard
 
     FILE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(file_path: API::NO_SLASH_URL_PART_REGEX)
@@ -56,7 +56,7 @@ module API
           ref: params[:ref],
           blob_id: @blob.id,
           commit_id: @commit.id,
-          last_commit_id: @repo.last_commit_id_for_path(@commit.sha, params[:file_path])
+          last_commit_id: @repo.last_commit_id_for_path(@commit.sha, params[:file_path], literal_pathspec: true)
         }
       end
 

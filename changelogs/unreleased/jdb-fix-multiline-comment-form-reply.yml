@@ -1,0 +1,5 @@
+---
+title: Fix showing MLC form on replies
+merge_request: 37139
+author:
+type: fixed

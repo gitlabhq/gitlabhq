@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::RateLimitHelpers, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::RateLimitHelpers, :clean_gitlab_redis_shared_state do
   let(:limiter_class) do
     Class.new do
       include ::Gitlab::RateLimitHelpers

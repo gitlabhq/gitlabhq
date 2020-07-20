@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe DesignManagement::DesignCollection do
+RSpec.describe DesignManagement::DesignCollection do
   include DesignManagementTestHelpers
 
   let_it_be(:issue, reload: true) { create(:issue) }

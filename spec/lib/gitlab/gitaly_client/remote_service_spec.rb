@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::RemoteService do
+RSpec.describe Gitlab::GitalyClient::RemoteService do
   let(:project) { create(:project) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
@@ -73,8 +73,11 @@ describe Gitlab::GitalyClient::RemoteService do
   describe '.exists?' do
     context "when the remote doesn't exist" do
       let(:url) { 'https://gitlab.com/gitlab-org/ik-besta-niet-of-ik-word-geplaagd.git' }
+      let(:storage_name) { 'default' }
 
       it 'returns false' do
+        expect(Gitaly::FindRemoteRepositoryRequest).to receive(:new).with(remote: url, storage_name: storage_name).and_call_original
+
         expect(described_class.exists?(url)).to be(false)
       end
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::DestroyService do
+RSpec.describe Projects::DestroyService do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }

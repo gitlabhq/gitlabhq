@@ -70,7 +70,7 @@ export default {
 </script>
 
 <template>
-  <div class="append-bottom-15 ide-commit-options">
+  <div class="gl-mb-5 ide-commit-options">
     <radio-group
       :value="$options.commitToCurrentBranch"
       :disabled="!canPushToBranch"

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200421195234_backfill_status_page_published_incidents.rb')
 
-describe BackfillStatusPagePublishedIncidents, :migration do
+RSpec.describe BackfillStatusPagePublishedIncidents, :migration do
   subject(:migration) { described_class.new }
 
   describe '#up' do

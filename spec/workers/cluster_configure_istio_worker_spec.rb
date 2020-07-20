@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterConfigureIstioWorker do
+RSpec.describe ClusterConfigureIstioWorker do
   describe '#perform' do
     shared_examples 'configure istio service' do
       it 'configures istio' do

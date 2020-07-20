@@ -70,10 +70,8 @@ module Gitlab
         private
 
         def invalid_relation?
-          # Do not create relation if it is:
-          #   - An unknown service
-          #   - A legacy trigger
-          unknown_service? || legacy_trigger?
+          # Do not create relation if it is a legacy trigger
+          legacy_trigger?
         end
 
         def setup_models
@@ -135,11 +133,6 @@ module Gitlab
               status.pipeline = imported_object
             end
           end
-        end
-
-        def unknown_service?
-          @relation_name == :services && parsed_relation_hash['type'] &&
-            !Object.const_defined?(parsed_relation_hash['type'])
         end
 
         def legacy_trigger?

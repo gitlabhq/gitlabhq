@@ -43,7 +43,7 @@ class SnippetsFinder < UnionFinder
   include Gitlab::Utils::StrongMemoize
 
   attr_accessor :current_user, :params
-  delegate :explore, :only_personal, :only_project, :scope, to: :params
+  delegate :explore, :only_personal, :only_project, :scope, :sort, to: :params
 
   def initialize(current_user = nil, params = {})
     @current_user = current_user
@@ -69,7 +69,9 @@ class SnippetsFinder < UnionFinder
 
     items = init_collection
     items = by_ids(items)
-    items.with_optional_visibility(visibility_from_scope).fresh
+    items = items.with_optional_visibility(visibility_from_scope)
+
+    items.order_by(sort_param)
   end
 
   private
@@ -115,7 +117,7 @@ class SnippetsFinder < UnionFinder
       queries << snippets_of_authorized_projects if current_user
     end
 
-    find_union(queries, Snippet)
+    prepared_union(queries)
   end
 
   def snippets_for_a_single_project
@@ -201,6 +203,21 @@ class SnippetsFinder < UnionFinder
 
       params[:project].is_a?(Project) ? params[:project] : Project.find_by_id(params[:project])
     end
+  end
+
+  def sort_param
+    sort.presence || 'id_desc'
+  end
+
+  def prepared_union(queries)
+    return Snippet.none if queries.empty?
+    return queries.first if queries.length == 1
+
+    # The queries are going to be part of a global `where`
+    # therefore we only need to retrieve the `id` column
+    # which will speed the query
+    queries.map! { |rel| rel.select(:id) }
+    Snippet.id_in(find_union(queries, Snippet))
   end
 end
 

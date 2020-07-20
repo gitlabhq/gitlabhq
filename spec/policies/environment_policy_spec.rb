@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EnvironmentPolicy do
+RSpec.describe EnvironmentPolicy do
   using RSpec::Parameterized::TableSyntax
 
   let(:user) { create(:user) }

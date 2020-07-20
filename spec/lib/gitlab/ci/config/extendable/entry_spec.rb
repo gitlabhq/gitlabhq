@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Config::Extendable::Entry do
+RSpec.describe Gitlab::Ci::Config::Extendable::Entry do
   describe '.new' do
     context 'when entry key is not included in the context hash' do
       it 'raises error' do

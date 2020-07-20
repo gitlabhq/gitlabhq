@@ -91,6 +91,12 @@ module Types
             null: true,
             description: 'Assignees of the alert'
 
+      field :metrics_dashboard_url,
+            GraphQL::STRING_TYPE,
+            null: true,
+            description: 'URL for metrics embed for the alert',
+            resolve: -> (alert, _args, _context) { alert.present.metrics_dashboard_url }
+
       def notes
         object.ordered_notes
       end

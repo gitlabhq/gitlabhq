@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TimeHelper do
+RSpec.describe TimeHelper do
   describe "#time_interval_in_words" do
     it "returns minutes and seconds" do
       intervals_in_words = {

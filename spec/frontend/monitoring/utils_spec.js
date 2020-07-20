@@ -1,12 +1,8 @@
 import * as monitoringUtils from '~/monitoring/utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { TEST_HOST } from 'jest/helpers/test_constants';
-import {
-  mockProjectDir,
-  singleStatMetricsResult,
-  anomalyMockGraphData,
-  barMockData,
-} from './mock_data';
+import { mockProjectDir, barMockData } from './mock_data';
+import { singleStatGraphData, anomalyGraphData } from './graph_data';
 import { metricsDashboardViewModel, graphData } from './fixture_data';
 
 const mockPath = `${TEST_HOST}${mockProjectDir}/-/environments/29/metrics`;
@@ -82,7 +78,7 @@ describe('monitoring/utils', () => {
     it('validates data with the query format', () => {
       const validGraphData = monitoringUtils.graphDataValidatorForValues(
         true,
-        singleStatMetricsResult,
+        singleStatGraphData(),
       );
 
       expect(validGraphData).toBe(true);
@@ -105,13 +101,13 @@ describe('monitoring/utils', () => {
     let threeMetrics;
     let fourMetrics;
     beforeEach(() => {
-      oneMetric = singleStatMetricsResult;
-      threeMetrics = anomalyMockGraphData;
+      oneMetric = singleStatGraphData();
+      threeMetrics = anomalyGraphData();
 
       const metrics = [...threeMetrics.metrics];
       metrics.push(threeMetrics.metrics[0]);
       fourMetrics = {
-        ...anomalyMockGraphData,
+        ...anomalyGraphData(),
         metrics,
       };
     });
@@ -429,14 +425,41 @@ describe('monitoring/utils', () => {
 
   describe('convertVariablesForURL', () => {
     it.each`
-      input                               | expected
-      ${undefined}                        | ${{}}
-      ${null}                             | ${{}}
-      ${{}}                               | ${{}}
-      ${{ env: { value: 'prod' } }}       | ${{ 'var-env': 'prod' }}
-      ${{ 'var-env': { value: 'prod' } }} | ${{ 'var-var-env': 'prod' }}
+      input                                                               | expected
+      ${[]}                                                               | ${{}}
+      ${[{ name: 'env', value: 'prod' }]}                                 | ${{ 'var-env': 'prod' }}
+      ${[{ name: 'env1', value: 'prod' }, { name: 'env2', value: null }]} | ${{ 'var-env1': 'prod' }}
+      ${[{ name: 'var-env', value: 'prod' }]}                             | ${{ 'var-var-env': 'prod' }}
     `('convertVariablesForURL returns $expected with input $input', ({ input, expected }) => {
       expect(monitoringUtils.convertVariablesForURL(input)).toEqual(expected);
     });
+  });
+
+  describe('setCustomVariablesFromUrl', () => {
+    beforeEach(() => {
+      jest.spyOn(urlUtils, 'updateHistory');
+    });
+
+    afterEach(() => {
+      urlUtils.updateHistory.mockRestore();
+    });
+
+    it.each`
+      input                                                               | urlParams
+      ${[]}                                                               | ${''}
+      ${[{ name: 'env', value: 'prod' }]}                                 | ${'?var-env=prod'}
+      ${[{ name: 'env1', value: 'prod' }, { name: 'env2', value: null }]} | ${'?var-env=prod&var-env1=prod'}
+    `(
+      'setCustomVariablesFromUrl updates history with query "$urlParams" with input $input',
+      ({ input, urlParams }) => {
+        monitoringUtils.setCustomVariablesFromUrl(input);
+
+        expect(urlUtils.updateHistory).toHaveBeenCalledTimes(1);
+        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+          url: `${TEST_HOST}/${urlParams}`,
+          title: '',
+        });
+      },
+    );
   });
 });

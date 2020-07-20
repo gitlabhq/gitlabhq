@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Helpers::RelatedResourcesHelpers do
+RSpec.describe API::Helpers::RelatedResourcesHelpers do
   subject(:helpers) do
     Class.new.include(described_class).new
   end

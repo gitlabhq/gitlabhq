@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Sentry::Client::Repo do
+RSpec.describe Sentry::Client::Repo do
   include SentryClientHelpers
 
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }

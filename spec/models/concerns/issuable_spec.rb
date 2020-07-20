@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issuable do
+RSpec.describe Issuable do
   include ProjectForksHelper
 
   let(:issuable_class) { Issue }
@@ -415,6 +415,27 @@ describe Issuable do
 
   describe '#to_hook_data' do
     let(:builder) { double }
+
+    context 'when old_associations is empty' do
+      let(:label) { create(:label) }
+
+      before do
+        issue.update!(labels: [label])
+        issue.assignees << user
+        issue.spend_time(duration: 2, user_id: user.id, spent_at: Time.current)
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
+      end
+
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build and does not set labels, assignees, nor total_time_spent' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: {})
+
+        # In some cases, old_associations is empty, e.g. on a close event
+        issue.to_hook_data(user)
+      end
+    end
 
     context 'labels are updated' do
       let(:labels) { create_list(:label, 2) }

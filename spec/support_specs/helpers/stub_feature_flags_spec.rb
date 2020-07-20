@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe StubFeatureFlags do
+RSpec.describe StubFeatureFlags do
   let(:feature_name) { :test_feature }
 
   describe '#stub_feature_flags' do

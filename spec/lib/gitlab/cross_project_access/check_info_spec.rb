@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CrossProjectAccess::CheckInfo do
+RSpec.describe Gitlab::CrossProjectAccess::CheckInfo do
   let(:dummy_controller) { double }
 
   before do

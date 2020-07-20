@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::Crossplane do
+RSpec.describe Clusters::Applications::Crossplane do
   let(:crossplane) { create(:clusters_applications_crossplane) }
 
   include_examples 'cluster application core specs', :clusters_applications_crossplane

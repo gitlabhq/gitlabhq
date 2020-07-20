@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ContentSecurityPolicy::ConfigLoader do
+RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
   let(:policy) { ActionDispatch::ContentSecurityPolicy.new }
   let(:csp_config) do
     {

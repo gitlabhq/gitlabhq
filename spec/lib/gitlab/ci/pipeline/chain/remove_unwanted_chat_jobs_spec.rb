@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs do
+RSpec.describe ::Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs do
   let(:project) { create(:project) }
 
   let(:pipeline) do

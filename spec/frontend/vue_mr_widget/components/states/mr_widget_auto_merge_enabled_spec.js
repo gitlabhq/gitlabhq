@@ -8,6 +8,7 @@ import { MWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 
 describe('MRWidgetAutoMergeEnabled', () => {
   let vm;
+  let oldWindowGl;
   const targetBranchPath = '/foo/bar';
   const targetBranch = 'foo';
   const sha = '1EA2EZ34';
@@ -15,6 +16,13 @@ describe('MRWidgetAutoMergeEnabled', () => {
   beforeEach(() => {
     const Component = Vue.extend(autoMergeEnabledComponent);
     jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+
+    oldWindowGl = window.gl;
+    window.gl = {
+      mrWidgetData: {
+        defaultAvatarUrl: 'no_avatar.png',
+      },
+    };
 
     vm = mountComponent(Component, {
       mr: {
@@ -35,6 +43,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
 
   afterEach(() => {
     vm.$destroy();
+    window.gl = oldWindowGl;
   });
 
   describe('computed', () => {

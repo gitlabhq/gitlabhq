@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Context::Global do
+RSpec.describe Gitlab::Ci::Build::Context::Global do
   let(:pipeline)       { create(:ci_pipeline) }
   let(:yaml_variables) { {} }
 

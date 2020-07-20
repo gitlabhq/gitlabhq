@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Rack Attack global throttles' do
+RSpec.describe 'Rack Attack global throttles' do
   include RackAttackSpecHelpers
 
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }

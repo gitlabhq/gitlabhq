@@ -52,13 +52,12 @@ module BlobHelper
     edit_button_tag(blob,
                     common_classes,
                     _('Edit'),
-                    Feature.enabled?(:web_ide_default) ? ide_edit_path(project, ref, path) : edit_blob_path(project, ref, path, options),
+                    edit_blob_path(project, ref, path, options),
                     project,
                     ref)
   end
 
   def ide_edit_button(project = @project, ref = @ref, path = @path, blob:)
-    return if Feature.enabled?(:web_ide_default)
     return unless blob
 
     edit_button_tag(blob,

@@ -218,6 +218,24 @@ RSpec.describe PersonalAccessTokensFinder do
         end
       end
 
+      describe 'with active or expired state' do
+        before do
+          params[:state] = 'active_or_expired'
+        end
+
+        it 'includes active tokens' do
+          is_expected.to include(active_personal_access_token, active_impersonation_token)
+        end
+
+        it 'includes expired tokens' do
+          is_expected.to include(expired_personal_access_token, expired_impersonation_token)
+        end
+
+        it 'does not include revoked tokens' do
+          is_expected.not_to include(revoked_personal_access_token, revoked_impersonation_token)
+        end
+      end
+
       describe 'with id' do
         subject { finder(params).find_by_id(active_personal_access_token.id) }
 

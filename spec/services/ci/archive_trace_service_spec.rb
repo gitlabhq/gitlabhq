@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::ArchiveTraceService, '#execute' do
+RSpec.describe Ci::ArchiveTraceService, '#execute' do
   subject { described_class.new.execute(job, worker_name: ArchiveTraceWorker.name) }
 
   context 'when job is finished' do

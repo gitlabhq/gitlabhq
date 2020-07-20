@@ -3,7 +3,7 @@
 
 .dropdown.btn-group
   %button.btn.rounded-right.text-center{ class: ('has-tooltip' if type == :icon), title: (_('Import issues') if type == :icon),
-    data: { toggle: 'dropdown' }, 'aria-label' => _('Import issues'), 'aria-haspopup' => 'true', 'aria-expanded' => 'false' }
+    data: { toggle: 'dropdown', qa_selector: 'import_issues_button' }, 'aria-label' => _('Import issues'), 'aria-haspopup' => 'true', 'aria-expanded' => 'false' }
     - if type == :icon
       = sprite_icon('import')
     - else
@@ -13,4 +13,5 @@
       %button{ data: { toggle: 'modal', target: '.issues-import-modal' } }
         = _('Import CSV')
     - if can_edit
-      %li= link_to _('Import from Jira'), project_import_jira_path(@project)
+      %li{ data: { qa_selector: 'import_from_jira_link' } }
+        = link_to _('Import from Jira'), project_import_jira_path(@project)

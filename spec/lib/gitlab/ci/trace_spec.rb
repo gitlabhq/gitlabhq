@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state do
   let(:build) { create(:ci_build) }
   let(:trace) { described_class.new(build) }
 

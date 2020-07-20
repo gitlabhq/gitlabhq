@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Factory do
+RSpec.describe Gitlab::Ci::Status::Factory do
   let(:user) { create(:user) }
   let(:fabricated_status) { factory.fabricate! }
   let(:factory) { described_class.new(resource, user) }
 
   context 'when object has a core status' do
-    HasStatus::AVAILABLE_STATUSES.each do |simple_status|
+    Ci::HasStatus::AVAILABLE_STATUSES.each do |simple_status|
       context "when simple core status is #{simple_status}" do
         let(:resource) { double('resource', status: simple_status) }
 

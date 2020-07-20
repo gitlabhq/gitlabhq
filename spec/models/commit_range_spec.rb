@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CommitRange do
+RSpec.describe CommitRange do
   describe 'modules' do
     subject { described_class }
 

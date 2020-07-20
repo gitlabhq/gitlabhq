@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PoolRepository do
+RSpec.describe PoolRepository do
   describe 'associations' do
     it { is_expected.to belong_to(:shard) }
     it { is_expected.to belong_to(:source_project) }

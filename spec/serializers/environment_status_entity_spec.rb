@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EnvironmentStatusEntity do
+RSpec.describe EnvironmentStatusEntity do
   let(:user)    { create(:user) }
   let(:request) { double('request', project: project) }
 

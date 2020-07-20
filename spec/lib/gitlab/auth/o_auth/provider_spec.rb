@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::OAuth::Provider do
+RSpec.describe Gitlab::Auth::OAuth::Provider do
   describe '.enabled?' do
     before do
       allow(described_class).to receive(:providers).and_return([:ldapmain, :google_oauth2])

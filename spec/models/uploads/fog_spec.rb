@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Uploads::Fog do
+RSpec.describe Uploads::Fog do
   let(:data_store) { described_class.new }
 
   before do

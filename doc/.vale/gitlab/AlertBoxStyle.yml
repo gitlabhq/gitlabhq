@@ -1,0 +1,16 @@
+---
+# Error: gitlab.AlertBoxStyle
+#
+# Makes sure alert boxes follow standard formatting.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: existence
+message: 'Alert box "%s" must use the formatting detailed in the documentation style guide.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#alert-boxes
+level: error
+scope: raw
+raw:
+  - '((NOTE|TIP|CAUTION|DANGER): \*\*[^:]*\*\*)|'
+  - '((NOTE: \*\*NOTE:\*\*)|(TIP: \*\*TIP:\*\*)|(CAUTION: \*\*CAUTION:\*\*)|(DANGER: \*\*DANGER:\*\*))|'
+  - '((NOTE: \*\*note:\*\*)|(TIP: \*\*tip:\*\*)|(CAUTION: \*\*caution:\*\*)|(DANGER: \*\*danger:\*\*))|'
+  - '((NOTE|TIP|CAUTION|DANGER): \*\*.*\*\*.+)'

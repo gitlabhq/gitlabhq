@@ -367,15 +367,6 @@ module IssuablesHelper
     end
   end
 
-  def issuable_close_reopen_button_method(issuable)
-    case issuable
-    when Issue
-      ''
-    when MergeRequest
-      'put'
-    end
-  end
-
   def issuable_author_is_current_user(issuable)
     issuable.author == current_user
   end
@@ -391,6 +382,14 @@ module IssuablesHelper
   def assignee_sidebar_data(assignee, merge_request: nil)
     { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }.tap do |data|
       data[:can_merge] = merge_request.can_be_merged_by?(assignee) if merge_request
+    end
+  end
+
+  def issuable_squash_option?(issuable, project)
+    if issuable.persisted?
+      issuable.squash
+    else
+      project.squash_enabled_by_default?
     end
   end
 

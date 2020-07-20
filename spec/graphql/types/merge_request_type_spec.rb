@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['MergeRequest'] do
+RSpec.describe GitlabSchema.types['MergeRequest'] do
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::MergeRequest) }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_merge_request) }
@@ -15,7 +15,8 @@ describe GitlabSchema.types['MergeRequest'] do
       description_html state created_at updated_at source_project target_project
       project project_id source_project_id target_project_id source_branch
       target_branch work_in_progress merge_when_pipeline_succeeds diff_head_sha
-      merge_commit_sha user_notes_count should_remove_source_branch diff_refs
+      merge_commit_sha user_notes_count should_remove_source_branch
+      diff_refs diff_stats diff_stats_summary
       force_remove_source_branch merge_status in_progress_merge_commit_sha
       merge_error allow_collaboration should_be_rebased rebase_commit_sha
       rebase_in_progress merge_commit_message default_merge_commit_message

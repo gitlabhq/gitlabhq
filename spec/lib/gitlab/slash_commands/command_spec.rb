@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Command do
+RSpec.describe Gitlab::SlashCommands::Command do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:chat_name) { double(:chat_name, user: user) }

@@ -217,7 +217,6 @@ export default {
             :svg-path="config.noContainersImage"
             data-testid="emptySearch"
             :title="$options.i18n.EMPTY_RESULT_TITLE"
-            class="container-message"
           >
             <template #description>
               {{ $options.i18n.EMPTY_RESULT_MESSAGE }}

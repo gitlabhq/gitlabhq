@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
+RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
   include ProjectForksHelper
 
   let(:project) { create(:project, :repository) }
@@ -216,11 +216,12 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
               target_project.add_maintainer(user)
             end
 
-            it 'create legacy detached merge request pipeline for fork merge request' do
+            it 'create detached merge request pipeline for fork merge request' do
               merge_request.reload
 
-              expect(merge_request.actual_head_pipeline)
-                .to be_legacy_detached_merge_request_pipeline
+              head_pipeline = merge_request.actual_head_pipeline
+              expect(head_pipeline).to be_detached_merge_request_pipeline
+              expect(head_pipeline.project).to eq(target_project)
             end
           end
 
@@ -339,13 +340,14 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
       end
     end
 
-    it_behaves_like 'new issuable record that supports quick actions' do
+    it_behaves_like 'issuable record that supports quick actions' do
       let(:default_params) do
         {
           source_branch: 'feature',
           target_branch: 'master'
         }
       end
+      let(:issuable) { described_class.new(project, user, params).execute }
     end
 
     context 'Quick actions' do

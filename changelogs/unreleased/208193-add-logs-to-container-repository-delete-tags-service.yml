@@ -1,0 +1,5 @@
+---
+title: Add log statements to Projects::ContainerRepository::DeleteTagsService
+merge_request: 35539
+author:
+type: added

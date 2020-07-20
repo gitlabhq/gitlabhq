@@ -20,7 +20,7 @@ Adjust your project's name, description, avatar, [default branch](../repository/
 
 The project description also partially supports [standard Markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
-#### Compliance framework **(ULTIMATE)**
+#### Compliance framework **(PREMIUM)**
 
 You can select a framework label to identify that your project has certain compliance requirements or needs additional oversight. Available labels include:
 
@@ -68,7 +68,7 @@ Some features depend on others:
 - If you disable the **Issues** option, GitLab also removes the following
   features:
   - **Issue Boards**
-  - [**Service Desk**](#service-desk-starter) **(STARTER)**
+  - [**Service Desk**](#service-desk-starter)
 
   NOTE: **Note:**
   When the **Issues** option is disabled, you can still access **Milestones**
@@ -223,13 +223,18 @@ To remove a project:
 1. In the Remove project section, click the **Remove project** button.
 1. Confirm the action when asked to.
 
-This action either:
+This action:
 
 - Removes a project including all associated resources (issues, merge requests etc).
-- Since [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/32935), on
-  [GitLab Premium or GitLab.com Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a project for
-  deletion. The deletion will happen 7 days later by default, but this can be changed in the
-  [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+- From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
+group admins can [configure](../../group/index.md#enabling-delayed-project-removal-premium) projects within a group
+to be deleted after a delayed period.
+When enabled, actual deletion happens after number of days
+specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+
+CAUTION: **Warning:**
+The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
+[Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 
 #### Restore a project **(PREMIUM)**
 
@@ -269,7 +274,7 @@ Configure Error Tracking to discover and view [Sentry errors within GitLab](../o
 
 ### Jaeger tracing **(ULTIMATE)**
 
-Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../operations/tracing.md).
+Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../../../operations/tracing.md).
 
 ### Status Page
 

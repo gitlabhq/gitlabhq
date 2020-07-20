@@ -42,7 +42,30 @@
   "isBookmarked": false,
   "isPublic": false,
   "isSubscribed": true,
-  "lastRelease": null,
+  "lastRelease": {
+    "dateReleased": null,
+    "commitCount": 1,
+    "url": null,
+    "data": {},
+    "lastDeploy": {},
+    "deployCount": 3,
+    "dateCreated": "2020-06-29T08:10:45.909Z",
+    "lastEvent": "2020-06-30T09:47:19.651Z",
+    "version": "17642328ead24b51867165985996d04b29321448",
+    "firstEvent": "2020-06-29T09:13:36.696Z",
+    "lastCommit": {},
+    "shortVersion": "27de6b42eb4",
+    "authors": [],
+    "owner": null,
+    "newGroups": 208,
+    "ref": null,
+    "projects": [
+      {
+        "name": "Pump Station",
+        "slug": "pump-station"
+      }
+    ]
+  },
   "lastSeen": "2018-11-06T21:19:55Z",
   "level": "error",
   "logger": null,

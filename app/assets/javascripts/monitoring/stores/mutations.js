@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import { pick } from 'lodash';
 import * as types from './mutation_types';
-import { mapToDashboardViewModel, normalizeQueryResult } from './utils';
-import { BACKOFF_TIMEOUT } from '../../lib/utils/common_utils';
-import { endpointKeys, initialStateKeys, metricStates } from '../constants';
+import { mapToDashboardViewModel, normalizeQueryResponseData } from './utils';
 import httpStatusCodes from '~/lib/utils/http_status';
+import { BACKOFF_TIMEOUT } from '../../lib/utils/common_utils';
+import { dashboardEmptyStates, endpointKeys, initialStateKeys, metricStates } from '../constants';
+import { optionsFromSeriesData } from './variable_mapping';
 
 /**
  * Locate and return a metric in the dashboard by its id
@@ -57,8 +58,7 @@ export default {
    * Dashboard panels structure and global state
    */
   [types.REQUEST_METRICS_DASHBOARD](state) {
-    state.emptyState = 'loading';
-    state.showEmptyState = true;
+    state.emptyState = dashboardEmptyStates.LOADING;
   },
   [types.RECEIVE_METRICS_DASHBOARD_SUCCESS](state, dashboardYML) {
     const { dashboard, panelGroups, variables, links } = mapToDashboardViewModel(dashboardYML);
@@ -70,12 +70,15 @@ export default {
     state.links = links;
 
     if (!state.dashboard.panelGroups.length) {
-      state.emptyState = 'noData';
+      state.emptyState = dashboardEmptyStates.NO_DATA;
+    } else {
+      state.emptyState = null;
     }
   },
   [types.RECEIVE_METRICS_DASHBOARD_FAILURE](state, error) {
-    state.emptyState = error ? 'unableToConnect' : 'noData';
-    state.showEmptyState = true;
+    state.emptyState = error
+      ? dashboardEmptyStates.UNABLE_TO_CONNECT
+      : dashboardEmptyStates.NO_DATA;
   },
 
   [types.REQUEST_DASHBOARD_STARRING](state) {
@@ -92,6 +95,10 @@ export default {
   },
   [types.RECEIVE_DASHBOARD_STARRING_FAILURE](state) {
     state.isUpdatingStarredValue = false;
+  },
+
+  [types.SET_CURRENT_DASHBOARD](state, currentDashboard) {
+    state.currentDashboard = currentDashboard;
   },
 
   /**
@@ -126,6 +133,16 @@ export default {
   },
 
   /**
+   * Dashboard Validation Warnings
+   */
+  [types.RECEIVE_DASHBOARD_VALIDATION_WARNINGS_SUCCESS](state, hasDashboardValidationWarnings) {
+    state.hasDashboardValidationWarnings = hasDashboardValidationWarnings;
+  },
+  [types.RECEIVE_DASHBOARD_VALIDATION_WARNINGS_FAILURE](state) {
+    state.hasDashboardValidationWarnings = false;
+  },
+
+  /**
    * Individual panel/metric results
    */
   [types.REQUEST_METRIC_RESULT](state, { metricId }) {
@@ -135,19 +152,18 @@ export default {
       metric.state = metricStates.LOADING;
     }
   },
-  [types.RECEIVE_METRIC_RESULT_SUCCESS](state, { metricId, result }) {
+  [types.RECEIVE_METRIC_RESULT_SUCCESS](state, { metricId, data }) {
     const metric = findMetricInDashboard(metricId, state.dashboard);
     metric.loading = false;
-    state.showEmptyState = false;
 
-    if (!result || result.length === 0) {
+    if (!data.result || data.result.length === 0) {
       metric.state = metricStates.NO_DATA;
       metric.result = null;
     } else {
-      const normalizedResults = result.map(normalizeQueryResult);
+      const result = normalizeQueryResponseData(data);
 
       metric.state = metricStates.OK;
-      metric.result = Object.freeze(normalizedResults);
+      metric.result = Object.freeze(result);
     }
   },
   [types.RECEIVE_METRIC_RESULT_FAILURE](state, { metricId, error }) {
@@ -169,11 +185,7 @@ export default {
     state.timeRange = timeRange;
   },
   [types.SET_GETTING_STARTED_EMPTY_STATE](state) {
-    state.emptyState = 'gettingStarted';
-  },
-  [types.SET_NO_DATA_EMPTY_STATE](state) {
-    state.showEmptyState = true;
-    state.emptyState = 'noData';
+    state.emptyState = dashboardEmptyStates.GETTING_STARTED;
   },
   [types.SET_ALL_DASHBOARDS](state, dashboards) {
     state.allDashboards = dashboards || [];
@@ -192,13 +204,18 @@ export default {
     state.expandedPanel.group = group;
     state.expandedPanel.panel = panel;
   },
-  [types.SET_VARIABLES](state, variables) {
-    state.variables = variables;
+  [types.UPDATE_VARIABLE_VALUE](state, { name, value }) {
+    const variable = state.variables.find(v => v.name === name);
+    if (variable) {
+      Object.assign(variable, {
+        value,
+      });
+    }
   },
-  [types.UPDATE_VARIABLES](state, updatedVariable) {
-    Object.assign(state.variables[updatedVariable.key], {
-      ...state.variables[updatedVariable.key],
-      value: updatedVariable.value,
-    });
+  [types.UPDATE_VARIABLE_METRIC_LABEL_VALUES](state, { variable, label, data = [] }) {
+    const values = optionsFromSeriesData({ label, data });
+
+    // Add new options with assign to ensure Vue reactivity
+    Object.assign(variable.options, { values });
   },
 };

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Project do
+RSpec.describe Project do
   include ProjectForksHelper
   include GitHelpers
   include ExternalAuthorizationServiceHelpers
@@ -63,6 +63,7 @@ describe Project do
     it { is_expected.to have_one(:bugzilla_service) }
     it { is_expected.to have_one(:gitlab_issue_tracker_service) }
     it { is_expected.to have_one(:external_wiki_service) }
+    it { is_expected.to have_one(:confluence_service) }
     it { is_expected.to have_one(:project_feature) }
     it { is_expected.to have_one(:project_repository) }
     it { is_expected.to have_one(:container_expiration_policy) }
@@ -119,6 +120,8 @@ describe Project do
     it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:project) }
     it { is_expected.to have_many(:repository_storage_moves) }
     it { is_expected.to have_many(:reviews).inverse_of(:project) }
+    it { is_expected.to have_many(:packages).class_name('Packages::Package') }
+    it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
 
     it_behaves_like 'model with repository' do
       let_it_be(:container) { create(:project, :repository, path: 'somewhere') }
@@ -1378,6 +1381,62 @@ describe Project do
     end
   end
 
+  describe '.service_desk_enabled' do
+    it 'returns the correct project' do
+      project_with_service_desk_enabled = create(:project)
+      project_with_service_desk_disabled = create(:project, :service_desk_disabled)
+
+      expect(described_class.service_desk_enabled).to include(project_with_service_desk_enabled)
+      expect(described_class.service_desk_enabled).not_to include(project_with_service_desk_disabled)
+    end
+  end
+
+  describe '#service_desk_enabled?' do
+    let_it_be(:namespace) { create(:namespace) }
+
+    subject(:project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
+
+    before do
+      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
+      allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+    end
+
+    it 'is enabled' do
+      expect(project.service_desk_enabled?).to be_truthy
+      expect(project.service_desk_enabled).to be_truthy
+    end
+  end
+
+  describe '#service_desk_address' do
+    let_it_be(:project) { create(:project, service_desk_enabled: true) }
+
+    before do
+      allow(Gitlab::ServiceDesk).to receive(:enabled?).and_return(true)
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+      allow(Gitlab.config.incoming_email).to receive(:address).and_return("test+%{key}@mail.com")
+    end
+
+    it 'uses project full path as service desk address key' do
+      expect(project.service_desk_address).to eq("test+#{project.full_path_slug}-#{project.project_id}-issue-@mail.com")
+    end
+  end
+
+  describe '.find_by_service_desk_project_key' do
+    it 'returns the correct project' do
+      project1 = create(:project)
+      project2 = create(:project)
+      create(:service_desk_setting, project: project1, project_key: 'key1')
+      create(:service_desk_setting, project: project2, project_key: 'key2')
+
+      expect(Project.find_by_service_desk_project_key('key1')).to eq(project1)
+      expect(Project.find_by_service_desk_project_key('key2')).to eq(project2)
+    end
+
+    it 'returns nil if there is no project with the key' do
+      expect(Project.find_by_service_desk_project_key('some_key')).to be_nil
+    end
+  end
+
   context 'repository storage by default' do
     let(:project) { build(:project) }
 
@@ -1651,6 +1710,14 @@ describe Project do
       let(:project_name) { 'group.example.com' }
 
       it { is_expected.to eq("http://group.example.com") }
+
+      context 'mixed case path' do
+        before do
+          project.update!(path: 'Group.example.com')
+        end
+
+        it { is_expected.to eq("http://group.example.com") }
+      end
     end
 
     context 'project page' do
@@ -1658,6 +1725,14 @@ describe Project do
       let(:project_name) { 'Project' }
 
       it { is_expected.to eq("http://group.example.com/project") }
+
+      context 'mixed case path' do
+        before do
+          project.update!(path: 'Project')
+        end
+
+        it { is_expected.to eq("http://group.example.com/Project") }
+      end
     end
   end
 
@@ -2897,28 +2972,73 @@ describe Project do
 
     subject { project.deployment_variables(environment: environment, kubernetes_namespace: namespace) }
 
-    before do
-      expect(project).to receive(:deployment_platform).with(environment: environment)
-        .and_return(deployment_platform)
-    end
-
-    context 'when project has no deployment platform' do
-      let(:deployment_platform) { nil }
-
-      it { is_expected.to eq [] }
-    end
-
-    context 'when project has a deployment platform' do
-      let(:platform_variables) { %w(platform variables) }
-      let(:deployment_platform) { double }
-
+    context 'when the deployment platform is stubbed' do
       before do
-        expect(deployment_platform).to receive(:predefined_variables)
-          .with(project: project, environment_name: environment, kubernetes_namespace: namespace)
-          .and_return(platform_variables)
+        expect(project).to receive(:deployment_platform).with(environment: environment)
+          .and_return(deployment_platform)
       end
 
-      it { is_expected.to eq platform_variables }
+      context 'when project has a deployment platform' do
+        let(:platform_variables) { %w(platform variables) }
+        let(:deployment_platform) { double }
+
+        before do
+          expect(deployment_platform).to receive(:predefined_variables)
+            .with(project: project, environment_name: environment, kubernetes_namespace: namespace)
+            .and_return(platform_variables)
+        end
+
+        it { is_expected.to eq platform_variables }
+      end
+
+      context 'when project has no deployment platform' do
+        let(:deployment_platform) { nil }
+
+        it { is_expected.to eq [] }
+      end
+    end
+
+    context 'when project has a deployment platforms' do
+      let(:project) { create(:project) }
+
+      let!(:default_cluster) do
+        create(:cluster,
+                :not_managed,
+                platform_type: :kubernetes,
+                projects: [project],
+                environment_scope: '*',
+                platform_kubernetes: default_cluster_kubernetes)
+      end
+
+      let!(:review_env_cluster) do
+        create(:cluster,
+                :not_managed,
+                platform_type: :kubernetes,
+                projects: [project],
+                environment_scope: 'review/*',
+                platform_kubernetes: review_env_cluster_kubernetes)
+      end
+
+      let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
+      let(:review_env_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'review-AAA') }
+
+      context 'when environment name is review/name' do
+        let!(:environment) { create(:environment, project: project, name: 'review/name') }
+
+        it 'returns variables from this service' do
+          expect(project.deployment_variables(environment: 'review/name'))
+            .to include(key: 'KUBE_TOKEN', value: 'review-AAA', public: false, masked: true)
+        end
+      end
+
+      context 'when environment name is other' do
+        let!(:environment) { create(:environment, project: project, name: 'staging/name') }
+
+        it 'returns variables from this service' do
+          expect(project.deployment_variables(environment: 'staging/name'))
+            .to include(key: 'KUBE_TOKEN', value: 'default-AAA', public: false, masked: true)
+        end
+      end
     end
   end
 
@@ -3999,7 +4119,7 @@ describe Project do
     it 'returns the number of forks' do
       project = build(:project)
 
-      expect_any_instance_of(Projects::ForksCountService).to receive(:count).and_return(1)
+      expect_any_instance_of(::Projects::BatchForksCountService).to receive(:refresh_cache_and_retrieve_data).and_return({ project => 1 })
 
       expect(project.forks_count).to eq(1)
     end
@@ -4655,6 +4775,7 @@ describe Project do
       expect(project).to receive(:refresh_markdown_cache!)
       expect(InternalId).to receive(:flush_records!).with(project: project)
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
+      expect(project).to receive(:write_repository_config)
 
       project.after_import
     end
@@ -4740,6 +4861,36 @@ describe Project do
       project = create(:project_empty_repo)
 
       expect { project.write_repository_config }.not_to raise_error
+    end
+  end
+
+  describe "#default_branch" do
+    context "with an empty repository" do
+      let_it_be(:project) { create(:project_empty_repo) }
+
+      context "Gitlab::CurrentSettings.default_branch_name is unavailable" do
+        before do
+          expect(Gitlab::CurrentSettings)
+            .to receive(:default_branch_name)
+            .and_return(nil)
+        end
+
+        it "returns that value" do
+          expect(project.default_branch).to be_nil
+        end
+      end
+
+      context "Gitlab::CurrentSettings.default_branch_name is available" do
+        before do
+          expect(Gitlab::CurrentSettings)
+            .to receive(:default_branch_name)
+            .and_return('example_branch')
+        end
+
+        it "returns that value" do
+          expect(project.default_branch).to eq("example_branch")
+        end
+      end
     end
   end
 
@@ -5886,6 +6037,30 @@ describe Project do
     end
   end
 
+  describe '#prometheus_service_active?' do
+    let(:project) { create(:project) }
+
+    subject { project.prometheus_service_active? }
+
+    before do
+      create(:prometheus_service, project: project, manual_configuration: manual_configuration)
+    end
+
+    context 'when project has an activated prometheus service' do
+      let(:manual_configuration) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when project has an inactive prometheus service' do
+      let(:manual_configuration) { false }
+
+      it 'the service is marked as inactive' do
+        expect(subject).to be_falsey
+      end
+    end
+  end
+
   describe '#self_monitoring?' do
     let_it_be(:project) { create(:project) }
 
@@ -6021,6 +6196,39 @@ describe Project do
       it 'returns latest jira import by created_at' do
         expect(project.jira_imports.pluck(:id)).to eq([jira_import3.id, jira_import2.id, jira_import1.id])
         expect(project.latest_jira_import).to eq(jira_import1)
+      end
+    end
+  end
+
+  describe '#packages_enabled' do
+    subject { create(:project).packages_enabled }
+
+    it { is_expected.to be true }
+  end
+
+  describe '#package_already_taken?' do
+    let(:namespace) { create(:namespace) }
+    let(:project) { create(:project, :public, namespace: namespace) }
+    let!(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo") }
+
+    context 'no package exists with the same name' do
+      it 'returns false' do
+        result = project.package_already_taken?("@#{namespace.path}/bar")
+        expect(result).to be false
+      end
+
+      it 'returns false if it is the project that the package belongs to' do
+        result = project.package_already_taken?("@#{namespace.path}/foo")
+        expect(result).to be false
+      end
+    end
+
+    context 'a package already exists with the same name' do
+      let(:alt_project) { create(:project, :public, namespace: namespace) }
+
+      it 'returns true' do
+        result = alt_project.package_already_taken?("@#{namespace.path}/foo")
+        expect(result).to be true
       end
     end
   end

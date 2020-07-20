@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::MilestonesController do
+RSpec.describe Groups::MilestonesController do
   context 'N+1 DB queries' do
     let(:user) { create(:user) }
     let!(:public_group) { create(:group, :public) }

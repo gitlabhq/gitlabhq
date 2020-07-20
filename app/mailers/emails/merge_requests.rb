@@ -92,6 +92,13 @@ module Emails
       mail_answer_thread(@merge_request, merge_request_thread_options(resolved_by_user_id, recipient_id, reason))
     end
 
+    def merge_when_pipeline_succeeds_email(recipient_id, merge_request_id, mwps_set_by_user_id, reason = nil)
+      setup_merge_request_mail(merge_request_id, recipient_id)
+
+      @mwps_set_by = ::User.find(mwps_set_by_user_id)
+      mail_answer_thread(@merge_request, merge_request_thread_options(mwps_set_by_user_id, recipient_id, reason))
+    end
+
     private
 
     def setup_merge_request_mail(merge_request_id, recipient_id, present: false)

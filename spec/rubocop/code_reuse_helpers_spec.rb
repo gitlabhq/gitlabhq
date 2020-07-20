@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rubocop'
 require 'parser/current'
 require_relative '../../rubocop/code_reuse_helpers'
 
-describe RuboCop::CodeReuseHelpers do
+RSpec.describe RuboCop::CodeReuseHelpers do
   def parse_source(source, path = 'foo.rb')
     buffer = Parser::Source::Buffer.new(path)
     buffer.source = source
@@ -69,13 +69,13 @@ describe RuboCop::CodeReuseHelpers do
 
   describe '#in_finder?' do
     it 'returns true for a node in the finders directory' do
-      node = parse_source('10', Rails.root.join('app', 'finders', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'finders', 'foo.rb'))
 
       expect(cop.in_finder?(node)).to eq(true)
     end
 
     it 'returns false for a node outside the finders directory' do
-      node = parse_source('10', Rails.root.join('app', 'foo', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
       expect(cop.in_finder?(node)).to eq(false)
     end
@@ -83,13 +83,13 @@ describe RuboCop::CodeReuseHelpers do
 
   describe '#in_model?' do
     it 'returns true for a node in the models directory' do
-      node = parse_source('10', Rails.root.join('app', 'models', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'models', 'foo.rb'))
 
       expect(cop.in_model?(node)).to eq(true)
     end
 
     it 'returns false for a node outside the models directory' do
-      node = parse_source('10', Rails.root.join('app', 'foo', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
       expect(cop.in_model?(node)).to eq(false)
     end
@@ -97,13 +97,13 @@ describe RuboCop::CodeReuseHelpers do
 
   describe '#in_service_class?' do
     it 'returns true for a node in the services directory' do
-      node = parse_source('10', Rails.root.join('app', 'services', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'services', 'foo.rb'))
 
       expect(cop.in_service_class?(node)).to eq(true)
     end
 
     it 'returns false for a node outside the services directory' do
-      node = parse_source('10', Rails.root.join('app', 'foo', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
       expect(cop.in_service_class?(node)).to eq(false)
     end
@@ -111,13 +111,13 @@ describe RuboCop::CodeReuseHelpers do
 
   describe '#in_presenter?' do
     it 'returns true for a node in the presenters directory' do
-      node = parse_source('10', Rails.root.join('app', 'presenters', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'presenters', 'foo.rb'))
 
       expect(cop.in_presenter?(node)).to eq(true)
     end
 
     it 'returns false for a node outside the presenters directory' do
-      node = parse_source('10', Rails.root.join('app', 'foo', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
       expect(cop.in_presenter?(node)).to eq(false)
     end
@@ -125,13 +125,13 @@ describe RuboCop::CodeReuseHelpers do
 
   describe '#in_serializer?' do
     it 'returns true for a node in the serializers directory' do
-      node = parse_source('10', Rails.root.join('app', 'serializers', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'serializers', 'foo.rb'))
 
       expect(cop.in_serializer?(node)).to eq(true)
     end
 
     it 'returns false for a node outside the serializers directory' do
-      node = parse_source('10', Rails.root.join('app', 'foo', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
       expect(cop.in_serializer?(node)).to eq(false)
     end
@@ -139,13 +139,13 @@ describe RuboCop::CodeReuseHelpers do
 
   describe '#in_worker?' do
     it 'returns true for a node in the workers directory' do
-      node = parse_source('10', Rails.root.join('app', 'workers', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'workers', 'foo.rb'))
 
       expect(cop.in_worker?(node)).to eq(true)
     end
 
     it 'returns false for a node outside the workers directory' do
-      node = parse_source('10', Rails.root.join('app', 'foo', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'foo', 'foo.rb'))
 
       expect(cop.in_worker?(node)).to eq(false)
     end
@@ -153,13 +153,13 @@ describe RuboCop::CodeReuseHelpers do
 
   describe '#in_api?' do
     it 'returns true for a node in the API directory' do
-      node = parse_source('10', Rails.root.join('lib', 'api', 'foo.rb'))
+      node = parse_source('10', rails_root_join('lib', 'api', 'foo.rb'))
 
       expect(cop.in_api?(node)).to eq(true)
     end
 
     it 'returns false for a node outside the API directory' do
-      node = parse_source('10', Rails.root.join('lib', 'foo', 'foo.rb'))
+      node = parse_source('10', rails_root_join('lib', 'foo', 'foo.rb'))
 
       expect(cop.in_api?(node)).to eq(false)
     end
@@ -167,21 +167,21 @@ describe RuboCop::CodeReuseHelpers do
 
   describe '#in_directory?' do
     it 'returns true for a directory in the CE app/ directory' do
-      node = parse_source('10', Rails.root.join('app', 'models', 'foo.rb'))
+      node = parse_source('10', rails_root_join('app', 'models', 'foo.rb'))
 
       expect(cop.in_directory?(node, 'models')).to eq(true)
     end
 
     it 'returns true for a directory in the EE app/ directory' do
       node =
-        parse_source('10', Rails.root.join('ee', 'app', 'models', 'foo.rb'))
+        parse_source('10', rails_root_join('ee', 'app', 'models', 'foo.rb'))
 
       expect(cop.in_directory?(node, 'models')).to eq(true)
     end
 
     it 'returns false for a directory in the lib/ directory' do
       node =
-        parse_source('10', Rails.root.join('lib', 'models', 'foo.rb'))
+        parse_source('10', rails_root_join('lib', 'models', 'foo.rb'))
 
       expect(cop.in_directory?(node, 'models')).to eq(false)
     end

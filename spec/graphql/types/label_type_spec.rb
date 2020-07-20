@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe GitlabSchema.types['Label'] do
+RSpec.describe GitlabSchema.types['Label'] do
   it 'has the correct fields' do
     expected_fields = [:id, :description, :description_html, :title, :color, :text_color]
 

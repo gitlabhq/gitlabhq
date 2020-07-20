@@ -47,7 +47,7 @@ class SchemaVersionFinder
   end
 end
 
-describe CleanupProjectsWithMissingNamespace, :migration, schema: SchemaVersionFinder.previous_migration do
+RSpec.describe CleanupProjectsWithMissingNamespace, :migration, schema: SchemaVersionFinder.previous_migration do
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
   let(:users) { table(:users) }

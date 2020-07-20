@@ -3,6 +3,7 @@
 class UsersController < ApplicationController
   include RoutableActions
   include RendersMemberAccess
+  include RendersProjectsList
   include ControllerWithCrossProjectAccessCheck
   include Gitlab::NoteableMetadata
 
@@ -34,6 +35,12 @@ class UsersController < ApplicationController
         pager_json("events/_events", @events.count, events: @events)
       end
     end
+  end
+
+  # Get all keys of a user(params[:username]) in a text format
+  # Helpful for sysadmins to put in respective servers
+  def ssh_keys
+    render plain: user.all_ssh_keys.join("\n")
   end
 
   def activity

@@ -51,8 +51,6 @@ To run Knative on GitLab, you will need:
 1. **Kubernetes Cluster:** An RBAC-enabled Kubernetes cluster is required to deploy Knative.
    The simplest way to get started is to add a cluster using GitLab's [GKE integration](../add_remove_clusters.md).
    The set of minimum recommended cluster specifications to run Knative is 3 nodes, 6 vCPUs, and 22.50 GB memory.
-1. **Helm Tiller:** Helm is a package manager for Kubernetes and is required to install
-   Knative.
 1. **GitLab Runner:** A runner is required to run the CI jobs that will deploy serverless
    applications or functions onto your cluster. You can install the GitLab Runner
    onto the existing Kubernetes cluster. See [Installing Applications](../index.md#installing-applications) for more information.
@@ -80,8 +78,8 @@ To run Knative on GitLab, you will need:
 NOTE: **Note:**
 The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.50 GB memory. **RBAC must be enabled.**
 
-1. [Add a Kubernetes cluster](../add_remove_clusters.md) and [install Helm](../index.md#installing-applications).
-1. Once Helm has been successfully installed, scroll down to the Knative app section. Enter the domain to be used with
+1. [Add a Kubernetes cluster](../add_remove_clusters.md).
+1. Select the **Applications** tab and scroll down to the Knative app section. Enter the domain to be used with
    your application/functions (e.g. `example.com`) and click **Install**.
 
    ![install-knative](img/install-knative.png)
@@ -143,24 +141,24 @@ You must do the following:
        labels:
          rbac.authorization.k8s.io/aggregate-to-edit: "true"
      rules:
-     - apiGroups:
-       - serving.knative.dev
-       resources:
-       - configurations
-       - configurationgenerations
-       - routes
-       - revisions
-       - revisionuids
-       - autoscalers
-       - services
-       verbs:
-       - get
-       - list
-       - create
-       - update
-       - delete
-       - patch
-       - watch
+       - apiGroups:
+           - serving.knative.dev
+         resources:
+           - configurations
+           - configurationgenerations
+           - routes
+           - revisions
+           - revisionuids
+           - autoscalers
+           - services
+         verbs:
+           - get
+           - list
+           - create
+           - update
+           - delete
+           - patch
+           - watch
      ```
 
      Then run the following command:
@@ -570,7 +568,7 @@ The simplest way to accomplish this is to
 use [Certbot to manually obtain Let's Encrypt certificates](https://knative.dev/docs/serving/using-a-tls-cert/#using-certbot-to-manually-obtain-let-s-encrypt-certificates). Certbot is a free, open source software tool for automatically using Let’s Encrypt certificates on manually-administrated websites to enable HTTPS.
 
 NOTE: **Note:**
-The instructions below relate to installing and running Certbot on a Linux server and may not work on other operating systems.
+The instructions below relate to installing and running Certbot on a Linux server that has Python 3 installed and may not work on other operating systems or with other versions of Python.
 
 1. Install Certbot by running the
    [`certbot-auto` wrapper script](https://certbot.eff.org/docs/install.html#certbot-auto).
@@ -580,7 +578,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
    wget https://dl.eff.org/certbot-auto
    sudo mv certbot-auto /usr/local/bin/certbot-auto
    sudo chown root /usr/local/bin/certbot-auto
-   chmod 0755 /usr/local/bin/certbot-auto
+   sudo chmod 0755 /usr/local/bin/certbot-auto
    /usr/local/bin/certbot-auto --help
    ```
 
@@ -609,7 +607,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
    using DNS challenge during authorization:
 
    ```shell
-   ./certbot-auto certonly --manual --preferred-challenges dns -d '*.<namespace>.example.com'
+   /usr/local/bin/certbot-auto certonly --manual --preferred-challenges dns -d '*.<namespace>.example.com'
    ```
 
    Where `<namespace>` is the namespace created by GitLab for your serverless project (composed of `<project_name>-<project_id>-<environment>`) and
@@ -835,7 +833,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
 ## Using an older version of `gitlabktl`
 
 There may be situations where you want to run an older version of `gitlabktl`. This
-requires setting an older version of the `gitlabktl` image in the `.gitlab-ci.yml file.`
+requires setting an older version of the `gitlabktl` image in the `.gitlab-ci.yml` file.
 
 To set an older version, add `image:` to the `functions:deploy` block. For example:
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::UserAccessDeniedReason do
+RSpec.describe Gitlab::Auth::UserAccessDeniedReason do
   include TermsHelper
   let(:user) { build(:user) }
 

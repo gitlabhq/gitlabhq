@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::AuthorizedKeys do
+RSpec.describe Gitlab::AuthorizedKeys do
   let(:logger) { double('logger').as_null_object }
 
   subject(:authorized_keys) { described_class.new(logger) }

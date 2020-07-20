@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::CheckIngressIpAddressService do
+RSpec.describe Clusters::Applications::CheckIngressIpAddressService do
   include ExclusiveLeaseHelpers
 
   let(:application) { create(:clusters_applications_ingress, :installed) }

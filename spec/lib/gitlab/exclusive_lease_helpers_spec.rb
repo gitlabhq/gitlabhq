@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state do
   include ::ExclusiveLeaseHelpers
 
   let(:class_instance) { (Class.new { include ::Gitlab::ExclusiveLeaseHelpers }).new }

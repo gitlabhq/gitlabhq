@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'gitlab:ldap:rename_provider rake task' do
+RSpec.describe 'gitlab:ldap:rename_provider rake task' do
   it 'completes without error' do
     Rake.application.rake_require 'tasks/gitlab/ldap'
     stub_warn_user_is_not_gitlab

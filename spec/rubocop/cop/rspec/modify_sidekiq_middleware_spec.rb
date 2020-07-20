@@ -4,9 +4,8 @@ require 'fast_spec_helper'
 require 'rubocop'
 require_relative '../../../../rubocop/cop/rspec/modify_sidekiq_middleware'
 
-describe RuboCop::Cop::RSpec::ModifySidekiqMiddleware, type: :rubocop do
+RSpec.describe RuboCop::Cop::RSpec::ModifySidekiqMiddleware, type: :rubocop do
   include CopHelper
-  include ExpectOffense
 
   subject(:cop) { described_class.new }
 

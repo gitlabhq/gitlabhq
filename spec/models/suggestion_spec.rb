@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Suggestion do
+RSpec.describe Suggestion do
   let(:suggestion) { create(:suggestion) }
 
   describe 'associations' do
@@ -38,26 +38,106 @@ describe Suggestion do
   end
 
   describe '#appliable?' do
-    context 'when patch is already applied' do
-      let(:suggestion) { create(:suggestion, :applied) }
+    let(:suggestion) { build(:suggestion) }
 
-      it 'returns false' do
-        expect(suggestion).not_to be_appliable
-      end
+    subject(:appliable) { suggestion.appliable? }
+
+    before do
+      allow(suggestion).to receive(:inapplicable_reason).and_return(inapplicable_reason)
     end
 
-    context 'when merge request is not opened' do
-      let(:merge_request) { create(:merge_request, :merged) }
-      let(:note) do
-        create(:diff_note_on_merge_request, project: merge_request.project,
-                                            noteable: merge_request)
+    context 'when inapplicable_reason is nil' do
+      let(:inapplicable_reason) { nil }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when inapplicable_reason is not nil' do
+      let(:inapplicable_reason) { :applied }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#inapplicable_reason' do
+    let(:merge_request) { create(:merge_request) }
+
+    let!(:note) do
+      create(
+        :diff_note_on_merge_request,
+        project: merge_request.project,
+        noteable: merge_request
+      )
+    end
+
+    let(:suggestion) { build(:suggestion, note: note) }
+
+    subject(:inapplicable_reason) { suggestion.inapplicable_reason }
+
+    context 'when suggestion is already applied' do
+      let(:suggestion) { build(:suggestion, :applied, note: note) }
+
+      it { is_expected.to eq(:applied) }
+    end
+
+    context 'when merge request was merged' do
+      before do
+        merge_request.mark_as_merged!
       end
 
-      let(:suggestion) { create(:suggestion, note: note) }
+      it { is_expected.to eq(:merge_request_merged) }
+    end
 
-      it 'returns false' do
-        expect(suggestion).not_to be_appliable
+    context 'when merge request is closed' do
+      before do
+        merge_request.close!
       end
+
+      it { is_expected.to eq(:merge_request_closed) }
+    end
+
+    context 'when source branch is deleted' do
+      before do
+        merge_request.project.repository.rm_branch(merge_request.author, merge_request.source_branch)
+      end
+
+      it { is_expected.to eq(:source_branch_deleted) }
+    end
+
+    context 'when content is outdated' do
+      before do
+        allow(suggestion).to receive(:outdated?).and_return(true)
+      end
+
+      it { is_expected.to eq(:outdated) }
+    end
+
+    context 'when note is outdated' do
+      before do
+        allow(note).to receive(:active?).and_return(false)
+      end
+
+      it { is_expected.to eq(:outdated) }
+    end
+
+    context 'when applicable' do
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#single_line?' do
+    subject(:single_line) { suggestion.single_line? }
+
+    context 'when suggestion is for a single line' do
+      let(:suggestion) { build(:suggestion, lines_above: 0, lines_below: 0) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when suggestion is for multiple lines' do
+      let(:suggestion) { build(:suggestion, lines_above: 2, lines_below: 0) }
+
+      it { is_expected.to eq(false) }
     end
   end
 end

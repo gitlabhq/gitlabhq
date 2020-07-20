@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Prometheus::PidProvider do
+RSpec.describe Prometheus::PidProvider do
   describe '.worker_id' do
     subject { described_class.worker_id }
 

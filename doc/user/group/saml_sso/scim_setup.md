@@ -92,7 +92,8 @@ You can then test the connection by clicking on **Test Connection**. If the conn
 
 1. Save your changes. For reference, you can view [an example configuration in the troubleshooting reference](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory).
 
-   NOTE: **Note:** If you used a unique identifier **other than** `objectId`, be sure to map it to `externalId`.
+   NOTE: **Note:**
+   If you used a unique identifier **other than** `objectId`, be sure to map it to `externalId`.
 
 1. Below the mapping list click on **Show advanced options > Edit attribute list for AppName**.
 
@@ -127,7 +128,8 @@ Before proceeding, be sure to complete the [GitLab configuration](#gitlab-config
 1. If you see an **Admin** button in the top right, click the button. This will
    ensure you are in the Admin area.
 
-   TIP: **Tip:** If you're using the Developer Console, click **Developer Console** in the top
+   TIP: **Tip:**
+   If you're using the Developer Console, click **Developer Console** in the top
    bar and select **Classic UI**. Otherwise, you may not see the buttons described
    in the following steps:
 
@@ -163,7 +165,7 @@ As long as [Group SAML](index.md) has been configured, prior to turning on sync,
 - By following these steps:
 
   1. Sign in to GitLab.com if needed.
-  1. Click on the GitLab app in the identity provider's dashboard or visit the **GitLab single sign on URL**.
+  1. Click on the GitLab app in the identity provider's dashboard or visit the **GitLab single sign-on URL**.
   1. Click on the **Authorize** button.
 
 New users and existing users on subsequent visits can access the group through the identify provider's dashboard or by visiting links directly.
@@ -175,7 +177,7 @@ For role information, please see the [Group SAML page](index.md#user-access-and-
 To rescind access to the group, we recommend removing the user from the identity
 provider or users list for the specific app.
 
-Upon the next sync, the user will be deprovisioned, which means that the user will be removed from the group. The user account will not be deleted unless using [group managed accounts](index.md#group-managed-accounts).
+Upon the next sync, the user will be deprovisioned, which means that the user will be removed from the group. The user account will not be deleted unless using [group managed accounts](group_managed_accounts.md).
 
 ## Troubleshooting
 

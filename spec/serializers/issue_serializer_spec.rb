@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssueSerializer do
+RSpec.describe IssueSerializer do
   let(:resource) { create(:issue) }
   let(:user)     { create(:user) }
   let(:json_entity) do

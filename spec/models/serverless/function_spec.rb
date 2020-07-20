@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::Serverless::Function do
+RSpec.describe ::Serverless::Function do
   let(:project) { create(:project) }
   let(:func) { described_class.new(project, 'test', 'test-ns') }
 

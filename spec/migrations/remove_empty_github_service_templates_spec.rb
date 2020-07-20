@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20191021101942_remove_empty_github_service_templates.rb')
 
-describe RemoveEmptyGithubServiceTemplates do
+RSpec.describe RemoveEmptyGithubServiceTemplates do
   subject(:migration) { described_class.new }
 
   let(:services) do

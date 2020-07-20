@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'merge requests creations' do
+RSpec.describe 'merge requests creations' do
   describe 'GET /:namespace/:project/merge_requests/new' do
     include ProjectForksHelper
 

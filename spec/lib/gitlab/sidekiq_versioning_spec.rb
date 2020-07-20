@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqVersioning, :redis do
+RSpec.describe Gitlab::SidekiqVersioning, :redis do
   let(:foo_worker) do
     Class.new do
       def self.name

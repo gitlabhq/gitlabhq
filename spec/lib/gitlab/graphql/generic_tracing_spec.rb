@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::GenericTracing do
+RSpec.describe Gitlab::Graphql::GenericTracing do
   let(:graphql_duration_seconds_histogram) { double('Gitlab::Metrics::NullMetric') }
 
   it 'updates graphql histogram with expected labels' do

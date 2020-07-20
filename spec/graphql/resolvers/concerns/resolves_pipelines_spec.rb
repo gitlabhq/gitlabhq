@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResolvesPipelines do
+RSpec.describe ResolvesPipelines do
   include GraphqlHelpers
 
   subject(:resolver) do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create', :requires_admin do
+  RSpec.describe 'Create', :requires_admin do
     describe 'push after setting the file size limit via admin/application_settings' do
       # Note: The file size limits in this test should be greater than the limits in
       # ee/browser_ui/3_create/repository/push_rules_spec to prevent that test from

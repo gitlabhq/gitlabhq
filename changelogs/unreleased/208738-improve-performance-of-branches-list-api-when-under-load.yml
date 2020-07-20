@@ -1,0 +1,5 @@
+---
+title: Use native Gitaly pagination for Branch list API
+merge_request: 35819
+author:
+type: changed

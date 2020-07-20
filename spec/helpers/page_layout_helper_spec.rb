@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PageLayoutHelper do
+RSpec.describe PageLayoutHelper do
   describe 'page_description' do
     it 'defaults to nil' do
       expect(helper.page_description).to eq nil

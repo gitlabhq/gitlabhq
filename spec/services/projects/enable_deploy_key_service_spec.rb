@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::EnableDeployKeyService do
+RSpec.describe Projects::EnableDeployKeyService do
   let(:deploy_key)  { create(:deploy_key, public: true) }
   let(:project)     { create(:project) }
   let(:user)        { project.creator}

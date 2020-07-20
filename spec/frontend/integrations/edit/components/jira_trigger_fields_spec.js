@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
 import { GlFormCheckbox } from '@gitlab/ui';
+import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
 
 describe('JiraTriggerFields', () => {
   let wrapper;
@@ -11,9 +11,12 @@ describe('JiraTriggerFields', () => {
     initialEnableComments: false,
   };
 
-  const createComponent = props => {
+  const createComponent = (props, isInheriting = false) => {
     wrapper = mount(JiraTriggerFields, {
       propsData: { ...defaultProps, ...props },
+      computed: {
+        isInheriting: () => isInheriting,
+      },
     });
   };
 
@@ -91,6 +94,24 @@ describe('JiraTriggerFields', () => {
 
         expect(findCommentSettings().isVisible()).toBe(true);
         expect(findCommentDetail().isVisible()).toBe(true);
+      });
+    });
+
+    it('disables checkboxes and radios if inheriting', () => {
+      createComponent(
+        {
+          initialTriggerCommit: true,
+          initialEnableComments: true,
+        },
+        true,
+      );
+
+      wrapper.findAll('[type=checkbox]').wrappers.forEach(checkbox => {
+        expect(checkbox.attributes('disabled')).toBe('disabled');
+      });
+
+      wrapper.findAll('[type=radio]').wrappers.forEach(radio => {
+        expect(radio.attributes('disabled')).toBe('disabled');
       });
     });
   });

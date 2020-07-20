@@ -104,15 +104,19 @@ knowledge of the following:
 - [GitLab Runner](https://docs.gitlab.com/runner/)
 - [Prometheus](https://prometheus.io/docs/introduction/overview/)
 
-Auto DevOps provides great defaults for all the stages; you can, however,
+Auto DevOps provides great defaults for all the stages and makes use of [CI templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates); you can, however,
 [customize](customize.md) almost everything to your needs.
 
 For an overview on the creation of Auto DevOps, read more
 [in this blog post](https://about.gitlab.com/blog/2017/06/29/whats-next-for-gitlab-ci/).
 
-NOTE: **Note**
+NOTE: **Note:**
 Kubernetes clusters can [be used without](../../user/project/clusters/index.md)
 Auto DevOps.
+
+## Kubernetes requirements
+
+See [Auto DevOps requirements for Kubernetes](requirements.md#auto-devops-requirements-for-kubernetes).
 
 ## Auto DevOps base domain
 
@@ -163,6 +167,10 @@ set the Auto DevOps base domain to `1.2.3.4.nip.io`.
 After completing setup, all requests hit the load balancer, which routes requests
 to the Kubernetes pods running your application.
 
+### AWS ECS
+
+See [Auto DevOps requirements for Amazon ECS](requirements.md#auto-devops-requirements-for-amazon-ecs).
+
 ## Enabling/Disabling Auto DevOps
 
 When first using Auto DevOps, review the [requirements](#requirements) to ensure
@@ -185,7 +193,7 @@ If enabling, check that your project does not have a `.gitlab-ci.yml`, or if one
    and choose the [deployment strategy](#deployment-strategy).
 1. Click **Save changes** for the changes to take effect.
 
-After enabling the feature, an Auto DevOps pipeline is triggered on the default branch.
+After enabling the feature, an Auto DevOps pipeline is triggered on the `master` branch.
 
 ### At the group level
 
@@ -240,11 +248,11 @@ TIP: **Tip:**
 Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
 to minimize downtime and risk.
 
-## Using multiple Kubernetes clusters **(PREMIUM)**
+## Using multiple Kubernetes clusters
 
 When using Auto DevOps, you can deploy different environments to
 different Kubernetes clusters, due to the 1:1 connection
-[existing between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters-premium).
+[existing between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters).
 
 The [Deploy Job template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
 used by Auto DevOps currently defines 3 environment names:
@@ -271,8 +279,8 @@ To add a different cluster for each environment:
 1. Navigate to your project's **{cloud-gear}** **Operations > Kubernetes**.
 1. Create the Kubernetes clusters with their respective environment scope, as
    described from the table above.
-1. After creating the clusters, navigate to each cluster and install Helm Tiller
-   and Ingress. Wait for the Ingress IP address to be assigned.
+1. After creating the clusters, navigate to each cluster and install
+   Ingress. Wait for the Ingress IP address to be assigned.
 1. Make sure you've [configured your DNS](#auto-devops-base-domain) with the
    specified Auto DevOps domains.
 1. Navigate to each cluster's page, through **{cloud-gear}** **Operations > Kubernetes**,
@@ -293,9 +301,9 @@ No documented way of using private container registry with Auto DevOps exists.
 We strongly advise using GitLab Container Registry with Auto DevOps to
 simplify configuration and prevent any unforeseen issues.
 
-### Installing Helm behind a proxy
+### Install applications behind a proxy
 
-GitLab does not support installing [Helm as a GitLab-managed App](../../user/clusters/applications.md#helm) when
+GitLab's Helm integration does not support installing applications when
 behind a proxy. Users who want to do so must inject their proxy settings
 into the installation pods at runtime, such as by using a
 [`PodPreset`](https://kubernetes.io/docs/concepts/workloads/pods/podpreset/):
@@ -357,6 +365,55 @@ To fix this issue, you must either:
 Auto Deploy will fail if GitLab can't create a Kubernetes namespace and
 service account for your project. For help debugging this issue, see
 [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
+
+### Detected an existing PostgreSQL database
+
+After upgrading to GitLab 13.0, you may encounter this message when deploying
+with Auto DevOps:
+
+```plaintext
+Detected an existing PostgreSQL database installed on the
+deprecated channel 1, but the current channel is set to 2. The default
+channel changed to 2 in of GitLab 13.0.
+[...]
+```
+
+Auto DevOps, by default, installs an in-cluster PostgreSQL database alongside
+your application. The default installation method changed in GitLab 13.0, and
+upgrading existing databases requires user involvement. The two installation
+methods are:
+
+- **channel 1 (deprecated):** Pulls in the database as a dependency of the associated
+  Helm chart. Only supports Kubernetes versions up to version 1.15.
+- **channel 2 (current):** Installs the database as an independent Helm chart. Required
+  for using the in-cluster database feature with Kubernetes versions 1.16 and greater.
+
+If you receive this error, you can do one of the following actions:
+
+- You can *safely* ignore the warning and continue using the channel 1 PostgreSQL
+  database by setting `AUTO_DEVOPS_POSTGRES_CHANNEL` to `1` and redeploying.
+
+- You can delete the channel 1 PostgreSQL database and install a fresh channel 2
+  database by setting `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value and
+  redeploying.
+
+  DANGER: **Danger:**
+  Deleting the channel 1 PostgreSQL database permanently deletes the existing
+  channel 1 database and all its data. See
+  [Upgrading PostgreSQL](upgrading_postgresql.md)
+  for more information on backing up and upgrading your database.
+
+- If you are not using the in-cluster database, you can set
+  `POSTGRES_ENABLED` to `false` and re-deploy. This option is especially relevant to
+  users of *custom charts without the in-chart PostgreSQL dependency*.
+  Database auto-detection is based on the `postgresql.enabled` Helm value for
+  your release. This value is set based on the `POSTGRES_ENABLED` CI variable
+  and persisted by Helm, regardless of whether or not your chart uses the
+  variable.
+
+DANGER: **Danger:**
+Setting `POSTGRES_ENABLED` to `false` permanently deletes any existing
+channel 1 database for your environment.
 
 ## Development guides
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Namespace::RootStorageStatisticsPolicy do
+RSpec.describe Namespace::RootStorageStatisticsPolicy do
   using RSpec::Parameterized::TableSyntax
 
   describe '#rules' do

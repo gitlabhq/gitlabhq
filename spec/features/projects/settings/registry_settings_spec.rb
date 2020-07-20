@@ -20,10 +20,10 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
 
     it 'shows available section' do
       settings_block = find('#js-registry-policies')
-      expect(settings_block).to have_text 'Container Registry tag expiration policy'
+      expect(settings_block).to have_text 'Cleanup policy for tags'
     end
 
-    it 'saves expiration policy submit the form' do
+    it 'saves cleanup policy submit the form' do
       within '#js-registry-policies' do
         within '.card-body' do
           select('7 days until tags are automatically removed', from: 'Expiration interval:')
@@ -36,10 +36,10 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
         submit_button.click
       end
       toast = find('.gl-toast')
-      expect(toast).to have_content('Expiration policy successfully saved.')
+      expect(toast).to have_content('Cleanup policy successfully saved.')
     end
 
-    it 'does not save expiration policy submit form with invalid regex' do
+    it 'does not save cleanup policy submit form with invalid regex' do
       within '#js-registry-policies' do
         within '.card-body' do
           fill_in('Tags with names matching this regex pattern will expire:', with: '*-production')
@@ -49,7 +49,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
         submit_button.click
       end
       toast = find('.gl-toast')
-      expect(toast).to have_content('Something went wrong while updating the expiration policy.')
+      expect(toast).to have_content('Something went wrong while updating the cleanup policy.')
     end
   end
 

@@ -2,7 +2,7 @@
 
 module API
   # Snippets API
-  class Snippets < Grape::API
+  class Snippets < Grape::API::Instance
     include PaginationParams
 
     before { authenticate! }
@@ -31,7 +31,7 @@ module API
         use :pagination
       end
       get do
-        present paginate(snippets_for_current_user), with: Entities::Snippet
+        present paginate(snippets_for_current_user), with: Entities::Snippet, current_user: current_user
       end
 
       desc 'List all public personal snippets current_user has access to' do
@@ -42,7 +42,7 @@ module API
         use :pagination
       end
       get 'public' do
-        present paginate(public_snippets), with: Entities::PersonalSnippet
+        present paginate(public_snippets), with: Entities::PersonalSnippet, current_user: current_user
       end
 
       desc 'Get a single snippet' do
@@ -57,7 +57,7 @@ module API
 
         break not_found!('Snippet') unless snippet
 
-        present snippet, with: Entities::PersonalSnippet
+        present snippet, with: Entities::PersonalSnippet, current_user: current_user
       end
 
       desc 'Create new snippet' do
@@ -82,7 +82,7 @@ module API
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
-          present snippet, with: Entities::PersonalSnippet
+          present snippet, with: Entities::PersonalSnippet, current_user: current_user
         else
           render_spam_error! if snippet.spam?
 
@@ -116,7 +116,7 @@ module API
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
-          present snippet, with: Entities::PersonalSnippet
+          present snippet, with: Entities::PersonalSnippet, current_user: current_user
         else
           render_spam_error! if snippet.spam?
 
@@ -155,12 +155,20 @@ module API
       end
       get ":id/raw" do
         snippet = snippets.find_by_id(params.delete(:id))
-        break not_found!('Snippet') unless snippet
+        not_found!('Snippet') unless snippet
 
-        env['api.format'] = :txt
-        content_type 'text/plain'
-        header['Content-Disposition'] = 'attachment'
         present content_for(snippet)
+      end
+
+      desc 'Get raw snippet file contents from the repository'
+      params do
+        use :raw_file_params
+      end
+      get ":id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
+        snippet = snippets.find_by_id(params.delete(:id))
+        not_found!('Snippet') unless snippet&.repo_exists?
+
+        present file_content_for(snippet)
       end
 
       desc 'Get the user agent details for a snippet' do

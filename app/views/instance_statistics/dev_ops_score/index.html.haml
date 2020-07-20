@@ -5,7 +5,7 @@
   - if usage_ping_enabled && show_callout?('dev_ops_score_intro_callout_dismissed')
     = render 'callout'
 
-  .prepend-top-default
+  .gl-mt-3
   - if !usage_ping_enabled
     = render 'disabled'
   - elsif @metric.blank?

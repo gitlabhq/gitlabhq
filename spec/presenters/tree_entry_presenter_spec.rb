@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TreeEntryPresenter do
+RSpec.describe TreeEntryPresenter do
   include Gitlab::Routing.url_helpers
 
   let(:project) { create(:project, :repository) }

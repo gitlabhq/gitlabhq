@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProjectStatistics do
+RSpec.describe API::ProjectStatistics do
   let_it_be(:developer) { create(:user) }
   let_it_be(:public_project) { create(:project, :public) }
 

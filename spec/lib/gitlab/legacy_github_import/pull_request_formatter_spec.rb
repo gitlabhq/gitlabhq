@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::PullRequestFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter do
   let(:client) { double }
   let(:project) { create(:project, :repository) }
   let(:source_sha) { create(:commit, project: project).id }

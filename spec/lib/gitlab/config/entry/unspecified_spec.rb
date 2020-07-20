@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Config::Entry::Unspecified do
+RSpec.describe Gitlab::Config::Entry::Unspecified do
   let(:unspecified) { described_class.new(entry) }
   let(:entry) { spy('Entry') }
 

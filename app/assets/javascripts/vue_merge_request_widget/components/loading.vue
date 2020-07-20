@@ -9,7 +9,7 @@ export default {
 </script>
 
 <template>
-  <div class="prepend-top-default">
+  <div class="gl-mt-3">
     <div class="mr-widget-heading p-3">
       <gl-skeleton-loader :width="577" :height="12">
         <rect width="86" height="12" rx="2" />

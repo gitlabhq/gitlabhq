@@ -12,6 +12,8 @@ Service.available_services_names.each do |service|
       service_attrs_list.inject({}) do |hash, k|
         if k =~ /^(token*|.*_token|.*_key)/
           hash.merge!(k => 'secrettoken')
+        elsif service == 'confluence' && k == :confluence_url
+          hash.merge!(k => 'https://example.atlassian.net/wiki')
         elsif k =~ /^(.*_url|url|webhook)/
           hash.merge!(k => "http://example.com")
         elsif service_klass.method_defined?("#{k}?")

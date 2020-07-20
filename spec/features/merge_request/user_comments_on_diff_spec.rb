@@ -117,9 +117,58 @@ RSpec.describe 'User comments on a diff', :js do
   context 'when adding multiline comments' do
     it 'saves a multiline comment' do
       click_diff_line(find("[id='#{sample_commit.line_code}']"))
+      add_comment('-13', '+14')
+    end
 
+    context 'when in side-by-side view' do
+      before do
+        visit(diffs_project_merge_request_path(project, merge_request, view: 'parallel'))
+      end
+
+      # In `files/ruby/popen.rb`
+      it 'allows comments for changes involving both sides' do
+        # click +15, select -13 add and verify comment
+        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .new_line a[data-linenumber="15"]').find(:xpath, '../..'), 'right')
+        add_comment('-13', '+15')
+      end
+
+      it 'allows comments to start above hidden lines and end below' do
+        # click +28, select 21 add and verify comment
+        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .new_line a[data-linenumber="28"]').find(:xpath, '../..'), 'right')
+        add_comment('21', '+28')
+      end
+
+      it 'allows comments on previously hidden lines at the top of a file' do
+        # Click -9, expand up, select 1 add and verify comment
+        page.within('[data-path="files/ruby/popen.rb"]') do
+          all('.js-unfold-all')[0].click
+        end
+        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .old_line a[data-linenumber="9"]').find(:xpath, '../..'), 'left')
+        add_comment('1', '-9')
+      end
+
+      it 'allows comments on previously hidden lines the middle of a file' do
+        # Click 27, expand up, select 18, add and verify comment
+        page.within('[data-path="files/ruby/popen.rb"]') do
+          all('.js-unfold-all')[1].click
+        end
+        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .old_line a[data-linenumber="21"]').find(:xpath, '../..'), 'left')
+        add_comment('18', '21')
+      end
+
+      it 'allows comments on previously hidden lines at the bottom of a file' do
+        # Click +28, expand down, select 37 add and verify comment
+        page.within('[data-path="files/ruby/popen.rb"]') do
+          all('.js-unfold-down')[1].click
+        end
+        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .old_line a[data-linenumber="30"]').find(:xpath, '../..'), 'left')
+        add_comment('+28', '37')
+      end
+    end
+
+    def add_comment(start_line, end_line)
       page.within('.discussion-form') do
-        find('#comment-line-start option', text: '-13').select_option
+        find('#comment-line-start option', exact_text: start_line).select_option
       end
 
       page.within('.js-discussion-note-form') do
@@ -131,7 +180,7 @@ RSpec.describe 'User comments on a diff', :js do
 
       page.within('.notes_holder') do
         expect(page).to have_content('Line is wrong')
-        expect(page).to have_content('Comment on lines -13 to +14')
+        expect(page).to have_content("Comment on lines #{start_line} to #{end_line}")
       end
 
       visit(merge_request_path(merge_request))

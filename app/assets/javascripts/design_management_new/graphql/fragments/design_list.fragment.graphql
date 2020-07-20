@@ -1,0 +1,8 @@
+fragment DesignListItem on Design {
+  id
+  event
+  filename
+  notesCount
+  image
+  imageV432x230
+}

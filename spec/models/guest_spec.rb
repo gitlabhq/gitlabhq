@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Guest do
+RSpec.describe Guest do
   let_it_be(:public_project, reload: true) { create(:project, :public) }
   let_it_be(:private_project) { create(:project, :private) }
   let_it_be(:internal_project) { create(:project, :internal) }

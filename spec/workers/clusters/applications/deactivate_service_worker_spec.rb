@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::DeactivateServiceWorker, '#perform' do
+RSpec.describe Clusters::Applications::DeactivateServiceWorker, '#perform' do
   context 'cluster exists' do
     describe 'prometheus service' do
       let(:service_name) { 'prometheus' }

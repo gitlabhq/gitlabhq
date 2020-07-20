@@ -8,6 +8,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
   let!(:user)      { create(:user)}
 
   before do
+    stub_feature_flags(vue_issuables_list: false)
     project.add_maintainer(user)
     sign_in(user)
   end

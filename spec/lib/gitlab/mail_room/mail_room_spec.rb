@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::MailRoom do
+RSpec.describe Gitlab::MailRoom do
   let(:default_port) { 143 }
   let(:yml_config) do
     {

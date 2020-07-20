@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class SystemHooks < Grape::API
+  class SystemHooks < Grape::API::Instance
     include PaginationParams
 
     before do

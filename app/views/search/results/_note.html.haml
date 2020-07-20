@@ -4,7 +4,7 @@
 
 .search-result-row
   %h5.note-search-caption.str-truncated
-    %i.fa.fa-comment
+    = sprite_icon('comment', size: 16, css_class: 'gl-vertical-align-text-bottom')
     = link_to_member(project, note.author, avatar: false)
     - link_to_project = link_to(project.full_name, project)
     = _("commented on %{link_to_project}").html_safe % { link_to_project: link_to_project }

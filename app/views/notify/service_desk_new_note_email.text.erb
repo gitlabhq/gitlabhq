@@ -1,0 +1,6 @@
+New response for issue #<%= @issue.iid %>:
+
+Author: <%= sanitize_name(@note.author_name) %>
+
+<%= @note.note %>
+<%# EE-specific start %><%= render_if_exists 'layouts/mailer/additional_text'%><%# EE-specific end %>

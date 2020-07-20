@@ -21,10 +21,10 @@ module API
         issue.assignees.first
       end
 
-      expose(:user_notes_count)     { |issue, options| issuable_metadata(issue, options, :user_notes_count) }
-      expose(:merge_requests_count) { |issue, options| issuable_metadata(issue, options, :merge_requests_count, options[:current_user]) }
-      expose(:upvotes)              { |issue, options| issuable_metadata(issue, options, :upvotes) }
-      expose(:downvotes)            { |issue, options| issuable_metadata(issue, options, :downvotes) }
+      expose(:user_notes_count)     { |issue, options| issuable_metadata.user_notes_count }
+      expose(:merge_requests_count) { |issue, options| issuable_metadata.merge_requests_count }
+      expose(:upvotes)              { |issue, options| issuable_metadata.upvotes }
+      expose(:downvotes)            { |issue, options| issuable_metadata.downvotes }
       expose :due_date
       expose :confidential
       expose :discussion_locked

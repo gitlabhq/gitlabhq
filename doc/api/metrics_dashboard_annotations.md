@@ -1,3 +1,10 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: concepts, howto
+---
+
 # Dashboard annotations API
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29089) in GitLab 12.10 behind a disabled feature flag.

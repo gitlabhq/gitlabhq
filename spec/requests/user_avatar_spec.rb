@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Loading a user avatar' do
+RSpec.describe 'Loading a user avatar' do
   let(:user) { create(:user, :with_avatar) }
 
   context 'when logged in' do

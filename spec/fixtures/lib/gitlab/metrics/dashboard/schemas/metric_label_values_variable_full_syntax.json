@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": [
+    "type", "options"
+  ],
+  "properties": {
+    "type": { "enum": "metric_label_values" },
+    "label": { "type": "string" },
+    "options": { "$ref": "metric_label_values_variable_options.json" }
+  },
+  "additionalProperties": false
+}

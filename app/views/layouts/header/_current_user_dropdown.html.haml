@@ -35,7 +35,6 @@
       = link_to _("Help"), help_path
     %li.d-md-none
       = link_to _("Support"), support_url
-    = render_if_exists "shared/learn_gitlab_menu_item"
   %li.d-md-none
     = link_to _("Submit feedback"), "https://about.gitlab.com/submit-feedback"
   - if current_user_menu?(:help) || current_user_menu?(:settings) || current_user_menu?(:profile)

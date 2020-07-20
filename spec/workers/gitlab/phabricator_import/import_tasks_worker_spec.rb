@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::PhabricatorImport::ImportTasksWorker do
+RSpec.describe Gitlab::PhabricatorImport::ImportTasksWorker do
   describe '#perform' do
     it 'calls the correct importer' do
       project = create(:project, :import_started, import_url: "https://the.phab.ulr")

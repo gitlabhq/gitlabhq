@@ -18,16 +18,21 @@ create an issue with the payload in the body of the issue. You can always
 The entire payload will be posted in the issue discussion as a comment
 authored by the GitLab Alert Bot.
 
-NOTE: **Note**
-In GitLab versions 13.1 and greater, you can configure [External Prometheus instances](prometheus.md#external-prometheus-instances) to use this endpoint.
+NOTE: **Note:**
+In GitLab versions 13.1 and greater, you can configure
+[External Prometheus instances](../../../operations/metrics/alerts.md#external-prometheus-instances)
+to use this endpoint.
 
 ## Setting up generic alerts
 
-To set up the generic alerts integration:
+To obtain credentials for setting up a generic alerts integration:
 
-1. Navigate to **Settings > Integrations** in a project.
-1. Click on **Alerts endpoint**.
-1. Toggle the **Active** alert setting. The `URL` and `Authorization Key` for the webhook configuration can be found there.
+- Sign in to GitLab as a user with maintainer [permissions](../../permissions.md) for a project.
+- Navigate to the **Operations** page for your project, depending on your installed version of GitLab:
+  - *In GitLab versions 13.1 and greater,* navigate to **{settings}** **Settings > Operations** in your project.
+  - *In GitLab versions prior to 13.1,* navigate to **{settings}** **Settings > Integrations** in your project. GitLab will display a banner encouraging you to enable the Alerts endpoint in **{settings}** **Settings > Operations** instead.
+- Click **Alerts endpoint**.
+- Toggle the **Active** alert setting to display the **URL** and **Authorization Key** for the webhook configuration.
 
 ## Customizing the payload
 
@@ -43,6 +48,14 @@ You can customize the payload by sending the following parameters. All fields ot
 | `hosts` | String or Array | One or more hosts, as to where this incident occurred. |
 | `severity` | String | The severity of the alert. Must be one of `critical`, `high`, `medium`, `low`, `info`, `unknown`. Default is `critical`. |
 | `fingerprint` | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. |
+
+You can also add custom fields to the alert's payload. The values of extra parameters
+are not limited to primitive types, such as strings or numbers, but can be a nested
+JSON object. For example:
+
+```json
+{ "foo": { "bar": { "baz": 42 } } }
+```
 
 TIP: **Payload size:**
 Ensure your requests are smaller than the [payload application limits](../../../administration/instance_limits.md#generic-alert-json-payloads).
@@ -70,6 +83,42 @@ Example payload:
   "monitoring_tool": "value",
   "hosts": "value",
   "severity": "high",
-  "fingerprint": "d19381d4e8ebca87b55cda6e8eee7385"
+  "fingerprint": "d19381d4e8ebca87b55cda6e8eee7385",
+  "foo": {
+    "bar": {
+      "baz": 42
+    }
+  }
 }
 ```
+
+## Triggering test alerts
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab Core in 13.2.
+
+After a [project maintainer or owner](#setting-up-generic-alerts)
+[configures generic alerts](#setting-up-generic-alerts), you can trigger a
+test alert to confirm your integration works properly.
+
+1. Sign in as a user with Developer or greater [permissions](../../../user/permissions.md).
+1. Navigate to **{settings}** **Settings > Operations** in your project.
+1. Click **Alerts endpoint** to expand the section.
+1. Enter a sample payload in **Alert test payload** (valid JSON is required).
+1. Click **Test alert payload**.
+
+GitLab displays an error or success message, depending on the outcome of your test.
+
+## Automatic grouping of identical alerts **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214557) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+In GitLab versions 13.2 and greater, GitLab groups alerts based on their payload.
+When an incoming alert contains the same payload as another alert (excluding the
+`start_time` and `hosts` attributes), GitLab groups these alerts together and
+displays a counter on the
+[Alert Management List](../operations/alert_management.md#alert-management-list)
+and details pages.
+
+If the existing alert is already `resolved`, then a new alert will be created instead.
+
+![Alert Management List](../operations/img/alert_list_v13_1.png)

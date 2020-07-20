@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::SyntaxHighlightFilter do
+RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
   include FilterSpecHelper
 
   shared_examples "XSS prevention" do |lang|

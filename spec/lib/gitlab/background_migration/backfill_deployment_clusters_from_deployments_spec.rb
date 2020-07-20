@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::BackfillDeploymentClustersFromDeployments, :migration, schema: 20200227140242 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillDeploymentClustersFromDeployments, :migration, schema: 20200227140242 do
   subject { described_class.new }
 
   describe '#perform' do

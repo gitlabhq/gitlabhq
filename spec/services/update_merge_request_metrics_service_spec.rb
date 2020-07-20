@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestMetricsService do
+RSpec.describe MergeRequestMetricsService do
   let(:metrics) { create(:merge_request).metrics }
 
   describe '#merge' do

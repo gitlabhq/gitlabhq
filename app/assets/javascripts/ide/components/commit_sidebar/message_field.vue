@@ -83,7 +83,7 @@ export default {
         <ul class="nav-links">
           <li>
             {{ __('Commit Message') }}
-            <span v-popover="$options.popoverOptions" class="form-text text-muted prepend-left-10">
+            <span v-popover="$options.popoverOptions" class="form-text text-muted gl-ml-3">
               <icon name="question" />
             </span>
           </li>

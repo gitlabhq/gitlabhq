@@ -16,7 +16,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   MAX_TOPICS_TO_SHOW = 3
 
   def statistic_icon(icon_name = 'plus-square-o')
-    sprite_icon(icon_name, size: 16, css_class: 'icon append-right-4')
+    sprite_icon(icon_name, size: 16, css_class: 'icon gl-mr-2')
   end
 
   def statistics_anchors(show_auto_devops_callout:)

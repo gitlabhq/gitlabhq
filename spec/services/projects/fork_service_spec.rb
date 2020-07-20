@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ForkService do
+RSpec.describe Projects::ForkService do
   include ProjectForksHelper
 
   shared_examples 'forks count cache refresh' do
@@ -10,6 +10,7 @@ describe Projects::ForkService do
       expect(from_project.forks_count).to be_zero
 
       fork_project(from_project, to_user)
+      BatchLoader::Executor.clear_current
 
       expect(from_project.forks_count).to eq(1)
     end
@@ -327,7 +328,7 @@ describe Projects::ForkService do
         destination_storage_name: 'test_second_storage'
       )
       Projects::UpdateRepositoryStorageService.new(storage_move).execute
-      fork_after_move = fork_project(project)
+      fork_after_move = fork_project(project.reload)
       pool_repository_before_move = PoolRepository.joins(:shard)
                                       .find_by(source_project: project, shards: { name: 'default' })
       pool_repository_after_move = PoolRepository.joins(:shard)
@@ -405,6 +406,7 @@ describe Projects::ForkService do
         expect(fork_from_project.forks_count).to be_zero
 
         subject.execute(fork_to_project)
+        BatchLoader::Executor.clear_current
 
         expect(fork_from_project.forks_count).to eq(1)
       end

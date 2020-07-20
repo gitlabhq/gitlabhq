@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectMirrorEntity do
+RSpec.describe ProjectMirrorEntity do
   let(:project) { create(:project, :repository, :remote_mirror) }
   let(:entity) { described_class.new(project) }
 

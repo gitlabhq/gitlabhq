@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::GollumTagsFilter do
+RSpec.describe Banzai::Filter::GollumTagsFilter do
   include FilterSpecHelper
 
   let(:project) { create(:project) }

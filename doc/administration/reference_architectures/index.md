@@ -38,7 +38,8 @@ When scaling GitLab, there are several factors to consider:
 - A load balancer is added in front to distribute traffic across the application nodes.
 - The application nodes connects to a shared file server and PostgreSQL and Redis services on the backend.
 
-NOTE: **Note:** Depending on your workflow, the following recommended
+NOTE: **Note:**
+Depending on your workflow, the following recommended
 reference architectures may need to be adapted accordingly. Your workload
 is influenced by factors including how active your users are,
 how much automation you use, mirroring, and repository/change size. Additionally the
@@ -120,13 +121,13 @@ As long as at least one of each component is online and capable of handling the 
 ### Automated database failover **(PREMIUM ONLY)**
 
 > - Level of complexity: **High**
-> - Required domain knowledge: PgBouncer, Repmgr, shared storage, distributed systems
+> - Required domain knowledge: PgBouncer, Repmgr or Patroni, shared storage, distributed systems
 > - Supported tiers: [GitLab Premium and Ultimate](https://about.gitlab.com/pricing/)
 
 By adding automatic failover for database systems, you can enable higher uptime
 with additional database nodes. This extends the default database with
 cluster management and failover policies.
-[PgBouncer in conjunction with Repmgr](../postgresql/replication_and_failover.md)
+[PgBouncer in conjunction with Repmgr or Patroni](../postgresql/replication_and_failover.md)
 is recommended.
 
 ### Instance level replication with GitLab Geo **(PREMIUM ONLY)**
@@ -164,6 +165,7 @@ column.
 | [PostgreSQL](../../development/architecture.md#postgresql) | Database | [PostgreSQL configuration](https://docs.gitlab.com/omnibus/settings/database.html) | Yes |
 | [PgBouncer](../../development/architecture.md#pgbouncer) | Database connection pooler | [PgBouncer configuration](../high_availability/pgbouncer.md#running-pgbouncer-as-part-of-a-non-ha-gitlab-installation) **(PREMIUM ONLY)** | Yes |
 | Repmgr | PostgreSQL cluster management and failover | [PostgreSQL and Repmgr configuration](../postgresql/replication_and_failover.md) | Yes |
+| Patroni | An alternative PostgreSQL cluster management and failover | [PostgreSQL and Patroni configuration](../postgresql/replication_and_failover.md#patroni) | Yes |
 | [Redis](../../development/architecture.md#redis) ([3](#footnotes))  | Key/value store for fast data lookup and caching | [Redis configuration](../high_availability/redis.md) | Yes |
 | Redis Sentinel | Redis | [Redis Sentinel configuration](../high_availability/redis.md) | Yes |
 | [Gitaly](../../development/architecture.md#gitaly) ([2](#footnotes)) ([7](#footnotes)) | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#run-gitaly-on-its-own-server) | Yes |
@@ -209,7 +211,7 @@ cluster with the Rails nodes broken down into a number of smaller Pods across th
    For medium sized installs (3,000 - 5,000) we suggest one Redis cluster for all
    classes and that Redis Sentinel is hosted alongside Consul.
    For larger architectures (10,000 users or more) we suggest running a separate
-   [Redis Cluster](../high_availability/redis.md#running-multiple-redis-clusters) for the Cache class
+   [Redis Cluster](../redis/replication_and_failover.md#running-multiple-redis-clusters) for the Cache class
    and another for the Queues and Shared State classes respectively. We also recommend
    that you run the Redis Sentinel clusters separately for each Redis Cluster.
 

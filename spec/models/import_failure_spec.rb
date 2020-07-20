@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ImportFailure do
+RSpec.describe ImportFailure do
   describe 'Scopes' do
     let_it_be(:project) { create(:project) }
     let_it_be(:correlation_id) { 'ABC' }

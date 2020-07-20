@@ -1,0 +1,17 @@
+---
+# Suggestion: gitlab.FutureTense
+#
+# Checks for use of future tense in sentences. Present tense is preferred as
+# much as possible.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: existence
+message: 'Avoid using future tense: "%s"'
+ignorecase: true
+level: warning
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language-to-avoid
+raw:
+   - "(going to( |\n|[[:punct:]])[a-zA-Z]*|"
+   - "will( |\n|[[:punct:]])[a-zA-Z]*|"
+   - "won't( |\n|[[:punct:]])[a-zA-Z]*|"
+   - "[a-zA-Z]*'ll( |\n|[[:punct:]])[a-zA-Z]*)"

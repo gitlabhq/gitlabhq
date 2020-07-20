@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterQueue do
+RSpec.describe ClusterQueue do
   let(:worker) do
     Class.new do
       def self.name

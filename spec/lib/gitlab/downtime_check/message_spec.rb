@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DowntimeCheck::Message do
+RSpec.describe Gitlab::DowntimeCheck::Message do
   describe '#to_s' do
     it 'returns an ANSI formatted String for an offline migration' do
       message = described_class.new('foo.rb', true, 'hello')

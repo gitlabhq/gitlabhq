@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'getting merge request information nested in a project' do
+RSpec.describe 'getting merge request information nested in a project' do
   include GraphqlHelpers
 
   let(:project) { create(:project, :repository, :public) }
@@ -41,6 +41,59 @@ describe 'getting merge request information nested in a project' do
     post_graphql(query, current_user: current_user)
 
     expect(merge_request_graphql_data['author']['username']).to eq(merge_request.author.username)
+  end
+
+  it 'includes diff stats' do
+    be_natural = an_instance_of(Integer).and(be >= 0)
+
+    post_graphql(query, current_user: current_user)
+
+    sums = merge_request_graphql_data['diffStats'].reduce([0, 0, 0]) do |(a, d, c), node|
+      a_, d_ = node.values_at('additions', 'deletions')
+      [a + a_, d + d_, c + a_ + d_]
+    end
+
+    expect(merge_request_graphql_data).to include(
+      'diffStats' => all(a_hash_including('path' => String, 'additions' => be_natural, 'deletions' => be_natural)),
+      'diffStatsSummary' => a_hash_including(
+        'fileCount' => merge_request.diff_stats.count,
+        'additions' => be_natural,
+        'deletions' => be_natural,
+        'changes' => be_natural
+      )
+    )
+
+    # diff_stats is consistent with summary
+    expect(merge_request_graphql_data['diffStatsSummary']
+      .values_at('additions', 'deletions', 'changes')).to eq(sums)
+
+    # diff_stats_summary is internally consistent
+    expect(merge_request_graphql_data['diffStatsSummary']
+      .values_at('additions', 'deletions').sum)
+      .to eq(merge_request_graphql_data.dig('diffStatsSummary', 'changes'))
+      .and be_positive
+  end
+
+  context 'requesting a specific diff stat' do
+    let(:diff_stat) { merge_request.diff_stats.first }
+
+    let(:query) do
+      graphql_query_for(:project, { full_path: project.full_path },
+        query_graphql_field(:merge_request, { iid: merge_request.iid.to_s }, [
+          query_graphql_field(:diff_stats, { path: diff_stat.path }, all_graphql_fields_for('DiffStats'))
+        ])
+      )
+    end
+
+    it 'includes only the requested stats' do
+      post_graphql(query, current_user: current_user)
+
+      expect(merge_request_graphql_data).to include(
+        'diffStats' => contain_exactly(
+          a_hash_including('path' => diff_stat.path, 'additions' => diff_stat.additions, 'deletions' => diff_stat.deletions)
+        )
+      )
+    end
   end
 
   it 'includes correct mergedAt value when merged' do

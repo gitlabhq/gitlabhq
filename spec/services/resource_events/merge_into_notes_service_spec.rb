@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResourceEvents::MergeIntoNotesService do
+RSpec.describe ResourceEvents::MergeIntoNotesService do
   def create_event(params)
     event_params = { action: :add, label: label, issue: resource,
                      user: user }
@@ -61,7 +61,7 @@ describe ResourceEvents::MergeIntoNotesService do
       event = create_event(created_at: 1.day.ago)
 
       notes = described_class.new(resource, user,
-                                  last_fetched_at: 2.days.ago.to_i).execute
+                                  last_fetched_at: 2.days.ago).execute
 
       expect(notes.count).to eq 1
       expect(notes.first.discussion_id).to eq event.discussion_id

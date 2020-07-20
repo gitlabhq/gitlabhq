@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata do
+RSpec.describe Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata do
   # Cannot use Class.new for this as ApplicationWorker will need the class to
   # have a name during `included do`.
   let(:worker) { AdminEmailWorker.new }

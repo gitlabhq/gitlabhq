@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Prometheus::Queries::DeploymentQuery do
+RSpec.describe Gitlab::Prometheus::Queries::DeploymentQuery do
   let(:environment) { create(:environment, slug: 'environment-slug') }
   let(:deployment) { create(:deployment, environment: environment) }
   let(:client) { double('prometheus_client') }

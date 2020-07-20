@@ -4,6 +4,8 @@ module Types
   class IssueType < BaseObject
     graphql_name 'Issue'
 
+    connection_type_class(Types::IssueConnectionType)
+
     implements(Types::Notes::NoteableType)
 
     authorize :read_issue
@@ -12,6 +14,8 @@ module Types
 
     present_using IssuePresenter
 
+    field :id, GraphQL::ID_TYPE, null: false,
+          description: "ID of the issue"
     field :iid, GraphQL::ID_TYPE, null: false,
           description: "Internal ID of the issue"
     field :title, GraphQL::STRING_TYPE, null: false,

@@ -1,0 +1,16 @@
+{
+  "aid":"1",
+  "p":"web",
+  "tna":"sp",
+  "tv":"js-2.14.0",
+  "eid":"fbf14096-74ee-47e4-883c-8a0d6cb72e37",
+  "duid":"79543c31-cfc3-4479-a737-fafb9333c8ba",
+  "sid":"54f6d3f3-f4f9-4fdc-87e0-a2c775234c1b",
+  "vid":4,
+  "url":"http://example.com/products/1",
+  "refr":"http://example.com/products/1",
+  "lang":"en-US",
+  "cookie":"1",
+  "tz":"America/Los_Angeles",
+  "cs":"UTF-8"
+}

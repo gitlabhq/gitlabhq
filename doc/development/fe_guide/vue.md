@@ -53,14 +53,14 @@ Be sure to read about [page-specific JavaScript](./performance.md#page-specific-
 
 #### Providing data from HAML to JavaScript
 
-While mounting a Vue application may be a need to provide data from Rails to JavaScript.
-To do that, provide the data through `data` attributes in the HTML element and query them while mounting the application.
+While mounting a Vue application, you might need to provide data from Rails to JavaScript.
+To do that, you can use the `data` attributes in the HTML element and query them while mounting the application.
 
 _Note:_ You should only do this while initializing the application, because the mounted element will be replaced with Vue-generated DOM.
 
 The advantage of providing data from the DOM to the Vue instance through `props` in the `render` function
-instead of querying the DOM inside the main Vue component is that makes tests easier by avoiding the need to
-create a fixture or an HTML element in the unit test. See the following example:
+instead of querying the DOM inside the main Vue component is avoiding the need to create a fixture or an HTML element in the unit test,
+which will make the tests easier. See the following example:
 
 ```javascript
 // haml
@@ -134,7 +134,7 @@ This approach has a few benefits:
   intermediate components being aware of it (c.f. passing the flag down via
   props).
 - Good testability, since the flag can be provided to `mount`/`shallowMount`
-  from `vue-test-utils` as easily as a prop.
+  from `vue-test-utils` simply as a prop.
 
   ```javascript
   import { shallowMount } from '@vue/test-utils';
@@ -155,7 +155,7 @@ This folder holds all components that are specific of this new feature.
 If you need to use or create a component that will probably be used somewhere
 else, please refer to `vue_shared/components`.
 
-A good thumb rule to know when you should create a component is to think if
+A good rule of thumb to know when you should create a component is to think if
 it will be reusable elsewhere.
 
 For example, tables are used in a quite amount of places across GitLab, a table
@@ -321,7 +321,7 @@ We should verify an event has been fired by asserting against the result of the 
 
 ## Vue.js Expert Role
 
-One should apply to be a Vue.js expert by opening an MR when the Merge Request's they create and review show:
+You should only apply to be a Vue.js expert when your own merge requests and your reviews show:
 
 - Deep understanding of Vue and Vuex reactivity
 - Vue and Vuex code are structured according to both official and our guidelines

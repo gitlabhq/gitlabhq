@@ -34,6 +34,7 @@ module QA
         Page::Project::Issue::New.perform do |new_page|
           new_page.fill_title(@title)
           new_page.fill_description(@description)
+          new_page.choose_milestone(@milestone) if @milestone
           new_page.create_new_issue
         end
       end

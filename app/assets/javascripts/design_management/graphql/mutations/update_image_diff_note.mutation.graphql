@@ -1,0 +1,10 @@
+#import "../fragments/design_note.fragment.graphql"
+
+mutation updateImageDiffNote($input: UpdateImageDiffNoteInput!) {
+  updateImageDiffNote(input: $input) {
+    errors
+    note {
+      ...DesignNote
+    }
+  }
+}

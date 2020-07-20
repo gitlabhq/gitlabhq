@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::External::File::Base do
+RSpec.describe Gitlab::Ci::Config::External::File::Base do
   let(:context_params) { { sha: 'HEAD' } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
 

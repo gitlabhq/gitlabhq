@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::Summary::Value do
+RSpec.describe Gitlab::CycleAnalytics::Summary::Value do
   describe Gitlab::CycleAnalytics::Summary::Value::None do
     it 'returns `-`' do
       expect(described_class.new.to_s).to eq('-')

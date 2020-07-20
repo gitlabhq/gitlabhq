@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Dashboard::Stages::GrafanaFormatter do
+RSpec.describe Gitlab::Metrics::Dashboard::Stages::GrafanaFormatter do
   include GrafanaApiHelpers
 
   let_it_be(:namespace) { create(:namespace, name: 'foo') }

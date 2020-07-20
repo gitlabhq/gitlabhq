@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Namespaces do
+RSpec.describe API::Namespaces do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let!(:group1) { create(:group, name: 'group.one') }

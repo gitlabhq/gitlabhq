@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
-    describe 'Changing Gitaly repository storage', :orchestrated, :requires_admin do
+  RSpec.describe 'Create' do
+    describe 'Changing Gitaly repository storage', :requires_admin do
       shared_examples 'repository storage move' do
         it 'confirms a `finished` status after moving project repository storage' do
           expect(project).to have_file('README.md')
@@ -24,7 +24,7 @@ module QA
         end
       end
 
-      context 'when moving from one Gitaly storage to another', :repository_storage do
+      context 'when moving from one Gitaly storage to another', :orchestrated, :repository_storage do
         let(:project) do
           Resource::Project.fabricate_via_api! do |project|
             project.name = 'repo-storage-move-status'
@@ -36,7 +36,9 @@ module QA
         it_behaves_like 'repository storage move'
       end
 
-      context 'when moving from Gitaly to Gitaly Cluster', :requires_praefect do
+      # Note: This test doesn't have the :orchestrated tag because it runs in the Test::Integration::Praefect
+      # scenario with other tests that aren't considered orchestrated.
+      context 'when moving from Gitaly to Gitaly Cluster', :requires_praefect, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/227127', type: :investigating } do
         let(:project) do
           Resource::Project.fabricate_via_api! do |project|
             project.name = 'repo-storage-move'

@@ -21,6 +21,10 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:deactivated) { @user&.deactivated? }
 
+  desc "User is support bot"
+  with_options scope: :user, score: 0
+  condition(:support_bot) { @user&.support_bot? }
+
   desc "User email is unconfirmed or user account is locked"
   with_options scope: :user, score: 0
   condition(:inactive) do
@@ -54,6 +58,8 @@ class BasePolicy < DeclarativePolicy::Base
   rule { admin }.enable :read_all_resources
 
   rule { default }.enable :read_cross_project
+
+  condition(:is_gitlab_com) { ::Gitlab.dev_env_or_com? }
 end
 
 BasePolicy.prepend_if_ee('EE::BasePolicy')

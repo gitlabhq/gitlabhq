@@ -1,4 +1,5 @@
 - breadcrumb_title _("Details")
+- page_title _("Groups")
 - @content_class = "limit-container-width" unless fluid_layout
 
 = content_for :meta_tags do
@@ -18,8 +19,8 @@
   .groups-listing{ data: { endpoints: { default: group_children_path(@group, format: :json), shared: group_shared_projects_path(@group, format: :json) } } }
     .top-area.group-nav-container.justify-content-between
       .scrolling-tabs-container.inner-page-scroll-tabs
-        .fade-left= icon('angle-left')
-        .fade-right= icon('angle-right')
+        .fade-left= sprite_icon('chevron-lg-left', size: 12)
+        .fade-right= sprite_icon('chevron-lg-right', size: 12)
         %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs
           %li.js-subgroups_and_projects-tab
             = link_to group_path, data: { target: 'div#subgroups_and_projects', action: 'subgroups_and_projects', toggle: 'tab'} do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::MergeRequestsResolver do
+RSpec.describe Resolvers::MergeRequestsResolver do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -22,9 +22,12 @@ describe Resolvers::MergeRequestsResolver do
 
   before do
     project.add_developer(current_user)
+    other_project.add_developer(current_user)
   end
 
   describe '#resolve' do
+    let(:queries_per_project) { 3 }
+
     context 'no arguments' do
       it 'returns all merge requests' do
         result = resolve_mr(project, {})
@@ -40,24 +43,34 @@ describe Resolvers::MergeRequestsResolver do
     end
 
     context 'by iid alone' do
-      it 'batch-resolves by target project full path and individual IID' do
-        result = batch_sync(max_queries: 2) do
+      it 'batch-resolves by target project full path and individual IID', :request_store do
+        # 1 query for project_authorizations, and 1 for merge_requests
+        result = batch_sync(max_queries: queries_per_project) do
           [iid_1, iid_2].map { |iid| resolve_mr_single(project, iid) }
         end
 
         expect(result).to contain_exactly(merge_request_1, merge_request_2)
       end
 
-      it 'batch-resolves by target project full path and IIDS' do
-        result = batch_sync(max_queries: 2) do
+      it 'batch-resolves by target project full path and IIDS', :request_store do
+        result = batch_sync(max_queries: queries_per_project) do
           resolve_mr(project, iids: [iid_1, iid_2])
         end
 
         expect(result).to contain_exactly(merge_request_1, merge_request_2)
       end
 
+      it 'batch-resolves by target project full path and IIDS, single or plural', :request_store do
+        result = batch_sync(max_queries: queries_per_project) do
+          [resolve_mr_single(project, merge_request_3.iid), *resolve_mr(project, iids: [iid_1, iid_2])]
+        end
+
+        expect(result).to contain_exactly(merge_request_1, merge_request_2, merge_request_3)
+      end
+
       it 'can batch-resolve merge requests from different projects' do
-        result = batch_sync(max_queries: 3) do
+        # 2 queries for project_authorizations, and 2 for merge_requests
+        result = batch_sync(max_queries: queries_per_project * 2) do
           resolve_mr(project, iids: iid_1) +
             resolve_mr(project, iids: iid_2) +
             resolve_mr(other_project, iids: other_iid)

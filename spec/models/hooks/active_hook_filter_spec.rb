@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ActiveHookFilter do
+RSpec.describe ActiveHookFilter do
   subject(:filter) { described_class.new(hook) }
 
   describe '#matches?' do

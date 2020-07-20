@@ -3,7 +3,7 @@
 require_relative '../../../../tooling/lib/tooling/test_file_finder'
 
 RSpec.describe Tooling::TestFileFinder do
-  subject { Tooling::TestFileFinder.new(file) }
+  subject { described_class.new(file) }
 
   describe '#test_files' do
     context 'when given non .rb files' do
@@ -84,6 +84,78 @@ RSpec.describe Tooling::TestFileFinder do
 
       it 'returns the matching module test file itself and the corresponding spec model test file' do
         test_files = ['ee/spec/models/ee/appearance_spec.rb', 'spec/models/appearance_spec.rb']
+        expect(subject.test_files).to contain_exactly(*test_files)
+      end
+    end
+
+    context 'when given a factory file' do
+      let(:file) { 'spec/factories/users.rb' }
+
+      it 'returns spec/factories_spec.rb file' do
+        expect(subject.test_files).to contain_exactly('spec/factories_spec.rb')
+      end
+    end
+
+    context 'when given an ee factory file' do
+      let(:file) { 'ee/spec/factories/users.rb' }
+
+      it 'returns spec/factories_spec.rb file' do
+        expect(subject.test_files).to contain_exactly('spec/factories_spec.rb')
+      end
+    end
+
+    context 'when given db/structure.sql' do
+      let(:file) { 'db/structure.sql' }
+
+      it 'returns spec/db/schema_spec.rb' do
+        expect(subject.test_files).to contain_exactly('spec/db/schema_spec.rb')
+      end
+    end
+
+    context 'when given an initializer' do
+      let(:file) { 'config/initializers/action_mailer_hooks.rb' }
+
+      it 'returns the matching initializer spec' do
+        expect(subject.test_files).to contain_exactly('spec/initializers/action_mailer_hooks_spec.rb')
+      end
+    end
+
+    context 'when given a haml view' do
+      let(:file) { 'app/views/admin/users/_user.html.haml' }
+
+      it 'returns the matching view spec' do
+        expect(subject.test_files).to contain_exactly('spec/views/admin/users/_user.html.haml_spec.rb')
+      end
+    end
+
+    context 'when given a haml view in ee/' do
+      let(:file) { 'ee/app/views/admin/users/_user.html.haml' }
+
+      it 'returns the matching view spec' do
+        expect(subject.test_files).to contain_exactly('ee/spec/views/admin/users/_user.html.haml_spec.rb')
+      end
+    end
+
+    context 'when given a migration file' do
+      let(:file) { 'db/migrate/20191023152913_add_default_and_free_plans.rb' }
+
+      it 'returns the matching migration spec' do
+        test_files = %w[
+          spec/migrations/add_default_and_free_plans_spec.rb
+          spec/migrations/20191023152913_add_default_and_free_plans_spec.rb
+        ]
+        expect(subject.test_files).to contain_exactly(*test_files)
+      end
+    end
+
+    context 'when given a post-migration file' do
+      let(:file) { 'db/post_migrate/20200608072931_backfill_imported_snippet_repositories.rb' }
+
+      it 'returns the matching migration spec' do
+        test_files = %w[
+          spec/migrations/backfill_imported_snippet_repositories_spec.rb
+          spec/migrations/20200608072931_backfill_imported_snippet_repositories_spec.rb
+        ]
         expect(subject.test_files).to contain_exactly(*test_files)
       end
     end

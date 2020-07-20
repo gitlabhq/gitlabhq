@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SessionsHelper do
+RSpec.describe SessionsHelper do
   describe '#unconfirmed_email?' do
     it 'returns true when the flash alert contains a devise failure unconfirmed message' do
       flash[:alert] = t(:unconfirmed, scope: [:devise, :failure])

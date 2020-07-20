@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['ContainerExpirationPolicyOlderThanEnum'] do
+RSpec.describe GitlabSchema.types['ContainerExpirationPolicyOlderThanEnum'] do
   let_it_be(:expected_values) { %w[SEVEN_DAYS FOURTEEN_DAYS THIRTY_DAYS NINETY_DAYS] }
 
   it_behaves_like 'exposing container expiration policy option', :older_than

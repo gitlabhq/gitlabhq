@@ -32,7 +32,7 @@ export default class AbuseReports {
       $messageCellElement.text(originalMessage);
     } else {
       $messageCellElement.data('messageTruncated', 'true');
-      $messageCellElement.text(`${originalMessage.substr(0, MAX_MESSAGE_LENGTH - 3)}...`);
+      $messageCellElement.text(truncate(originalMessage, MAX_MESSAGE_LENGTH));
     }
   }
 }

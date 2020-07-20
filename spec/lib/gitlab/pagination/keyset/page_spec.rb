@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Pagination::Keyset::Page do
+RSpec.describe Gitlab::Pagination::Keyset::Page do
   describe '#per_page' do
     it 'limits to a maximum of 100 records per page' do
       per_page = described_class.new(per_page: 101).per_page

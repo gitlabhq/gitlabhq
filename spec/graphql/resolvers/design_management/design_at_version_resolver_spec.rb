@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::DesignManagement::DesignAtVersionResolver do
+RSpec.describe Resolvers::DesignManagement::DesignAtVersionResolver do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

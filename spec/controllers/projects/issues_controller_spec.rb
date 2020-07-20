@@ -237,7 +237,7 @@ RSpec.describe Projects::IssuesController do
 
     context 'external issue tracker' do
       let!(:service) do
-        create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker', new_issue_url: 'http://test.com')
+        create(:custom_issue_tracker_service, project: project, new_issue_url: 'http://test.com')
       end
 
       before do
@@ -1561,6 +1561,43 @@ RSpec.describe Projects::IssuesController do
         expect(ExportCsvWorker).not_to receive(:perform_async)
         expect(response).to redirect_to(new_user_session_path)
       end
+    end
+  end
+
+  describe 'GET service_desk' do
+    let_it_be(:project) { create(:project_empty_repo, :public) }
+    let_it_be(:support_bot) { User.support_bot }
+    let_it_be(:other_user) { create(:user) }
+    let_it_be(:service_desk_issue_1) { create(:issue, project: project, author: support_bot) }
+    let_it_be(:service_desk_issue_2) { create(:issue, project: project, author: support_bot, assignees: [other_user]) }
+    let_it_be(:other_user_issue) { create(:issue, project: project, author: other_user) }
+
+    def get_service_desk(extra_params = {})
+      get :service_desk, params: extra_params.merge(namespace_id: project.namespace, project_id: project)
+    end
+
+    it 'adds an author filter for the support bot user' do
+      get_service_desk
+
+      expect(assigns(:issues)).to contain_exactly(service_desk_issue_1, service_desk_issue_2)
+    end
+
+    it 'does not allow any other author to be set' do
+      get_service_desk(author_username: other_user.username)
+
+      expect(assigns(:issues)).to contain_exactly(service_desk_issue_1, service_desk_issue_2)
+    end
+
+    it 'supports other filters' do
+      get_service_desk(assignee_username: other_user.username)
+
+      expect(assigns(:issues)).to contain_exactly(service_desk_issue_2)
+    end
+
+    it 'allows an assignee to be specified by id' do
+      get_service_desk(assignee_id: other_user.id)
+
+      expect(assigns(:users)).to contain_exactly(other_user, support_bot)
     end
   end
 

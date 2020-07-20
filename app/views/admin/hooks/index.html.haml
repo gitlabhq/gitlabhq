@@ -1,10 +1,10 @@
 - page_title @hook.pluralized_name
 
-.row.prepend-top-default
+.row.gl-mt-3
   .col-lg-4
     = render 'shared/web_hooks/title_and_docs', hook: @hook
 
-  .col-lg-8.append-bottom-default
+  .col-lg-8.gl-mb-3
     = form_for @hook, as: :hook, url: admin_hooks_path do |f|
       = render partial: 'form', locals: { form: f, hook: @hook }
       = f.submit _('Add system hook'), class: 'btn btn-success'

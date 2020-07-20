@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-describe AuthorizedProjectsWorker do
+RSpec.describe AuthorizedProjectsWorker do
   it_behaves_like "refreshes user's project authorizations"
 end

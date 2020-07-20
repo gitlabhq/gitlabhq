@@ -10,21 +10,13 @@ describe('Mutations TestReports Store', () => {
   const defaultState = {
     endpoint: '',
     testReports: {},
-    selectedSuite: {},
+    selectedSuite: null,
     isLoading: false,
+    hasFullReport: false,
   };
 
   beforeEach(() => {
-    mockState = defaultState;
-  });
-
-  describe('set endpoint', () => {
-    it('should set endpoint', () => {
-      const expectedState = { ...mockState, endpoint: 'foo' };
-      mutations[types.SET_ENDPOINT](mockState, 'foo');
-
-      expect(mockState.endpoint).toEqual(expectedState.endpoint);
-    });
+    mockState = { ...defaultState };
   });
 
   describe('set reports', () => {
@@ -33,15 +25,25 @@ describe('Mutations TestReports Store', () => {
       mutations[types.SET_REPORTS](mockState, testReports);
 
       expect(mockState.testReports).toEqual(expectedState.testReports);
+      expect(mockState.hasFullReport).toBe(true);
     });
   });
 
-  describe('set selected suite', () => {
-    it('should set selectedSuite', () => {
-      const selectedSuite = testReports.test_suites[0];
-      mutations[types.SET_SELECTED_SUITE](mockState, selectedSuite);
+  describe('set selected suite index', () => {
+    it('should set selectedSuiteIndex', () => {
+      const selectedSuiteIndex = 0;
+      mutations[types.SET_SELECTED_SUITE_INDEX](mockState, selectedSuiteIndex);
 
-      expect(mockState.selectedSuite).toEqual(selectedSuite);
+      expect(mockState.selectedSuiteIndex).toEqual(selectedSuiteIndex);
+    });
+  });
+
+  describe('set summary', () => {
+    it('should set summary', () => {
+      const summary = { total_count: 1 };
+      mutations[types.SET_SUMMARY](mockState, summary);
+
+      expect(mockState.testReports).toEqual(summary);
     });
   });
 

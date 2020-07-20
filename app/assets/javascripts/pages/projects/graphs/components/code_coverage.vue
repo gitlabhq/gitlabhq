@@ -63,17 +63,19 @@ export default {
     selectedDailyCoverageName() {
       return this.selectedDailyCoverage?.group_name;
     },
-    formattedData() {
-      if (this.selectedDailyCoverage?.data) {
-        return this.selectedDailyCoverage.data.map(value => [
-          dateFormat(value.date, 'mmm dd'),
-          value.coverage,
-        ]);
-      }
-
+    sortedData() {
       // If the fetching failed, we return an empty array which
       // allow the graph to render while empty
-      return [];
+      if (!this.selectedDailyCoverage?.data) {
+        return [];
+      }
+
+      return [...this.selectedDailyCoverage.data].sort(
+        (a, b) => new Date(a.date) - new Date(b.date),
+      );
+    },
+    formattedData() {
+      return this.sortedData.map(value => [dateFormat(value.date, 'mmm dd'), value.coverage]);
     },
     chartData() {
       return [

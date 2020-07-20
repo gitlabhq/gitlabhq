@@ -42,8 +42,6 @@ Check all the [GitLab Enterprise features for issue boards](#gitlab-enterprise-f
 
 ![GitLab issue boards - Premium](img/issue_boards_premium.png)
 
----
-
 ## How it works
 
 The Issue Board feature builds on GitLab's existing
@@ -97,8 +95,6 @@ If you have the labels "**backend**", "**frontend**", "**staging**", and
 - Add multiple issues to lists in the board by selecting one or more existing issues.
 
 ![issue card moving](img/issue_board_move_issue_card_list.png)
-
----
 
 ### Use cases for multiple issue boards
 
@@ -252,8 +248,6 @@ clicking **View scope**.
 
 ![Viewing board configuration](img/issue_board_view_scope.png)
 
----
-
 ### Focus mode
 
 > - [Introduced]((https://about.gitlab.com/releases/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep)) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.1.
@@ -275,8 +269,6 @@ especially in combination with [assignee lists](#assignee-lists-premium).
 
 ![issue board summed weights](img/issue_board_summed_weights.png)
 
----
-
 ### Group issue boards **(PREMIUM)**
 
 > [Introduced](https://about.gitlab.com/releases/2017/09/22/gitlab-10-0-released/#group-issue-boards) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
@@ -291,8 +283,6 @@ NOTE: **Note:**
 Multiple group issue boards were originally [introduced](https://about.gitlab.com/releases/2017/09/22/gitlab-10-0-released/#group-issue-boards) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0, and one group issue board per group was made available in GitLab Core 10.6.
 
 ![Group issue board](img/group_issue_board.png)
-
----
 
 ### Assignee lists **(PREMIUM)**
 
@@ -313,8 +303,6 @@ To remove an assignee list, just as with a label list, click the trash icon.
 
 ![Assignee lists](img/issue_board_assignee_lists.png)
 
----
-
 ### Milestone lists **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6469) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2.
@@ -331,8 +319,6 @@ to and from a milestone list to manipulate the milestone of the dragged issues.
 As in other list types, click the trash icon to remove a list.
 
 ![Milestone lists](img/issue_board_milestone_lists.png)
-
----
 
 ## Work In Progress limits **(STARTER)**
 
@@ -364,8 +350,6 @@ If an issue is blocked by another issue, an icon appears next to its title to in
 status.
 
 ![Blocked issues](img/issue_boards_blocked_icon_v12_8.png)
-
----
 
 ## Actions you can take on an issue board
 
@@ -437,8 +421,6 @@ the list by filtering by author, assignee, milestone, and label.
 
 ![Bulk adding issues to lists](img/issue_boards_add_issues_modal.png)
 
----
-
 ### Remove an issue from a list
 
 Removing an issue from a list can be done by clicking the issue card and then
@@ -446,8 +428,6 @@ clicking the **Remove from board** button in the sidebar. The
 respective label is removed.
 
 ![Remove issue from list](img/issue_boards_remove_issue.png)
-
----
 
 ### Filter issues
 
@@ -492,8 +472,6 @@ to another list the label changes and a system not is recorded.
 
 ![issue board system notes](img/issue_board_system_notes.png)
 
----
-
 ### Drag issues between lists
 
 When dragging issues between lists, different behavior occurs depending on the source list and the target list.
@@ -517,8 +495,6 @@ To select and move multiple cards:
 1. Drag one of the selected cards to another position or list and all selected cards are moved.
 
 ![Multi-select Issue Cards](img/issue_boards_multi_select_v12_4.png)
-
----
 
 ### Issue ordering in a list
 

@@ -19,7 +19,11 @@ module Gitlab
                   parent_pipeline: parent_pipeline
                 }
               )
+
+              add_warnings_to_pipeline(@command.config_processor.warnings)
             rescue Gitlab::Ci::YamlProcessor::ValidationError => ex
+              add_warnings_to_pipeline(ex.warnings)
+
               error(ex.message, config_error: true)
             rescue => ex
               Gitlab::ErrorTracking.track_exception(ex,
@@ -33,6 +37,14 @@ module Gitlab
 
             def break?
               @pipeline.errors.any? || @pipeline.persisted?
+            end
+
+            private
+
+            def add_warnings_to_pipeline(warnings)
+              return unless warnings.present?
+
+              warnings.each { |message| warning(message) }
             end
           end
         end

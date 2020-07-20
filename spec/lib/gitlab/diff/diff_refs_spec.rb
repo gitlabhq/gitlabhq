@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::DiffRefs do
+RSpec.describe Gitlab::Diff::DiffRefs do
   let(:project) { create(:project, :repository) }
 
   describe '#==' do

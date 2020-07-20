@@ -1,0 +1,19 @@
+- expanded = expanded_by_default?
+%section.settings.js-service-desk-setting-wrapper.no-animate#js-service-desk{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Service Desk')
+    %button.btn.js-settings-toggle
+      = expanded ? _('Collapse') : _('Expand')
+    - link_start = "<a href='#{help_page_path('user/project/service_desk')}' target='_blank' rel='noopener noreferrer'>".html_safe
+    %p= _('Enable/disable your service desk. %{link_start}Learn more about service desk%{link_end}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+  .settings-content
+    - if ::Gitlab::ServiceDesk.supported?
+      .js-service-desk-setting-root{ data: { endpoint: project_service_desk_path(@project),
+        enabled: "#{@project.service_desk_enabled}",
+        incoming_email: (@project.service_desk_address if @project.service_desk_enabled),
+        selected_template: "#{@project.service_desk_setting&.issue_template_key}",
+        outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",
+        project_key: "#{@project.service_desk_setting&.project_key}",
+        templates: issuable_templates_names(Issue.new) } }
+    - elsif show_callout?('promote_service_desk_dismissed')
+      = render 'shared/promotions/promote_servicedesk'

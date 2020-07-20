@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::Metrics::Dashboards::AnnotationResolver do
+RSpec.describe Resolvers::Metrics::Dashboards::AnnotationResolver do
   include GraphqlHelpers
 
   describe '#resolve' do

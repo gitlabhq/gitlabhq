@@ -26,16 +26,16 @@
         %ul
           - if dashboard_nav_link?(:groups)
             %li.d-md-none
-              = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups' do
+              = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', data: { qa_selector: 'groups_link' } do
                 = _('Groups')
           - if dashboard_nav_link?(:activity)
             = nav_link(path: 'dashboard#activity') do
-              = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity' do
+              = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', data: { qa_selector: 'activity_link' } do
                 = _('Activity')
 
           - if dashboard_nav_link?(:milestones)
             = nav_link(controller: 'dashboard/milestones') do
-              = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones' do
+              = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', data: { qa_selector: 'milestones_link' } do
                 = _('Milestones')
 
           - if dashboard_nav_link?(:snippets)

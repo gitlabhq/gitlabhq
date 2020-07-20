@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PipelineEntity do
+RSpec.describe PipelineEntity do
   include Gitlab::Routing
 
   let_it_be(:project) { create(:project) }
@@ -258,6 +258,30 @@ describe PipelineEntity do
           allow(entity).to receive(:can_retry?).and_return(false)
 
           expect(subject[:failed_builds]).to be_nil
+        end
+      end
+    end
+
+    context 'when pipeline has build report results' do
+      let(:pipeline) { create(:ci_pipeline, :with_report_results, project: project, user: user) }
+
+      context 'when feature is enabled' do
+        before do
+          stub_feature_flags(build_report_summary: true)
+        end
+
+        it 'exposes tests total count' do
+          expect(subject[:tests_total_count]).to eq(2)
+        end
+      end
+
+      context 'when feature is disabled' do
+        before do
+          stub_feature_flags(build_report_summary: false)
+        end
+
+        it 'do not expose tests total count' do
+          expect(subject).not_to include(:tests_total_count)
         end
       end
     end

@@ -19,10 +19,21 @@ module Issues
 
       notify_participants
 
+      # Updates old issue sent notifications allowing
+      # to receive service desk emails on the new moved issue.
+      update_service_desk_sent_notifications
+
       new_entity
     end
 
     private
+
+    def update_service_desk_sent_notifications
+      return unless original_entity.from_service_desk?
+
+      original_entity
+        .sent_notifications.update_all(project_id: new_entity.project_id, noteable_id: new_entity.id)
+    end
 
     def update_old_entity
       super

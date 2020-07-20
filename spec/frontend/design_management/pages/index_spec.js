@@ -3,7 +3,7 @@ import { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { GlEmptyState } from '@gitlab/ui';
 import Index from '~/design_management/pages/index.vue';
-import uploadDesignQuery from '~/design_management/graphql/mutations/uploadDesign.mutation.graphql';
+import uploadDesignQuery from '~/design_management/graphql/mutations/upload_design.mutation.graphql';
 import DesignDestroyer from '~/design_management/components/design_destroyer.vue';
 import DesignDropzone from '~/design_management/components/upload/design_dropzone.vue';
 import DeleteButton from '~/design_management/components/delete_button.vue';

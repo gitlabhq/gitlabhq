@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Elasticsearch::Logs::Pods do
+RSpec.describe Gitlab::Elasticsearch::Logs::Pods do
   let(:client) { Elasticsearch::Transport::Client }
 
   let(:es_query) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/pods_query.json'), symbolize_names: true) }

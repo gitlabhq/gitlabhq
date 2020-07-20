@@ -1,0 +1,6 @@
+---
+title: If a user does not have write access to repo, but a fork exists, the Web IDE
+  button should take them to the fork
+merge_request: 36548
+author:
+type: added

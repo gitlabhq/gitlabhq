@@ -312,7 +312,7 @@ describe('GfmAutoComplete', () => {
           title: 'My Group',
           search: 'my-group My Group',
           icon:
-            '<svg class="s16 vertical-align-middle prepend-left-5"><use xlink:href="undefined#notifications-off" /></svg>',
+            '<svg class="s16 vertical-align-middle gl-ml-2"><use xlink:href="undefined#notifications-off" /></svg>',
         },
       ]);
     });

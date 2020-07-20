@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::FileTypeDetection do
+RSpec.describe Gitlab::FileTypeDetection do
   describe '.extension_match?' do
     let(:extensions) { %w[foo bar] }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService, :migration, schema: 2020_02_20_115023 do
+RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService, :migration, schema: 2020_02_20_115023 do
   def service_params_for(project_id, params = {})
     {
       project_id: project_id,

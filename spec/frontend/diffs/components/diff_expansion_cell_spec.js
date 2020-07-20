@@ -6,10 +6,10 @@ import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
 import { getPreviousLineIndex } from '~/diffs/store/utils';
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import diffFileMockData from '../mock_data/diff_file';
+import { getByText } from '@testing-library/dom';
 
 const EXPAND_UP_CLASS = '.js-unfold';
 const EXPAND_DOWN_CLASS = '.js-unfold-down';
-const EXPAND_ALL_CLASS = '.js-unfold-all';
 const LINE_TO_USE = 5;
 const lineSources = {
   [INLINE_DIFF_VIEW_TYPE]: 'highlighted_diff_lines',
@@ -88,7 +88,7 @@ describe('DiffExpansionCell', () => {
 
   const findExpandUp = () => vm.$el.querySelector(EXPAND_UP_CLASS);
   const findExpandDown = () => vm.$el.querySelector(EXPAND_DOWN_CLASS);
-  const findExpandAll = () => vm.$el.querySelector(EXPAND_ALL_CLASS);
+  const findExpandAll = () => getByText(vm.$el, 'Show unchanged lines');
 
   describe('top row', () => {
     it('should have "expand up" and "show all" option', () => {

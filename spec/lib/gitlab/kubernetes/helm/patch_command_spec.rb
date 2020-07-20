@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::Helm::PatchCommand do
+RSpec.describe Gitlab::Kubernetes::Helm::PatchCommand do
   let(:files) { { 'ca.pem': 'some file content' } }
   let(:repository) { 'https://repository.example.com' }
   let(:rbac) { false }

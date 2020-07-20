@@ -9,9 +9,9 @@ type: reference, howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4348) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
-NOTE: **4 of the top 6 attacks were application based.**
-Download our whitepaper,
-["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
+NOTE: **Note:**
+The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
+explains how **4 of the top 6 attacks were application based**. Download it
 to learn how to protect your organization.
 
 Running [static checks](../sast/index.md) on your code is the first step to detect
@@ -36,7 +36,7 @@ NOTE: **Note:**
 This comparison logic uses only the latest pipeline executed for the target branch's base commit.
 Running the pipeline on any other commit has no effect on the merge request.
 
-![DAST Widget](img/dast_all_v13_0.png)
+![DAST Widget](img/dast_v13_2.png)
 
 By clicking on one of the detected linked vulnerabilities, you can
 see the details and the URL(s) affected.
@@ -44,10 +44,10 @@ see the details and the URL(s) affected.
 ![DAST Widget Clicked](img/dast_single_v13_0.png)
 
 [Dynamic Application Security Testing (DAST)](https://en.wikipedia.org/wiki/Dynamic_Application_Security_Testing)
-uses the popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
+uses the popular open source tool [OWASP Zed Attack Proxy](https://www.zaproxy.org/)
 to perform an analysis on your running web application.
 
-By default, DAST executes [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan)
+By default, DAST executes [ZAP Baseline Scan](https://www.zaproxy.org/docs/docker/baseline-scan/)
 and performs passive scanning only. It won't actively attack your application.
 However, DAST can be [configured](#full-scan)
 to also perform an *active scan*: attack your application and produce a more extensive security report.
@@ -142,6 +142,22 @@ should be excluded from changes for the duration of a DAST scan.
 The only changes to the site should be from the DAST scanner. Be aware that any
 changes that users, scheduled tasks, database changes, code changes, other pipelines, or other scanners make to
 the site during a scan could lead to inaccurate results.
+
+### Hide sensitive information
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
+
+HTTP request and response headers may contain sensitive information, including cookies and
+authorization credentials. By default, the following headers are masked:
+
+- `Authorization`.
+- `Proxy-Authorization`.
+- `Set-Cookie` (values only).
+- `Cookie` (values only).
+
+Using the [`DAST_MASK_HTTP_HEADERS` variable](#available-variables), you can list the
+headers whose values you want masked. For details on how to mask headers, see
+[Customizing the DAST settings](#customizing-the-dast-settings).
 
 ### Authentication
 
@@ -398,6 +414,10 @@ variables:
 
 ### Customizing the DAST settings
 
+CAUTION: **Deprecation:**
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
+is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
+
 The DAST settings can be changed through environment variables by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 These variables are documented in [available variables](#available-variables).
@@ -410,68 +430,43 @@ include:
 
 variables:
   DAST_WEBSITE: https://example.com
-  DAST_TARGET_AVAILABILITY_TIMEOUT: 120
+  DAST_SPIDER_MINS: 120
 ```
 
 Because the template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
 configuration, the last mention of the variable will take precedence.
 
-### Overriding the DAST template
-
-CAUTION: **Deprecation:**
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
-
-If you want to override the job definition (for example, change properties like
-`variables` or `dependencies`), you need to declare a `dast` job after the
-template inclusion and specify any additional keys under it. For example:
-
-```yaml
-include:
-  - template: DAST.gitlab-ci.yml
-
-dast:
-  stage: dast # IMPORTANT: don't forget to add this
-  variables:
-    DAST_WEBSITE: https://example.com
-    CI_DEBUG_TRACE: "true"
-```
-
-As the DAST job belongs to a separate `dast` stage that runs after all
-[default stages](../../../ci/yaml/README.md#stages),
-don't forget to add `stage: dast` when you override the template job definition.
-
 ### Available variables
 
 DAST can be [configured](#customizing-the-dast-settings) using environment variables.
 
-| Environment variable        | Required   | Description                                                                    |
+| Environment variable        | Type | Description                                                                    |
 |-----------------------------| -----------|--------------------------------------------------------------------------------|
-| `SECURE_ANALYZERS_PREFIX`   | no | Set the Docker registry base address from which to download the analyzer. |
-| `DAST_WEBSITE`  | no| The URL of the website to scan. `DAST_API_SPECIFICATION` must be specified if this is omitted. |
-| `DAST_API_SPECIFICATION`  | no | The API specification to import. `DAST_WEBSITE` must be specified if this is omitted. |
-| `DAST_AUTH_URL` | no | The authentication URL of the website to scan. Not supported for API scans. |
-| `DAST_USERNAME` | no | The username to authenticate to in the website. |
-| `DAST_PASSWORD` | no | The password to authenticate to in the website. |
-| `DAST_USERNAME_FIELD` | no | The name of username field at the sign-in HTML form. |
-| `DAST_PASSWORD_FIELD` | no | The name of password field at the sign-in HTML form. |
-| `DAST_AUTH_EXCLUDE_URLS` | no | The URLs to skip during the authenticated scan; comma-separated, no spaces in between. Not supported for API scans. |
-| `DAST_TARGET_AVAILABILITY_TIMEOUT` | no | Time limit in seconds to wait for target availability. Scan is attempted nevertheless if it runs out. Integer. Defaults to `60`. |
-| `DAST_FULL_SCAN_ENABLED` | no | Switches the tool to execute [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
-| `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | no | Requires [domain validation](#domain-validation) when running DAST full scans. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. Not supported for API scans. |
-| `DAST_AUTO_UPDATE_ADDONS` | no | By default the versions of ZAP add-ons are pinned to those provided with the DAST image. Set to `true` to allow ZAP to download the latest versions. |
-| `DAST_API_HOST_OVERRIDE` | no | Used to override domains defined in API specification files. |
-| `DAST_EXCLUDE_RULES` | no | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from the scan report. Currently, excluded rules will get executed but the alerts from them will be suppressed. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://github.com/zaproxy/zaproxy/blob/develop/docs/scanners.md). For example, `HTTP Parameter Override` has a rule ID of `10026`. |
-| `DAST_REQUEST_HEADERS` | no | Set to a comma-separated list of request header names and values. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
-| `DAST_DEBUG` | no | Enable debug message output. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
-| `DAST_SPIDER_MINS` | no | The maximum duration of the spider scan in minutes. Set to zero for unlimited. Defaults to one minute, or unlimited when the scan is a full scan. |
-| `DAST_HTML_REPORT` | no | The file name of the HTML report written at the end of a scan. |
-| `DAST_MARKDOWN_REPORT` | no | The file name of the Markdown report written at the end of a scan. |
-| `DAST_XML_REPORT` | no | The file name of the XML report written at the end of a scan. |
-| `DAST_INCLUDE_ALPHA_VULNERABILITIES` | no | Include alpha passive and active scan rules. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
-| `DAST_USE_AJAX_SPIDER` | no | Use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
-| `DAST_ZAP_CLI_OPTIONS` | no | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. |
-| `DAST_ZAP_LOG_CONFIGURATION` | no | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG` |
+| `SECURE_ANALYZERS_PREFIX`   | URL | Set the Docker registry base address from which to download the analyzer. |
+| `DAST_WEBSITE`  | URL | The URL of the website to scan. `DAST_API_SPECIFICATION` must be specified if this is omitted. |
+| `DAST_API_SPECIFICATION`  | URL or string | The API specification to import. The specification can be hosted at a URL, or the name of a file present in the `/zap/wrk` directory. `DAST_WEBSITE` must be specified if this is omitted. |
+| `DAST_AUTH_URL` | URL | The URL of the page containing the sign-in HTML form on the target website. `DAST_USERNAME` and `DAST_PASSWORD` will be submitted with the login form to create an authenticated scan. Not supported for API scans. |
+| `DAST_USERNAME` | string | The username to authenticate to in the website. |
+| `DAST_PASSWORD` | string | The password to authenticate to in the website. |
+| `DAST_USERNAME_FIELD` | string | The name of username field at the sign-in HTML form. |
+| `DAST_PASSWORD_FIELD` | string | The name of password field at the sign-in HTML form. |
+| `DAST_MASK_HTTP_HEADERS` | string | Comma-separated list of request and response headers to be masked (introduced in GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
+| `DAST_AUTH_EXCLUDE_URLS` | URLs | The URLs to skip during the authenticated scan; comma-separated, no spaces in between. Not supported for API scans. |
+| `DAST_FULL_SCAN_ENABLED` | boolean | Set to `true` to run a [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of a [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Default: `false` |
+| `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | boolean | Set to `true` to require [domain validation](#domain-validation) when running DAST full scans. Not supported for API scans. Default: `false` |
+| `DAST_AUTO_UPDATE_ADDONS` | boolean | ZAP add-ons are pinned to specific versions in the DAST Docker image. Set to `true` to download the latest versions when the scan starts. Default: `false` |
+| `DAST_API_HOST_OVERRIDE` | string | Used to override domains defined in API specification files. Example: `example.com:8080` |
+| `DAST_EXCLUDE_RULES` | string | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from running during the scan. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://github.com/zaproxy/zaproxy/blob/develop/docs/scanners.md). For example, `HTTP Parameter Override` has a rule ID of `10026`. **Note:** In earlier versions of GitLab the excluded rules were executed but alerts they generated were supressed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118641) in GitLab 12.10. |
+| `DAST_REQUEST_HEADERS` | string | Set to a comma-separated list of request header names and values. Headers will be added to every request made by DAST. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
+| `DAST_DEBUG` | boolean | Enable debug message output. Default: `false` |
+| `DAST_SPIDER_MINS` | number | The maximum duration of the spider scan in minutes. Set to `0` for unlimited. Default: One minute, or unlimited when the scan is a full scan. |
+| `DAST_HTML_REPORT` | string | The file name of the HTML report written at the end of a scan. |
+| `DAST_MARKDOWN_REPORT` | string | The file name of the Markdown report written at the end of a scan. |
+| `DAST_XML_REPORT` | string | The file name of the XML report written at the end of a scan. |
+| `DAST_INCLUDE_ALPHA_VULNERABILITIES` | boolean | Set to `true` to include alpha passive and active scan rules. Default: `false` |
+| `DAST_USE_AJAX_SPIDER` | boolean | Set to `true` to use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Default: `false` |
+| `DAST_ZAP_CLI_OPTIONS` | string | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. |
+| `DAST_ZAP_LOG_CONFIGURATION` | string | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG` |
 
 ### DAST command-line options
 
@@ -532,19 +527,20 @@ A DAST job has two executing processes:
 
 Debug mode of the scripts can be enabled by using the `DAST_DEBUG` environment variable. This can help when troubleshooting the job,
 and will output statements indicating what percentage of the scan is complete.
-For details on using variables, see [Overriding the DAST template](#overriding-the-dast-template).
+For details on using variables, see [Overriding the DAST template](#customizing-the-dast-settings).
 
 Debug mode of the ZAP server can be enabled using the `DAST_ZAP_LOG_CONFIGURATION` environment variable.
 The following table outlines examples of values that can be set and the effect that they have on the output that is logged.
 Multiple values can be specified, separated by semicolons.
 
-| Log configuration value                            | Effect                                                            |
-|--------------------------------------------------  | ----------------------------------------------------------------- |
-| `log4j.rootLogger=DEBUG`                           | Enable all debug logging statements.                              |
-| `log4j.logger.org.apache.commons.httpclient=DEBUG` | Log every HTTP request and response made by the ZAP server.       |
-| `log4j.logger.com.crawljax=DEBUG`                  | Enable Ajax Crawler debug logging statements.                     |
-| `log4j.logger.org.parosproxy.paros=DEBUG`          | Enable ZAP server proxy debug logging statements.                 |
-| `log4j.logger.org.zaproxy.zap=DEBUG`               | Enable debug logging statements of the general ZAP server code.   |
+| Log configuration value                                      | Effect                                                            |
+|--------------------------------------------------            | ----------------------------------------------------------------- |
+| `log4j.rootLogger=DEBUG`                                     | Enable all debug logging statements.                              |
+| `log4j.logger.org.apache.commons.httpclient=DEBUG`           | Log every HTTP request and response made by the ZAP server.       |
+| `log4j.logger.org.zaproxy.zap.spider.SpiderController=DEBUG` | Log URLs found during the spider scan of the target.              |
+| `log4j.logger.com.crawljax=DEBUG`                            | Enable Ajax Crawler debug logging statements.                     |
+| `log4j.logger.org.parosproxy.paros=DEBUG`                    | Enable ZAP server proxy debug logging statements.                 |
+| `log4j.logger.org.zaproxy.zap=DEBUG`                         | Enable debug logging statements of the general ZAP server code.   |
 
 ## Running DAST in an offline environment
 
@@ -603,6 +599,44 @@ The DAST job should now use local copies of the DAST analyzers to scan your code
 security reports without requiring internet access.
 
 Alternatively, you can use the variable `SECURE_ANALYZERS_PREFIX` to override the base registry address of the `dast` image.
+
+## On-Demand Scans
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.2.
+> - It's deployed behind a feature flag, disabled by default.
+> - It's disabled on GitLab.com.
+> - It's able to be enabled or disabled per-project.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-on-demand-scans).
+
+Passive DAST scans may be run on demand against a target website, outside the DevOps lifecycle. These scans will
+always be associated with the default or `master` branch of your project and the results can be seen in the project dashboard.
+
+![DAST On-Demand Scan](img/dast_on_demand_v13_2.png)
+
+### Enable or disable On-Demand Scans
+
+On-Demand Scans is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance. On-Demand Scans can be enabled or disabled per-project
+
+To enable it:
+
+```ruby
+# Instance-wide
+Feature.enable(:security_on_demand_scans_feature_flag)
+# or by project
+Feature.enable(:security_on_demand_scans_feature_flag, Project.find(<project id>))
+```
+
+To disable it:
+
+```ruby
+# Instance-wide
+Feature.disable(:security_on_demand_scans_feature_flag)
+# or by project
+Feature.disable(:security_on_demand_scans_feature_flag, Project.find(<project id>))
+```
 
 ## Reports
 
@@ -683,18 +717,6 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 For more information about the vulnerabilities database update, check the
 [maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
-
 ## Optimizing DAST
 
 By default, DAST will download all artifacts defined by previous jobs in the pipeline. If
@@ -734,3 +756,15 @@ variables:
 
 Here, DAST is being allocated 3072 MB.
 Change the number after `-Xmx` to the required memory amount.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

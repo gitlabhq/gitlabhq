@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MembersHelper do
+RSpec.describe MembersHelper do
   describe '#remove_member_message' do
     let(:requester) { create(:user) }
     let(:project) { create(:project, :public) }

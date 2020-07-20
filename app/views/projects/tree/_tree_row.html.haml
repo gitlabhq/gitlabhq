@@ -14,7 +14,7 @@
       %a.str-truncated{ href: fast_project_blob_path(@project, tree_join(@id || @commit.id, tree_row_name)), title: tree_row_name }
         %span= tree_row_name
       - if @lfs_blob_ids.include?(tree_row.id)
-        %span.badge.label-lfs.prepend-left-5 LFS
+        %span.badge.label-lfs.gl-ml-2 LFS
 
     - elsif tree_row_type == :commit
       = tree_icon('archive', tree_row.mode, tree_row.name)

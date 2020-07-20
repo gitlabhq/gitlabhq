@@ -5,11 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Project repository storage move API
+# Project repository storage moves API **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31285) in GitLab 13.0.
 
-Project repository storage can be moved. To retrieve project repository storage moves using the API, you must [authenticate yourself](README.md#authentication) as an administrator.
+Project repository storage can be moved. To retrieve project repository storage moves using the API,
+you must [authenticate yourself](README.md#authentication) as an administrator.
 
 ## Retrieve all project repository storage moves
 
@@ -23,7 +24,7 @@ are [paginated](README.md#pagination).
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/project_repository_storage_moves'
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_repository_storage_moves"
 ```
 
 Example response:
@@ -66,7 +67,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/1/repository_storage_moves'
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository_storage_moves"
 ```
 
 Example response:
@@ -106,7 +107,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/project_repository_storage_moves/1'
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_repository_storage_moves/1"
 ```
 
 Example response:
@@ -145,7 +146,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/1/repository_storage_moves/1'
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository_storage_moves/1"
 ```
 
 Example response:
@@ -185,7 +186,7 @@ Example request:
 
 ```shell
 curl --request POST --header "PRIVATE_TOKEN: <your_access_token>" --header "Content-Type: application/json" \
---data '{"destination_storage_name":"storage2"}' 'https://gitlab.example.com/api/v4/projects/1/repository_storage_moves'
+--data '{"destination_storage_name":"storage2"}' "https://gitlab.example.com/api/v4/projects/1/repository_storage_moves"
 ```
 
 Example response:

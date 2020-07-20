@@ -2,6 +2,7 @@ import ReplacedImageDiff from '~/image_diff/replaced_image_diff';
 import ImageDiff from '~/image_diff/image_diff';
 import { viewTypes } from '~/image_diff/view_types';
 import imageDiffHelper from '~/image_diff/helpers/index';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('ReplacedImageDiff', () => {
   let element;
@@ -12,17 +13,17 @@ describe('ReplacedImageDiff', () => {
       <div id="element">
         <div class="two-up">
           <div class="js-image-frame">
-            <img src="${gl.TEST_HOST}/image.png">
+            <img src="${TEST_HOST}/image.png">
           </div>
         </div>
         <div class="swipe">
           <div class="js-image-frame">
-            <img src="${gl.TEST_HOST}/image.png">
+            <img src="${TEST_HOST}/image.png">
           </div>
         </div>
         <div class="onion-skin">
           <div class="js-image-frame">
-            <img src="${gl.TEST_HOST}/image.png">
+            <img src="${TEST_HOST}/image.png">
           </div>
         </div>
         <div class="view-modes-menu">

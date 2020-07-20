@@ -114,7 +114,7 @@ After the mirror is created, this option can currently only be modified via the 
 
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
-1. Create a [GitHub personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) with the `public_repo` box checked.
+1. Create a [GitHub personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) with the `public_repo` box checked.
 1. Fill in the **Git repository URL** field using this format: `https://<your_github_username>@github.com/<your_github_group>/<your_github_project>.git`.
 1. Fill in **Password** field with your GitHub personal access token.
 1. Click the **Mirror repository** button.
@@ -125,10 +125,10 @@ The repository will push soon. To force a push, click the appropriate button.
 
 ## Setting up a push mirror to another GitLab instance with 2FA activated
 
-1. On the destination GitLab instance, create a [personal access token](../../profile/personal_access_tokens.md) with `API` scope.
+1. On the destination GitLab instance, create a [personal access token](../../profile/personal_access_tokens.md) with `write_repository` scope.
 1. On the source GitLab instance:
    1. Fill in the **Git repository URL** field using this format: `https://oauth2@<destination host>/<your_gitlab_group_or_name>/<your_gitlab_project>.git`.
-   1. Fill in **Password** field with the GitLab personal access token created on the destination GitLab instance.
+   1. Fill in the **Password** field with the GitLab personal access token created on the destination GitLab instance.
    1. Click the **Mirror repository** button.
 
 ## Pulling from a remote repository **(STARTER)**
@@ -231,7 +231,7 @@ those you expect. GitLab.com and other code hosting sites publish their
 fingerprints in the open for you to check:
 
 - [AWS CodeCommit](https://docs.aws.amazon.com/codecommit/latest/userguide/regions.html#regions-fingerprints)
-- [Bitbucket](https://confluence.atlassian.com/bitbucket/ssh-keys-935365775.html)
+- [Bitbucket](https://support.atlassian.com/bitbucket-cloud/docs/configure-ssh-and-two-step-verification/)
 - [GitHub](https://help.github.com/en/github/authenticating-to-github/githubs-ssh-key-fingerprints)
 - [GitLab.com](../../gitlab_com/index.md#ssh-host-keys-fingerprints)
 - [Launchpad](https://help.launchpad.net/SSHFingerprints)

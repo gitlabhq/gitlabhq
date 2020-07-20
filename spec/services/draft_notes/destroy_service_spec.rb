@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe DraftNotes::DestroyService do
+RSpec.describe DraftNotes::DestroyService do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.target_project }
   let(:user) { merge_request.author }

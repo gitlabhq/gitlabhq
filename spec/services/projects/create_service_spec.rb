@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::CreateService, '#execute' do
+RSpec.describe Projects::CreateService, '#execute' do
   include ExternalAuthorizationServiceHelpers
   include GitHelpers
 
@@ -240,13 +240,21 @@ describe Projects::CreateService, '#execute' do
   end
 
   context 'import data' do
-    it 'stores import data and URL' do
-      import_data = { data: { 'test' => 'some data' } }
-      project = create_project(user, { name: 'test', import_url: 'http://import-url', import_data: import_data })
+    let(:import_data) { { data: { 'test' => 'some data' } } }
+    let(:imported_project) { create_project(user, { name: 'test', import_url: 'http://import-url', import_data: import_data }) }
 
-      expect(project.import_data).to be_persisted
-      expect(project.import_data.data).to eq(import_data[:data])
-      expect(project.import_url).to eq('http://import-url')
+    it 'does not write repository config' do
+      expect_next_instance_of(Project) do |project|
+        expect(project).not_to receive(:write_repository_config)
+      end
+
+      imported_project
+    end
+
+    it 'stores import data and URL' do
+      expect(imported_project.import_data).to be_persisted
+      expect(imported_project.import_data.data).to eq(import_data[:data])
+      expect(imported_project.import_url).to eq('http://import-url')
     end
   end
 
@@ -438,14 +446,35 @@ describe Projects::CreateService, '#execute' do
   end
 
   context 'when readme initialization is requested' do
-    it 'creates README.md' do
+    let(:project) { create_project(user, opts) }
+
+    before do
       opts[:initialize_with_readme] = '1'
+    end
 
-      project = create_project(user, opts)
+    shared_examples 'creates README.md' do
+      it { expect(project.repository.commit_count).to be(1) }
+      it { expect(project.repository.readme.name).to eql('README.md') }
+      it { expect(project.repository.readme.data).to include('# GitLab') }
+    end
 
-      expect(project.repository.commit_count).to be(1)
-      expect(project.repository.readme.name).to eql('README.md')
-      expect(project.repository.readme.data).to include('# GitLab')
+    it_behaves_like 'creates README.md'
+
+    context 'and a default_branch_name is specified' do
+      before do
+        allow(Gitlab::CurrentSettings)
+          .to receive(:default_branch_name)
+          .and_return('example_branch')
+      end
+
+      it_behaves_like 'creates README.md'
+
+      it 'creates README.md within the specified branch rather than master' do
+        branches = project.repository.branches
+
+        expect(branches.size).to eq(1)
+        expect(branches.collect(&:name)).to contain_exactly('example_branch')
+      end
     end
   end
 
@@ -647,10 +676,6 @@ describe Projects::CreateService, '#execute' do
     end
 
     it 'updates authorization for current_user' do
-      expect(Users::RefreshAuthorizedProjectsService).to(
-        receive(:new).with(user).and_call_original
-      )
-
       project = create_project(user, opts)
 
       expect(
@@ -682,10 +707,6 @@ describe Projects::CreateService, '#execute' do
       end
 
       it 'updates authorization for current_user' do
-        expect(Users::RefreshAuthorizedProjectsService).to(
-          receive(:new).with(user).and_call_original
-        )
-
         project = create_project(user, opts)
 
         expect(

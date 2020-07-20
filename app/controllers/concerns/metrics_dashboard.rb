@@ -13,7 +13,7 @@ module MetricsDashboard
     result = dashboard_finder.find(
       project_for_dashboard,
       current_user,
-      metrics_dashboard_params.to_h.symbolize_keys
+      decoded_params
     )
 
     if result
@@ -41,7 +41,7 @@ module MetricsDashboard
   end
 
   def amend_dashboard(dashboard)
-    project_dashboard = project_for_dashboard && !dashboard[:system_dashboard]
+    project_dashboard = project_for_dashboard && !dashboard[:out_of_the_box_dashboard]
 
     dashboard[:can_edit] = project_dashboard ? can_edit?(dashboard) : false
     dashboard[:project_blob_path] = project_dashboard ? dashboard_project_blob_path(dashboard) : nil
@@ -113,5 +113,15 @@ module MetricsDashboard
       status: result[:http_status] || :bad_request,
       json: result.slice(:all_dashboards, :message, :status)
     }
+  end
+
+  def decoded_params
+    params = metrics_dashboard_params
+
+    if params[:dashboard_path]
+      params[:dashboard_path] = CGI.unescape(params[:dashboard_path])
+    end
+
+    params
   end
 end

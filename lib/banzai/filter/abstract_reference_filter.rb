@@ -146,16 +146,16 @@ module Banzai
         link_pattern_start = /\A#{link_pattern}/
         link_pattern_anchor = /\A#{link_pattern}\z/
 
-        nodes.each do |node|
+        nodes.each_with_index do |node, index|
           if text_node?(node) && ref_pattern
-            replace_text_when_pattern_matches(node, ref_pattern) do |content|
+            replace_text_when_pattern_matches(node, index, ref_pattern) do |content|
               object_link_filter(content, ref_pattern)
             end
 
           elsif element_node?(node)
             yield_valid_link(node) do |link, inner_html|
               if ref_pattern && link =~ ref_pattern_anchor
-                replace_link_node_with_href(node, link) do
+                replace_link_node_with_href(node, index, link) do
                   object_link_filter(link, ref_pattern, link_content: inner_html)
                 end
 
@@ -165,7 +165,7 @@ module Banzai
               next unless link_pattern
 
               if link == inner_html && inner_html =~ link_pattern_start
-                replace_link_node_with_text(node, link) do
+                replace_link_node_with_text(node, index) do
                   object_link_filter(inner_html, link_pattern, link_reference: true)
                 end
 
@@ -173,7 +173,7 @@ module Banzai
               end
 
               if link =~ link_pattern_anchor
-                replace_link_node_with_href(node, link) do
+                replace_link_node_with_href(node, index, link) do
                   object_link_filter(link, link_pattern, link_content: inner_html, link_reference: true)
                 end
 

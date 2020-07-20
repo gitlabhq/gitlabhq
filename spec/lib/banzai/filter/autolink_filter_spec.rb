@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::AutolinkFilter do
+RSpec.describe Banzai::Filter::AutolinkFilter do
   include FilterSpecHelper
 
   let(:link) { 'http://about.gitlab.com/' }

@@ -16,7 +16,7 @@ A top-level GitLab group is one that does not have any parent group itself. All 
 as well as projects of the top-level group's subgroups nesting down, are connected. Alternatively, you can specify
 a GitLab personal namespace in the Jira configuration, which will then connect the projects in that personal namespace to Jira.
 
-NOTE: **Note**:
+NOTE: **Note:**
 Note this is different from the [existing Jira](../user/project/integrations/jira.md) project integration, where the mapping
 is one GitLab project to the entire Jira instance.
 
@@ -55,7 +55,7 @@ There are no special requirements if you are using GitLab.com.
    replacing `<your-gitlab-instance-domain>` appropriately. So for example, if you are using GitLab.com,
    this would be `https://gitlab.com/login/oauth/callback`.
 
-   NOTE: **Note**:
+   NOTE: **Note:**
    If using a GitLab version earlier than 11.3, the `Redirect URI` must be
    `https://<your-gitlab-instance-domain>/-/jira/login/oauth/callback`. If you want Jira
    to have access to all projects, GitLab recommends an administrator creates the
@@ -90,7 +90,7 @@ There are no special requirements if you are using GitLab.com.
    replacing `<your-gitlab-instance-domain>` appropriately. So for example, if you are using GitLab.com,
    this would be `https://gitlab.com/`.
 
-   NOTE: **Note**:
+   NOTE: **Note:**
    If using a GitLab version earlier than 11.3 the `Host URL` value should be `https://<your-gitlab-instance-domain>/-/jira`
 
    For the `Client ID` field, use the `Application ID` value from the previous section.

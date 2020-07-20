@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Avatar do
+RSpec.describe API::Avatar do
   let(:gravatar_service) { double('GravatarService') }
 
   describe 'GET /avatar' do

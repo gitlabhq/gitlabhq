@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Gitaly
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: reference, howto
+---
+
 # Repository storage paths
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4578) in GitLab 8.10.
@@ -60,7 +67,8 @@ files and add the full paths of the alternative repository storage paths. In
 the example below, we add two more mount points that are named `nfs_1` and `nfs_2`
 respectively.
 
-NOTE: **Note:** This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab's performance. See the [relevant documentation](high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+NOTE: **Note:**
+This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab's performance. See the [relevant documentation](high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 **For installations from source**
 
@@ -110,7 +118,10 @@ Once you set the multiple storage paths, you can choose where new repositories
 will be stored under **Admin Area > Settings > Repository >
 Repository storage > Storage nodes for new repositories**.
 
-![Choose repository storage path in Admin Area](img/repository_storages_admin_ui_v12_10.png)
+Each storage can be assigned a weight from 0-100. When a new project is created, these
+weights are used to determine the storage location the repository will be created on.
+
+![Choose repository storage path in Admin Area](img/repository_storages_admin_ui_v13_1.png)
 
 Beginning with GitLab 8.13.4, multiple paths can be chosen. New repositories
 will be randomly placed on one of the selected paths.

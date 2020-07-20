@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::LegacyStage do
+RSpec.describe Ci::LegacyStage do
   let(:stage) { build(:ci_stage) }
   let(:pipeline) { stage.pipeline }
   let(:stage_name) { stage.name }

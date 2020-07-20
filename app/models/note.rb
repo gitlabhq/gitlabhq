@@ -5,6 +5,7 @@
 # A note of this type is never resolvable.
 class Note < ApplicationRecord
   extend ActiveModel::Naming
+  include Gitlab::Utils::StrongMemoize
   include Participable
   include Mentionable
   include Awardable
@@ -122,6 +123,8 @@ class Note < ApplicationRecord
   scope :common, -> { where(noteable_type: ["", nil]) }
   scope :fresh, -> { order(created_at: :asc, id: :asc) }
   scope :updated_after, ->(time) { where('updated_at > ?', time) }
+  scope :with_updated_at, ->(time) { where(updated_at: time) }
+  scope :by_updated_at, -> { reorder(:updated_at, :id) }
   scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
@@ -446,8 +449,10 @@ class Note < ApplicationRecord
   # Consider using `#to_discussion` if we do not need to render the discussion
   # and all its notes and if we don't care about the discussion's resolvability status.
   def discussion
-    full_discussion = self.noteable.notes.find_discussion(self.discussion_id) if part_of_discussion?
-    full_discussion || to_discussion
+    strong_memoize(:discussion) do
+      full_discussion = self.noteable.notes.find_discussion(self.discussion_id) if part_of_discussion?
+      full_discussion || to_discussion
+    end
   end
 
   def start_of_discussion?

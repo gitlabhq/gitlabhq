@@ -1,0 +1,5 @@
+---
+title: Prevent emails to user on expiry of impersonation token
+merge_request: 32140
+author:
+type: fixed

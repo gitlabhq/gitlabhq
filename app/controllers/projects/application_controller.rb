@@ -42,7 +42,7 @@ class Projects::ApplicationController < ApplicationController
 
   def authorize_action!(action)
     unless can?(current_user, action, project)
-      return access_denied!
+      access_denied!
     end
   end
 
@@ -79,10 +79,6 @@ class Projects::ApplicationController < ApplicationController
         notice: "This action is not allowed unless you are on a branch"
       )
     end
-  end
-
-  def apply_diff_view_cookie!
-    set_secure_cookie(:diff_view, params.delete(:view), permanent: true) if params[:view].present?
   end
 
   def require_pages_enabled!

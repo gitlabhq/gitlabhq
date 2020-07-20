@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ImportGithub do
+RSpec.describe API::ImportGithub do
   let(:token) { "asdasd12345" }
   let(:provider) { :github }
   let(:access_params) { { github_access_token: token } }
@@ -24,6 +24,10 @@ describe API::ImportGithub do
       Grape::Endpoint.before_each do |endpoint|
         allow(endpoint).to receive(:client).and_return(double('client', user: provider_user, repo: provider_repo).as_null_object)
       end
+    end
+
+    after do
+      Grape::Endpoint.before_each nil
     end
 
     it 'rejects requests when Github Importer is disabled' do

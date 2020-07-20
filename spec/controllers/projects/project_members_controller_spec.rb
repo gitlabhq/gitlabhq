@@ -106,6 +106,29 @@ RSpec.describe Projects::ProjectMembersController do
         expect(response).to redirect_to(project_project_members_path(project))
       end
     end
+
+    context 'adding project bot' do
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+
+      before do
+        project.add_maintainer(user)
+
+        unrelated_project = create(:project)
+        unrelated_project.add_maintainer(project_bot)
+      end
+
+      it 'returns error' do
+        post :create, params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          user_ids: project_bot.id,
+          access_level: Gitlab::Access::GUEST
+        }
+
+        expect(flash[:alert]).to include('project bots cannot be added to other groups / projects')
+        expect(response).to redirect_to(project_project_members_path(project))
+      end
+    end
   end
 
   describe 'PUT update' do

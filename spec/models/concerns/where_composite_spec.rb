@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WhereComposite do
+RSpec.describe WhereComposite do
   describe '.where_composite' do
     let_it_be(:test_table_name) { "test_table_#{SecureRandom.hex(10)}" }
 

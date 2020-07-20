@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildTraceChunks::Redis, :clean_gitlab_redis_shared_state do
+RSpec.describe Ci::BuildTraceChunks::Redis, :clean_gitlab_redis_shared_state do
   let(:data_store) { described_class.new }
 
   describe '#available?' do

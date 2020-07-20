@@ -56,7 +56,7 @@
 
 = render_if_exists 'projects/settings/default_issue_template'
 
-= render_if_exists 'projects/service_desk_settings'
+= render 'projects/service_desk_settings'
 
 %section.qa-advanced-settings.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded) }
   .settings-header

@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Auth::Activity do
+RSpec.describe Gitlab::Auth::Activity do
   describe '.each_counter' do
     it 'has all static counters defined' do
       described_class.each_counter do |counter|

@@ -9,7 +9,7 @@
           %li= msg
 
   = hidden_field_tag :notification_type, 'global'
-  .row.prepend-top-default
+  .row.gl-mt-3
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0
         = page_title
@@ -21,7 +21,7 @@
       %h5.gl-mt-0
         = _('Global notification settings')
 
-      = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications prepend-top-default' } do |f|
+      = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications gl-mt-3' } do |f|
         = render_if_exists 'profiles/notifications/email_settings', form: f
 
       = label_tag :global_notification_level, "Global notification level", class: "label-bold"
@@ -47,7 +47,7 @@
         = _('Projects (%{count})') % { count: @project_notifications.size }
       %p.account-well
         = _('To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there.')
-      .append-bottom-default
+      .gl-mb-3
         %ul.bordered-list
           - @project_notifications.each do |setting|
             = render 'project_settings', setting: setting, project: setting.source

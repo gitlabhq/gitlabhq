@@ -45,7 +45,7 @@ describe('Project commits actions', () => {
 
   describe('fetchAuthors', () => {
     it('dispatches request/receive', () => {
-      const path = '/autocomplete/users.json';
+      const path = '/-/autocomplete/users.json';
       state.projectId = '8';
       const data = [{ id: 1 }];
 
@@ -60,7 +60,7 @@ describe('Project commits actions', () => {
     });
 
     it('dispatches request/receive on error', () => {
-      const path = '/autocomplete/users.json';
+      const path = '/-/autocomplete/users.json';
       mock.onGet(path).replyOnce(500);
 
       testAction(actions.fetchAuthors, null, state, [], [{ type: 'receiveAuthorsError' }]);

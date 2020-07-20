@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TabHelper do
+RSpec.describe TabHelper do
   include ApplicationHelper
 
   describe 'nav_link' do

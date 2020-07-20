@@ -16,6 +16,7 @@ class AuditEventService
     @author = build_author(author)
     @entity = entity
     @details = details
+    @ip_address = (@details[:ip_address].presence || @author.current_sign_in_ip)
   end
 
   # Builds the @details attribute for authentication
@@ -49,6 +50,8 @@ class AuditEventService
 
   private
 
+  attr_reader :ip_address
+
   def build_author(author)
     case author
     when User
@@ -61,6 +64,7 @@ class AuditEventService
   def base_payload
     {
       author_id: @author.id,
+      author_name: @author.name,
       entity_id: @entity.id,
       entity_type: @entity.class.name
     }

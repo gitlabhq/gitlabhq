@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200213220159_migrate_store_security_reports_sidekiq_queue.rb')
 
-describe MigrateStoreSecurityReportsSidekiqQueue, :redis do
+RSpec.describe MigrateStoreSecurityReportsSidekiqQueue, :redis do
   include Gitlab::Database::MigrationHelpers
   include StubWorker
 

@@ -9,6 +9,7 @@ class Projects::BlobController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include RedirectsForMissingPathOnTree
   include SourcegraphDecorator
+  include DiffHelper
 
   prepend_before_action :authenticate_user!, only: [:edit]
 
@@ -129,7 +130,7 @@ class Projects::BlobController < Projects::ApplicationController
         end
       end
 
-      return redirect_to_tree_root_for_missing_path(@project, @ref, @path)
+      redirect_to_tree_root_for_missing_path(@project, @ref, @path)
     end
   end
 
@@ -207,14 +208,14 @@ class Projects::BlobController < Projects::ApplicationController
 
   def set_last_commit_sha
     @last_commit_sha = Gitlab::Git::Commit
-      .last_for_path(@repository, @ref, @path).sha
+      .last_for_path(@repository, @ref, @path, literal_pathspec: true).sha
   end
 
   def show_html
     environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
     environment_params[:find_latest] = true
     @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
-    @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
+    @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path, literal_pathspec: true)
     @code_navigation_path = Gitlab::CodeNavigationPath.new(@project, @blob.commit_id).full_json_path_for(@blob.path)
 
     render 'show'

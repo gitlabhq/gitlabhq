@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AccessibilityReportsComparerEntity do
+RSpec.describe AccessibilityReportsComparerEntity do
   let(:entity) { described_class.new(comparer) }
   let(:comparer) { Gitlab::Ci::Reports::AccessibilityReportsComparer.new(base_report, head_report) }
   let(:base_report) { Gitlab::Ci::Reports::AccessibilityReports.new }

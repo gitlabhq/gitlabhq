@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EmojiHelper do
+RSpec.describe EmojiHelper do
   describe '#emoji_icon' do
     let(:options) { {} }
     let(:emoji_text) { 'rocket' }

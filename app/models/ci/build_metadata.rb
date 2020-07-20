@@ -19,6 +19,7 @@ module Ci
     before_create :set_build_project
 
     validates :build, presence: true
+    validates :secrets, json_schema: { filename: 'build_metadata_secrets' }
 
     serialize :config_options, Serializers::JSON # rubocop:disable Cop/ActiveRecordSerialize
     serialize :config_variables, Serializers::JSON # rubocop:disable Cop/ActiveRecordSerialize

@@ -1,0 +1,6 @@
+---
+title: Use the application's default_branch_name when available when initializing a new repo with
+  a README
+merge_request: 35801
+author:
+type: changed

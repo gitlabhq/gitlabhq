@@ -1,5 +1,5 @@
 - if readme.rich_viewer
-  %article.file-holder.readme-holder{ id: 'readme', class: [("limited-width-container" unless fluid_layout), ("js-show-on-root" if vue_file_list_enabled?)] }
+  %article.file-holder.readme-holder{ id: 'readme', class: [("limited-width-container" unless fluid_layout)] }
     .js-file-title.file-title-flex-parent
       .file-header-content
         = blob_icon readme.mode, readme.name

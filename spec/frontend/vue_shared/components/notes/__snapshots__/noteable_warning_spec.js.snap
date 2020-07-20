@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Issue Warning Component when issue is locked but not confidential renders information about locked issue 1`] = `
+<span>
+  
+    This issue is locked.
+    Only project members can comment.
+    
+  <gl-link-stub
+    href="locked-path"
+    target="_blank"
+  >
+    Learn more
+  </gl-link-stub>
+</span>
+`;
+
+exports[`Issue Warning Component when noteable is confidential but not locked renders information about confidential issue 1`] = `
+<span>
+  
+    This is a confidential issue.
+    People without permission will never get a notification.
+    
+  <gl-link-stub
+    href="confidential-path"
+    target="_blank"
+  >
+    Learn more
+  </gl-link-stub>
+</span>
+`;
+
+exports[`Issue Warning Component when noteable is locked and confidential renders information about locked and confidential noteable 1`] = `
+<span>
+  <span>
+    This issue is 
+    <a
+      href=""
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      confidential
+    </a>
+     and 
+    <a
+      href=""
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      locked
+    </a>
+    .
+  </span>
+  
+    People without permission will never get a notification and won't be able to comment.
+  
+</span>
+`;

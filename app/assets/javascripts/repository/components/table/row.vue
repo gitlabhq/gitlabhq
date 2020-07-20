@@ -66,6 +66,11 @@ export default {
       type: String,
       required: true,
     },
+    mode: {
+      type: String,
+      required: false,
+      default: '',
+    },
     type: {
       type: String,
       required: true,
@@ -140,6 +145,7 @@ export default {
       >
         <file-icon
           :file-name="fullPath"
+          :file-mode="mode"
           :folder="isFolder"
           :submodule="isSubmodule"
           :loading="path === loadingPath"

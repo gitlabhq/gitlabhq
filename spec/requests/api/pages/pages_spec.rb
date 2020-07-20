@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Pages do
+RSpec.describe API::Pages do
   let_it_be(:project) { create(:project, path: 'my.project', pages_https_only: false) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }

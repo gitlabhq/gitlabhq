@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::TransferService do
+RSpec.describe Groups::TransferService do
   let(:user) { create(:user) }
   let(:new_parent_group) { create(:group, :public) }
   let!(:group_member) { create(:group_member, :owner, group: group, user: user) }

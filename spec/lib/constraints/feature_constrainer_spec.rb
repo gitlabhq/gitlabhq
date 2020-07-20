@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Constraints::FeatureConstrainer do
+RSpec.describe Constraints::FeatureConstrainer do
   describe '#matches' do
     it 'calls Feature.enabled? with the correct arguments' do
       gate = stub_feature_flag_gate("an object")

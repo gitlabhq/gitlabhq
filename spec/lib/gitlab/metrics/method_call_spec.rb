@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::MethodCall do
+RSpec.describe Gitlab::Metrics::MethodCall do
   let(:transaction) { double(:transaction, labels: {}) }
   let(:method_call) { described_class.new('Foo#bar', :Foo, '#bar', transaction) }
 

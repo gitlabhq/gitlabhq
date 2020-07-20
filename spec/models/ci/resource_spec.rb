@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::Resource do
+RSpec.describe Ci::Resource do
   describe '.free' do
     subject { described_class.free }
 

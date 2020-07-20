@@ -85,6 +85,10 @@ class PipelineEntity < Grape::Entity
     pipeline.failed_builds
   end
 
+  expose :tests_total_count, if: -> (pipeline, _) { Feature.enabled?(:build_report_summary, pipeline.project) } do |pipeline|
+    pipeline.test_report_summary.total_count
+  end
+
   private
 
   alias_method :pipeline, :object

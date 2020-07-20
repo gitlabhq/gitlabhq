@@ -99,6 +99,9 @@ store packages.
 
 [Read more about using object storage with GitLab](../object_storage.md).
 
+NOTE: **Note:**
+We recommend using the [consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration). The following instructions apply to the original config format.
+
 **Omnibus GitLab installations**
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines (uncomment where

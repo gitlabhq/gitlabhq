@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['SnippetBlob'] do
+RSpec.describe GitlabSchema.types['SnippetBlob'] do
   it 'has the correct fields' do
     expected_fields = [:rich_data, :plain_data,
                        :raw_path, :size, :binary, :name, :path,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserCallout do
+RSpec.describe UserCallout do
   let!(:callout) { create(:user_callout) }
 
   it_behaves_like 'having unique enum values'

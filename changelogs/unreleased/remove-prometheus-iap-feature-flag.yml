@@ -1,0 +1,5 @@
+---
+title: Prometheus instances behind Google IAP can now be accessed via manual configurations
+merge_request: 36856
+author:
+type: added

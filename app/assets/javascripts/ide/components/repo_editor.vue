@@ -185,7 +185,6 @@ export default {
       'setFileLanguage',
       'setEditorPosition',
       'setFileViewMode',
-      'updateViewer',
       'removePendingTab',
       'triggerFilesChange',
       'addTempImage',
@@ -241,7 +240,7 @@ export default {
       });
     },
     setupEditor() {
-      if (!this.file || !this.editor.instance) return;
+      if (!this.file || !this.editor.instance || this.file.loading) return;
 
       const head = this.getStagedFile(this.file.path);
 

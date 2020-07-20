@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiscussionEntity do
+RSpec.describe DiscussionEntity do
   include RepoHelpers
 
   let(:user) { create(:user) }

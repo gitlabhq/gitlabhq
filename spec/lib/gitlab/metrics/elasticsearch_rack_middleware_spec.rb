@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::ElasticsearchRackMiddleware do
+RSpec.describe Gitlab::Metrics::ElasticsearchRackMiddleware do
   let(:app) { double(:app, call: 'app call result') }
   let(:middleware) { described_class.new(app) }
   let(:env) { {} }

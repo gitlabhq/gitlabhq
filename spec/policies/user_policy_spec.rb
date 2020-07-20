@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserPolicy do
+RSpec.describe UserPolicy do
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
 

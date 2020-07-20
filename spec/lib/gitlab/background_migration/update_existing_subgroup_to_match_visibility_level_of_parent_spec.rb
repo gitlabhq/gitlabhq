@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::UpdateExistingSubgroupToMatchVisibilityLevelOfParent, schema: 2020_01_10_121314 do
+RSpec.describe Gitlab::BackgroundMigration::UpdateExistingSubgroupToMatchVisibilityLevelOfParent, schema: 2020_01_10_121314 do
   include MigrationHelpers::NamespacesHelpers
 
   context 'private visibility level' do

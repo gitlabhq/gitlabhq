@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Upload do
+RSpec.describe Upload do
   describe 'associations' do
     it { is_expected.to belong_to(:model) }
   end

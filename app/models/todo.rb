@@ -7,15 +7,16 @@ class Todo < ApplicationRecord
   # Time to wait for todos being removed when not visible for user anymore.
   # Prevents TODOs being removed by mistake, for example, removing access from a user
   # and giving it back again.
-  WAIT_FOR_DELETE    = 1.hour
+  WAIT_FOR_DELETE = 1.hour
 
-  ASSIGNED           = 1
-  MENTIONED          = 2
-  BUILD_FAILED       = 3
-  MARKED             = 4
-  APPROVAL_REQUIRED  = 5 # This is an EE-only feature
-  UNMERGEABLE        = 6
-  DIRECTLY_ADDRESSED = 7
+  ASSIGNED            = 1
+  MENTIONED           = 2
+  BUILD_FAILED        = 3
+  MARKED              = 4
+  APPROVAL_REQUIRED   = 5 # This is an EE-only feature
+  UNMERGEABLE         = 6
+  DIRECTLY_ADDRESSED  = 7
+  MERGE_TRAIN_REMOVED = 8 # This is an EE-only feature
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -24,7 +25,8 @@ class Todo < ApplicationRecord
     MARKED => :marked,
     APPROVAL_REQUIRED => :approval_required,
     UNMERGEABLE => :unmergeable,
-    DIRECTLY_ADDRESSED => :directly_addressed
+    DIRECTLY_ADDRESSED => :directly_addressed,
+    MERGE_TRAIN_REMOVED => :merge_train_removed
   }.freeze
 
   belongs_to :author, class_name: "User"
@@ -163,6 +165,10 @@ class Todo < ApplicationRecord
 
   def assigned?
     action == ASSIGNED
+  end
+
+  def merge_train_removed?
+    action == MERGE_TRAIN_REMOVED
   end
 
   def done?

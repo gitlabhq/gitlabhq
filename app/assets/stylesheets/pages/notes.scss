@@ -10,6 +10,7 @@ $note-form-margin-left: 72px;
     top: 0;
     bottom: 0;
     left: $left;
+    height: calc(100% - 20px);
   }
 }
 
@@ -185,8 +186,8 @@ $note-form-margin-left: 72px;
       padding: $gl-padding;
 
       .dummy-avatar {
-        background-color: $gl-gray-200;
-        border: 1px solid darken($gl-gray-200, 25%);
+        background-color: $gl-gray-100;
+        border: 1px solid darken($gl-gray-100, 25%);
       }
 
       .note-headline-light,
@@ -254,10 +255,6 @@ $note-form-margin-left: 72px;
       }
 
       &.is-loading {
-        .fa-smile-o {
-          display: none;
-        }
-
         .fa-spinner {
           display: inline-block;
         }

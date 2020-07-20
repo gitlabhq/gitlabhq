@@ -1,5 +1,5 @@
 %li.d-flex.align-items-center.key-list-item
-  .append-right-10
+  .gl-mr-3
     - if key.valid?
       - if key.expired?
         %span.d-inline-block.has-tooltip{ title: s_('Profiles|Your key has expired') }
@@ -17,15 +17,15 @@
       = key.fingerprint
 
     .key-list-item-dates.d-flex.align-items-start.justify-content-between
-      %span.last-used-at.append-right-10
+      %span.last-used-at.gl-mr-3
         = s_('Profiles|Last used:')
         = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
-      %span.expires.append-right-10
+      %span.expires.gl-mr-3
         = s_('Profiles|Expires:')
         = key.expires_at ? key.expires_at.to_date : _('Never')
       %span.key-created-at
         = s_('Profiles|Created %{time_ago}'.html_safe) % { time_ago:time_ago_with_tooltip(key.created_at)}
         - if key.can_delete?
-          = link_to path_to_key(key, is_admin), data: { confirm: _('Are you sure?')}, method: :delete, class: "btn btn-transparent prepend-left-10 align-baseline" do
+          = link_to path_to_key(key, is_admin), data: { confirm: _('Are you sure?')}, method: :delete, class: "btn btn-transparent gl-ml-3 align-baseline" do
             %span.sr-only= _('Remove')
             = sprite_icon('remove', size: 16)

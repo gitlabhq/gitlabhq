@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::PackageJsonLinker do
+RSpec.describe Gitlab::DependencyLinker::PackageJsonLinker do
   describe '.support?' do
     it 'supports package.json' do
       expect(described_class.support?('package.json')).to be_truthy

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import LogControlButtons from '~/logs/components/log_control_buttons.vue';
 
 describe('LogControlButtons', () => {
@@ -31,9 +31,9 @@ describe('LogControlButtons', () => {
     expect(wrapper.isVueInstance()).toBe(true);
     expect(wrapper.isEmpty()).toBe(false);
 
-    expect(findScrollToTop().is(GlDeprecatedButton)).toBe(true);
-    expect(findScrollToBottom().is(GlDeprecatedButton)).toBe(true);
-    expect(findRefreshBtn().is(GlDeprecatedButton)).toBe(true);
+    expect(findScrollToTop().is(GlButton)).toBe(true);
+    expect(findScrollToBottom().is(GlButton)).toBe(true);
+    expect(findRefreshBtn().is(GlButton)).toBe(true);
   });
 
   it('emits a `refresh` event on click on `refresh` button', () => {

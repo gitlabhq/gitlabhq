@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe JSONWebToken::Token do
+RSpec.describe JSONWebToken::Token do
   let(:token) { described_class.new }
 
   context 'custom parameters' do

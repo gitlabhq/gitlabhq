@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LoopHelpers do
+RSpec.describe Gitlab::LoopHelpers do
   let(:class_instance) { (Class.new { include ::Gitlab::LoopHelpers }).new }
 
   describe '#loop_until' do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectSnippets < Grape::API
+  class ProjectSnippets < Grape::API::Instance
     include PaginationParams
 
     before { authenticate! }
@@ -37,7 +37,7 @@ module API
         use :pagination
       end
       get ":id/snippets" do
-        present paginate(snippets_for_current_user), with: Entities::ProjectSnippet
+        present paginate(snippets_for_current_user), with: Entities::ProjectSnippet, current_user: current_user
       end
 
       desc 'Get a single project snippet' do
@@ -48,7 +48,7 @@ module API
       end
       get ":id/snippets/:snippet_id" do
         snippet = snippets_for_current_user.find(params[:snippet_id])
-        present snippet, with: Entities::ProjectSnippet
+        present snippet, with: Entities::ProjectSnippet, current_user: current_user
       end
 
       desc 'Create a new project snippet' do
@@ -71,7 +71,7 @@ module API
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
-          present snippet, with: Entities::ProjectSnippet
+          present snippet, with: Entities::ProjectSnippet, current_user: current_user
         else
           render_spam_error! if snippet.spam?
 
@@ -107,7 +107,7 @@ module API
         snippet = service_response.payload[:snippet]
 
         if service_response.success?
-          present snippet, with: Entities::ProjectSnippet
+          present snippet, with: Entities::ProjectSnippet, current_user: current_user
         else
           render_spam_error! if snippet.spam?
 
@@ -147,9 +147,18 @@ module API
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet
 
-        env['api.format'] = :txt
-        content_type 'text/plain'
         present content_for(snippet)
+      end
+
+      desc 'Get raw project snippet file contents from the repository'
+      params do
+        use :raw_file_params
+      end
+      get ":id/snippets/:snippet_id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
+        snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
+        not_found!('Snippet') unless snippet&.repo_exists?
+
+        present file_content_for(snippet)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

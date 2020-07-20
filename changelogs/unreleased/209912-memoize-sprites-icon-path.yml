@@ -1,0 +1,5 @@
+---
+title: Avoid N+1 calls for image_path when rendering commits
+merge_request: 36724
+author:
+type: performance

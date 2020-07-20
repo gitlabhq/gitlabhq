@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::BaseEnum do
+RSpec.describe Types::BaseEnum do
   describe '#enum' do
     let(:enum) do
       Class.new(described_class) do

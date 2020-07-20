@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExpandVariables do
+RSpec.describe ExpandVariables do
   describe '#expand' do
     context 'table tests' do
       using RSpec::Parameterized::TableSyntax

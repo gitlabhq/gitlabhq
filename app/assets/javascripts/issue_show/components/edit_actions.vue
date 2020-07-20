@@ -63,7 +63,7 @@ export default {
 </script>
 
 <template>
-  <div class="prepend-top-default append-bottom-default clearfix">
+  <div class="gl-mt-3 gl-mb-3 clearfix">
     <button
       :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"
       :disabled="formState.updateLoading || !isSubmitEnabled"
@@ -81,7 +81,7 @@ export default {
       v-if="shouldShowDeleteButton"
       :class="{ disabled: deleteLoading }"
       :disabled="deleteLoading"
-      class="btn btn-danger float-right append-right-default qa-delete-button"
+      class="btn btn-danger float-right gl-mr-3 qa-delete-button"
       type="button"
       @click="deleteIssuable"
     >

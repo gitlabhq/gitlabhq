@@ -24,6 +24,8 @@ file path fragments to start seeing results.
 
 ## Syntax highlighting
 
+> Support for `.gitlab.ci.yml` validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218472) in GitLab 13.2.
+
 As expected from an IDE, syntax highlighting for many languages within
 the Web IDE will make your direct editing even easier.
 
@@ -35,10 +37,21 @@ The Web IDE currently provides:
 - IntelliSense and validation support (displaying errors and warnings, providing
   smart completions, formatting, and outlining) for some languages. For example:
   TypeScript, JavaScript, CSS, LESS, SCSS, JSON, and HTML.
+- Validation support for certain JSON and YAML files using schemas based on the
+  [JSON Schema Store](https://www.schemastore.org/json/). This feature
+  is only supported for the `.gitlab-ci.yml` file.
+
+  NOTE: **Note:**
+  Validation support based on schemas is hidden behind
+  the feature flag `:schema_linting` on self-managed installations. To enable the
+  feature, you can [turn on the feature flag in Rails console](../../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags).
 
 Because the Web IDE is based on the [Monaco Editor](https://microsoft.github.io/monaco-editor/),
 you can find a more complete list of supported languages in the
-[Monaco languages](https://github.com/Microsoft/monaco-languages) repository.
+[Monaco languages](https://github.com/Microsoft/monaco-languages) repository. Under the hood,
+Monaco uses the [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) library for syntax highlighting.
+
+If you are missing Syntax Highlighting support for any language, we prepared a short guide on how to [add support for a missing language Syntax Highlighting.](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/ide/lib/languages/README.md)
 
 NOTE: **Note:**
 Single file editing is based on the [Ace Editor](https://ace.c9.io).
@@ -210,16 +223,20 @@ to work:
 
 - The Runner needs to have
   [`[session_server]` configured properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section).
+  This section requires at least a `session_timeout` value (which defaults to 1800
+  seconds) and a `listen_address` value. If `advertise_address` is not defined, `listen_address` is used.
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../../administration/integration/terminal.md#enabling-and-disabling-terminal-support). **(ULTIMATE ONLY)**
 
 If you have the terminal open and the job has finished with its tasks, the
 terminal will block the job from finishing for the duration configured in
-[`[session_server].terminal_max_retention_time`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
+[`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
 until you close the terminal window.
 
-NOTE: **Note:** Not all executors are
-[supported](https://docs.gitlab.com/runner/executors/#compatibility-chart)
+NOTE: **Note:**
+Not all executors are
+[supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
+The [File Sync](#file-syncing-to-web-terminal) feature is supported on Kubernetes runners only.
 
 ### Web IDE configuration file
 
@@ -243,6 +260,8 @@ In the code below there is an example of this configuration file:
 
 ```yaml
 terminal:
+  # This can be any image that has the necessary runtime environment for your project.
+  image: node:10-alpine
   before_script:
     - apt-get update
   script: sleep 60

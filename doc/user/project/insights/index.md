@@ -271,6 +271,27 @@ you defined.
 | `week`           | 4             |
 | `month`          | 12            |
 
+#### `query.period_field`
+
+Define the timestamp field used to group "issuables".
+
+Supported values are:
+
+- `created_at` (default): Group data using the `created_at` field.
+- `closed_at`: Group data using the `closed_at` field (for issues only).
+- `merged_at`: Group data using the `merged_at` field (for merge requests only).
+
+The `period_field` is automatically set to:
+
+- `closed_at` if `query.issuable_state` is `closed`
+- `merged_at` if `query.issuable_state` is `merged`
+- `created_at` otherwise
+
+NOTE: **Note:**
+Until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/26911), is resolved, you may see `created_at`
+in place of `merged_at`.
+`created_at` will be used instead.
+
 ### `projects`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10904) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.4.

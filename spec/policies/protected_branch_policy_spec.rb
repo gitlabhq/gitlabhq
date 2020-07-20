@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProtectedBranchPolicy do
+RSpec.describe ProtectedBranchPolicy do
   let(:user) { create(:user) }
   let(:name) { 'feature' }
   let(:protected_branch) { create(:protected_branch, name: name) }

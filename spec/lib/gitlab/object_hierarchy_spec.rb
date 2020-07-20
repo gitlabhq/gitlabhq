@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ObjectHierarchy do
+RSpec.describe Gitlab::ObjectHierarchy do
   let!(:parent) { create(:group) }
   let!(:child1) { create(:group, parent: parent) }
   let!(:child2) { create(:group, parent: child1) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetsHelper do
+RSpec.describe SnippetsHelper do
   include Gitlab::Routing
   include IconsHelper
 

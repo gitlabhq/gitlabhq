@@ -23,7 +23,7 @@ class JiraService < IssueTrackerService
 
   # TODO: we can probably just delegate as part of
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
-  data_field :username, :password, :url, :api_url, :jira_issue_transition_id
+  data_field :username, :password, :url, :api_url, :jira_issue_transition_id, :project_key, :issues_enabled
 
   before_update :reset_password
 
@@ -64,8 +64,6 @@ class JiraService < IssueTrackerService
   def set_default_data
     return unless issues_tracker.present?
 
-    self.title ||= issues_tracker['title']
-
     return if url
 
     data_fields.url ||= issues_tracker['url']
@@ -103,11 +101,11 @@ class JiraService < IssueTrackerService
     [Jira service documentation](#{help_page_url('user/project/integrations/jira')})."
   end
 
-  def default_title
+  def title
     'Jira'
   end
 
-  def default_description
+  def description
     s_('JiraService|Jira issue tracker')
   end
 
@@ -130,7 +128,7 @@ class JiraService < IssueTrackerService
   end
 
   def new_issue_url
-    "#{url}/secure/CreateIssue.jspa"
+    "#{url}/secure/CreateIssue!default.jspa"
   end
 
   alias_method :original_url, :url
@@ -442,3 +440,5 @@ class JiraService < IssueTrackerService
     end
   end
 end
+
+JiraService.prepend_if_ee('EE::JiraService')

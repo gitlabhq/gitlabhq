@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SnippetInputActionCollection do
+RSpec.describe SnippetInputActionCollection do
   let(:action_name)    { 'create' }
   let(:action)         { { action: action_name, file_path: 'foo', content: 'bar', previous_path: 'foobar' } }
   let(:data)           { [action, action] }

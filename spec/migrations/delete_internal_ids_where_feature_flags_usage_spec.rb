@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200117194900_delete_internal_ids_where_feature_flags_usage')
 
-describe DeleteInternalIdsWhereFeatureFlagsUsage do
+RSpec.describe DeleteInternalIdsWhereFeatureFlagsUsage do
   let(:namespaces)   { table(:namespaces) }
   let(:projects)     { table(:projects) }
   let(:internal_ids) { table(:internal_ids) }

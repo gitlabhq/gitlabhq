@@ -1,0 +1,5 @@
+---
+title: Add a GraphQL mutation for toggling the resolved state of a Discussion
+merge_request: 32934
+author:
+type: added

@@ -66,13 +66,26 @@ export const trimPathComponents = path =>
     .join('/');
 
 export function registerLanguages(def, ...defs) {
-  if (defs.length) defs.forEach(lang => registerLanguages(lang));
+  defs.forEach(lang => registerLanguages(lang));
 
   const languageId = def.id;
 
   languages.register(def);
   languages.setMonarchTokensProvider(languageId, def.language);
   languages.setLanguageConfiguration(languageId, def.conf);
+}
+
+export function registerSchemas({ language, options }, ...schemas) {
+  schemas.forEach(schema => registerSchemas(schema));
+
+  const defaults = {
+    json: languages.json.jsonDefaults,
+    yaml: languages.yaml.yamlDefaults,
+  };
+
+  if (defaults[language]) {
+    defaults[language].setDiagnosticsOptions(options);
+  }
 }
 
 export const otherSide = side => (side === SIDE_RIGHT ? SIDE_LEFT : SIDE_RIGHT);

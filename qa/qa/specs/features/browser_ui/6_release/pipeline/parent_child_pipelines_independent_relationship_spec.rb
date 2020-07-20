@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Release', :docker, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217250', type: :investigating } do
+  RSpec.describe 'Release', :docker, :runner, :reliable do
     describe 'Parent-child pipelines independent relationship' do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -29,12 +29,8 @@ module QA
         view_pipelines
 
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
+          expect(parent_pipeline).to have_child_pipeline
           expect(parent_pipeline).to have_passed
-
-          parent_pipeline.retry_on_exception(reload: true, sleep_interval: 1.0) do
-            parent_pipeline.click_linked_job(project.name)
-          end
-          expect(parent_pipeline).to have_job("child_job")
         end
       end
 
@@ -43,12 +39,8 @@ module QA
         view_pipelines
 
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
+          expect(parent_pipeline).to have_child_pipeline
           expect(parent_pipeline).to have_passed
-
-          parent_pipeline.retry_on_exception(reload: true, sleep_interval: 1.0) do
-            parent_pipeline.click_linked_job(project.name)
-          end
-          expect(parent_pipeline).to have_job("child_job")
         end
       end
 

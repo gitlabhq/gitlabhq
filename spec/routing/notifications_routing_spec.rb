@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "notifications routing" do
+RSpec.describe "notifications routing" do
   it "routes to #show" do
     expect(get("/profile/notifications")).to route_to("profiles/notifications#show")
   end

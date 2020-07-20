@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Users::UpdateService do
+RSpec.describe Users::UpdateService do
   let(:user) { create(:user) }
 
   describe '#execute' do

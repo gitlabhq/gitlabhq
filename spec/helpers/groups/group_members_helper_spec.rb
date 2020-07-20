@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Groups::GroupMembersHelper do
+RSpec.describe Groups::GroupMembersHelper do
   describe '.group_member_select_options' do
     let(:group) { create(:group) }
 

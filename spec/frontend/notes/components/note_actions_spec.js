@@ -127,25 +127,63 @@ describe('noteActions', () => {
           .catch(done.fail);
       });
 
-      it('should be possible to assign or unassign the comment author', () => {
-        wrapper = shallowMountNoteActions(props, {
-          targetType: () => 'issue',
-        });
-
-        const assignUserButton = wrapper.find('[data-testid="assign-user"]');
-        expect(assignUserButton.exists()).toBe(true);
-
-        assignUserButton.trigger('click');
-        axiosMock.onPut(`${TEST_HOST}/api/v4/projects/group/project/issues/1`).reply(() => {
-          expect(actions.updateAssignees).toHaveBeenCalled();
-        });
-      });
-
       it('should not be possible to assign or unassign the comment author in a merge request', () => {
         const assignUserButton = wrapper.find('[data-testid="assign-user"]');
         expect(assignUserButton.exists()).toBe(false);
       });
     });
+  });
+
+  describe('when a user has access to edit an issue', () => {
+    const testButtonClickTriggersAction = () => {
+      axiosMock.onPut(`${TEST_HOST}/api/v4/projects/group/project/issues/1`).reply(() => {
+        expect(actions.updateAssignees).toHaveBeenCalled();
+      });
+
+      const assignUserButton = wrapper.find('[data-testid="assign-user"]');
+      expect(assignUserButton.exists()).toBe(true);
+      assignUserButton.trigger('click');
+    };
+
+    beforeEach(() => {
+      wrapper = shallowMountNoteActions(props, {
+        targetType: () => 'issue',
+      });
+      store.state.noteableData = {
+        current_user: {
+          can_update: true,
+        },
+      };
+      store.state.userData = userDataMock;
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+      axiosMock.restore();
+    });
+
+    it('should be possible to assign the comment author', testButtonClickTriggersAction);
+    it('should be possible to unassign the comment author', testButtonClickTriggersAction);
+  });
+
+  describe('when a user does not have access to edit an issue', () => {
+    const testButtonDoesNotRender = () => {
+      const assignUserButton = wrapper.find('[data-testid="assign-user"]');
+      expect(assignUserButton.exists()).toBe(false);
+    };
+
+    beforeEach(() => {
+      wrapper = shallowMountNoteActions(props, {
+        targetType: () => 'issue',
+      });
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it('should not be possible to assign the comment author', testButtonDoesNotRender);
+    it('should not be possible to unassign the comment author', testButtonDoesNotRender);
   });
 
   describe('user is not logged in', () => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqMiddleware::ServerMetrics do
+RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
   context "with worker attribution" do
     subject { described_class.new }
 

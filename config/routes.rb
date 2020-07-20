@@ -1,5 +1,6 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
+require 'product_analytics/collector_app'
 
 Rails.application.routes.draw do
   concern :access_requestable do
@@ -58,6 +59,7 @@ Rails.application.routes.draw do
 
   # Search
   get 'search' => 'search#show'
+  get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
   get 'search/count' => 'search#count', as: :search_count
 
   # JSON Web Token
@@ -75,6 +77,7 @@ Rails.application.routes.draw do
     get '/autocomplete/projects' => 'autocomplete#projects'
     get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
     get '/autocomplete/merge_request_target_branches' => 'autocomplete#merge_request_target_branches'
+    get '/autocomplete/deploy_keys_with_owners' => 'autocomplete#deploy_keys_with_owners'
 
     Gitlab.ee do
       get '/autocomplete/project_groups' => 'autocomplete#project_groups'
@@ -174,6 +177,9 @@ Rails.application.routes.draw do
     # Used by third parties to verify CI_JOB_JWT, placeholder route
     # in case we decide to move away from doorkeeper-openid_connect
     get 'jwks' => 'doorkeeper/openid_connect/discovery#keys'
+
+    # Product analytics collector
+    match '/collector/i', to: ProductAnalytics::CollectorApp.new, via: :all
   end
   # End of the /-/ scope.
 
@@ -189,8 +195,6 @@ Rails.application.routes.draw do
       member do
         Gitlab.ee do
           get :metrics, format: :json
-          get :metrics_dashboard
-          get :'/prometheus/api/v1/*proxy_path', to: 'clusters#prometheus_proxy', as: :prometheus_api
           get :environments, format: :json
         end
 
@@ -200,6 +204,8 @@ Rails.application.routes.draw do
           delete '/:application', to: 'clusters/applications#destroy', as: :uninstall_applications
         end
 
+        get :metrics_dashboard
+        get :'/prometheus/api/v1/*proxy_path', to: 'clusters#prometheus_proxy', as: :prometheus_api
         get :cluster_status, format: :json
         delete :clear_cache
       end
@@ -242,6 +248,8 @@ Rails.application.routes.draw do
     post :preview_markdown
   end
 
+  draw :group
+
   resources :projects, only: [:index, :new, :create]
 
   get '/projects/:id' => 'projects#resolve'
@@ -258,9 +266,16 @@ Rails.application.routes.draw do
   draw :admin
   draw :profile
   draw :dashboard
-  draw :group
   draw :user
   draw :project
+
+  # Serve snippet routes under /-/snippets.
+  # To ensure an old unscoped routing is used for the UI we need to
+  # add prefix 'as' to the scope routing and place it below original routing.
+  # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
+  scope '-', as: :scoped do
+    draw :snippets
+  end
 
   root to: "root#index"
 

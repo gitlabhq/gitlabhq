@@ -191,8 +191,10 @@ module TreeHelper
 
   def vue_file_list_data(project, ref)
     {
+      can_push_code: current_user&.can?(:push_code, project) && "true",
       project_path: project.full_path,
       project_short_path: project.path,
+      fork_path: current_user&.fork_of(project)&.full_path,
       ref: ref,
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
       full_name: project.name_with_namespace

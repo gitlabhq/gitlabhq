@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CurrentSettings do
+RSpec.describe Gitlab::CurrentSettings do
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end

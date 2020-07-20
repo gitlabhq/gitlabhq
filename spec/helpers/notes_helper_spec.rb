@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe NotesHelper do
+RSpec.describe NotesHelper do
   include RepoHelpers
 
   let(:owner) { create(:owner) }

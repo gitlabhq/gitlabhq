@@ -3,6 +3,10 @@ import axios from '../../lib/utils/axios_utils';
 export default class MRWidgetService {
   constructor(endpoints) {
     this.endpoints = endpoints;
+
+    this.apiApprovalsPath = endpoints.apiApprovalsPath;
+    this.apiApprovePath = endpoints.apiApprovePath;
+    this.apiUnapprovePath = endpoints.apiUnapprovePath;
   }
 
   merge(data) {
@@ -52,6 +56,18 @@ export default class MRWidgetService {
 
   rebase() {
     return axios.post(this.endpoints.rebasePath);
+  }
+
+  fetchApprovals() {
+    return axios.get(this.apiApprovalsPath).then(res => res.data);
+  }
+
+  approveMergeRequest() {
+    return axios.post(this.apiApprovePath).then(res => res.data);
+  }
+
+  unapproveMergeRequest() {
+    return axios.post(this.apiUnapprovePath).then(res => res.data);
   }
 
   static executeInlineAction(url) {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MailScheduler::IssueDueWorker do
+RSpec.describe MailScheduler::IssueDueWorker do
   describe '#perform' do
     let(:worker) { described_class.new }
     let(:project) { create(:project) }

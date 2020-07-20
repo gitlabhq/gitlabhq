@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 require 'rubocop'
 require 'rubocop/rspec/support'
 
 require_relative '../../../rubocop/cop/include_sidekiq_worker'
 
-describe RuboCop::Cop::IncludeSidekiqWorker do
+RSpec.describe RuboCop::Cop::IncludeSidekiqWorker, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

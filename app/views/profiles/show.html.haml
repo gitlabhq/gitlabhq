@@ -1,8 +1,9 @@
 - breadcrumb_title s_("Profiles|Edit Profile")
+- page_title s_("Profiles|Edit Profile")
 - @content_class = "limit-container-width" unless fluid_layout
 - gravatar_link = link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host
 
-= bootstrap_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user prepend-top-default js-quick-submit gl-show-field-errors' }, authenticity_token: true do |f|
+= bootstrap_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user gl-mt-3 js-quick-submit gl-show-field-errors' }, authenticity_token: true do |f|
   = form_errors(@user)
 
   .row
@@ -24,13 +25,13 @@
           .md
             = brand_profile_image_guidelines
     .col-lg-8
-      .clearfix.avatar-image.append-bottom-default
+      .clearfix.avatar-image.gl-mb-3
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = image_tag avatar_icon_for_user(@user, 160), alt: '', class: 'avatar s160'
       %h5.gl-mt-0= s_("Profiles|Upload new avatar")
-      .prepend-top-5.append-bottom-10
+      .gl-mt-2.append-bottom-10
         %button.btn.js-choose-user-avatar-button{ type: 'button' }= s_("Profiles|Choose file...")
-        %span.avatar-file-name.prepend-left-default.js-avatar-filename= s_("Profiles|No file chosen")
+        %span.avatar-file-name.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen")
         = f.file_field_without_bootstrap :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
       .form-text.text-muted= s_("Profiles|The maximum file size allowed is 200KB.")
       - if @user.avatar?
@@ -117,7 +118,7 @@
       = f.check_box :include_private_contributions, label: s_('Profiles|Include private contributions on my profile'), wrapper_class: 'mb-2', inline: true
       .help-block
         = s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information")
-      .prepend-top-default.append-bottom-default
+      .gl-mt-3.gl-mb-3
         = f.submit s_("Profiles|Update profile settings"), class: 'btn btn-success'
         = link_to _("Cancel"), user_path(current_user), class: 'btn btn-cancel'
 

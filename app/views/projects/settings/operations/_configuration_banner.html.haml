@@ -12,13 +12,13 @@
           .svg-container
             = image_tag 'illustrations/monitoring/getting_started.svg'
         .col-sm-10
-          %p.text-success.prepend-top-default
+          %p.text-success.gl-mt-3
             = s_('PrometheusService|Prometheus is being automatically managed on your clusters')
           = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), class: 'btn'
       - else
         .col-sm-2
           = image_tag 'illustrations/monitoring/loading.svg'
         .col-sm-10
-          %p.prepend-top-default
+          %p.gl-mt-3
             = s_('PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments')
           = link_to s_('PrometheusService|Install Prometheus on clusters'), project_clusters_path(project), class: 'btn btn-success'

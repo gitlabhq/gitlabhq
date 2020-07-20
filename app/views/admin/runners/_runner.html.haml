@@ -72,8 +72,8 @@
           = link_to [:pause, :admin, runner], method: :get, class: 'btn btn-default has-tooltip', title: _('Pause'), ref: 'tooltip', aria: { label: _('Pause') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
             = icon('pause')
         - else
-          = link_to [:resume, :admin, runner], method: :get, class: 'btn btn-default has-tooltip', title: _('Resume'), ref: 'tooltip', aria: { label: _('Resume') }, data: { placement: 'top', container: 'body'} do
-            = icon('play')
+          = link_to [:resume, :admin, runner], method: :get, class: 'btn btn-default has-tooltip gl-px-3', title: _('Resume'), ref: 'tooltip', aria: { label: _('Resume') }, data: { placement: 'top', container: 'body'} do
+            = sprite_icon('play')
       .btn-group
         = link_to [:admin, runner], method: :delete, class: 'btn btn-danger has-tooltip', title: _('Remove'), ref: 'tooltip', aria: { label: _('Remove') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
           = icon('remove')

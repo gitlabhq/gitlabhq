@@ -1,3 +1,10 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: concepts, howto
+---
+
 # User-starred metrics dashboards API
 
 The starred dashboard feature makes navigating to frequently-used dashboards easier
@@ -15,6 +22,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `dashboard_path` | string        | yes      | URL-encoded path to file defining the dashboard which should be marked as favorite.   |
 
 ```shell
@@ -45,6 +53,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `dashboard_path` | string        | no      | URL-encoded path to file defining the dashboard which should no longer be marked as favorite. When not supplied all dashboards within given projects will be removed from favorites.   |
 
 ```shell

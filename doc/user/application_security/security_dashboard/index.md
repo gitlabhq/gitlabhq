@@ -1,5 +1,8 @@
 ---
 type: reference, howto
+stage: Secure
+group: Threat Insights
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # GitLab Security Dashboard **(ULTIMATE)**
@@ -9,7 +12,7 @@ vulnerabilities in your groups, projects and pipelines.
 
 You can also drill down into a vulnerability and get extra information, see which
 project it comes from, the file it's in, and various metadata to help you analyze
-the risk. You can also action these vulnerabilities by creating an issue for them,
+the risk. You can also take actions on vulnerabilities by creating an issue for them,
 or by dismissing them.
 
 To benefit from the Security Dashboard you must first configure one of the
@@ -42,7 +45,7 @@ At the pipeline level, the Security section displays the vulnerabilities present
 
 Visit the page for any pipeline which has run any of the [supported reports](#supported-reports). Click the **Security** tab to view the Security findings.
 
-![Pipeline Security Dashboard](img/pipeline_security_dashboard_v12_6.png)
+![Pipeline Security Dashboard](img/pipeline_security_dashboard_v13_2.png)
 
 NOTE: **Note:**
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish for any reason, the security dashboard will not show SAST scanner output. For example, if the SAST job finishes but the DAST job fails, the security dashboard will not show SAST results. The analyzer will output an [exit code](../../../development/integrations/secure.md#exit-code) on failure.
@@ -51,56 +54,52 @@ A pipeline consists of multiple jobs, including SAST and DAST scanning. If any j
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
-At the project level, the Security Dashboard displays the latest security reports for your project.
-Use it to find and fix vulnerabilities.
+At the project level, the Security Dashboard displays the vulnerabilities merged into your project's
+[default branch](../../project/repository/branches/index.md#default-branch). Access it by navigating
+to **Security & Compliance > Security Dashboard**.
 
-![Project Security Dashboard](img/project_security_dashboard_v13_0.png)
+The Security Dashboard first displays the total number of vulnerabilities by severity (for example,
+Critical, High, Medium, Low). Below this, a table displays each vulnerability's status, severity,
+and description. Clicking a vulnerability takes you to its [Vulnerability Details](../vulnerabilities)
+page to view more information about that vulnerability.
 
-### Export vulnerabilities
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197494) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
-
-You can export all your project's vulnerabilities as CSV by clicking on the export button located at top right of the Project Security Dashboard. This will initiate the process, and once complete, the CSV report will be downloaded. The report will contain all vulnerabilities in the project as filters won't apply.
-
-NOTE: **Note:**
-It may take several minutes for the download to start if your project consists
-of thousands of vulnerabilities. Do not close the page until the download finishes.
-
-![CSV Export Button](img/project_security_dashboard_export_csv_v12_10.png)
-
-## Group Security Dashboard
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
-
-The group Security Dashboard gives an overview of the vulnerabilities of all the
-projects in a group and its subgroups.
-
-First, navigate to the Security Dashboard found under your group's
-**Security** tab.
-
-Once you're on the dashboard, at the top you should see a series of filters for:
+You can filter the vulnerabilities by:
 
 - Status
 - Severity
 - Report type
 
+You can also dismiss vulnerabilities in the table:
+
+1. Select the checkbox for each vulnerability you want to dismiss.
+1. In the menu that appears, select the reason for dismissal and click **Dismiss Selected**.
+
+![Project Security Dashboard](img/project_security_dashboard_v13_2.png)
+
+## Group Security Dashboard
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
+
+The group Security Dashboard gives an overview of the vulnerabilities in the default branches of the
+projects in a group and its subgroups. Access it by navigating to **Security > Security Dashboard**
+for your group.
+
 NOTE: **Note:**
-The dashboard only shows projects with [security reports](#supported-reports) enabled in a group.
+The Security Dashboard only shows projects with [security reports](#supported-reports) enabled in a
+group.
 
-![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_0.png)
+![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_2_noNav.png)
 
-Selecting one or more filters will filter the results in this page.
+You can filter which vulnerabilities the Security Dashboard displays by:
 
-The main section is a list of all the vulnerabilities in the group, sorted by severity.
-In that list, you can see the severity of the vulnerability, its name, its
-confidence (likelihood of the vulnerability to be a positive one), and the project
-it's from.
+- Status
+- Severity
+- Report type
+- Project
 
-If you hover over a row, the following actions appear:
-
-- More info
-- Create issue
-- Dismiss vulnerability
+A table lists the vulnerabilities, sorted by severity. The table shows each vulnerability's status,
+severity, and description. Clicking a vulnerability takes you to its [Vulnerability Details](../vulnerabilities)
+page to view more information about that vulnerability.
 
 Next to the list is a timeline chart that shows how many open
 vulnerabilities your projects had at various points in time. You can filter among 30, 60, and
@@ -120,28 +119,14 @@ vulnerabilities are not included either.
 
 Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 
-### Export vulnerabilities
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213013) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
-
-You can export all your vulnerabilities as CSV by clicking the **{upload}** **Export** button
-located at the top right of the **Group Security Dashboard**. After the report builds, the CSV
-report downloads to your local machine. The report contains all vulnerabilities for the projects
-defined in the **Group Security Dashboard**, as filters don't apply to the export function.
-
-NOTE: **Note:**
-It may take several minutes for the download to start if your project contains thousands of
-vulnerabilities. Don't close the page until the download finishes.
-
-![CSV Export Button](img/group_security_dashboard_export_csv_v13_1.png)
-
 ## Instance Security Dashboard
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6953) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
 
-At the instance level, the Security Dashboard displays the vulnerabilities
-present in all of the projects that you have added to it. It includes all
-of the features of the [group security dashboard](#group-security-dashboard).
+At the instance level, the Security Dashboard displays the vulnerabilities present in the default
+branches of all the projects you configure to display on the dashboard. It includes all the
+[group Security Dashboard's](#group-security-dashboard)
+features.
 
 You can access the Instance Security Dashboard from the menu
 bar at the top of the page. Under **More**, select **Security**.
@@ -156,26 +141,24 @@ To add projects to the dashboard:
 1. Search for and add one or more projects using the **Search your projects** field.
 1. Click the **Add projects** button.
 
-Once added, the dashboard will display the vulnerabilities found in your chosen
-projects.
+Once added, the Security Dashboard displays the vulnerabilities found in your chosen projects'
+default branches.
 
-![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v13_0.png)
+![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v13_2_sm.png)
 
-### Export vulnerabilities
+## Export vulnerabilities
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213014) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213014) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 
-You can export all your vulnerabilities as CSV by clicking the **{upload}** **Export**
-button located at top right of the **Instance Security Dashboard**. After the report
+You can export all your vulnerabilities in CSV format by clicking the **{upload}** **Export**
+button located at top right of the **Security Dashboard**. After the report
 is built, the CSV report downloads to your local machine. The report contains all
-vulnerabilities for the projects defined in the **Instance Security Dashboard**,
+vulnerabilities for the projects defined in the **Security Dashboard**,
 as filters don't apply to the export function.
 
 NOTE: **Note:**
 It may take several minutes for the download to start if your project contains
 thousands of vulnerabilities. Do not close the page until the download finishes.
-
-![CSV Export Button](img/instance_security_dashboard_export_csv_v13_0.png)
 
 ## Keeping the dashboards up to date
 
@@ -194,11 +177,33 @@ Dashboard regardless of how often the default branch is updated.
 
 That way, reports are created even if no code change happens.
 
+CAUTION: **Warning:**
+Running Dependency Scanning from a scheduled pipeline might result in false negatives if your
+project doesn't have a lock file and isn't configured for Continuous Delivery. A lock file is a file
+that lists all transient dependencies and keeps track of their exact versions. The false negative
+can occur because the dependency version resolved during the scan might differ from the ones
+resolved when your project was built and released, in a previous pipeline. Java projects can't have
+lock files. Python projects can have lock files, but GitLab Secure tools don't support them.
+
 ## Security scans using Auto DevOps
 
 When using [Auto DevOps](../../../topics/autodevops/index.md), use
 [special environment variables](../../../topics/autodevops/customize.md#environment-variables)
 to configure daily security scans.
+
+## Vulnerability list
+
+Each dashboard's vulnerability list contains vulnerabilities from the latest scans that were merged
+into the default branch.
+Click any vulnerability in the table to see more information on that vulnerability. To create an
+issue associated with the vulnerability, click the **Create Issue** button.
+
+![Create an issue for the vulnerability](img/standalone_vulnerability_page_v13_1.png)
+
+Once you create the issue, the vulnerability list contains a link to the issue and an icon whose
+color indicates the issue's status (green for open issues, blue for closed issues).
+
+![Display attached issues](img/vulnerability_list_table_v13_1.png)
 
 <!-- ## Troubleshooting
 

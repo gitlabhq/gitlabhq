@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
+RSpec.describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
   include KubernetesHelpers
 
   let(:api_url) { 'http://111.111.111.111' }

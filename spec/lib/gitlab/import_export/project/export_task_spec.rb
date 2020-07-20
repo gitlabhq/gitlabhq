@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe Gitlab::ImportExport::Project::ExportTask do
+RSpec.describe Gitlab::ImportExport::Project::ExportTask do
   let_it_be(:username) { 'root' }
   let(:namespace_path) { username }
   let_it_be(:user) { create(:user, username: username) }

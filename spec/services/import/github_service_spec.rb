@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::GithubService do
+RSpec.describe Import::GithubService do
   let_it_be(:user) { create(:user) }
   let_it_be(:token) { 'complex-token' }
   let_it_be(:access_params) { { github_access_token: 'github-complex-token' } }

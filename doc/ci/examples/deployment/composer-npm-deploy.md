@@ -150,7 +150,7 @@ before_script:
 stage_deploy:
   artifacts:
     paths:
-    - build/
+      - build/
   only:
     - dev
   script:

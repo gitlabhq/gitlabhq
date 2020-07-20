@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issues::ReorderService do
+RSpec.describe Issues::ReorderService do
   let_it_be(:user)    { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:group)   { create(:group) }

@@ -1,0 +1,5 @@
+---
+title: Prevent duplicate issues when importing from CSV
+merge_request: 33626
+author:
+type: fixed

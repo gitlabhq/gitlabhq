@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Prometheus::Queries::KnativeInvocationQuery do
+RSpec.describe Gitlab::Prometheus::Queries::KnativeInvocationQuery do
   include PrometheusHelpers
 
   let(:project) { create(:project) }

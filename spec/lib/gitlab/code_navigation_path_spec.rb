@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-describe Gitlab::CodeNavigationPath do
+RSpec.describe Gitlab::CodeNavigationPath do
   context 'when there is an artifact with code navigation data' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:sha) { project.repository.commits('master', limit: 5).last.id }
+    let_it_be(:sha) { project.repository.commits('master', limit: Gitlab::CodeNavigationPath::LATEST_COMMITS_LIMIT).last.id }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: sha) }
     let_it_be(:job) { create(:ci_build, pipeline: pipeline) }
     let_it_be(:artifact) { create(:ci_job_artifact, :lsif, job: job) }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Issues < Grape::API
+  class Issues < Grape::API::Instance
     include PaginationParams
     helpers Helpers::IssuesHelpers
     helpers Helpers::RateLimiter
@@ -10,9 +10,9 @@ module API
 
     helpers do
       params :negatable_issue_filter_params do
-        optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
+        optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
-        optional :iids, type: Array[Integer], desc: 'The IID array of issues'
+        optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of issues'
         optional :search, type: String, desc: 'Search issues for text present in the title, description, or any combination of these'
         optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
 
@@ -62,12 +62,12 @@ module API
 
       params :issue_params do
         optional :description, type: String, desc: 'The description of an issue'
-        optional :assignee_ids, type: Array[Integer], desc: 'The array of user IDs to assign issue'
+        optional :assignee_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The array of user IDs to assign issue'
         optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
-        optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
-        optional :add_labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
-        optional :remove_labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
+        optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
+        optional :add_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
+        optional :remove_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
@@ -107,7 +107,6 @@ module API
           with: Entities::Issue,
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
-          issuable_metadata: Gitlab::IssuableMetadata.new(current_user, issues).data,
           include_subscribed: false
         }
 
@@ -133,7 +132,6 @@ module API
           with: Entities::Issue,
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
-          issuable_metadata: Gitlab::IssuableMetadata.new(current_user, issues).data,
           include_subscribed: false,
           group: user_group
         }
@@ -170,7 +168,6 @@ module API
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
           project: user_project,
-          issuable_metadata: Gitlab::IssuableMetadata.new(current_user, issues).data,
           include_subscribed: false
         }
 
@@ -285,6 +282,30 @@ module API
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         else
           render_validation_error!(issue)
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      desc 'Reorder an existing issue' do
+        success Entities::Issue
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+        optional :move_after_id, type: Integer, desc: 'The ID of the issue we want to be after'
+        optional :move_before_id, type: Integer, desc: 'The ID of the issue we want to be before'
+        at_least_one_of :move_after_id, :move_before_id
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      put ':id/issues/:issue_iid/reorder' do
+        issue = user_project.issues.find_by(iid: params[:issue_iid])
+        not_found!('Issue') unless issue
+
+        authorize! :update_issue, issue
+
+        if ::Issues::ReorderService.new(user_project, current_user, params).execute(issue)
+          present issue, with: Entities::Issue, current_user: current_user, project: user_project
+        else
+          render_api_error!({ error: 'Unprocessable Entity' }, 422)
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

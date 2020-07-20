@@ -18,12 +18,42 @@ A paginated list of epics is available in each group from where you can create
 a new epic. The list of epics includes also epics from all subgroups of the
 selected group. From your group page:
 
-1. Go to **Epics**.
+### Create an epic from the epic list
+
+To create an epic from the epic list, in a group:
+
+1. Go to **{epic}** **Epics**.
 1. Click **New epic**.
 1. Enter a descriptive title.
 1. Click **Create epic**.
 
-You will be taken to the new epic where can edit the following details:
+### Access the New Epic form
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211533) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+There are two ways to get to the New Epic form and create an epic in the group you're in:
+
+- From an epic in your group, click **New Epic**.
+- From anywhere, in the top menu, click **plus** (**{plus-square}**) **> New epic**.
+
+  ![New epic from an open epic](img/new_epic_from_groups_v13.2.png)
+
+### Elements of the New Epic form
+
+When you're creating a new epic, these are the fields you can fill in:
+
+- Title
+- Description
+- Confidentiality checkbox
+- Labels
+- Start date
+- Due date
+
+![New epic form](img/new_epic_form_v13.2.png)
+
+## Edit an epic
+
+After you create an epic, you can edit change the following details:
 
 - Title
 - Description
@@ -31,15 +61,16 @@ You will be taken to the new epic where can edit the following details:
 - Due date
 - Labels
 
-An epic's page contains the following tabs:
+To edit an epic's title or description:
 
-- **Epics and Issues**: epics and issues added to this epic. Child epics, and their issues, are
-  shown in a tree view.
-  - Click the <kbd>></kbd> beside a parent epic to reveal the child epics and issues.
-  - Hover over the total counts to see a breakdown of open and closed items.
-- **Roadmap**: a roadmap view of child epics which have start and due dates.
+1. Click the **Edit title and description** **{pencil}** button.
+1. Make your changes.
+1. Click **Save changes**.
 
-![epic view](img/epic_view_v13.0.png)
+To edit an epics' start date, due date, or labels:
+
+1. Click **Edit** next to each section in the epic sidebar.
+1. Select the dates or labels for your epic.
 
 ## Bulk-edit epics
 
@@ -118,27 +149,17 @@ The sort option and order is saved and used wherever you browse epics, including
 
 ## Make an epic confidential
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213068) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
-> - It's deployed behind a feature flag, disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-confidential-epics-premium-only). **(PREMIUM ONLY)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213068) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0 behind a feature flag, disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/224513) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
 When you're creating an epic, you can make it confidential by selecting the **Make this epic
 confidential** checkbox.
 
-### Enable Confidential Epics **(PREMIUM ONLY)**
+### Disable confidential epics **(PREMIUM ONLY)**
 
-The Confidential Epics feature is under development and not ready for production use.
-It's deployed behind a feature flag that is **disabled by default**.
+The confidential epics feature is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:confidential_epics)
-```
+can disable it for your self-managed instance.
 
 To disable it:
 
@@ -233,7 +254,7 @@ To move an issue to another epic:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
 
 If you have the necessary [permissions](../../permissions.md) to close an issue and create an
-epic in the parent group, you can promote an issue to an epic with the `/promote`
+epic in the immediate parent group, you can promote an issue to an epic with the `/promote`
 [quick action](../../project/quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
 Only issues from projects that are in groups can be promoted. When attempting to promote a confidential
 issue, a warning will display. Promoting a confidential issue to an epic will make all information

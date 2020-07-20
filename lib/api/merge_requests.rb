@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class MergeRequests < Grape::API
+  class MergeRequests < Grape::API::Instance
     include PaginationParams
 
     CONTEXT_COMMITS_POST_LIMIT = 20
@@ -44,7 +44,9 @@ module API
       def find_merge_requests(args = {})
         args = declared_params.merge(args)
         args[:milestone_title] = args.delete(:milestone)
+        args[:not][:milestone_title] = args[:not]&.delete(:milestone)
         args[:label_name] = args.delete(:labels)
+        args[:not][:label_name] = args[:not]&.delete(:labels)
         args[:scope] = args[:scope].underscore if args[:scope]
 
         merge_requests = MergeRequestsFinder.new(current_user, args).execute
@@ -60,16 +62,8 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       def merge_request_pipelines_with_access
-        authorize! :read_pipeline, user_project
-
         mr = find_merge_request_with_access(params[:merge_request_iid])
-        mr.all_pipelines
-      end
-
-      def check_sha_param!(params, merge_request)
-        if params[:sha] && merge_request.diff_head_sha != params[:sha]
-          render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
-        end
+        ::Ci::PipelinesForMergeRequestFinder.new(mr, current_user).execute
       end
 
       def automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
@@ -91,7 +85,6 @@ module API
         if params[:view] == 'simple'
           options[:with] = Entities::MergeRequestSimple
         else
-          options[:issuable_metadata] = Gitlab::IssuableMetadata.new(current_user, merge_requests).data
           options[:skip_merge_status_recheck] = !declared_params[:with_merge_status_recheck]
         end
 
@@ -179,11 +172,11 @@ module API
         params :optional_params do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
-          optional :assignee_ids, type: Array[Integer], desc: 'The array of user IDs to assign issue'
+          optional :assignee_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The array of user IDs to assign issue'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
-          optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
-          optional :add_labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
-          optional :remove_labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
+          optional :labels, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
+          optional :add_labels, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
+          optional :remove_labels, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
           optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch'
           optional :allow_maintainer_to_push, type: Boolean, as: :allow_collaboration, desc: '[deprecated] See allow_collaboration'
@@ -198,7 +191,7 @@ module API
       end
       params do
         use :merge_requests_params
-        optional :iids, type: Array[Integer], desc: 'The IID array of merge requests'
+        optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of merge requests'
       end
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
@@ -315,7 +308,7 @@ module API
       end
 
       params do
-        requires :commits, type: Array, allow_blank: false, desc: 'List of context commits sha'
+        requires :commits, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, allow_blank: false, desc: 'List of context commits sha'
       end
       desc 'create context commits of merge request' do
         success Entities::Commit
@@ -345,7 +338,7 @@ module API
       end
 
       params do
-        requires :commits, type: Array, allow_blank: false, desc: 'List of context commits sha'
+        requires :commits, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, allow_blank: false, desc: 'List of context commits sha'
       end
       desc 'remove context commits of merge request'
       delete ':id/merge_requests/:merge_request_iid/context_commits' do
@@ -389,8 +382,6 @@ module API
         success Entities::Pipeline
       end
       post ':id/merge_requests/:merge_request_iid/pipelines' do
-        authorize! :create_pipeline, user_project
-
         pipeline = ::MergeRequests::CreatePipelineService
           .new(user_project, current_user, allow_duplicate: true)
           .execute(find_merge_request_with_access(params[:merge_request_iid]))

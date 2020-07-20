@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterProvisionWorker do
+RSpec.describe ClusterProvisionWorker do
   describe '#perform' do
     context 'when provider type is gcp' do
       let(:cluster) { create(:cluster, provider_type: :gcp, provider_gcp: provider) }

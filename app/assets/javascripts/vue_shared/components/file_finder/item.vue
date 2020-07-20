@@ -88,7 +88,7 @@ export default {
         >
         </span>
       </strong>
-      <span class="diff-changed-file-path prepend-top-5">
+      <span class="diff-changed-file-path gl-mt-2">
         <span
           v-for="(char, charIndex) in pathWithEllipsis.split('')"
           :key="charIndex + char"

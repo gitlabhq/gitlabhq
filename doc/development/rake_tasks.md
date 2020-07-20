@@ -232,6 +232,9 @@ To see the full list of API routes, you can run:
 bundle exec rake grape:path_helpers
 ```
 
+The generated list includes a full list of API endpoints and functional
+RESTful API verbs.
+
 For the Rails controllers, run:
 
 ```shell

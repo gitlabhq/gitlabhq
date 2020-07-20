@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::SidekiqMetrics do
+RSpec.describe API::SidekiqMetrics do
   let(:admin) { create(:user, :admin) }
 
   describe 'GET sidekiq/*' do

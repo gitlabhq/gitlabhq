@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SafeRequestStore do
+RSpec.describe Gitlab::SafeRequestStore do
   describe '.store' do
     context 'when RequestStore is active', :request_store do
       it 'uses RequestStore' do

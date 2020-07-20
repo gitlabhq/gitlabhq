@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'getting group label information' do
+RSpec.describe 'getting group label information' do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group, :public) }

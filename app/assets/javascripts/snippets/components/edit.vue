@@ -3,9 +3,8 @@ import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 
 import Flash from '~/flash';
 import { __, sprintf } from '~/locale';
-import axios from '~/lib/utils/axios_utils';
 import TitleField from '~/vue_shared/components/form/title.vue';
-import { getBaseURL, joinPaths, redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility';
 import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
 
 import UpdateSnippetMutation from '../mutations/updateSnippet.mutation.graphql';
@@ -15,6 +14,9 @@ import {
   SNIPPET_VISIBILITY_PRIVATE,
   SNIPPET_CREATE_MUTATION_ERROR,
   SNIPPET_UPDATE_MUTATION_ERROR,
+  SNIPPET_BLOB_ACTION_CREATE,
+  SNIPPET_BLOB_ACTION_UPDATE,
+  SNIPPET_BLOB_ACTION_MOVE,
 } from '../constants';
 import SnippetBlobEdit from './snippet_blob_edit.vue';
 import SnippetVisibilityEdit from './snippet_visibility_edit.vue';
@@ -53,17 +55,25 @@ export default {
   },
   data() {
     return {
-      blob: {},
-      fileName: '',
-      content: '',
-      isContentLoading: true,
+      blobsActions: {},
       isUpdating: false,
       newSnippet: false,
     };
   },
   computed: {
+    getActionsEntries() {
+      return Object.values(this.blobsActions);
+    },
+    allBlobsHaveContent() {
+      const entries = this.getActionsEntries;
+      return entries.length > 0 && !entries.find(action => !action.content);
+    },
+    allBlobChangesRegistered() {
+      const entries = this.getActionsEntries;
+      return entries.length > 0 && !entries.find(action => action.action === '');
+    },
     updatePrevented() {
-      return this.snippet.title === '' || this.content === '' || this.isUpdating;
+      return this.snippet.title === '' || !this.allBlobsHaveContent || this.isUpdating;
     },
     isProjectSnippet() {
       return Boolean(this.projectPath);
@@ -74,8 +84,7 @@ export default {
         title: this.snippet.title,
         description: this.snippet.description,
         visibilityLevel: this.snippet.visibilityLevel,
-        fileName: this.fileName,
-        content: this.content,
+        files: this.getActionsEntries.filter(entry => entry.action !== ''),
       };
     },
     saveButtonLabel() {
@@ -97,9 +106,57 @@ export default {
       return `${this.isProjectSnippet ? 'project' : 'personal'}_snippet_description`;
     },
   },
+  created() {
+    window.addEventListener('beforeunload', this.onBeforeUnload);
+  },
+  destroyed() {
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
+  },
   methods: {
-    updateFileName(newName) {
-      this.fileName = newName;
+    onBeforeUnload(e = {}) {
+      const returnValue = __('Are you sure you want to lose unsaved changes?');
+
+      if (!this.allBlobChangesRegistered) return undefined;
+
+      Object.assign(e, { returnValue });
+      return returnValue;
+    },
+    updateBlobActions(args = {}) {
+      // `_constants` is the internal prop that
+      // should not be sent to the mutation. Hence we filter it out from
+      // the argsToUpdateAction that is the data-basis for the mutation.
+      const { _constants: blobConstants, ...argsToUpdateAction } = args;
+      const { previousPath, filePath, content } = argsToUpdateAction;
+      let actionEntry = this.blobsActions[blobConstants.id] || {};
+      let tunedActions = {
+        action: '',
+        previousPath,
+      };
+
+      if (this.newSnippet) {
+        // new snippet, hence new blob
+        tunedActions = {
+          action: SNIPPET_BLOB_ACTION_CREATE,
+          previousPath: '',
+        };
+      } else if (previousPath && filePath) {
+        // renaming of a blob + renaming & content update
+        const renamedToOriginal = filePath === blobConstants.originalPath;
+        tunedActions = {
+          action: renamedToOriginal ? SNIPPET_BLOB_ACTION_UPDATE : SNIPPET_BLOB_ACTION_MOVE,
+          previousPath: !renamedToOriginal ? blobConstants.originalPath : '',
+        };
+      } else if (content !== blobConstants.originalContent) {
+        // content update only
+        tunedActions = {
+          action: SNIPPET_BLOB_ACTION_UPDATE,
+          previousPath: '',
+        };
+      }
+
+      actionEntry = { ...actionEntry, ...argsToUpdateAction, ...tunedActions };
+
+      this.$set(this.blobsActions, blobConstants.id, actionEntry);
     },
     flashAPIFailure(err) {
       const defaultErrorMsg = this.newSnippet
@@ -111,24 +168,9 @@ export default {
     onNewSnippetFetched() {
       this.newSnippet = true;
       this.snippet = this.$options.newSnippetSchema;
-      this.blob = this.snippet.blob;
-      this.isContentLoading = false;
     },
     onExistingSnippetFetched() {
       this.newSnippet = false;
-      const { blob } = this.snippet;
-      this.blob = blob;
-      this.fileName = blob.name;
-      const baseUrl = getBaseURL();
-      const url = joinPaths(baseUrl, blob.rawPath);
-
-      axios
-        .get(url)
-        .then(res => {
-          this.content = res.data;
-          this.isContentLoading = false;
-        })
-        .catch(e => this.flashAPIFailure(e));
     },
     onSnippetFetch(snippetRes) {
       if (snippetRes.data.snippets.edges.length === 0) {
@@ -172,6 +214,7 @@ export default {
           if (errors.length) {
             this.flashAPIFailure(errors[0]);
           } else {
+            this.originalContent = this.content;
             redirectTo(baseObj.snippet.webUrl);
           }
         })
@@ -184,7 +227,6 @@ export default {
     title: '',
     description: '',
     visibilityLevel: SNIPPET_VISIBILITY_PRIVATE,
-    blob: {},
   },
 };
 </script>
@@ -215,12 +257,16 @@ export default {
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
       />
-      <snippet-blob-edit
-        v-model="content"
-        :file-name="fileName"
-        :is-loading="isContentLoading"
-        @name-change="updateFileName"
-      />
+      <template v-if="blobs.length">
+        <snippet-blob-edit
+          v-for="blob in blobs"
+          :key="blob.name"
+          :blob="blob"
+          @blob-updated="updateBlobActions"
+        />
+      </template>
+      <snippet-blob-edit v-else @blob-updated="updateBlobActions" />
+
       <snippet-visibility-edit
         v-model="snippet.visibilityLevel"
         :help-link="visibilityHelpLink"

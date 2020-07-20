@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Import::MergeRequestHelpers, type: :helper do
+RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 

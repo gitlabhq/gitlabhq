@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserCanonicalEmail do
+RSpec.describe UserCanonicalEmail do
   it { is_expected.to belong_to(:user) }
 
   describe 'validations' do

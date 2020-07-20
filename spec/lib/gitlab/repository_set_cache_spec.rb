@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
   let_it_be(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:namespace) { "#{repository.full_path}:#{project.id}" }

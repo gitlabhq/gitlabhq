@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe ProjectDailyStatisticsWorker, '#perform' do
+RSpec.describe ProjectDailyStatisticsWorker, '#perform' do
   let(:worker) { described_class.new }
   let(:project) { create(:project) }
 

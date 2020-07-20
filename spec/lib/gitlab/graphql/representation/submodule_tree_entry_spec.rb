@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Representation::SubmoduleTreeEntry do
+RSpec.describe Gitlab::Graphql::Representation::SubmoduleTreeEntry do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 

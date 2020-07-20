@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Deployment do
+RSpec.describe Deployment do
   subject { build(:deployment) }
 
   it { is_expected.to belong_to(:project).required }

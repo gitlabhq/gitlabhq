@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe StuckCiJobsWorker do
+RSpec.describe StuckCiJobsWorker do
   include ExclusiveLeaseHelpers
 
   let!(:runner) { create :ci_runner }

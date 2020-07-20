@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Samplers::DatabaseSampler do
+RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
   subject { described_class.new }
 
   describe '#interval' do

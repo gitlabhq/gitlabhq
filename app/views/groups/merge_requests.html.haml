@@ -1,6 +1,6 @@
 - @can_bulk_update = can?(current_user, :admin_merge_request, @group) && @group.feature_available?(:group_bulk_edit)
 
-- page_title "Merge Requests"
+- page_title _("Merge Requests")
 
 - if group_merge_requests_count(state: 'all').zero?
   = render 'shared/empty_states/merge_requests', project_select_button: true

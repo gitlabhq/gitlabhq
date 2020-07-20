@@ -7,7 +7,7 @@ Note that administrator authorization is required to change feature flags. `QA::
 Please be sure to include the tag `:requires_admin` so that the test can be skipped in environments where admin access is not available.
 
 ```ruby
-context "with feature flag enabled", :requires_admin do
+RSpec.describe "with feature flag enabled", :requires_admin do
   before do
     Runtime::Feature.enable('feature_flag_name')
   end

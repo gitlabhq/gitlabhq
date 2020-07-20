@@ -4,13 +4,19 @@ module QA
   module Page
     module Project
       module Wiki
-        class Edit < Page::Base
+        class Edit < Base
+          include Wiki::Sidebar
+
           view 'app/views/shared/wikis/_form.html.haml' do
             element :wiki_title_textbox
             element :wiki_content_textarea
             element :wiki_message_textbox
             element :save_changes_button
             element :create_page_button
+          end
+
+          view 'app/assets/javascripts/pages/shared/wikis/components/delete_wiki_modal.vue' do
+            element :delete_button
           end
 
           def set_title(title)
@@ -31,6 +37,11 @@ module QA
 
           def click_create_page
             click_element :create_page_button
+          end
+
+          def delete_page
+            click_element :delete_button, Page::Modal::DeleteWiki
+            Page::Modal::DeleteWiki.perform(&:confirm_deletion)
           end
         end
       end

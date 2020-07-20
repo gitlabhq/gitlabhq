@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class GroupVariables < Grape::API
+  class GroupVariables < Grape::API::Instance
     include PaginationParams
 
     before { authenticate! }
@@ -48,7 +48,7 @@ module API
         requires :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
         optional :masked, type: String, desc: 'Whether the variable is masked'
-        optional :variable_type, type: String, values: Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
+        optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
       end
       post ':id/variables' do
         variable_params = declared_params(include_missing: false)
@@ -70,7 +70,7 @@ module API
         optional :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
         optional :masked, type: String, desc: 'Whether the variable is masked'
-        optional :variable_type, type: String, values: Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
+        optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ':id/variables/:key' do

@@ -11,6 +11,11 @@ module QA
         current_date.next_month.strftime("%Y/%m/%d")
       end
 
+      def format_date(date)
+        new_date = DateTime.strptime(date, "%Y/%m/%d")
+        new_date.strftime("%b %-d, %Y")
+      end
+
       private
 
       def current_date

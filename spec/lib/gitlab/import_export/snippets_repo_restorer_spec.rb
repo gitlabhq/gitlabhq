@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::SnippetsRepoRestorer do
+RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer do
   include GitHelpers
 
   describe 'bundle a snippet Git repo' do

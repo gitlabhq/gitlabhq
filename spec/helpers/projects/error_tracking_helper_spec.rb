@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::ErrorTrackingHelper do
+RSpec.describe Projects::ErrorTrackingHelper do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:project, reload: true) { create(:project) }

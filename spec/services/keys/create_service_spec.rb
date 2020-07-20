@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Keys::CreateService do
+RSpec.describe Keys::CreateService do
   let(:user) { create(:user) }
   let(:params) { attributes_for(:key) }
 

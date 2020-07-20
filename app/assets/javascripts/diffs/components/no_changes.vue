@@ -1,12 +1,12 @@
 <script>
 import { mapGetters } from 'vuex';
 import { escape } from 'lodash';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 
 export default {
   components: {
-    GlDeprecatedButton,
+    GlButton,
   },
   props: {
     changesEmptyStateIllustration: {
@@ -43,9 +43,9 @@ export default {
       <div class="text-content text-center">
         <span v-html="emptyStateText"></span>
         <div class="text-center">
-          <gl-deprecated-button :href="getNoteableData.new_blob_path" variant="success">{{
+          <gl-button :href="getNoteableData.new_blob_path" variant="success" category="primary">{{
             __('Create commit')
-          }}</gl-deprecated-button>
+          }}</gl-button>
         </div>
       </div>
     </div>

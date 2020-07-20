@@ -5,13 +5,14 @@ require 'spec_helper'
 RSpec.describe Dashboard::ProjectsController do
   include ExternalAuthorizationServiceHelpers
 
+  let_it_be(:user) { create(:user) }
+
   describe '#index' do
     context 'user not logged in' do
       it_behaves_like 'authenticates sessionless user', :index, :atom
     end
 
     context 'user logged in' do
-      let_it_be(:user) { create(:user) }
       let_it_be(:project) { create(:project) }
       let_it_be(:project2) { create(:project) }
 
@@ -71,8 +72,6 @@ RSpec.describe Dashboard::ProjectsController do
   context 'json requests' do
     render_views
 
-    let(:user) { create(:user) }
-
     before do
       sign_in(user)
     end
@@ -114,16 +113,14 @@ RSpec.describe Dashboard::ProjectsController do
   end
 
   context 'atom requests' do
-    let(:user) { create(:user) }
-
     before do
       sign_in(user)
     end
 
     describe '#index' do
-      context 'project pagination' do
-        let(:projects) { create_list(:project, 2, creator: user) }
+      let_it_be(:projects) { create_list(:project, 2, creator: user) }
 
+      context 'project pagination' do
         before do
           allow(Kaminari.config).to receive(:default_per_page).and_return(1)
 
@@ -136,6 +133,37 @@ RSpec.describe Dashboard::ProjectsController do
           get :index, format: :atom
 
           expect(assigns(:events).count).to eq(2)
+        end
+      end
+
+      describe 'rendering' do
+        include DesignManagementTestHelpers
+        render_views
+
+        let(:project) { projects.first }
+        let!(:design_event) { create(:design_event, project: project) }
+        let!(:wiki_page_event) { create(:wiki_page_event, project: project) }
+        let!(:issue_event) { create(:closed_issue_event, project: project) }
+        let(:design) { design_event.design }
+        let(:wiki_page) { wiki_page_event.wiki_page }
+        let(:issue) { issue_event.issue }
+
+        before do
+          enable_design_management
+          project.add_developer(user)
+        end
+
+        it 'renders all kinds of event without error', :aggregate_failures do
+          get :index, format: :atom
+
+          expect(assigns(:events)).to include(design_event, wiki_page_event, issue_event)
+          expect(response).to render_template('dashboard/projects/index')
+          expect(response.body).to include(
+            "uploaded design #{design.to_reference}",
+            "created wiki page #{wiki_page.title}",
+            "joined project #{project.full_name}",
+            "closed issue #{issue.to_reference}"
+          )
         end
       end
     end

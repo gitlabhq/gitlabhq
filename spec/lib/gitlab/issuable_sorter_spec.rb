@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::IssuableSorter do
+RSpec.describe Gitlab::IssuableSorter do
   let(:namespace1) { build_stubbed(:namespace, id: 1) }
   let(:project1) { build_stubbed(:project, id: 1, namespace: namespace1) }
 

@@ -1,0 +1,5 @@
+---
+title: "Prevents editing of non-markdown kramdown content in the Static Site Editor's WYSIWYG mode"
+merge_request: 34185
+author:
+type: changed

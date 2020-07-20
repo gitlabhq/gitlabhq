@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
   include ChunkedIOHelpers
 
   let_it_be(:build) { create(:ci_build, :running) }

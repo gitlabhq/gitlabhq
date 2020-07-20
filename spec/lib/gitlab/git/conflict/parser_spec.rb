@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::Conflict::Parser do
+RSpec.describe Gitlab::Git::Conflict::Parser do
   describe '.parse' do
     def parse_text(text)
       described_class.parse(text, our_path: 'README.md', their_path: 'README.md')

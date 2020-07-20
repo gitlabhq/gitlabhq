@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::BackfillEnvironmentIdDeploymentMergeRequests, schema: 20200312134637 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillEnvironmentIdDeploymentMergeRequests, schema: 20200312134637 do
   let(:environments)              { table(:environments) }
   let(:merge_requests)            { table(:merge_requests) }
   let(:deployments)               { table(:deployments) }

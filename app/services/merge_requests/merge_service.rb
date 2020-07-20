@@ -27,6 +27,7 @@ module MergeRequests
           success
         end
       end
+
       log_info("Merge process finished on JID #{merge_jid} with state #{state}")
     rescue MergeError => e
       handle_merge_error(log_message: e.message, save_message_on_model: true)
@@ -56,6 +57,8 @@ module MergeRequests
           'Only fast-forward merge is allowed for your project. Please update your source branch'
         elsif !@merge_request.mergeable?
           'Merge request is not mergeable'
+        elsif !@merge_request.squash && project.squash_always?
+          'This project requires squashing commits when merge requests are accepted.'
         end
 
       raise_error(error) if error

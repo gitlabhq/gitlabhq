@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::IssueNew do
+RSpec.describe Gitlab::SlashCommands::IssueNew do
   describe '#execute' do
     let(:project) { create(:project) }
     let(:user) { create(:user) }

@@ -13,10 +13,10 @@
   url: clusterable.create_user_clusters_path, as: :cluster do |field|
   = field.text_field :name, required: true, title: s_('ClusterIntegration|Cluster name is required.'),
     label: s_('ClusterIntegration|Kubernetes cluster name'), label_class: 'label-bold'
-  - if has_multiple_clusters?
-    = field.text_field :environment_scope, required: true, title: 'Environment scope is required.',
-      label: s_('ClusterIntegration|Environment scope'), label_class: 'label-bold',
-      help: s_("ClusterIntegration|Choose which of your environments will use this cluster.")
+
+  = field.text_field :environment_scope, required: true, title: s_('ClusterIntegration|Environment scope is required.'),
+    label: s_('ClusterIntegration|Environment scope'), label_class: 'label-bold',
+    help: s_('ClusterIntegration|Choose which of your environments will use this cluster.')
 
   = field.fields_for :platform_kubernetes, @user_cluster.platform_kubernetes do |platform_kubernetes_field|
     = platform_kubernetes_field.url_field :api_url, required: true,

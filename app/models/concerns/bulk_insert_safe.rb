@@ -37,7 +37,7 @@ module BulkInsertSafe
 
   # These are the callbacks we think safe when used on models that are
   # written to the database in bulk
-  CALLBACK_NAME_WHITELIST = Set[
+  ALLOWED_CALLBACKS = Set[
     :initialize,
     :validate,
     :validation,
@@ -179,16 +179,12 @@ module BulkInsertSafe
     end
 
     def _bulk_insert_callback_allowed?(name, args)
-      _bulk_insert_whitelisted?(name) || _bulk_insert_saved_from_belongs_to?(name, args)
+      ALLOWED_CALLBACKS.include?(name) || _bulk_insert_saved_from_belongs_to?(name, args)
     end
 
     # belongs_to associations will install a before_save hook during class loading
     def _bulk_insert_saved_from_belongs_to?(name, args)
       args.first == :before && args.second.to_s.start_with?('autosave_associated_records_for_')
-    end
-
-    def _bulk_insert_whitelisted?(name)
-      CALLBACK_NAME_WHITELIST.include?(name)
     end
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Fix snippet repository import edge cases
+merge_request: 33506
+author:
+type: fixed

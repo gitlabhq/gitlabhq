@@ -31,7 +31,7 @@ export default {
         s__(`This job is stuck because you don't have
   any active runners online or available with any of these tags assigned to them:`)
       }}
-      <span v-for="(tag, index) in tags" :key="index" class="badge badge-primary append-right-4">
+      <span v-for="(tag, index) in tags" :key="index" class="badge badge-primary gl-mr-2">
         {{ tag }}
       </span>
     </p>

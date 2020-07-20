@@ -28,7 +28,7 @@ export default {
 };
 </script>
 <template>
-  <div class="prepend-top-default">
+  <div class="gl-mt-3">
     <p>
       <slot></slot>
     </p>

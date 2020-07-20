@@ -8,7 +8,7 @@ export default () => {
     return;
   }
 
-  const { authorizationKey, changeKeyUrl, notifyUrl, learnMoreUrl } = el.dataset;
+  const { authorizationKey, changeKeyUrl, notifyUrl, learnMoreUrl, disabled } = el.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -20,6 +20,7 @@ export default () => {
           changeKeyUrl,
           notifyUrl,
           learnMoreUrl,
+          disabled,
         },
       });
     },

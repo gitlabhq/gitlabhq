@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Bitbucket::Connection do
+RSpec.describe Bitbucket::Connection do
   before do
     allow_next_instance_of(described_class) do |instance|
       allow(instance).to receive(:provider).and_return(double(app_id: '', app_secret: ''))

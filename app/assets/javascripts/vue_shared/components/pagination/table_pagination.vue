@@ -20,7 +20,7 @@ export default {
         Here is an example `change` method:
 
         change(pagenum) {
-          gl.utils.visitUrl(`?page=${pagenum}`);
+          visitUrl(`?page=${pagenum}`);
         },
       */
     change: {
@@ -64,7 +64,7 @@ export default {
 <template>
   <gl-pagination
     v-if="showPagination"
-    class="justify-content-center prepend-top-default"
+    class="justify-content-center gl-mt-3"
     v-bind="$attrs"
     :value="pageInfo.page"
     :per-page="pageInfo.perPage"

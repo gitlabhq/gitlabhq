@@ -1,0 +1,5 @@
+---
+title: Expose project deploy keys for autocompletion
+merge_request: 34875
+author:
+type: added

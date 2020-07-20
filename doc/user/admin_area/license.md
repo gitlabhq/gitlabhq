@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Activate all GitLab Enterprise Edition functionality with a license **(STARTER ONLY)**
+# Activate GitLab EE with a license **(STARTER ONLY)**
 
 To activate all GitLab Enterprise Edition (EE) functionality, you need to upload
 a license. Once you've received your license from GitLab Inc., you can upload it
@@ -107,14 +107,23 @@ expired license(s).
 It's possible to upload and view more than one license,
 but only the latest license will be used as the active license.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### There is no License tab in the Admin Area
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+If you originally installed Community Edition rather than Enterprise Edition you will need to
+[upgrade to Enterprise Edition](../../update/README.md#community-to-enterprise-edition)
+before uploading your license.
+
+GitLab.com users cannot upload and use a self-managed license. If you
+wish to use paid features on GitLab.com, a separate subscription may be
+[purchased](../../subscriptions/index.md#subscribe-to-gitlabcom).
+
+### Users exceed license limit upon renewal
+
+If you've added new users to your GitLab instance prior to renewal you may need to
+purchase additional seats to cover those users. If this is the case and a license
+without enough users is uploaded a message is displayed prompting you to purchase
+additional users. More information on how to determine the required number of users
+and how to add additional seats can be found in the
+[licensing FAQ](https://about.gitlab.com/pricing/licensing-faq/).

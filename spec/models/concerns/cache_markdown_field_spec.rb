@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CacheMarkdownField, :clean_gitlab_redis_cache do
+RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
   let(:ar_class) do
     Class.new(ActiveRecord::Base) do
       self.table_name = 'issues'

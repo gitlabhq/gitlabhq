@@ -1,11 +1,61 @@
 import { uniq } from 'lodash';
-import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
+import axios from '../lib/utils/axios_utils';
 
-export const validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
+import AccessorUtilities from '../lib/utils/accessor';
+
+let emojiMap = null;
+let emojiPromise = null;
+let validEmojiNames = null;
+
+export const EMOJI_VERSION = '1';
+
+const isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+
+export function initEmojiMap() {
+  emojiPromise =
+    emojiPromise ||
+    new Promise((resolve, reject) => {
+      if (emojiMap) {
+        resolve(emojiMap);
+      } else if (
+        isLocalStorageAvailable &&
+        window.localStorage.getItem('gl-emoji-map-version') === EMOJI_VERSION &&
+        window.localStorage.getItem('gl-emoji-map')
+      ) {
+        emojiMap = JSON.parse(window.localStorage.getItem('gl-emoji-map'));
+        validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
+        resolve(emojiMap);
+      } else {
+        // We load the JSON file direct from the server
+        // because it can't be loaded from a CDN due to
+        // cross domain problems with JSON
+        axios
+          .get(`${gon.relative_url_root || ''}/-/emojis/${EMOJI_VERSION}/emojis.json`)
+          .then(({ data }) => {
+            emojiMap = data;
+            validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
+            resolve(emojiMap);
+            if (isLocalStorageAvailable) {
+              window.localStorage.setItem('gl-emoji-map-version', EMOJI_VERSION);
+              window.localStorage.setItem('gl-emoji-map', JSON.stringify(emojiMap));
+            }
+          })
+          .catch(err => {
+            reject(err);
+          });
+      }
+    });
+
+  return emojiPromise;
+}
 
 export function normalizeEmojiName(name) {
   return Object.prototype.hasOwnProperty.call(emojiAliases, name) ? emojiAliases[name] : name;
+}
+
+export function getValidEmojiNames() {
+  return validEmojiNames;
 }
 
 export function isEmojiNameValid(name) {
@@ -36,8 +86,8 @@ export function getEmojiCategoryMap() {
     };
     Object.keys(emojiMap).forEach(name => {
       const emoji = emojiMap[name];
-      if (emojiCategoryMap[emoji.category]) {
-        emojiCategoryMap[emoji.category].push(name);
+      if (emojiCategoryMap[emoji.c]) {
+        emojiCategoryMap[emoji.c].push(name);
       }
     });
   }
@@ -58,8 +108,9 @@ export function getEmojiInfo(query) {
 }
 
 export function emojiFallbackImageSrc(inputName) {
-  const { name, digest } = getEmojiInfo(inputName);
-  return `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/emoji/${name}-${digest}.png`;
+  const { name } = getEmojiInfo(inputName);
+  return `${gon.asset_host || ''}${gon.relative_url_root ||
+    ''}/-/emojis/${EMOJI_VERSION}/${name}.png`;
 }
 
 export function emojiImageTag(name, src) {
@@ -67,36 +118,17 @@ export function emojiImageTag(name, src) {
 }
 
 export function glEmojiTag(inputName, options) {
-  const opts = { sprite: false, forceFallback: false, ...options };
-  const { name, ...emojiInfo } = getEmojiInfo(inputName);
-
-  const fallbackImageSrc = emojiFallbackImageSrc(name);
+  const opts = { sprite: false, ...options };
+  const name = normalizeEmojiName(inputName);
   const fallbackSpriteClass = `emoji-${name}`;
 
-  const classList = [];
-  if (opts.forceFallback && opts.sprite) {
-    classList.push('emoji-icon');
-    classList.push(fallbackSpriteClass);
-  }
-  const classAttribute = classList.length > 0 ? `class="${classList.join(' ')}"` : '';
   const fallbackSpriteAttribute = opts.sprite
     ? `data-fallback-sprite-class="${fallbackSpriteClass}"`
     : '';
-  let contents = emojiInfo.moji;
-  if (opts.forceFallback && !opts.sprite) {
-    contents = emojiImageTag(name, fallbackImageSrc);
-  }
 
   return `
     <gl-emoji
-      ${classAttribute}
-      data-name="${name}"
-      data-fallback-src="${fallbackImageSrc}"
       ${fallbackSpriteAttribute}
-      data-unicode-version="${emojiInfo.unicodeVersion}"
-      title="${emojiInfo.description}"
-    >
-      ${contents}
-    </gl-emoji>
+      data-name="${name}"></gl-emoji>
   `;
 }

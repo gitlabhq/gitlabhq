@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::ResolvableInterface do
+RSpec.describe Types::ResolvableInterface do
   it 'exposes the expected fields' do
     expected_fields = %i[
       resolvable

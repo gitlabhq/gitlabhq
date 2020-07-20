@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::QueryLimiting::Transaction do
+RSpec.describe Gitlab::QueryLimiting::Transaction do
   after do
     Thread.current[described_class::THREAD_KEY] = nil
   end

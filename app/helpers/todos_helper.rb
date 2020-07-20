@@ -22,6 +22,7 @@ module TodosHelper
     when Todo::APPROVAL_REQUIRED then "set #{todo_action_subject(todo)} as an approver for"
     when Todo::UNMERGEABLE then 'Could not merge'
     when Todo::DIRECTLY_ADDRESSED then "directly addressed #{todo_action_subject(todo)} on"
+    when Todo::MERGE_TRAIN_REMOVED then "Removed from Merge Train:"
     end
   end
 
@@ -97,11 +98,13 @@ module TodosHelper
         'mr'
       when Issue
         'issue'
+      when AlertManagement::Alert
+        'alert'
       end
 
     content_tag(:span, nil, class: 'target-status') do
-      content_tag(:span, nil, class: "status-box status-box-#{type}-#{todo.target.state.dasherize}") do
-        todo.target.state.capitalize
+      content_tag(:span, nil, class: "status-box status-box-#{type}-#{todo.target.state.to_s.dasherize}") do
+        todo.target.state.to_s.capitalize
       end
     end
   end
@@ -195,6 +198,10 @@ module TodosHelper
     "&middot; #{content}".html_safe
   end
 
+  def todo_author_display?(todo)
+    !todo.build_failed? && !todo.unmergeable?
+  end
+
   private
 
   def todos_design_path(todo, path_options)
@@ -214,7 +221,14 @@ module TodosHelper
   end
 
   def show_todo_state?(todo)
-    (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && %w(closed merged).include?(todo.target.state)
+    case todo.target
+    when MergeRequest, Issue
+      %w(closed merged).include?(todo.target.state)
+    when AlertManagement::Alert
+      %i(resolved).include?(todo.target.state)
+    else
+      false
+    end
   end
 
   def todo_group_options

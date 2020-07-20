@@ -36,7 +36,7 @@ function mountIssuableListRootApp() {
 }
 
 function mountIssuablesListApp() {
-  if (!gon.features?.vueIssuablesList) {
+  if (!gon.features?.vueIssuablesList && !gon.features?.jiraIssuesIntegration) {
     return;
   }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::MergeToRefService do
+RSpec.describe MergeRequests::MergeToRefService do
   shared_examples_for 'MergeService for target ref' do
     it 'target_ref has the same state of target branch' do
       repo = merge_request.target_project.repository

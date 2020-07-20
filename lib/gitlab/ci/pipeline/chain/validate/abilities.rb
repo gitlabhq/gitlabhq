@@ -19,7 +19,7 @@ module Gitlab
               end
 
               unless allowed_to_write_ref?
-                return error("Insufficient permissions for protected ref '#{command.ref}'")
+                error("Insufficient permissions for protected ref '#{command.ref}'")
               end
             end
 

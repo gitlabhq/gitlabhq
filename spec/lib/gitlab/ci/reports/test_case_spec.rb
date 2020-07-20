@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Reports::TestCase do
+RSpec.describe Gitlab::Ci::Reports::TestCase do
   describe '#initialize' do
     let(:test_case) { described_class.new(params)}
 

@@ -1,0 +1,34 @@
+= form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-import-export-limits-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :project_import_limit, _('Max Project Import requests per minute per user'), class: 'label-bold'
+      = f.number_field :project_import_limit, class: 'form-control'
+
+  %fieldset
+    .form-group
+      = f.label :project_export_limit, _('Max Project Export requests per minute per user'), class: 'label-bold'
+      = f.number_field :project_export_limit, class: 'form-control'
+
+  %fieldset
+    .form-group
+      = f.label :project_download_export_limit, _('Max Project Export Download requests per minute per user'), class: 'label-bold'
+      = f.number_field :project_download_export_limit, class: 'form-control'
+
+  %fieldset
+    .form-group
+      = f.label :group_import_limit, _('Max Group Import requests per minute per user'), class: 'label-bold'
+      = f.number_field :group_import_limit, class: 'form-control'
+
+  %fieldset
+    .form-group
+      = f.label :group_export_limit, _('Max Group Export requests per minute per user'), class: 'label-bold'
+      = f.number_field :group_export_limit, class: 'form-control'
+
+  %fieldset
+    .form-group
+      = f.label :group_download_export_limit, _('Max Group Export Download requests per minute per user'), class: 'label-bold'
+      = f.number_field :group_download_export_limit, class: 'form-control'
+
+  = f.submit 'Save changes', class: "btn btn-success", data: { qa_selector: 'save_changes_button' }

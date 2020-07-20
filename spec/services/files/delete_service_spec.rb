@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Files::DeleteService do
+RSpec.describe Files::DeleteService do
   subject { described_class.new(project, user, commit_params) }
 
   let(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::DeployTokens::DestroyService do
+RSpec.describe Projects::DeployTokens::DestroyService do
   it_behaves_like 'a deploy token deletion service' do
     let_it_be(:entity) { create(:project) }
     let_it_be(:deploy_token_class) { ProjectDeployToken }

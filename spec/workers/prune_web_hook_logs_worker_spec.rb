@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PruneWebHookLogsWorker do
+RSpec.describe PruneWebHookLogsWorker do
   describe '#perform' do
     before do
       hook = create(:project_hook)

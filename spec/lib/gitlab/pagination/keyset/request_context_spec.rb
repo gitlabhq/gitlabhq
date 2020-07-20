@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Pagination::Keyset::RequestContext do
+RSpec.describe Gitlab::Pagination::Keyset::RequestContext do
   let(:request) { double('request', params: params) }
 
   describe '#page' do

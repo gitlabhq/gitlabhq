@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GitRefValidator do
+RSpec.describe Gitlab::GitRefValidator do
   using RSpec::Parameterized::TableSyntax
 
   describe '.validate' do

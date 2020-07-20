@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Namespace do
+RSpec.describe Namespace do
   include ProjectForksHelper
   include GitHelpers
 
@@ -17,6 +17,8 @@ describe Namespace do
     it { is_expected.to have_many :children }
     it { is_expected.to have_one :root_storage_statistics }
     it { is_expected.to have_one :aggregation_schedule }
+    it { is_expected.to have_one :namespace_settings }
+    it { is_expected.to have_many :custom_emoji }
   end
 
   describe 'validations' do
@@ -62,6 +64,36 @@ describe Namespace do
         let(:group) { build(:group, path: 'tree') }
 
         it { expect(group).to be_valid }
+      end
+    end
+
+    describe '1 char path length' do
+      it 'does not allow to create one' do
+        namespace = build(:namespace, path: 'j')
+
+        expect(namespace).not_to be_valid
+        expect(namespace.errors[:path].first).to eq('is too short (minimum is 2 characters)')
+      end
+
+      it 'does not allow to update one' do
+        namespace = create(:namespace)
+        namespace.update(path: 'j')
+
+        expect(namespace).not_to be_valid
+        expect(namespace.errors[:path].first).to eq('is too short (minimum is 2 characters)')
+      end
+
+      it 'allows updating other attributes for existing record' do
+        namespace = build(:namespace, path: 'j')
+        namespace.save(validate: false)
+        namespace.reload
+
+        expect(namespace.path).to eq('j')
+
+        namespace.update(name: 'something new')
+
+        expect(namespace).to be_valid
+        expect(namespace.name).to eq('something new')
       end
     end
   end
@@ -153,7 +185,8 @@ describe Namespace do
                                wiki_size:            505,
                                lfs_objects_size:     202,
                                build_artifacts_size: 303,
-                               packages_size:        404))
+                               packages_size:        404,
+                               snippets_size:        605))
     end
 
     let(:project2) do
@@ -164,7 +197,8 @@ describe Namespace do
                                wiki_size:            50,
                                lfs_objects_size:     20,
                                build_artifacts_size: 30,
-                               packages_size:        40))
+                               packages_size:        40,
+                               snippets_size:        60))
     end
 
     it "sums all project storage counters in the namespace" do
@@ -172,12 +206,13 @@ describe Namespace do
       project2
       statistics = described_class.with_statistics.find(namespace.id)
 
-      expect(statistics.storage_size).to eq 1665
+      expect(statistics.storage_size).to eq 2330
       expect(statistics.repository_size).to eq 111
       expect(statistics.wiki_size).to eq 555
       expect(statistics.lfs_objects_size).to eq 222
       expect(statistics.build_artifacts_size).to eq 333
       expect(statistics.packages_size).to eq 444
+      expect(statistics.snippets_size).to eq 665
     end
 
     it "correctly handles namespaces without projects" do
@@ -189,6 +224,7 @@ describe Namespace do
       expect(statistics.lfs_objects_size).to eq 0
       expect(statistics.build_artifacts_size).to eq 0
       expect(statistics.packages_size).to eq 0
+      expect(statistics.snippets_size).to eq 0
     end
   end
 
@@ -849,8 +885,13 @@ describe Namespace do
   end
 
   describe '#root_ancestor' do
+    let!(:root_group) { create(:group) }
+
+    it 'returns root_ancestor for root group without a query' do
+      expect { root_group.root_ancestor }.not_to exceed_query_limit(0)
+    end
+
     it 'returns the top most ancestor' do
-      root_group = create(:group)
       nested_group = create(:group, parent: root_group)
       deep_nested_group = create(:group, parent: nested_group)
       very_deep_nested_group = create(:group, parent: deep_nested_group)

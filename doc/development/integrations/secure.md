@@ -100,13 +100,12 @@ the project repository contains Java source code and the `dependency_scanning` f
 
 ```yaml
 mysec_dependency_scanning:
-  except:
-    variables:
-      - $DEPENDENCY_SCANNING_DISABLED
-  only:
-    variables:
-      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bjava\b/
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED
+      when: never
+    - if: $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists:
+        - '**/*.java'
 ```
 
 Any additional job policy should only be configured by users based on their needs.
@@ -231,6 +230,32 @@ Scanners may use [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_c
 to colorize the messages they write to the Unix standard output and standard error streams.
 We recommend using red to report errors, yellow for warnings, and green for notices.
 Also, we recommend prefixing error messages with `[ERRO]`, warnings with `[WARN]`, and notices with `[INFO]`.
+
+#### Logging level
+
+The scanner should filter out a log message if its log level is lower than the
+one set in the `SECURE_LOG_LEVEL` variable. For instance, `info` and `warn`
+messages should be skipped when `SECURE_LOG_LEVEL` is set to `error`. Accepted
+values are as follows, listed from highest to lowest:
+
+- `fatal`
+- `error`
+- `warn`
+- `info`
+- `debug`
+
+It is recommended to use the `debug` level for verbose logging that could be
+useful when debugging. The default value for `SECURE_LOG_LEVEL` should be set
+to `info`.
+
+#### common logutil package
+
+If you are using [go](https://golang.org/) and
+[common](https://gitlab.com/gitlab-org/security-products/analyzers/common),
+then it is suggested that you use [logrus](https://github.com/Sirupsen/logrus)
+and [common's logutil package](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/tree/master/logutil)
+to configure the formatter for [logrus](https://github.com/Sirupsen/logrus).
+See the [logutil README.md](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/tree/master/logutil/README.md)
 
 ## Report
 
@@ -547,3 +572,15 @@ remediation. `fixes[].id` contains a fixed vulnerability's [unique identifier](#
 
 The `diff` field is a base64-encoded remediation code diff, compatible with
 [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion). This field is required.
+
+## Limitations
+
+### Container Scanning
+
+Container Scanning currently has these limitations:
+
+- Although the Security Dashboard can display scan results from multiple images, if multiple
+  vulnerabilities have the same fingerprint, only the first instance of that vulnerability is
+  displayed. We're working on removing this limitation. You can follow our progress on the issue
+  [Change location fingerprint for Container Scanning](https://gitlab.com/gitlab-org/gitlab/-/issues/215466).
+- Different scanners may each report the same vulnerability, resulting in duplicate findings.

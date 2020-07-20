@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Terraform::StateUploader do
+RSpec.describe Terraform::StateUploader do
   subject { terraform_state.file }
 
   let(:terraform_state) { create(:terraform_state, :with_file) }

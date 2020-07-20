@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CampfireService do
+RSpec.describe CampfireService do
   include StubRequests
 
   describe 'Associations' do

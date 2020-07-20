@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Popen::Runner do
+RSpec.describe Gitlab::Popen::Runner do
   subject { described_class.new }
 
   describe '#run' do

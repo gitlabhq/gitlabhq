@@ -1,0 +1,5 @@
+---
+title: Fix single file editor with long branch name
+merge_request: 36371
+author:
+type: fixed

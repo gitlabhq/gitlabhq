@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DiffFileBaseEntity do
+RSpec.describe DiffFileBaseEntity do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:entity) { described_class.new(diff_file, options).as_json }
@@ -39,10 +39,6 @@ describe DiffFileBaseEntity do
     let(:diff_file) { merge_request.diffs.diff_files.to_a.last }
     let(:options) { { request: EntityRequest.new(current_user: create(:user)), merge_request: merge_request } }
     let(:params) { {} }
-
-    before do
-      stub_feature_flags(web_ide_default: false)
-    end
 
     shared_examples 'a diff file edit path to the source branch' do
       it do

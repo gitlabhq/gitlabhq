@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, schema: 20200130145430 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, schema: 20200130145430 do
   let(:services) { table(:services) }
 
   before do

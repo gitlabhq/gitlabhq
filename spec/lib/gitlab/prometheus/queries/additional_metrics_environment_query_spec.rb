@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Prometheus::Queries::AdditionalMetricsEnvironmentQuery do
+RSpec.describe Gitlab::Prometheus::Queries::AdditionalMetricsEnvironmentQuery do
   around do |example|
     Timecop.freeze { example.run }
   end

@@ -23,6 +23,14 @@ module Gitlab
           increment_db_counters(payload)
         end
 
+        def self.db_counter_payload
+          return {} unless Gitlab::SafeRequestStore.active?
+
+          DB_COUNTERS.map do |counter|
+            [counter, Gitlab::SafeRequestStore[counter].to_i]
+          end.to_h
+        end
+
         private
 
         define_histogram :gitlab_sql_duration_seconds do
@@ -36,13 +44,21 @@ module Gitlab
         end
 
         def increment_db_counters(payload)
-          current_transaction.increment(:db_count, 1)
+          increment(:db_count)
 
           if payload.fetch(:cached, payload[:name] == 'CACHE')
-            current_transaction.increment(:db_cached_count, 1)
+            increment(:db_cached_count)
           end
 
-          current_transaction.increment(:db_write_count, 1) unless select_sql_command?(payload)
+          increment(:db_write_count) unless select_sql_command?(payload)
+        end
+
+        def increment(counter)
+          current_transaction.increment(counter, 1)
+
+          if Gitlab::SafeRequestStore.active?
+            Gitlab::SafeRequestStore[counter] = Gitlab::SafeRequestStore[counter].to_i + 1
+          end
         end
 
         def current_transaction

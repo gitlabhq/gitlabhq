@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  RSpec.describe 'Create' do
     describe 'Push over HTTP using Git protocol version 2', :requires_git_protocol_v2 do
       it 'user pushes to the repository' do
         Flow::Login.sign_in

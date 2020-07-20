@@ -19,6 +19,8 @@ describe('Squash before merge component', () => {
     wrapper.destroy();
   });
 
+  const findLabel = () => wrapper.find('[data-testid="squashLabel"]');
+
   describe('checkbox', () => {
     const findCheckbox = () => wrapper.find('.js-squash-checkbox');
 
@@ -60,6 +62,46 @@ describe('Squash before merge component', () => {
       });
 
       expect(findCheckbox().attributes('disabled')).toBeTruthy();
+    });
+  });
+
+  describe('label', () => {
+    describe.each`
+      isDisabled | expectation
+      ${true}    | ${'grays out text if it is true'}
+      ${false}   | ${'does not gray out text if it is false'}
+    `('isDisabled prop', ({ isDisabled, expectation }) => {
+      beforeEach(() => {
+        createComponent({
+          value: false,
+          isDisabled,
+        });
+      });
+
+      it(expectation, () => {
+        expect(findLabel().classes('gl-text-gray-600')).toBe(isDisabled);
+      });
+    });
+  });
+
+  describe('tooltip', () => {
+    const tooltipTitle = () => findLabel().element.dataset.title;
+
+    it('does not render when isDisabled is false', () => {
+      createComponent({
+        value: true,
+        isDisabled: false,
+      });
+      expect(tooltipTitle()).toBeUndefined();
+    });
+
+    it('display message when when isDisabled is true', () => {
+      createComponent({
+        value: true,
+        isDisabled: true,
+      });
+
+      expect(tooltipTitle()).toBe('Required in this project.');
     });
   });
 

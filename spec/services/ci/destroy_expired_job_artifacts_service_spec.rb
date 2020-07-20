@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared_state do
+RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
   describe '.execute' do
@@ -14,7 +14,7 @@ describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared_state
     context 'when artifact is expired' do
       context 'when artifact is not locked' do
         before do
-          artifact.update!(locked: false)
+          artifact.job.pipeline.unlocked!
         end
 
         it 'destroys job artifact' do
@@ -24,7 +24,7 @@ describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared_state
 
       context 'when artifact is locked' do
         before do
-          artifact.update!(locked: true)
+          artifact.job.pipeline.artifacts_locked!
         end
 
         it 'does not destroy job artifact' do

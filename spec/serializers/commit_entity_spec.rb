@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CommitEntity do
+RSpec.describe CommitEntity do
   let(:signature_html) { 'TEST' }
 
   let(:entity) do

@@ -1,8 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
-import store from '~/pipelines/stores/test_reports';
 import { __ } from '~/locale';
+import { GlTooltipDirective } from '@gitlab/ui';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 export default {
@@ -11,7 +11,9 @@ export default {
     Icon,
     SmartVirtualList,
   },
-  store,
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     heading: {
       type: String,
@@ -32,16 +34,16 @@ export default {
 
 <template>
   <div>
-    <div class="row prepend-top-default">
+    <div class="row gl-mt-3">
       <div class="col-12">
         <h4>{{ heading }}</h4>
       </div>
     </div>
 
-    <div v-if="hasSuites" class="test-reports-table append-bottom-default js-test-cases-table">
+    <div v-if="hasSuites" class="test-reports-table gl-mb-3 js-test-cases-table">
       <div role="row" class="gl-responsive-table-row table-row-header font-weight-bold fgray">
         <div role="rowheader" class="table-section section-20">
-          {{ __('Class') }}
+          {{ __('Suite') }}
         </div>
         <div role="rowheader" class="table-section section-20">
           {{ __('Name') }}
@@ -68,13 +70,25 @@ export default {
           class="gl-responsive-table-row rounded align-items-md-start mt-xs-3 js-case-row"
         >
           <div class="table-section section-20 section-wrap">
-            <div role="rowheader" class="table-mobile-header">{{ __('Class') }}</div>
-            <div class="table-mobile-content pr-md-1 text-truncate">{{ testCase.classname }}</div>
+            <div role="rowheader" class="table-mobile-header">{{ __('Suite') }}</div>
+            <div
+              v-gl-tooltip
+              :title="testCase.classname"
+              class="table-mobile-content pr-md-1 text-truncate"
+            >
+              {{ testCase.classname }}
+            </div>
           </div>
 
           <div class="table-section section-20 section-wrap">
             <div role="rowheader" class="table-mobile-header">{{ __('Name') }}</div>
-            <div class="table-mobile-content pr-md-1 text-truncate">{{ testCase.name }}</div>
+            <div
+              v-gl-tooltip
+              :title="testCase.name"
+              class="table-mobile-content pr-md-1 text-truncate"
+            >
+              {{ testCase.name }}
+            </div>
           </div>
 
           <div class="table-section section-10 section-wrap">

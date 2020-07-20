@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JiraImport::Stage::FinishImportWorker do
+RSpec.describe Gitlab::JiraImport::Stage::FinishImportWorker do
   let_it_be(:project) { create(:project) }
   let_it_be(:worker) { described_class.new }
 

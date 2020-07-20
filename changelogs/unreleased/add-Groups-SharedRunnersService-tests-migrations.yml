@@ -1,0 +1,5 @@
+---
+title: Add setting to enable and disable shared Runners for a group and its descendants
+merge_request: 33411
+author: Arthur de Lapertosa Lisboa
+type: added

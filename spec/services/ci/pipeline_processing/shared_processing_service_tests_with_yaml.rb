@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'Pipeline Processing Service Tests With Yaml' do
+RSpec.shared_context 'Pipeline Processing Service Tests With Yaml' do
   where(:test_file_path) do
     Dir.glob(Rails.root.join('spec/services/ci/pipeline_processing/test_cases/*.yml'))
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Pagination::OffsetPagination do
+RSpec.describe Gitlab::Pagination::OffsetPagination do
   let(:resource) { Project.all }
   let(:custom_port) { 8080 }
   let(:incoming_api_projects_url) { "#{Gitlab.config.gitlab.url}:#{custom_port}/api/v4/projects" }

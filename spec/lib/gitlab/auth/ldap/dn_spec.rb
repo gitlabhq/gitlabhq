@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::Ldap::DN do
+RSpec.describe Gitlab::Auth::Ldap::DN do
   using RSpec::Parameterized::TableSyntax
 
   describe '#normalize_value' do

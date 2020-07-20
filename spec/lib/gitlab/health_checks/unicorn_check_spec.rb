@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::HealthChecks::UnicornCheck do
+RSpec.describe Gitlab::HealthChecks::UnicornCheck do
   let(:result_class) { Gitlab::HealthChecks::Result }
   let(:readiness) { described_class.readiness }
   let(:metrics) { described_class.metrics }

@@ -13,7 +13,7 @@
           %span.cgray= starrer.user.to_reference
 
           - if starrer.user == current_user
-            %span.badge.badge-success.prepend-left-5= _("It's you")
+            %span.badge.badge-success.gl-ml-2= _("It's you")
 
         .block-truncated
           = time_ago_with_tooltip(starrer.starred_since)

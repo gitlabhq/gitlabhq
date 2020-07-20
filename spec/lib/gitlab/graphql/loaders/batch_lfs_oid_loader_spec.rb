@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Loaders::BatchLfsOidLoader do
+RSpec.describe Gitlab::Graphql::Loaders::BatchLfsOidLoader do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['CommitEncoding'] do
+RSpec.describe GitlabSchema.types['CommitEncoding'] do
   it { expect(described_class.graphql_name).to eq('CommitEncoding') }
 
   it 'exposes all the existing encoding option' do

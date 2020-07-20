@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildRunnerPresenter do
+RSpec.describe Ci::BuildRunnerPresenter do
   let(:presenter) { described_class.new(build) }
   let(:archive) { { paths: ['sample.txt'] } }
 

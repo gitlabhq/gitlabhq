@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Job do
+RSpec.describe Gitlab::Ci::Config::Entry::Job do
   let(:entry) { described_class.new(config, name: :rspec) }
 
   it_behaves_like 'with inheritable CI config' do
@@ -33,7 +33,7 @@ describe Gitlab::Ci::Config::Entry::Job do
            inherit]
       end
 
-      it { is_expected.to match_array result }
+      it { is_expected.to include(*result) }
     end
   end
 

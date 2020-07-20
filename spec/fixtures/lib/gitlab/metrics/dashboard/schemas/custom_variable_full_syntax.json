@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": [
+    "type", "options"
+  ],
+  "properties": {
+    "type": { "enum": ["custom"] },
+    "label": { "type": "string" },
+    "options": { "$ref": "custom_variable_options.json" }
+  },
+  "additionalProperties": false
+}

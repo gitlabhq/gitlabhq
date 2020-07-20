@@ -25,7 +25,7 @@ To add or import a user, you can follow the
 
 ## Principles behind permissions
 
-See our [product handbook on permissions](https://about.gitlab.com/handbook/product/#permissions-in-gitlab)
+See our [product handbook on permissions](https://about.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab).
 
 ## Instance-wide user permissions
 
@@ -47,7 +47,7 @@ The following table depicts the various user permission levels in a project.
 |---------------------------------------------------|---------|------------|-------------|----------|--------|
 | Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                                    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View allowed and denied licenses **(ULTIMATE)** | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View Security reports **(ULTIMATE)**              | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | View Dependency list **(ULTIMATE)**               | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
@@ -86,7 +86,7 @@ The following table depicts the various user permission levels in a project.
 | View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
 | Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
 | Pull [packages](packages/index.md) **(PREMIUM)**  |         | ✓          | ✓           | ✓        | ✓      |
-| Publish [packages](packages/index.md) **(PREMIUM)**|         |            | ✓           | ✓        | ✓      |
+| Publish [packages](packages/index.md) **(PREMIUM)**|        |            | ✓           | ✓        | ✓      |
 | Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
 | Create/edit/delete [Releases](project/releases/index.md)|   |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
@@ -120,6 +120,7 @@ The following table depicts the various user permission levels in a project.
 | Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |
 | Manage Feature Flags **(PREMIUM)**                |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete metrics dashboard annotations  |         |            | ✓           | ✓        | ✓      |
+| Run CI/CD pipeline against a protected branch     |         |            | ✓ (*5*)     | ✓        | ✓      |
 | Use environment terminals                         |         |            |             | ✓        | ✓      |
 | Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)** |     |      |             | ✓        | ✓      |
 | Add new team members                              |         |            |             | ✓        | ✓      |
@@ -139,7 +140,10 @@ The following table depicts the various user permission levels in a project.
 | Manage GitLab Pages domains and certificates      |         |            |             | ✓        | ✓      |
 | Remove GitLab Pages                               |         |            |             | ✓        | ✓      |
 | Manage clusters                                   |         |            |             | ✓        | ✓      |
+| Manage Project Operations                         |         |            |             | ✓        | ✓      |
 | View Pods logs                                    |         |            |             | ✓        | ✓      |
+| Read Terraform state                              |         |            | ✓           | ✓        | ✓      |
+| Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)                |         |            |             | ✓        | ✓      |
 | Manage Error Tracking                             |         |            |             | ✓        | ✓      |
@@ -154,6 +158,7 @@ The following table depicts the various user permission levels in a project.
 | Remove project                                    |         |            |             |          | ✓      |
 | Archive project                                   |         |            |             |          | ✓      |
 | Delete issues                                     |         |            |             |          | ✓      |
+| Delete pipelines                                  |         |            |             |          | ✓      |
 | Delete merge request                              |         |            |             |          | ✓      |
 | Disable notification emails                       |         |            |             |          | ✓      |
 | Force push to protected branches (*4*)            |         |            |             |          |        |
@@ -246,6 +251,7 @@ group.
 | Create project in group                                |       |          | ✓ (3)     | ✓ (3)      | ✓ (3) |
 | Share (invite) groups with groups                      |       |          |           |            | ✓     |
 | Create/edit/delete group milestones                    |       |          | ✓         | ✓          | ✓     |
+| Create/edit/delete iterations                          |       |          | ✓         | ✓          | ✓     |
 | Enable/disable a dependency proxy **(PREMIUM)**        |       |          | ✓         | ✓          | ✓     |
 | Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations       |       |          | ✓         | ✓          | ✓     |
@@ -267,8 +273,8 @@ group.
 | View Issues analytics **(PREMIUM)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
 | View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Billing **(FREE ONLY)**                           | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
-| View Usage Quotas **(FREE ONLY)**                      | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
+| View Billing **(FREE ONLY)**                           |       |          |           |            | ✓ (4) |
+| View Usage Quotas **(FREE ONLY)**                      |       |          |           |            | ✓ (4) |
 
 1. Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)
@@ -281,7 +287,7 @@ group.
 ### Subgroup permissions
 
 When you add a member to a subgroup, they inherit the membership and
-permission level from the parent group. This model allows access to
+permission level from the parent group(s). This model allows access to
 nested groups if you have membership in one of its parents.
 
 To learn more, read through the documentation on

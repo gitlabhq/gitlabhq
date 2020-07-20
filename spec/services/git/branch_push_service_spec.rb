@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Git::BranchPushService, services: true do
+RSpec.describe Git::BranchPushService, services: true do
   include RepoHelpers
 
   let_it_be(:user) { create(:user) }
@@ -629,6 +629,37 @@ describe Git::BranchPushService, services: true do
           expect(stop_service.current_user).to eq(user)
           expect(stop_service).to receive(:execute).with(branch)
         end
+
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
+      end
+    end
+  end
+
+  describe 'artifacts' do
+    context 'create branch' do
+      let(:oldrev) { blankrev }
+
+      it 'does nothing' do
+        expect(::Ci::RefDeleteUnlockArtifactsWorker).not_to receive(:perform_async)
+
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
+      end
+    end
+
+    context 'update branch' do
+      it 'does nothing' do
+        expect(::Ci::RefDeleteUnlockArtifactsWorker).not_to receive(:perform_async)
+
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
+      end
+    end
+
+    context 'delete branch' do
+      let(:newrev) { blankrev }
+
+      it 'unlocks artifacts' do
+        expect(::Ci::RefDeleteUnlockArtifactsWorker)
+          .to receive(:perform_async).with(project.id, user.id, "refs/heads/#{branch}")
 
         execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end

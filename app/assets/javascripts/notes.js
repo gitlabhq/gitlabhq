@@ -1617,7 +1617,7 @@ export default class Notes {
     }
 
     tempFormContent = formContent;
-    if (this.hasQuickActions(formContent)) {
+    if (this.glForm.supportsQuickActions && this.hasQuickActions(formContent)) {
       tempFormContent = this.stripQuickActions(formContent);
       hasQuickActions = true;
     }

@@ -1,0 +1,4 @@
+---
+title: Snippet comments where any line begins with a slash following an alphabetic character can't be published
+merge_request: 36563
+type: fixed

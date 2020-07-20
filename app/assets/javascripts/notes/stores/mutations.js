@@ -95,6 +95,10 @@ export default {
     Object.assign(state, { noteableData: data });
   },
 
+  [types.SET_ISSUE_CONFIDENTIAL](state, data) {
+    state.noteableData.confidential = data;
+  },
+
   [types.SET_USER_DATA](state, data) {
     Object.assign(state, { userData: data });
   },
@@ -302,6 +306,14 @@ export default {
 
   [types.SET_DISCUSSIONS_SORT](state, sort) {
     state.discussionSortOrder = sort;
+  },
+
+  [types.SET_SELECTED_COMMENT_POSITION](state, position) {
+    state.selectedCommentPosition = position;
+  },
+
+  [types.SET_SELECTED_COMMENT_POSITION_HOVER](state, position) {
+    state.selectedCommentPositionHover = position;
   },
 
   [types.DISABLE_COMMENTS](state, value) {

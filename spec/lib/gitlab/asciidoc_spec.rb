@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'nokogiri'
 
 module Gitlab
-  describe Asciidoc do
+  RSpec.describe Asciidoc do
     include FakeBlobHelpers
 
     before do

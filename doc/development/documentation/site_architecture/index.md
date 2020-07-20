@@ -111,7 +111,7 @@ located in the [Dockerfiles directory](https://gitlab.com/gitlab-org/gitlab-docs
 
 If you need to rebuild the Docker images immediately (must have maintainer level permissions):
 
-CAUTION: **Caution**
+CAUTION: **Caution:**
 If you change the dockerfile configuration and rebuild the images, you can break the master
 pipeline in the main `gitlab` repository as well as in `gitlab-docs`. Create an image with
 a different name first and test it to ensure you do not break the pipelines.
@@ -152,9 +152,9 @@ Suppose we have the `content/_data/versions.yaml` file with the content:
 
 ```yaml
 versions:
-- 10.6
-- 10.5
-- 10.4
+  - 10.6
+  - 10.5
+  - 10.4
 ```
 
 We can then loop over the `versions` array with something like:

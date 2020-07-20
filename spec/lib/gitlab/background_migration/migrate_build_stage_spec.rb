@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateBuildStage, schema: 20180212101928 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateBuildStage do
+  let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }
   let(:stages) { table(:ci_stages) }
@@ -22,7 +23,8 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, schema: 20180212101928 
   end
 
   before do
-    projects.create!(id: 123, name: 'gitlab', path: 'gitlab-ce')
+    namespace = namespaces.create!(name: 'gitlab-org', path: 'gitlab-org')
+    projects.create!(id: 123, name: 'gitlab', path: 'gitlab-ce', namespace_id: namespace.id)
     pipelines.create!(id: 1, project_id: 123, ref: 'master', sha: 'adf43c3a')
 
     jobs.create!(id: 1, commit_id: 1, project_id: 123,
@@ -53,7 +55,7 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, schema: 20180212101928 
                                                       statuses[:pending]]
   end
 
-  it 'recovers from unique constraint violation only twice', :quarantine do
+  it 'recovers from unique constraint violation only twice', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/28128' do
     allow(described_class::Migratable::Stage)
       .to receive(:find_by).and_return(nil)
 

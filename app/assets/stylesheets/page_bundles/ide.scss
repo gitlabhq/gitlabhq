@@ -145,7 +145,7 @@ $ide-commit-header-height: 48px;
   }
 
   &:not([disabled]):hover {
-    background-color: var(--ide-input-border, $gray-200);
+    background-color: var(--ide-input-border, $gray-100);
   }
 
   &:not([disabled]):focus {
@@ -250,10 +250,6 @@ $ide-commit-header-height: 48px;
   > div + div {
     padding-left: $gl-padding;
   }
-}
-
-.ide-status-file {
-  text-align: right;
 }
 // Not great, but this is to deal with our current output
 .multi-file-preview-holder {
@@ -400,7 +396,7 @@ $ide-commit-header-height: 48px;
   }
 
   &:active {
-    background: var(--ide-background, $gray-200);
+    background: var(--ide-background, $gray-100);
   }
 
   &.is-active {
@@ -571,7 +567,7 @@ $ide-commit-header-height: 48px;
 
   &:focus {
     color: var(--ide-text-color, $gl-text-color);
-    background-color: var(--ide-background-hover, $gray-200);
+    background-color: var(--ide-background-hover, $gray-100);
   }
 
   &.active {
@@ -1050,7 +1046,7 @@ $ide-commit-header-height: 48px;
   background-color: var(--ide-background, $gray-50);
 
   &:hover {
-    background-color: var(--ide-file-row-btn-hover-background, $gray-200);
+    background-color: var(--ide-file-row-btn-hover-background, $gray-100);
   }
 
   &:active,
@@ -1101,7 +1097,7 @@ $ide-commit-header-height: 48px;
   &:focus {
     outline: 0;
     box-shadow: none;
-    border-color: var(--ide-border-color, $gray-200);
+    border-color: var(--ide-border-color, $gray-100);
   }
 }
 
@@ -1144,7 +1140,7 @@ $ide-commit-header-height: 48px;
 }
 
 .file-row:active {
-  background: var(--ide-background, $gray-200);
+  background: var(--ide-background, $gray-100);
 }
 
 .file-row.is-active {

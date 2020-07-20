@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BoardsHelper do
+RSpec.describe BoardsHelper do
   let_it_be(:project) { create(:project) }
 
   describe '#build_issue_link_base' do

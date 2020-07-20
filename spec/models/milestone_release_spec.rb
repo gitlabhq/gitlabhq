@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MilestoneRelease do
+RSpec.describe MilestoneRelease do
   let(:project) { create(:project) }
   let(:release) { create(:release, project: project) }
   let(:milestone) { create(:milestone, project: project) }

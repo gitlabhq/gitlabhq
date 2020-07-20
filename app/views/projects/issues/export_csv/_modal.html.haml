@@ -12,7 +12,7 @@
         .modal-body
           .modal-subheader
             = icon('check', { class: 'checkmark' })
-            %strong.prepend-left-10
+            %strong.gl-ml-3
               - issues_count = issuables_count_for_state(:issues, params[:state])
               = n_('%d issue selected', '%d issues selected', issues_count) % issues_count
           .modal-text

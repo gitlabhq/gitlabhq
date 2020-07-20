@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::JobWaiter do
+RSpec.describe Gitlab::JobWaiter do
   describe '.notify' do
     it 'pushes the jid to the named queue' do
       key = 'gitlab:job_waiter:foo'

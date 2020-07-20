@@ -1,0 +1,5 @@
+---
+title: Add project_id, user_id, status, ref index to ci_pipelines
+merge_request: 33290
+author:
+type: performance

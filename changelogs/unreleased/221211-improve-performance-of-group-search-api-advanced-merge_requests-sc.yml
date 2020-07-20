@@ -1,0 +1,5 @@
+---
+title: Improve the search performance for merge requests
+merge_request: 36072
+author:
+type: performance

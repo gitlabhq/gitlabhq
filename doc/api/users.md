@@ -89,7 +89,8 @@ GET /users
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
     "is_admin": false,
-    "bio": null,
+    "bio": "",
+    "bio_html": "",
     "location": null,
     "skype": "",
     "linkedin": "",
@@ -128,7 +129,8 @@ GET /users
     "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
     "is_admin": false,
-    "bio": null,
+    "bio": "",
+    "bio_html": "",
     "location": null,
     "skype": "",
     "linkedin": "",
@@ -245,7 +247,8 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "bio": null,
+  "bio": "",
+  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -280,7 +283,8 @@ Example Responses:
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
-  "bio": null,
+  "bio": "",
+  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -314,7 +318,8 @@ Example Responses:
 }
 ```
 
-NOTE: **Note:** The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
+NOTE: **Note:**
+The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
 Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
 the `shared_runners_minutes_limit`, and `extra_shared_runners_minutes_limit` parameters.
@@ -368,6 +373,9 @@ over `password`. In addition, `reset_password` and
 NOTE: **Note:**
 From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29888/), `private_profile` will default to `false`.
 
+NOTE: **Note:**
+From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35604), `bio` will default to `""` instead of `null`.
+
 ```plaintext
 POST /users
 ```
@@ -384,7 +392,7 @@ Parameters:
 | `email`                              | Yes      | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` | No       | Extra pipeline minutes quota for this user **(STARTER)**                                                                                                |
+| `extra_shared_runners_minutes_limit` | No       | Extra pipeline minutes quota for this user (purchased in addition to the minutes included in the plan) **(STARTER)**                                                                                                |
 | `force_random_password`              | No       | Set user password to a random value - true or false (default)                                                                                           |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -398,7 +406,7 @@ Parameters:
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | The public email of the user                                                                                                                            |
 | `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
-| `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user **(STARTER)**                                                                                                      |
+| `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` **(STARTER)**                                                                                                      |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | The GitLab theme for the user (see [the user preference docs](../user/profile/preferences.md#navigation-theme) for more information)                    |
@@ -426,7 +434,7 @@ Parameters:
 | `email`                              | No       | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` | No       | Extra pipeline minutes quota for this user **(STARTER)**                                                                                                |
+| `extra_shared_runners_minutes_limit` | No       | Extra pipeline minutes quota for this user (purchased in addition to the minutes included in the plan) **(STARTER)**                                                                                                |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `id`                                 | Yes      | The ID of the user                                                                                                                                      |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -439,7 +447,7 @@ Parameters:
 | `projects_limit`                     | No       | Limit projects each user can create                                                                                                                     |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | The public email of the user                                                                                                                            |
-| `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user **(STARTER)**                                                                                                      |
+| `shared_runners_minutes_limit`       | No       | Pipeline minutes quota for this user (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` **(STARTER)**                                                                                                      |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | The GitLab theme for the user (see [the user preference docs](../user/profile/preferences.md#navigation-theme) for more information)                    |
@@ -499,7 +507,8 @@ GET /user
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "bio": null,
+  "bio": "",
+  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -548,7 +557,8 @@ GET /user
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
   "is_admin": false,
-  "bio": null,
+  "bio": "",
+  "bio_html": "",
   "location": null,
   "public_email": "john@example.com",
   "skype": "",
@@ -798,6 +808,9 @@ Parameters:
 - `title` (required) - new SSH Key's title
 - `key` (required) - new SSH key
 - `expires_at` (optional) - The expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)
+
+NOTE: **Note:**
+This also adds an audit event, as described in [audit instance events](../administration/audit_events.md#instance-events-premium-only). **(PREMIUM)**
 
 ## Delete SSH key for current user
 
@@ -1400,7 +1413,8 @@ Parameters:
 
 ### Get user activities (admin only)
 
-NOTE: **Note:** This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
+NOTE: **Note:**
+This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
 
 Get the last activity date for all users, sorted from oldest to newest.
 

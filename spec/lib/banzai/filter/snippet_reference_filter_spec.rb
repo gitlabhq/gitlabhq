@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::SnippetReferenceFilter do
+RSpec.describe Banzai::Filter::SnippetReferenceFilter do
   include FilterSpecHelper
 
   let(:project)   { create(:project, :public) }

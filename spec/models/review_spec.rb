@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Review do
+RSpec.describe Review do
   describe 'associations' do
     it { is_expected.to belong_to(:author).class_name('User').with_foreign_key(:author_id).inverse_of(:reviews) }
     it { is_expected.to belong_to(:merge_request).inverse_of(:reviews).touch(false) }

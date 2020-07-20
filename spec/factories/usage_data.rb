@@ -5,7 +5,8 @@ FactoryBot.define do
     skip_create # non-model factories (i.e. without #save)
 
     initialize_with do
-      projects = create_list(:project, 4)
+      projects = create_list(:project, 3)
+      projects << create(:project, :repository)
       create(:board, project: projects[0])
       create(:jira_service, project: projects[0])
       create(:jira_service, :without_properties_callback, project: projects[1])
@@ -46,7 +47,7 @@ FactoryBot.define do
       create(:sentry_issue, issue: projects[0].issues[0])
 
       # Incident Labeled Issues
-      incident_label_attrs = IncidentManagement::CreateIssueService::INCIDENT_LABEL
+      incident_label_attrs = IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES
       incident_label = create(:label, project: projects[0], **incident_label_attrs)
       create(:labeled_issue, project: projects[0], labels: [incident_label])
       incident_group = create(:group)
@@ -83,12 +84,23 @@ FactoryBot.define do
       create(:clusters_applications_knative, :installed, cluster: gcp_cluster)
       create(:clusters_applications_elastic_stack, :installed, cluster: gcp_cluster)
       create(:clusters_applications_jupyter, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_cilium, :installed, cluster: gcp_cluster)
 
       create(:grafana_integration, project: projects[0], enabled: true)
       create(:grafana_integration, project: projects[1], enabled: true)
       create(:grafana_integration, project: projects[2], enabled: false)
 
       ProjectFeature.first.update_attribute('repository_access_level', 0)
+
+      # Create fresh & a month (28-days SMAU) old  data
+      env = create(:environment, project: projects[3])
+      [2, 29].each do |n|
+        deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
+        create(:deployment, :failed, deployment_options)
+        create(:deployment, :success, deployment_options)
+        create_list(:project_snippet, 2, project: projects[0], created_at: n.days.ago)
+        create(:personal_snippet, created_at: n.days.ago)
+      end
     end
   end
 end

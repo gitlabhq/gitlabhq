@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'html/pipeline'
 
-describe Banzai::Filter::LabelReferenceFilter do
+RSpec.describe Banzai::Filter::LabelReferenceFilter do
   include FilterSpecHelper
 
   let(:project)   { create(:project, :public, name: 'sample-project') }

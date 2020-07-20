@@ -3,11 +3,17 @@
 module Gitlab
   module Danger
     module Changelog
-      NO_CHANGELOG_LABELS = %w[backstage ci-build meta].freeze
+      NO_CHANGELOG_LABELS = [
+        'tooling',
+        'tooling::pipelines',
+        'tooling::workflow',
+        'ci-build',
+        'meta'
+      ].freeze
       NO_CHANGELOG_CATEGORIES = %i[docs none].freeze
 
       def needed?
-        categories_need_changelog? && (gitlab.mr_labels & NO_CHANGELOG_LABELS).empty?
+        categories_need_changelog? && without_no_changelog_label?
       end
 
       def found
@@ -26,6 +32,10 @@ module Gitlab
 
       def categories_need_changelog?
         (helper.changes_by_category.keys - NO_CHANGELOG_CATEGORIES).any?
+      end
+
+      def without_no_changelog_label?
+        (gitlab.mr_labels & NO_CHANGELOG_LABELS).empty?
       end
     end
   end

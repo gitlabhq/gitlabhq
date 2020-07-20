@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe DeferScriptTagHelper do
+RSpec.describe DeferScriptTagHelper do
   describe 'script tag' do
     script_url = 'test.js'
 

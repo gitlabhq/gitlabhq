@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqConfig do
+RSpec.describe Gitlab::SidekiqConfig do
   describe '.workers' do
     it 'includes all workers' do
       worker_classes = described_class.workers.map(&:klass)

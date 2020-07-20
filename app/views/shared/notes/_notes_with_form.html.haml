@@ -18,12 +18,12 @@
         .timeline-content.timeline-content-form
           = render "shared/notes/form", view: diff_view, supports_autocomplete: autocomplete
 - elsif !current_user
-  .disabled-comment.text-center.prepend-top-default
+  .disabled-comment.text-center.gl-mt-3
     - link_to_register = link_to(_("register"), new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'), class: 'js-register-link')
     - link_to_sign_in = link_to(_("sign in"), new_session_path(:user, redirect_to_referer: 'yes'), class: 'js-sign-in-link')
     = _("Please %{link_to_register} or %{link_to_sign_in} to comment").html_safe % { link_to_register: link_to_register, link_to_sign_in: link_to_sign_in }
 - elsif discussion_locked
-  .disabled-comment.text-center.prepend-top-default
+  .disabled-comment.text-center.gl-mt-3
     %span.issuable-note-warning
       = sprite_icon('lock', size: 16, css_class: 'icon')
       %span

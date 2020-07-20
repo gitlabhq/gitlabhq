@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::BundleFile do
+RSpec.describe Gitlab::Git::BundleFile do
   describe '.check!' do
     let(:valid_bundle) { Tempfile.new }
     let(:valid_bundle_path) { valid_bundle.path }

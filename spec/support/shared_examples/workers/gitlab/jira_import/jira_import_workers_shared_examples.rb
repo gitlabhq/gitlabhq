@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'include import workers modules' do
+RSpec.shared_examples 'include import workers modules' do
   it { expect(described_class).to include_module(ApplicationWorker) }
   it { expect(described_class).to include_module(Gitlab::JiraImport::QueueOptions) }
 
@@ -12,7 +12,7 @@ shared_examples 'include import workers modules' do
   end
 end
 
-shared_examples 'does not advance to next stage' do
+RSpec.shared_examples 'does not advance to next stage' do
   it 'does not advance to next stage' do
     expect(Gitlab::JiraImport::AdvanceStageWorker).not_to receive(:perform_async)
 
@@ -20,7 +20,7 @@ shared_examples 'does not advance to next stage' do
   end
 end
 
-shared_examples 'cannot do Jira import' do
+RSpec.shared_examples 'cannot do Jira import' do
   it 'does not advance to next stage' do
     worker = described_class.new
     expect(worker).not_to receive(:import)
@@ -29,7 +29,7 @@ shared_examples 'cannot do Jira import' do
   end
 end
 
-shared_examples 'advance to next stage' do |next_stage|
+RSpec.shared_examples 'advance to next stage' do |next_stage|
   let(:job_waiter) { Gitlab::JobWaiter.new(2, 'some-job-key') }
 
   it "advances to #{next_stage} stage" do

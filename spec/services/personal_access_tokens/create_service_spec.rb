@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PersonalAccessTokens::CreateService do
+RSpec.describe PersonalAccessTokens::CreateService do
   describe '#execute' do
     context 'with valid params' do
       it 'creates personal access token record' do

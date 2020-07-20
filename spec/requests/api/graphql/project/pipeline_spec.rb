@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'getting pipeline information nested in a project' do
+RSpec.describe 'getting pipeline information nested in a project' do
   include GraphqlHelpers
 
   let(:project) { create(:project, :repository, :public) }

@@ -1,0 +1,5 @@
+---
+title: Mask key comments when exposing SSH/Deploy Keys via the API
+merge_request: 34255
+author:
+type: added

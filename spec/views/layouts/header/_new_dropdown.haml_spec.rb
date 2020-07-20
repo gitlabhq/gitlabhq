@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'layouts/header/_new_dropdown' do
+RSpec.describe 'layouts/header/_new_dropdown' do
   let(:user) { create(:user) }
 
   context 'group-specific links' do

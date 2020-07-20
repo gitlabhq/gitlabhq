@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Getting versions related to an issue' do
+RSpec.describe 'Getting versions related to an issue' do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

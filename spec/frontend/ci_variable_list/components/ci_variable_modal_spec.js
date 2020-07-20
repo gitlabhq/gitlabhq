@@ -1,10 +1,8 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlDeprecatedButton, GlFormCombobox } from '@gitlab/ui';
 import { AWS_ACCESS_KEY_ID } from '~/ci_variable_list/constants';
 import CiVariableModal from '~/ci_variable_list/components/ci_variable_modal.vue';
-import CiKeyField from '~/ci_variable_list/components/ci_key_field.vue';
-import { awsTokens } from '~/ci_variable_list/components/ci_variable_autocomplete_tokens';
 import createStore from '~/ci_variable_list/store';
 import mockData from '../services/mock_data';
 import ModalStub from '../stubs';
@@ -51,7 +49,7 @@ describe('Ci variable modal', () => {
       });
 
       it('does not render the autocomplete dropdown', () => {
-        expect(wrapper.contains(CiKeyField)).toBe(false);
+        expect(wrapper.contains(GlFormCombobox)).toBe(false);
       });
     });
 
@@ -60,7 +58,7 @@ describe('Ci variable modal', () => {
         createComponent(shallowMount);
       });
       it('renders the autocomplete dropdown', () => {
-        expect(wrapper.find(CiKeyField).exists()).toBe(true);
+        expect(wrapper.find(GlFormCombobox).exists()).toBe(true);
       });
     });
   });
@@ -159,10 +157,7 @@ describe('Ci variable modal', () => {
 
     it('Update variable button dispatches updateVariable with correct variable', () => {
       addOrUpdateButton(2).vm.$emit('click');
-      expect(store.dispatch).toHaveBeenCalledWith(
-        'updateVariable',
-        store.state.variableBeingEdited,
-      );
+      expect(store.dispatch).toHaveBeenCalledWith('updateVariable');
     });
 
     it('Resets the editing state once modal is hidden', () => {
@@ -172,35 +167,12 @@ describe('Ci variable modal', () => {
 
     it('dispatches deleteVariable with correct variable to delete', () => {
       deleteVariableButton().vm.$emit('click');
-      expect(store.dispatch).toHaveBeenCalledWith('deleteVariable', mockData.mockVariables[0]);
+      expect(store.dispatch).toHaveBeenCalledWith('deleteVariable');
     });
   });
 
   describe('Validations', () => {
     const maskError = 'This variable can not be masked.';
-
-    describe('when the key state is invalid', () => {
-      beforeEach(() => {
-        const [variable] = mockData.mockVariables;
-        const invalidKeyVariable = {
-          ...variable,
-          key: AWS_ACCESS_KEY_ID,
-          value: 'AKIAIOSFODNN7EXAMPLEjdhy',
-          secret_value: 'AKIAIOSFODNN7EXAMPLEjdhy',
-        };
-        createComponent(mount);
-        store.state.variable = invalidKeyVariable;
-      });
-
-      it('disables the submit button', () => {
-        expect(addOrUpdateButton(1).attributes('disabled')).toBeTruthy();
-      });
-
-      it('shows the correct error text', () => {
-        const errorText = awsTokens[AWS_ACCESS_KEY_ID].invalidMessage;
-        expect(findModal().text()).toContain(errorText);
-      });
-    });
 
     describe('when the mask state is invalid', () => {
       beforeEach(() => {
@@ -225,39 +197,14 @@ describe('Ci variable modal', () => {
       });
     });
 
-    describe('when the mask and key states are invalid', () => {
-      beforeEach(() => {
-        const [variable] = mockData.mockVariables;
-        const invalidMaskandKeyVariable = {
-          ...variable,
-          key: AWS_ACCESS_KEY_ID,
-          value: 'AKIAIOSFODNN7EXAMPLEjdhyd:;',
-          secret_value: 'AKIAIOSFODNN7EXAMPLEjdhyd:;',
-          masked: true,
-        };
-        createComponent(mount);
-        store.state.variable = invalidMaskandKeyVariable;
-      });
-
-      it('disables the submit button', () => {
-        expect(addOrUpdateButton(1).attributes('disabled')).toBeTruthy();
-      });
-
-      it('shows the correct error text', () => {
-        const errorText = awsTokens[AWS_ACCESS_KEY_ID].invalidMessage;
-        expect(findModal().text()).toContain(maskError);
-        expect(findModal().text()).toContain(errorText);
-      });
-    });
-
     describe('when both states are valid', () => {
       beforeEach(() => {
         const [variable] = mockData.mockVariables;
         const validMaskandKeyVariable = {
           ...variable,
           key: AWS_ACCESS_KEY_ID,
-          value: 'AKIAIOSFODNN7EXAMPLE',
-          secret_value: 'AKIAIOSFODNN7EXAMPLE',
+          value: '12345678',
+          secret_value: '87654321',
           masked: true,
         };
         createComponent(mount);
@@ -267,12 +214,6 @@ describe('Ci variable modal', () => {
 
       it('does not disable the submit button', () => {
         expect(addOrUpdateButton(1).attributes('disabled')).toBeFalsy();
-      });
-
-      it('shows no error text', () => {
-        const errorText = awsTokens[AWS_ACCESS_KEY_ID].invalidMessage;
-        expect(findModal().text()).not.toContain(maskError);
-        expect(findModal().text()).not.toContain(errorText);
       });
     });
   });

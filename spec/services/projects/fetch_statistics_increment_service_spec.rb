@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module Projects
-  describe FetchStatisticsIncrementService do
+  RSpec.describe FetchStatisticsIncrementService do
     let(:project) { create(:project) }
 
     describe '#execute' do

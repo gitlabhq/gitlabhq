@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IncidentsSettingTabs should render the component 1`] = `
+<section
+  class="settings no-animate qa-incident-management-settings"
+  data-qa-selector="incidents_settings_content"
+  id="incident-management-settings"
+>
+  <div
+    class="settings-header"
+  >
+    <h3
+      class="h4"
+    >
+      
+      Incidents
+    
+    </h3>
+     
+    <gl-button-stub
+      category="tertiary"
+      class="js-settings-toggle"
+      icon=""
+      size="medium"
+      variant="default"
+    >
+      Expand
+    </gl-button-stub>
+     
+    <p>
+      
+      Set up integrations with external tools to help better manage incidents.
+    
+    </p>
+  </div>
+   
+  <div
+    class="settings-content"
+  >
+    <gl-tabs-stub
+      theme="indigo"
+    >
+      <gl-tab-stub
+        title="Alert integration"
+      >
+        <alertssettingsform-stub
+          class="gl-pt-3"
+          data-testid="AlertsSettingsForm-tab"
+        />
+      </gl-tab-stub>
+      <gl-tab-stub
+        title="PagerDuty integration"
+      >
+        <pagerdutysettingsform-stub
+          class="gl-pt-3"
+          data-testid="PagerDutySettingsForm-tab"
+        />
+      </gl-tab-stub>
+      <!---->
+    </gl-tabs-stub>
+  </div>
+</section>
+`;

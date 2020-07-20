@@ -211,6 +211,15 @@ export default {
     can_revert_on_current_merge_request: true,
     can_cherry_pick_on_current_merge_request: true,
   },
+  codeclimate: {
+    head_path: 'head.json',
+    base_path: 'base.json',
+  },
+  blob_path: {
+    base_path: 'blob_path',
+    head_path: 'blob_path',
+  },
+  codequality_help_path: 'code_quality.html',
   target_branch_path: '/root/acets-app/branches/master',
   source_branch_path: '/root/acets-app/branches/daaaa',
   conflict_resolution_ui_path: '/root/acets-app/-/merge_requests/22/conflicts',
@@ -239,7 +248,8 @@ export default {
   commit_change_content_path: '/root/acets-app/-/merge_requests/22/commit_change_content',
   merge_commit_path:
     'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
-  troubleshooting_docs_path: 'help',
+  mr_troubleshooting_docs_path: 'help',
+  ci_troubleshooting_docs_path: 'help2',
   merge_request_pipelines_docs_path: '/help/ci/merge_request_pipelines/index.md',
   merge_train_when_pipeline_succeeds_docs_path:
     '/help/ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/#startadd-to-merge-train-when-pipeline-succeeds',
@@ -312,7 +322,8 @@ export const mockStore = {
     { id: 0, name: 'prod', status: SUCCESS },
     { id: 1, name: 'prod-docs', status: SUCCESS },
   ],
-  troubleshootingDocsPath: 'troubleshooting-docs-path',
+  mrTroubleshootingDocsPath: 'mr-troubleshooting-docs-path',
+  ciTroubleshootingDocsPath: 'ci-troubleshooting-docs-path',
   ciStatus: 'ci-status',
   hasCI: true,
   exposedArtifactsPath: 'exposed_artifacts.json',

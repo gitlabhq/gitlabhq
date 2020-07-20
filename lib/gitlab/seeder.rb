@@ -18,6 +18,7 @@ module Gitlab
 
     MASS_INSERT_PROJECT_START = 'mass_insert_project_'
     MASS_INSERT_USER_START = 'mass_insert_user_'
+    REPORTED_USER_START = 'reported_user_'
     ESTIMATED_INSERT_PER_MINUTE = 2_000_000
     MASS_INSERT_ENV = 'MASS_INSERT'
 
@@ -36,7 +37,7 @@ module Gitlab
 
       included do
         scope :not_mass_generated, -> do
-          where.not("username LIKE '#{MASS_INSERT_USER_START}%'")
+          where.not("username LIKE '#{MASS_INSERT_USER_START}%' OR username LIKE '#{REPORTED_USER_START}%'")
         end
       end
     end

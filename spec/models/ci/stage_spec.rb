@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::Stage, :models do
+RSpec.describe Ci::Stage, :models do
   let_it_be(:pipeline) { create(:ci_empty_pipeline) }
   let(:stage) { create(:ci_stage_entity, pipeline: pipeline, project: pipeline.project) }
 
@@ -172,7 +172,7 @@ describe Ci::Stage, :models do
 
       it 'raises an exception' do
         expect { stage.update_legacy_status }
-          .to raise_error(HasStatus::UnknownStatusError)
+          .to raise_error(Ci::HasStatus::UnknownStatusError)
       end
     end
   end

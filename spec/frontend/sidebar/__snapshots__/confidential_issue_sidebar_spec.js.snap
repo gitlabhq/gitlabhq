@@ -3,6 +3,7 @@
 exports[`Confidential Issue Sidebar Block renders for confidential = false and isEditable = false 1`] = `
 <div
   class="block issuable-sidebar-item confidentiality"
+  iid=""
 >
   <div
     class="sidebar-collapsed-icon"
@@ -35,6 +36,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
      
     <div
       class="no-value sidebar-item-value"
+      data-testid="not-confidential"
     >
       <icon-stub
         aria-hidden="true"
@@ -55,6 +57,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
 exports[`Confidential Issue Sidebar Block renders for confidential = false and isEditable = true 1`] = `
 <div
   class="block issuable-sidebar-item confidentiality"
+  iid=""
 >
   <div
     class="sidebar-collapsed-icon"
@@ -95,6 +98,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
      
     <div
       class="no-value sidebar-item-value"
+      data-testid="not-confidential"
     >
       <icon-stub
         aria-hidden="true"
@@ -115,6 +119,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
 exports[`Confidential Issue Sidebar Block renders for confidential = true and isEditable = false 1`] = `
 <div
   class="block issuable-sidebar-item confidentiality"
+  iid=""
 >
   <div
     class="sidebar-collapsed-icon"
@@ -167,6 +172,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
 exports[`Confidential Issue Sidebar Block renders for confidential = true and isEditable = true 1`] = `
 <div
   class="block issuable-sidebar-item confidentiality"
+  iid=""
 >
   <div
     class="sidebar-collapsed-icon"

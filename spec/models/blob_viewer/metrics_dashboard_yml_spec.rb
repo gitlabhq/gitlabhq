@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BlobViewer::MetricsDashboardYml do
+RSpec.describe BlobViewer::MetricsDashboardYml do
   include FakeBlobHelpers
   include RepoHelpers
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::PropagateServiceTemplate do
+RSpec.describe Projects::PropagateServiceTemplate do
   describe '.propagate' do
     let!(:service_template) do
       PushoverService.create(

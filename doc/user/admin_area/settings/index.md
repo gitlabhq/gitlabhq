@@ -43,6 +43,7 @@ Access the default page for admin area settings by navigating to
 
 | Option | Description |
 | ------ | ----------- |
+| [Repository's custom initial branch name](../../project/repository/branches/index.md#custom-initial-branch-name-core-only) | Set a custom branch name rather than master for all the new repositories created within your instance. |
 | [Repository mirror](visibility_and_access_controls.md#allow-mirrors-to-be-set-up-for-projects) | Configure repository mirroring. |
 | [Repository storage](../../../administration/repository_storage_types.md) | Configure storage path settings. |
 | Repository maintenance | ([Repository checks](../../../administration/repository_checks.md) and [Housekeeping](../../../administration/housekeeping.md)). Configure automatic Git checks and housekeeping on repositories. |

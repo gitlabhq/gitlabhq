@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SystemNotes::CommitService do
+RSpec.describe SystemNotes::CommitService do
   let_it_be(:group)    { create(:group) }
   let_it_be(:project)  { create(:project, :repository, group: group) }
   let_it_be(:author)   { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::MilestoneFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::MilestoneFormatter do
   let(:project) { create(:project) }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }

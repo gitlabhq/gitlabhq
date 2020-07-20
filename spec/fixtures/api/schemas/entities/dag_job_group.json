@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "required": ["name", "size", "jobs"],
+  "properties": {
+    "name": { "type": "string" },
+    "size": { "type": "integer" },
+    "jobs": {
+      "type": "array",
+      "items": { "$ref": "dag_job.json" }
+    }
+  },
+  "additionalProperties": false
+}

@@ -8,7 +8,7 @@ function getTrackingSpy(key) {
 describe('Tracking Events', () => {
   describe('trackDesignDetailView', () => {
     const eventKey = 'projects:issues:design';
-    const eventName = 'design_viewed';
+    const eventName = 'view_design';
 
     it('trackDesignDetailView fires a tracking event when called', () => {
       const trackingSpy = getTrackingSpy(eventKey);
@@ -20,11 +20,14 @@ describe('Tracking Events', () => {
         eventName,
         expect.objectContaining({
           label: eventName,
-          value: {
-            'internal-object-refrerer': '',
-            'design-collection-owner': '',
-            'design-version-number': 1,
-            'design-is-current-version': false,
+          context: {
+            schema: expect.any(String),
+            data: {
+              'design-version-number': 1,
+              'design-is-current-version': false,
+              'internal-object-referrer': '',
+              'design-collection-owner': '',
+            },
           },
         }),
       );
@@ -40,11 +43,14 @@ describe('Tracking Events', () => {
         eventName,
         expect.objectContaining({
           label: eventName,
-          value: {
-            'internal-object-refrerer': 'from-a-test',
-            'design-collection-owner': 'test',
-            'design-version-number': 100,
-            'design-is-current-version': true,
+          context: {
+            schema: expect.any(String),
+            data: {
+              'design-version-number': 100,
+              'design-is-current-version': true,
+              'internal-object-referrer': 'from-a-test',
+              'design-collection-owner': 'test',
+            },
           },
         }),
       );

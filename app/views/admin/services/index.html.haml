@@ -1,4 +1,4 @@
-- page_title "Service Templates"
+- page_title _("Service Templates")
 %h3.page-title Service templates
 %p.light= s_('AdminSettings|Service template allows you to set default values for integrations')
 
@@ -11,13 +11,24 @@
         %th Description
         %th Last edit
     - @services.each do |service|
-      %tr
-        %td
-          = boolean_to_icon service.activated?
-        %td
-          = link_to edit_admin_application_settings_service_path(service.id) do
-            %strong= service.title
-        %td
-          = service.description
-        %td.light
-          = time_ago_with_tooltip service.updated_at
+      - if service.type.in?(@existing_instance_types)
+        %tr
+          %td
+          %td
+            = link_to edit_admin_application_settings_integration_path(service.to_param), class: 'gl-text-blue-300!' do
+              %strong.has-tooltip{ title: s_('AdminSettings|Moved to integrations'), data: { container: 'body' } }
+                = service.title
+          %td.gl-cursor-default.gl-text-gray-600
+            = service.description
+          %td
+      - else
+        %tr
+          %td
+            = boolean_to_icon service.activated?
+          %td
+            = link_to edit_admin_application_settings_service_path(service.id) do
+              %strong= service.title
+          %td
+            = service.description
+          %td.light
+            = time_ago_with_tooltip service.updated_at

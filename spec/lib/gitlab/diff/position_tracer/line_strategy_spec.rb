@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::PositionTracer::LineStrategy do
+RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy do
   # Douwe's diary                                    New York City, 2016-06-28
   # --------------------------------------------------------------------------
   #
@@ -1798,6 +1798,144 @@ describe Gitlab::Diff::PositionTracer::LineStrategy do
           ]
 
           expect_new_positions(old_position_attrs, new_position_attrs)
+        end
+      end
+    end
+
+    describe 'symlink scenarios' do
+      let(:new_file) { old_file_status == :new }
+      let(:deleted_file) { old_file_status == :deleted }
+      let(:renamed_file) { old_file_status == :renamed }
+
+      let(:file_identifier) { "#{file_name}-#{new_file}-#{deleted_file}-#{renamed_file}" }
+      let(:file_identifier_hash) { Digest::SHA1.hexdigest(file_identifier) }
+
+      let(:update_line_commit) do
+        update_file(
+          branch_name,
+          file_name,
+          <<-CONTENT.strip_heredoc
+            A
+            BB
+            C
+          CONTENT
+        )
+      end
+
+      let(:delete_file_commit) do
+        delete_file(branch_name, file_name)
+      end
+
+      let(:create_second_file_commit) do
+        create_file(
+          branch_name,
+          second_file_name,
+          <<-CONTENT.strip_heredoc
+            D
+            E
+          CONTENT
+        )
+      end
+
+      before do
+        stub_feature_flags(file_identifier_hash: true)
+      end
+
+      describe 'from symlink to text' do
+        let(:initial_commit) { project.commit('0e5b363105e9176a77bac94d7ff6d8c4fb35c3eb') }
+        let(:symlink_to_text_commit) { project.commit('689815e617abc6889f1fded4834d2dd7d942a58e') }
+        let(:branch_name) { 'diff-files-symlink-to-text' }
+        let(:file_name) { 'symlink-to-text.txt' }
+        let(:old_position) { position(old_path: file_name, new_path: file_name, new_line: 3, file_identifier_hash: file_identifier_hash) }
+
+        before do
+          create_branch('diff-files-symlink-to-text-test', branch_name)
+        end
+
+        context "when the old position is on the new text file" do
+          let(:old_file_status) { :new }
+
+          context "when the text file's content was unchanged between the old and the new diff" do
+            let(:old_diff_refs) { diff_refs(initial_commit, symlink_to_text_commit) }
+            let(:new_diff_refs) { diff_refs(initial_commit, create_second_file_commit) }
+
+            it "returns the new position" do
+              expect_new_position(
+                new_path: old_position.new_path,
+                new_line: old_position.new_line
+              )
+            end
+          end
+
+          context "when the text file's content has change, but the line was unchanged between the old and the new diff" do
+            let(:old_diff_refs) { diff_refs(initial_commit, symlink_to_text_commit) }
+            let(:new_diff_refs) { diff_refs(initial_commit, update_line_commit) }
+
+            it "returns the new position" do
+              expect_new_position(
+                new_path: old_position.new_path,
+                new_line: old_position.new_line
+              )
+            end
+          end
+
+          context "when the text file's line was changed between the old and the new diff" do
+            let(:old_position) { position(old_path: file_name, new_path: file_name, new_line: 2, file_identifier_hash: file_identifier_hash) }
+
+            let(:old_diff_refs) { diff_refs(initial_commit, symlink_to_text_commit) }
+            let(:new_diff_refs) { diff_refs(initial_commit, update_line_commit) }
+            let(:change_diff_refs) { diff_refs(symlink_to_text_commit, update_line_commit) }
+
+            it "returns the position of the change" do
+              expect_change_position(
+                old_path: file_name,
+                new_path: file_name,
+                old_line: 2,
+                new_line: nil
+              )
+            end
+          end
+
+          context "when the text file was removed between the old and the new diff" do
+            let(:old_diff_refs) { diff_refs(initial_commit, symlink_to_text_commit) }
+            let(:new_diff_refs) { diff_refs(initial_commit, delete_file_commit) }
+            let(:change_diff_refs) { diff_refs(symlink_to_text_commit, delete_file_commit) }
+
+            it "returns the position of the change" do
+              expect_change_position(
+                old_path: file_name,
+                new_path: file_name,
+                old_line: 3,
+                new_line: nil
+              )
+            end
+          end
+        end
+
+        describe 'from text to symlink' do
+          let(:initial_commit) { project.commit('3db7bd90bab8ce8f02c9818590b84739a2e97230') }
+          let(:text_to_symlink_commit) { project.commit('5e2c2708c2e403dece5dd25759369150aac51644') }
+          let(:branch_name) { 'diff-files-text-to-symlink' }
+          let(:file_name) { 'text-to-symlink.txt' }
+
+          context "when the position is on the added text file" do
+            let(:old_file_status) { :new }
+
+            context "when the text file gets changed to a symlink between the old and the new diff" do
+              let(:old_diff_refs) { diff_refs(initial_commit.parent, initial_commit) }
+              let(:new_diff_refs) { diff_refs(initial_commit.parent, text_to_symlink_commit) }
+              let(:change_diff_refs) { diff_refs(initial_commit, text_to_symlink_commit) }
+
+              it "returns the position of the change" do
+                expect_change_position(
+                  old_path: file_name,
+                  new_path: file_name,
+                  old_line: 3,
+                  new_line: nil
+                )
+              end
+            end
+          end
         end
       end
     end

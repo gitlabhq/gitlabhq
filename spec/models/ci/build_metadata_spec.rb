@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::BuildMetadata do
+RSpec.describe Ci::BuildMetadata do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group, build_timeout: 2000) }
@@ -88,6 +88,35 @@ describe Ci::BuildMetadata do
           let(:runner) { create(:ci_runner, maximum_timeout: 2100) }
 
           it_behaves_like 'sets timeout', 'job_timeout_source', 1900
+        end
+      end
+    end
+  end
+
+  describe 'validations' do
+    context 'when attributes are valid' do
+      it 'returns no errors' do
+        metadata.secrets = {
+          DATABASE_PASSWORD: {
+            vault: {
+              engine: { name: 'kv-v2', path: 'kv-v2' },
+              path: 'production/db',
+              field: 'password'
+            }
+          }
+        }
+
+        expect(metadata).to be_valid
+      end
+    end
+
+    context 'when data is invalid' do
+      it 'returns errors' do
+        metadata.secrets = { DATABASE_PASSWORD: { vault: {} } }
+
+        aggregate_failures do
+          expect(metadata).to be_invalid
+          expect(metadata.errors.full_messages).to eq(["Secrets must be a valid json schema"])
         end
       end
     end

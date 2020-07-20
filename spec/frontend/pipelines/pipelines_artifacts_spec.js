@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import PipelineArtifacts from '~/pipelines/components/pipelines_artifacts.vue';
+import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 import { GlLink } from '@gitlab/ui';
 
 describe('Pipelines Artifacts dropdown', () => {

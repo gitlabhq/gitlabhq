@@ -82,10 +82,9 @@ describe('DropdownButtonComponent', () => {
     });
 
     it('renders dropdown button icon', () => {
-      const dropdownIconEl = vm.$el.querySelector('i.fa');
+      const dropdownIconEl = vm.$el.querySelector('.dropdown-menu-toggle .gl-icon');
 
       expect(dropdownIconEl).not.toBeNull();
-      expect(dropdownIconEl.classList.contains('fa-chevron-down')).toBe(true);
     });
   });
 });

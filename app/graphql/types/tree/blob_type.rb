@@ -17,6 +17,8 @@ module Types
             resolve: -> (blob, args, ctx) do
               Gitlab::Graphql::Loaders::BatchLfsOidLoader.new(blob.repository, blob.id).find
             end
+      field :mode, GraphQL::STRING_TYPE, null: true,
+            description: 'Blob mode in numeric format'
       # rubocop: enable Graphql/AuthorizeTypes
     end
   end

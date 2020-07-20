@@ -1,0 +1,3 @@
+mutation toggleSidebarStatus {
+  toggleSidebarStatus @client
+}

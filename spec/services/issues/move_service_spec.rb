@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Issues::MoveService do
+RSpec.describe Issues::MoveService do
   let(:user) { create(:user) }
   let(:author) { create(:user) }
   let(:title) { 'Some issue' }
@@ -207,6 +207,51 @@ describe Issues::MoveService do
         let(:old_issue) { build(:issue, project: old_project, author: author) }
 
         it { expect { move }.to raise_error(StandardError, /permissions/) }
+      end
+    end
+  end
+
+  context 'updating sent notifications' do
+    let!(:old_issue_notification_1) { create(:sent_notification, project: old_issue.project, noteable: old_issue) }
+    let!(:old_issue_notification_2) { create(:sent_notification, project: old_issue.project, noteable: old_issue) }
+    let!(:other_issue_notification) { create(:sent_notification, project: old_issue.project) }
+
+    include_context 'user can move issue'
+
+    context 'when issue is from service desk' do
+      before do
+        allow(old_issue).to receive(:from_service_desk?).and_return(true)
+      end
+
+      it 'updates moved issue sent notifications' do
+        new_issue = move_service.execute(old_issue, new_project)
+
+        old_issue_notification_1.reload
+        old_issue_notification_2.reload
+        expect(old_issue_notification_1.project_id).to eq(new_issue.project_id)
+        expect(old_issue_notification_1.noteable_id).to eq(new_issue.id)
+        expect(old_issue_notification_2.project_id).to eq(new_issue.project_id)
+        expect(old_issue_notification_2.noteable_id).to eq(new_issue.id)
+      end
+
+      it 'does not update other issues sent notifications' do
+        expect do
+          move_service.execute(old_issue, new_project)
+          other_issue_notification.reload
+        end.not_to change { other_issue_notification.noteable_id }
+      end
+    end
+
+    context 'when issue is not from service desk' do
+      it 'does not update sent notifications' do
+        move_service.execute(old_issue, new_project)
+
+        old_issue_notification_1.reload
+        old_issue_notification_2.reload
+        expect(old_issue_notification_1.project_id).to eq(old_issue.project_id)
+        expect(old_issue_notification_1.noteable_id).to eq(old_issue.id)
+        expect(old_issue_notification_2.project_id).to eq(old_issue.project_id)
+        expect(old_issue_notification_2.noteable_id).to eq(old_issue.id)
       end
     end
   end

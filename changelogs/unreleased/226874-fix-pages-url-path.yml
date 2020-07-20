@@ -1,0 +1,5 @@
+---
+title: Fix Project#pages_url not to downcase url path
+merge_request: 36183
+author:
+type: fixed

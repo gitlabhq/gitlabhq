@@ -5,12 +5,57 @@ import {
   removeParams,
   updateHistory,
 } from '~/lib/utils/url_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import {
   timeRangeParamNames,
   timeRangeFromParams,
   timeRangeToParams,
 } from '~/lib/utils/datetime_range';
 import { VARIABLE_PREFIX } from './constants';
+
+/**
+ * Extracts the initial state and props from HTML dataset
+ * and places them in separate objects to setup bundle.
+ * @param {*} dataset
+ */
+export const stateAndPropsFromDataset = (dataset = {}) => {
+  const {
+    currentDashboard,
+    deploymentsEndpoint,
+    dashboardEndpoint,
+    dashboardsEndpoint,
+    dashboardTimezone,
+    canAccessOperationsSettings,
+    operationsSettingsPath,
+    projectPath,
+    logsPath,
+    currentEnvironmentName,
+    customDashboardBasePath,
+    ...dataProps
+  } = dataset;
+
+  // HTML attributes are always strings, parse other types.
+  dataProps.hasMetrics = parseBoolean(dataProps.hasMetrics);
+  dataProps.customMetricsAvailable = parseBoolean(dataProps.customMetricsAvailable);
+  dataProps.prometheusAlertsAvailable = parseBoolean(dataProps.prometheusAlertsAvailable);
+
+  return {
+    initState: {
+      currentDashboard,
+      deploymentsEndpoint,
+      dashboardEndpoint,
+      dashboardsEndpoint,
+      dashboardTimezone,
+      canAccessOperationsSettings,
+      operationsSettingsPath,
+      projectPath,
+      logsPath,
+      currentEnvironmentName,
+      customDashboardBasePath,
+    },
+    dataProps,
+  };
+};
 
 /**
  * List of non time range url parameters
@@ -160,8 +205,10 @@ export const removePrefixFromLabel = label =>
  * @returns {Object}
  */
 export const convertVariablesForURL = variables =>
-  Object.keys(variables || {}).reduce((acc, key) => {
-    acc[addPrefixToLabel(key)] = variables[key]?.value;
+  variables.reduce((acc, { name, value }) => {
+    if (value !== null) {
+      acc[addPrefixToLabel(name)] = value;
+    }
     return acc;
   }, {});
 

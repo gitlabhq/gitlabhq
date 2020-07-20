@@ -16,10 +16,10 @@ module Types
       value 'UPDATED_TIME_DESC', 'Created time by descending order', value: :updated_at_desc
       value 'EVENT_COUNT_ASC', 'Events count by ascending order', value: :event_count_asc
       value 'EVENT_COUNT_DESC', 'Events count by descending order', value: :event_count_desc
-      value 'SEVERITY_ASC', 'Severity by ascending order', value: :severity_asc
-      value 'SEVERITY_DESC', 'Severity by descending order', value: :severity_desc
-      value 'STATUS_ASC', 'Status by ascending order', value: :status_asc
-      value 'STATUS_DESC', 'Status by descending order', value: :status_desc
+      value 'SEVERITY_ASC', 'Severity from less critical to more critical', value: :severity_asc
+      value 'SEVERITY_DESC', 'Severity from more critical to less critical', value: :severity_desc
+      value 'STATUS_ASC', 'Status by order: Ignored > Resolved > Acknowledged > Triggered', value: :status_asc
+      value 'STATUS_DESC', 'Status by order: Triggered > Acknowledged > Resolved > Ignored', value: :status_desc
     end
   end
 end

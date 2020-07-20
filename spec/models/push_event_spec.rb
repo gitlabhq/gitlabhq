@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PushEvent do
+RSpec.describe PushEvent do
   let(:payload) { PushEventPayload.new }
 
   let(:event) do

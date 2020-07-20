@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20191216183532_insert_project_hooks_plan_limits.rb')
 
-describe InsertProjectHooksPlanLimits do
+RSpec.describe InsertProjectHooksPlanLimits do
   let(:migration) { described_class.new }
   let(:plans) { table(:plans) }
   let(:plan_limits) { table(:plan_limits) }

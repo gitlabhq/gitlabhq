@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Prometheus::ProxyService do
+RSpec.describe Prometheus::ProxyService do
   include ReactiveCachingHelpers
 
   let_it_be(:project) { create(:project) }

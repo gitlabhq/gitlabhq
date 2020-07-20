@@ -66,7 +66,7 @@ function kubectl_cleanup_release() {
   local release="${2}"
 
   echoinfo "Deleting all K8s resources matching '${release}'..." true
-  kubectl --namespace "${namespace}" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa,crd 2>&1 \
+  kubectl --namespace "${namespace}" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,clusterrole,clusterrolebinding,role,rolebinding,sa,crd 2>&1 \
     | grep "${release}" \
     | awk '{print $1}' \
     | xargs kubectl --namespace "${namespace}" delete \
@@ -126,6 +126,38 @@ function get_pod() {
   echo "${pod_name}"
 }
 
+function run_task() {
+  local namespace="${KUBE_NAMESPACE}"
+  local ruby_cmd="${1}"
+  local task_runner_pod=$(get_pod "task-runner")
+
+  kubectl exec -it --namespace "${namespace}" "${task_runner_pod}" -- gitlab-rails runner "${ruby_cmd}"
+}
+
+function disable_sign_ups() {
+  if [ -z ${REVIEW_APPS_ROOT_TOKEN+x} ]; then
+    echoerr "In order to protect Review Apps, REVIEW_APPS_ROOT_TOKEN variable must be set"
+    false
+  else
+    true
+  fi
+
+  # Create the root token
+  local ruby_cmd="token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups'); token.set_token('${REVIEW_APPS_ROOT_TOKEN}'); begin; token.save!; rescue(ActiveRecord::RecordNotUnique); end"
+  run_task "${ruby_cmd}"
+
+  # Disable sign-ups
+  curl  --silent --show-error --request PUT --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/application/settings?signup_enabled=false"
+
+  local signup_enabled=$(curl --silent --show-error --request GET --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/application/settings" | jq ".signup_enabled")
+  if [[ "${signup_enabled}" == "false" ]]; then
+    echoinfo "Sign-ups have been disabled successfully."
+  else
+    echoerr "Sign-ups should be disabled but are still enabled!"
+    false
+  fi
+}
+
 function check_kube_domain() {
   echoinfo "Checking that Kube domain exists..." true
 
@@ -181,6 +213,32 @@ function install_external_dns() {
   fi
 }
 
+# This script is used to install cert-manager in the cluster
+# The installation steps are documented in
+# https://gitlab.com/gitlab-org/quality/team-tasks/snippets/1990286
+function install_certmanager() {
+  local namespace="${KUBE_NAMESPACE}"
+  local release="cert-manager-review-app-helm3"
+
+  echoinfo "Installing cert-manager..." true
+
+  if ! deploy_exists "${namespace}" "${release}" || previous_deploy_failed "${namespace}" "${release}" ; then
+    kubectl apply \
+    -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.10/deploy/manifests/00-crds.yaml
+
+    echoinfo "Installing cert-manager Helm chart"
+    helm repo add jetstack https://charts.jetstack.io
+    helm repo update
+
+    helm install "${release}" jetstack/cert-manager \
+      --namespace "${namespace}" \
+      --version v0.15.1 \
+      --set installCRDS=true
+  else
+    echoinfo "The cert-manager Helm chart is already successfully deployed."
+  fi
+}
+
 function create_application_secret() {
   local namespace="${KUBE_NAMESPACE}"
   local release="${CI_ENVIRONMENT_SLUG}"
@@ -233,6 +291,17 @@ function base_config_changed() {
   curl "${CI_API_V4_URL}/projects/${CI_MERGE_REQUEST_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/changes" | jq '.changes | any(.old_path == "scripts/review_apps/base-config.yaml")'
 }
 
+function parse_gitaly_image_tag() {
+  local gitaly_version="${GITALY_VERSION}"
+
+  # prepend semver version with `v`
+  if [[ $gitaly_version =~  ^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?(-ee)?$ ]]; then
+    echo "v${gitaly_version}"
+  else
+    echo "${gitaly_version}"
+  fi
+}
+
 function deploy() {
   local namespace="${KUBE_NAMESPACE}"
   local release="${CI_ENVIRONMENT_SLUG}"
@@ -248,6 +317,7 @@ function deploy() {
   gitlab_webservice_image_repository="${IMAGE_REPOSITORY}/gitlab-webservice-ee"
   gitlab_task_runner_image_repository="${IMAGE_REPOSITORY}/gitlab-task-runner-ee"
   gitlab_gitaly_image_repository="${IMAGE_REPOSITORY}/gitaly"
+  gitaly_image_tag=$(parse_gitaly_image_tag)
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-ee"
 
@@ -269,7 +339,7 @@ HELM_CMD=$(cat << EOF
     --set gitlab.migrations.image.repository="${gitlab_migrations_image_repository}" \
     --set gitlab.migrations.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.gitaly.image.repository="${gitlab_gitaly_image_repository}" \
-    --set gitlab.gitaly.image.tag="v${GITALY_VERSION}" \
+    --set gitlab.gitaly.image.tag="${gitaly_image_tag}" \
     --set gitlab.gitlab-shell.image.repository="${gitlab_shell_image_repository}" \
     --set gitlab.gitlab-shell.image.tag="v${GITLAB_SHELL_VERSION}" \
     --set gitlab.sidekiq.annotations.commit="${CI_COMMIT_SHORT_SHA}" \

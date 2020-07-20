@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CleanupContainerRepositoryWorker, :clean_gitlab_redis_shared_state do
+RSpec.describe CleanupContainerRepositoryWorker, :clean_gitlab_redis_shared_state do
   let(:repository) { create(:container_repository) }
   let(:project) { repository.project }
   let(:user) { project.owner }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequest do
+RSpec.describe MergeRequest do
   include RepoHelpers
   include ProjectForksHelper
   include ReactiveCachingHelpers
@@ -12,6 +12,8 @@ describe MergeRequest do
   subject { create(:merge_request) }
 
   describe 'associations' do
+    subject { build_stubbed(:merge_request) }
+
     it { is_expected.to belong_to(:target_project).class_name('Project') }
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
@@ -52,29 +54,6 @@ describe MergeRequest do
       create(:merge_request, source_project: project, target_project: project)
 
       expect(described_class.from_and_to_forks(project)).to contain_exactly(mr_from_fork, mr_to_fork)
-    end
-  end
-
-  describe 'locking' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:lock_version) do
-      [
-        [0],
-        ["0"]
-      ]
-    end
-
-    with_them do
-      it 'works when a merge request has a NULL lock_version' do
-        merge_request = create(:merge_request)
-
-        described_class.where(id: merge_request.id).update_all('lock_version = NULL')
-
-        merge_request.update!(lock_version: lock_version, title: 'locking test')
-
-        expect(merge_request.reload.title).to eq('locking test')
-      end
     end
   end
 
@@ -195,6 +174,8 @@ describe MergeRequest do
   end
 
   describe 'validation' do
+    subject { build_stubbed(:merge_request) }
+
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
 
@@ -279,6 +260,21 @@ describe MergeRequest do
         merge_request.mark_as_merged!
 
         expect(MergeRequest::Metrics.count).to eq(1)
+      end
+
+      it 'does not create duplicated metrics records when MR is concurrently updated' do
+        merge_request = create(:merge_request)
+
+        merge_request.metrics.destroy
+
+        instance1 = MergeRequest.find(merge_request.id)
+        instance2 = MergeRequest.find(merge_request.id)
+
+        instance1.ensure_metrics
+        instance2.ensure_metrics
+
+        metrics_records = MergeRequest::Metrics.where(merge_request_id: merge_request.id)
+        expect(metrics_records.size).to eq(1)
       end
     end
   end
@@ -1092,11 +1088,41 @@ describe MergeRequest do
   end
 
   describe "#work_in_progress?" do
-    ['WIP ', 'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP [WIP] WIP: WIP '].each do |wip_prefix|
+    subject { build_stubbed(:merge_request) }
+
+    [
+      'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP: [WIP] WIP:',
+      'draft:', 'Draft: ', '[Draft]', '[DRAFT] ', 'Draft - '
+    ].each do |wip_prefix|
       it "detects the '#{wip_prefix}' prefix" do
         subject.title = "#{wip_prefix}#{subject.title}"
+
         expect(subject.work_in_progress?).to eq true
       end
+    end
+
+    it "detects merge request title just saying 'wip'" do
+      subject.title = "wip"
+
+      expect(subject.work_in_progress?).to eq true
+    end
+
+    it "detects merge request title just saying 'draft'" do
+      subject.title = "draft"
+
+      expect(subject.work_in_progress?).to eq true
+    end
+
+    it 'does not detect WIP in the middle of the title' do
+      subject.title = 'Something with WIP in the middle'
+
+      expect(subject.work_in_progress?).to eq false
+    end
+
+    it 'does not detect Draft in the middle of the title' do
+      subject.title = 'Something with Draft in the middle'
+
+      expect(subject.work_in_progress?).to eq false
     end
 
     it "doesn't detect WIP for words starting with WIP" do
@@ -1115,7 +1141,12 @@ describe MergeRequest do
   end
 
   describe "#wipless_title" do
-    ['WIP ', 'WIP:', 'WIP: ', '[WIP]', '[WIP] ', '[WIP] WIP [WIP] WIP: WIP '].each do |wip_prefix|
+    subject { build_stubbed(:merge_request) }
+
+    [
+      'WIP:', 'WIP: ', '[WIP]', '[WIP] ', '[WIP] WIP: [WIP] WIP:',
+      'draft:', 'Draft: ', '[Draft]', '[DRAFT] ', 'Draft - '
+    ].each do |wip_prefix|
       it "removes the '#{wip_prefix}' prefix" do
         wipless_title = subject.title
         subject.title = "#{wip_prefix}#{subject.title}"
@@ -1133,14 +1164,14 @@ describe MergeRequest do
   end
 
   describe "#wip_title" do
-    it "adds the WIP: prefix to the title" do
-      wip_title = "WIP: #{subject.title}"
+    it "adds the Draft: prefix to the title" do
+      wip_title = "Draft: #{subject.title}"
 
       expect(subject.wip_title).to eq wip_title
     end
 
-    it "does not add the WIP: prefix multiple times" do
-      wip_title = "WIP: #{subject.title}"
+    it "does not add the Draft: prefix multiple times" do
+      wip_title = "Draft: #{subject.title}"
       subject.title = subject.wip_title
       subject.title = subject.wip_title
 
@@ -1170,6 +1201,12 @@ describe MergeRequest do
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
+    it "can't be removed because source project has been deleted" do
+      subject.source_project = nil
+
+      expect(subject.can_remove_source_branch?(user)).to be_falsey
+    end
+
     it "can't remove a root ref" do
       subject.update(source_branch: 'master', target_branch: 'feature')
 
@@ -1193,6 +1230,29 @@ describe MergeRequest do
       subject.source_branch = "lfs"
 
       expect(subject.can_remove_source_branch?(user)).to be_falsey
+    end
+  end
+
+  describe "#source_branch_exists?" do
+    let(:merge_request) { subject }
+    let(:repository) { merge_request.source_project.repository }
+
+    context 'when the source project is set' do
+      it 'memoizes the value and returns the result' do
+        expect(repository).to receive(:branch_exists?).once.with(merge_request.source_branch).and_return(true)
+
+        2.times { expect(merge_request.source_branch_exists?).to eq(true) }
+      end
+    end
+
+    context 'when the source project is not set' do
+      before do
+        merge_request.source_project = nil
+      end
+
+      it 'returns false' do
+        expect(merge_request.source_branch_exists?).to eq(false)
+      end
     end
   end
 
@@ -2426,7 +2486,7 @@ describe MergeRequest do
 
     context 'when working in progress' do
       before do
-        subject.title = 'WIP MR'
+        subject.title = '[Draft] MR'
       end
 
       it 'returns false' do

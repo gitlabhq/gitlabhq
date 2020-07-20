@@ -20,6 +20,7 @@ Telemetry Guide:
   1. [Our tracking tools](#our-tracking-tools)
   1. [What data can be tracked](#what-data-can-be-tracked)
   1. [Telemetry systems overview](#telemetry-systems-overview)
+  1. [Snowflake data warehouse](#snowflake-data-warehouse)
 
 [Usage Ping Guide](usage_ping.md)
 
@@ -44,9 +45,9 @@ Telemetry Guide:
 More useful links:
 
 - [Telemetry Direction](https://about.gitlab.com/direction/telemetry/)
-- [Data Analysis Process](https://about.gitlab.com/handbook/business-ops/data-team/#-data-analysis-process)
-- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/data-for-product-managers/)
-- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-infrastructure/)
+- [Data Analysis Process](https://about.gitlab.com/handbook/business-ops/data-team/#data-analysis-process/)
+- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/)
+- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/platform/infrastructure/)
 
 ## Our tracking tools
 
@@ -68,7 +69,7 @@ For more details, read the [Usage Ping](usage_ping.md) guide.
 
 ### Database import
 
-Database imports are full imports of data into GitLab's data warehouse. For GitLab.com, the PostgreSQL database is loaded into Snowflake data warehouse every 6 hours. For more details, see the [data team handbook](https://about.gitlab.com/handbook/business-ops/data-team/#extract-and-load).
+Database imports are full imports of data into GitLab's data warehouse. For GitLab.com, the PostgreSQL database is loaded into Snowflake data warehouse every 6 hours. For more details, see the [data team handbook](https://about.gitlab.com/handbook/business-ops/data-team/platform/#extract-and-load).
 
 ### Log system
 
@@ -144,7 +145,7 @@ The systems overview is a simplified diagram showing the interactions between Gi
 
 For Telemetry purposes, GitLab Inc has three major components:
 
-1. [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/data-infrastructure/): This contains everything managed by our data team including Sisense Dashboards for visualization, Snowflake for Data Warehousing, incoming data sources such as PostgreSQL Pipeline and S3 Bucket, and lastly our data collectors [GitLab.com's Snowplow Collector](https://about.gitlab.com/handbook/engineering/infrastructure/library/snowplow/) and GitLab's Versions Application.
+1. [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/platform/infrastructure/): This contains everything managed by our data team including Sisense Dashboards for visualization, Snowflake for Data Warehousing, incoming data sources such as PostgreSQL Pipeline and S3 Bucket, and lastly our data collectors [GitLab.com's Snowplow Collector](https://about.gitlab.com/handbook/engineering/infrastructure/library/snowplow/) and GitLab's Versions Application.
 1. GitLab.com: This is the production GitLab application which is made up of a Client and Server. On the Client or browser side, a Snowplow JS Tracker (Frontend) is used to track client-side events. On the Server or application side, a Snowplow Ruby Tracker (Backend) is used to track server-side events. The server also contains Usage Ping which leverages a PostgreSQL database and a Redis in-memory data store to report on usage data. Lastly, the server also contains System Logs which are generated from running the GitLab application.
 1. [Monitoring infrastructure](https://about.gitlab.com/handbook/engineering/monitoring/): This is the infrastructure used to ensure GitLab.com is operating smoothly. System Logs are sent from GitLab.com to our monitoring infrastructure and collected by a FluentD collector. From FluentD, logs are either sent to long term Google Cloud Services cold storage via Stackdriver, or, they are sent to our Elastic Cluster via Cloud Pub/Sub which can be explored in real-time using Kibana.
 
@@ -169,3 +170,19 @@ The differences between GitLab.com and self-managed are summarized below:
 | Self-Managed | **{dotted-circle}**(1) | **{dotted-circle}**(1)  | **{check-circle}** | **{dotted-circle}** | **{dotted-circle}** |
 
 Note (1): Snowplow JS and Snowplow Ruby are available on self-managed, however, the Snowplow Collector endpoint is set to a self-managed Snowplow Collector which GitLab Inc does not have access to.
+
+## Snowflake data warehouse
+
+The Snowflake data warehouse is where we keep all of GitLab Inc's data.
+
+### Data sources
+
+There are several data sources available in Snowflake and Sisense each representing a different view of the data along the transformation pipeline.
+
+| Source | Description | Access |
+| ------ | ------ | ------ |
+| raw | These tables are the raw data source | Access via Snowflake |
+| analytics_staging | These tables have undergone little to no data transformation, meaning they're basically clones of the raw data source |  Access via Snowflake or Sisense  |
+| analytics | These tables have typically undergone more data transformation. They will typically end in `_xf` to represent the fact that they are transformed | Access via Snowflake or Sisense  |
+
+If you are a Product Manager interested in the raw data, you will likely focus on the `analytics` and `analytics_staging` sources. The raw source is limited to the data and infrastructure teams. For more information, please see [Data For Product Managers: What's the difference between analytics_staging and analytics?](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#whats-the-difference-between-analytics_staging-and-analytics)

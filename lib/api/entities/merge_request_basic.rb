@@ -22,13 +22,11 @@ module API
         MarkupHelper.markdown_field(entity, :description)
       end
       expose :target_branch, :source_branch
-      expose(:user_notes_count) { |merge_request, options| issuable_metadata(merge_request, options, :user_notes_count) }
-      expose(:upvotes)          { |merge_request, options| issuable_metadata(merge_request, options, :upvotes) }
-      expose(:downvotes)        { |merge_request, options| issuable_metadata(merge_request, options, :downvotes) }
-      expose :assignee, using: ::API::Entities::UserBasic do |merge_request|
-        merge_request.assignee
-      end
-      expose :author, :assignees, using: Entities::UserBasic
+      expose(:user_notes_count) { |merge_request, options| issuable_metadata.user_notes_count }
+      expose(:upvotes)          { |merge_request, options| issuable_metadata.upvotes }
+      expose(:downvotes)        { |merge_request, options| issuable_metadata.downvotes }
+
+      expose :author, :assignees, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :labels do |merge_request, options|
         if options[:with_labels_details]
@@ -57,9 +55,12 @@ module API
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
-      expose :allow_collaboration, if: -> (merge_request, _) { merge_request.for_fork? }
-      # Deprecated
-      expose :allow_collaboration, as: :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
+
+      with_options if: -> (merge_request, _) { merge_request.for_fork? } do
+        expose :allow_collaboration
+        # Deprecated
+        expose :allow_collaboration, as: :allow_maintainer_to_push
+      end
 
       # reference is deprecated in favour of references
       # Introduced [Gitlab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)

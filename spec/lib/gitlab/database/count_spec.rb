@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::Count do
+RSpec.describe Gitlab::Database::Count do
   before do
     create_list(:project, 3)
     create(:identity)

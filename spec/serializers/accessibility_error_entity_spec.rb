@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AccessibilityErrorEntity do
+RSpec.describe AccessibilityErrorEntity do
   let(:entity) { described_class.new(accessibility_error) }
 
   describe '#as_json' do

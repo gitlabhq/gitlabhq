@@ -89,13 +89,15 @@ export const getDayName = date =>
  * @example
  * dateFormat('2017-12-05','mmm d, yyyy h:MMtt Z' ) -> "Dec 5, 2017 12:00am GMT+0000"
  * @param {date} datetime
+ * @param {String} format
+ * @param {Boolean} UTC convert local time to UTC
  * @returns {String}
  */
-export const formatDate = (datetime, format = 'mmm d, yyyy h:MMtt Z') => {
+export const formatDate = (datetime, format = 'mmm d, yyyy h:MMtt Z', utc = false) => {
   if (isString(datetime) && datetime.match(/\d+-\d+\d+ /)) {
     throw new Error(__('Invalid date'));
   }
-  return dateFormat(datetime, format);
+  return dateFormat(datetime, format, utc);
 };
 
 /**
@@ -425,7 +427,6 @@ export const dayInQuarter = (date, quarter) => {
 window.gl = window.gl || {};
 window.gl.utils = {
   ...(window.gl.utils || {}),
-  getTimeago,
   localTimeAgo,
 };
 

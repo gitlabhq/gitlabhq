@@ -4,9 +4,9 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/git_annex.html'
 
 # Git annex
 
-> **Warning:** GitLab has [completely
-removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1648) in GitLab 9.0 (2017/03/22).
-Read through the [migration guide from git-annex to Git LFS](../topics/git/lfs/migrate_from_git_annex_to_git_lfs.md).
+CAUTION: **Warning:**
+[Git Annex support was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1648)
+in GitLab 9.0. Read through the [migration guide from git-annex to Git LFS](../topics/git/lfs/migrate_from_git_annex_to_git_lfs.md).
 
 The biggest limitation of Git, compared to some older centralized version
 control systems has been the maximum size of the repositories.
@@ -198,7 +198,7 @@ can cause `git-annex` to raise unpredicted warnings and errors.
 
 Consult the [Annex upgrade page](https://git-annex.branchable.com/upgrades/) for more information about
 the differences between versions. You can find out which version is installed
-on your server by navigating to <https://pkgs.org/download/git-annex> and
+on your server by navigating to `https://pkgs.org/download/git-annex` and
 searching for your distribution.
 
 Although there is no general guide for `git-annex` errors, there are a few tips

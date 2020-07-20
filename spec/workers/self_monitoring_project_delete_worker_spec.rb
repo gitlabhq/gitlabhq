@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SelfMonitoringProjectDeleteWorker do
+RSpec.describe SelfMonitoringProjectDeleteWorker do
   let_it_be(:jid) { 'b5b28910d97563e58c2fe55f' }
   let_it_be(:data_key) { "self_monitoring_delete_result:#{jid}" }
 

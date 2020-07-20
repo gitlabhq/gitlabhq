@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/avoid_keyword_arguments_in_sidekiq_workers'
 
-describe RuboCop::Cop::AvoidKeywordArgumentsInSidekiqWorkers do
+RSpec.describe RuboCop::Cop::AvoidKeywordArgumentsInSidekiqWorkers, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

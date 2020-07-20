@@ -171,6 +171,39 @@ RSpec.describe Admin::ClustersController do
     end
   end
 
+  it_behaves_like 'GET #metrics_dashboard for dashboard', 'Cluster health' do
+    let(:cluster) { create(:cluster, :instance, :provided_by_gcp) }
+
+    let(:metrics_dashboard_req_params) do
+      {
+        id: cluster.id
+      }
+    end
+  end
+
+  describe 'GET #prometheus_proxy' do
+    let(:user) { admin }
+    let(:proxyable) do
+      create(:cluster, :instance, :provided_by_gcp)
+    end
+
+    it_behaves_like 'metrics dashboard prometheus api proxy' do
+      context 'with anonymous user' do
+        let(:prometheus_body) { nil }
+
+        before do
+          sign_out(admin)
+        end
+
+        it 'returns 404' do
+          get :prometheus_proxy, params: prometheus_proxy_params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe 'POST #create_gcp' do
     let(:legacy_abac_param) { 'true' }
     let(:params) do

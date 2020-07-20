@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Branches::DivergingCommitCountsService do
+RSpec.describe Branches::DivergingCommitCountsService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 

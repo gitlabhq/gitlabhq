@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class DeployKeys < Grape::API
+  class DeployKeys < Grape::API::Instance
     include PaginationParams
 
     before { authenticate! }

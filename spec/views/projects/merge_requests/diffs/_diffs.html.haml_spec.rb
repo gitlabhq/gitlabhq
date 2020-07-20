@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/merge_requests/diffs/_diffs.html.haml' do
+RSpec.describe 'projects/merge_requests/diffs/_diffs.html.haml' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }

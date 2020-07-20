@@ -118,7 +118,12 @@ export default {
     @mouseleave="$emit('mouseleave', $event)"
   >
     <div class="file-row-name-container">
-      <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
+      <span
+        ref="textOutput"
+        :style="levelIndentation"
+        class="file-row-name str-truncated"
+        data-qa-selector="file_name_content"
+      >
         <file-icon
           class="file-row-icon"
           :class="{ 'text-secondary': file.type === 'tree' }"

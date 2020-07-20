@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Constraints::UserUrlConstrainer do
+RSpec.describe Constraints::UserUrlConstrainer do
   let!(:user) { create(:user, username: 'dz') }
 
   describe '#matches?' do

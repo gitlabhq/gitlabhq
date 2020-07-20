@@ -19,10 +19,13 @@ By using subgroups you can do the following:
 - **Make it easier to manage people and control visibility.** Give people
   different [permissions](../../permissions.md#group-members-permissions) depending on their group [membership](#membership).
 
+For more information on allowed permissions in groups and projects, see
+[visibility levels](../../../development/permissions.md#general-permissions).
+
 ## Overview
 
 A group can have many subgroups inside it, and at the same time a group can have
-only 1 parent group. It resembles a directory behavior or a nested items list:
+only one immediate parent group. It resembles a directory behavior or a nested items list:
 
 - Group 1
   - Group 1.1
@@ -86,7 +89,7 @@ of words that are not allowed to be used as group names see the
 [reserved names](../../reserved_names.md).
 
 Users can always create subgroups if they are explicitly added as an Owner (or
-Maintainer, if that setting is enabled) to a parent group, even if group
+Maintainer, if that setting is enabled) to an immediate parent group, even if group
 creation is disabled by an administrator in their settings.
 
 To create a subgroup:
@@ -96,9 +99,9 @@ To create a subgroup:
 
    ![Subgroups page](img/create_subgroup_button.png)
 
-1. Create a new group like you would normally do. Notice that the parent group
+1. Create a new group like you would normally do. Notice that the immediate parent group
    namespace is fixed under **Group path**. The visibility level can differ from
-   the parent group.
+   the immediate parent group.
 
    ![Subgroups page](img/create_new_group.png)
 
@@ -110,12 +113,13 @@ Follow the same process to create any subsequent groups.
 ## Membership
 
 When you add a member to a subgroup, they inherit the membership and permission
-level from the parent group. This model allows access to nested groups if you
+level from the parent group(s). This model allows access to nested groups if you
 have membership in one of its parents.
 
-Jobs for pipelines in subgroups can use [Runners](../../../ci/runners/README.md) registered to the parent group. This means secrets configured for the parent group are available to subgroup jobs.
+Jobs for pipelines in subgroups can use [Runners](../../../ci/runners/README.md) registered to the parent group(s).
+This means secrets configured for the parent group are available to subgroup jobs.
 
-In addition, maintainers of projects that belong to subgroups can see the details of Runners registered to parent groups.
+In addition, maintainers of projects that belong to subgroups can see the details of Runners registered to parent group(s).
 
 The group permissions for a member can be changed only by Owners, and only on
 the **Members** page of the group the member was added.

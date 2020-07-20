@@ -28,15 +28,16 @@ export default {
       type: String,
       required: true,
     },
-    contextLinesPath: {
-      type: String,
-      required: true,
-    },
     line: {
       type: Object,
       required: true,
     },
     isBottom: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isCommented: {
       type: Boolean,
       required: false,
       default: false,
@@ -51,7 +52,10 @@ export default {
     ...mapGetters('diffs', ['fileLineCoverage']),
     ...mapState({
       isHighlighted(state) {
-        return this.line.line_code !== null && this.line.line_code === state.diffs.highlightedRow;
+        if (this.isCommented) return true;
+
+        const lineCode = this.line.line_code;
+        return lineCode ? lineCode === state.diffs.highlightedRow : false;
       },
     }),
     isContextLine() {
@@ -106,7 +110,6 @@ export default {
   >
     <diff-table-cell
       :file-hash="fileHash"
-      :context-lines-path="contextLinesPath"
       :line="line"
       :line-type="oldLineType"
       :is-bottom="isBottom"
@@ -117,7 +120,6 @@ export default {
     />
     <diff-table-cell
       :file-hash="fileHash"
-      :context-lines-path="contextLinesPath"
       :line="line"
       :line-type="newLineType"
       :is-bottom="isBottom"

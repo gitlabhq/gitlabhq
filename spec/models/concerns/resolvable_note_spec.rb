@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Note, ResolvableNote do
+RSpec.describe Note, ResolvableNote do
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 

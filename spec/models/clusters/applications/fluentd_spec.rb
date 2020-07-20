@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::Fluentd do
+RSpec.describe Clusters::Applications::Fluentd do
   let(:waf_log_enabled) { true }
   let(:cilium_log_enabled) { true }
   let(:fluentd) { create(:clusters_applications_fluentd, waf_log_enabled: waf_log_enabled, cilium_log_enabled: cilium_log_enabled) }

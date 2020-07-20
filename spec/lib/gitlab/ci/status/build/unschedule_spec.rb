@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Build::Unschedule do
+RSpec.describe Gitlab::Ci::Status::Build::Unschedule do
   let(:status) { double('core status') }
   let(:user) { double('user') }
 

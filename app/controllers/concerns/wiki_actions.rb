@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module WikiActions
+  include DiffHelper
+  include PreviewMarkdown
   include SendsBlob
   include Gitlab::Utils::StrongMemoize
   extend ActiveSupport::Concern
@@ -11,16 +13,23 @@ module WikiActions
     before_action :authorize_admin_wiki!, only: :destroy
 
     before_action :wiki
-    before_action :page, only: [:show, :edit, :update, :history, :destroy]
+    before_action :page, only: [:show, :edit, :update, :history, :destroy, :diff]
     before_action :load_sidebar, except: [:pages]
+    before_action :set_content_class
 
     before_action only: [:show, :edit, :update] do
       @valid_encoding = valid_encoding?
     end
 
     before_action only: [:edit, :update], unless: :valid_encoding? do
-      redirect_to wiki_page_path(wiki, page)
+      if params[:id].present?
+        redirect_to wiki_page_path(wiki, page || params[:id])
+      else
+        redirect_to wiki_path(wiki)
+      end
     end
+
+    helper_method :view_file_button, :diff_file_html_data
   end
 
   def new
@@ -133,6 +142,19 @@ module WikiActions
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  def diff
+    return render_404 unless page
+
+    apply_diff_view_cookie!
+
+    @diffs = page.diffs(diff_options)
+    @diff_notes_disabled = true
+
+    render 'shared/wikis/diff'
+  end
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def destroy
     WikiPages::DestroyService.new(container: container, current_user: current_user).execute(page)
 
@@ -203,7 +225,7 @@ module WikiActions
 
   def page_params
     keys = [:id]
-    keys << :version_id if params[:action] == 'show'
+    keys << :version_id if %w[show diff].include?(params[:action])
 
     params.values_at(*keys)
   end
@@ -228,5 +250,26 @@ module WikiActions
 
       wiki.repository.blob_at(commit.id, params[:id])
     end
+  end
+
+  def set_content_class
+    @content_class = 'limit-container-width' unless fluid_layout # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
+  # Override CommitsHelper#view_file_button
+  def view_file_button(commit_sha, *args)
+    path = wiki_page_path(wiki, page, version_id: page.version.id)
+
+    helpers.link_to(path, class: 'btn') do
+      helpers.raw(_('View page @ ')) + helpers.content_tag(:span, Commit.truncate_sha(commit_sha), class: 'commit-sha')
+    end
+  end
+
+  # Override DiffHelper#diff_file_html_data
+  def diff_file_html_data(_project, _diff_file_path, diff_commit_id)
+    {
+      blob_diff_path: wiki_page_path(wiki, page, action: :diff, version_id: diff_commit_id),
+      view: diff_view
+    }
   end
 end

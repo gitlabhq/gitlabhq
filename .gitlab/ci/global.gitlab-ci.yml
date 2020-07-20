@@ -18,7 +18,7 @@
 
 .rails-cache:
   cache:
-    key: "rails-v1"
+    key: "rails-v2"
     paths:
       - vendor/ruby/
       - vendor/gitaly-ruby/
@@ -72,10 +72,29 @@
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
 
+.use-pg12:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.27-lfs-2.9-chrome-83-node-12.x-yarn-1.21-postgresql-12-graphicsmagick-1.3.34"
+  services:
+    - name: postgres:12
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+
 .use-pg11-ee:
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.27-lfs-2.9-chrome-83-node-12.x-yarn-1.21-postgresql-11-graphicsmagick-1.3.34"
   services:
     - name: postgres:11.6
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
+    - name: elasticsearch:6.4.2
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+
+.use-pg12-ee:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.27-lfs-2.9-chrome-83-node-12.x-yarn-1.21-postgresql-12-graphicsmagick-1.3.34"
+  services:
+    - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
     - name: elasticsearch:6.4.2

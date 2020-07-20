@@ -1,0 +1,6 @@
+---
+title: Table index added to `metrics_dashboard_annotations` for future pruning of stale metrics
+  Annotations for metrics dashboards are now checked for valid start and end dates.
+merge_request: 32433
+author:
+type: added

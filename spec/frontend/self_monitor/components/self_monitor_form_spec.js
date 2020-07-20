@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlDeprecatedButton } from '@gitlab/ui';
 import SelfMonitor from '~/self_monitor/components/self_monitor_form.vue';
 import { createStore } from '~/self_monitor/store';
+import { TEST_HOST } from 'helpers/test_constants';
 
 describe('self monitor component', () => {
   let wrapper;
@@ -82,7 +83,7 @@ describe('self monitor component', () => {
             .find({ ref: 'selfMonitoringFormText' })
             .find('a')
             .attributes('href'),
-        ).toEqual('http://localhost/instance-administrators-random/gitlab-self-monitoring');
+        ).toEqual(`${TEST_HOST}/instance-administrators-random/gitlab-self-monitoring`);
       });
     });
   });

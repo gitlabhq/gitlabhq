@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProjectRepositoryStorageMoves do
+RSpec.describe API::ProjectRepositoryStorageMoves do
   include AccessMatchersForRequest
 
   let_it_be(:user) { create(:admin) }

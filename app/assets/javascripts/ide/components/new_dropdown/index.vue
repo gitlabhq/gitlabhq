@@ -64,6 +64,7 @@ export default {
         :aria-label="__('Create new file or directory')"
         type="button"
         class="rounded border-0 d-flex ide-entry-dropdown-toggle"
+        data-qa-selector="dropdown_button"
         @click.stop="openDropdown()"
       >
         <icon name="ellipsis_v" /> <icon name="chevron-down" />
@@ -97,6 +98,7 @@ export default {
             class="d-flex"
             icon="pencil"
             icon-classes="mr-2"
+            data-qa-selector="rename_move_button"
             @click="createNewItem($options.modalTypes.rename)"
           />
         </li>

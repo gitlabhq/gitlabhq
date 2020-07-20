@@ -7,7 +7,8 @@ module PerformanceMonitoring
     attr_accessor :type, :title, :y_label, :weight, :metrics, :y_axis, :max_value
 
     validates :title, presence: true
-    validates :metrics, presence: true
+    validates :metrics, array_members: { member_class: PerformanceMonitoring::PrometheusMetric }
+
     class << self
       def from_json(json_content)
         build_from_hash(json_content).tap(&:validate!)
@@ -23,8 +24,14 @@ module PerformanceMonitoring
           title: attributes['title'],
           y_label: attributes['y_label'],
           weight: attributes['weight'],
-          metrics: attributes['metrics']&.map { |metric| PrometheusMetric.from_json(metric) }
+          metrics: initialize_children_collection(attributes['metrics'])
         )
+      end
+
+      def initialize_children_collection(children)
+        return unless children.is_a?(Array)
+
+        children.map { |metrics| PerformanceMonitoring::PrometheusMetric.from_json(metrics) }
       end
     end
 

@@ -1,189 +1,182 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { shallowMount, mount } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
-import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
+import { SUCCESS } from '~/vue_merge_request_widget/constants';
+import PipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
+import PipelineStage from '~/pipelines/components/pipelines_list/stage.vue';
 import mockData from '../mock_data';
 
 describe('MRWidgetPipeline', () => {
-  let vm;
-  let Component;
+  let wrapper;
 
-  beforeEach(() => {
-    Component = Vue.extend(pipelineComponent);
-  });
+  const defaultProps = {
+    pipeline: mockData.pipeline,
+    ciStatus: SUCCESS,
+    hasCi: true,
+    mrTroubleshootingDocsPath: 'help',
+    ciTroubleshootingDocsPath: 'ci-help',
+  };
+
+  const ciErrorMessage =
+    'Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.';
+  const monitoringMessage = 'Checking pipeline status.';
+
+  const findCIErrorMessage = () => wrapper.find('[data-testid="ci-error-message"]');
+  const findPipelineID = () => wrapper.find('[data-testid="pipeline-id"]');
+  const findPipelineInfoContainer = () => wrapper.find('[data-testid="pipeline-info-container"]');
+  const findCommitLink = () => wrapper.find('[data-testid="commit-link"]');
+  const findPipelineGraph = () => wrapper.find('[data-testid="widget-mini-pipeline-graph"]');
+  const findAllPipelineStages = () => wrapper.findAll(PipelineStage);
+  const findPipelineCoverage = () => wrapper.find('[data-testid="pipeline-coverage"]');
+  const findPipelineCoverageDelta = () => wrapper.find('[data-testid="pipeline-coverage-delta"]');
+  const findMonitoringPipelineMessage = () =>
+    wrapper.find('[data-testid="monitoring-pipeline-message"]');
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+
+  const createWrapper = (props, mountFn = shallowMount) => {
+    wrapper = mountFn(PipelineComponent, {
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    if (wrapper?.destroy) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
   describe('computed', () => {
     describe('hasPipeline', () => {
-      it('should return true when there is a pipeline', () => {
-        vm = mountComponent(Component, {
-          pipeline: mockData.pipeline,
-          ciStatus: 'success',
-          hasCi: true,
-          troubleshootingDocsPath: 'help',
-        });
-
-        expect(vm.hasPipeline).toEqual(true);
+      beforeEach(() => {
+        createWrapper();
       });
 
-      it('should return false when there is no pipeline', () => {
-        vm = mountComponent(Component, {
-          pipeline: {},
-          troubleshootingDocsPath: 'help',
-        });
+      it('should return true when there is a pipeline', () => {
+        expect(wrapper.vm.hasPipeline).toBe(true);
+      });
 
-        expect(vm.hasPipeline).toEqual(false);
+      it('should return false when there is no pipeline', async () => {
+        wrapper.setProps({ pipeline: {} });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.hasPipeline).toBe(false);
       });
     });
 
     describe('hasCIError', () => {
-      it('should return false when there is no CI error', () => {
-        vm = mountComponent(Component, {
-          pipeline: mockData.pipeline,
-          hasCi: true,
-          ciStatus: 'success',
-          troubleshootingDocsPath: 'help',
-        });
-
-        expect(vm.hasCIError).toEqual(false);
+      beforeEach(() => {
+        createWrapper();
       });
 
-      it('should return true when there is a CI error', () => {
-        vm = mountComponent(Component, {
-          pipeline: mockData.pipeline,
-          hasCi: true,
-          ciStatus: null,
-          troubleshootingDocsPath: 'help',
-        });
+      it('should return false when there is no CI error', () => {
+        expect(wrapper.vm.hasCIError).toBe(false);
+      });
 
-        expect(vm.hasCIError).toEqual(true);
+      it('should return true when there is a pipeline, but no ci status', async () => {
+        wrapper.setProps({ ciStatus: null });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.hasCIError).toBe(true);
       });
     });
 
     describe('coverageDeltaClass', () => {
-      it('should return no class if there is no coverage change', () => {
-        vm = mountComponent(Component, {
-          pipeline: mockData.pipeline,
-          pipelineCoverageDelta: '0',
-          troubleshootingDocsPath: 'help',
-        });
-
-        expect(vm.coverageDeltaClass).toEqual('');
+      beforeEach(() => {
+        createWrapper({ pipelineCoverageDelta: '0' });
       });
 
-      it('should return text-success if the coverage increased', () => {
-        vm = mountComponent(Component, {
-          pipeline: mockData.pipeline,
-          pipelineCoverageDelta: '10',
-          troubleshootingDocsPath: 'help',
-        });
-
-        expect(vm.coverageDeltaClass).toEqual('text-success');
+      it('should return no class if there is no coverage change', async () => {
+        expect(wrapper.vm.coverageDeltaClass).toBe('');
       });
 
-      it('should return text-danger if the coverage decreased', () => {
-        vm = mountComponent(Component, {
-          pipeline: mockData.pipeline,
-          pipelineCoverageDelta: '-12',
-          troubleshootingDocsPath: 'help',
-        });
+      it('should return text-success if the coverage increased', async () => {
+        wrapper.setProps({ pipelineCoverageDelta: '10' });
 
-        expect(vm.coverageDeltaClass).toEqual('text-danger');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.coverageDeltaClass).toBe('text-success');
+      });
+
+      it('should return text-danger if the coverage decreased', async () => {
+        wrapper.setProps({ pipelineCoverageDelta: '-12' });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.coverageDeltaClass).toBe('text-danger');
       });
     });
   });
 
   describe('rendered output', () => {
-    it('should render CI error', () => {
-      vm = mountComponent(Component, {
-        pipeline: mockData.pipeline,
-        hasCi: true,
-        troubleshootingDocsPath: 'help',
-      });
-
-      expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
-        'Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.',
-      );
+    beforeEach(() => {
+      createWrapper({ ciStatus: null }, mount);
     });
 
-    it('should render CI error when no pipeline is provided', () => {
-      vm = mountComponent(Component, {
-        pipeline: {},
-        hasCi: true,
-        ciStatus: 'success',
-        troubleshootingDocsPath: 'help',
-      });
-
-      expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
-        'Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.',
-      );
+    it('should render CI error if there is a pipeline, but no status', async () => {
+      expect(findCIErrorMessage().text()).toBe(ciErrorMessage);
     });
 
-    it('should render CI error when no CI is provided and pipeline must succeed is turned on', () => {
-      vm = mountComponent(Component, {
+    it('should render a loading state when no pipeline is found', async () => {
+      wrapper.setProps({
         pipeline: {},
         hasCi: false,
         pipelineMustSucceed: true,
-        troubleshootingDocsPath: 'help',
       });
 
-      expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
-        'No pipeline has been run for this commit.',
-      );
+      await wrapper.vm.$nextTick();
+
+      expect(findMonitoringPipelineMessage().text()).toBe(monitoringMessage);
+      expect(findLoadingIcon().exists()).toBe(true);
     });
 
     describe('with a pipeline', () => {
       beforeEach(() => {
-        vm = mountComponent(Component, {
-          pipeline: mockData.pipeline,
-          hasCi: true,
-          ciStatus: 'success',
-          pipelineCoverageDelta: mockData.pipelineCoverageDelta,
-          troubleshootingDocsPath: 'help',
-        });
+        createWrapper(
+          {
+            pipelineCoverageDelta: mockData.pipelineCoverageDelta,
+          },
+          mount,
+        );
       });
 
       it('should render pipeline ID', () => {
-        expect(vm.$el.querySelector('.pipeline-id').textContent.trim()).toEqual(
-          `#${mockData.pipeline.id}`,
-        );
+        expect(
+          findPipelineID()
+            .text()
+            .trim(),
+        ).toBe(`#${mockData.pipeline.id}`);
       });
 
       it('should render pipeline status and commit id', () => {
-        expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
-          mockData.pipeline.details.status.label,
-        );
+        expect(findPipelineInfoContainer().text()).toMatch(mockData.pipeline.details.status.label);
 
-        expect(vm.$el.querySelector('.js-commit-link').textContent.trim()).toEqual(
-          mockData.pipeline.commit.short_id,
-        );
+        expect(
+          findCommitLink()
+            .text()
+            .trim(),
+        ).toBe(mockData.pipeline.commit.short_id);
 
-        expect(vm.$el.querySelector('.js-commit-link').getAttribute('href')).toEqual(
-          mockData.pipeline.commit.commit_path,
-        );
+        expect(findCommitLink().attributes('href')).toBe(mockData.pipeline.commit.commit_path);
       });
 
       it('should render pipeline graph', () => {
-        expect(vm.$el.querySelector('.mr-widget-pipeline-graph')).toBeDefined();
-        expect(vm.$el.querySelectorAll('.stage-container').length).toEqual(
-          mockData.pipeline.details.stages.length,
-        );
+        expect(findPipelineGraph().exists()).toBe(true);
+        expect(findAllPipelineStages().length).toBe(mockData.pipeline.details.stages.length);
       });
 
       it('should render coverage information', () => {
-        expect(vm.$el.querySelector('.media-body').textContent).toContain(
-          `Coverage ${mockData.pipeline.coverage}`,
-        );
+        expect(findPipelineCoverage().text()).toMatch(`Coverage ${mockData.pipeline.coverage}%`);
       });
 
       it('should render pipeline coverage delta information', () => {
-        expect(vm.$el.querySelector('.js-pipeline-coverage-delta.text-danger')).toBeDefined();
-        expect(vm.$el.querySelector('.js-pipeline-coverage-delta').textContent).toContain(
-          `(${mockData.pipelineCoverageDelta}%)`,
-        );
+        expect(findPipelineCoverageDelta().exists()).toBe(true);
+        expect(findPipelineCoverageDelta().text()).toBe(`(${mockData.pipelineCoverageDelta}%)`);
       });
     });
 
@@ -192,71 +185,61 @@ describe('MRWidgetPipeline', () => {
         const mockCopy = JSON.parse(JSON.stringify(mockData));
         delete mockCopy.pipeline.commit;
 
-        vm = mountComponent(Component, {
-          pipeline: mockCopy.pipeline,
-          hasCi: true,
-          ciStatus: 'success',
-          troubleshootingDocsPath: 'help',
-        });
+        createWrapper({}, mount);
       });
 
       it('should render pipeline ID', () => {
-        expect(vm.$el.querySelector('.pipeline-id').textContent.trim()).toEqual(
-          `#${mockData.pipeline.id}`,
-        );
+        expect(
+          findPipelineID()
+            .text()
+            .trim(),
+        ).toBe(`#${mockData.pipeline.id}`);
       });
 
       it('should render pipeline status', () => {
-        expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
-          mockData.pipeline.details.status.label,
-        );
-
-        expect(vm.$el.querySelector('.js-commit-link')).toBeNull();
+        expect(findPipelineInfoContainer().text()).toMatch(mockData.pipeline.details.status.label);
       });
 
       it('should render pipeline graph', () => {
-        expect(vm.$el.querySelector('.mr-widget-pipeline-graph')).toBeDefined();
-        expect(vm.$el.querySelectorAll('.stage-container').length).toEqual(
-          mockData.pipeline.details.stages.length,
-        );
+        expect(findPipelineGraph().exists()).toBe(true);
+        expect(findAllPipelineStages().length).toBe(mockData.pipeline.details.stages.length);
       });
 
       it('should render coverage information', () => {
-        expect(vm.$el.querySelector('.media-body').textContent).toContain(
-          `Coverage ${mockData.pipeline.coverage}`,
-        );
+        expect(findPipelineCoverage().text()).toMatch(`Coverage ${mockData.pipeline.coverage}%`);
       });
     });
 
     describe('without coverage', () => {
-      it('should not render a coverage', () => {
+      beforeEach(() => {
         const mockCopy = JSON.parse(JSON.stringify(mockData));
         delete mockCopy.pipeline.coverage;
 
-        vm = mountComponent(Component, {
-          pipeline: mockCopy.pipeline,
-          hasCi: true,
-          ciStatus: 'success',
-          troubleshootingDocsPath: 'help',
-        });
+        createWrapper(
+          {
+            pipeline: mockCopy.pipeline,
+          },
+          mount,
+        );
+      });
 
-        expect(vm.$el.querySelector('.media-body').textContent).not.toContain('Coverage');
+      it('should not render a coverage component', () => {
+        expect(findPipelineCoverage().exists()).toBe(false);
       });
     });
 
     describe('without a pipeline graph', () => {
-      it('should not render a pipeline graph', () => {
+      beforeEach(() => {
         const mockCopy = JSON.parse(JSON.stringify(mockData));
         delete mockCopy.pipeline.details.stages;
 
-        vm = mountComponent(Component, {
+        createWrapper({
           pipeline: mockCopy.pipeline,
-          hasCi: true,
-          ciStatus: 'success',
-          troubleshootingDocsPath: 'help',
         });
+      });
 
-        expect(vm.$el.querySelector('.js-mini-pipeline-graph')).toEqual(null);
+      it('should not render a pipeline graph', () => {
+        expect(findPipelineGraph().exists()).toBe(false);
       });
     });
 
@@ -273,11 +256,8 @@ describe('MRWidgetPipeline', () => {
       });
 
       const factory = () => {
-        vm = mountComponent(Component, {
+        createWrapper({
           pipeline,
-          hasCi: true,
-          ciStatus: 'success',
-          troubleshootingDocsPath: 'help',
           sourceBranchLink: mockData.source_branch_link,
         });
       };
@@ -289,7 +269,7 @@ describe('MRWidgetPipeline', () => {
           factory();
 
           const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id} on ${mockData.source_branch_link}`;
-          const actual = trimText(vm.$el.querySelector('.js-pipeline-info-container').innerText);
+          const actual = trimText(findPipelineInfoContainer().text());
 
           expect(actual).toBe(expected);
         });
@@ -302,7 +282,7 @@ describe('MRWidgetPipeline', () => {
           factory();
 
           const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
-          const actual = trimText(vm.$el.querySelector('.js-pipeline-info-container').innerText);
+          const actual = trimText(findPipelineInfoContainer().text());
 
           expect(actual).toBe(expected);
         });
@@ -316,7 +296,7 @@ describe('MRWidgetPipeline', () => {
           factory();
 
           const expected = `Detached merge request pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
-          const actual = trimText(vm.$el.querySelector('.js-pipeline-info-container').innerText);
+          const actual = trimText(findPipelineInfoContainer().text());
 
           expect(actual).toBe(expected);
         });

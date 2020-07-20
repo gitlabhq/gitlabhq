@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WikiPages::EventCreateService do
+RSpec.describe WikiPages::EventCreateService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -13,21 +13,6 @@ describe WikiPages::EventCreateService do
     let(:slug) { generate(:sluggified_title) }
     let(:action) { :created }
     let(:response) { subject.execute(slug, page, action) }
-
-    context 'feature flag is not enabled' do
-      before do
-        stub_feature_flags(wiki_events: false)
-      end
-
-      it 'does not error' do
-        expect(response).to be_success
-          .and have_attributes(message: /No event created/)
-      end
-
-      it 'does not create an event' do
-        expect { response }.not_to change(Event, :count)
-      end
-    end
 
     context 'the user is nil' do
       subject { described_class.new(nil) }

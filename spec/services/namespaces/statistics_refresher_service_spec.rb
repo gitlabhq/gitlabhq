@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Namespaces::StatisticsRefresherService, '#execute' do
+RSpec.describe Namespaces::StatisticsRefresherService, '#execute' do
   let(:group) { create(:group) }
   let(:projects) { create_list(:project, 5, namespace: group) }
   let(:service) { described_class.new }

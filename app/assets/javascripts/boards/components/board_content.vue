@@ -54,7 +54,7 @@ export default {
   <div>
     <div
       v-if="!isSwimlanesOn"
-      class="boards-list w-100 py-3 px-2 text-nowrap"
+      class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap"
       data-qa-selector="boards_list"
     >
       <board-column
@@ -77,6 +77,7 @@ export default {
       :can-admin-list="canAdminList"
       :disabled="disabled"
       :board-id="boardId"
+      :group-id="groupId"
     />
   </div>
 </template>

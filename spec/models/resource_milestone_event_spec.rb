@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResourceMilestoneEvent, type: :model do
+RSpec.describe ResourceMilestoneEvent, type: :model do
   it_behaves_like 'a resource event'
   it_behaves_like 'a resource event for issues'
   it_behaves_like 'a resource event for merge requests'

@@ -39,6 +39,10 @@ module Gitlab
         @root.errors
       end
 
+      def warnings
+        @root.warnings
+      end
+
       def to_hash
         @config
       end
@@ -93,7 +97,7 @@ module Gitlab
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, @context.sentry_payload)
       end
 
-      # Overriden in EE
+      # Overridden in EE
       def rescue_errors
         RESCUE_ERRORS
       end

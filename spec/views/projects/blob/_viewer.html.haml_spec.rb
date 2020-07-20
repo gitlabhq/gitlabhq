@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'projects/blob/_viewer.html.haml' do
+RSpec.describe 'projects/blob/_viewer.html.haml' do
   include FakeBlobHelpers
 
   let(:project) { build(:project) }

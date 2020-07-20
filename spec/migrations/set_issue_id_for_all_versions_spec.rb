@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20190715043954_set_issue_id_for_all_versions.rb')
 
-describe SetIssueIdForAllVersions do
+RSpec.describe SetIssueIdForAllVersions do
   let(:projects) { table(:projects) }
   let(:issues) { table(:issues) }
   let(:designs) { table(:design_management_designs) }

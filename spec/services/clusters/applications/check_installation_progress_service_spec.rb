@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
+RSpec.describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
   RESCHEDULE_PHASES = Gitlab::Kubernetes::Pod::PHASES - [Gitlab::Kubernetes::Pod::SUCCEEDED, Gitlab::Kubernetes::Pod::FAILED].freeze
 
   let(:application) { create(:clusters_applications_helm, :installing) }

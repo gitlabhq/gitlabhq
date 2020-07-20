@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::GroupContainerRepositories do
+RSpec.describe API::GroupContainerRepositories do
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:project) { create(:project, :private, group: group) }
   let_it_be(:reporter) { create(:user) }

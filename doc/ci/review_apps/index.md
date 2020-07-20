@@ -260,10 +260,6 @@ For example, in a Ruby application, you would need to have this script:
 Then, when your app is deployed via GitLab CI/CD, those variables should get
 replaced with their real values.
 
-NOTE: **Note:**
-Future enhancements [are planned](https://gitlab.com/gitlab-org/gitlab/-/issues/11322)
-to make this process even easier.
-
 ### Determining merge request ID
 
 The visual review tools retrieve the merge request ID from the `data-merge-request-id`

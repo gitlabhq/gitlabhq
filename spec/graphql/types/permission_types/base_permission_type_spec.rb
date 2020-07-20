@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Types::PermissionTypes::BasePermissionType do
+RSpec.describe Types::PermissionTypes::BasePermissionType do
   let(:permitable) { double('permittable') }
   let(:current_user) { build(:user) }
   let(:context) { { current_user: current_user } }

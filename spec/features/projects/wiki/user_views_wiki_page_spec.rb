@@ -8,9 +8,10 @@ RSpec.describe 'User views a wiki page' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:path) { 'image.png' }
+  let(:wiki) { project.wiki }
   let(:wiki_page) do
     create(:wiki_page,
-           wiki: project.wiki,
+           wiki: wiki,
            title: 'home', content: "Look at this [image](#{path})\n\n ![alt text](#{path})")
   end
 
@@ -70,11 +71,13 @@ RSpec.describe 'User views a wiki page' do
 
       click_on('Page history')
 
-      page.within(:css, '.nav-text') do
+      within('.nav-text') do
         expect(page).to have_content('History')
       end
 
-      find('a[href*="?version_id"]')
+      within('.wiki-history') do
+        expect(page).to have_css('a[href*="?version_id"]', count: 4)
+      end
     end
   end
 
@@ -92,8 +95,8 @@ RSpec.describe 'User views a wiki page' do
       let(:path) { upload_file_to_wiki(project, user, 'dk.png') }
 
       it do
-        expect(page).to have_xpath("//img[@data-src='#{project.wiki.wiki_base_path}/#{path}']")
-        expect(page).to have_link('image', href: "#{project.wiki.wiki_base_path}/#{path}")
+        expect(page).to have_xpath("//img[@data-src='#{wiki.wiki_base_path}/#{path}']")
+        expect(page).to have_link('image', href: "#{wiki.wiki_base_path}/#{path}")
 
         click_on('image')
 
@@ -103,7 +106,7 @@ RSpec.describe 'User views a wiki page' do
     end
 
     it 'shows the creation page if file does not exist' do
-      expect(page).to have_link('image', href: "#{project.wiki.wiki_base_path}/#{path}")
+      expect(page).to have_link('image', href: "#{wiki.wiki_base_path}/#{path}")
 
       click_on('image')
 
@@ -114,7 +117,7 @@ RSpec.describe 'User views a wiki page' do
 
   context 'when a page has history' do
     before do
-      wiki_page.update(message: 'updated home', content: 'updated [some link](other-page)')
+      wiki_page.update(message: 'updated home', content: 'updated [some link](other-page)') # rubocop:disable Rails/SaveBang
     end
 
     it 'shows the page history' do
@@ -134,13 +137,74 @@ RSpec.describe 'User views a wiki page' do
 
       expect(page).not_to have_selector('a.btn', text: 'Edit')
     end
+
+    context 'show the diff' do
+      def expect_diff_links(commit)
+        diff_path = wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
+
+        expect(page).to have_link('Hide whitespace changes', href: "#{diff_path}&w=1")
+        expect(page).to have_link('Inline', href: "#{diff_path}&view=inline")
+        expect(page).to have_link('Side-by-side', href: "#{diff_path}&view=parallel")
+        expect(page).to have_link("View page @ #{commit.short_id}", href: wiki_page_path(wiki, wiki_page, version_id: commit))
+        expect(page).to have_css('.diff-file[data-blob-diff-path="%s"]' % diff_path)
+      end
+
+      it 'links to the correct diffs' do
+        visit project_wiki_history_path(project, wiki_page)
+
+        commit1 = wiki.commit('HEAD^')
+        commit2 = wiki.commit
+
+        expect(page).to have_link('created page: home', href: wiki_page_path(wiki, wiki_page, version_id: commit1, action: :diff))
+        expect(page).to have_link('updated home', href: wiki_page_path(wiki, wiki_page, version_id: commit2, action: :diff))
+      end
+
+      it 'between the current and the previous version of a page' do
+        commit = wiki.commit
+        visit wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
+
+        expect(page).to have_content('by John Doe')
+        expect(page).to have_content('updated home')
+        expect(page).to have_content('Showing 1 changed file with 1 addition and 3 deletions')
+        expect(page).to have_content('some link')
+
+        expect_diff_links(commit)
+      end
+
+      it 'between two old versions of a page' do
+        wiki_page.update(message: 'latest home change', content: 'updated [another link](other-page)') # rubocop:disable Rails/SaveBang:
+        commit = wiki.commit('HEAD^')
+        visit wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
+
+        expect(page).to have_content('by John Doe')
+        expect(page).to have_content('updated home')
+        expect(page).to have_content('Showing 1 changed file with 1 addition and 3 deletions')
+        expect(page).to have_content('some link')
+        expect(page).not_to have_content('latest home change')
+        expect(page).not_to have_content('another link')
+
+        expect_diff_links(commit)
+      end
+
+      it 'for the oldest version of a page' do
+        commit = wiki.commit('HEAD^')
+        visit wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
+
+        expect(page).to have_content('by John Doe')
+        expect(page).to have_content('created page: home')
+        expect(page).to have_content('Showing 1 changed file with 4 additions and 0 deletions')
+        expect(page).to have_content('Look at this')
+
+        expect_diff_links(commit)
+      end
+    end
   end
 
   context 'when a page has special characters in its title' do
     let(:title) { '<foo> !@#$%^&*()[]{}=_+\'"\\|<>? <bar>' }
 
     before do
-      wiki_page.update(title: title )
+      wiki_page.update(title: title ) # rubocop:disable Rails/SaveBang
     end
 
     it 'preserves the special characters' do
@@ -155,7 +219,7 @@ RSpec.describe 'User views a wiki page' do
     let(:title) { '<script>alert("title")<script>' }
 
     before do
-      wiki_page.update(title: title, content: 'foo <script>alert("content")</script> bar')
+      wiki_page.update(title: title, content: 'foo <script>alert("content")</script> bar') # rubocop:disable Rails/SaveBang
     end
 
     it 'safely displays the page' do
@@ -168,7 +232,7 @@ RSpec.describe 'User views a wiki page' do
 
   context 'when a page has XSS in its message' do
     before do
-      wiki_page.update(message: '<script>alert(true)<script>', content: 'XSS update')
+      wiki_page.update(message: '<script>alert(true)<script>', content: 'XSS update') # rubocop:disable Rails/SaveBang
     end
 
     it 'safely displays the message' do

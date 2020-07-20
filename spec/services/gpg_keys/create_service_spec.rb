@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GpgKeys::CreateService do
+RSpec.describe GpgKeys::CreateService do
   let(:user) { create(:user) }
   let(:params) { attributes_for(:gpg_key) }
 

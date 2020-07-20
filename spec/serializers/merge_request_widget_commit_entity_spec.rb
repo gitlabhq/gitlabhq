@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequestWidgetCommitEntity do
+RSpec.describe MergeRequestWidgetCommitEntity do
   let(:project) { create(:project, :repository) }
   let(:commit) { project.commit }
   let(:request) { double('request') }

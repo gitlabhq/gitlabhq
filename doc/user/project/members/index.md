@@ -128,3 +128,30 @@ If you change your mind before your request is approved, just click the
 ## Share project with group
 
 Alternatively, you can [share a project with an entire group](share_project_with_groups.md) instead of adding users one by one.
+
+## Remove a member from the project
+
+Only users with permissions of [Owner](../../permissions.md#group-members-permissions) can manage
+project members.
+
+You can remove a user from the project if the given member has a direct membership in the project.
+If membership is inherited from a parent group, then the member can be removed only from the parent
+group itself.
+
+When removing a member, you can decide whether to unassign the user from all issues and merge
+requests they are currently assigned or leave the assignments as they are.
+
+- **Unassigning the removed member** from all issues and merge requests might be helpful when a user
+  is leaving a private project and you wish to revoke their access to any issues and merge requests
+  they are assigned.
+- **Keeping the issues and merge requests assigned** might be helpful for projects that accept public
+  contributions where a user doesn't have to be a member to be able to contribute to issues and
+  merge requests.
+
+To remove a member from a project:
+
+1. In a project, go to **{users}** **Members**.
+1. Click the **Delete** **{remove}** button next to a project member you want to remove.
+   A **Remove member** modal appears.
+1. (Optional) Select the **Also unassign this user from related issues and merge requests** checkbox.
+1. Click **Remove member**.

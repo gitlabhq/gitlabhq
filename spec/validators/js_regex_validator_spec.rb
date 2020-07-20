@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe JsRegexValidator do
+RSpec.describe JsRegexValidator do
   describe '#validates_each' do
     using RSpec::Parameterized::TableSyntax
 

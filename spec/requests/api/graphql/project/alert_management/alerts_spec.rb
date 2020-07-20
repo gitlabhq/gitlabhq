@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe 'getting Alert Management Alerts' do
+RSpec.describe 'getting Alert Management Alerts' do
   include GraphqlHelpers
 
   let_it_be(:payload) { { 'custom' => { 'alert' => 'payload' } } }
@@ -73,12 +73,13 @@ describe 'getting Alert Management Alerts' do
           'endedAt' => nil,
           'details' => { 'custom.alert' => 'payload' },
           'createdAt' => triggered_alert.created_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
-          'updatedAt' => triggered_alert.updated_at.strftime('%Y-%m-%dT%H:%M:%SZ')
+          'updatedAt' => triggered_alert.updated_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
+          'metricsDashboardUrl' => nil
         )
 
         expect(second_alert).to include(
           'iid' => resolved_alert.iid.to_s,
-          'issueIid' => nil,
+          'issueIid' => resolved_alert.issue_iid.to_s,
           'status' => 'RESOLVED',
           'endedAt' => resolved_alert.ended_at.strftime('%Y-%m-%dT%H:%M:%SZ')
         )
@@ -109,14 +110,14 @@ describe 'getting Alert Management Alerts' do
         it_behaves_like 'a working graphql query'
 
         it 'sorts in the correct order' do
-          expect(iids).to eq [resolved_alert.iid.to_s, triggered_alert.iid.to_s]
+          expect(iids).to eq [triggered_alert.iid.to_s, resolved_alert.iid.to_s]
         end
 
         context 'ascending order' do
           let(:params) { 'sort: SEVERITY_ASC' }
 
           it 'sorts in the correct order' do
-            expect(iids).to eq [triggered_alert.iid.to_s, resolved_alert.iid.to_s]
+            expect(iids).to eq [resolved_alert.iid.to_s, triggered_alert.iid.to_s]
           end
         end
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Todos::Destroy::EntityLeaveService do
+RSpec.describe Todos::Destroy::EntityLeaveService do
   let(:group)   { create(:group, :private) }
   let(:project) { create(:project, group: group) }
   let(:user)    { create(:user) }

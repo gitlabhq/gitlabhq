@@ -8,7 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13438) in GitLab 9.5.
 
-NOTE: **Note:** [NGINX Ingress version 0.16](nginx_ingress.md) and above have built-in Prometheus metrics, which are different than the VTS based metrics.
+NOTE: **Note:**
+[NGINX Ingress version 0.16](nginx_ingress.md) and above have built-in Prometheus metrics, which are different than the VTS based metrics.
 
 GitLab has support for automatically detecting and monitoring the Kubernetes NGINX Ingress controller. This is provided by leveraging the included VTS Prometheus metrics exporter in [version 0.9.0](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#09-beta1) through [0.15.x](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0150).
 

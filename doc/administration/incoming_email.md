@@ -17,9 +17,14 @@ GitLab has several features based on receiving incoming emails:
   allow GitLab users to create a new merge request by sending an email to a
   user-specific email address.
 - [Service Desk](../user/project/service_desk.md): provide e-mail support to
-  your customers through GitLab. **(PREMIUM)**
+  your customers through GitLab.
 
 ## Requirements
+
+NOTE: **Note:**
+It is **not** recommended to use an email address that receives or will receive any
+messages not intended for the GitLab instance. Any incoming emails not intended
+for GitLab will receive a reject notice.
 
 Handling incoming emails requires an [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-enabled
 email account. GitLab requires one of the following three strategies:
@@ -69,6 +74,11 @@ and [allowed less secure apps to access the account](https://support.google.com/
 or [turn-on 2-step validation](https://support.google.com/accounts/answer/185839)
 and use [an application password](https://support.google.com/mail/answer/185833).
 
+If you want to use Office 365, and two-factor authentication is enabled, make sure
+you're using an
+[app password](https://docs.microsoft.com/en-us/azure/active-directory/user-help/multi-factor-authentication-end-user-app-passwords)
+instead of the regular password for the mailbox.
+
 To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 [Postfix setup documentation](reply_by_email_postfix_setup.md).
 
@@ -100,6 +110,16 @@ Alternatively, use a dedicated domain for GitLab email communications such as
 
 See GitLab issue [#30366](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30366)
 for a real-world example of this exploit.
+
+CAUTION:**Caution:**
+Be sure to use a mail server that has been configured to reduce
+spam.
+A Postfix mail server that is running on a default configuration, for example,
+can result in abuse. All messages received on the configured mailbox will be processed
+and messages that are not intended for the GitLab instance will receive a reject notice.
+If the sender's address is spoofed, the reject notice will be delivered to the spoofed
+`FROM` address, which can cause the mail server's IP or domain to appear on a block
+list.
 
 ### Omnibus package installations
 

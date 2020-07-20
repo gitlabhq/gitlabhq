@@ -1,0 +1,5 @@
+---
+title: Swap Grape over to Gitlab::Json
+merge_request: 36472
+author:
+type: performance

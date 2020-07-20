@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::AfterCreateService do
+RSpec.describe MergeRequests::AfterCreateService do
   let_it_be(:merge_request) { create(:merge_request) }
 
   subject(:after_create_service) do

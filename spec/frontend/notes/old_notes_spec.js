@@ -624,7 +624,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
     });
   });
 
-  describe('postComment with Slash commands', () => {
+  describe('postComment with quick actions', () => {
     const sampleComment = '/assign @root\n/award :100:';
     const note = {
       commands_changes: {
@@ -640,6 +640,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
     let $notesContainer;
 
     beforeEach(() => {
+      loadFixtures('commit/show.html');
       mockAxios.onPost(NOTES_POST_PATH).reply(200, note);
 
       new Notes('', []);
@@ -659,14 +660,49 @@ describe.skip('Old Notes (~/notes.js)', () => {
       $form.find('textarea.js-note-text').val(sampleComment);
     });
 
-    it('should remove slash command placeholder when comment with slash commands is done posting', done => {
+    it('should remove quick action placeholder when comment with quick actions is done posting', done => {
       jest.spyOn(gl.awardsHandler, 'addAwardToEmojiBar');
       $('.js-comment-button').click();
 
-      expect($notesContainer.find('.system-note.being-posted').length).toEqual(1); // Placeholder shown
+      expect($notesContainer.find('.note.being-posted').length).toEqual(1); // Placeholder shown
 
       setImmediate(() => {
-        expect($notesContainer.find('.system-note.being-posted').length).toEqual(0); // Placeholder removed
+        expect($notesContainer.find('.note.being-posted').length).toEqual(0); // Placeholder removed
+        done();
+      });
+    });
+  });
+
+  describe('postComment with slash when quick actions are not supported', () => {
+    const sampleComment = '/assign @root';
+    let $form;
+    let $notesContainer;
+
+    beforeEach(() => {
+      const note = {
+        id: 1234,
+        html: `<li class="note note-row-1234 timeline-entry" id="note_1234">
+                <div class="note-text">${sampleComment}</div>
+                </li>`,
+        note: sampleComment,
+        valid: true,
+      };
+      mockAxios.onPost(NOTES_POST_PATH).reply(200, note);
+
+      new Notes('', []);
+      $form = $('form.js-main-target-form');
+      $notesContainer = $('ul.main-notes-list');
+      $form.find('textarea.js-note-text').val(sampleComment);
+    });
+
+    it('should show message placeholder including lines starting with slash', done => {
+      $('.js-comment-button').click();
+
+      expect($notesContainer.find('.note.being-posted').length).toEqual(1); // Placeholder shown
+      expect($notesContainer.find('.note-body p').text()).toEqual(sampleComment); // No quick action processing
+
+      setImmediate(() => {
+        expect($notesContainer.find('.note.being-posted').length).toEqual(0); // Placeholder removed
         done();
       });
     });

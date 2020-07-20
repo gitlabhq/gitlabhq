@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UserPreference do
+RSpec.describe UserPreference do
   let(:user_preference) { create(:user_preference) }
 
   describe 'notes filters global keys' do

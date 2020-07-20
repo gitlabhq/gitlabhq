@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::UrlBlockers::IpWhitelistEntry do
+RSpec.describe Gitlab::UrlBlockers::IpWhitelistEntry do
   let(:ipv4) { IPAddr.new('192.168.1.1') }
 
   describe '#initialize' do

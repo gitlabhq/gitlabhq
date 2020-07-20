@@ -13,6 +13,6 @@
     = render 'layouts/page', sidebar: sidebar, nav: nav
     = footer_message
 
-    = render_if_exists "shared/onboarding_guide"
+    = render 'layouts/img_loader'
 
     = yield :scripts_body

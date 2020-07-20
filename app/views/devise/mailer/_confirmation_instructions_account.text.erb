@@ -1,6 +1,5 @@
-<% if @resource.unconfirmed_email.present? %>
-<%= @resource.unconfirmed_email %>,
-
+<% if @resource.unconfirmed_email.present? || !@resource.created_recently? %>
+<%= @resource.unconfirmed_email || @resource.email %>,
 Use the link below to confirm your email address.
 <% else %>
   <% if Gitlab.com? %>

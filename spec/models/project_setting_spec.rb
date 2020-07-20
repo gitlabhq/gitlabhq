@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-describe ProjectSetting, type: :model do
+RSpec.describe ProjectSetting, type: :model do
   it { is_expected.to belong_to(:project) }
 end

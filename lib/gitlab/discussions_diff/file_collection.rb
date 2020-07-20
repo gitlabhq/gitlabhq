@@ -70,8 +70,8 @@ module Gitlab
       #
       # Returns a Hash with { id => [Array of Gitlab::Diff::line], ...]
       def highlighted_lines_by_ids(ids)
-        diff_files_indexed_by_id.slice(*ids).each_with_object({}) do |(id, file), hash|
-          hash[id] = file.highlighted_diff_lines.map(&:to_hash)
+        diff_files_indexed_by_id.slice(*ids).transform_values do |file|
+          file.highlighted_diff_lines.map(&:to_hash)
         end
       end
     end

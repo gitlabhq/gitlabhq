@@ -10,7 +10,7 @@
       .col.form-group
         = f.label :title, _('Title'), class: 'label-bold'
         = f.text_field :title, class: "form-control input-lg qa-key-title-field", required: true, placeholder: s_('Profiles|e.g. My MacBook key')
-        %p.form-text.text-muted= s_('Profiles|Give your individual key a title')
+        %p.form-text.text-muted= s_('Profiles|Give your individual key a title. This will be publically visible.')
 
       .col.form-group
         = f.label :expires_at, s_('Profiles|Expires at'), class: 'label-bold'
@@ -23,5 +23,5 @@
 
       %button.btn.btn-success.js-add-ssh-key-validation-confirm-submit= _("Yes, add it")
 
-    .prepend-top-default
+    .gl-mt-3
       = f.submit s_('Profiles|Add key'), class: "btn btn-success js-add-ssh-key-validation-original-submit qa-add-key-button"

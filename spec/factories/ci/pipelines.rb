@@ -65,6 +65,22 @@ FactoryBot.define do
         add_attribute(:protected) { true }
       end
 
+      trait :with_report_results do
+        status { :success }
+
+        after(:build) do |pipeline, evaluator|
+          pipeline.builds << build(:ci_build, :report_results, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
+      trait :with_codequality_report do
+        status { :success }
+
+        after(:build) do |pipeline, evaluator|
+          pipeline.builds << build(:ci_build, :codequality_report, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
       trait :with_test_reports do
         status { :success }
 

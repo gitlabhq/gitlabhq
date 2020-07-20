@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AbuseReportMailer do
+RSpec.describe AbuseReportMailer do
   include EmailSpec::Matchers
 
   describe '.notify' do

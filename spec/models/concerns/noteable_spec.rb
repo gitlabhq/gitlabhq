@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Noteable do
+RSpec.describe Noteable do
   let!(:active_diff_note1) { create(:diff_note_on_merge_request) }
   let(:project) { active_diff_note1.project }
   subject { active_diff_note1.noteable }
@@ -260,6 +260,46 @@ describe Noteable do
       it '10 is returned' do
         expect(subject.capped_notes_count(10)).to eq(10)
       end
+    end
+  end
+
+  describe "#has_any_diff_note_positions?" do
+    let(:source_branch) { "compare-with-merge-head-source" }
+    let(:target_branch) { "compare-with-merge-head-target" }
+    let(:merge_request) { create(:merge_request, source_branch: source_branch, target_branch: target_branch) }
+
+    let!(:note) do
+      path = "files/markdown/ruby-style-guide.md"
+
+      position = Gitlab::Diff::Position.new(
+        old_path: path,
+        new_path: path,
+        new_line: 508,
+        diff_refs: merge_request.diff_refs
+      )
+
+      create(:diff_note_on_merge_request, project: merge_request.project, position: position, noteable: merge_request)
+    end
+
+    before do
+      MergeRequests::MergeToRefService.new(merge_request.project, merge_request.author).execute(merge_request)
+      Discussions::CaptureDiffNotePositionsService.new(merge_request).execute
+    end
+
+    it "returns true when it has diff note positions" do
+      expect(merge_request.has_any_diff_note_positions?).to be(true)
+    end
+
+    it "returns false when it has notes but no diff note positions" do
+      DiffNotePosition.where(note: note).find_each(&:delete)
+
+      expect(merge_request.has_any_diff_note_positions?).to be(false)
+    end
+
+    it "returns false when it has no notes" do
+      merge_request.notes.find_each(&:destroy)
+
+      expect(merge_request.has_any_diff_note_positions?).to be(false)
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Uploads::Local do
+RSpec.describe Uploads::Local do
   let(:data_store) { described_class.new }
 
   before do

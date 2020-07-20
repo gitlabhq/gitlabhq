@@ -1,8 +1,15 @@
+---
+stage: Release
+group: Release Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: concepts, howto
+---
+
 # Freeze Periods API
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29382) in GitLab 13.0.
 
-You can use the Freeze Periods API to manipulate GitLab's [Freeze Period](../user/project/releases/index.md#set-a-deploy-freeze) entries.
+You can use the Freeze Periods API to manipulate GitLab's [Freeze Period](../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze) entries.
 
 ## Permissions and security
 

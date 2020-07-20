@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OauthAccessToken do
+RSpec.describe OauthAccessToken do
   let(:user) { create(:user) }
   let(:app_one) { create(:oauth_application) }
   let(:app_two) { create(:oauth_application) }

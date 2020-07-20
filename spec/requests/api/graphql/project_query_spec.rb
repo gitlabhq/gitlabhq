@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'getting project information' do
+RSpec.describe 'getting project information' do
   include GraphqlHelpers
 
   let(:project) { create(:project, :repository) }

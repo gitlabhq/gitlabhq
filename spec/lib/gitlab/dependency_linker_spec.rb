@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker do
+RSpec.describe Gitlab::DependencyLinker do
   describe '.link' do
     it 'links using GemfileLinker' do
       blob_name = 'Gemfile'

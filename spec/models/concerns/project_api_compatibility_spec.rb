@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectAPICompatibility do
+RSpec.describe ProjectAPICompatibility do
   let(:project) { create(:project) }
 
   # git_strategy

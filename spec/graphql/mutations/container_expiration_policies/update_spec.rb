@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::ContainerExpirationPolicies::Update do
+RSpec.describe Mutations::ContainerExpirationPolicies::Update do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project, reload: true) { create(:project) }

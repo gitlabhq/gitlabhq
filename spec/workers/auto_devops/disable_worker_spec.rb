@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe AutoDevops::DisableWorker, '#perform' do
+RSpec.describe AutoDevops::DisableWorker, '#perform' do
   let(:user) { create(:user, developer_projects: [project]) }
   let(:project) { create(:project, :repository, :auto_devops) }
   let(:auto_devops) { project.auto_devops }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Setting assignees of an alert' do
+RSpec.describe 'Setting assignees of an alert' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

@@ -11,7 +11,7 @@
     %ul.controls
       %li
         = link_to gitlab_snippet_path(snippet, anchor: 'notes'), class: ('no-comments' if notes_count.zero?) do
-          = icon('comments')
+          = sprite_icon('comments', size: 16, css_class: 'gl-vertical-align-text-bottom')
           = notes_count
       %li
         %span.sr-only

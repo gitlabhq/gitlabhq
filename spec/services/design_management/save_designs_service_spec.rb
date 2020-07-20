@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe DesignManagement::SaveDesignsService do
+RSpec.describe DesignManagement::SaveDesignsService do
   include DesignManagementTestHelpers
   include ConcurrentHelpers
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::ShaAttribute do
+RSpec.describe Gitlab::Database::ShaAttribute do
   let(:sha) do
     '9a573a369a5bfbb9a4a36e98852c21af8a44ea8b'
   end

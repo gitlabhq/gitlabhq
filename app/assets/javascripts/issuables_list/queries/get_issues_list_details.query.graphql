@@ -1,5 +1,3 @@
-#import "~/jira_import/queries/jira_import.fragment.graphql"
-
 query($fullPath: ID!) {
   project(fullPath: $fullPath) {
     issues {
@@ -15,7 +13,8 @@ query($fullPath: ID!) {
     jiraImportStatus
     jiraImports {
       nodes {
-        ...JiraImport
+        importedIssuesCount
+        jiraProjectKey
       }
     }
   }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
   let(:project) { create(:project) }
   let(:client) { double(:client) }
   let(:finder) { described_class.new(project, client) }

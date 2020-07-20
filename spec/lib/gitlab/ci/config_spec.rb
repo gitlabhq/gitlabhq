@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Config do
+RSpec.describe Gitlab::Ci::Config do
   include StubRequests
 
   let_it_be(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::AppTextLogger do
+RSpec.describe Gitlab::AppTextLogger do
   subject { described_class.new('/dev/null') }
 
   let(:hash_message) { { message: 'Message', project_id: 123 } }

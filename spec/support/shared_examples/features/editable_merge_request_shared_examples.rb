@@ -53,11 +53,15 @@ RSpec.shared_examples 'an editable merge request' do
     find('#merge_request_description').native.send_keys('')
     fill_in 'merge_request_description', with: user.to_reference[0..4]
 
-    wait_for_requests
-
     page.within('.atwho-view') do
       expect(page).to have_content(user2.name)
     end
+  end
+
+  it 'description has quick action autocomplete', :js do
+    find('#merge_request_description').native.send_keys('/')
+
+    expect(page).to have_selector('.atwho-container')
   end
 
   it 'has class js-quick-submit in form' do

@@ -14,7 +14,8 @@ website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitl
 Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
 for a complete Kramdown reference.
 
-NOTE: **Note:** We encourage you to view this document as [rendered by GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
+NOTE: **Note:**
+We encourage you to view this document as [rendered by GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
 
 ## GitLab Flavored Markdown (GFM)
 
@@ -54,7 +55,7 @@ repository that were written using some of the nuances of GitLab's RedCarpet ver
 of Markdown. Since CommonMark uses slightly stricter syntax, these documents
 might now appear a little differently since we have transitioned to CommonMark.
 
-It's usually quite easy to fix. For example, numbered lists with nested lists may
+For example, numbered lists with nested lists may
 render incorrectly:
 
 ```markdown
@@ -63,8 +64,8 @@ render incorrectly:
   - milk
 ```
 
-Simply add a space to each nested item to align the `-` with the first character of
-the top list item (`C` in this case):
+To correct their rendering, add a space to each nested item to align the `-` with the first
+character of the top list item (`C` in this case):
 
 ```markdown
 1. Chocolate
@@ -76,7 +77,8 @@ the top list item (`C` in this case):
    - dark
    - milk
 
-NOTE: **Note:** We will flag any significant differences between Redcarpet and CommonMark
+NOTE: **Note:**
+We will flag any significant differences between Redcarpet and CommonMark
   Markdown in this document.
 
 If you have a large volume of Markdown files, it can be tedious to determine
@@ -92,7 +94,7 @@ to change.
 GitLab makes full use of the standard (CommonMark) formatting, but also includes additional
 functionality useful for GitLab users.
 
-It makes use of [new Markdown features](#new-GFM-markdown-extensions),
+It makes use of [new Markdown features](#new-gfm-markdown-extensions),
 not found in standard Markdown:
 
 - [Color "chips" written in HEX, RGB or HSL](#colors)
@@ -241,7 +243,7 @@ Sometimes you want to :monkey: around a bit and add some :star2: to your :speech
 
 You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-If you're new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.
+If you're new to this, don't be :fearful:. You can join the emoji :family:. All you need to do is to look up one of the supported codes.
 
 Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
 ```
@@ -252,7 +254,7 @@ Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/ma
 
 You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/bug.png" width="20px" height="20px" style="display:inline;margin:0"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0"> patches. And if someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/snail.png" width="20px" height="20px" style="display:inline;margin:0"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/birthday.png" width="20px" height="20px" style="display:inline;margin:0">. People will <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/heart.png" width="20px" height="20px" style="display:inline;margin:0"> you for that.
 
-If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px" style="display:inline;margin:0">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px" style="display:inline;margin:0">. All you need to do is to look up one of the supported codes.
+If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px" style="display:inline;margin:0">. You can join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px" style="display:inline;margin:0">. All you need to do is to look up one of the supported codes.
 
 Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0">
 
@@ -261,7 +263,8 @@ when rendered within GitLab, may appear different depending on the OS and browse
 
 Most emoji are natively supported on macOS, Windows, iOS, Android, and will fall back on image-based emoji where there is no support.
 
-NOTE: **Note:** On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/)
+NOTE: **Note:**
+On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/)
 to get full native emoji support. Ubuntu 18.04 (like many modern Linux distributions) has
 this font installed by default.
 
@@ -402,14 +405,15 @@ a^2+b^2=c^2
 
 _Be advised that KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
 
-NOTE: **Note:** This also works for the Asciidoctor `:stem: latexmath`. For details see
+NOTE: **Note:**
+This also works for the Asciidoctor `:stem: latexmath`. For details see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
 ### Special GitLab references
 
-GFM recognizes special GitLab related references. For example, you can easily reference
+GFM recognizes special GitLab related references. For example, you can reference
 an issue, a commit, a team member, or even the whole team within a project. GFM will turn
-that reference into a link so you can navigate between them easily.
+that reference into a link so you can navigate between them.
 
 Additionally, GFM recognizes certain cross-project references and also has a shorthand
 version to reference other projects from the same namespace.
@@ -502,8 +506,6 @@ Second section content.
 
 ![Preview of an auto-generated TOC in a Wiki](img/markdown_toc_preview_v12_9.png)
 
----
-
 ### Wiki-specific Markdown
 
 The following examples show how links inside wikis behave.
@@ -581,7 +583,7 @@ This snippet links to `<wiki_root>/miscellaneous.md`:
 
 ### Embedding metrics in GitLab Flavored Markdown
 
-Metric charts can be embedded within GitLab Flavored Markdown. See [Embedding Metrics within GitLab flavored Markdown](../user/project/integrations/prometheus.md#embedding-metric-charts-within-gitlab-flavored-markdown) for more details.
+Metric charts can be embedded within GitLab Flavored Markdown. See [Embedding Metrics within GitLab flavored Markdown](../operations/metrics/embed.md#embedding-metric-charts-within-gitlab-flavored-markdown) for more details.
 
 ## Standard Markdown and extensions in GitLab
 
@@ -591,7 +593,7 @@ If a functionality is extended, the new option will be listed as a sub-section.
 
 ### Blockquotes
 
-Blockquotes are an easy way to highlight information, such as a side-note. It's generated
+Blockquotes are useful to highlight information, such as a side-note. It's generated
 by starting the lines of the blockquote with `>`:
 
 ```markdown
@@ -637,9 +639,9 @@ you can quote that without having to manually prepend `>` to every line!
 
 ### Code spans and blocks
 
-You can easily highlight anything that should be viewed as code and not simple text.
+You can highlight anything that should be viewed as code and not simple text.
 
-Simple inline code is easily highlighted with single backticks `` ` ``:
+Simple inline code is highlighted with single backticks `` ` ``:
 
 ```markdown
 Inline `code` has `back-ticks around` it.
@@ -781,7 +783,8 @@ Combined emphasis with **asterisks and _underscores_**.
 
 Strikethrough uses two tildes. ~~Scratch this.~~
 
-NOTE: **Note:** Strikethrough is not part of the core Markdown standard, but is part of GFM.
+NOTE: **Note:**
+Strikethrough is not part of the core Markdown standard, but is part of GFM.
 
 #### Multiple underscores in words and mid-word emphasis
 
@@ -1150,7 +1153,7 @@ A line break will be inserted (a new paragraph will start) if the previous text 
 ended with two newlines, like when you hit <kbd>Enter</kbd> twice in a row. If you only
 use one newline (hit <kbd>Enter</kbd> once), the next sentence will be part of the
 same paragraph. This is useful if you want to keep long lines from wrapping, and keep
-them easily editable:
+them editable:
 
 ```markdown
 Here's a line for us to start with.
@@ -1248,7 +1251,8 @@ Do not change to reference style links.
 
 Some text to show that the reference links can follow later.
 
-NOTE: **Note:** Relative links do not allow the referencing of project files in a wiki
+NOTE: **Note:**
+Relative links do not allow the referencing of project files in a wiki
 page, or a wiki page in a project file. The reason for this is that a wiki is always
 in a separate Git repository in GitLab. For example, `[I'm a reference-style link](style)`
 will point the link to `wikis/style` only when the link is inside of a wiki Markdown file.
@@ -1275,7 +1279,7 @@ GFM will auto-link almost any URL you put into your text:
 
 ### Lists
 
-Ordered and unordered lists can be easily created.
+Ordered and unordered lists can be created.
 
 For an ordered list, add the number you want the list
 to start with, like `1.`, followed by a space, at the start of each line for ordered lists.

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe AuthHelper do
+RSpec.describe AuthHelper do
   describe "button_based_providers" do
     it 'returns all enabled providers from devise' do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }

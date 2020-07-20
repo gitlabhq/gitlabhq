@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PropagateIntegrationWorker do
+RSpec.describe PropagateIntegrationWorker do
   describe '#perform' do
     let(:integration) do
       PushoverService.create(

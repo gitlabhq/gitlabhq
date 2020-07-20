@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Search::FoundWikiPage do
+RSpec.describe Gitlab::Search::FoundWikiPage do
   let(:project) { create(:project, :public, :repository) }
 
   describe 'policy' do

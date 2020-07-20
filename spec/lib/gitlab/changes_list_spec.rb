@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::ChangesList do
+RSpec.describe Gitlab::ChangesList do
   let(:valid_changes_string) { "\n000000 570e7b2 refs/heads/my_branch\nd14d6c 6fd24d refs/heads/master" }
   let(:invalid_changes) { 1 }
 

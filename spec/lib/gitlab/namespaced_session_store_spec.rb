@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::NamespacedSessionStore do
+RSpec.describe Gitlab::NamespacedSessionStore do
   let(:key) { :some_key }
 
   context 'current session' do

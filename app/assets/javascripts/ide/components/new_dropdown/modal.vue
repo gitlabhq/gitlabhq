@@ -154,10 +154,7 @@ export default {
           data-qa-selector="file_name_field"
           :placeholder="placeholder"
         />
-        <ul
-          v-if="isCreatingNewFile"
-          class="file-templates prepend-top-default list-inline qa-template-list"
-        >
+        <ul v-if="isCreatingNewFile" class="file-templates gl-mt-3 list-inline qa-template-list">
           <li v-for="(template, index) in templateTypes" :key="index" class="list-inline-item">
             <button
               type="button"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResourceEvents::ChangeLabelsService do
+RSpec.describe ResourceEvents::ChangeLabelsService do
   let_it_be(:project) { create(:project) }
   let_it_be(:author)  { create(:user) }
   let(:resource) { create(:issue, project: project) }

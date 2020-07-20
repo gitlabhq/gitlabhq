@@ -16,27 +16,7 @@ module Gitlab
           limit: limit
         )
         response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_blob, request, timeout: GitalyClient.fast_timeout)
-
-        data = []
-        blob = nil
-        response.each do |msg|
-          if blob.nil?
-            blob = msg
-          end
-
-          data << msg.data
-        end
-
-        return if blob.oid.blank?
-
-        data = data.join
-
-        Gitlab::Git::Blob.new(
-          id: blob.oid,
-          size: blob.size,
-          data: data,
-          binary: Gitlab::Git::Blob.binary?(data)
-        )
+        consume_blob_response(response)
       end
 
       def batch_lfs_pointers(blob_ids)
@@ -48,7 +28,6 @@ module Gitlab
         )
 
         response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_lfs_pointers, request, timeout: GitalyClient.medium_timeout)
-
         map_lfs_pointers(response)
       end
 
@@ -70,8 +49,7 @@ module Gitlab
           :blob_service,
           :get_blobs,
           request,
-          timeout: GitalyClient.fast_timeout
-        )
+          timeout: GitalyClient.fast_timeout)
 
         GitalyClient::BlobsStitcher.new(response)
       end
@@ -96,7 +74,6 @@ module Gitlab
           request,
           timeout: GitalyClient.fast_timeout
         )
-
         map_blob_types(response)
       end
 
@@ -127,7 +104,6 @@ module Gitlab
           request,
           timeout: timeout
         )
-
         map_lfs_pointers(response)
       end
 
@@ -137,11 +113,33 @@ module Gitlab
         )
 
         response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_all_lfs_pointers, request, timeout: GitalyClient.medium_timeout)
-
         map_lfs_pointers(response)
       end
 
       private
+
+      def consume_blob_response(response)
+        data = []
+        blob = nil
+        response.each do |msg|
+          if blob.nil?
+            blob = msg
+          end
+
+          data << msg.data
+        end
+
+        return if blob.oid.blank?
+
+        data = data.join
+
+        Gitlab::Git::Blob.new(
+          id: blob.oid,
+          size: blob.size,
+          data: data,
+          binary: Gitlab::Git::Blob.binary?(data)
+        )
+      end
 
       def map_lfs_pointers(response)
         response.flat_map do |message|

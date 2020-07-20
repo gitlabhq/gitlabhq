@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectCiCdSetting do
+RSpec.describe ProjectCiCdSetting do
   describe 'validations' do
     it 'validates default_git_depth is between 0 and 1000 or nil' do
       expect(subject).to validate_numericality_of(:default_git_depth)

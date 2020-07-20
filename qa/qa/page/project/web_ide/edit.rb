@@ -50,6 +50,15 @@ module QA
             element :first_file_button
           end
 
+          view 'app/assets/javascripts/vue_shared/components/file_row.vue' do
+            element :file_name_content
+          end
+
+          view 'app/assets/javascripts/ide/components/new_dropdown/index.vue' do
+            element :dropdown_button
+            element :rename_move_button
+          end
+
           def has_file?(file_name)
             within_element(:file_list) do
               page.has_content? file_name
@@ -131,6 +140,14 @@ module QA
             click_element(:first_file_button, Page::Component::WebIDE::Modal::CreateNewFile)
             fill_element(:file_name_field, file_name)
             click_button('Create file')
+          end
+
+          def rename_file(file_name, new_file_name)
+            click_element(:file_name_content, text: file_name)
+            click_element(:dropdown_button)
+            click_element(:rename_move_button, Page::Component::WebIDE::Modal::CreateNewFile)
+            fill_element(:file_name_field, new_file_name)
+            click_button('Rename file')
           end
         end
       end

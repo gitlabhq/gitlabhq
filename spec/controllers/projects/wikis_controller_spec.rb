@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::WikisController do
   it_behaves_like 'wiki controller actions' do
-    let(:container) { create(:project, :public, :repository, namespace: user.namespace) }
+    let(:container) { create(:project, :public, namespace: user.namespace) }
     let(:routing_params) { { namespace_id: container.namespace, project_id: container } }
   end
 end

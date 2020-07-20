@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EntityRequest do
+RSpec.describe EntityRequest do
   subject do
     described_class.new(user: 'user', project: 'some project')
   end

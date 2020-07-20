@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SystemCheck::BaseCheck do
+RSpec.describe SystemCheck::BaseCheck do
   context 'helpers on instance level' do
     it 'responds to SystemCheck::Helpers methods' do
       expect(subject).to respond_to :fix_and_rerun, :for_more_information, :see_installation_guide_section,

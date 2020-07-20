@@ -4,19 +4,18 @@ require 'spec_helper'
 
 RSpec.describe AlertManagement::CreateAlertIssueService do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
   let_it_be(:payload) do
     {
-      'annotations' => {
-        'title' => 'Alert title'
-      },
       'startsAt' => '2020-04-27T10:10:22.265949279Z',
       'generatorURL' => 'http://8d467bd4607a:9090/graph?g0.expr=vector%281%29&g0.tab=1'
     }
   end
   let_it_be(:generic_alert, reload: true) { create(:alert_management_alert, :triggered, project: project, payload: payload) }
-  let_it_be(:prometheus_alert) { create(:alert_management_alert, :triggered, :prometheus, project: project, payload: payload) }
+  let_it_be(:prometheus_alert, reload: true) { create(:alert_management_alert, :triggered, :prometheus, project: project, payload: payload) }
   let(:alert) { generic_alert }
+  let(:alert_presenter) { alert.present }
   let(:created_issue) { Issue.last! }
 
   describe '#execute' do
@@ -29,7 +28,7 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
         .and_return(can_create)
     end
 
-    shared_examples 'creating an alert' do
+    shared_examples 'creating an alert issue' do
       it 'creates an issue' do
         expect { execute }.to change { project.issues.count }.by(1)
       end
@@ -48,10 +47,26 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
         expect(alert.reload.issue_id).to eq(created_issue.id)
       end
 
-      it 'sets issue author to the current user' do
-        execute
+      it 'creates a system note' do
+        expect { execute }.to change { alert.reload.notes.count }.by(1)
+      end
+    end
 
+    shared_examples 'setting an issue attributes' do
+      before do
+        execute
+      end
+
+      it 'sets issue author to the current user' do
         expect(created_issue.author).to eq(user)
+      end
+
+      it 'sets the issue title' do
+        expect(created_issue.title).to eq(alert.title)
+      end
+
+      it 'sets the issue description' do
+        expect(created_issue.description).to include(alert_presenter.issue_summary_markdown.strip)
       end
     end
 
@@ -69,27 +84,33 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
       context 'when the alert is prometheus alert' do
         let(:alert) { prometheus_alert }
+        let(:issue) { subject.payload[:issue] }
 
-        it_behaves_like 'creating an alert'
+        it_behaves_like 'creating an alert issue'
+        it_behaves_like 'setting an issue attributes'
+        it_behaves_like 'create alert issue sets issue labels'
       end
 
       context 'when the alert is generic' do
         let(:alert) { generic_alert }
+        let(:issue) { subject.payload[:issue] }
 
-        it_behaves_like 'creating an alert'
+        it_behaves_like 'creating an alert issue'
+        it_behaves_like 'setting an issue attributes'
+        it_behaves_like 'create alert issue sets issue labels'
       end
 
       context 'when issue cannot be created' do
-        let(:alert) { prometheus_alert }
+        let(:alert) { generic_alert }
 
         before do
-          # set invalid payload for Prometheus alert
-          alert.update!(payload: {})
+          # Invalid alert
+          alert.update_columns(title: '')
         end
 
         it 'has an unsuccessful status' do
           expect(execute).to be_error
-          expect(execute.message).to eq('invalid alert')
+          expect(execute.message).to eq("Title can't be blank")
         end
       end
 

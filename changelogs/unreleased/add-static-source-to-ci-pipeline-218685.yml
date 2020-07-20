@@ -1,0 +1,5 @@
+---
+title: Ability to use an arbitrary YAML blob to create CI pipelines
+merge_request: 34706
+author:
+type: added

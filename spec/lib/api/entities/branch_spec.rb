@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Entities::Branch do
+RSpec.describe API::Entities::Branch do
   describe '#as_json' do
     subject { entity.as_json }
 

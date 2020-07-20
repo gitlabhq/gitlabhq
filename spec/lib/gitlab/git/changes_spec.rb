@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Git::Changes do
+RSpec.describe Gitlab::Git::Changes do
   let(:changes) { described_class.new }
 
   describe '#includes_branches?' do

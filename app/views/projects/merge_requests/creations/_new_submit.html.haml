@@ -20,8 +20,8 @@
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
       .merge-request-tabs-container
         .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
-          .fade-left= icon('angle-left')
-          .fade-right= icon('angle-right')
+          .fade-left= sprite_icon('chevron-lg-left', size: 12)
+          .fade-right= sprite_icon('chevron-lg-right', size: 12)
           %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.js-tabs-affix
             %li.commits-tab.new-tab
               = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::AvatarRestorer do
+RSpec.describe Gitlab::ImportExport::AvatarRestorer do
   include UploadHelpers
 
   let(:shared) { project.import_export_shared }

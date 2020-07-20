@@ -4,7 +4,8 @@ module QA
   module Page
     module Project
       module Snippet
-        class New < Page::Dashboard::Snippet::New
+        class New < Page::Base
+          include Page::Component::NewSnippet
           include Component::LazyLoader
           view 'app/views/shared/empty_states/_snippets.html.haml' do
             element :create_first_snippet_link

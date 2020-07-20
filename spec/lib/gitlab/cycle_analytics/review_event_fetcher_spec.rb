@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::ReviewEventFetcher do
+RSpec.describe Gitlab::CycleAnalytics::ReviewEventFetcher do
   let(:stage_name) { :review }
 
   it_behaves_like 'default query config'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupPolicy do
+RSpec.describe GroupPolicy do
   include_context 'GroupPolicy context'
 
   context 'public group with no user' do
@@ -154,13 +154,17 @@ describe GroupPolicy do
   context 'admin' do
     let(:current_user) { admin }
 
-    it do
+    specify do
       expect_allowed(*read_group_permissions)
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*maintainer_permissions)
       expect_allowed(*owner_permissions)
+    end
+
+    context 'with admin mode', :enable_admin_mode do
+      specify { expect_allowed(*admin_permissions) }
     end
   end
 
@@ -658,6 +662,63 @@ describe GroupPolicy do
         let(:current_user) { send(role) }
 
         it { expect_disallowed(:update_max_artifacts_size) }
+      end
+    end
+  end
+
+  describe 'design activity' do
+    let_it_be(:group) { create(:group, :public) }
+    let(:current_user) { nil }
+
+    subject { described_class.new(current_user, group) }
+
+    context 'when design management is not available' do
+      it { is_expected.not_to be_allowed(:read_design_activity) }
+
+      context 'even when there are projects in the group' do
+        before do
+          create_list(:project_group_link, 2, group: group)
+        end
+
+        it { is_expected.not_to be_allowed(:read_design_activity) }
+      end
+    end
+
+    context 'when design management is available globally' do
+      include DesignManagementTestHelpers
+
+      before do
+        enable_design_management
+      end
+
+      context 'the group has no projects' do
+        it { is_expected.not_to be_allowed(:read_design_activity) }
+      end
+
+      context 'the group has a project' do
+        let(:project) { create(:project, :public) }
+
+        before do
+          create(:project_group_link, project: project, group: group)
+        end
+
+        it { is_expected.to be_allowed(:read_design_activity) }
+
+        context 'which does not have design management enabled' do
+          before do
+            project.update(lfs_enabled: false)
+          end
+
+          it { is_expected.not_to be_allowed(:read_design_activity) }
+
+          context 'but another project does' do
+            before do
+              create(:project_group_link, project: create(:project, :public), group: group)
+            end
+
+            it { is_expected.to be_allowed(:read_design_activity) }
+          end
+        end
       end
     end
   end

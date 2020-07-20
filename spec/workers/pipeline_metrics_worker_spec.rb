@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PipelineMetricsWorker do
+RSpec.describe PipelineMetricsWorker do
   let(:project) { create(:project, :repository) }
 
   let!(:merge_request) do
@@ -18,7 +18,7 @@ describe PipelineMetricsWorker do
            ref: 'master',
            sha: project.repository.commit('master').id,
            started_at: 1.hour.ago,
-           finished_at: Time.now)
+           finished_at: Time.current)
   end
 
   let(:status) { 'pending' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::View::Presenter::Factory do
+RSpec.describe Gitlab::View::Presenter::Factory do
   let(:build) { Ci::Build.new }
 
   describe '#initialize' do

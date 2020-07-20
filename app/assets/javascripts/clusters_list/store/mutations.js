@@ -1,8 +1,11 @@
 import * as types from './mutation_types';
 
 export default {
-  [types.SET_LOADING_STATE](state, value) {
-    state.loading = value;
+  [types.SET_LOADING_CLUSTERS](state, value) {
+    state.loadingClusters = value;
+  },
+  [types.SET_LOADING_NODES](state, value) {
+    state.loadingNodes = value;
   },
   [types.SET_CLUSTERS_DATA](state, { data, paginationInformation }) {
     Object.assign(state, {

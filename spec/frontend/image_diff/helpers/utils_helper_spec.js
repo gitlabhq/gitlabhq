@@ -1,6 +1,7 @@
 import * as utilsHelper from '~/image_diff/helpers/utils_helper';
 import ImageBadge from '~/image_diff/image_badge';
 import * as mockData from '../mock_data';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('utilsHelper', () => {
   const { noteId, discussionId, image, imageProperties, imageMeta } = mockData;
@@ -36,7 +37,7 @@ describe('utilsHelper', () => {
     beforeEach(() => {
       const imageFrameEl = document.createElement('div');
       imageFrameEl.innerHTML = `
-        <img src="${gl.TEST_HOST}/image.png">
+        <img src="${TEST_HOST}/image.png">
       `;
       discussionEl = document.createElement('div');
       discussionEl.dataset.discussionId = discussionId;

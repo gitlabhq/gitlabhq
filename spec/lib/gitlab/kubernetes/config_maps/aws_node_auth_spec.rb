@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::ConfigMaps::AwsNodeAuth do
+RSpec.describe Gitlab::Kubernetes::ConfigMaps::AwsNodeAuth do
   describe '#generate' do
     let(:role) { 'arn:aws:iam::123456789012:role/node-instance-role' }
 

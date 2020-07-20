@@ -22,7 +22,7 @@ When a feature is no longer necessary, you can [archive the related requirement]
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [GitLab 12.10 Introduces Requirements Management](https://www.youtube.com/watch?v=uSS7oUNSEoU).
 
-![requirements list view](img/requirements_list_view_v12_10.png)
+![requirements list view](img/requirements_list_v13_1.png)
 
 ## Create a requirement
 
@@ -38,8 +38,6 @@ To create a requirement:
 You will see the newly created requirement on the top of the list, as the requirements
 list is sorted by creation date in descending order.
 
-![requirement create view](img/requirement_create_view_v12_10.png)
-
 ## Edit a requirement
 
 You can edit a requirement (if you have the necessary privileges) from the requirements
@@ -51,16 +49,12 @@ To edit a requirement:
 1. Update the title in text input field.
 1. Click **Save changes**.
 
-![requirement edit view](img/requirement_edit_view_v12_10.png)
-
 ## Archive a requirement
 
 You can archive an open requirement (if you have the necessary privileges) while
 you're in the **Open** tab.
 
-From the requirements list page, click **Archive** (**{archive}**).
-
-![requirement archive view](img/requirement_archive_view_v12_10.png)
+To archive a requirement, click **Archive** (**{archive}**).
 
 As soon as a requirement is archived, it no longer appears in the **Open** tab.
 
@@ -68,35 +62,37 @@ As soon as a requirement is archived, it no longer appears in the **Open** tab.
 
 You can view the list of archived requirements in the **Archived** tab.
 
-![archived requirements list](img/requirements_archived_list_view_v12_10.png)
+![archived requirements list](img/requirements_archived_list_view_v13_1.png)
 
 To reopen an archived requirement, click **Reopen**.
 
 As soon as a requirement is reopened, it no longer appears in the **Archived** tab.
 
-## Search for a requirement from the requirements list page
+## Search for a requirement
 
-> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212543) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
 
-You can search for a requirement from the list of requirements using filtered search bar (similar to
-that of Issues and Merge Requests) based on following parameters:
+You can search for a requirement from the requirements list page based on the following criteria:
 
-- Title
-- Author username
+- Requirement title
+- Author's username
 
-To search, go to the list of requirements and click the field **Search or filter results**.
-It will display a dropdown menu, from which you can add an author. You can also enter plain
-text to search by epic title or description. When done, press <kbd>Enter</kbd> on your
-keyboard to filter the list.
+To search for a requirement:
 
-You can also sort requirements list by:
+1. In a project, go to **{requirements}** **Requirements > List**.
+1. Click the **Search or filter results** field. A dropdown menu appears.
+1. Select the requirement author from the dropdown or enter plain text to search by requirement title.
+1. Press <kbd>Enter</kbd> on your keyboard to filter the list.
+
+You can also sort the requirements list by:
 
 - Created date
 - Last updated
 
 ## Allow requirements to be satisfied from a CI job
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/215514) ability to specify individual requirements and their statuses in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.
 
 GitLab supports [requirements test
 reports](../../../ci/pipelines/job_artifacts.md#artifactsreportsrequirements-ultimate) now.
@@ -132,6 +128,32 @@ the requirement report is checked for the "all passed" record
 (`{"*":"passed"}`), and on success, it marks all existing open requirements as
 Satisfied.
 
+#### Specifying individual requirements
+
+It is possible to specify individual requirements and their statuses.
+
+If the following requirements exist:
+
+- `REQ-1` (with IID `1`)
+- `REQ-2` (with IID `2`)
+- `REQ-3` (with IID `3`)
+
+It is possible to specify that the first requirement passed, and the second failed.
+Valid values are "passed" and "failed".
+By omitting a requirement IID (in this case `REQ-3`'s IID `3`), no result is noted.
+
+```yaml
+requirements_confirmation:
+  when: manual
+  allow_failure: false
+  script:
+    - mkdir tmp
+    - echo "{\"1\":\"passed\", \"2\":\"failed\"}" > tmp/requirements.json
+  artifacts:
+    reports:
+      requirements: tmp/requirements.json
+```
+
 ### Add the manual job to CI conditionally
 
 To configure your CI to include the manual job only when there are some open
@@ -140,9 +162,9 @@ requirements, add a rule which checks `CI_HAS_OPEN_REQUIREMENTS` CI variable.
 ```yaml
 requirements_confirmation:
   rules:
-  - if: "$CI_HAS_OPEN_REQUIREMENTS" == "true"
-    when: manual
-  - when: never
+    - if: "$CI_HAS_OPEN_REQUIREMENTS" == "true"
+      when: manual
+    - when: never
   allow_failure: false
   script:
     - mkdir tmp

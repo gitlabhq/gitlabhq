@@ -16,6 +16,75 @@ RSpec.describe 'User edits a merge request', :js do
     visit(edit_project_merge_request_path(project, merge_request))
   end
 
+  describe 'Squash commits' do
+    it 'override MR setting if "Required" is saved' do
+      merge_request.update!(squash: false)
+
+      project.project_setting.update!(squash_option: 'always')
+      visit(edit_project_merge_request_path(project, merge_request))
+      click_button('Save changes')
+
+      project.project_setting.update!(squash_option: 'default_off')
+      visit(edit_project_merge_request_path(project, merge_request))
+
+      expect(find("#merge_request_squash").selected?).to be(true)
+    end
+
+    it 'recovers MR squash setting if "Required" is not saved' do
+      merge_request.update!(squash: false)
+
+      project.project_setting.update!(squash_option: 'always')
+      visit(edit_project_merge_request_path(project, merge_request))
+
+      project.project_setting.update!(squash_option: 'default_on')
+      visit(edit_project_merge_request_path(project, merge_request))
+
+      expect(find("#merge_request_squash").selected?).to be(false)
+    end
+
+    it 'does not override MR squash setting if "Do not allow" is saved' do
+      merge_request.update!(squash: true)
+
+      project.project_setting.update!(squash_option: 'never')
+      visit(edit_project_merge_request_path(project, merge_request))
+      click_button('Save changes')
+
+      expect(merge_request.squash).to be true
+    end
+
+    it 'displays "Required in this project" for "Required" project setting squash option' do
+      project.project_setting.update!(squash_option: 'always')
+      visit(edit_project_merge_request_path(project, merge_request))
+
+      expect(page).to have_content('Squash commits when merge request is accepted.')
+      expect(page).to have_content("Required in this project")
+    end
+
+    it 'does not display message for "Allow" project setting squash option' do
+      project.project_setting.update!(squash_option: 'default_off')
+      visit(edit_project_merge_request_path(project, merge_request))
+
+      expect(page).to have_content('Squash commits when merge request is accepted.')
+      expect(page).not_to have_content("Required in this project")
+    end
+
+    it 'does not display message for "Encourage" project setting squash option' do
+      project.project_setting.update!(squash_option: 'default_on')
+      visit(edit_project_merge_request_path(project, merge_request))
+
+      expect(page).to have_content('Squash commits when merge request is accepted.')
+      expect(page).not_to have_content("Required in this project")
+    end
+
+    it 'is hidden for "Do not allow" project setting squash option' do
+      project.project_setting.update!(squash_option: 'never')
+      visit(edit_project_merge_request_path(project, merge_request))
+
+      expect(page).not_to have_content('Squash commits when merge request is accepted.')
+      expect(page).not_to have_css('#merge_request_squash')
+    end
+  end
+
   it 'changes the target branch' do
     expect(page).to have_content('From master into feature')
 

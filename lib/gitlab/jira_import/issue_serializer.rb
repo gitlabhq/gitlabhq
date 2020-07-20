@@ -52,7 +52,9 @@ module Gitlab
       end
 
       def map_user_id(jira_user)
-        Gitlab::JiraImport::UserMapper.new(project, jira_user).execute&.id
+        return unless jira_user&.dig('accountId')
+
+        Gitlab::JiraImport.get_user_mapping(project.id, jira_user['accountId'])
       end
 
       def reporter

@@ -5,7 +5,6 @@ import FileTable from './table/index.vue';
 import getRefMixin from '../mixins/get_ref';
 import getFiles from '../queries/getFiles.query.graphql';
 import getProjectPath from '../queries/getProjectPath.query.graphql';
-import getVueFileListLfsBadge from '../queries/getVueFileListLfsBadge.query.graphql';
 import FilePreview from './preview/index.vue';
 import { readmeFile } from '../utils/readme';
 
@@ -20,9 +19,6 @@ export default {
   apollo: {
     projectPath: {
       query: getProjectPath,
-    },
-    vueFileListLfsBadge: {
-      query: getVueFileListLfsBadge,
     },
   },
   props: {
@@ -47,7 +43,6 @@ export default {
         blobs: [],
       },
       isLoadingFiles: false,
-      vueFileListLfsBadge: false,
     };
   },
   computed: {
@@ -82,7 +77,6 @@ export default {
             path: this.path || '/',
             nextPageCursor: this.nextPageCursor,
             pageSize: PAGE_SIZE,
-            vueLfsEnabled: this.vueFileListLfsBadge,
           },
         })
         .then(({ data }) => {

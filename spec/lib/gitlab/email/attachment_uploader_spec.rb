@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::Email::AttachmentUploader do
+RSpec.describe Gitlab::Email::AttachmentUploader do
   describe "#execute" do
     let(:project) { create(:project) }
     let(:message_raw) { fixture_file("emails/attachment.eml") }

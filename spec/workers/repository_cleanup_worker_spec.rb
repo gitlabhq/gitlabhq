@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RepositoryCleanupWorker do
+RSpec.describe RepositoryCleanupWorker do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

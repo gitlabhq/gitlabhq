@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ErrorTracking::ListIssuesService do
+RSpec.describe ErrorTracking::ListIssuesService do
   include_context 'sentry error tracking context'
 
   let(:params) { { search_term: 'something', sort: 'last_seen', cursor: 'some-cursor' } }

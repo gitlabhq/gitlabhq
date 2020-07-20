@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UploadedFile do
+RSpec.describe UploadedFile do
   let(:temp_dir) { Dir.tmpdir }
   let(:temp_file) { Tempfile.new(%w[test test], temp_dir) }
 

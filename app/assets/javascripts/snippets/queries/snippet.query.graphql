@@ -7,7 +7,7 @@ query GetSnippetQuery($ids: [ID!]) {
     edges {
       node {
         ...SnippetBase
-        ...Project
+        ...SnippetProject
         author {
           ...Author
         }

@@ -2,6 +2,7 @@
 
 require_relative '../spec/simplecov_env'
 SimpleCovEnv.configure_profile
+SimpleCovEnv.configure_formatter
 
 module SimpleCov
   module ResultMerger

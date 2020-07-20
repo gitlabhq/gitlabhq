@@ -124,7 +124,7 @@ describe QA::Specs::Helpers::Quarantine do
     end
   end
 
-  describe '.skip_or_run_quarantined_tests' do
+  describe '.skip_or_run_quarantined_tests_or_contexts' do
     context 'with no tag focused' do
       before do
         described_class.configure_rspec
@@ -146,6 +146,37 @@ describe QA::Specs::Helpers::Quarantine do
         end
 
         expect(group.examples.first.execution_result.status).to eq(:passed)
+      end
+
+      context 'with environment set' do
+        before do
+          QA::Runtime::Scenario.define(:gitlab_address, 'https://staging.gitlab.com')
+          described_class.configure_rspec
+        end
+
+        it 'is skipped when set on contexts or descriptions' do
+          group = describe_successfully 'Quarantined in staging', quarantine: { only: { subdomain: :staging } } do
+            it('runs in staging') {}
+          end
+
+          expect(group.examples.first.execution_result.status).to eq(:pending)
+          expect(group.examples.first.execution_result.pending_message)
+            .to eq('In quarantine')
+        end
+
+        it 'is skipped only in staging' do
+          group = describe_successfully do
+            it('skipped in staging', quarantine: { only: { subdomain: :staging } }) {}
+            it('runs in staging', quarantine: { only: :production }) {}
+            it('skipped in staging also', quarantine: { only: { subdomain: %i[release staging] } }) {}
+            it('runs in any env') {}
+          end
+
+          expect(group.examples[0].execution_result.status).to eq(:pending)
+          expect(group.examples[1].execution_result.status).to eq(:passed)
+          expect(group.examples[2].execution_result.status).to eq(:pending)
+          expect(group.examples[3].execution_result.status).to eq(:passed)
+        end
       end
 
       context 'quarantine message' do
@@ -278,6 +309,96 @@ describe QA::Specs::Helpers::Quarantine do
 
         expect(group.examples.first.execution_result.status).to be(:passed)
       end
+    end
+  end
+
+  describe 'running against specific environments' do
+    before do
+      QA::Runtime::Scenario.define(:gitlab_address, 'https://staging.gitlab.com')
+      described_class.configure_rspec
+    end
+
+    describe 'description and context blocks' do
+      context 'with environment set' do
+        it 'can apply to contexts or descriptions' do
+          group = describe_successfully 'Runs in staging', only: { subdomain: :staging } do
+            it('runs in staging') {}
+          end
+
+          expect(group.examples[0].execution_result.status).to eq(:passed)
+        end
+      end
+
+      context 'with different environment set' do
+        before do
+          QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.com')
+          described_class.configure_rspec
+        end
+
+        it 'does not run against production' do
+          group = describe_successfully 'Runs in staging', :something, only: { subdomain: :staging } do
+            it('runs in staging') {}
+          end
+
+          expect(group.examples[0].execution_result.status).to eq(:pending)
+        end
+      end
+    end
+
+    it 'runs only in staging' do
+      group = describe_successfully do
+        it('runs in staging', only: { subdomain: :staging }) {}
+        it('doesnt run in staging', only: :production) {}
+        it('runs in staging also', only: { subdomain: %i[release staging] }) {}
+        it('runs in any env') {}
+      end
+
+      expect(group.examples[0].execution_result.status).to eq(:passed)
+      expect(group.examples[1].execution_result.status).to eq(:pending)
+      expect(group.examples[2].execution_result.status).to eq(:passed)
+      expect(group.examples[3].execution_result.status).to eq(:passed)
+    end
+
+    context 'custom env' do
+      before do
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://release.gitlab.net')
+      end
+
+      it 'runs on a custom environment' do
+        group = describe_successfully do
+          it('runs on release gitlab net', only: { tld: '.net', subdomain: :release, domain: 'gitlab' } ) {}
+          it('does not run on release', only: :production ) {}
+        end
+
+        expect(group.examples.first.execution_result.status).to eq(:passed)
+        expect(group.examples.last.execution_result.status).to eq(:pending)
+      end
+    end
+
+    context 'production' do
+      before do
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.com/')
+      end
+
+      it 'runs on production' do
+        group = describe_successfully do
+          it('runs on prod', only: :production ) {}
+          it('does not run in prod', only: { subdomain: :staging }) {}
+          it('runs in prod and staging', only: { subdomain: /(staging.)?/, domain: 'gitlab' }) {}
+        end
+
+        expect(group.examples[0].execution_result.status).to eq(:passed)
+        expect(group.examples[1].execution_result.status).to eq(:pending)
+        expect(group.examples[2].execution_result.status).to eq(:passed)
+      end
+    end
+
+    it 'outputs a message for invalid environments' do
+      group = describe_successfully do
+        it('will skip', only: :production) {}
+      end
+
+      expect(group.examples.first.execution_result.pending_message).to match(/[Tt]est.*not compatible.*environment/)
     end
   end
 end

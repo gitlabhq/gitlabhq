@@ -1,0 +1,5 @@
+---
+title: Fix broken todo GraphQL API filtering when filtering by type
+merge_request: 34790
+author:
+type: fixed

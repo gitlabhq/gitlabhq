@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe HashedStorage::MigratorWorker do
+RSpec.describe HashedStorage::MigratorWorker do
   subject(:worker) { described_class.new }
 
   let(:projects) { create_list(:project, 2, :legacy_storage, :empty_repo) }

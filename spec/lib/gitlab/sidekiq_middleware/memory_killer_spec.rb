@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqMiddleware::MemoryKiller do
+RSpec.describe Gitlab::SidekiqMiddleware::MemoryKiller do
   subject { described_class.new }
 
   let(:pid) { 999 }

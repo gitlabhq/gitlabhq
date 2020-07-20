@@ -5,7 +5,7 @@ require 'haml_lint'
 require 'haml_lint/spec'
 require Rails.root.join('haml_lint/linter/no_plain_nodes')
 
-describe HamlLint::Linter::NoPlainNodes do
+RSpec.describe HamlLint::Linter::NoPlainNodes do
   include_context 'linter'
 
   context 'reports when a tag has an inline plain node' do

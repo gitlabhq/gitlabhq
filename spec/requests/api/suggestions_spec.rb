@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Suggestions do
+RSpec.describe API::Suggestions do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

@@ -1,6 +1,6 @@
 - file_hooks = Gitlab::FileHook.files
 
-.row.prepend-top-default
+.row.gl-mt-3
   .col-lg-4
     %h4.gl-mt-0
       = _('File Hooks')
@@ -9,7 +9,7 @@
       = link_to _('For more information, see the File Hooks documentation.'), help_page_path('administration/file_hooks')
 
 
-  .col-lg-8.append-bottom-default
+  .col-lg-8.gl-mb-3
     - if file_hooks.any?
       .card
         .card-header

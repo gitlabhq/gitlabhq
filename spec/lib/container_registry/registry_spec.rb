@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ContainerRegistry::Registry do
+RSpec.describe ContainerRegistry::Registry do
   let(:path) { nil }
   let(:registry) { described_class.new('http://example.com', path: path) }
 

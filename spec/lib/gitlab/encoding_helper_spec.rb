@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::EncodingHelper do
+RSpec.describe Gitlab::EncodingHelper do
   let(:ext_class) { Class.new { extend Gitlab::EncodingHelper } }
   let(:binary_string) { File.read(Rails.root + "spec/fixtures/dk.png") }
 

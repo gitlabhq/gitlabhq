@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
+require 'fast_spec_helper'
 require 'rubocop'
-require 'rubocop/rspec/support'
-
 require_relative '../../../../rubocop/cop/migration/timestamps'
 
-describe RuboCop::Cop::Migration::Timestamps do
+RSpec.describe RuboCop::Cop::Migration::Timestamps, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::HousekeepingService do
+RSpec.describe Projects::HousekeepingService do
   subject { described_class.new(project) }
 
   let_it_be(:project) { create(:project, :repository) }

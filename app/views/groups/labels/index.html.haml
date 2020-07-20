@@ -1,4 +1,4 @@
-- page_title 'Labels'
+- page_title _('Labels')
 - can_admin_label = can?(current_user, :admin_label, @group)
 - search = params[:search]
 - subscribed = params[:subscribed]
@@ -8,7 +8,7 @@
   #promote-label-modal
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
-  .labels-container.prepend-top-5
+  .labels-container.gl-mt-2
     - if @labels.any?
       .text-muted
         = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuable_types.to_sentence }
@@ -27,5 +27,5 @@
   = render 'shared/empty_states/labels'
 
 %template#js-badge-item-template
-  %li.label-link-item.js-priority-badge.inline.prepend-left-10
+  %li.label-link-item.js-priority-badge.inline.gl-ml-3
     .label-badge.label-badge-blue= _('Prioritized label')

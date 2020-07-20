@@ -7,12 +7,14 @@ import eventHub from '../eventhub';
 import DeployKeysService from '../service';
 import DeployKeysStore from '../store';
 import KeysPanel from './keys_panel.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     KeysPanel,
     NavigationTabs,
     GlLoadingIcon,
+    Icon,
   },
   props: {
     endpoint: {
@@ -115,7 +117,7 @@ export default {
 </script>
 
 <template>
-  <div class="append-bottom-default deploy-keys">
+  <div class="gl-mb-3 deploy-keys">
     <gl-loading-icon
       v-if="isLoading && !hasKeys"
       :label="s__('DeployKeys|Loading deploy keys')"
@@ -123,8 +125,8 @@ export default {
     />
     <template v-else-if="hasKeys">
       <div class="top-area scrolling-tabs-container inner-page-scroll-tabs">
-        <div class="fade-left"><i class="fa fa-angle-left" aria-hidden="true"> </i></div>
-        <div class="fade-right"><i class="fa fa-angle-right" aria-hidden="true"> </i></div>
+        <div class="fade-left"><icon name="chevron-lg-left" :size="12" /></div>
+        <div class="fade-right"><icon name="chevron-lg-right" :size="12" /></div>
 
         <navigation-tabs :tabs="tabs" scope="deployKeys" @onChangeTab="onChangeTab" />
       </div>

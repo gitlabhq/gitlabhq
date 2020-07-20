@@ -1,4 +1,4 @@
-.row.prepend-top-default.append-bottom-default.triggers-container
+.row.gl-mt-3.gl-mb-3.triggers-container
   .col-lg-12
     .card
       .card-header
@@ -21,7 +21,7 @@
                 %th
               = render partial: 'projects/triggers/trigger', collection: @triggers, as: :trigger
         - else
-          %p.settings-message.text-center.append-bottom-default
+          %p.settings-message.text-center.gl-mb-3
             No triggers have been created yet. Add one using the form above.
 
       .card-footer
@@ -38,7 +38,7 @@
           %code REF_NAME
           with the trigger token and the branch or tag name respectively.
 
-        %h5.prepend-top-default
+        %h5.gl-mt-3
           Use cURL
 
         %p.light
@@ -51,7 +51,7 @@
                  -F token=TOKEN \
                  -F ref=REF_NAME \
                  #{builds_trigger_url(@project.id)}
-        %h5.prepend-top-default
+        %h5.gl-mt-3
           Use .gitlab-ci.yml
 
         %p.light
@@ -66,7 +66,7 @@
               stage: deploy
               script:
                 - "curl -X POST -F token=TOKEN -F ref=REF_NAME #{builds_trigger_url(@project.id)}"
-        %h5.prepend-top-default
+        %h5.gl-mt-3
           Use webhook
 
         %p.light
@@ -76,7 +76,7 @@
         %pre
           :plain
              #{builds_trigger_url(@project.id, ref: 'REF_NAME')}?token=TOKEN
-        %h5.prepend-top-default
+        %h5.gl-mt-3
           Pass job variables
 
         %p.light

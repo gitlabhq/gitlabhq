@@ -15,8 +15,7 @@ RSpec.describe 'User creates blob in new project', :js do
     it 'allows the user to add a new file' do
       click_link 'New file'
 
-      find('#editor')
-      execute_script('ace.edit("editor").setValue("Hello world")')
+      execute_script("monaco.editor.getModels()[0].setValue('Hello world')")
 
       fill_in(:file_name, with: 'dummy-file')
 

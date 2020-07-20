@@ -1,4 +1,5 @@
 - issuable = local_assigns.fetch(:issuable)
+- project = local_assigns.fetch(:project)
 
 - return unless issuable.is_a?(MergeRequest)
 - return if issuable.closed_without_fork?
@@ -9,14 +10,22 @@
       = _('Merge options')
   .col-sm-10
     - if issuable.can_remove_source_branch?(current_user)
-      .form-check.append-bottom-default
+      .form-check.gl-mb-3
         = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil
         = check_box_tag 'merge_request[force_remove_source_branch]', '1', issuable.force_remove_source_branch?, class: 'form-check-input'
         = label_tag 'merge_request[force_remove_source_branch]', class: 'form-check-label' do
           Delete source branch when merge request is accepted.
-    .form-check
-      = hidden_field_tag 'merge_request[squash]', '0', id: nil
-      = check_box_tag 'merge_request[squash]', '1', issuable.squash, class: 'form-check-input'
-      = label_tag 'merge_request[squash]', class: 'form-check-label' do
-        Squash commits when merge request is accepted.
-        = link_to icon('question-circle'), help_page_path('user/project/merge_requests/squash_and_merge'), target: '_blank'
+    - if !project.squash_never?
+      .form-check
+        - if project.squash_always?
+          = hidden_field_tag 'merge_request[squash]', '1', id: nil
+          = check_box_tag 'merge_request[squash]', '1', project.squash_enabled_by_default?, class: 'form-check-input', disabled: 'true'
+        - else
+          = hidden_field_tag 'merge_request[squash]', '0', id: nil
+          = check_box_tag 'merge_request[squash]', '1', issuable_squash_option?(issuable, project), class: 'form-check-input'
+        = label_tag 'merge_request[squash]', class: 'form-check-label' do
+          Squash commits when merge request is accepted.
+          = link_to icon('question-circle'), help_page_path('user/project/merge_requests/squash_and_merge'), target: '_blank'
+        - if project.squash_always?
+          .gl-text-gray-600
+            = _('Required in this project.')

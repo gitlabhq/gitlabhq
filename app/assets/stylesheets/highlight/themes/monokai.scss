@@ -1,6 +1,6 @@
 /* https://github.com/richleland/pygments-css/blob/master/monokai.css */
 
-@import "../common";
+@import '../common';
 
 /*
 * Monokai Colors
@@ -211,7 +211,10 @@ $monokai-gi: #a6e22e;
 
   .hll { background-color: $monokai-hll; }
   .c { color: $monokai-c; } /* Comment */
-  .err { color: $monokai-err-color; background-color: $monokai-err-bg; } /* Error */
+  .err { /* Error */
+    color: $monokai-err-color;
+    background-color: $monokai-err-bg;
+  }
   .k { color: $monokai-k; } /* Keyword */
   .l { color: $monokai-l; } /* Literal */
   .n { color: $monokai-n; } /* Name */

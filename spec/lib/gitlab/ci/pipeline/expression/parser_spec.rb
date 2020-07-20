@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Pipeline::Expression::Parser do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Parser do
   describe '#tree' do
     context 'when using two operators' do
       it 'returns a reverse descent parse tree' do

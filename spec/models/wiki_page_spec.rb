@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe WikiPage do
+RSpec.describe WikiPage do
   let_it_be(:user) { create(:user) }
   let(:container) { create(:project, :wiki_repo) }
   let(:wiki) { Wiki.for_container(container, user) }
@@ -861,6 +861,24 @@ describe WikiPage do
       it 'returns the timestamp of the commit' do
         expect(existing_page.version_commit_timestamp).to eq(existing_page.version.commit.committed_date)
       end
+    end
+  end
+
+  describe '#diffs' do
+    subject { existing_page }
+
+    it 'returns a diff instance' do
+      diffs = subject.diffs(foo: 'bar')
+
+      expect(diffs).to be_a(Gitlab::Diff::FileCollection::WikiPage)
+      expect(diffs.diffable).to be_a(Commit)
+      expect(diffs.diffable.id).to eq(subject.version.id)
+      expect(diffs.project).to be(subject.wiki)
+      expect(diffs.diff_options).to include(
+        expanded: true,
+        paths: [subject.path],
+        foo: 'bar'
+      )
     end
   end
 

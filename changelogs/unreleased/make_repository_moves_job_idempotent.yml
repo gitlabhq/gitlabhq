@@ -1,0 +1,5 @@
+---
+title: Make ProjectUpdateRepositoryStorageWorker idempotent
+merge_request: 35483
+author:
+type: fixed

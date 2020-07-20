@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Diff::Highlight do
+RSpec.describe Gitlab::Diff::Highlight do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

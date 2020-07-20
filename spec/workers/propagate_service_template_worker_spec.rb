@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PropagateServiceTemplateWorker do
+RSpec.describe PropagateServiceTemplateWorker do
   include ExclusiveLeaseHelpers
 
   describe '#perform' do

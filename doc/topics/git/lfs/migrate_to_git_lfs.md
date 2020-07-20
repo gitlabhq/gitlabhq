@@ -21,7 +21,7 @@ and lastly create LFS tracking rules to prevent new binary files
 from being added.
 
 This tutorial was inspired by the guide
-[Use BFG to migrate a repository to Git LFS](https://confluence.atlassian.com/bitbucket/use-bfg-to-migrate-a-repo-to-git-lfs-834233484.html).
+[Use BFG to migrate a repository to Git LFS](https://support.atlassian.com/bitbucket-cloud/docs/use-bfg-to-migrate-a-repo-to-git-lfs/).
 For more information on Git LFS, see the [references](#references)
 below.
 

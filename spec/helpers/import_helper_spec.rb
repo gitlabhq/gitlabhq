@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ImportHelper do
+RSpec.describe ImportHelper do
   describe '#sanitize_project_name' do
     it 'removes leading tildes' do
       expect(helper.sanitize_project_name('~~root')).to eq('root')

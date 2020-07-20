@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SSHPublicKey, lib: true do
+RSpec.describe Gitlab::SSHPublicKey, lib: true do
   let(:key) { attributes_for(:rsa_key_2048)[:key] }
   let(:public_key) { described_class.new(key) }
 

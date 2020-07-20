@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Users::RespondToTermsService do
+RSpec.describe Users::RespondToTermsService do
   let(:user) { create(:user) }
   let(:term) { create(:term) }
 

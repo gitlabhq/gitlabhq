@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::LegacyGithubImport::ReleaseFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::ReleaseFormatter do
   let!(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
   let(:octocat) { double(id: 123456, login: 'octocat') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }

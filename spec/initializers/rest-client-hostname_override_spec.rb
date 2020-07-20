@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'rest-client dns rebinding protection' do
+RSpec.describe 'rest-client dns rebinding protection' do
   it_behaves_like 'a request using Gitlab::UrlBlocker' do
     let(:http_method) { :get }
     let(:url_blocked_error_class) { ArgumentError }

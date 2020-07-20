@@ -91,7 +91,7 @@ describe('CI variable list store actions', () => {
 
       testAction(
         actions.deleteVariable,
-        mockVariable,
+        {},
         state,
         [],
         [
@@ -110,7 +110,7 @@ describe('CI variable list store actions', () => {
 
       testAction(
         actions.deleteVariable,
-        mockVariable,
+        {},
         state,
         [],
         [
@@ -134,7 +134,7 @@ describe('CI variable list store actions', () => {
 
       testAction(
         actions.updateVariable,
-        mockVariable,
+        {},
         state,
         [],
         [
@@ -283,6 +283,68 @@ describe('CI variable list store actions', () => {
           );
           done();
         },
+      );
+    });
+  });
+
+  describe('Update variable values', () => {
+    it('updateVariableKey', () => {
+      testAction(
+        actions.updateVariableKey,
+        { key: mockVariable.key },
+        {},
+        [
+          {
+            type: types.UPDATE_VARIABLE_KEY,
+            payload: mockVariable.key,
+          },
+        ],
+        [],
+      );
+    });
+
+    it('updateVariableValue', () => {
+      testAction(
+        actions.updateVariableValue,
+        { secret_value: mockVariable.value },
+        {},
+        [
+          {
+            type: types.UPDATE_VARIABLE_VALUE,
+            payload: mockVariable.value,
+          },
+        ],
+        [],
+      );
+    });
+
+    it('updateVariableType', () => {
+      testAction(
+        actions.updateVariableType,
+        { variable_type: mockVariable.variable_type },
+        {},
+        [{ type: types.UPDATE_VARIABLE_TYPE, payload: mockVariable.variable_type }],
+        [],
+      );
+    });
+
+    it('updateVariableProtected', () => {
+      testAction(
+        actions.updateVariableProtected,
+        { protected_variable: mockVariable.protected },
+        {},
+        [{ type: types.UPDATE_VARIABLE_PROTECTED, payload: mockVariable.protected }],
+        [],
+      );
+    });
+
+    it('updateVariableMasked', () => {
+      testAction(
+        actions.updateVariableMasked,
+        { masked: mockVariable.masked },
+        {},
+        [{ type: types.UPDATE_VARIABLE_MASKED, payload: mockVariable.masked }],
+        [],
       );
     });
   });

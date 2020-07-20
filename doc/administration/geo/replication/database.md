@@ -130,7 +130,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    connect to the **primary** node's database. For this reason, we need the address of
    each node.
 
-   NOTE: **Note:** For external PostgreSQL instances, see [additional instructions](external_database.md).
+   NOTE: **Note:**
+   For external PostgreSQL instances, see [additional instructions](external_database.md).
 
    If you are using a cloud provider, you can lookup the addresses for each
    Geo node through your cloud provider's management console.
@@ -419,7 +420,8 @@ data before running `pg_basebackup`.
 
 1. Execute the command below to start a backup/restore and begin the replication
 
-   CAUTION: **Warning:** Each Geo **secondary** node must have its own unique replication slot name.
+   CAUTION: **Warning:**
+   Each Geo **secondary** node must have its own unique replication slot name.
    Using the same slot name between two secondaries will break PostgreSQL replication.
 
    ```shell

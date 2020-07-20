@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UpdateExternalPullRequestsWorker do
+RSpec.describe UpdateExternalPullRequestsWorker do
   describe '#perform' do
     let_it_be(:project) { create(:project, import_source: 'tanuki/repository') }
     let_it_be(:user) { create(:user) }

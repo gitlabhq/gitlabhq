@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GlobalPolicy do
+RSpec.describe GlobalPolicy do
   include TermsHelper
 
   let_it_be(:project_bot) { create(:user, :project_bot) }
@@ -126,6 +126,24 @@ describe GlobalPolicy do
       context 'when admin mode is disabled' do
         it { is_expected.to be_disallowed(:read_custom_attribute) }
         it { is_expected.to be_disallowed(:update_custom_attribute) }
+      end
+    end
+  end
+
+  describe 'using project statistics filters' do
+    context 'regular user' do
+      it { is_expected.not_to be_allowed(:use_project_statistics_filters) }
+    end
+
+    context 'admin' do
+      let(:current_user) { create(:user, :admin) }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:use_project_statistics_filters) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:use_project_statistics_filters) }
       end
     end
   end

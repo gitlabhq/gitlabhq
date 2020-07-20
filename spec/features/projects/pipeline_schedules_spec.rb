@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Pipeline Schedules', :js do
-  include PipelineSchedulesHelper
-
   let!(:project) { create(:project, :repository) }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
   let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }

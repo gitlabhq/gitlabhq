@@ -11,6 +11,8 @@ module Gitlab
 
               DEFAULT_YAML_FILE = '.gitlab-ci.yml'
 
+              attr_reader :command
+
               def initialize(pipeline, command)
                 @pipeline = pipeline
                 @command = command

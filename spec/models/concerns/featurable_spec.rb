@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Featurable do
+RSpec.describe Featurable do
   let_it_be(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:feature_class) { subject.class }

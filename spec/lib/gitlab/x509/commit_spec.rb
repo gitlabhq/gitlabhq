@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::X509::Commit do
+RSpec.describe Gitlab::X509::Commit do
   describe '#signature' do
     let(:signature) { described_class.new(commit).signature }
 

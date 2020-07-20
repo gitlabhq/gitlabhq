@@ -1,5 +1,7 @@
 import Vue from 'vue';
 
+import sanitize from 'sanitize-html';
+
 import UsersCache from './lib/utils/users_cache';
 import UserPopover from './vue_shared/components/user_popover/user_popover.vue';
 
@@ -38,6 +40,7 @@ const populateUserInfo = user => {
           name: userData.name,
           location: userData.location,
           bio: userData.bio,
+          bioHtml: sanitize(userData.bio_html),
           workInformation: userData.work_information,
           loaded: true,
         });

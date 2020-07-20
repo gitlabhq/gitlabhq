@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Boards do
+RSpec.describe API::Boards do
   let_it_be(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
   let_it_be(:guest) { create(:user) }

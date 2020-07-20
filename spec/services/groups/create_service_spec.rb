@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Groups::CreateService, '#execute' do
+RSpec.describe Groups::CreateService, '#execute' do
   let!(:user) { create(:user) }
   let!(:group_params) { { path: "group_path", visibility_level: Gitlab::VisibilityLevel::PUBLIC } }
 
@@ -127,6 +127,15 @@ describe Groups::CreateService, '#execute' do
         .and_return({ 'name' => 'tanuki', 'id' => 'lskdjfwlekfjsdifjj' })
 
       expect { subject }.to change { ChatTeam.count }.from(0).to(1)
+    end
+  end
+
+  describe 'creating a setting record' do
+    let(:service) { described_class.new(user, group_params) }
+
+    it 'create the settings record connected to the group' do
+      group = subject
+      expect(group.namespace_settings).to be_persisted
     end
   end
 end

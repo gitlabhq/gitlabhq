@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EventsHelper do
+RSpec.describe EventsHelper do
   include Gitlab::Routing
 
   describe '#event_commit_title' do
@@ -174,8 +174,8 @@ describe EventsHelper do
       url = helper.event_wiki_page_target_url(event)
       title = event.target_title
       html = [
-        "<span class=\"event-target-type append-right-4\">wiki page</span>",
-        "<a title=\"#{title}\" class=\"has-tooltip event-target-link append-right-4\" href=\"#{url}\">",
+        "<span class=\"event-target-type gl-mr-2\">wiki page</span>",
+        "<a title=\"#{title}\" class=\"has-tooltip event-target-link gl-mr-2\" href=\"#{url}\">",
         title,
         "</a>"
       ].join
@@ -224,6 +224,103 @@ describe EventsHelper do
         note_id  = event.target.id
 
         expect(subject).to eq("#{project_base_url}/-/issues/#{iid}/designs/#{filename}#note_#{note_id}")
+      end
+    end
+  end
+
+  describe '#event_filter_visible' do
+    include DesignManagementTestHelpers
+
+    let_it_be(:project) { create(:project) }
+    let_it_be(:current_user) { create(:user) }
+
+    subject { helper.event_filter_visible(key) }
+
+    before do
+      enable_design_management
+      project.add_reporter(current_user)
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    def disable_read_design_activity(object)
+      allow(Ability).to receive(:allowed?)
+        .with(current_user, :read_design_activity, eq(object))
+        .and_return(false)
+    end
+
+    context 'for :designs' do
+      let(:key) { :designs }
+
+      context 'there is no relevant instance variable' do
+        it { is_expected.to be(true) }
+      end
+
+      context 'a project has been assigned' do
+        before do
+          assign(:project, project)
+        end
+
+        it { is_expected.to be(true) }
+
+        context 'the current user cannot read design activity' do
+          before do
+            disable_read_design_activity(project)
+          end
+
+          it { is_expected.to be(false) }
+        end
+      end
+
+      context 'projects have been assigned' do
+        before do
+          assign(:projects, Project.where(id: project.id))
+        end
+
+        it { is_expected.to be(true) }
+
+        context 'the collection is empty' do
+          before do
+            assign(:projects, Project.none)
+          end
+
+          it { is_expected.to be(false) }
+        end
+
+        context 'the current user cannot read design activity' do
+          before do
+            disable_read_design_activity(project)
+          end
+
+          it { is_expected.to be(false) }
+        end
+      end
+
+      context 'a group has been assigned' do
+        let_it_be(:group) { create(:group) }
+
+        before do
+          assign(:group, group)
+        end
+
+        context 'there are no projects in the group' do
+          it { is_expected.to be(false) }
+        end
+
+        context 'the group has at least one project' do
+          before do
+            create(:project_group_link, project: project, group: group)
+          end
+
+          it { is_expected.to be(true) }
+
+          context 'the current user cannot read design activity' do
+            before do
+              disable_read_design_activity(group)
+            end
+
+            it { is_expected.to be(false) }
+          end
+        end
       end
     end
   end

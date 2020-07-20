@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::Validate::External do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:pipeline) { build(:ci_empty_pipeline, user: user, project: project) }

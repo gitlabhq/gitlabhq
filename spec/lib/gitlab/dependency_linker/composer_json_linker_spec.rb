@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::DependencyLinker::ComposerJsonLinker do
+RSpec.describe Gitlab::DependencyLinker::ComposerJsonLinker do
   describe '.support?' do
     it 'supports composer.json' do
       expect(described_class.support?('composer.json')).to be_truthy

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::RouteMap do
+RSpec.describe Gitlab::RouteMap do
   describe '#initialize' do
     context 'when the data is not YAML' do
       it 'raises an error' do

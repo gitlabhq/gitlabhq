@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Database::WithLockRetries do
+RSpec.describe Gitlab::Database::WithLockRetries do
   let(:env) { {} }
   let(:logger) { Gitlab::Database::WithLockRetries::NULL_LOGGER }
   let(:subject) { described_class.new(env: env, logger: logger, timing_configuration: timing_configuration) }

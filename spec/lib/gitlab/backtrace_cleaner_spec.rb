@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BacktraceCleaner do
+RSpec.describe Gitlab::BacktraceCleaner do
   describe '.clean_backtrace' do
     it 'uses the Rails backtrace cleaner' do
       backtrace = []

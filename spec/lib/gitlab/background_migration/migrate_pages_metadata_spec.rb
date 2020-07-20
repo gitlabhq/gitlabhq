@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigratePagesMetadata, schema: 20190919040324 do
+RSpec.describe Gitlab::BackgroundMigration::MigratePagesMetadata, schema: 20190919040324 do
   let(:projects) { table(:projects) }
 
   subject(:migrate_pages_metadata) { described_class.new }

@@ -43,6 +43,10 @@ module Gitlab
         @maven_app_name_regex ||= /\A[\w\-\.]+\z/.freeze
       end
 
+      def maven_version_regex
+        @maven_version_regex ||= /\A(\.?[\w\+-]+\.?)+\z/.freeze
+      end
+
       def maven_app_group_regex
         maven_app_name_regex
       end
@@ -244,6 +248,14 @@ module Gitlab
 
     def utc_date_regex
       @utc_date_regex ||= /\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/.freeze
+    end
+
+    def merge_request_wip
+      /(?i)(\[WIP\]\s*|WIP:\s*|WIP$)/
+    end
+
+    def merge_request_draft
+      /(?i)(\[draft\]|\(draft\)|draft:|draft\s\-\s|draft$)/
     end
 
     def issue

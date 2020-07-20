@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Suggestions::CreateService do
+RSpec.describe Suggestions::CreateService do
   let(:project_with_repo) { create(:project, :repository) }
   let(:merge_request) do
     create(:merge_request, source_project: project_with_repo,

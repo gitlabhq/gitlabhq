@@ -500,16 +500,27 @@ span.idiff {
   border: transparent;
 }
 
-.code-navigation {
-  border-bottom: 1px $gray-darkest dashed;
+.code-navigation-line:hover {
+  .code-navigation {
+    border-bottom: 1px $gray-darkest dashed;
 
-  &:hover {
-    border-bottom-color: $almost-black;
+    &:hover {
+      border-bottom-color: $almost-black;
+    }
   }
 }
 
-.code-navigation-popover {
-  max-width: 450px;
+.code-navigation-popover.popover {
+  max-width: calc(min(#{px-to-rem(560px)}, calc(100vw - #{$gl-padding-32})));
+}
+
+.code-navigation-popover-container {
+  max-height: px-to-rem(320px);
+}
+
+.code-navigation-popover .code {
+  padding-left: $grid-size * 3;
+  text-indent: -$grid-size * 2;
 }
 
 .tree-item-link {

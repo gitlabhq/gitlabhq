@@ -76,16 +76,20 @@ module Gitlab
         def trace_added_line(position)
           b_path = position.new_path
           b_line = position.new_line
+          diff_file = diff_file(position)
+          b_mode = diff_file&.b_mode
 
-          bd_diff = bd_diffs.diff_file_with_old_path(b_path)
+          bd_diff = bd_diffs.diff_file_with_old_path(b_path, b_mode)
 
           d_path = bd_diff&.new_path || b_path
+          d_mode = bd_diff&.b_mode || b_mode
           d_line = LineMapper.new(bd_diff).old_to_new(b_line)
 
           if d_line
-            cd_diff = cd_diffs.diff_file_with_new_path(d_path)
+            cd_diff = cd_diffs.diff_file_with_new_path(d_path, d_mode)
 
             c_path = cd_diff&.old_path || d_path
+            c_mode = cd_diff&.a_mode || d_mode
             c_line = LineMapper.new(cd_diff).new_to_old(d_line)
 
             if c_line
@@ -98,7 +102,7 @@ module Gitlab
               else
                 # If the line is no longer in the MR, we unfortunately cannot show
                 # the current state on the CD diff, so we treat it as outdated.
-                ac_diff = ac_diffs.diff_file_with_new_path(c_path)
+                ac_diff = ac_diffs.diff_file_with_new_path(c_path, c_mode)
 
                 { position: new_position(ac_diff, nil, c_line), outdated: true }
               end
@@ -115,22 +119,26 @@ module Gitlab
         def trace_removed_line(position)
           a_path = position.old_path
           a_line = position.old_line
+          diff_file = diff_file(position)
+          a_mode = diff_file&.a_mode
 
-          ac_diff = ac_diffs.diff_file_with_old_path(a_path)
+          ac_diff = ac_diffs.diff_file_with_old_path(a_path, a_mode)
 
           c_path = ac_diff&.new_path || a_path
+          c_mode = ac_diff&.b_mode || a_mode
           c_line = LineMapper.new(ac_diff).old_to_new(a_line)
 
           if c_line
-            cd_diff = cd_diffs.diff_file_with_old_path(c_path)
+            cd_diff = cd_diffs.diff_file_with_old_path(c_path, c_mode)
 
             d_path = cd_diff&.new_path || c_path
+            d_mode = cd_diff&.b_mode || c_mode
             d_line = LineMapper.new(cd_diff).old_to_new(c_line)
 
             if d_line
               # If the line is still in C but also in D, it has turned from a
               # removed line into an unchanged one.
-              bd_diff = bd_diffs.diff_file_with_new_path(d_path)
+              bd_diff = bd_diffs.diff_file_with_new_path(d_path, d_mode)
 
               { position: new_position(bd_diff, nil, d_line), outdated: true }
             else
@@ -148,17 +156,21 @@ module Gitlab
           a_line = position.old_line
           b_path = position.new_path
           b_line = position.new_line
+          diff_file = diff_file(position)
+          a_mode = diff_file&.a_mode
+          b_mode = diff_file&.b_mode
 
-          ac_diff = ac_diffs.diff_file_with_old_path(a_path)
+          ac_diff = ac_diffs.diff_file_with_old_path(a_path, a_mode)
 
           c_path = ac_diff&.new_path || a_path
+          c_mode = ac_diff&.b_mode || a_mode
           c_line = LineMapper.new(ac_diff).old_to_new(a_line)
 
-          bd_diff = bd_diffs.diff_file_with_old_path(b_path)
+          bd_diff = bd_diffs.diff_file_with_old_path(b_path, b_mode)
 
           d_line = LineMapper.new(bd_diff).old_to_new(b_line)
 
-          cd_diff = cd_diffs.diff_file_with_old_path(c_path)
+          cd_diff = cd_diffs.diff_file_with_old_path(c_path, c_mode)
 
           if c_line && d_line
             # If the line is still in C and D, it is still unchanged.

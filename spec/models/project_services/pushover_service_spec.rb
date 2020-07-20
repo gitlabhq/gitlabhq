@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PushoverService do
+RSpec.describe PushoverService do
   include StubRequests
 
   describe 'Associations' do

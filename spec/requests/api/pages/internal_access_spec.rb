@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Internal Project Pages Access" do
+RSpec.describe "Internal Project Pages Access" do
   using RSpec::Parameterized::TableSyntax
   include AccessMatchers
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader do
+RSpec.describe Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader do
   describe '#find' do
     it 'only queries once for project statistics' do
       stats = create_list(:project_statistics, 2)

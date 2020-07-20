@@ -89,7 +89,6 @@ tree:
     - :triggers
     - :pipeline_schedules
     - :container_expiration_policy
-    - :services
     - protected_branches:
       - :merge_access_levels
       - :push_access_levels
@@ -169,6 +168,7 @@ excluded_attributes:
     - :marked_for_deletion_by_user_id
     - :compliance_framework_setting
     - :show_default_award_emojis
+    - :services
   namespaces:
     - :runners_token
     - :runners_token_encrypted
@@ -261,10 +261,6 @@ excluded_attributes:
   runners:
     - :token
     - :token_encrypted
-  services:
-    - :inherit_from_id
-    - :instance
-    - :template
   error_tracking_setting:
     - :encrypted_token
     - :encrypted_token_iv
@@ -313,12 +309,14 @@ excluded_attributes:
     - :merge_request_id
     - :external_pull_request_id
     - :ci_ref_id
+    - :locked
   stages:
     - :pipeline_id
   merge_access_levels:
     - :protected_branch_id
   push_access_levels:
     - :protected_branch_id
+    - :deploy_key_id
   unprotect_access_levels:
     - :protected_branch_id
   create_access_levels:
@@ -352,8 +350,6 @@ methods:
   label:
     - :type
   statuses:
-    - :type
-  services:
     - :type
   merge_request_diff_files:
     - :utf8_diff

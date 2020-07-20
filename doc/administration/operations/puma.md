@@ -1,11 +1,11 @@
 # Switching to Puma
 
-## Puma
-
 As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced [Unicorn](https://yhbt.net/unicorn/).
-as the default web server. Starting with 13.0, both all-in-one package based
-installations as well as Helm chart based installations will run Puma instead of
-Unicorn unless explicitly specified not to.
+as the default web server. From GitLab 13.0, the following run Puma instead of Unicorn unless
+explicitly configured not to:
+
+- All-in-one package-based installations.
+- Helm chart-based installations.
 
 ## Why switch to Puma?
 
@@ -32,10 +32,12 @@ Additionally we strongly recommend that multi-node deployments [configure their 
 ## Performance caveat when using Puma with Rugged
 
 For deployments where NFS is used to store Git repository, we allow GitLab to use
-[Direct Git Access](../gitaly/#direct-git-access-in-gitlab-rails) to improve performance via usage of [Rugged](https://github.com/libgit2/rugged).
+[direct Git access](../gitaly/index.md#direct-access-to-git-in-gitlab) to improve performance using
+[Rugged](https://github.com/libgit2/rugged).
 
-Rugged usage is automatically enabled if Direct Git Access is present, unless it
-is disabled by [feature flags](../../development/gitaly.md#legacy-rugged-code).
+Rugged usage is automatically enabled if direct Git access
+[is available](../gitaly/index.md#how-it-works), unless it is disabled by
+[feature flags](../../development/gitaly.md#legacy-rugged-code).
 
 MRI Ruby uses a GVL. This allows MRI Ruby to be multi-threaded, but running at
 most on a single core. Since Rugged can use a thread for long periods of

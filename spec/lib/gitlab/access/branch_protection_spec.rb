@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Access::BranchProtection do
+RSpec.describe Gitlab::Access::BranchProtection do
   describe '#any?' do
     using RSpec::Parameterized::TableSyntax
 

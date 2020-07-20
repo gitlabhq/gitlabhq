@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe X509IssuerCrlCheckWorker do
+RSpec.describe X509IssuerCrlCheckWorker do
   subject(:worker) { described_class.new }
 
   let(:project) { create(:project, :public, :repository) }

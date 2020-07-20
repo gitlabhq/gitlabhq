@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::Helm::InstallCommand do
+RSpec.describe Gitlab::Kubernetes::Helm::InstallCommand do
   subject(:install_command) do
     described_class.new(
       name: 'app-name',

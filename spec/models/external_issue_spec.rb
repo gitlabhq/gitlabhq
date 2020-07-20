@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ExternalIssue do
+RSpec.describe ExternalIssue do
   let(:project) { double('project', id: 1, to_reference: 'namespace1/project1') }
   let(:issue)   { described_class.new('EXT-1234', project) }
 

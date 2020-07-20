@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Import::GitlabGroupsController do
+RSpec.describe Import::GitlabGroupsController do
   include WorkhorseHelpers
 
   let(:import_path) { "#{Dir.tmpdir}/gitlab_groups_controller_spec" }
@@ -15,6 +15,8 @@ describe Import::GitlabGroupsController do
     allow_next_instance_of(Gitlab::ImportExport) do |import_export|
       expect(import_export).to receive(:storage_path).and_return(import_path)
     end
+
+    allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
 
     stub_uploads_object_storage(ImportExportUploader)
   end

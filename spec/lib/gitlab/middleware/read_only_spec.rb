@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Middleware::ReadOnly do
+RSpec.describe Gitlab::Middleware::ReadOnly do
   include Rack::Test::Methods
   using RSpec::Parameterized::TableSyntax
 

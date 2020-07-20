@@ -1,0 +1,5 @@
+---
+title: Add support for linting based on schemas in WebIDE
+merge_request: 35838
+author:
+type: added

@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management pagination component hides components when designs are empty 1`] = `<!---->`;
+
+exports[`Design management pagination component renders pagination buttons 1`] = `
+<div
+  class="d-flex align-items-center"
+>
+  
+  0 of 2
+  
+  <div
+    class="btn-group ml-3 mr-3"
+  >
+    <pagination-button-stub
+      class="js-previous-design"
+      iconname="angle-left"
+      title="Go to previous design"
+    />
+     
+    <pagination-button-stub
+      class="js-next-design"
+      design="[object Object]"
+      iconname="angle-right"
+      title="Go to next design"
+    />
+  </div>
+</div>
+`;

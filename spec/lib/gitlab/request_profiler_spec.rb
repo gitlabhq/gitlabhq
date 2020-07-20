@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::RequestProfiler do
+RSpec.describe Gitlab::RequestProfiler do
   describe '.profile_token' do
     it 'returns a token' do
       expect(described_class.profile_token).to be_present

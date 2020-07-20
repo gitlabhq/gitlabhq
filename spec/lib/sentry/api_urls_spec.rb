@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Sentry::ApiUrls do
+RSpec.describe Sentry::ApiUrls do
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project/' }
   let(:token) { 'test-token' }
   let(:issue_id) { '123456' }

@@ -1,0 +1,12 @@
+type ActiveDiscussion {
+  id: ID
+  source: String
+}
+
+extend type Query {
+  activeDiscussion: ActiveDiscussion
+}
+
+extend type Mutation {
+  updateActiveDiscussion(id: ID!, source: String!): Boolean
+}

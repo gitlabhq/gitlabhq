@@ -1,63 +1,40 @@
+dashboard: 'Cluster health'
+priority: 1
+panel_groups:
 - group: Cluster Health
-  priority: 1
-  metrics:
+  priority: 10
+  panels:
   - title: "CPU Usage"
+    type: "area-chart"
     y_label: "CPU (cores)"
-    required_metrics: ['container_cpu_usage_seconds_total']
     weight: 1
-    queries:
-    - query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{id="/"}[15m])) by (job)) without (job)'
-      label: Usage (cores)
-      unit: "cores"
-      appearance:
-        line:
-          width: 2
-        area:
-          opacity: 0
-    - query_range: 'sum(kube_pod_container_resource_requests_cpu_cores{kubernetes_namespace="gitlab-managed-apps"})'
-      label: Requested (cores)
-      unit: "cores"
-      appearance:
-        line:
-          width: 2
-        area:
-          opacity: 0
-    - query_range: 'sum(kube_node_status_capacity_cpu_cores{kubernetes_namespace="gitlab-managed-apps"})'
-      label: Capacity (cores)
-      unit: "cores"
-      appearance:
-        line:
-          type: 'dashed'
-          width: 2
-        area:
-          opacity: 0
-  - title: "Memory usage"
+    metrics:
+      - id: cluster_health_cpu_usage
+        query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{id="/"}[15m])) by (job)) without (job)'
+        unit: cores
+        label: Usage (cores)
+      - id: cluster_health_cpu_requested
+        query_range: 'sum(kube_pod_container_resource_requests_cpu_cores{kubernetes_namespace="gitlab-managed-apps"})'
+        unit: cores
+        label: Requested (cores)
+      - id: cluster_health_cpu_capacity
+        query_range: 'sum(kube_node_status_capacity_cpu_cores{kubernetes_namespace="gitlab-managed-apps"})'
+        unit: cores
+        label: Capacity (cores)
+  - title: "Memory Usage"
+    type: "area-chart"
     y_label: "Memory (GiB)"
-    required_metrics: ['container_memory_usage_bytes']
     weight: 1
-    queries:
-    - query_range: 'avg(sum(container_memory_usage_bytes{id="/"}) by (job)) without (job) / 2^30'
-      label: Usage (GiB)
-      unit: "GiB"
-      appearance:
-        line:
-          width: 2
-        area:
-          opacity: 0
-    - query_range: 'sum(kube_pod_container_resource_requests_memory_bytes{kubernetes_namespace="gitlab-managed-apps"})/2^30'
-      label: Requested (GiB)
-      unit: "GiB"
-      appearance:
-        line:
-          width: 2
-        area:
-          opacity: 0
-    - query_range: 'sum(kube_node_status_capacity_memory_bytes{kubernetes_namespace="gitlab-managed-apps"})/2^30'
-      label: Capacity (GiB)
-      unit: "GiB"
-      appearance:
-        line:
-          type: 'dashed'
-          width: 2
-        area:
-          opacity: 0
+    metrics:
+      - id: cluster_health_memory_usage
+        query_range: 'avg(sum(container_memory_usage_bytes{id="/"}) by (job)) without (job) / 2^30'
+        unit: GiB
+        label: Usage (GiB)
+      - id: cluster_health_memory_requested
+        query_range: 'sum(kube_pod_container_resource_requests_memory_bytes{kubernetes_namespace="gitlab-managed-apps"})/2^30'
+        unit: GiB
+        label: Requested (GiB)
+      - id: cluster_health_memory_capacity
+        query_range: 'sum(kube_node_status_capacity_memory_bytes{kubernetes_namespace="gitlab-managed-apps"})/2^30'
+        unit: GiB
+        label: Capacity (GiB)

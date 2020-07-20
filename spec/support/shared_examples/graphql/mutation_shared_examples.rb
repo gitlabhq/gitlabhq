@@ -7,13 +7,23 @@
 #
 # There must be a method or let called `mutation` defined that executes
 # the mutation.
-RSpec.shared_examples 'a mutation that returns top-level errors' do |errors:|
+RSpec.shared_examples 'a mutation that returns top-level errors' do |errors: []|
+  let(:match_errors) { eq(errors) }
+
   it do
     post_graphql_mutation(mutation, current_user: current_user)
 
     error_messages = graphql_errors.map { |e| e['message'] }
 
-    expect(error_messages).to eq(errors)
+    expect(error_messages).to match_errors
+  end
+end
+
+RSpec.shared_examples 'an invalid argument to the mutation' do |argument_name:|
+  it_behaves_like 'a mutation that returns top-level errors' do
+    let(:match_errors) do
+      contain_exactly(include("invalid value for #{GraphqlHelpers.fieldnamerize(argument_name)}"))
+    end
   end
 end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200420094444_backfill_snippet_repositories.rb')
 
-describe BackfillSnippetRepositories do
+RSpec.describe BackfillSnippetRepositories do
   let(:users) { table(:users) }
   let(:snippets) { table(:snippets) }
   let(:user) { users.create(id: 1, email: 'user@example.com', projects_limit: 10, username: 'test', name: 'Test', state: 'active') }

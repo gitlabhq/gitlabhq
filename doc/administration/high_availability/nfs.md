@@ -12,10 +12,28 @@ From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
 support for NFS for Git repositories is scheduled to be removed. Upgrade to
 [Gitaly Cluster](../gitaly/praefect.md) as soon as possible.
 
-NOTE: **Note:** Filesystem performance has a big impact on overall GitLab
+NOTE: **Note:**
+Filesystem performance has a big impact on overall GitLab
 performance, especially for actions that read or write to Git repositories. See
 [Filesystem Performance Benchmarking](../operations/filesystem_benchmarking.md)
 for steps to test filesystem performance.
+
+## Known kernel version incompatibilities
+
+RedHat Enterprise Linux (RHEL) and CentOS v7.7 and v7.8 ship with kernel
+version `3.10.0-1127`, which [contains a
+bug](https://bugzilla.redhat.com/show_bug.cgi?id=1783554) that causes
+[uploads to fail to copy over NFS](https://gitlab.com/gitlab-org/gitlab/-/issues/218999). The
+following GitLab versions include a fix to work properly with that
+kernel version:
+
+1. [12.10.12](https://about.gitlab.com/releases/2020/06/25/gitlab-12-10-12-released/)
+1. [13.0.7](https://about.gitlab.com/releases/2020/06/25/gitlab-13-0-7-released/)
+1. [13.1.1](https://about.gitlab.com/releases/2020/06/24/gitlab-13-1-1-released/)
+1. 13.2 and up
+
+If you are using that kernel version, be sure to upgrade GitLab to avoid
+errors.
 
 ## NFS Server features
 
@@ -88,7 +106,8 @@ administrators to keep NFS server delegation disabled.
 
 #### Improving NFS performance with Unicorn
 
-NOTE: **Note:** From GitLab 12.1, it will automatically be detected if Rugged can and should be used per storage.
+NOTE: **Note:**
+From GitLab 12.1, it will automatically be detected if Rugged can and should be used per storage.
 
 If you previously enabled Rugged using the feature flag, you will need to unset the feature flag by using:
 
@@ -100,7 +119,8 @@ If the Rugged feature flag is explicitly set to either true or false, GitLab wil
 
 #### Improving NFS performance with Puma
 
-NOTE: **Note:** From GitLab 12.7, Rugged auto-detection is disabled if Puma thread count is greater than 1.
+NOTE: **Note:**
+From GitLab 12.7, Rugged auto-detection is disabled if Puma thread count is greater than 1.
 
 If you want to use Rugged with Puma, it is recommended to [set Puma thread count to 1](https://docs.gitlab.com/omnibus/settings/puma.html#puma-settings).
 

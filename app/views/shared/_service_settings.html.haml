@@ -1,22 +1,23 @@
-= form_errors(@service)
+= form_errors(integration)
 
-- if lookup_context.template_exists?('help', "projects/services/#{@service.to_param}", true)
-  = render "projects/services/#{@service.to_param}/help", subject: @service
-- elsif @service.help.present?
+- if lookup_context.template_exists?('help', "projects/services/#{integration.to_param}", true)
+  = render "projects/services/#{integration.to_param}/help", subject: integration
+- elsif integration.help.present?
   .info-well
     .well-segment
-      = markdown @service.help
+      = markdown integration.help
 
 .service-settings
-  .js-vue-integration-settings{ data: { show_active: @service.show_active_box?.to_s, activated: (@service.active || @service.new_record?).to_s, type: @service.to_param, merge_request_events: @service.merge_requests_events.to_s,
-commit_events: @service.commit_events.to_s, enable_comments: @service.comment_on_event_enabled.to_s, comment_detail: @service.comment_detail, trigger_events: trigger_events_for_service, fields: fields_for_service } }
+  - if @admin_integration
+    .js-vue-admin-integration-settings{ data: integration_form_data(@admin_integration) }
+  .js-vue-integration-settings{ data: integration_form_data(integration) }
 
-  - if show_service_trigger_events?
+  - if show_service_trigger_events?(integration)
     .form-group.row
       %label.col-form-label.col-sm-2= _('Trigger')
 
       .col-sm-10
-        - @service.configurable_events.each do |event|
+        - integration.configurable_events.each do |event|
           .form-group
             .form-check
               = form.check_box service_event_field_name(event), class: 'form-check-input'
@@ -24,14 +25,14 @@ commit_events: @service.commit_events.to_s, enable_comments: @service.comment_on
                 %strong
                   = event.humanize
 
-            - field = @service.event_field(event)
+            - field = integration.event_field(event)
 
             - if field
               = form.text_field field[:name], class: "form-control", placeholder: field[:placeholder]
 
             %p.text-muted
-              = @service.class.event_description(event)
+              = integration.class.event_description(event)
 
   - unless integration_form_refactor?
-    - @service.global_fields.each do |field|
+    - integration.global_fields.each do |field|
       = render 'shared/field', form: form, field: field

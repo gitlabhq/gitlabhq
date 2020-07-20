@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe IssueDueSchedulerWorker do
+RSpec.describe IssueDueSchedulerWorker do
   describe '#perform' do
     it 'schedules one MailScheduler::IssueDueWorker per project with open issues due tomorrow' do
       project1 = create(:project)

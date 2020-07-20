@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20200116051619_drop_background_migration_jobs.rb')
 
-describe DropBackgroundMigrationJobs, :sidekiq, :redis, schema: 2020_01_16_051619 do
+RSpec.describe DropBackgroundMigrationJobs, :sidekiq, :redis, schema: 2020_01_16_051619 do
   subject(:migration) { described_class.new }
 
   describe '#up' do

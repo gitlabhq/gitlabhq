@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::GenericSecret do
+RSpec.describe Gitlab::Kubernetes::GenericSecret do
   let(:secret) { described_class.new(name, data, namespace) }
   let(:name) { 'example-name' }
   let(:data) { 'example-data' }

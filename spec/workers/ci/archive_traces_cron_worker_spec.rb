@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::ArchiveTracesCronWorker do
+RSpec.describe Ci::ArchiveTracesCronWorker do
   subject { described_class.new.perform }
 
   let(:finished_at) { 1.day.ago }

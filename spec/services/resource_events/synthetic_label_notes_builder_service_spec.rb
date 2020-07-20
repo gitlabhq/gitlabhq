@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ResourceEvents::SyntheticLabelNotesBuilderService do
+RSpec.describe ResourceEvents::SyntheticLabelNotesBuilderService do
   describe '#execute' do
     let!(:user) { create(:user) }
 

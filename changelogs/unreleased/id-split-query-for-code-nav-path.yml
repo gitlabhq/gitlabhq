@@ -1,0 +1,5 @@
+---
+title: Split query for code-nav path into two queries
+merge_request: 37092
+author:
+type: performance

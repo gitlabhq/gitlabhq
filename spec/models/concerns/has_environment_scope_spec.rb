@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe HasEnvironmentScope do
+RSpec.describe HasEnvironmentScope do
   subject { build(:ci_variable) }
 
   it { is_expected.to allow_value('*').for(:environment_scope) }

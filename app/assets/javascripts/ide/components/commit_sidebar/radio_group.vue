@@ -66,7 +66,7 @@ export default {
         name="commit-action"
         @change="updateCommitAction($event.target.value)"
       />
-      <span class="prepend-left-10">
+      <span class="gl-ml-3">
         <span v-if="label" class="ide-option-label"> {{ label }} </span> <slot v-else></slot>
       </span>
     </label>

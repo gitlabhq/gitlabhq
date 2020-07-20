@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Artifacts::Adapters::RawStream do
+RSpec.describe Gitlab::Ci::Build::Artifacts::Adapters::RawStream do
   describe '#initialize' do
     context 'when stream is passed' do
       let(:stream) { File.open(expand_fixture_path('junit/junit.xml'), 'rb') }

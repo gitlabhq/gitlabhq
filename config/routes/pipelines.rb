@@ -22,9 +22,13 @@ resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
     get :test_reports_count
   end
 
-  member do
-    resources :stages, only: [], param: :name do
-      post :play_manual
+  resources :stages, only: [], param: :name, controller: 'pipelines/stages' do
+    post :play_manual
+  end
+
+  resources :tests, only: [:show], param: :suite_name, controller: 'pipelines/tests' do
+    collection do
+      get :summary
     end
   end
 end

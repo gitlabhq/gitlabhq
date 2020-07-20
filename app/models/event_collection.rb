@@ -33,22 +33,15 @@ class EventCollection
                  project_events
                end
 
-    relation = apply_feature_flags(relation)
     relation = paginate_events(relation)
     relation.with_associations.to_a
   end
 
   def all_project_events
-    apply_feature_flags(Event.from_union([project_events]).recent)
+    Event.from_union([project_events]).recent
   end
 
   private
-
-  def apply_feature_flags(events)
-    return events if ::Feature.enabled?(:wiki_events)
-
-    events.not_wiki_page
-  end
 
   def project_events
     relation_with_join_lateral('project_id', projects)

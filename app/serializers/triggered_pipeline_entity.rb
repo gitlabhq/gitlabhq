@@ -11,6 +11,12 @@ class TriggeredPipelineEntity < Grape::Entity
   expose :coverage
   expose :source
 
+  expose :source_job do
+    expose :name do |pipeline|
+      pipeline.source_job&.name
+    end
+  end
+
   expose :path do |pipeline|
     project_pipeline_path(pipeline.project, pipeline)
   end
@@ -27,7 +33,7 @@ class TriggeredPipelineEntity < Grape::Entity
     as: :triggered_by, with: TriggeredPipelineEntity,
     if: -> (_, opts) { can_read_details? && expand_for_path?(opts) }
 
-  expose :triggered_pipelines,
+  expose :triggered_pipelines_with_preloads,
     as: :triggered, using: TriggeredPipelineEntity,
     if: -> (_, opts) { can_read_details? && expand_for_path?(opts) }
 

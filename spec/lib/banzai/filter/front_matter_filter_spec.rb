@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Banzai::Filter::FrontMatterFilter do
+RSpec.describe Banzai::Filter::FrontMatterFilter do
   include FilterSpecHelper
 
   it 'allows for `encoding:` before the front matter' do

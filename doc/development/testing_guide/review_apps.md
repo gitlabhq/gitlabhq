@@ -9,7 +9,7 @@ pipeline](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6665).
 
 ```mermaid
 graph TD
-  A["build-qa-image, gitlab:assets:compile pull-cache<br/>(canonical default refs only)"];
+  A["build-qa-image, compile-production-assets<br/>(canonical default refs only)"];
   B[review-build-cng];
   C[review-deploy];
   D[CNG-mirror];
@@ -30,7 +30,7 @@ subgraph "2. gitlab `review-prepare` stage"
   end
 
 subgraph "3. gitlab `review` stage"
-  C["review-deploy<br><br>Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps-ce` or `review-apps-ee`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
+  C["review-deploy<br><br>Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
   end
 
 subgraph "4. gitlab `qa` stage"
@@ -44,25 +44,27 @@ subgraph "CNG-mirror pipeline"
 
 ### Detailed explanation
 
-1. On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) during the `test` stage, the
-   [`gitlab:assets:compile`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724487) job is automatically started.
-   - Once it's done, it starts the [`review-build-cng`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808)
-     manual job since the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) pipeline triggered in the
+1. On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) during the `prepare` stage, the
+   [`compile-production-assets`](https://gitlab.com/gitlab-org/gitlab/-/jobs/641770154) job is automatically started.
+   - Once it's done, the [`review-build-cng`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808)
+     job starts since the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) pipeline triggered in the
      following step depends on it.
-1. The [`review-build-cng`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808) job [triggers a pipeline](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657)
+1. Once `compile-production-assets` is done, the [`review-build-cng`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808)
+   job [triggers a pipeline](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657)
    in the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project.
+   - The `review-build-cng` job automatically starts only if your MR includes
+     [CI or frontend changes](../pipelines.md#changes-patterns). In other cases, the job is manual.
    - The [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657) pipeline creates the Docker images of
      each component (e.g. `gitlab-rails-ee`, `gitlab-shell`, `gitaly` etc.)
      based on the commit from the [GitLab pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) and stores
      them in its [registry](https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry).
    - We use the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project so that the `CNG`, (Cloud
-     Native GitLab), project's registry is not overloaded with a
-     lot of transient Docker images.
+     Native GitLab), project's registry is not overloaded with a lot of transient Docker images.
    - Note that the official CNG images are built by the `cloud-native-image`
      job, which runs only for tags, and triggers itself a [`CNG`](https://gitlab.com/gitlab-org/build/CNG) pipeline.
-1. Once the `test` stage is done, the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job
+1. Once `review-build-cng` is done, the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job
    deploys the Review App using [the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/) to
-   the [`review-apps-ce`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-a/review-apps-ce?project=gitlab-review-apps) / [`review-apps-ee`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps-ee?project=gitlab-review-apps)
+   the [`review-apps`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps?project=gitlab-review-apps)
    Kubernetes cluster on GCP.
    - The actual scripts used to deploy the Review App can be found at
      [`scripts/review_apps/review-apps.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/review-apps.sh).
@@ -94,10 +96,9 @@ subgraph "CNG-mirror pipeline"
 - The manual `review-stop` can be used to
   stop a Review App manually, and is also started by GitLab once a merge
   request's branch is deleted after being merged.
-- The Kubernetes cluster is connected to the `gitlab-{ce,ee}` projects using
+- The Kubernetes cluster is connected to the `gitlab` projects using
   [GitLab's Kubernetes integration](../../user/project/clusters/index.md). This basically
-  allows to have a link to the Review App directly from the merge request
-  widget.
+  allows to have a link to the Review App directly from the merge request widget.
 
 ### Auto-stopping of Review Apps
 
@@ -136,11 +137,10 @@ browser performance testing using a
 
 ### Node pools
 
-The `review-apps-ee` and `review-apps-ce` clusters are currently set up with
+The `review-apps` cluster is currently set up with
 the following node pools:
 
-- `review-apps-ee` of pre-emptible `e2-highcpu-16` (16 vCPU, 16 GB memory) nodes with autoscaling
-- `review-apps-ce` of pre-emptible `n1-standard-8` (8 vCPU, 16 GB memory) nodes with autoscaling
+- `e2-highcpu-16` (16 vCPU, 16 GB memory) pre-emptible nodes with autoscaling
 
 ### Helm
 
@@ -189,9 +189,7 @@ secure note named `gitlab-{ce,ee} Review App's root password`.
 1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
 1. Replace `-c task-runner -- ls` with `-it -- gitlab-rails console` from the
    default command or
-   - Run `kubectl exec --namespace review-apps-ce review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
-     - Replace `review-apps-ce` with `review-apps-ee` if the Review App
-       is running EE, and
+   - Run `kubectl exec --namespace review-apps review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
      - Replace `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`
        with your Pod's name.
 

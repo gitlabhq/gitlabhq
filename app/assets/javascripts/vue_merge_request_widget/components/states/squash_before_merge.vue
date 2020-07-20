@@ -1,6 +1,7 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -25,12 +26,22 @@ export default {
       default: false,
     },
   },
+  computed: {
+    tooltipTitle() {
+      return this.isDisabled ? __('Required in this project.') : false;
+    },
+  },
 };
 </script>
 
 <template>
   <div class="inline">
-    <label>
+    <label
+      v-tooltip
+      :class="{ 'gl-text-gray-600': isDisabled }"
+      data-testid="squashLabel"
+      :data-title="tooltipTitle"
+    >
       <input
         :checked="value"
         :disabled="isDisabled"

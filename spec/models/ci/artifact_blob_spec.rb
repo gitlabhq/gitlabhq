@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::ArtifactBlob do
+RSpec.describe Ci::ArtifactBlob do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:build) { create(:ci_build, :artifacts, project: project) }
   let(:entry) { build.artifacts_metadata_entry('other_artifacts_0.1.2/another-subdirectory/banana_sample.gif') }

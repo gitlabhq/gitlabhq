@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::FileMarkdownLinkBuilder do
+RSpec.describe Gitlab::FileMarkdownLinkBuilder do
   let(:custom_class) do
     Class.new do
       include Gitlab::FileMarkdownLinkBuilder

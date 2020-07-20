@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::ReleasesResolver do
+RSpec.describe Resolvers::ReleasesResolver do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :private) }

@@ -1,0 +1,5 @@
+---
+title: Updates Helm version to 2.16.9 which has some fixes
+merge_request: 36746
+author:
+type: fixed

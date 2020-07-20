@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PushEventPayload do
+RSpec.describe PushEventPayload do
   it_behaves_like 'having unique enum values'
 
   describe 'saving payloads' do

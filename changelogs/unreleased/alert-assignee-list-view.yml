@@ -1,0 +1,5 @@
+---
+title: Add database and GraphQL support for alert assignees
+merge_request: 32609
+author:
+type: added

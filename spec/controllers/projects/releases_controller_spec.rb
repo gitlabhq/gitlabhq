@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ReleasesController do
+  include AccessMatchersForController
+
   let!(:project) { create(:project, :repository, :public) }
   let_it_be(:private_project) { create(:project, :repository, :private) }
   let_it_be(:developer)  { create(:user) }
@@ -116,6 +118,15 @@ RSpec.describe Projects::ReleasesController do
         end
       end
     end
+  end
+
+  describe 'GET #new' do
+    let(:request) do
+      get :new, params: { namespace_id: project.namespace, project_id: project }
+    end
+
+    it { expect { request }.to be_denied_for(:reporter).of(project) }
+    it { expect { request }.to be_allowed_for(:developer).of(project) }
   end
 
   describe 'GET #edit' do

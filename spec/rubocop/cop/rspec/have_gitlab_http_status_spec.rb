@@ -8,7 +8,7 @@ require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/rspec/have_gitlab_http_status'
 
-describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus do
+RSpec.describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus do
   include CopHelper
 
   using RSpec::Parameterized::TableSyntax

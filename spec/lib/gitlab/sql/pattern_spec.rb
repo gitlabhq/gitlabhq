@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SQL::Pattern do
+RSpec.describe Gitlab::SQL::Pattern do
   describe '.to_pattern' do
     subject(:to_pattern) { User.to_pattern(query) }
 

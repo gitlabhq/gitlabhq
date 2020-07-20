@@ -3,7 +3,7 @@
 module Gitlab
   module StaticSiteEditor
     class Config
-      SUPPORTED_EXTENSIONS = %w[.md].freeze
+      SUPPORTED_EXTENSIONS = %w[.md .md.erb].freeze
 
       def initialize(repository, ref, file_path, return_url)
         @repository = repository
@@ -20,7 +20,7 @@ module Gitlab
           commit_id: commit_id,
           project_id: project.id,
           project: project.path,
-          namespace: project.namespace.path,
+          namespace: project.namespace.full_path,
           return_url: sanitize_url(return_url),
           is_supported_content: supported_content?.to_s,
           base_url: Gitlab::Routing.url_helpers.project_show_sse_path(project, full_path)
@@ -42,11 +42,11 @@ module Gitlab
       end
 
       def extension_supported?
-        File.extname(file_path).in?(SUPPORTED_EXTENSIONS)
+        SUPPORTED_EXTENSIONS.any? { |ext| file_path.end_with?(ext) }
       end
 
       def file_exists?
-        commit_id.present? && repository.blob_at(commit_id, file_path).present?
+        commit_id.present? && !repository.blob_at(commit_id, file_path).nil?
       end
 
       def full_path

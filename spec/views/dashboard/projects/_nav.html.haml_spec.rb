@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'dashboard/projects/_nav.html.haml' do
+RSpec.describe 'dashboard/projects/_nav.html.haml' do
   it 'highlights All tab by default' do
     render
 

@@ -149,14 +149,14 @@ the job will fail:
 ```yaml
 job:
   services:
-  - php:7
-  - node:latest
-  - golang:1.10
+    - php:7
+    - node:latest
+    - golang:1.10
   image: alpine:3.7
   script:
-  - php -v
-  - node -v
-  - go version
+    - php -v
+    - node -v
+    - go version
 ```
 
 If you need to have `php`, `node` and `go` available for your script, you should
@@ -176,7 +176,7 @@ You can then use for example the [tutum/wordpress](https://hub.docker.com/r/tutu
 
 ```yaml
 services:
-- tutum/wordpress:latest
+  - tutum/wordpress:latest
 ```
 
 If you don't [specify a service alias](#available-settings-for-services),
@@ -219,7 +219,7 @@ default:
 
 test:
   script:
-  - bundle exec rake spec
+    - bundle exec rake spec
 ```
 
 The image name must be in one of the following formats:
@@ -238,16 +238,16 @@ default:
 test:2.6:
   image: ruby:2.6
   services:
-  - postgres:11.7
+    - postgres:11.7
   script:
-  - bundle exec rake spec
+    - bundle exec rake spec
 
 test:2.7:
   image: ruby:2.7
   services:
-  - postgres:12.2
+    - postgres:12.2
   script:
-  - bundle exec rake spec
+    - bundle exec rake spec
 ```
 
 Or you can pass some [extended configuration options](#extended-docker-configuration-options)
@@ -260,17 +260,17 @@ default:
     entrypoint: ["/bin/bash"]
 
   services:
-  - name: my-postgres:11.7
-    alias: db-postgres
-    entrypoint: ["/usr/local/bin/db-postgres"]
-    command: ["start"]
+    - name: my-postgres:11.7
+      alias: db-postgres
+      entrypoint: ["/usr/local/bin/db-postgres"]
+      command: ["start"]
 
   before_script:
-  - bundle install
+    - bundle install
 
 test:
   script:
-  - bundle exec rake spec
+    - bundle exec rake spec
 ```
 
 ## Passing environment variables to services
@@ -292,21 +292,21 @@ variables:
   POSTGRES_INITDB_ARGS: "--encoding=UTF8 --data-checksums"
 
 services:
-- name: postgres:11.7
-  alias: db
-  entrypoint: ["docker-entrypoint.sh"]
-  command: ["postgres"]
+  - name: postgres:11.7
+    alias: db
+    entrypoint: ["docker-entrypoint.sh"]
+    command: ["postgres"]
 
 image:
   name: ruby:2.6
   entrypoint: ["/bin/bash"]
 
 before_script:
-- bundle install
+  - bundle install
 
 test:
   script:
-  - bundle exec rake spec
+    - bundle exec rake spec
 ```
 
 ## Extended Docker configuration options
@@ -330,8 +330,8 @@ For example, the following two definitions are equal:
    image: "registry.example.com/my/image:latest"
 
    services:
-   - postgresql:9.4
-   - redis:latest
+     - postgresql:9.4
+     - redis:latest
    ```
 
 1. Using a map as an option to `image` and `services`. The use of `image:name` is
@@ -342,8 +342,8 @@ For example, the following two definitions are equal:
      name: "registry.example.com/my/image:latest"
 
    services:
-   - name: postgresql:9.4
-   - name: redis:latest
+     - name: postgresql:9.4
+     - name: redis:latest
    ```
 
 ### Available settings for `image`
@@ -378,8 +378,8 @@ would not work properly:
 
 ```yaml
 services:
-- mysql:latest
-- mysql:latest
+  - mysql:latest
+  - mysql:latest
 ```
 
 The Runner would start two containers using the `mysql:latest` image, but both
@@ -392,10 +392,10 @@ look like:
 
 ```yaml
 services:
-- name: mysql:latest
-  alias: mysql-1
-- name: mysql:latest
-  alias: mysql-2
+  - name: mysql:latest
+    alias: mysql-1
+  - name: mysql:latest
+    alias: mysql-2
 ```
 
 The Runner will still start two containers using the `mysql:latest` image,
@@ -427,7 +427,7 @@ CMD ["/usr/bin/super-sql", "run"]
 # .gitlab-ci.yml
 
 services:
-- my-super-sql:latest
+  - my-super-sql:latest
 ```
 
 After the new extended Docker configuration options, you can now simply
@@ -437,8 +437,8 @@ set a `command` in `.gitlab-ci.yml`, like:
 # .gitlab-ci.yml
 
 services:
-- name: super/sql:latest
-  command: ["/usr/bin/super-sql", "run"]
+  - name: super/sql:latest
+    command: ["/usr/bin/super-sql", "run"]
 ```
 
 As you can see, the syntax of `command` is similar to [Dockerfile's `CMD`](https://docs.docker.com/engine/reference/builder/#cmd).
@@ -545,9 +545,8 @@ runtime.
   support for using private registries, which required manual configuration
   of credentials on runner's host. We recommend to upgrade your Runner to
   at least version **1.8** if you want to use private registries.
-- Not available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html),
-  follow <https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2673> for
-  details.
+- Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
+  in GitLab Runner 13.1 and later.
 
 ### Using statically-defined credentials
 
@@ -601,6 +600,7 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   Open a terminal and execute the following command:
 
   ```shell
+  # Note the use of "-n" - it prevents encoding a newline in the password.
   echo -n "my_username:my_password" | base64
 
   # Example output to copy
@@ -681,11 +681,13 @@ To add `DOCKER_AUTH_CONFIG` to a Runner:
 
 1. Restart the Runner service.
 
-NOTE: **Note:** The double quotes included in the `DOCKER_AUTH_CONFIG`
+NOTE: **Note:**
+The double quotes included in the `DOCKER_AUTH_CONFIG`
 data must be escaped with backslashes. This prevents them from being
 interpreted as TOML.
 
-NOTE: **Note:** The `environment` option is a list. So your Runner may
+NOTE: **Note:**
+The `environment` option is a list. So your Runner may
 have existing entries and you should add this to the list, not replace
 it.
 
@@ -715,7 +717,8 @@ To configure credentials store, follow these steps:
      `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner will read this configuration file
      and will use the needed helper for this specific repository.
 
-NOTE: **Note:** `credsStore` is used to access ALL the registries.
+NOTE: **Note:**
+`credsStore` is used to access ALL the registries.
 If you will want to use both images from private registry and public images from DockerHub,
 pulling from DockerHub will fail, because Docker daemon will try to use the same credentials for **ALL** the registries.
 

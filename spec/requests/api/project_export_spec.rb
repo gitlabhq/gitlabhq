@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::ProjectExport, :clean_gitlab_redis_cache do
+RSpec.describe API::ProjectExport, :clean_gitlab_redis_cache do
   let_it_be(:project) { create(:project) }
   let_it_be(:project_none) { create(:project) }
   let_it_be(:project_started) { create(:project) }
@@ -237,7 +237,7 @@ describe API::ProjectExport, :clean_gitlab_redis_cache do
           before do
             allow(Gitlab::ApplicationRateLimiter)
               .to receive(:increment)
-              .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_download_export][:threshold] + 1)
+              .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_download_export][:threshold].call + 1)
           end
 
           it 'prevents requesting project export' do
@@ -362,7 +362,7 @@ describe API::ProjectExport, :clean_gitlab_redis_cache do
           before do
             allow(Gitlab::ApplicationRateLimiter)
               .to receive(:increment)
-              .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_export][:threshold] + 1)
+              .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_export][:threshold].call + 1)
           end
 
           it 'prevents requesting project export' do

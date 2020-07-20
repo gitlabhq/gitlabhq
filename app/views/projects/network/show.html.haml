@@ -1,5 +1,5 @@
-- breadcrumb_title "Graph"
-- page_title "Graph", @ref
+- breadcrumb_title _("Graph")
+- page_title _("Graph"), @ref
 = render "head"
 %div{ class: container_class }
   .project-network
@@ -16,5 +16,5 @@
 
     - if @commit
       .network-graph{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
-        .text-center.prepend-top-default
+        .text-center.gl-mt-3
           .spinner.spinner-md

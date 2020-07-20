@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mutations::MergeRequests::SetLabels do
+RSpec.describe Mutations::MergeRequests::SetLabels do
   let(:merge_request) { create(:merge_request) }
   let(:user) { create(:user) }
 

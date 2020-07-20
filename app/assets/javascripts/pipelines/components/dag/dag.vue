@@ -1,19 +1,32 @@
 <script>
-import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import DagGraph from './dag_graph.vue';
-import { DEFAULT, PARSE_FAILURE, LOAD_FAILURE, UNSUPPORTED_DATA } from './constants';
+import DagAnnotations from './dag_annotations.vue';
+import {
+  DEFAULT,
+  PARSE_FAILURE,
+  LOAD_FAILURE,
+  UNSUPPORTED_DATA,
+  ADD_NOTE,
+  REMOVE_NOTE,
+  REPLACE_NOTES,
+} from './constants';
 import { parseData } from './parsing_utils';
 
 export default {
   // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'Dag',
   components: {
+    DagAnnotations,
     DagGraph,
     GlAlert,
     GlLink,
     GlSprintf,
+    GlEmptyState,
+    GlButton,
   },
   props: {
     graphUrl: {
@@ -21,20 +34,42 @@ export default {
       required: false,
       default: '',
     },
+    emptySvgPath: {
+      type: String,
+      required: true,
+      default: '',
+    },
+    dagDocPath: {
+      type: String,
+      required: true,
+      default: '',
+    },
   },
   data() {
     return {
-      showFailureAlert: false,
-      showBetaInfo: true,
+      annotationsMap: {},
       failureType: null,
       graphData: null,
+      showFailureAlert: false,
+      showBetaInfo: true,
+      hasNoDependentJobs: false,
     };
   },
   errorTexts: {
     [LOAD_FAILURE]: __('We are currently unable to fetch data for this graph.'),
     [PARSE_FAILURE]: __('There was an error parsing the data for this graph.'),
-    [UNSUPPORTED_DATA]: __('A DAG must have two dependent jobs to be visualized on this tab.'),
+    [UNSUPPORTED_DATA]: __('DAG visualization requires at least 3 dependent jobs.'),
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
+  },
+  emptyStateTexts: {
+    title: __('Start using Directed Acyclic Graphs (DAG)'),
+    firstDescription: __(
+      "This pipeline does not use the %{codeStart}needs%{codeEnd} keyword and can't be represented as a directed acyclic graph.",
+    ),
+    secondDescription: __(
+      'Using %{codeStart}needs%{codeEnd} allows jobs to run before their stage is reached, as soon as their individual dependencies are met, which speeds up your pipelines.',
+    ),
+    button: __('Learn more about job dependencies'),
   },
   computed: {
     betaMessage() {
@@ -66,6 +101,9 @@ export default {
           };
       }
     },
+    shouldDisplayAnnotations() {
+      return !isEmpty(this.annotationsMap);
+    },
     shouldDisplayGraph() {
       return Boolean(!this.showFailureAlert && this.graphData);
     },
@@ -86,6 +124,9 @@ export default {
       .catch(() => reportFailure(LOAD_FAILURE));
   },
   methods: {
+    addAnnotationToMap({ uid, source, target }) {
+      this.$set(this.annotationsMap, uid, { source, target });
+    },
     processGraphData(data) {
       let parsed;
 
@@ -96,8 +137,15 @@ export default {
         return;
       }
 
-      if (parsed.links.length < 2) {
+      if (parsed.links.length === 1) {
         this.reportFailure(UNSUPPORTED_DATA);
+        return;
+      }
+
+      // If there are no links, we don't report failure
+      // as it simply means the user does not use job dependencies
+      if (parsed.links.length === 0) {
+        this.hasNoDependentJobs = true;
         return;
       }
 
@@ -109,9 +157,27 @@ export default {
     hideBetaInfo() {
       this.showBetaInfo = false;
     },
+    removeAnnotationFromMap({ uid }) {
+      this.$delete(this.annotationsMap, uid);
+    },
     reportFailure(type) {
       this.showFailureAlert = true;
       this.failureType = type;
+    },
+    updateAnnotation({ type, data }) {
+      switch (type) {
+        case ADD_NOTE:
+          this.addAnnotationToMap(data);
+          break;
+        case REMOVE_NOTE:
+          this.removeAnnotationFromMap(data);
+          break;
+        case REPLACE_NOTES:
+          this.annotationsMap = data;
+          break;
+        default:
+          break;
+      }
     },
   },
 };
@@ -131,6 +197,43 @@ export default {
         </template>
       </gl-sprintf>
     </gl-alert>
-    <dag-graph v-if="shouldDisplayGraph" :graph-data="graphData" @onFailure="reportFailure" />
+    <div class="gl-relative">
+      <dag-annotations v-if="shouldDisplayAnnotations" :annotations="annotationsMap" />
+      <dag-graph
+        v-if="shouldDisplayGraph"
+        :graph-data="graphData"
+        @onFailure="reportFailure"
+        @update-annotation="updateAnnotation"
+      />
+      <gl-empty-state
+        v-else-if="hasNoDependentJobs"
+        :svg-path="emptySvgPath"
+        :title="$options.emptyStateTexts.title"
+      >
+        <template #description>
+          <div class="gl-text-left">
+            <p>
+              <gl-sprintf :message="$options.emptyStateTexts.firstDescription">
+                <template #code="{ content }">
+                  <code>{{ content }}</code>
+                </template>
+              </gl-sprintf>
+            </p>
+            <p>
+              <gl-sprintf :message="$options.emptyStateTexts.secondDescription">
+                <template #code="{ content }">
+                  <code>{{ content }}</code>
+                </template>
+              </gl-sprintf>
+            </p>
+          </div>
+        </template>
+        <template #actions>
+          <gl-button :href="dagDocPath" target="__blank" variant="success">
+            {{ $options.emptyStateTexts.button }}
+          </gl-button>
+        </template>
+      </gl-empty-state>
+    </div>
   </div>
 </template>

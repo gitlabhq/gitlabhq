@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UsersHelper do
+RSpec.describe UsersHelper do
   include TermsHelper
 
   let(:user) { create(:user) }

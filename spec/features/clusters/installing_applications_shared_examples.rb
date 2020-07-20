@@ -2,6 +2,9 @@
 
 RSpec.shared_examples "installing applications for a cluster" do |managed_apps_local_tiller|
   before do
+    # Reduce interval from 10 seconds which is too long for an automated test
+    stub_const("#{Clusters::ClustersController}::STATUS_POLLING_INTERVAL", 500)
+
     stub_feature_flags(managed_apps_local_tiller: managed_apps_local_tiller)
 
     visit cluster_path
@@ -107,10 +110,6 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
         end
 
         describe 'when user clicks install button' do
-          def domainname_form_value
-            page.find('.js-knative-domainname').value
-          end
-
           before do
             allow(ClusterInstallAppWorker).to receive(:perform_async)
             allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
@@ -135,7 +134,7 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
 
           it 'shows status transition' do
             page.within('.js-cluster-application-row-knative') do
-              expect(domainname_form_value).to eq('domain.example.org')
+              expect(page).to have_field('Knative Domain Name:', with: 'domain.example.org')
               expect(page).to have_css('.js-cluster-application-uninstall-button', exact_text: 'Uninstall')
             end
 
@@ -147,7 +146,7 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
             page.within('.js-cluster-application-row-knative') do
               expect(ClusterPatchAppWorker).to receive(:perform_async)
 
-              expect(domainname_form_value).to eq('domain.example.org')
+              expect(page).to have_field('Knative Domain Name:', with: 'domain.example.org')
 
               page.find('.js-knative-domainname').set("new.domain.example.org")
 
@@ -155,7 +154,7 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
 
               wait_for_requests
 
-              expect(domainname_form_value).to eq('new.domain.example.org')
+              expect(page).to have_field('Knative Domain Name:', with: 'new.domain.example.org')
             end
           end
         end
@@ -169,34 +168,54 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
         allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
 
         create(:clusters_applications_helm, :installed, cluster: cluster) unless managed_apps_local_tiller
-
-        page.within('.js-cluster-application-row-cert_manager') do
-          click_button 'Install'
-        end
       end
 
       it 'shows status transition' do
-        def email_form_value
-          page.find('.js-email').value
-        end
-
         page.within('.js-cluster-application-row-cert_manager') do
-          expect(email_form_value).to eq(cluster.user.email)
+          click_button 'Install'
+          wait_for_requests
+
+          expect(page).to have_field('Issuer Email', with: cluster.user.email)
           expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
-          page.find('.js-email').set("new_email@example.org")
           Clusters::Cluster.last.application_cert_manager.make_installing!
 
-          expect(email_form_value).to eq('new_email@example.org')
+          expect(page).to have_field('Issuer Email', with: cluster.user.email)
           expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
           Clusters::Cluster.last.application_cert_manager.make_installed!
 
-          expect(email_form_value).to eq('new_email@example.org')
+          expect(page).to have_field('Issuer Email', with: cluster.user.email)
           expect(page).to have_css('.js-cluster-application-uninstall-button', exact_text: 'Uninstall')
         end
 
         expect(page).to have_content('Cert-Manager was successfully installed on your Kubernetes cluster')
+      end
+
+      it 'installs with custom email' do
+        custom_email = 'new_email@example.org'
+
+        page.within('.js-cluster-application-row-cert_manager') do
+          # Wait for the polling to finish
+          wait_for_requests
+
+          page.find('.js-email').set(custom_email)
+          click_button 'Install'
+          wait_for_requests
+
+          expect(page).to have_field('Issuer Email', with: custom_email)
+          expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+
+          Clusters::Cluster.last.application_cert_manager.make_installing!
+
+          expect(page).to have_field('Issuer Email', with: custom_email)
+          expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+
+          Clusters::Cluster.last.application_cert_manager.make_installed!
+
+          expect(page).to have_field('Issuer Email', with: custom_email)
+          expect(page).to have_css('.js-cluster-application-uninstall-button', exact_text: 'Uninstall')
+        end
       end
     end
 

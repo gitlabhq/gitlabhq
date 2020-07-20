@@ -36,7 +36,7 @@ The following task will run a [group sync](../auth/ldap/index.md#group-sync-star
 when you'd like to update all configured group memberships against LDAP without
 waiting for the next scheduled group sync to be run.
 
-NOTE: **NOTE:**
+NOTE: **Note:**
 If you'd like to change the frequency at which a group sync is performed,
 [adjust the cron schedule](../auth/ldap/index.md#adjusting-ldap-group-sync-schedule-starter-only)
 instead.

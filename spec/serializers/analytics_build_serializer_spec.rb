@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AnalyticsBuildSerializer do
+RSpec.describe AnalyticsBuildSerializer do
   let(:resource) { create(:ci_build) }
 
   subject { described_class.new.represent(resource) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Prometheus, :prometheus do
+RSpec.describe Gitlab::Metrics::Prometheus, :prometheus do
   let(:all_metrics) { Gitlab::Metrics }
   let(:registry) { all_metrics.registry }
 

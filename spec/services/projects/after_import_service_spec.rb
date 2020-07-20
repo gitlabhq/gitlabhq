@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Projects::AfterImportService do
+RSpec.describe Projects::AfterImportService do
   include GitHelpers
 
   subject { described_class.new(project) }
@@ -69,6 +69,26 @@ describe Projects::AfterImportService do
 
       it 'throws after import error' do
         expect { subject.execute }.to raise_exception('after import error')
+      end
+    end
+
+    context 'when housekeeping service lease is taken' do
+      let(:exception) { Projects::HousekeepingService::LeaseTaken.new }
+
+      it 'logs the error message' do
+        allow_next_instance_of(Projects::HousekeepingService) do |instance|
+          expect(instance).to receive(:execute).and_raise(exception)
+        end
+
+        expect(Gitlab::Import::Logger).to receive(:info).with(
+          {
+            message: 'Project housekeeping failed',
+            project_full_path: project.full_path,
+            project_id: project.id,
+            'error.message' => exception.to_s
+          }).and_call_original
+
+        subject.execute
       end
     end
 

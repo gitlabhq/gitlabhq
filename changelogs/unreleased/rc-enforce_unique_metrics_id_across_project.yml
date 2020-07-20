@@ -1,0 +1,5 @@
+---
+title: Enforce prometheus metric uniqueness across project scope
+merge_request: 35566
+author:
+type: fixed

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::System do
+RSpec.describe Gitlab::Metrics::System do
   context 'when /proc files exist' do
     # Fixtures pulled from:
     # Linux carbon 5.3.0-7648-generic #41~1586789791~19.10~9593806-Ubuntu SMP Mon Apr 13 17:50:40 UTC  x86_64 x86_64 x86_64 GNU/Linux

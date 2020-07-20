@@ -3,7 +3,7 @@
 module Mutations
   module AwardEmojis
     class Remove < Base
-      graphql_name 'RemoveAwardEmoji'
+      graphql_name 'AwardEmojiRemove'
 
       def resolve(args)
         awardable = authorized_find!(id: args[:awardable_id])

@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "type": "doc",
+  "content": [
+    {
+      "type": "codeBlock",
+      "attrs": {
+        "language": "javascript"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "export function makeIssue({ parentIssue, project, users }) {\n\n  const issueType = pickRandom(project.issueTypes)\n\n  console.log(data)\n\n  return data\n}"
+        }
+      ]
+    },
+    {
+      "type": "codeBlock",
+      "attrs": {
+        "language": "css"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ".overflow { overflow: hidden; }"
+        }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Item 1"
+                }
+              ]
+            },
+            {
+              "type": "codeBlock",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "public DemoClass()\n{\n  // assign default value\n  x = 0;\n}"
+                }
+              ]
+            },
+            {
+              "type": "orderedList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Number list Item 1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "codeBlock",
+                      "attrs": {
+                        "language": "ruby"
+                      },
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "def test\n  # assign default value\n  x = 0\nend"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

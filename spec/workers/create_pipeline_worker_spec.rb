@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe CreatePipelineWorker do
+RSpec.describe CreatePipelineWorker do
   describe '#perform' do
     let(:worker) { described_class.new }
 

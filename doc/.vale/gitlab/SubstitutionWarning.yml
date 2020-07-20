@@ -4,7 +4,7 @@
 # Warns against using common shorthand for terms.
 # For substitutions flagged as errors, see Substitutions.yml
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: substitution
 message: 'If possible, use "%s" instead of "%s".'
 link: https://about.gitlab.com/handbook/communication/#top-misused-terms
@@ -13,8 +13,11 @@ ignorecase: true
 swap:
   admin: administrator
   blacklist(ed|ing)?: denylist
+  code base: codebase
   config: configuration
   distro: distribution
+  file name: filename
+  filesystem: file system
   info: information
   repo: repository
   whitelist(ed|ing)?: allowlist

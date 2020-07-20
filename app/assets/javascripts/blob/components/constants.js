@@ -25,7 +25,7 @@ export const BLOB_RENDER_ERRORS = {
     TOO_LARGE: {
       id: 'too_large',
       text: sprintf(__('it is larger than %{limit}'), {
-        limit: numberToHumanSize(104857600), // 100MB in bytes
+        limit: numberToHumanSize(10485760), // 10MB in bytes
       }),
     },
     EXTERNAL: {

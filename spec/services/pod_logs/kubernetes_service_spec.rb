@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ::PodLogs::KubernetesService do
+RSpec.describe ::PodLogs::KubernetesService do
   include KubernetesHelpers
 
   let_it_be(:cluster) { create(:cluster, :provided_by_gcp, environment_scope: '*') }

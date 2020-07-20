@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GitlabSchema.types['Group'] do
+RSpec.describe GitlabSchema.types['Group'] do
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Group) }
 
   specify { expect(described_class.graphql_name).to eq('Group') }
