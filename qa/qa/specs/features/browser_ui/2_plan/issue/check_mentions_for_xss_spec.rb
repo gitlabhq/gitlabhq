@@ -2,35 +2,32 @@
 
 module QA
   RSpec.describe 'Plan', :reliable do
+    let!(:user) do
+      Resource::User.fabricate_via_api! do |user|
+        user.name = "eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;"
+        user.password = "test1234"
+        user.api_client = Runtime::API::Client.as_admin
+      end
+    end
+
+    let!(:project) do
+      Resource::Project.fabricate_via_api! do |project|
+        project.name = 'xss-test-for-mentions-project'
+      end
+    end
+
     describe 'check xss occurence in @mentions in issues', :requires_admin do
-      it 'mentions a user in a comment' do
-        QA::Runtime::Env.personal_access_token = QA::Runtime::Env.admin_personal_access_token
-
-        unless QA::Runtime::Env.personal_access_token
-          Flow::Login.sign_in_as_admin
-        end
-
-        user = Resource::User.fabricate_via_api! do |user|
-          user.name = "eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;"
-          user.password = "test1234"
-        end
-
-        QA::Runtime::Env.personal_access_token = nil
-
-        Page::Main::Menu.perform(&:sign_out) if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
-
+      before do
         Flow::Login.sign_in
-
-        project = Resource::Project.fabricate_via_api! do |project|
-          project.name = 'xss-test-for-mentions-project'
-        end
 
         Flow::Project.add_member(project: project, username: user.username)
 
         Resource::Issue.fabricate_via_api! do |issue|
           issue.project = project
         end.visit!
+      end
 
+      it 'mentions a user in a comment' do
         Page::Project::Issue::Show.perform do |show|
           show.select_all_activities_filter
           show.comment("cc-ing you here @#{user.username}")
