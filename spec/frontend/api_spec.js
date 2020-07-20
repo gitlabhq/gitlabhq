@@ -891,4 +891,34 @@ describe('Api', () => {
       });
     });
   });
+
+  describe('createPipeline', () => {
+    it('creates new pipeline', () => {
+      const redirectUrl = 'ci-project/-/pipelines/95';
+      const projectId = 8;
+      const postData = {
+        ref: 'tag-1',
+        variables: [
+          { key: 'test_file', value: 'test_file_val', variable_type: 'file' },
+          { key: 'test_var', value: 'test_var_val', variable_type: 'env_var' },
+        ],
+      };
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/pipeline`;
+
+      jest.spyOn(axios, 'post');
+
+      mock.onPost(expectedUrl).replyOnce(200, {
+        web_url: redirectUrl,
+      });
+
+      return Api.createPipeline(projectId, postData).then(({ data }) => {
+        expect(data.web_url).toBe(redirectUrl);
+        expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      });
+    });
+  });
 });

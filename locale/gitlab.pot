@@ -17281,6 +17281,9 @@ msgstr ""
 msgid "Pipeline|Skipped"
 msgstr ""
 
+msgid "Pipeline|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used by default."
+msgstr ""
+
 msgid "Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default."
 msgstr ""
 
@@ -23227,6 +23230,15 @@ msgstr ""
 msgid "Templates"
 msgstr ""
 
+msgid "TemporaryStorage|GitLab allows you a %{strongStart}free, one-time storage increase%{strongEnd}. For 30 days your storage will be unlimited. This gives you time to reduce your storage usage. After 30 days, your original storage limit of %{limit} applies. If you are at maximum storage capacity, your account will be read-only. To continue using GitLab you'll have to purchase additional storage or decrease storage usage."
+msgstr ""
+
+msgid "TemporaryStorage|Increase storage temporarily"
+msgstr ""
+
+msgid "TemporaryStorage|Temporarily increase storage now?"
+msgstr ""
+
 msgid "Terminal"
 msgstr ""
 
@@ -23508,6 +23520,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "The fork relationship has been removed."
+msgstr ""
+
+msgid "The form contains the following error:"
 msgstr ""
 
 msgid "The global settings require you to enable Two-Factor Authentication for your account."
@@ -25687,6 +25702,9 @@ msgid "UsageQuota|Buy additional minutes"
 msgstr ""
 
 msgid "UsageQuota|Current period usage"
+msgstr ""
+
+msgid "UsageQuota|Increase storage temporarily"
 msgstr ""
 
 msgid "UsageQuota|LFS Objects"

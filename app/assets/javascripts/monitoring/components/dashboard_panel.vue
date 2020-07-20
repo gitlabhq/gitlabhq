@@ -30,7 +30,6 @@ import MonitorStackedColumnChart from './charts/stacked_column.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import AlertWidget from './alert_widget.vue';
 import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
-import { graphDataToCsv } from '../csv_export';
 
 const events = {
   timeRangeZoom: 'timerangezoom',
@@ -149,10 +148,13 @@ export default {
       return null;
     },
     csvText() {
-      if (this.graphData) {
-        return graphDataToCsv(this.graphData);
-      }
-      return null;
+      const chartData = this.graphData?.metrics[0].result[0].values || [];
+      const yLabel = this.graphData.y_label;
+      const header = `timestamp,${yLabel}\r\n`; // eslint-disable-line @gitlab/require-i18n-strings
+      return chartData.reduce((csv, data) => {
+        const row = data.join(',');
+        return `${csv}${row}\r\n`;
+      }, header);
     },
     downloadCsv() {
       const data = new Blob([this.csvText], { type: 'text/plain' });

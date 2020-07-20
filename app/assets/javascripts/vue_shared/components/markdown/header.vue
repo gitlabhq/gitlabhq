@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { GlPopover, GlDeprecatedButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlPopover, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import ToolbarButton from './toolbar_button.vue';
 import Icon from '../icon.vue';
 
@@ -9,7 +9,7 @@ export default {
     ToolbarButton,
     Icon,
     GlPopover,
-    GlDeprecatedButton,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -141,9 +141,14 @@ export default {
                   )
                 }}
               </p>
-              <gl-deprecated-button variant="primary" size="sm" @click="handleSuggestDismissed">
+              <gl-button
+                variant="info"
+                category="primary"
+                size="sm"
+                @click="handleSuggestDismissed"
+              >
                 {{ __('Got it') }}
-              </gl-deprecated-button>
+              </gl-button>
             </gl-popover>
           </template>
           <toolbar-button tag="`" tag-block="```" :button-title="__('Insert code')" icon="code" />

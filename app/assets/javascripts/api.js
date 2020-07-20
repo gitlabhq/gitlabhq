@@ -55,6 +55,7 @@ const Api = {
   adminStatisticsPath: '/api/:version/application/statistics',
   pipelineSinglePath: '/api/:version/projects/:id/pipelines/:pipeline_id',
   pipelinesPath: '/api/:version/projects/:id/pipelines/',
+  createPipelinePath: '/api/:version/projects/:id/pipeline',
   environmentsPath: '/api/:version/projects/:id/environments',
   rawFilePath: '/api/:version/projects/:id/repository/files/:path/raw',
   issuePath: '/api/:version/projects/:id/issues/:issue_iid',
@@ -573,6 +574,16 @@ const Api = {
 
     return axios.get(url, {
       params: options,
+    });
+  },
+
+  createPipeline(id, data) {
+    const url = Api.buildUrl(this.createPipelinePath).replace(':id', encodeURIComponent(id));
+
+    return axios.post(url, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
   },
 

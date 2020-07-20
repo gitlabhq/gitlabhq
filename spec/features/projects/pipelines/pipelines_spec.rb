@@ -652,6 +652,7 @@ RSpec.describe 'Pipelines', :js do
       let(:project) { create(:project, :repository) }
 
       before do
+        stub_feature_flags(new_pipeline_form: false)
         visit new_project_pipeline_path(project)
       end
 
@@ -718,6 +719,7 @@ RSpec.describe 'Pipelines', :js do
       let(:project) { create(:project, :repository) }
 
       before do
+        stub_feature_flags(new_pipeline_form: false)
         visit new_project_pipeline_path(project)
       end
 

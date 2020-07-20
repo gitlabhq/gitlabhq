@@ -51,7 +51,7 @@ To send separate email notifications to users with
 
 ## Configure PagerDuty integration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/119018) in GitLab 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/119018) in GitLab 13.3.
 
 You can set up a webhook with PagerDuty to automatically create a GitLab issue
 for each PagerDuty incident. This configuration requires you to make changes
@@ -61,7 +61,7 @@ in both PagerDuty and GitLab:
 1. Navigate to **{settings}** **Settings > Operations > Incidents** and expand **Incidents**.
 1. Select the **PagerDuty integration** tab:
 
-   ![PagerDuty incidents integration](img/pagerduty_incidents_integration_13_2.png)
+   ![PagerDuty incidents integration](img/pagerduty_incidents_integration_13_3.png)
 
 1. Activate the integration, and save the changes in GitLab.
 1. Copy the value of **Webhook URL** for use in a later step.

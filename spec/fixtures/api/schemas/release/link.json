@@ -4,7 +4,6 @@
   "properties": {
     "id": { "type": "integer" },
     "name": { "type": "string" },
-    "filepath": { "type": "string" },
     "url": { "type": "string" },
     "direct_asset_url": { "type": "string" },
     "external": { "type": "boolean" },

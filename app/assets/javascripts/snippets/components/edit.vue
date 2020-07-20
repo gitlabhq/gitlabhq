@@ -116,7 +116,7 @@ export default {
     onBeforeUnload(e = {}) {
       const returnValue = __('Are you sure you want to lose unsaved changes?');
 
-      if (!this.allBlobChangesRegistered) return undefined;
+      if (!this.allBlobChangesRegistered || this.isUpdating) return undefined;
 
       Object.assign(e, { returnValue });
       return returnValue;

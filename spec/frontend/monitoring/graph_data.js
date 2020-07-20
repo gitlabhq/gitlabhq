@@ -83,7 +83,7 @@ const matrixMultiResult = ({ values1 = ['1', '2', '3'], values2 = ['4', '5', '6'
  * @param {Object} dataOptions.isMultiSeries
  */
 export const timeSeriesGraphData = (panelOptions = {}, dataOptions = {}) => {
-  const { metricCount = 1, isMultiSeries = false, withLabels = true } = dataOptions;
+  const { metricCount = 1, isMultiSeries = false } = dataOptions;
 
   return mapPanelToViewModel({
     title: 'Time Series Panel',
@@ -91,7 +91,7 @@ export const timeSeriesGraphData = (panelOptions = {}, dataOptions = {}) => {
     x_label: 'X Axis',
     y_label: 'Y Axis',
     metrics: Array.from(Array(metricCount), (_, i) => ({
-      label: withLabels ? `Metric ${i + 1}` : undefined,
+      label: `Metric ${i + 1}`,
       state: metricStates.OK,
       result: isMultiSeries ? matrixMultiResult() : matrixSingleResult(),
     })),

@@ -388,42 +388,49 @@ describe('Snippet Edit app', () => {
         returnValueSetter = jest.spyOn(event, 'returnValue', 'set');
       };
 
-      it('does not prevent page navigation if there are no blobs', () => {
-        bootstrap();
-        window.dispatchEvent(event);
-
-        expect(returnValueSetter).not.toHaveBeenCalled();
-      });
-
-      it('does not prevent page navigation if there are no changes to the blobs content', () => {
-        bootstrap({
-          blobsActions: {
-            foo: {
-              ...actionWithContent,
-              action: '',
-            },
+      const actionsWithoutAction = {
+        blobsActions: {
+          foo: {
+            ...actionWithContent,
+            action: '',
           },
-        });
-        window.dispatchEvent(event);
-
-        expect(returnValueSetter).not.toHaveBeenCalled();
-      });
-
-      it('prevents page navigation if there are some changes in the snippet content', () => {
-        bootstrap({
-          blobsActions: {
-            foo: {
-              ...actionWithContent,
-              action: 'update',
-            },
+        },
+      };
+      const actionsWithUpdate = {
+        blobsActions: {
+          foo: {
+            ...actionWithContent,
+            action: 'update',
           },
-        });
+        },
+      };
+      const actionsWithUpdateWhileSaving = {
+        blobsActions: {
+          foo: {
+            ...actionWithContent,
+            action: 'update',
+          },
+        },
+        isUpdating: true,
+      };
 
+      it.each`
+        bool                  | expectToBePrevented | data                            | condition
+        ${'does not prevent'} | ${false}            | ${undefined}                    | ${'there are no blobs'}
+        ${'does not prevent'} | ${false}            | ${actionsWithoutAction}         | ${'there are no changes to the blobs content'}
+        ${'prevents'}         | ${true}             | ${actionsWithUpdate}            | ${'there are changes to the blobs content'}
+        ${'does not prevent'} | ${false}            | ${actionsWithUpdateWhileSaving} | ${'the snippet is being saved'}
+      `('$bool page navigation if $condition', ({ expectToBePrevented, data }) => {
+        bootstrap(data);
         window.dispatchEvent(event);
 
-        expect(returnValueSetter).toHaveBeenCalledWith(
-          'Are you sure you want to lose unsaved changes?',
-        );
+        if (expectToBePrevented) {
+          expect(returnValueSetter).toHaveBeenCalledWith(
+            'Are you sure you want to lose unsaved changes?',
+          );
+        } else {
+          expect(returnValueSetter).not.toHaveBeenCalled();
+        }
       });
     });
   });
