@@ -1,5 +1,0 @@
----
-title: Remove dashboard panels' tabindex where is not needed
-merge_request: 36168
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Set default values for SAST_EXCLUDED_PATHS and DS_EXCLUDED_PATHS
-merge_request: 34076
-author:
-type: changed

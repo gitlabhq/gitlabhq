@@ -1,5 +1,0 @@
----
-title: Use memoized start/finish for metrics based on issues table
-merge_request: 37155
-author:
-type: performance

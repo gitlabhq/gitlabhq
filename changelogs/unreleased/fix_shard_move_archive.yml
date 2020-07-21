@@ -1,5 +1,0 @@
----
-title: Ensure original repository is archived after a shard move
-merge_request: 34895
-author:
-type: fixed

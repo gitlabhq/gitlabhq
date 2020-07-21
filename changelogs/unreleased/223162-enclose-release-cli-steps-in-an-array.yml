@@ -1,5 +1,0 @@
----
-title: Enclose `release-cli` steps in an array
-merge_request: 34913
-author:
-type: fixed

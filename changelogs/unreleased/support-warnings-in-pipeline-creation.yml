@@ -1,5 +1,0 @@
----
-title: Store pipeline creation errors and warnings into Ci::PipelineMessage
-merge_request: 33762
-author:
-type: other

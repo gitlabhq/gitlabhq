@@ -1,5 +1,0 @@
----
-title: Fix creating release evidence if release is created via UI
-merge_request: 32441
-author:
-type: fixed

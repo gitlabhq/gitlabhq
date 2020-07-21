@@ -1,5 +1,0 @@
----
-title: Do not depend on artifacts from previous stages in Auto DevOps deployments
-merge_request: 36741
-author:
-type: fixed

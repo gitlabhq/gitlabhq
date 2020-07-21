@@ -1,5 +1,0 @@
----
-title: Suppress progress on docker pulling in builtin templates
-merge_request: 35253
-author: Takuya Noguchi
-type: other

@@ -1,5 +1,0 @@
----
-title: Fix whitespace changes overgrowing the diff container
-merge_request: 32774
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix directory and last commit not loading for some filenames
-merge_request: 34985
-author:
-type: fixed

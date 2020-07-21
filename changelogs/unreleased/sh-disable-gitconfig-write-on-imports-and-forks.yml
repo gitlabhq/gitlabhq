@@ -1,5 +1,0 @@
----
-title: Defer updating .git/config for imported projects
-merge_request: 35308
-author:
-type: fixed

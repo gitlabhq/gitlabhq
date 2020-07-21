@@ -1,5 +1,0 @@
----
-title: Add MergeRequest.diffStatsSummary.fileCount to graphql API
-merge_request: 35685
-author:
-type: added

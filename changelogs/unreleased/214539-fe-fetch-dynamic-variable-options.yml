@@ -1,5 +1,0 @@
----
-title: Fetch metrics dashboard templating variable options using a Prometheus query
-merge_request: 34607
-author:
-type: added

@@ -1,6 +1,0 @@
----
-title: Updated Auto DevOps with a fix to delete PostgreSQL PVC on environment cleanup,
-  a fix for multiline K8S_SECRET variables, updated Helm to 2.16.7 and glibc to 2.31
-merge_request: 34399
-author: verenion
-type: fixed

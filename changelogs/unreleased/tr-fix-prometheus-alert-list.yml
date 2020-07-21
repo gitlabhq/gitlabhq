@@ -1,5 +1,0 @@
----
-title: Ensure that alerts are shown when prometheus service is active
-merge_request: 33928
-author:
-type: fixed

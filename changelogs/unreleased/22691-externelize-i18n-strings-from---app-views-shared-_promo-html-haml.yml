@@ -1,5 +1,0 @@
----
-title: Externalize i18n strings from ./app/views/shared/_promo.html.haml
-merge_request: 32109
-author: Gilang Gumilar
-type: changed

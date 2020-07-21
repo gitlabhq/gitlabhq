@@ -1,5 +1,0 @@
----
-title: Add a custom HTML renderer to the Static Site Editor for embedded ruby (ERB) syntax
-merge_request: 35261
-author:
-type: added

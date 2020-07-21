@@ -1,5 +1,0 @@
----
-title: Limit alert assignment to only users who can read alerts
-merge_request: 34681
-author:
-type: fixed

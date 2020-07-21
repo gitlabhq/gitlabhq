@@ -1,5 +1,0 @@
----
-title: Don't include changes in webhook payload when old associations are empty
-merge_request: 35158
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: GraphQL hasNextPage and hasPreviousPage return correct values
-merge_request: 32476
-author:
-type: fixed

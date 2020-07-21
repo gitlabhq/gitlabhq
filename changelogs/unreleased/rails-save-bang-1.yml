@@ -1,5 +1,0 @@
----
-title: Refactor issues controller spec to fix SaveBang Cop
-merge_request: 36582
-author: Rajendra Kadam
-type: fixed

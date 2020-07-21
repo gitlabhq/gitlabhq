@@ -1,5 +1,0 @@
----
-title: SpamVerdictService can call external spam check endpoint
-merge_request: 31449
-author:
-type: added

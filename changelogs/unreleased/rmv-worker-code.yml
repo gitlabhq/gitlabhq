@@ -1,5 +1,0 @@
----
-title: Remove the unused worker code and its queue
-merge_request: 32595
-author: Ravishankar
-type: deprecated

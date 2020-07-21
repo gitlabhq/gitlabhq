@@ -1,5 +1,0 @@
----
-title: Fix not being able to add more than one CI variable through the UI
-merge_request: 37001
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add DestroyService for GPG keys and use for deleting GPG keys via API
-merge_request: 34935
-author: Rajendra Kadam
-type: fixed

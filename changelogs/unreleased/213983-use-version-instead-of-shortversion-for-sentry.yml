@@ -1,5 +1,0 @@
----
-title: Use full version instead of short version for Sentry Error Release links.
-merge_request: 35623
-author:
-type: fixed

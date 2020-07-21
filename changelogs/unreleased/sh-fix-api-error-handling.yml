@@ -1,5 +1,0 @@
----
-title: Fix 500 errors with invalid access tokens
-merge_request: 35895
-author:
-type: fixed

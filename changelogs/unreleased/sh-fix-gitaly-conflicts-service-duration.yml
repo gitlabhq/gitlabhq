@@ -1,5 +1,0 @@
----
-title: Fix Gitaly duration timings for conflicts and search RPCs
-merge_request: 34909
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Trigger stackprof by sending a SIGUSR2 signal
-merge_request: 35993
-author:
-type: performance

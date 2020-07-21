@@ -1,5 +1,0 @@
----
-title: Add metrics for Redis usage during web requests
-merge_request: 32605
-author:
-type: added

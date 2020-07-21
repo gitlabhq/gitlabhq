@@ -1,5 +1,0 @@
----
-title: Remove null constraint for JID in GroupImportState
-merge_request: 33181
-author:
-type: changed

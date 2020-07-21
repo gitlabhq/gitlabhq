@@ -1,5 +1,0 @@
----
-title: Prevent autosave when reply comment via cmd+enter
-merge_request: 35716
-author:
-type: fixed

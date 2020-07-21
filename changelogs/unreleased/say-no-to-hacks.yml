@@ -1,5 +1,0 @@
----
-title: Removes fixes that broke the pipeline table
-merge_request: 36803
-author:
-type: fixed

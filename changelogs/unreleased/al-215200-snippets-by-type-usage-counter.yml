@@ -1,5 +1,0 @@
----
-title: Add index on id and type for Snippets
-merge_request: 32885
-author:
-type: performance

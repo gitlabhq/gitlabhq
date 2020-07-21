@@ -1,5 +1,0 @@
----
-title: Require namespace path (and username) to be at least 2 chars long
-merge_request: 35649
-author:
-type: changed

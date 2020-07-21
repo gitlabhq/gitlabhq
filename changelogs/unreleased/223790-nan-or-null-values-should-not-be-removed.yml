@@ -1,5 +1,0 @@
----
-title: Stop removing NaN values from monitoring data series
-merge_request: 35086
-author:
-type: changed

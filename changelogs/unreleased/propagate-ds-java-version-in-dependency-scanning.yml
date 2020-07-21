@@ -1,5 +1,0 @@
----
-title: Propagate DS_JAVA_VERSION for dependency scanning
-merge_request: 36448
-author:
-type: fixed

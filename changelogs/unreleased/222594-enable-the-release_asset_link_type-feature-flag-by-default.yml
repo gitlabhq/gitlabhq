@@ -1,5 +1,0 @@
----
-title: Enable `:ci_release_generation` feature flag by default
-merge_request: 34633
-author:
-type: changed

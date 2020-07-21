@@ -1,5 +1,0 @@
----
-title: Allow developer role read-only access to Terraform state
-merge_request: 33573
-author:
-type: added

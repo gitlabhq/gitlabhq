@@ -1,5 +1,0 @@
----
-title: Propagate error on FF pre-receive failure
-merge_request: 35633
-author:
-type: fixed

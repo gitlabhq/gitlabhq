@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in commit entity spec
-merge_request: 32039
-author: Rajendra Kadam
-type: fixed

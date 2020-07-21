@@ -1,5 +1,0 @@
----
-title: Fix 500 errors and false positive warnings during metrics dashboard validation.
-merge_request: 34166
-author:
-type: fixed

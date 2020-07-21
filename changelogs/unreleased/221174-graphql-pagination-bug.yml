@@ -1,5 +1,0 @@
----
-title: GraphQL - properly handle pagination of millisecond-precision timestamps
-merge_request: 34352
-author:
-type: fixed

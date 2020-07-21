@@ -1,5 +1,0 @@
----
-title: Improve query to retrieve job artifacts with files stored locally
-merge_request: 35084
-author:
-type: performance

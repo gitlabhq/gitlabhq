@@ -1,5 +1,0 @@
----
-title: Expose metrics dashboard URL for alert GraphQL query
-merge_request: 35293
-author:
-type: added
