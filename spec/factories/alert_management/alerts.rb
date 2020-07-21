@@ -23,7 +23,7 @@ FactoryBot.define do
 
     trait :with_assignee do |alert|
       after(:create) do |alert|
-        alert.alert_assignees.create(assignee: create(:user))
+        alert.alert_assignees.create!(assignee: create(:user))
       end
     end
 

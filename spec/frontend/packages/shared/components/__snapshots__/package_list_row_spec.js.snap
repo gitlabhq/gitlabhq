@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`packages_list_row renders 1`] = `
+<div
+  class="gl-responsive-table-row"
+  data-qa-selector="packages-row"
+>
+  <div
+    class="table-section section-50 d-flex flex-md-column justify-content-between flex-wrap"
+  >
+    <div
+      class="d-flex align-items-center mr-2"
+    >
+      <gl-link-stub
+        class="text-dark font-weight-bold mb-md-1"
+        data-qa-selector="package_link"
+        href="foo"
+      >
+        
+        Test package
+      
+      </gl-link-stub>
+       
+      <!---->
+    </div>
+     
+    <div
+      class="d-flex text-secondary text-truncate mt-md-2"
+    >
+      <span>
+        1.0.0
+      </span>
+       
+      <!---->
+       
+      <div
+        class="d-flex align-items-center"
+      >
+        <gl-icon-stub
+          class="text-secondary ml-2 mr-1"
+          name="review-list"
+          size="16"
+        />
+         
+        <gl-link-stub
+          class="text-secondary"
+          data-testid="packages-row-project"
+          href="/foo/bar/baz"
+        >
+          
+        </gl-link-stub>
+      </div>
+       
+      <div
+        class="d-flex align-items-center"
+        data-testid="package-type"
+      >
+        <gl-icon-stub
+          class="text-secondary ml-2 mr-1"
+          name="package"
+          size="16"
+        />
+         
+        <span>
+          Maven
+        </span>
+      </div>
+    </div>
+  </div>
+   
+  <div
+    class="table-section d-flex flex-md-column justify-content-between align-items-md-end section-40"
+  >
+    <publish-method-stub
+      packageentity="[object Object]"
+    />
+     
+    <div
+      class="text-secondary order-0 order-md-1 mt-md-2"
+    >
+      <gl-sprintf-stub
+        message="Created %{timestamp}"
+      />
+    </div>
+  </div>
+   
+  <div
+    class="table-section section-10 d-flex justify-content-end"
+  >
+    <gl-button-stub
+      aria-label="Remove package"
+      category="primary"
+      data-testid="action-delete"
+      icon="remove"
+      size="medium"
+      title="Remove package"
+      variant="danger"
+    />
+  </div>
+</div>
+`;

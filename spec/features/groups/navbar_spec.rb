@@ -45,6 +45,8 @@ RSpec.describe 'Group navbar' do
   end
 
   before do
+    insert_package_nav(_('Kubernetes'))
+
     stub_feature_flags(group_push_rules: false)
     stub_feature_flags(group_iterations: false)
     stub_feature_flags(group_wiki: false)
@@ -62,13 +64,8 @@ RSpec.describe 'Group navbar' do
     before do
       stub_config(registry: { enabled: true })
 
-      insert_after_nav_item(
-        _('Kubernetes'),
-        new_nav_item: {
-          nav_item: _('Packages & Registries'),
-          nav_sub_items: [_('Container Registry')]
-        }
-      )
+      insert_container_nav(_('Kubernetes'))
+
       visit group_path(group)
     end
 

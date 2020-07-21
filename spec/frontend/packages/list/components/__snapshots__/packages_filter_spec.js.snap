@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`packages_filter renders 1`] = `
+<gl-search-box-by-click-stub
+  clearable="true"
+  clearbuttontitle="Clear"
+  clearrecentsearchestext="Clear recent searches"
+  closebuttontitle="Close"
+  norecentsearchestext="You don't have any recent searches"
+  placeholder="Filter by name"
+  recentsearchesheader="Recent searches"
+  value=""
+/>
+`;

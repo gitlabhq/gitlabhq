@@ -169,7 +169,7 @@ module QA
       end
 
       def has_element?(name, **kwargs)
-        wait_for_requests
+        wait_for_requests(skip_finished_loading_check: !!kwargs.delete(:skip_finished_loading_check))
 
         disabled = kwargs.delete(:disabled)
 
@@ -207,15 +207,6 @@ module QA
 
       def has_normalized_ws_text?(text, wait: Capybara.default_max_wait_time)
         has_text?(text.gsub(/\s+/, " "), wait: wait)
-      end
-
-      def finished_loading?
-        wait_for_requests
-
-        # The number of selectors should be able to be reduced after
-        # migration to the new spinner is complete.
-        # https://gitlab.com/groups/gitlab-org/-/epics/956
-        has_no_css?('.gl-spinner, .fa-spinner, .spinner', wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
       end
 
       def finished_loading_block?

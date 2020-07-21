@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe AlertManagement::AlertsFinder, '#execute' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:alert_1) { create(:alert_management_alert, :all_fields, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }
-  let_it_be(:alert_2) { create(:alert_management_alert, :all_fields, :ignored, project: project, events: 1, severity: :critical) }
-  let_it_be(:alert_3) { create(:alert_management_alert, :all_fields) }
+  let_it_be(:resolved_alert) { create(:alert_management_alert, :all_fields, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }
+  let_it_be(:ignored_alert) { create(:alert_management_alert, :all_fields, :ignored, project: project, events: 1, severity: :critical) }
+  let_it_be(:triggered_alert) { create(:alert_management_alert, :all_fields) }
   let(:params) { {} }
 
   describe '#execute' do
@@ -23,13 +23,13 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
       end
 
       context 'empty params' do
-        it { is_expected.to contain_exactly(alert_1, alert_2) }
+        it { is_expected.to contain_exactly(resolved_alert, ignored_alert) }
       end
 
       context 'iid given' do
-        let(:params) { { iid: alert_1.iid } }
+        let(:params) { { iid: resolved_alert.iid } }
 
-        it { is_expected.to match_array(alert_1) }
+        it { is_expected.to match_array(resolved_alert) }
 
         context 'unknown iid' do
           let(:params) { { iid: 'unknown' } }
@@ -41,13 +41,13 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
       context 'status given' do
         let(:params) { { status: AlertManagement::Alert::STATUSES[:resolved] } }
 
-        it { is_expected.to match_array(alert_1) }
+        it { is_expected.to match_array(resolved_alert) }
 
         context 'with an array of statuses' do
-          let(:alert_3) { create(:alert_management_alert) }
+          let(:triggered_alert) { create(:alert_management_alert) }
           let(:params) { { status: [AlertManagement::Alert::STATUSES[:resolved]] } }
 
-          it { is_expected.to match_array(alert_1) }
+          it { is_expected.to match_array(resolved_alert) }
         end
 
         context 'with no alerts of status' do
@@ -59,13 +59,13 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
         context 'with an empty status array' do
           let(:params) { { status: [] } }
 
-          it { is_expected.to match_array([alert_1, alert_2]) }
+          it { is_expected.to match_array([resolved_alert, ignored_alert]) }
         end
 
         context 'with an nil status' do
           let(:params) { { status: nil } }
 
-          it { is_expected.to match_array([alert_1, alert_2]) }
+          it { is_expected.to match_array([resolved_alert, ignored_alert]) }
         end
       end
 
@@ -74,13 +74,13 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
           context 'sorts alerts ascending' do
             let(:params) { { sort: 'created_asc' } }
 
-            it { is_expected.to eq [alert_1, alert_2] }
+            it { is_expected.to eq [resolved_alert, ignored_alert] }
           end
 
           context 'sorts alerts descending' do
             let(:params) { { sort: 'created_desc' } }
 
-            it { is_expected.to eq [alert_2, alert_1] }
+            it { is_expected.to eq [ignored_alert, resolved_alert] }
           end
         end
 
@@ -88,13 +88,13 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
           context 'sorts alerts ascending' do
             let(:params) { { sort: 'updated_asc' } }
 
-            it { is_expected.to eq [alert_1, alert_2] }
+            it { is_expected.to eq [resolved_alert, ignored_alert] }
           end
 
           context 'sorts alerts descending' do
             let(:params) { { sort: 'updated_desc' } }
 
-            it { is_expected.to eq [alert_2, alert_1] }
+            it { is_expected.to eq [ignored_alert, resolved_alert] }
           end
         end
 
@@ -102,13 +102,13 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
           context 'sorts alerts ascending' do
             let(:params) { { sort: 'started_at_asc' } }
 
-            it { is_expected.to eq [alert_1, alert_2] }
+            it { is_expected.to eq [resolved_alert, ignored_alert] }
           end
 
           context 'sorts alerts descending' do
             let(:params) { { sort: 'started_at_desc' } }
 
-            it { is_expected.to eq [alert_2, alert_1] }
+            it { is_expected.to eq [ignored_alert, resolved_alert] }
           end
         end
 
@@ -116,13 +116,13 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
           context 'sorts alerts ascending' do
             let(:params) { { sort: 'ended_at_asc' } }
 
-            it { is_expected.to eq [alert_1, alert_2] }
+            it { is_expected.to eq [resolved_alert, ignored_alert] }
           end
 
           context 'sorts alerts descending' do
             let(:params) { { sort: 'ended_at_desc' } }
 
-            it { is_expected.to eq [alert_2, alert_1] }
+            it { is_expected.to eq [ignored_alert, resolved_alert] }
           end
         end
 
@@ -133,13 +133,13 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
           context 'sorts alerts ascending' do
             let(:params) { { sort: 'event_count_asc' } }
 
-            it { is_expected.to eq [alert_2, alert_1, alert_count_3, alert_count_6] }
+            it { is_expected.to eq [ignored_alert, resolved_alert, alert_count_3, alert_count_6] }
           end
 
           context 'sorts alerts descending' do
             let(:params) { { sort: 'event_count_desc' } }
 
-            it { is_expected.to eq [alert_count_6, alert_count_3, alert_1, alert_2] }
+            it { is_expected.to eq [alert_count_6, alert_count_3, resolved_alert, ignored_alert] }
           end
         end
 

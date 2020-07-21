@@ -392,6 +392,7 @@ class ProjectsController < Projects::ApplicationController
       :initialize_with_readme,
       :autoclose_referenced_issues,
       :suggestion_commit_message,
+      :packages_enabled,
       :service_desk_enabled,
 
       project_feature_attributes: %i[

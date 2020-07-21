@@ -1,16 +1,23 @@
-- if group_container_registry_nav?
-  = nav_link(controller: 'groups/registry/repositories') do
-    = link_to group_container_registries_path(@group), title: _('Container Registry') do
+- packages_link = group_packages_list_nav? ? group_packages_path(@group) : group_container_registries_path(@group)
+
+- if group_packages_nav?
+  = nav_link(controller: ['groups/packages', 'groups/registry/repositories']) do
+    = link_to packages_link, title: _('Packages') do
       .nav-icon-container
         = sprite_icon('package')
       %span.nav-item-name
         = _('Packages & Registries')
     %ul.sidebar-sub-level-items
-      = nav_link(controller: 'groups/registry/repositories', html_options: { class: "fly-out-top-item" } ) do
-        = link_to group_container_registries_path(@group), title: _('Container Registry') do
+      = nav_link(controller: [:packages, :repositories], html_options: { class: "fly-out-top-item" } ) do
+        = link_to packages_link, title: _('Packages & Registries') do
           %strong.fly-out-top-item-name
             = _('Packages & Registries')
       %li.divider.fly-out-top-item
-      = nav_link(controller: 'groups/registry/repositories') do
-        = link_to group_container_registries_path(@group), title: _('Container Registry') do
-          %span= _('Container Registry')
+      - if group_packages_list_nav?
+        = nav_link(controller: 'groups/packages') do
+          = link_to group_packages_path(@group), title: _('Packages') do
+            %span= _('Package Registry')
+      - if group_container_registry_nav?
+        = nav_link(controller: 'groups/registry/repositories') do
+          = link_to group_container_registries_path(@group), title: _('Container Registry') do
+            %span= _('Container Registry')

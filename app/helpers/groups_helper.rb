@@ -28,6 +28,7 @@ module GroupsHelper
 
   def group_packages_nav_link_paths
     %w[
+      groups/packages#index
       groups/container_registries#index
     ]
   end
@@ -155,6 +156,15 @@ module GroupsHelper
     end
 
     groups.to_json
+  end
+
+  def group_packages_nav?
+    group_packages_list_nav? ||
+      group_container_registry_nav?
+  end
+
+  def group_packages_list_nav?
+    @group.packages_feature_enabled?
   end
 
   private

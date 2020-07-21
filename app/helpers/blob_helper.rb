@@ -48,24 +48,40 @@ module BlobHelper
     return unless blob = readable_blob(options, path, project, ref)
 
     common_classes = "btn btn-primary js-edit-blob ml-2 #{options[:extra_class]}"
+    data = { track_event: 'click_edit', track_label: 'Edit' }
+
+    if Feature.enabled?(:web_ide_primary_edit, project.group)
+      common_classes += " btn-inverted"
+      data[:track_property] = 'secondary'
+    end
 
     edit_button_tag(blob,
                     common_classes,
                     _('Edit'),
                     edit_blob_path(project, ref, path, options),
                     project,
-                    ref)
+                    ref,
+                    data)
   end
 
   def ide_edit_button(project = @project, ref = @ref, path = @path, blob:)
     return unless blob
 
+    common_classes = 'btn btn-primary ide-edit-button ml-2'
+    data = { track_event: 'click_edit_ide', track_label: 'Web IDE' }
+
+    unless Feature.enabled?(:web_ide_primary_edit, project.group)
+      common_classes += " btn-inverted"
+      data[:track_property] = 'secondary'
+    end
+
     edit_button_tag(blob,
-                    'btn btn-inverted btn-primary ide-edit-button ml-2',
+                    common_classes,
                     _('Web IDE'),
                     ide_edit_path(project, ref, path),
                     project,
-                    ref)
+                    ref,
+                    data)
   end
 
   def modify_file_button(project = @project, ref = @ref, path = @path, blob:, label:, action:, btn_class:, modal_type:)
@@ -325,16 +341,16 @@ module BlobHelper
     button_tag(button_text, class: "#{common_classes} disabled has-tooltip", title: _('You can only edit files when you are on a branch'), data: { container: 'body' })
   end
 
-  def edit_link_tag(link_text, edit_path, common_classes)
-    link_to link_text, edit_path, class: "#{common_classes} btn-sm"
+  def edit_link_tag(link_text, edit_path, common_classes, data)
+    link_to link_text, edit_path, class: "#{common_classes} btn-sm", data: data
   end
 
-  def edit_button_tag(blob, common_classes, text, edit_path, project, ref)
+  def edit_button_tag(blob, common_classes, text, edit_path, project, ref, data)
     if !on_top_of_branch?(project, ref)
       edit_disabled_button_tag(text, common_classes)
       # This condition only applies to users who are logged in
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
-      edit_link_tag(text, edit_path, common_classes)
+      edit_link_tag(text, edit_path, common_classes, data)
     elsif can?(current_user, :fork_project, project) && can?(current_user, :create_merge_request_in, project)
       edit_fork_button_tag(common_classes, project, text, edit_blob_fork_params(edit_path))
     end

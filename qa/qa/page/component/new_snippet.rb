@@ -55,12 +55,10 @@ module QA
         end
 
         def fill_file_name(name)
-          finished_loading?
           fill_element :file_name_field, name
         end
 
         def fill_file_content(content)
-          finished_loading?
           text_area.set content
         end
 

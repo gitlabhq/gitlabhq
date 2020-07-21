@@ -1,3 +1,8 @@
+- requirements_link_url = help_page_path('user/project/issues/design_management', anchor: 'requirements')
+- requirements_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: requirements_link_url }
+- link_end = '</a>'.html_safe
+- enable_lfs_message = s_("DesignManagement|To upload designs, you'll need to %{requirements_link_start}enable LFS%{requirements_link_end}.").html_safe % { requirements_link_start: requirements_link_start, requirements_link_end: link_end }
+
 - if @project.design_management_enabled?
   - if Feature.enabled?(:design_management_moved, @project, default_enabled: true)
     .js-design-management-new{ data: { project_path: @project.full_path, issue_iid: @issue.iid, issue_path: project_issue_path(@project, @issue) } }
@@ -5,13 +10,8 @@
     .js-design-management{ data: { project_path: @project.full_path, issue_iid: @issue.iid, issue_path: project_issue_path(@project, @issue) } }
 - else
   - if Feature.enabled?(:design_management_moved, @project, default_enabled: true)
-    .row.empty-state.design-dropzone-border.gl-mt-5
-      .text-content.center.gl-font-weight-bold
-        - requirements_link_url = help_page_path('user/project/issues/design_management', anchor: 'requirements')
-        - requirements_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: requirements_link_url }
-        - support_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: support_url }
-        - link_end = '</a>'.html_safe
-        = s_("DesignManagement|To enable design management, you'll need to %{requirements_link_start}meet the requirements%{requirements_link_end}. If you need help, reach out to our %{support_link_start}support team%{support_link_end} for assistance.").html_safe % { requirements_link_start: requirements_link_start, requirements_link_end: link_end, support_link_start: support_link_start, support_link_end: link_end }
+    .gl-border-solid.gl-border-1.gl-border-gray-100.gl-rounded-base.gl-mt-5.gl-p-3.gl-text-center
+      = enable_lfs_message
   - else
     .mt-4
       .row.empty-state
@@ -20,8 +20,4 @@
             %h4.center
               = _('The one place for your designs')
             %p.center
-              - requirements_link_url = help_page_path('user/project/issues/design_management', anchor: 'requirements')
-              - requirements_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: requirements_link_url }
-              - support_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: support_url }
-              - link_end = '</a>'.html_safe
-              = s_("DesignManagement|To enable design management, you'll need to %{requirements_link_start}meet the requirements%{requirements_link_end}. If you need help, reach out to our %{support_link_start}support team%{support_link_end} for assistance.").html_safe % { requirements_link_start: requirements_link_start, requirements_link_end: link_end, support_link_start: support_link_start, support_link_end: link_end }
+              = enable_lfs_message

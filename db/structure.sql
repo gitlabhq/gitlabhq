@@ -9400,8 +9400,10 @@ CREATE TABLE public.audit_events (
     ip_address inet,
     author_name text,
     entity_path text,
+    target_details text,
     CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
-    CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255))
+    CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT check_d493ec90b5 CHECK ((char_length(target_details) <= 5500))
 );
 
 CREATE SEQUENCE public.audit_events_id_seq
@@ -23987,10 +23989,12 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200713071042
 20200713141854
 20200713152443
+20200715124210
 20200715135130
 20200715202659
 20200716044023
 20200716120419
+20200716145156
 20200718040100
 20200718040200
 20200718040300

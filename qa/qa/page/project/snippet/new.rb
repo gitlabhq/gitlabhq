@@ -14,6 +14,7 @@ module QA
 
           def click_create_first_snippet
             finished_loading?
+
             # The svg takes a fraction of a second to load after which the
             # "New snippet" button shifts up a bit. This can cause
             # webdriver to miss the hit so we wait for the svg to load before

@@ -249,15 +249,15 @@ RSpec.describe AlertManagement::Alert do
     subject { described_class.last_prometheus_alert_by_project_id }
 
     let(:project_1) { create(:project) }
-    let!(:alert_1) { create(:alert_management_alert, project: project_1) }
-    let!(:alert_2) { create(:alert_management_alert, project: project_1) }
+    let!(:p1_alert_1) { create(:alert_management_alert, project: project_1) }
+    let!(:p1_alert_2) { create(:alert_management_alert, project: project_1) }
 
     let(:project_2) { create(:project) }
-    let!(:alert_3) { create(:alert_management_alert, project: project_2) }
-    let!(:alert_4) { create(:alert_management_alert, project: project_2) }
+    let!(:p2_alert_1) { create(:alert_management_alert, project: project_2) }
+    let!(:p2_alert_2) { create(:alert_management_alert, project: project_2) }
 
     it 'returns the latest alert for each project' do
-      expect(subject).to contain_exactly(alert_2, alert_4)
+      expect(subject).to contain_exactly(p1_alert_2, p2_alert_2)
     end
   end
 

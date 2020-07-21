@@ -19,7 +19,7 @@ module QA
         end
       end
 
-      it 'closes an issue' do
+      it 'closes an issue', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/225303', type: :bug } do
         closed_issue.visit!
 
         Page::Project::Issue::Show.perform do |issue_page|

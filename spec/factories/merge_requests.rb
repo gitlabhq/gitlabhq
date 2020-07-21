@@ -268,7 +268,7 @@ FactoryBot.define do
       end
 
       after(:create) do |merge_request, evaluator|
-        merge_request.update(labels: evaluator.labels)
+        merge_request.update!(labels: evaluator.labels)
       end
     end
   end

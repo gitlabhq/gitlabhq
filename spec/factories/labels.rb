@@ -27,7 +27,7 @@ FactoryBot.define do
 
     after(:create) do |label, evaluator|
       if evaluator.priority
-        label.priorities.create(project: label.project, priority: evaluator.priority)
+        label.priorities.create!(project: label.project, priority: evaluator.priority)
       end
     end
   end

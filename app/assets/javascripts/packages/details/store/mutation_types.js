@@ -1,0 +1,2 @@
+export const SET_LOADING = 'SET_LOADING';
+export const SET_PACKAGE_VERSIONS = 'SET_PACKAGE_VERSIONS';

@@ -1586,6 +1586,7 @@ RSpec.describe API::Projects do
         expect(json_response['ci_default_git_depth']).to eq(project.ci_default_git_depth)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
         expect(json_response['readme_url']).to eq(project.readme_url)
+        expect(json_response).to have_key 'packages_enabled'
       end
 
       it 'returns a group link with expiration date' do
@@ -2337,6 +2338,22 @@ RSpec.describe API::Projects do
       expect(project4).to be_persisted
       expect(project_member2).to be_persisted
       expect(project_member).to be_persisted
+    end
+
+    describe 'updating packages_enabled attribute' do
+      it 'is enabled by default' do
+        expect(project.packages_enabled).to be true
+      end
+
+      context 'without the need for a license' do
+        it 'disables project packages feature' do
+          put(api("/projects/#{project.id}", user), params: { packages_enabled: false })
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(project.reload.packages_enabled).to be false
+          expect(json_response['packages_enabled']).to eq(false)
+        end
+      end
     end
 
     it 'returns 400 when nothing sent' do

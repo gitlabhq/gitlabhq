@@ -56,7 +56,7 @@ module QA
 
             def await_installed(application_name)
               within_element(application_name) do
-                has_element?(:uninstall_button, application: application_name, wait: 300)
+                has_element?(:uninstall_button, application: application_name, wait: 300, skip_finished_loading_check: true)
               end
             end
 

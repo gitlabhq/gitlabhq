@@ -47,6 +47,58 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
+  describe 'Packages' do
+    let(:user) { create(:user) }
+
+    let_it_be(:package_menu_name) { 'Packages & Registries' }
+    let_it_be(:package_entry_name) { 'Package Registry' }
+
+    before do
+      project.team.add_developer(user)
+      sign_in(user)
+      stub_container_registry_config(enabled: true)
+    end
+
+    context 'when packages is enabled' do
+      it 'packages link is visible' do
+        render
+
+        expect(rendered).to have_link(package_menu_name, href: project_packages_path(project))
+      end
+
+      it 'packages list link is visible' do
+        render
+
+        expect(rendered).to have_link(package_entry_name, href: project_packages_path(project))
+      end
+
+      it 'container registry link is visible' do
+        render
+
+        expect(rendered).to have_link('Container Registry', href: project_container_registry_index_path(project))
+      end
+    end
+
+    context 'when container registry is disabled' do
+      before do
+        stub_container_registry_config(enabled: false)
+      end
+
+      it 'packages top level and list link are visible' do
+        render
+
+        expect(rendered).to have_link(package_menu_name, href: project_packages_path(project))
+        expect(rendered).to have_link(package_entry_name, href: project_packages_path(project))
+      end
+
+      it 'container registry link is not visible' do
+        render
+
+        expect(rendered).not_to have_link('Container Registry', href: project_container_registry_index_path(project))
+      end
+    end
+  end
+
   describe 'releases entry' do
     it 'renders releases link' do
       render

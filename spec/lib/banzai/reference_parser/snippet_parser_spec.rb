@@ -33,6 +33,17 @@ RSpec.describe Banzai::ReferenceParser::SnippetParser do
         project.project_feature.update_attribute(:snippets_access_level, ProjectFeature::ENABLED)
       end
 
+      it 'avoids N+1 cached queries', :use_sql_query_cache do
+        # Run this once to establish a baseline
+        visible_references(:public)
+
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          subject.nodes_visible_to_user(user, [link])
+        end
+
+        expect { subject.nodes_visible_to_user(user, Array.new(10, link)) }.not_to exceed_all_query_limit(control_count.count)
+      end
+
       it 'creates a reference for guest for a public snippet' do
         expect(visible_references(:public)).to eq([link])
       end

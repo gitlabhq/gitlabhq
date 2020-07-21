@@ -11,6 +11,7 @@ module QA
         include SubMenus::Operations
         include SubMenus::Repository
         include SubMenus::Settings
+        include SubMenus::Packages
 
         view 'app/views/layouts/nav/sidebar/_project.html.haml' do
           element :activity_link

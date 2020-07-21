@@ -196,7 +196,7 @@ FactoryBot.define do
       IssueTrackerService.skip_callback(:validation, :before, :handle_properties)
     end
 
-    to_create { |instance| instance.save(validate: false) }
+    to_create { |instance| instance.save!(validate: false) }
 
     after(:create) do
       IssueTrackerService.set_callback(:validation, :before, :handle_properties)

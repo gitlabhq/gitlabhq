@@ -275,7 +275,7 @@ module QA
         end
 
         def wait_for_loading
-          finished_loading? && has_no_element?(:skeleton_note)
+          has_no_element?(:skeleton_note)
         end
 
         def click_open_in_web_ide

@@ -30,6 +30,13 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :artifacts, only: [:index, :destroy]
 
+        resources :packages, only: [:index, :show, :destroy], module: :packages
+        resources :package_files, only: [], module: :packages do
+          member do
+            get :download
+          end
+        end
+
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             resources :artifacts, only: [] do

@@ -14,7 +14,6 @@ module QA
               click_button 'Expand' unless has_css?('button', text: 'Collapse', wait: 1)
 
               has_content?('Collapse')
-              finished_loading?
             end
 
             yield if block_given?

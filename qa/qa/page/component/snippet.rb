@@ -100,19 +100,16 @@ module QA
         end
 
         def has_file_content?(file_content)
-          finished_loading?
           within_element(:file_content) do
             has_text?(file_content)
           end
         end
 
         def click_edit_button
-          finished_loading?
           click_element(:snippet_action_button, action: 'Edit')
         end
 
         def click_delete_button
-          finished_loading?
           click_element(:snippet_action_button, action: 'Delete')
           click_element(:delete_snippet_button)
           # wait for the page to reload after deletion
@@ -123,32 +120,27 @@ module QA
         end
 
         def get_repository_uri_http
-          finished_loading?
           click_element(:clone_button)
           Git::Location.new(find_element(:copy_http_url_button)['data-clipboard-text']).uri.to_s
         end
 
         def get_repository_uri_ssh
-          finished_loading?
           click_element(:clone_button)
           Git::Location.new(find_element(:copy_ssh_url_button)['data-clipboard-text']).uri.to_s
         end
 
         def add_comment(comment)
-          finished_loading?
           fill_element(:note_field, comment)
           click_element(:comment_button)
         end
 
         def has_comment_author?(author_username)
-          finished_loading?
           within_element(:note_author_content) do
             has_text?('@' + author_username)
           end
         end
 
         def has_comment_content?(comment_content)
-          finished_loading?
           within_element(:note_content) do
             has_text?(comment_content)
           end
@@ -161,14 +153,12 @@ module QA
         end
 
         def edit_comment(comment)
-          finished_loading?
           click_element(:edit_comment_button)
           fill_element(:edit_note_field, comment)
           click_element(:save_comment_button)
         end
 
         def delete_comment(comment)
-          finished_loading?
           click_element(:more_actions_dropdown)
           accept_alert do
             click_element(:delete_comment_button)

@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PackageTitle renders with tags 1`] = `
+<div
+  class="gl-flex-direction-column"
+>
+  <div
+    class="gl-display-flex"
+  >
+    <!---->
+     
+    <div
+      class="gl-display-flex gl-flex-direction-column"
+    >
+      <h1
+        class="gl-font-size-h1 gl-mt-3 gl-mb-2"
+      >
+        
+        Test package
+      
+      </h1>
+       
+      <div
+        class="gl-display-flex gl-align-items-center gl-text-gray-700"
+      >
+        <gl-icon-stub
+          class="gl-mr-3"
+          name="eye"
+          size="16"
+        />
+         
+        <gl-sprintf-stub
+          message="v%{version} published %{timeAgo}"
+        />
+      </div>
+    </div>
+  </div>
+   
+  <div
+    class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mb-3"
+  >
+    <div
+      class="gl-display-flex gl-align-items-center gl-mr-5"
+    >
+      <gl-icon-stub
+        class="gl-text-gray-700 gl-mr-3"
+        name="package"
+        size="16"
+      />
+       
+      <span
+        class="gl-font-weight-bold"
+        data-testid="package-type"
+      >
+        maven
+      </span>
+    </div>
+     
+    <div
+      class="gl-display-flex gl-align-items-center gl-mr-5"
+    >
+      <package-tags-stub
+        tagdisplaylimit="1"
+        tags="[object Object],[object Object],[object Object],[object Object]"
+      />
+    </div>
+     
+    <!---->
+     
+    <!---->
+     
+    <div
+      class="gl-display-flex gl-align-items-center gl-mr-5"
+    >
+      <gl-icon-stub
+        class="gl-text-gray-700 gl-mr-3"
+        name="disk"
+        size="16"
+      />
+       
+      <span
+        class="gl-font-weight-bold"
+        data-testid="package-size"
+      >
+        300 bytes
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PackageTitle renders without tags 1`] = `
+<div
+  class="gl-flex-direction-column"
+>
+  <div
+    class="gl-display-flex"
+  >
+    <!---->
+     
+    <div
+      class="gl-display-flex gl-flex-direction-column"
+    >
+      <h1
+        class="gl-font-size-h1 gl-mt-3 gl-mb-2"
+      >
+        
+        Test package
+      
+      </h1>
+       
+      <div
+        class="gl-display-flex gl-align-items-center gl-text-gray-700"
+      >
+        <gl-icon-stub
+          class="gl-mr-3"
+          name="eye"
+          size="16"
+        />
+         
+        <gl-sprintf-stub
+          message="v%{version} published %{timeAgo}"
+        />
+      </div>
+    </div>
+  </div>
+   
+  <div
+    class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mb-3"
+  >
+    <div
+      class="gl-display-flex gl-align-items-center gl-mr-5"
+    >
+      <gl-icon-stub
+        class="gl-text-gray-700 gl-mr-3"
+        name="package"
+        size="16"
+      />
+       
+      <span
+        class="gl-font-weight-bold"
+        data-testid="package-type"
+      >
+        maven
+      </span>
+    </div>
+     
+    <!---->
+     
+    <!---->
+     
+    <!---->
+     
+    <div
+      class="gl-display-flex gl-align-items-center gl-mr-5"
+    >
+      <gl-icon-stub
+        class="gl-text-gray-700 gl-mr-3"
+        name="disk"
+        size="16"
+      />
+       
+      <span
+        class="gl-font-weight-bold"
+        data-testid="package-size"
+      >
+        300 bytes
+      </span>
+    </div>
+  </div>
+</div>
+`;

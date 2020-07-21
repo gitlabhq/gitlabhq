@@ -136,7 +136,6 @@ module QA
           end
 
           def create_first_file(file_name)
-            finished_loading?
             click_element(:first_file_button, Page::Component::WebIDE::Modal::CreateNewFile)
             fill_element(:file_name_field, file_name)
             click_button('Create file')

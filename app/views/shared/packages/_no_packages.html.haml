@@ -1,0 +1,7 @@
+.svg-content= image_tag 'illustrations/no-packages.svg'
+.text-content
+  %h4.text-center= _('There are no packages yet')
+  %p
+    - no_packages_url = help_page_path('administration/packages/index')
+    - no_packages_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: no_packages_url }
+    = _('Learn how to %{no_packages_link_start}publish and share your packages%{no_packages_link_end} with GitLab.').html_safe % { no_packages_link_start: no_packages_link_start, no_packages_link_end: '</a>'.html_safe }

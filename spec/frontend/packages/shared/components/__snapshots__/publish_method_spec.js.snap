@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`publish_method renders 1`] = `
+<div
+  class="d-flex align-items-center text-secondary order-1 order-md-0 mb-md-1"
+>
+  <gl-icon-stub
+    class="mr-1"
+    name="git-merge"
+    size="16"
+  />
+   
+  <strong
+    class="mr-1 text-dark"
+  >
+    branch-name
+  </strong>
+   
+  <gl-icon-stub
+    class="mr-1"
+    name="commit"
+    size="16"
+  />
+   
+  <gl-link-stub
+    class="mr-1"
+    href="../commit/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  >
+    xxxxxxxx
+  </gl-link-stub>
+   
+  <clipboard-button-stub
+    cssclass="border-0 text-secondary py-0 px-1"
+    text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    title="Copy commit SHA"
+    tooltipplacement="top"
+  />
+</div>
+`;

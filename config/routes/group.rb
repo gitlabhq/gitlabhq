@@ -55,6 +55,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       post :toggle_subscription, on: :member
     end
 
+    resources :packages, only: [:index]
+
     resources :milestones, constraints: { id: %r{[^/]+} } do
       member do
         get :merge_requests

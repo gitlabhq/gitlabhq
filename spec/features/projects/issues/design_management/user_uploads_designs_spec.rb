@@ -46,7 +46,7 @@ RSpec.describe 'User uploads new design', :js do
       let(:feature_enabled) { false }
 
       it 'shows the message about requirements' do
-        expect(page).to have_content("To enable design management, you'll need to meet the requirements.")
+        expect(page).to have_content("To upload designs, you'll need to enable LFS.")
       end
     end
   end
@@ -80,7 +80,7 @@ RSpec.describe 'User uploads new design', :js do
       let(:feature_enabled) { false }
 
       it 'shows the message about requirements' do
-        expect(page).to have_content("To enable design management, you'll need to meet the requirements.")
+        expect(page).to have_content("To upload designs, you'll need to enable LFS.")
       end
     end
   end

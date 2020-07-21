@@ -277,6 +277,11 @@ module QA
         autoload :Show, 'qa/page/project/job/show'
       end
 
+      module Packages
+        autoload :Index, 'qa/page/project/packages/index'
+        autoload :Show, 'qa/page/project/packages/show'
+      end
+
       module Settings
         autoload :Advanced, 'qa/page/project/settings/advanced'
         autoload :Main, 'qa/page/project/settings/main'
@@ -315,6 +320,7 @@ module QA
         autoload :Repository, 'qa/page/project/sub_menus/repository'
         autoload :Settings, 'qa/page/project/sub_menus/settings'
         autoload :Project, 'qa/page/project/sub_menus/project'
+        autoload :Packages, 'qa/page/project/sub_menus/packages'
       end
 
       module Issue

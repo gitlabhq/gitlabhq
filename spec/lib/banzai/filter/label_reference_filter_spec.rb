@@ -31,6 +31,19 @@ RSpec.describe Banzai::Filter::LabelReferenceFilter do
     expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-label has-tooltip gl-link gl-label-link'
   end
 
+  it 'avoids N+1 cached queries', :use_sql_query_cache, :request_store do
+    # Run this once to establish a baseline
+    reference_filter("Label #{reference}")
+
+    control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      reference_filter("Label #{reference}")
+    end
+
+    labels_markdown = Array.new(10, "Label #{reference}").join('\n')
+
+    expect { reference_filter(labels_markdown) }.not_to exceed_all_query_limit(control_count.count)
+  end
+
   it 'includes a data-project attribute' do
     doc = reference_filter("Label #{reference}")
     link = doc.css('a').first

@@ -1,0 +1,5 @@
+---
+title: Refactor all factories to fix SaveBang Cop
+merge_request: 37268
+author: Rajendra Kadam
+type: fixed

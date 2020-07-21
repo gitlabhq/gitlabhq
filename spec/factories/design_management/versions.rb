@@ -135,7 +135,7 @@ FactoryBot.define do
           actions: version_actions
         )
 
-        version.update(sha: sha)
+        version.update!(sha: sha)
       end
     end
   end

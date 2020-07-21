@@ -120,7 +120,7 @@ module QA
           found
         end
 
-        def finished_loading?
+        def finished_loading?(wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           log('waiting for loading to complete...')
           now = Time.now
 

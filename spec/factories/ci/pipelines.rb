@@ -17,7 +17,7 @@ FactoryBot.define do
 
     after(:create) do |pipeline, evaluator|
       merge_request = evaluator.head_pipeline_of
-      merge_request&.update(head_pipeline: pipeline)
+      merge_request&.update!(head_pipeline: pipeline)
     end
 
     factory :ci_pipeline do
