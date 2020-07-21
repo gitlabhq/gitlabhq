@@ -383,3 +383,47 @@ production_plan:
   artifacts:
     name: Production
 ```
+
+## Using a GitLab managed Terraform state backend as a remote data source
+
+You can use a GitLab-managed Terraform state as a
+[Terraform data source](https://www.terraform.io/docs/providers/terraform/d/remote_state.html).
+To use your existing Terraform state backend as a data source, provide the following details
+as [Terraform input variables](https://www.terraform.io/docs/configuration/variables.html):
+
+- **address**: The URL of the remote state backend you want to use as a data source.
+  For example, `https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>`.
+- **username**: The username to authenticate with the data source. If you are using a [Personal Access Token](../profile/personal_access_tokens.md) for
+  authentication, this is your GitLab username. If you are using GitLab CI, this is `'gitlab-ci-token'`.
+- **password**: The password to authenticate with the data source. If you are using a Personal Access Token for
+  authentication, this is the token value. If you are using GitLab CI, it is the contents of the `${CI_JOB_TOKEN}` CI variable.
+
+An example setup is shown below:
+
+1. Create a file named `example.auto.tfvars` with the following contents:
+
+   ```plaintext
+   example_remote_state_address=https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>
+   example_username=<GitLab username>
+   example_access_token=<GitLab Personal Acceess Token>
+   ```
+
+1. Define the data source by adding the following code block in a `.tf` file (such as `data.tf`):
+
+   ```hcl
+   data "terraform_remote_state" "example" {
+     backend = "http"
+
+     config = {
+       address = var.example_remote_state_address
+       username = var.example_username
+       password = var.example_access_token
+     }
+   }
+   ```
+
+Outputs from the data source can now be referenced within your Terraform resources
+using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.
+
+You need at least [developer access](../permissions.md) to the target project
+to read the Terraform state.

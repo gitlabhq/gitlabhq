@@ -25,6 +25,9 @@ const mockPageEl = {
 };
 jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageEl);
 
+const scrollIntoViewMock = jest.fn();
+HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
 const localVue = createLocalVue();
 const router = createRouter();
 localVue.use(VueRouter);
@@ -566,6 +569,15 @@ describe('Design management index page', () => {
       wrapper.vm.$router.push('/');
       expect(mockPageEl.classList.remove).toHaveBeenCalledTimes(1);
       expect(mockPageEl.classList.remove).toHaveBeenCalledWith(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+    });
+
+    it('should trigger a scrollIntoView method if designs route is detected', () => {
+      router.replace({
+        path: '/designs',
+      });
+      createComponent(true);
+
+      expect(scrollIntoViewMock).toHaveBeenCalled();
     });
   });
 });

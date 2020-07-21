@@ -516,6 +516,7 @@ project:
 - webex_teams_service
 - build_report_results
 - vulnerability_statistic
+- vulnerability_historical_statistics
 award_emoji:
 - awardable
 - user

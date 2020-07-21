@@ -107,7 +107,7 @@ exports[`Design management index page designs renders designs list and header wi
       </div>
        
       <div
-        class="qa-selector-toolbar gl-display-flex"
+        class="qa-selector-toolbar gl-display-flex gl-align-items-center"
       >
         <gl-button-stub
           category="tertiary"

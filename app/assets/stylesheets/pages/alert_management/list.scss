@@ -14,10 +14,13 @@
 
       td,
       th {
-        @include gl-pl-9;
         @include gl-py-5;
         @include gl-outline-none;
         @include gl-relative;
+      }
+
+      .sortable-cell {
+        padding-left: calc(0.75rem + 0.65em);
       }
 
       th {

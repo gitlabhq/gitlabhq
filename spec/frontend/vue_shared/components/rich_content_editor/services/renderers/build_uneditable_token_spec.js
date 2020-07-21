@@ -3,7 +3,7 @@ import {
   buildUneditableOpenTokens,
   buildUneditableCloseToken,
   buildUneditableCloseTokens,
-  buildUneditableTokens,
+  buildUneditableBlockTokens,
   buildUneditableInlineTokens,
   buildUneditableHtmlAsTextTokens,
 } from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
@@ -51,9 +51,9 @@ describe('Build Uneditable Token renderer helper', () => {
     });
   });
 
-  describe('buildUneditableTokens', () => {
+  describe('buildUneditableBlockTokens', () => {
     it('returns a 3-item array of tokens with the originToken wrapped in the middle of block tokens', () => {
-      const result = buildUneditableTokens(originToken);
+      const result = buildUneditableBlockTokens(originToken);
 
       expect(result).toHaveLength(3);
       expect(result).toStrictEqual(uneditableTokens);

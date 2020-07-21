@@ -34,7 +34,7 @@ export const buildUneditableCloseTokens = (token, tagType = TAG_TYPES.block) => 
 
 export const buildTextToken = content => buildToken('text', null, { content });
 
-export const buildUneditableTokens = token => {
+export const buildUneditableBlockTokens = token => {
   return [...buildUneditableOpenTokens(token), buildUneditableCloseToken()];
 };
 

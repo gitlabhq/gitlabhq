@@ -884,7 +884,8 @@ They reflect configuration defined for this instance of Praefect.
 
 ## Strong consistency
 
-> Introduced in GitLab 13.1 in [alpha](https://about.gitlab.com/handbook/product/#alpha-beta-ga), disabled by default.
+> - Introduced in GitLab 13.1 in [alpha](https://about.gitlab.com/handbook/product/#alpha-beta-ga), disabled by default.
+> - Entered [beta](https://about.gitlab.com/handbook/product/#alpha-beta-ga) in GitLab 13.2, disabled by default.
 
 Praefect guarantees eventual consistency by replicating all writes to secondary nodes
 after the write to the primary Gitaly node has happened.

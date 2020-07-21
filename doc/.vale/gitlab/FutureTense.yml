@@ -11,7 +11,7 @@ ignorecase: true
 level: warning
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language-to-avoid
 raw:
-   - "(going to( |\n|[[:punct:]])[a-zA-Z]*|"
-   - "will( |\n|[[:punct:]])[a-zA-Z]*|"
-   - "won't( |\n|[[:punct:]])[a-zA-Z]*|"
-   - "[a-zA-Z]*'ll( |\n|[[:punct:]])[a-zA-Z]*)"
+  - "(going to( |\n|[[:punct:]])[a-zA-Z]*|"
+  - "will( |\n|[[:punct:]])[a-zA-Z]*|"
+  - "won't( |\n|[[:punct:]])[a-zA-Z]*|"
+  - "[a-zA-Z]*'ll( |\n|[[:punct:]])[a-zA-Z]*)"

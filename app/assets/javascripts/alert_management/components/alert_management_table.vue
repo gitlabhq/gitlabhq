@@ -60,15 +60,15 @@ export default {
     {
       key: 'severity',
       label: s__('AlertManagement|Severity'),
-      tdClass: `${tdClass} rounded-top text-capitalize`,
       thClass: `${thClass} gl-w-eighth`,
+      tdClass: `${tdClass} rounded-top text-capitalize sortable-cell`,
       sortable: true,
     },
     {
       key: 'startedAt',
       label: s__('AlertManagement|Start time'),
       thClass: `${thClass} js-started-at w-15p`,
-      tdClass,
+      tdClass: `${tdClass} sortable-cell`,
       sortable: true,
     },
     {
@@ -81,7 +81,7 @@ export default {
       key: 'eventCount',
       label: s__('AlertManagement|Events'),
       thClass: `${thClass} text-right gl-w-12`,
-      tdClass: `${tdClass} text-md-right`,
+      tdClass: `${tdClass} text-md-right sortable-cell`,
       sortable: true,
     },
     {
@@ -89,7 +89,6 @@ export default {
       label: s__('AlertManagement|Issue'),
       thClass: 'gl-w-12 gl-pointer-events-none',
       tdClass,
-      sortable: false,
     },
     {
       key: 'assignees',
@@ -99,9 +98,9 @@ export default {
     },
     {
       key: 'status',
-      thClass: `${thClass} w-15p`,
       label: s__('AlertManagement|Status'),
-      tdClass: `${tdClass} rounded-bottom`,
+      thClass: `${thClass} w-15p`,
+      tdClass: `${tdClass} rounded-bottom sortable-cell`,
       sortable: true,
     },
   ],

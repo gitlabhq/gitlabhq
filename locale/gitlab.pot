@@ -3429,6 +3429,9 @@ msgstr ""
 msgid "Authorization key"
 msgstr ""
 
+msgid "Authorization required"
+msgstr ""
+
 msgid "Authorization was granted by entering your username and password in the application."
 msgstr ""
 
@@ -3436,6 +3439,9 @@ msgid "Authorize"
 msgstr ""
 
 msgid "Authorize %{link_to_client} to use your account?"
+msgstr ""
+
+msgid "Authorize <strong>%{user}</strong> to use your account?"
 msgstr ""
 
 msgid "Authorize external services to send alerts to GitLab"
@@ -20112,6 +20118,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Requires values to meet regular expression requirements."
+msgstr ""
+
+msgid "Resend Request"
 msgstr ""
 
 msgid "Resend confirmation email"

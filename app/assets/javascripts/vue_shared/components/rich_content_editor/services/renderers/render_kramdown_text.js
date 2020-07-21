@@ -1,13 +1,9 @@
-import { buildUneditableTokens } from './build_uneditable_token';
+import { renderUneditableLeaf as render } from './render_utils';
 
 const kramdownRegex = /(^{:.+}$)/;
 
 const canRender = ({ literal }) => {
   return kramdownRegex.test(literal);
-};
-
-const render = (_, { origin }) => {
-  return buildUneditableTokens(origin());
 };
 
 export default { canRender, render };

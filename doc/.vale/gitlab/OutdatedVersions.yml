@@ -3,7 +3,7 @@
 #
 # Checks for references to versions of GitLab that are no longer supported.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: 'Can this reference to "%s" be refactored?'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#importance-of-referencing-gitlab-versions-and-tiers

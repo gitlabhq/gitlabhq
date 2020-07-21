@@ -16117,6 +16117,31 @@ CREATE SEQUENCE public.vulnerability_feedback_id_seq
 
 ALTER SEQUENCE public.vulnerability_feedback_id_seq OWNED BY public.vulnerability_feedback.id;
 
+CREATE TABLE public.vulnerability_historical_statistics (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    total integer DEFAULT 0 NOT NULL,
+    critical integer DEFAULT 0 NOT NULL,
+    high integer DEFAULT 0 NOT NULL,
+    medium integer DEFAULT 0 NOT NULL,
+    low integer DEFAULT 0 NOT NULL,
+    unknown integer DEFAULT 0 NOT NULL,
+    info integer DEFAULT 0 NOT NULL,
+    date date NOT NULL,
+    letter_grade smallint NOT NULL
+);
+
+CREATE SEQUENCE public.vulnerability_historical_statistics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.vulnerability_historical_statistics_id_seq OWNED BY public.vulnerability_historical_statistics.id;
+
 CREATE TABLE public.vulnerability_identifiers (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -17111,6 +17136,8 @@ ALTER TABLE ONLY public.vulnerabilities ALTER COLUMN id SET DEFAULT nextval('pub
 ALTER TABLE ONLY public.vulnerability_exports ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_exports_id_seq'::regclass);
 
 ALTER TABLE ONLY public.vulnerability_feedback ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_feedback_id_seq'::regclass);
+
+ALTER TABLE ONLY public.vulnerability_historical_statistics ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_historical_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY public.vulnerability_identifiers ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_identifiers_id_seq'::regclass);
 
@@ -18387,6 +18414,9 @@ ALTER TABLE ONLY public.vulnerability_exports
 
 ALTER TABLE ONLY public.vulnerability_feedback
     ADD CONSTRAINT vulnerability_feedback_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.vulnerability_historical_statistics
+    ADD CONSTRAINT vulnerability_historical_statistics_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.vulnerability_identifiers
     ADD CONSTRAINT vulnerability_identifiers_pkey PRIMARY KEY (id);
@@ -20589,6 +20619,8 @@ CREATE INDEX index_users_star_projects_on_project_id ON public.users_star_projec
 
 CREATE UNIQUE INDEX index_users_star_projects_on_user_id_and_project_id ON public.users_star_projects USING btree (user_id, project_id);
 
+CREATE UNIQUE INDEX index_vuln_historical_statistics_on_project_id_and_date ON public.vulnerability_historical_statistics USING btree (project_id, date);
+
 CREATE INDEX index_vulnerabilities_on_author_id ON public.vulnerabilities USING btree (author_id);
 
 CREATE INDEX index_vulnerabilities_on_confirmed_by_id ON public.vulnerabilities USING btree (confirmed_by_id);
@@ -22158,6 +22190,9 @@ ALTER TABLE ONLY public.list_user_preferences
 
 ALTER TABLE ONLY public.project_custom_attributes
     ADD CONSTRAINT fk_rails_719c3dccc5 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.vulnerability_historical_statistics
+    ADD CONSTRAINT fk_rails_72b73ed023 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.slack_integrations
     ADD CONSTRAINT fk_rails_73db19721a FOREIGN KEY (service_id) REFERENCES public.services(id) ON DELETE CASCADE;
@@ -23945,6 +23980,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200713071042
 20200713141854
 20200713152443
+20200715135130
 20200715202659
 20200716044023
 20200716120419

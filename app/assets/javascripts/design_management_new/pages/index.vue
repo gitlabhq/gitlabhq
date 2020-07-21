@@ -107,6 +107,9 @@ export default {
   },
   mounted() {
     this.toggleOnPasteListener(this.$route.name);
+    if (this.$route.path === '/designs') {
+      this.$el.scrollIntoView();
+    }
   },
   methods: {
     resetFilesToBeSaved() {
@@ -274,7 +277,7 @@ export default {
           <span class="gl-font-weight-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
           <design-version-dropdown />
         </div>
-        <div v-show="hasDesigns" class="qa-selector-toolbar gl-display-flex">
+        <div v-show="hasDesigns" class="qa-selector-toolbar gl-display-flex gl-align-items-center">
           <gl-button
             v-if="isLatestVersion"
             variant="link"
