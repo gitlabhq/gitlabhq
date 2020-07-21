@@ -92,7 +92,7 @@ module API
 
             # If we have created a project directly from a git push
             # we have to assign its value to both @project and @container
-            @project = @container = access_checker.project
+            @project = @container = access_checker.container
           end
         end
       end

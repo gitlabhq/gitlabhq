@@ -5790,9 +5790,6 @@ msgstr ""
 msgid "ClusterIntegration|To remove your integration, type %{clusterName} to confirm:"
 msgstr ""
 
-msgid "ClusterIntegration|Toggle Kubernetes cluster"
-msgstr ""
-
 msgid "ClusterIntegration|Uninstall %{appTitle}"
 msgstr ""
 
@@ -24946,6 +24943,9 @@ msgid "To-do item successfully marked as done."
 msgstr ""
 
 msgid "Today"
+msgstr ""
+
+msgid "Toggle Kubernetes cluster"
 msgstr ""
 
 msgid "Toggle Markdown preview"

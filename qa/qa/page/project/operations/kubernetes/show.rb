@@ -10,8 +10,11 @@ module QA
               element :ingress_ip_address, 'id="ingress-endpoint"' # rubocop:disable QA/ElementWithPattern
             end
 
-            view 'app/views/clusters/clusters/_gitlab_integration_form.html.haml' do
+            view 'app/assets/javascripts/clusters/forms/components/integration_form.vue' do
               element :integration_status_toggle, required: true
+            end
+
+            view 'app/views/clusters/clusters/_gitlab_integration_form.html.haml' do
               element :base_domain_field, required: true
               element :save_changes_button, required: true
             end

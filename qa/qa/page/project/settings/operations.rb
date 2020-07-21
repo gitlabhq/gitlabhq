@@ -12,7 +12,7 @@ module QA
           end
 
           def expand_incidents(&block)
-            expand_section(:incidents_settings_content) do
+            expand_content(:incidents_settings_content) do
               Settings::Incidents.perform(&block)
             end
           end

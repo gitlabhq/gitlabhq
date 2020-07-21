@@ -37,19 +37,19 @@ module Gitlab
       end
 
       def wiki?
-        self == WIKI
+        name == :wiki
       end
 
       def project?
-        self == PROJECT
+        name == :project
       end
 
       def snippet?
-        self == SNIPPET
+        name == :snippet
       end
 
       def design?
-        self == DESIGN
+        name == :design
       end
 
       def path_suffix

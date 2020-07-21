@@ -1,7 +1,8 @@
 # OmniAuth
 
 GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and
-other popular services.
+other popular services. [OmniAuth](https://rubygems.org/gems/omniauth/) is
+"a generalized Rack framework for multiple-provider authentication, built on Ruby.
 
 Configuring OmniAuth does not prevent standard GitLab authentication or LDAP
 (if configured) from continuing to work. Users can choose to sign in using any

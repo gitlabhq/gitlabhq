@@ -112,7 +112,7 @@ module Metrics
       end
 
       def push_authorized?
-        Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(branch)
+        Gitlab::UserAccess.new(current_user, container: project).can_push_to_branch?(branch)
       end
 
       def dashboard_template

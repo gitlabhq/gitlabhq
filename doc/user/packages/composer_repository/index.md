@@ -4,9 +4,10 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab Composer Repository **(PREMIUM)**
+# GitLab Composer Repository
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
 
 With the GitLab Composer Repository, every project can have its own space to store [Composer](https://getcomposer.org/) packages.
 
@@ -14,7 +15,7 @@ With the GitLab Composer Repository, every project can have its own space to sto
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled support for the Package Registry](../../../administration/packages/index.md). **(PREMIUM ONLY)**
+[enabled support for the Package Registry](../../../administration/packages/index.md).
 
 After the Composer Repository is enabled, it will be available for all new projects
 by default. To enable it for existing projects, or if you want to disable it:

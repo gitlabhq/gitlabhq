@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module ClustersHelper
+  def has_multiple_clusters?
+    true
+  end
+
   def create_new_cluster_label(provider: nil)
     case provider
     when 'aws'
@@ -21,6 +25,13 @@ module ClustersHelper
         default: { path: image_path('illustrations/logos/kubernetes.svg'), text: _('Kubernetes Cluster') },
         gcp: { path: image_path('illustrations/logos/google_gke.svg'), text: s_('ClusterIntegration|Google GKE') }
       }
+    }
+  end
+
+  def js_cluster_form_data(cluster, can_edit)
+    {
+      enabled: cluster.enabled?.to_s,
+      editable: can_edit.to_s
     }
   end
 

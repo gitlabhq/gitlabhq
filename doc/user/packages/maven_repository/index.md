@@ -4,9 +4,10 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab Maven Repository **(PREMIUM)**
+# GitLab Maven Repository
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5811) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5811) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
 
 With the GitLab [Maven](https://maven.apache.org) Repository, every
 project can have its own space to store its Maven artifacts.
@@ -17,7 +18,7 @@ project can have its own space to store its Maven artifacts.
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled support for the Maven repository](../../../administration/packages/index.md).**(PREMIUM ONLY)**
+[enabled support for the Maven repository](../../../administration/packages/index.md).
 
 After the Packages feature is enabled, the Maven Repository will be available for
 all new projects by default. To enable it for existing projects, or if you want

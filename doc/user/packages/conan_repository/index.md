@@ -4,9 +4,10 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab Conan Repository **(PREMIUM)**
+# GitLab Conan Repository
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8248) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8248) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
 
 With the GitLab Conan Repository, every
 project can have its own space to store Conan packages.
@@ -17,7 +18,7 @@ project can have its own space to store Conan packages.
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled support for the Conan Repository](../../../administration/packages/index.md).**(PREMIUM ONLY)**
+[enabled support for the Conan Repository](../../../administration/packages/index.md).
 
 After the Conan Repository is enabled, it will be available for all new projects
 by default. To enable it for existing projects, or if you want to disable it:

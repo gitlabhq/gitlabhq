@@ -1,6 +1,6 @@
 - expanded = expanded_by_default?
 
-%section.qa-protected-branches-settings.settings.no-animate#js-protected-branches-settings{ class: ('expanded' if expanded) }
+%section.settings.no-animate#js-protected-branches-settings{ class: ('expanded' if expanded), data: { qa_selector: 'protected_branches_settings_content' } }
   .settings-header
     %h4
       Protected Branches

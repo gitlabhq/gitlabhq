@@ -8,11 +8,11 @@ module QA
           include QA::Page::Settings::Common
 
           view 'app/views/admin/application_settings/general.html.haml' do
-            element :account_and_limit_settings
+            element :account_and_limit_settings_content
           end
 
           def expand_account_and_limit(&block)
-            expand_section(:account_and_limit_settings) do
+            expand_content(:account_and_limit_settings_content) do
               Component::AccountAndLimit.perform(&block)
             end
           end

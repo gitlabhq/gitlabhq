@@ -141,9 +141,9 @@ activation strategy.
 ### Enable or disable feature flag strategies
 
 This feature is under development, but is ready for testing. It's
-deployed behind a feature flag that is **disabled by default**.
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can enable it for your instance.
+can disable it for your instance.
 
 To enable it:
 

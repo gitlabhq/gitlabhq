@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Checks::ChangeAccess do
-  describe '#exec' do
+  describe '#validate!' do
     include_context 'change access checks context'
 
     subject { change_access }
 
     context 'without failed checks' do
       it "doesn't raise an error" do
-        expect { subject.exec }.not_to raise_error
+        expect { subject.validate! }.not_to raise_error
       end
 
       it 'calls pushes checks' do
@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Checks::ChangeAccess do
           expect(instance).to receive(:validate!)
         end
 
-        subject.exec
+        subject.validate!
       end
 
       it 'calls branches checks' do
@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Checks::ChangeAccess do
           expect(instance).to receive(:validate!)
         end
 
-        subject.exec
+        subject.validate!
       end
 
       it 'calls tags checks' do
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Checks::ChangeAccess do
           expect(instance).to receive(:validate!)
         end
 
-        subject.exec
+        subject.validate!
       end
 
       it 'calls lfs checks' do
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Checks::ChangeAccess do
           expect(instance).to receive(:validate!)
         end
 
-        subject.exec
+        subject.validate!
       end
 
       it 'calls diff checks' do
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Checks::ChangeAccess do
           expect(instance).to receive(:validate!)
         end
 
-        subject.exec
+        subject.validate!
       end
     end
 
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Checks::ChangeAccess do
                                      protocol: protocol,
                                      logger: logger)
 
-        expect { access.exec }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
+        expect { access.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
       end
     end
   end

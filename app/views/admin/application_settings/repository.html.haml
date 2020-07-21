@@ -25,7 +25,7 @@
   .settings-content
     = render partial: 'repository_mirrors_form'
 
-%section.settings.qa-repository-storage-settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded_by_default?) }
+%section.settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'repository_storage_settings_content' } }
   .settings-header
     %h4
       = _('Repository storage')

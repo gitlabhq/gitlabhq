@@ -1,5 +1,4 @@
 import MockAdapter from 'axios-mock-adapter';
-import $ from 'jquery';
 import { loadHTMLFixture } from 'helpers/fixtures';
 import { setTestTimeout } from 'helpers/timeout';
 import Clusters from '~/clusters/clusters_bundle';
@@ -60,25 +59,6 @@ describe('Clusters', () => {
 
     it('should call initProjectSelectDropdown on construct', () => {
       expect(initProjectSelectDropdown).toHaveBeenCalled();
-    });
-  });
-
-  describe('toggle', () => {
-    it('should update the button and the input field on click', done => {
-      const toggleButton = document.querySelector(
-        '.js-cluster-enable-toggle-area .js-project-feature-toggle',
-      );
-      const toggleInput = document.querySelector(
-        '.js-cluster-enable-toggle-area .js-project-feature-toggle-input',
-      );
-
-      $(toggleInput).one('trigger-change', () => {
-        expect(toggleButton.classList).not.toContain('is-checked');
-        expect(toggleInput.getAttribute('value')).toEqual('false');
-        done();
-      });
-
-      toggleButton.click();
     });
   });
 

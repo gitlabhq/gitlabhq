@@ -8,11 +8,11 @@ module QA
           include QA::Page::Settings::Common
 
           view 'app/views/admin/application_settings/repository.html.haml' do
-            element :repository_storage_settings
+            element :repository_storage_settings_content
           end
 
           def expand_repository_storage(&block)
-            expand_section(:repository_storage_settings) do
+            expand_content(:repository_storage_settings_content) do
               Component::RepositoryStorage.perform(&block)
             end
           end

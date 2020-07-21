@@ -179,7 +179,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     return false unless source_branch_exists?
 
     !!::Gitlab::UserAccess
-      .new(current_user, project: source_project)
+      .new(current_user, container: source_project)
       .can_push_to_branch?(source_branch)
   end
 

@@ -69,7 +69,7 @@ module Commits
     end
 
     def validate_permissions!
-      allowed = ::Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(@branch_name)
+      allowed = ::Gitlab::UserAccess.new(current_user, container: project).can_push_to_branch?(@branch_name)
 
       unless allowed
         raise_error("You are not allowed to push into this branch")

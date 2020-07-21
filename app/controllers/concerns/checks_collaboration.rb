@@ -17,7 +17,7 @@ module ChecksCollaboration
   # used across multiple calls in the view
   def user_access(project)
     @user_access ||= {}
-    @user_access[project] ||= Gitlab::UserAccess.new(current_user, project: project)
+    @user_access[project] ||= Gitlab::UserAccess.new(current_user, container: project)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

@@ -13,7 +13,7 @@
   .settings-content
     = render 'visibility_and_access'
 
-%section.settings.qa-account-and-limit-settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded_by_default?) }
+%section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'account_and_limit_settings_content' } }
   .settings-header
     %h4
       = _('Account and limit')

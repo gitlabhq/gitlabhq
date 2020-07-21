@@ -13,7 +13,7 @@ module API
 
     helpers do
       def user_access
-        @user_access ||= Gitlab::UserAccess.new(current_user, project: user_project)
+        @user_access ||= Gitlab::UserAccess.new(current_user, container: user_project)
       end
 
       def authorize_push_to_branch!(branch)

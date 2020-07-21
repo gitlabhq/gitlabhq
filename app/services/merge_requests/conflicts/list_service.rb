@@ -8,7 +8,7 @@ module MergeRequests
       def can_be_resolved_by?(user)
         return false unless merge_request.source_project
 
-        access = ::Gitlab::UserAccess.new(user, project: merge_request.source_project)
+        access = ::Gitlab::UserAccess.new(user, container: merge_request.source_project)
         access.can_push_to_branch?(merge_request.source_branch)
       end
 

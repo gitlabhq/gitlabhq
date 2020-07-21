@@ -23,7 +23,6 @@ module Gitlab
       deploy_key_upload: 'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: 'The project you were looking for could not be found.',
-      namespace_not_found: 'The namespace you were looking for could not be found.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
@@ -43,38 +42,42 @@ module Gitlab
     PUSH_COMMANDS = %w{git-receive-pack}.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :repository_path, :redirected_path, :auth_result_type, :changes, :logger
+    attr_reader :actor, :protocol, :authentication_abilities,
+                :namespace_path, :redirected_path, :auth_result_type,
+                :cmd, :changes
+    attr_accessor :container
 
-    alias_method :container, :project
-
-    def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, repository_path: nil, redirected_path: nil, auth_result_type: nil)
-      @actor    = actor
-      @project  = project
-      @protocol = protocol
+    def initialize(actor, container, protocol, authentication_abilities:, namespace_path: nil, repository_path: nil, redirected_path: nil, auth_result_type: nil)
+      @actor     = actor
+      @container = container
+      @protocol  = protocol
       @authentication_abilities = Array(authentication_abilities)
-      @namespace_path = namespace_path || project&.namespace&.full_path
-      @repository_path = repository_path || project&.path
+      @namespace_path = namespace_path
+      @repository_path = repository_path
       @redirected_path = redirected_path
       @auth_result_type = auth_result_type
     end
 
+    def repository_path
+      @repository_path ||= project&.path
+    end
+
     def check(cmd, changes)
-      @logger = Checks::TimedLogger.new(timeout: INTERNAL_TIMEOUT, header: LOG_HEADER)
       @changes = changes
+      @cmd = cmd
 
       check_protocol!
       check_valid_actor!
       check_active_user!
-      check_authentication_abilities!(cmd)
-      check_command_disabled!(cmd)
-      check_command_existence!(cmd)
+      check_authentication_abilities!
+      check_command_disabled!
+      check_command_existence!
 
-      custom_action = check_custom_action(cmd)
+      custom_action = check_custom_action
       return custom_action if custom_action
 
-      check_db_accessibility!(cmd)
-      check_namespace!
-      check_project!(cmd)
+      check_db_accessibility!
+      check_container!
       check_repository_existence!
 
       case cmd
@@ -87,12 +90,27 @@ module Gitlab
       success_result
     end
 
+    def logger
+      @logger ||= Checks::TimedLogger.new(timeout: INTERNAL_TIMEOUT, header: LOG_HEADER)
+    end
+
     def guest_can_download_code?
-      Guest.can?(:download_code, project)
+      Guest.can?(download_ability, container)
     end
 
     def user_can_download_code?
-      authentication_abilities.include?(:download_code) && user_access.can_do_action?(:download_code)
+      authentication_abilities.include?(:download_code) &&
+        user_access.can_do_action?(download_ability)
+    end
+
+    # @return [Symbol] the name of a Declarative Policy ability to check
+    def download_ability
+      raise NotImplementedError
+    end
+
+    # @return [Symbol] the name of a Declarative Policy ability to check
+    def push_ability
+      raise NotImplementedError
     end
 
     def build_can_download_code?
@@ -111,13 +129,17 @@ module Gitlab
 
     private
 
-    def check_project!(_cmd)
+    def check_container!
+      check_project! if project?
+    end
+
+    def check_project!
       check_project_accessibility!
       add_project_moved_message!
     end
 
-    def check_custom_action(cmd)
-      nil
+    def check_custom_action
+      # no-op: Overridden in EE
     end
 
     def check_for_console_messages
@@ -152,12 +174,6 @@ module Gitlab
       end
     end
 
-    def check_namespace!
-      return if namespace_path.present?
-
-      raise NotFoundError, ERROR_MESSAGES[:namespace_not_found]
-    end
-
     def check_active_user!
       return unless user
 
@@ -167,23 +183,27 @@ module Gitlab
       end
     end
 
-    def check_authentication_abilities!(cmd)
+    def check_authentication_abilities!
       case cmd
       when *DOWNLOAD_COMMANDS
         unless authentication_abilities.include?(:download_code) || authentication_abilities.include?(:build_download_code)
-          raise ForbiddenError, ERROR_MESSAGES[:auth_download]
+          raise ForbiddenError, error_message(:auth_download)
         end
       when *PUSH_COMMANDS
         unless authentication_abilities.include?(:push_code)
-          raise ForbiddenError, ERROR_MESSAGES[:auth_upload]
+          raise ForbiddenError, error_message(:auth_upload)
         end
       end
     end
 
     def check_project_accessibility!
       if project.blank? || !can_read_project?
-        raise NotFoundError, ERROR_MESSAGES[:project_not_found]
+        raise NotFoundError, not_found_message
       end
+    end
+
+    def not_found_message
+      error_message(:project_not_found)
     end
 
     def add_project_moved_message!
@@ -194,34 +214,34 @@ module Gitlab
       project_moved.add_message
     end
 
-    def check_command_disabled!(cmd)
-      if upload_pack?(cmd)
+    def check_command_disabled!
+      if upload_pack?
         check_upload_pack_disabled!
-      elsif receive_pack?(cmd)
+      elsif receive_pack?
         check_receive_pack_disabled!
       end
     end
 
     def check_upload_pack_disabled!
       if http? && upload_pack_disabled_over_http?
-        raise ForbiddenError, ERROR_MESSAGES[:upload_pack_disabled_over_http]
+        raise ForbiddenError, error_message(:upload_pack_disabled_over_http)
       end
     end
 
     def check_receive_pack_disabled!
       if http? && receive_pack_disabled_over_http?
-        raise ForbiddenError, ERROR_MESSAGES[:receive_pack_disabled_over_http]
+        raise ForbiddenError, error_message(:receive_pack_disabled_over_http)
       end
     end
 
-    def check_command_existence!(cmd)
+    def check_command_existence!
       unless ALL_COMMANDS.include?(cmd)
-        raise ForbiddenError, ERROR_MESSAGES[:command_not_allowed]
+        raise ForbiddenError, error_message(:command_not_allowed)
       end
     end
 
-    def check_db_accessibility!(cmd)
-      return unless receive_pack?(cmd)
+    def check_db_accessibility!
+      return unless receive_pack?
 
       if Gitlab::Database.read_only?
         raise ForbiddenError, push_to_read_only_message
@@ -229,9 +249,11 @@ module Gitlab
     end
 
     def check_repository_existence!
-      unless repository.exists?
-        raise NotFoundError, ERROR_MESSAGES[:no_repo]
-      end
+      raise NotFoundError, no_repo_message unless repository.exists?
+    end
+
+    def no_repo_message
+      error_message(:no_repo)
     end
 
     def check_download_access!
@@ -242,26 +264,44 @@ module Gitlab
         guest_can_download_code?
 
       unless passed
-        raise ForbiddenError, ERROR_MESSAGES[:download]
+        raise ForbiddenError, download_forbidden_message
       end
     end
 
+    def download_forbidden_message
+      error_message(:download)
+    end
+
+    # We assume that all git-access classes are in project context by default.
+    # Override this method to be more specific.
+    def project?
+      true
+    end
+
+    def project
+      container if container.is_a?(::Project)
+    end
+
     def check_push_access!
-      if project.repository_read_only?
-        raise ForbiddenError, ERROR_MESSAGES[:read_only]
+      if container.repository_read_only?
+        raise ForbiddenError, error_message(:read_only)
       end
 
       if deploy_key?
         unless deploy_key.can_push_to?(project)
-          raise ForbiddenError, ERROR_MESSAGES[:deploy_key_upload]
+          raise ForbiddenError, error_message(:deploy_key_upload)
         end
       elsif user
         # User access is verified in check_change_access!
       else
-        raise ForbiddenError, ERROR_MESSAGES[:upload]
+        raise ForbiddenError, error_message(:upload)
       end
 
       check_change_access!
+    end
+
+    def user_can_push?
+      user_access.can_do_action?(push_ability)
     end
 
     def check_change_access!
@@ -269,17 +309,17 @@ module Gitlab
       return if deploy_key?
 
       if changes == ANY
-        can_push = user_access.can_do_action?(:push_code) ||
-          project.any_branch_allows_collaboration?(user_access.user)
+        can_push = user_can_push? ||
+          project&.any_branch_allows_collaboration?(user_access.user)
 
         unless can_push
-          raise ForbiddenError, ERROR_MESSAGES[:push_code]
+          raise ForbiddenError, error_message(:push_code)
         end
       else
         # If there are worktrees with a HEAD pointing to a non-existent object,
         # calls to `git rev-list --all` will fail in git 2.15+. This should also
         # clear stale lock files.
-        project.repository.clean_stale_repository_files
+        project.repository.clean_stale_repository_files if project.present?
 
         # Iterate over all changes to find if user allowed all of them to be applied
         changes_list.each.with_index do |change, index|
@@ -293,16 +333,14 @@ module Gitlab
     end
 
     def check_single_change_access(change, skip_lfs_integrity_check: false)
-      change_access = Checks::ChangeAccess.new(
+      Checks::ChangeAccess.new(
         change,
         user_access: user_access,
         project: project,
         skip_lfs_integrity_check: skip_lfs_integrity_check,
         protocol: protocol,
         logger: logger
-      )
-
-      change_access.exec
+      ).validate!
     rescue Checks::TimedLogger::TimeoutError
       raise TimeoutError, logger.full_message
     end
@@ -347,12 +385,12 @@ module Gitlab
       protocol == 'http'
     end
 
-    def upload_pack?(command)
-      command == 'git-upload-pack'
+    def upload_pack?
+      cmd == 'git-upload-pack'
     end
 
-    def receive_pack?(command)
-      command == 'git-receive-pack'
+    def receive_pack?
+      cmd == 'git-receive-pack'
     end
 
     def upload_pack_disabled_over_http?
@@ -365,6 +403,16 @@ module Gitlab
 
     protected
 
+    def error_message(key)
+      self.class.ancestors.each do |cls|
+        return cls.const_get('ERROR_MESSAGES', false).fetch(key)
+      rescue NameError, KeyError
+        next
+      end
+
+      raise ArgumentError, "No error message defined for #{key}"
+    end
+
     def success_result
       ::Gitlab::GitAccessResult::Success.new(console_messages: check_for_console_messages)
     end
@@ -374,9 +422,7 @@ module Gitlab
     end
 
     def user
-      return @user if defined?(@user)
-
-      @user =
+      strong_memoize(:user) do
         case actor
         when User
           actor
@@ -387,20 +433,21 @@ module Gitlab
         when :ci
           nil
         end
+      end
     end
 
     def user_access
       @user_access ||= if ci?
                          CiAccess.new
                        elsif user && request_from_ci_build?
-                         BuildAccess.new(user, project: project)
+                         BuildAccess.new(user, container: container)
                        else
-                         UserAccess.new(user, project: project)
+                         UserAccess.new(user, container: container)
                        end
     end
 
     def push_to_read_only_message
-      ERROR_MESSAGES[:cannot_push_to_read_only]
+      error_message(:cannot_push_to_read_only)
     end
 
     def repository

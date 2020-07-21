@@ -1,4 +1,4 @@
-# Packages **(PREMIUM)**
+# Packages
 
 This document will guide you through adding another [package management system](../administration/packages/index.md) support to GitLab.
 
@@ -25,9 +25,9 @@ The existing database model requires the following:
 
 ### API endpoints
 
-Package systems work with GitLab via API. For example `ee/lib/api/npm_packages.rb`
+Package systems work with GitLab via API. For example `lib/api/npm_packages.rb`
 implements API endpoints to work with NPM clients. So, the first thing to do is to
-add a new `ee/lib/api/your_name_packages.rb` file with API endpoints that are
+add a new `lib/api/your_name_packages.rb` file with API endpoints that are
 necessary to make the package system client to work. Usually that means having
 endpoints like:
 
@@ -175,15 +175,15 @@ The implementation of the different Merge Requests will vary between different p
 
 The MVC must support [Personal Access Tokens](../user/profile/personal_access_tokens.md) right from the start. We currently support two options for these tokens: OAuth and Basic Access.
 
-OAuth authentication is already supported. You can see an example in the [npm API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/npm_packages.rb).
+OAuth authentication is already supported. You can see an example in the [npm API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/npm_packages.rb).
 
 [Basic Access authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)
 support is done by overriding a specific function in the API helpers, like
-[this example in the Conan API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/conan_packages.rb).
+[this example in the Conan API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/conan_packages.rb).
 For this authentication mechanism, keep in mind that some clients can send an unauthenticated
 request first, wait for the 401 Unauthorized response with the [`WWW-Authenticate`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate)
 field, then send an updated (authenticated) request. This case is more involved as
-GitLab needs to handle the 401 Unauthorized response. The [Nuget API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/nuget_packages.rb)
+GitLab needs to handle the 401 Unauthorized response. The [Nuget API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/nuget_packages.rb)
 supports this case.
 
 #### Authorization

@@ -69,7 +69,7 @@ gem 'rubyzip', '~> 2.0.0', require: 'zip'
 gem 'acme-client', '~> 2.0', '>= 2.0.6'
 
 # Browser detection
-gem 'browser', '~> 2.5'
+gem 'browser', '~> 4.2'
 
 # GPG
 gem 'gpgme', '~> 2.0.19'

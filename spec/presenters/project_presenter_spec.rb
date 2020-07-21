@@ -525,7 +525,7 @@ RSpec.describe ProjectPresenter do
   end
 
   describe '#statistics_buttons' do
-    let(:project) { build(:project) }
+    let(:project) { build_stubbed(:project) }
 
     it 'orders the items correctly' do
       allow(project.repository).to receive(:readme).and_return(double(name: 'readme'))

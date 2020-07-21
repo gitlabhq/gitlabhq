@@ -37,19 +37,19 @@ module QA
           end
 
           def expand_advanced_settings(&block)
-            expand_section(:advanced_settings) do
+            expand_content(:advanced_settings) do
               Advanced.perform(&block)
             end
           end
 
           def expand_merge_requests_settings(&block)
-            expand_section(:merge_request_settings) do
+            expand_content(:merge_request_settings) do
               MergeRequest.perform(&block)
             end
           end
 
           def expand_visibility_project_features_permissions(&block)
-            expand_section(:visibility_features_permissions_content) do
+            expand_content(:visibility_features_permissions_content) do
               VisibilityFeaturesPermissions.perform(&block)
             end
           end

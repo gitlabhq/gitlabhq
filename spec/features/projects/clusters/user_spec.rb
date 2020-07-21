@@ -73,6 +73,7 @@ RSpec.describe 'User Cluster', :js do
     end
 
     it 'user sees a cluster details page' do
+      expect(page).to have_content('GitLab Integration')
       expect(page).to have_button('Save changes')
     end
 

@@ -4,13 +4,14 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab Go Proxy **(PREMIUM)**
+# GitLab Go Proxy
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27376) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.1.
 > - It's deployed behind a feature flag, disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-the-go-proxy). **(PREMIUM)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-the-go-proxy).
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
 
 With the Go proxy for GitLab, every project in GitLab can be fetched with the
 [Go proxy protocol](https://proxy.golang.org/).
@@ -53,7 +54,7 @@ the **{package}** **Packages > List** entry under your project's sidebar, verify
 the following:
 
 1. Your GitLab administrator has
-   [enabled support for the Package Registry](../../../administration/packages/index.md). **(PREMIUM ONLY)**
+   [enabled support for the Package Registry](../../../administration/packages/index.md).
 1. The Package Registry is [enabled for your project](../index.md).
 
 NOTE: **Note:**

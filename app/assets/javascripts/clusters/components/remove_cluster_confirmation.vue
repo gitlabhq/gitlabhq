@@ -118,7 +118,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-display-flex gl-justify-content-end">
     <split-button
       v-if="canCleanupResources"
       :action-items="$options.splitButtonActionItems"

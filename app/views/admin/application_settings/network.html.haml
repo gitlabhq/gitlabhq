@@ -13,7 +13,7 @@
   .settings-content
     = render 'performance'
 
-%section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'ip_limits_section' } }
+%section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'ip_limits_content' } }
   .settings-header
     %h4
       = _('User and IP Rate Limits')
@@ -24,7 +24,7 @@
   .settings-content
     = render 'ip_limits'
 
-%section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'outbound_requests_section' } }
+%section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'outbound_requests_content' } }
   .settings-header
     %h4
       = _('Outbound requests')

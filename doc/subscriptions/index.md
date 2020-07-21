@@ -130,25 +130,35 @@ instance, ensure you're purchasing enough seats to
 
 With the [Customers Portal](https://customers.gitlab.com/) you can:
 
-- [Change billing and company information](#change-billing-information)
+- [Change your personal details](#change-your-personal-details)
+- [Change your company details](#change-your-company-details)
 - [Change the payment method](#change-payment-method)
 - [Change the linked account](#change-the-linked-account)
 - [Change the associated namespace](#change-the-associated-namespace)
 - [Change customers portal account password](#change-customer-portal-account-password)
 
-### Change billing information
+### Change your personal details
 
-To change billing information:
+Your personal details are used on invoices. Your email address is used for the Customers Portal
+login and license-related email.
+
+To change your personal details, including name and billing address:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **My account** drop-down and click on **Payment methods**.
-1. Make the required changes to the **Account Details** information.
+1. Select **My account > Account details**.
+1. Expand the **Personal details** section.
+1. Edit your personal details.
 1. Click **Save changes**.
 
-NOTE: **Note:**
-Future purchases will use the information in this section.
-The email listed in this section is used for the Customers Portal
-login and for license-related email communication.
+### Change your company details
+
+To change your company details, including company name and VAT number:
+
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **My account > Account details**.
+1. Expand the **Company details** section.
+1. Edit the company details.
+1. Click **Save changes**.
 
 ### Change payment method
 
@@ -196,30 +206,36 @@ To change the password for this customers portal account:
 
 ## View your subscription
 
+You can view details of your subscription in either GitLab.com or your self-managed instance:
+
+- [View your GitLab.com subscription](#view-your-gitlabcom-subscription)
+- [View your self-managed subscription](#view-your-self-managed-subscription)
+
 ### View your GitLab.com subscription
 
-To see the status of your GitLab.com subscription, log into GitLab.com and go to the **Billing** section of the relevant namespace:
+To see the status of your GitLab.com subscription, log in to GitLab.com and go to the **Billing** section of the relevant namespace:
 
 - For individuals:
   1. Go to **User Avatar > Settings**.
   1. Click **Billing**.
 - For groups:
   1. From the group page (*not* from a project within the group), go to **Settings > Billing**.
+     You must have Owner level permission to view a group's billing page.
 
 The following table describes details of your subscription for groups:
 
-| Field | Description |
-| ------ | ------ |
-| Seats in subscription | If this is a paid plan, represents the number of seats you've paid to support in your group. |
-| Seats currently in use | Number of active seats currently in use. |
-| Max seats used | Highest number of seats you've used. If this exceeds the seats in subscription, you may owe an additional fee for the additional users. |
-| Seats owed | If your maximum seats used exceeds the seats in your subscription, you'll owe an additional fee for the users you've added. |
-| Subscription start date | Date your subscription started. If this is for a Free plan, is the date you transitioned off your group's paid plan. |
-| Subscription end date | Date your current subscription will end. Does not apply to Free plans. |
+| Field                   | Description                                                                                                                             |
+|-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| **Seats in subscription**   | If this is a paid plan, represents the number of seats you've paid to support in your group.                                            |
+| **Seats currently in use** | Number of active seats currently in use.                                                                                                |
+| **Max seats used**          | Highest number of seats you've used. If this exceeds the seats in subscription, you may owe an additional fee for the additional users. |
+| **Seats owed**              | If your maximum seats used exceeds the seats in your subscription, you'll owe an additional fee for the users you've added.             |
+| **Subscription start date** | Date your subscription started. If this is for a Free plan, is the date you transitioned off your group's paid plan.                    |
+| **Subscription end date**   | Date your current subscription will end. Does not apply to Free plans.                                                                  |
 
 ### View your self-managed subscription
 
-To view the status of your self-managed subscription, log into the self-managed instance and go to the **License** page.
+To view the status of your self-managed subscription, log in to the self-managed instance and go to the **License** page.
 
   1. Go to **{admin}** **Admin Area**.
   1. From the left-hand menu, select **License**.

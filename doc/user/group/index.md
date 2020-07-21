@@ -426,6 +426,7 @@ When transferring groups, note:
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will change to match the new parent group's visibility.
 - Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this leaves the group without an owner. In this case, the user transferring the group becomes the group's owner.
+- Transfers will fail if [packages](../packages/index.md) exist in any of the projects within the group, or in any of its subgroups.
 
 ## Group settings
 

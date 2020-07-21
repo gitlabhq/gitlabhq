@@ -97,7 +97,7 @@ module API
 
         user_access = Gitlab::UserAccess.new(
           current_user,
-          project: merge_request.source_project
+          container: merge_request.source_project
         )
 
         forbidden!('Cannot push to source branch') unless

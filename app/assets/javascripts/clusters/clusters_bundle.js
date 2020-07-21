@@ -20,7 +20,6 @@ import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
 import RemoveClusterConfirmation from './components/remove_cluster_confirmation.vue';
-import setupToggleButtons from '../toggle_buttons';
 import initProjectSelectDropdown from '~/project_select';
 import initServerlessSurveyBanner from '~/serverless/survey_banner';
 
@@ -128,10 +127,6 @@ export default class Clusters {
     Clusters.initDismissableCallout();
     initSettingsPanels();
 
-    const toggleButtonsContainer = document.querySelector('.js-cluster-enable-toggle-area');
-    if (toggleButtonsContainer) {
-      setupToggleButtons(toggleButtonsContainer);
-    }
     this.initApplications(clusterType);
     this.initEnvironments();
 

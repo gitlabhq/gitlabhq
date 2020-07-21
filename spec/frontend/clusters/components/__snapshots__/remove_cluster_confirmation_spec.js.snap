@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Remove cluster confirmation modal renders splitbutton with modal included 1`] = `
-<div>
+<div
+  class="gl-display-flex gl-justify-content-end"
+>
   <div
     class="dropdown b-dropdown gl-dropdown btn-group"
   >

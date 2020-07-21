@@ -3,7 +3,7 @@
 - mirror_settings_enabled = can?(current_user, :admin_remote_mirror, @project)
 - mirror_settings_class = "#{'expanded' if expanded} #{'js-mirror-settings' if mirror_settings_enabled}".strip
 
-%section.settings.project-mirror-settings.no-animate#js-push-remote-settings{ class: mirror_settings_class, data: { qa_selector: 'mirroring_repositories_settings_section' } }
+%section.settings.project-mirror-settings.no-animate#js-push-remote-settings{ class: mirror_settings_class, data: { qa_selector: 'mirroring_repositories_settings_content' } }
   .settings-header
     %h4= _('Mirroring repositories')
     %button.btn.js-settings-toggle

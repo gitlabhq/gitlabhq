@@ -4,9 +4,10 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab PyPi Repository **(PREMIUM)**
+# GitLab PyPi Repository
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208747) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208747) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
 
 With the GitLab PyPi Repository, every project can have its own space to store PyPi packages.
 
@@ -23,7 +24,7 @@ You will need a recent version of [pip](https://pypi.org/project/pip/) and [twin
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled support for the Package Registry](../../../administration/packages/index.md). **(PREMIUM ONLY)**
+[enabled support for the Package Registry](../../../administration/packages/index.md).
 
 After the PyPi Repository is enabled, it will be available for all new projects
 by default. To enable it for existing projects, or if you want to disable it:

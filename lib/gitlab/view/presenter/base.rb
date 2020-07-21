@@ -30,6 +30,10 @@ module Gitlab
           Gitlab::UrlBuilder.instance
         end
 
+        def is_a?(type)
+          super || subject.is_a?(type)
+        end
+
         class_methods do
           def presenter?
             true

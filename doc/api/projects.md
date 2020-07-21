@@ -1085,7 +1085,7 @@ POST /projects
 | `template_project_id` | integer | no | **(PREMIUM)** When used with `use_custom_template`, project ID of a custom project template. This is preferable to using `template_name` since `template_name` may be ambiguous. |
 | `use_custom_template` | boolean | no | **(PREMIUM)** Use either custom [instance](../user/admin_area/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template |
 | `group_with_project_templates_id` | integer | no | **(PREMIUM)** For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true |
-| `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
+| `packages_enabled` | boolean | no | Enable or disable packages repository feature |
 
 NOTE: **Note:**
 If your HTTP repository is not publicly accessible,
@@ -1156,7 +1156,7 @@ POST /projects/user/:user_id
 | `template_name` | string | no | When used without `use_custom_template`, name of a [built-in project template](../gitlab-basics/create-project.md#built-in-templates). When used with `use_custom_template`, name of a custom project template |
 | `use_custom_template` | boolean | no | **(PREMIUM)** Use either custom [instance](../user/admin_area/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template |
 | `group_with_project_templates_id` | integer | no | **(PREMIUM)** For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true |
-| `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
+| `packages_enabled` | boolean | no | Enable or disable packages repository feature |
 
 NOTE: **Note:**
 If your HTTP repository is not publicly accessible,
@@ -1227,7 +1227,7 @@ PUT /projects/:id
 | `mirror_trigger_builds` | boolean | no | **(STARTER)** Pull mirroring triggers builds |
 | `only_mirror_protected_branches` | boolean | no | **(STARTER)** Only mirror protected branches |
 | `mirror_overwrites_diverged_branches` | boolean | no | **(STARTER)** Pull mirror overwrites diverged branches |
-| `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
+| `packages_enabled` | boolean | no | Enable or disable packages repository feature |
 | `service_desk_enabled` | boolean | no | Enable or disable service desk feature |
 
 NOTE: **Note:**

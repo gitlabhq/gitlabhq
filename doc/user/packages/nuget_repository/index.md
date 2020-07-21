@@ -4,9 +4,10 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab NuGet Repository **(PREMIUM)**
+# GitLab NuGet Repository
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
 
 With the GitLab NuGet Repository, every project can have its own space to store NuGet packages.
 
@@ -58,7 +59,7 @@ mono nuget.exe
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled support for the Package Registry](../../../administration/packages/index.md). **(PREMIUM ONLY)**
+[enabled support for the Package Registry](../../../administration/packages/index.md).
 
 After the NuGet Repository is enabled, it will be available for all new projects
 by default. To enable it for existing projects, or if you want to disable it:

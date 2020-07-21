@@ -2,41 +2,50 @@
 
 module Gitlab
   class GitAccessWiki < GitAccess
-    prepend_if_ee('EE::Gitlab::GitAccessWiki') # rubocop: disable Cop/InjectEnterpriseEditionModule
+    extend ::Gitlab::Utils::Override
 
     ERROR_MESSAGES = {
-      read_only:     "You can't push code to a read-only GitLab instance.",
+      download: 'You are not allowed to download files from this wiki.',
+      not_found: 'The wiki you were looking for could not be found.',
+      no_repo: 'A repository for this wiki does not exist yet.',
+      read_only: "You can't push code to a read-only GitLab instance.",
       write_to_wiki: "You are not allowed to write to this project's wiki."
     }.freeze
 
-    def guest_can_download_code?
-      Guest.can?(:download_wiki_code, project)
+    override :download_ability
+    def download_ability
+      :download_wiki_code
     end
 
-    def user_can_download_code?
-      authentication_abilities.include?(:download_code) && user_access.can_do_action?(:download_wiki_code)
+    override :push_ability
+    def push_ability
+      :create_wiki
     end
 
+    override :check_change_access!
     def check_change_access!
-      unless user_access.can_do_action?(:create_wiki)
-        raise ForbiddenError, ERROR_MESSAGES[:write_to_wiki]
-      end
-
-      if Gitlab::Database.read_only?
-        raise ForbiddenError, push_to_read_only_message
-      end
+      raise ForbiddenError, write_to_wiki_message unless user_can_push?
 
       true
     end
 
     def push_to_read_only_message
-      ERROR_MESSAGES[:read_only]
+      error_message(:read_only)
     end
 
-    private
+    def write_to_wiki_message
+      error_message(:write_to_wiki)
+    end
 
+    def not_found_message
+      error_message(:not_found)
+    end
+
+    override :repository
     def repository
-      project.wiki.repository
+      container.wiki.repository
     end
   end
 end
+
+Gitlab::GitAccessWiki.prepend_if_ee('EE::Gitlab::GitAccessWiki')

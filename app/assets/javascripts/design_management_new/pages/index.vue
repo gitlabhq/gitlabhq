@@ -267,7 +267,6 @@ export default {
   <div
     data-testid="designs-root"
     class="gl-mt-5"
-    :class="{ 'designs-root': !isDesignListEmpty }"
     @mouseenter="toggleOnPasteListener"
     @mouseleave="toggleOffPasteListener"
   >
