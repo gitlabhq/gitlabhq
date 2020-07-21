@@ -822,9 +822,6 @@ The following is example content of the Usage Ping payload.
     "adapter": "postgresql",
     "version": "9.6.15"
   },
-  "app_server": {
-    "type": "console"
-  },
   "avg_cycle_analytics": {
     "issue": {
       "average": 999,

@@ -1,13 +1,15 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import newDropdown from '~/ide/components/new_dropdown/index.vue';
-import { resetStore } from '../../helpers';
 
 describe('new dropdown component', () => {
+  let store;
   let vm;
 
   beforeEach(() => {
+    store = createStore();
+
     const component = Vue.extend(newDropdown);
 
     vm = createComponentWithStore(component, store, {
@@ -30,8 +32,6 @@ describe('new dropdown component', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   it('renders new file, upload and new directory links', () => {

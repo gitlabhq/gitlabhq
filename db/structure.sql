@@ -19717,6 +19717,8 @@ CREATE INDEX index_merge_request_diff_commits_on_sha ON public.merge_request_dif
 
 CREATE UNIQUE INDEX index_merge_request_diff_files_on_mr_diff_id_and_order ON public.merge_request_diff_files USING btree (merge_request_diff_id, relative_order);
 
+CREATE INDEX index_merge_request_diffs_on_external_diff_store ON public.merge_request_diffs USING btree (external_diff_store);
+
 CREATE INDEX index_merge_request_diffs_on_merge_request_id_and_id ON public.merge_request_diffs USING btree (merge_request_id, id);
 
 CREATE INDEX index_merge_request_diffs_on_merge_request_id_and_id_partial ON public.merge_request_diffs USING btree (merge_request_id, id) WHERE ((NOT stored_externally) OR (stored_externally IS NULL));
@@ -20487,6 +20489,8 @@ CREATE INDEX index_term_agreements_on_term_id ON public.term_agreements USING bt
 
 CREATE INDEX index_term_agreements_on_user_id ON public.term_agreements USING btree (user_id);
 
+CREATE INDEX index_terraform_states_on_file_store ON public.terraform_states USING btree (file_store);
+
 CREATE INDEX index_terraform_states_on_locked_by_user_id ON public.terraform_states USING btree (locked_by_user_id);
 
 CREATE UNIQUE INDEX index_terraform_states_on_project_id_and_name ON public.terraform_states USING btree (project_id, name);
@@ -20644,6 +20648,8 @@ CREATE INDEX index_vulnerabilities_on_start_date_sourcing_milestone_id ON public
 CREATE INDEX index_vulnerabilities_on_updated_by_id ON public.vulnerabilities USING btree (updated_by_id);
 
 CREATE INDEX index_vulnerability_exports_on_author_id ON public.vulnerability_exports USING btree (author_id);
+
+CREATE INDEX index_vulnerability_exports_on_file_store ON public.vulnerability_exports USING btree (file_store);
 
 CREATE INDEX index_vulnerability_exports_on_group_id_not_null ON public.vulnerability_exports USING btree (group_id) WHERE (group_id IS NOT NULL);
 
@@ -23960,6 +23966,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200703124823
 20200703125016
 20200703154822
+20200703165434
 20200704143633
 20200704161600
 20200706005325
@@ -23984,5 +23991,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200715202659
 20200716044023
 20200716120419
+20200718040100
+20200718040200
+20200718040300
 \.
 

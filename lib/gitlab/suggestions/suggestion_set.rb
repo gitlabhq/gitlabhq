@@ -83,7 +83,7 @@ module Gitlab
         end
 
         unless suggestion.appliable?(cached: false)
-          return _('A suggestion is not applicable.')
+          return suggestion.inapplicable_reason(cached: false)
         end
 
         unless latest_source_head?(suggestion)

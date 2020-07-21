@@ -1,15 +1,17 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import ideSidebar from '~/ide/components/ide_side_bar.vue';
 import { leftSidebarViews } from '~/ide/constants';
-import { resetStore } from '../helpers';
 import { projectData } from '../mock_data';
 
 describe('IdeSidebar', () => {
   let vm;
+  let store;
 
   beforeEach(() => {
+    store = createStore();
+
     const Component = Vue.extend(ideSidebar);
 
     store.state.currentProjectId = 'abcproject';
@@ -20,8 +22,6 @@ describe('IdeSidebar', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   it('renders a sidebar', () => {

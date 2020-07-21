@@ -261,17 +261,8 @@ module Gitlab
           database: {
             adapter: alt_usage_data { Gitlab::Database.adapter_name },
             version: alt_usage_data { Gitlab::Database.version }
-          },
-          app_server: { type: app_server_type }
+          }
         }
-      end
-
-      def app_server_type
-        Gitlab::Runtime.identify.to_s
-      rescue Gitlab::Runtime::IdentificationError => e
-        Gitlab::AppLogger.error(e.message)
-        Gitlab::ErrorTracking.track_exception(e)
-        'unknown_app_server_type'
       end
 
       def object_store_config(component)

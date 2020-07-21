@@ -1,19 +1,20 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { projectData } from 'jest/ide/mock_data';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import CommitForm from '~/ide/components/commit_sidebar/form.vue';
 import { leftSidebarViews } from '~/ide/constants';
-import { resetStore } from '../../helpers';
 import waitForPromises from 'helpers/wait_for_promises';
 
 describe('IDE commit form', () => {
   const Component = Vue.extend(CommitForm);
   let vm;
+  let store;
 
   const beginCommitButton = () => vm.$el.querySelector('[data-testid="begin-commit-button"]');
 
   beforeEach(() => {
+    store = createStore();
     store.state.changedFiles.push('test');
     store.state.currentProjectId = 'abcproject';
     store.state.currentBranchId = 'master';
@@ -24,8 +25,6 @@ describe('IDE commit form', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   it('enables begin commit button when there are changes', () => {

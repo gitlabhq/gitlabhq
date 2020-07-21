@@ -2185,7 +2185,7 @@ entry.
 - Replaced ACE with Monaco editor for Snippets. !25465
 - Add support for user Job Title. !25483
 - Add name_regex_keep param to container registry bulk delete API endpoint. !25484
-- Add Project template for Gatsby. !25486
+- Add Project template for Gatsby. !24192
 - Add filepath to ReleaseLink. !25512
 - Added Drop older active deployments project setting. !25520
 - Add filepath to release links API. !25533

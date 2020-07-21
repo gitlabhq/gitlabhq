@@ -74,7 +74,7 @@ RSpec.describe API::Suggestions do
         put api(url, user)
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({ 'message' => 'A suggestion is not applicable.' })
+        expect(json_response).to eq({ 'message' => "Can't apply as this line was changed in a more recent version." })
       end
     end
 
@@ -133,7 +133,7 @@ RSpec.describe API::Suggestions do
             params: { ids: [suggestion.id, unappliable_suggestion.id] }
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({ 'message' => 'A suggestion is not applicable.' })
+        expect(json_response).to eq({ 'message' => "Can't apply as this line was changed in a more recent version." })
       end
     end
 

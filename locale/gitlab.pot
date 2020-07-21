@@ -420,6 +420,12 @@ msgstr ""
 msgid "%{labelStart}Class:%{labelEnd} %{class}"
 msgstr ""
 
+msgid "%{labelStart}Crash Address:%{labelEnd} %{crash_address}"
+msgstr ""
+
+msgid "%{labelStart}Crash State:%{labelEnd} %{stacktrace_snippet}"
+msgstr ""
+
 msgid "%{labelStart}Evidence:%{labelEnd} %{evidence}"
 msgstr ""
 
@@ -1137,9 +1143,6 @@ msgid "A sign-in to your account has been made from the following IP address: %{
 msgstr ""
 
 msgid "A subscription will trigger a new pipeline on the default branch of this project when a pipeline successfully completes for a new tag on the %{default_branch_docs} of the subscribed project."
-msgstr ""
-
-msgid "A suggestion is not applicable."
 msgstr ""
 
 msgid "A user with write access to the source branch selected this option"
@@ -6846,9 +6849,6 @@ msgid "Coverage"
 msgstr ""
 
 msgid "Coverage Fuzzing"
-msgstr ""
-
-msgid "Crash State"
 msgstr ""
 
 msgid "Create"
@@ -27761,6 +27761,9 @@ msgstr ""
 msgid "ciReport|%{linkStartTag}Learn more about Container Scanning %{linkEndTag}"
 msgstr ""
 
+msgid "ciReport|%{linkStartTag}Learn more about Coverage Fuzzing %{linkEndTag}"
+msgstr ""
+
 msgid "ciReport|%{linkStartTag}Learn more about DAST %{linkEndTag}"
 msgstr ""
 
@@ -27834,6 +27837,12 @@ msgid "ciReport|Container scanning detects known vulnerabilities in your docker 
 msgstr ""
 
 msgid "ciReport|Coverage Fuzzing"
+msgstr ""
+
+msgid "ciReport|Coverage Fuzzing Title"
+msgstr ""
+
+msgid "ciReport|Coverage fuzzing"
 msgstr ""
 
 msgid "ciReport|Create a merge request to implement this solution, or download and apply the patch manually."

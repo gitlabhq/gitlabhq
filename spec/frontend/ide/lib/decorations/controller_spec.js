@@ -2,14 +2,17 @@ import Editor from '~/ide/lib/editor';
 import DecorationsController from '~/ide/lib/decorations/controller';
 import Model from '~/ide/lib/common/model';
 import { file } from '../../helpers';
+import { createStore } from '~/ide/stores';
 
 describe('Multi-file editor library decorations controller', () => {
   let editorInstance;
   let controller;
   let model;
+  let store;
 
   beforeEach(() => {
-    editorInstance = Editor.create();
+    store = createStore();
+    editorInstance = Editor.create(store);
     editorInstance.createInstance(document.createElement('div'));
 
     controller = new DecorationsController(editorInstance);

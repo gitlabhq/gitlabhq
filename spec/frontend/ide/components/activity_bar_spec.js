@@ -1,15 +1,17 @@
 import Vue from 'vue';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import { leftSidebarViews } from '~/ide/constants';
 import ActivityBar from '~/ide/components/activity_bar.vue';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
-import { resetStore } from '../helpers';
 
 describe('IDE activity bar', () => {
   const Component = Vue.extend(ActivityBar);
   let vm;
+  let store;
 
   beforeEach(() => {
+    store = createStore();
+
     Vue.set(store.state.projects, 'abcproject', {
       web_url: 'testing',
     });
@@ -20,8 +22,6 @@ describe('IDE activity bar', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   describe('updateActivityBarView', () => {

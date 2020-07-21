@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import createFlash from '~/flash';
 import {
   getMergeRequestData,
@@ -10,7 +10,6 @@ import {
 } from '~/ide/stores/actions/merge_request';
 import service from '~/ide/services';
 import { leftSidebarViews, PERMISSION_READ_MR } from '~/ide/constants';
-import { resetStore } from '../../helpers';
 
 const TEST_PROJECT = 'abcproject';
 const TEST_PROJECT_ID = 17;
@@ -18,9 +17,12 @@ const TEST_PROJECT_ID = 17;
 jest.mock('~/flash');
 
 describe('IDE store merge request actions', () => {
+  let store;
   let mock;
 
   beforeEach(() => {
+    store = createStore();
+
     mock = new MockAdapter(axios);
 
     store.state.projects[TEST_PROJECT] = {
@@ -34,7 +36,6 @@ describe('IDE store merge request actions', () => {
 
   afterEach(() => {
     mock.restore();
-    resetStore(store);
   });
 
   describe('getMergeRequestsForBranch', () => {

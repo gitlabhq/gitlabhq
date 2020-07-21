@@ -254,16 +254,8 @@ export default {
             {{ __('Environment') }}
           </gl-dropdown-header>
           <gl-dropdown-divider />
-          <gl-search-box-by-type
-            ref="monitorEnvironmentsDropdownSearch"
-            class="m-2"
-            @input="debouncedEnvironmentsSearch"
-          />
-          <gl-loading-icon
-            v-if="environmentsLoading"
-            ref="monitorEnvironmentsDropdownLoading"
-            :inline="true"
-          />
+          <gl-search-box-by-type class="m-2" @input="debouncedEnvironmentsSearch" />
+          <gl-loading-icon v-if="environmentsLoading" :inline="true" />
           <div v-else class="flex-fill overflow-auto">
             <gl-dropdown-item
               v-for="environment in filteredEnvironments"

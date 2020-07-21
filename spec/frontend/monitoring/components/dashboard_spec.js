@@ -1,7 +1,7 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import Tracking from '~/tracking';
 import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
-import { GlModal, GlDropdownItem, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
+import { GlModal, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
@@ -29,7 +29,7 @@ import {
   setupStoreWithDataForPanelCount,
   setupStoreWithLinks,
 } from '../store_utils';
-import { environmentData, dashboardGitResponse, storeVariables } from '../mock_data';
+import { dashboardGitResponse, storeVariables } from '../mock_data';
 import {
   metricsDashboardViewModel,
   metricsDashboardPanelCount,
@@ -46,12 +46,6 @@ describe('Dashboard', () => {
   let mock;
 
   const findDashboardHeader = () => wrapper.find(DashboardHeader);
-  const findEnvironmentsDropdown = () =>
-    findDashboardHeader().find({ ref: 'monitorEnvironmentsDropdown' });
-  const findAllEnvironmentsDropdownItems = () => findEnvironmentsDropdown().findAll(GlDropdownItem);
-  const setSearchTerm = searchTerm => {
-    store.commit(`monitoringDashboard/${types.SET_ENVIRONMENTS_FILTER}`, searchTerm);
-  };
 
   const createShallowWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(Dashboard, {
@@ -88,28 +82,6 @@ describe('Dashboard', () => {
     if (store.dispatch.mockReset) {
       store.dispatch.mockReset();
     }
-  });
-
-  describe('no metrics are available yet', () => {
-    beforeEach(() => {
-      createShallowWrapper();
-    });
-
-    it('shows the environment selector', () => {
-      expect(findEnvironmentsDropdown().exists()).toBe(true);
-    });
-  });
-
-  describe('no data found', () => {
-    beforeEach(() => {
-      createShallowWrapper();
-
-      return wrapper.vm.$nextTick();
-    });
-
-    it('shows the environment selector dropdown', () => {
-      expect(findEnvironmentsDropdown().exists()).toBe(true);
-    });
   });
 
   describe('request information to the server', () => {
@@ -149,17 +121,14 @@ describe('Dashboard', () => {
     });
 
     it('fetches the metrics data with proper time window', () => {
-      jest.spyOn(store, 'dispatch');
-
       createMountedWrapper({ hasMetrics: true });
 
-      store.commit(
-        `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
-        environmentData,
-      );
-
       return wrapper.vm.$nextTick().then(() => {
-        expect(store.dispatch).toHaveBeenCalled();
+        expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
+        expect(store.dispatch).toHaveBeenCalledWith(
+          'monitoringDashboard/setTimeRange',
+          expect.objectContaining({ duration: { seconds: 28800 } }),
+        );
       });
     });
   });
@@ -500,21 +469,6 @@ describe('Dashboard', () => {
       return wrapper.vm.$nextTick();
     });
 
-    it('renders the environments dropdown with a number of environments', () => {
-      expect(findAllEnvironmentsDropdownItems().length).toEqual(environmentData.length);
-
-      findAllEnvironmentsDropdownItems().wrappers.forEach((itemWrapper, index) => {
-        const anchorEl = itemWrapper.find('a');
-        if (anchorEl.exists()) {
-          const href = anchorEl.attributes('href');
-          const currentDashboard = encodeURIComponent(dashboardGitResponse[0].path);
-          const environmentId = encodeURIComponent(environmentData[index].id);
-          const url = `${TEST_HOST}/-/metrics/${currentDashboard}?environment=${environmentId}`;
-          expect(href).toBe(url);
-        }
-      });
-    });
-
     it('it does not show loading icons in any group', () => {
       setupStoreWithData(store);
 
@@ -523,16 +477,6 @@ describe('Dashboard', () => {
           expect(groupWrapper.props('isLoading')).toBe(false);
         });
       });
-    });
-
-    // Note: This test is not working, .active does not show the active environment
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('renders the environments dropdown with a single active element', () => {
-      const activeItem = findAllEnvironmentsDropdownItems().wrappers.filter(itemWrapper =>
-        itemWrapper.find('.active').exists(),
-      );
-
-      expect(activeItem.length).toBe(1);
     });
   });
 
@@ -612,16 +556,6 @@ describe('Dashboard', () => {
           expect(findToggleStarIcon().attributes('name')).toBe('star');
         });
       });
-    });
-  });
-
-  it('hides the environments dropdown list when there is no environments', () => {
-    createMountedWrapper({ hasMetrics: true });
-
-    setupStoreWithDashboard(store);
-
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findAllEnvironmentsDropdownItems()).toHaveLength(0);
     });
   });
 
@@ -808,100 +742,6 @@ describe('Dashboard', () => {
           .at(0)
           .props('selectedState'),
       ).toEqual(metricStates.NO_DATA);
-    });
-  });
-
-  describe('searchable environments dropdown', () => {
-    beforeEach(() => {
-      createMountedWrapper({ hasMetrics: true }, { attachToDocument: true });
-
-      setupStoreWithData(store);
-
-      return wrapper.vm.$nextTick();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
-    it('renders a search input', () => {
-      expect(
-        wrapper
-          .find(DashboardHeader)
-          .find({ ref: 'monitorEnvironmentsDropdownSearch' })
-          .exists(),
-      ).toBe(true);
-    });
-
-    it('renders dropdown items', () => {
-      findAllEnvironmentsDropdownItems().wrappers.forEach((itemWrapper, index) => {
-        const anchorEl = itemWrapper.find('a');
-        if (anchorEl.exists()) {
-          expect(anchorEl.text()).toBe(environmentData[index].name);
-        }
-      });
-    });
-
-    it('filters rendered dropdown items', () => {
-      const searchTerm = 'production';
-      const resultEnvs = environmentData.filter(({ name }) => name.indexOf(searchTerm) !== -1);
-      setSearchTerm(searchTerm);
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findAllEnvironmentsDropdownItems().length).toEqual(resultEnvs.length);
-      });
-    });
-
-    it('does not filter dropdown items if search term is empty string', () => {
-      const searchTerm = '';
-      setSearchTerm(searchTerm);
-
-      return wrapper.vm.$nextTick(() => {
-        expect(findAllEnvironmentsDropdownItems().length).toEqual(environmentData.length);
-      });
-    });
-
-    it("shows error message if search term doesn't match", () => {
-      const searchTerm = 'does-not-exist';
-      setSearchTerm(searchTerm);
-
-      return wrapper.vm.$nextTick(() => {
-        expect(
-          wrapper
-            .find(DashboardHeader)
-            .find({ ref: 'monitorEnvironmentsDropdownMsg' })
-            .isVisible(),
-        ).toBe(true);
-      });
-    });
-
-    it('shows loading element when environments fetch is still loading', () => {
-      store.commit(`monitoringDashboard/${types.REQUEST_ENVIRONMENTS_DATA}`);
-
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(
-            wrapper
-              .find(DashboardHeader)
-              .find({ ref: 'monitorEnvironmentsDropdownLoading' })
-              .exists(),
-          ).toBe(true);
-        })
-        .then(() => {
-          store.commit(
-            `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
-            environmentData,
-          );
-        })
-        .then(() => {
-          expect(
-            wrapper
-              .find(DashboardHeader)
-              .find({ ref: 'monitorEnvironmentsDropdownLoading' })
-              .exists(),
-          ).toBe(false);
-        });
     });
   });
 

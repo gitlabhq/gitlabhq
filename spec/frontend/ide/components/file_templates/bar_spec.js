@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/ide/stores';
 import Bar from '~/ide/components/file_templates/bar.vue';
-import { resetStore, file } from '../../helpers';
+import { file } from '../../helpers';
 
 describe('IDE file templates bar component', () => {
   let Component;
@@ -26,7 +26,6 @@ describe('IDE file templates bar component', () => {
 
   afterEach(() => {
     vm.$destroy();
-    resetStore(vm.$store);
   });
 
   describe('template type dropdown', () => {

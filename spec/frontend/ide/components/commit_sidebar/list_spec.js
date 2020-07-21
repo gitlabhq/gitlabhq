@@ -1,13 +1,16 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import commitSidebarList from '~/ide/components/commit_sidebar/list.vue';
-import { file, resetStore } from '../../helpers';
+import { file } from '../../helpers';
 
 describe('Multi-file editor commit sidebar list', () => {
+  let store;
   let vm;
 
   beforeEach(() => {
+    store = createStore();
+
     const Component = Vue.extend(commitSidebarList);
 
     vm = createComponentWithStore(Component, store, {
@@ -26,8 +29,6 @@ describe('Multi-file editor commit sidebar list', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   describe('with a list of files', () => {

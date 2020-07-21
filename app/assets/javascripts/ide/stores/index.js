@@ -33,5 +33,3 @@ export const createStoreOptions = () => ({
 });
 
 export const createStore = () => new Vuex.Store(createStoreOptions());
-
-export default createStore();
