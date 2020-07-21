@@ -33,8 +33,8 @@
           = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('PipelineSchedules|Take ownership'), class: 'btn' do
             = s_('PipelineSchedules|Take ownership')
         - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)
-          = link_to edit_pipeline_schedule_path(pipeline_schedule), title: _('Edit'), class: 'btn' do
-            = icon('pencil')
+          = link_to edit_pipeline_schedule_path(pipeline_schedule), title: _('Edit'), class: 'btn gl-display-flex' do
+            = sprite_icon('pencil', size: 16)
         - if can?(current_user, :admin_pipeline_schedule, pipeline_schedule)
           = link_to pipeline_schedule_path(pipeline_schedule), title: _('Delete'), method: :delete, class: 'btn btn-remove', data: { confirm: _("Are you sure you want to delete this pipeline schedule?") } do
             = icon('trash')

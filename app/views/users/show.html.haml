@@ -14,7 +14,7 @@
     = render layout: 'users/cover_controls' do
       - if @user == current_user
         = link_to profile_path, class: link_classes + 'btn btn-default has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile' do
-          = icon('pencil')
+          = sprite_icon('pencil')
       - elsif current_user
         - if @user.abuse_report
           %button{ class: link_classes + 'btn btn-danger mr-1', title: s_('UserProfile|Already reported for abuse'),

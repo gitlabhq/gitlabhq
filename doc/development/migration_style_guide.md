@@ -380,7 +380,8 @@ Example changes:
 - `change_column_default`
 - `create_table` / `drop_table`
 
-**Note:** `with_lock_retries` method **cannot** be used within the `change` method, you must manually define the `up` and `down` methods to make the migration reversible.
+NOTE: **Note:**
+`with_lock_retries` method **cannot** be used within the `change` method, you must manually define the `up` and `down` methods to make the migration reversible.
 
 ### How the helper method works
 
@@ -440,7 +441,8 @@ the `with_multiple_threads` block, instead of re-using the global connection
 pool. This ensures each thread has its own connection object, and won't time
 out when trying to obtain one.
 
-**NOTE:** PostgreSQL has a maximum amount of connections that it allows. This
+NOTE: **Note:**
+PostgreSQL has a maximum amount of connections that it allows. This
 limit can vary from installation to installation. As a result, it's recommended
 you do not use more than 32 threads in a single migration. Usually, 4-8 threads
 should be more than enough.

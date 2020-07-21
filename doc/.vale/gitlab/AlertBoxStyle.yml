@@ -11,6 +11,6 @@ level: error
 scope: raw
 raw:
   - '((NOTE|TIP|CAUTION|DANGER): \*\*[^:]*\*\*)|'
-  - '((NOTE: \*\*NOTE:\*\*)|(TIP: \*\*TIP:\*\*)|(CAUTION: \*\*CAUTION:\*\*)|(DANGER: \*\*DANGER:\*\*))|'
-  - '((NOTE: \*\*note:\*\*)|(TIP: \*\*tip:\*\*)|(CAUTION: \*\*caution:\*\*)|(DANGER: \*\*danger:\*\*))|'
-  - '((NOTE|TIP|CAUTION|DANGER): \*\*.*\*\*.+)'
+  - '((NOTE: \*\*(NOTE|note):\*\*)|(TIP: \*\*(TIP|tip):\*\*)|(CAUTION: \*\*(CAUTION|caution):\*\*)|(DANGER: \*\*(DANGER|danger):\*\*))|'
+  - '((NOTE|TIP|CAUTION|DANGER): \*\*.*\*\*.+)|'
+  - '((\n[ ]*(\*){1,2}(NOTE|Note|note|TIP|Tip|tip|CAUTION|Caution|caution|DANGER|Danger|danger):(\*){1,2})'

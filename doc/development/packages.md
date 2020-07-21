@@ -73,7 +73,8 @@ NPM is currently a hybrid of the instance level and group level.
 It is using the top-level group or namespace as the defining portion of the name
 (for example, `@my-group-name/my-package-name`).
 
-**Note:** Composer package naming scope is Instance Level.
+NOTE: **Note:**
+Composer package naming scope is Instance Level.
 
 ### Naming conventions
 

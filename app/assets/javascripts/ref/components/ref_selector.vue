@@ -74,6 +74,18 @@ export default {
       return !this.showBranchesSection && !this.showTagsSection && !this.showCommitsSection;
     },
   },
+  watch: {
+    // Keep the Vuex store synchronized if the parent
+    // component updates the selected ref through v-model
+    value: {
+      immediate: true,
+      handler() {
+        if (this.value !== this.selectedRef) {
+          this.setSelectedRef(this.value);
+        }
+      },
+    },
+  },
   created() {
     this.setProjectId(this.projectId);
     this.search(this.query);

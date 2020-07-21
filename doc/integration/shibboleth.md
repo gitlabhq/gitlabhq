@@ -46,7 +46,7 @@ The following changes are needed to enable Shibboleth:
    RequestHeader set X_FORWARDED_PROTO 'https'
    ```
 
-   **NOTE:**
+   NOTE: **Note:**
    Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
    earlier version, you'll need to explicitly enable it in `/etc/gitlab/gitlab.rb`.
 

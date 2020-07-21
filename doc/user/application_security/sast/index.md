@@ -289,14 +289,16 @@ See [Analyzer settings](#analyzer-settings) for the complete list of available o
 
 SAST can be [configured](#customizing-the-sast-settings) using environment variables.
 
-#### Logging Level
+#### Logging level
 
-You can control the verbosity of logs by setting the `SECURE_LOG_LEVEL` env var. The default is set to `info`, you can set it to any of the following levels:
+To control the verbosity of logs set the `SECURE_LOG_LEVEL` environment variable. Messages of this logging level or higher are output. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1.
+
+From highest to lowest severity, the logging levels are:
 
 - `fatal`
 - `error`
 - `warn`
-- `info`
+- `info` (default)
 - `debug`
 
 #### Custom Certificate Authority

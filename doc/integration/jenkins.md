@@ -157,7 +157,7 @@ and storing build status for Commits and Merge Requests.
 
 ### Steps required to implement a similar integration
 
-**Note:**
+NOTE: **Note:**
 All steps are implemented using AJAX requests on the merge request page.
 
 1. In order to display the build status in a merge request you must create a project service in GitLab.

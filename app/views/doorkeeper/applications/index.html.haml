@@ -44,7 +44,7 @@
                       = link_to edit_oauth_application_path(application), class: "btn btn-transparent gl-mr-2" do
                         %span.sr-only
                           = _('Edit')
-                        = icon('pencil')
+                        = sprite_icon('pencil')
                       = render 'delete_form', application: application, small: true
         - else
           .settings-message.text-center

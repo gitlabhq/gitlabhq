@@ -496,81 +496,72 @@ Container Registry.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15398) in GitLab 12.8.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/218737) from "expiration policy" to "cleanup policy" in GitLab 13.2.
 
-For a specific project, if you want to remove tags you no longer need,
-you can create a cleanup policy. When the policy is applied, tags matching the regex pattern are removed.
+The cleanup policy is a scheduled job you can use to remove tags from the Container Registry.
+For the project where it's defined, tags matching the regex pattern are removed.
 The underlying layers and images remain.
 
-To delete the underlying layers and images no longer associated with any tags, Instance Administrators can use
+To delete the underlying layers and images that aren't associated with any tags, administrators can use
 [garbage collection](../../../administration/packages/container_registry.md#removing-unused-layers-not-referenced-by-manifests) with the `-m` switch.
 
-NOTE: **Note:**
-For GitLab.com, cleanup policies are not available for projects created
-before this feature was deployed to production (February 2020).
-Support for pre-existing projects on GitLab.com
-[is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/196124).
-For self-managed instances, cleanup policies may be enabled by an admin in the
-[GitLab application settings](../../../api/settings.md#change-application-settings) by setting `container_expiration_policies_enable_historic_entries` to true.
-Note the inherent [risks involved](./index.md#use-with-external-container-registries).
+### Enable the cleanup policy
 
-The cleanup policy algorithm starts by collecting all the tags for a given repository in a list,
-then goes through a process of excluding tags from it until only the ones to be deleted remain:
+The cleanup policy is enabled for all projects by default.
 
-1. Collect all the tags for a given repository in a list.
+- For GitLab.com, the project must have been created before February, 2020.
+  Support for projects created earlier
+  [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/196124).
+
+- For self-managed GitLab instances, the project must have been created
+  before GitLab 12.7. However, an administrator can enable the cleanup policy
+  for all projects (even those created before 12.7) in
+  [GitLab application settings](../../../api/settings.md#change-application-settings)
+  by setting `container_expiration_policies_enable_historic_entries` to true.
+
+  There are performance risks with enabling it for all projects, especially if you
+  are using an [external registry](./index.md#use-with-external-container-registries).
+
+### How the cleanup policy works
+
+The cleanup policy collects all tags in the Container Registry and excludes tags
+until only the tags to be deleted remain.
+
+The cleanup policy:
+
+1. Collects all tags for a given repository in a list.
 1. Excludes the tag named `latest` from the list.
-1. Evaluates the `name_regex`, excluding non-matching names from the list.
-1. Excludes any tags that do not have a manifest (not part of the options).
+1. Evaluates the `name_regex` (tags to expire), excluding non-matching names from the list.
+1. Excludes any tags that do not have a manifest (not part of the options in the UI).
 1. Orders the remaining tags by `created_date`.
 1. Excludes from the list the N tags based on the `keep_n` value (Number of tags to retain).
-1. Excludes from the list the tags more recent than the `older_than` value (Cleanup interval).
-1. Excludes from the list any tags matching the `name_regex_keep` value (Images to preserve).
+1. Excludes from the list the tags more recent than the `older_than` value (Expiration interval).
+1. Excludes from the list any tags matching the `name_regex_keep` value (tags to preserve).
 1. Finally, the remaining tags in the list are deleted from the Container Registry.
 
-### Managing project cleanup policy through the UI
+### Create a cleanup policy
 
-To manage project cleanup policy, navigate to **{settings}** **Settings > CI/CD > Container Registry tag cleanup policy**.
+You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the UI.
 
-The UI allows you to configure the following:
+To create a cleanup policy in the UI:
 
-- **Cleanup policy:** enable or disable the cleanup policy.
-- **Cleanup interval:** how long tags are exempt from being deleted.
-- **Cleanup schedule:** how often the cron job checking the tags should run.
-- **Number of tags to retain:** how many tags to _always_ keep for each image.
-- **Docker tags with names matching this regex pattern will expire:** the regex used to determine what tags should be cleaned up. To qualify all tags for cleanup, use the default value of `.*`.
-- **Docker tags with names matching this regex pattern will be preserved:** the regex used to determine what tags should be preserved. To preserve all tags, use the default value of `.*`.
+1. For your project, go to **Settings > CI/CD**.
+1. Expand the **Cleanup policy for tags** section.
+1. Complete the fields.
 
-#### Troubleshooting cleanup policies
+   | Field                                                                     | Description                                                                                                       |
+   |---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+   | **Cleanup policy**                                                        | Turn the policy on or off.                                                                                        |
+   | **Expiration interval**                                                   | How long tags are exempt from being deleted.                                                                      |
+   | **Expiration schedule**                                                   | How often the policy should run.                                                                                  |
+   | **Number of tags to retain**                                              | How many tags to _always_ keep for each image.                                                                    |
+   | **Tags with names matching this regex pattern will expire:**              | The regex pattern that determines which tags to remove. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
+   | **Tags with names matching this regex pattern will be preserved:**        | The regex pattern that determines which tags to preserve. The `latest` tag is always preserved. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
 
-If you see the following message:
+1. Click **Set cleanup policy**.
 
-"Something went wrong while updating the cleanup policy."
+Depending on the interval you chose, the policy is scheduled to run.
 
-Check the regex patterns to ensure they are valid.
-
-You can use [Rubular](https://rubular.com/) to check your regex.
-View some common [regex pattern examples](#regex-pattern-examples).
-
-### Managing project cleanup policy through the API
-
-You can set, update, and disable the cleanup policies using the GitLab API.
-
-Examples:
-
-- Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve any images with the name `master` and the policy is enabled:
-
-  ```shell
-  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-master"}}' 'https://gitlab.example.com/api/v4/projects/2'
-  ```
-
-See the API documentation for further details: [Edit project](../../../api/projects.md#edit-project).
-
-### Use with external container registries
-
-When using an [external container registry](./../../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint),
-running a cleanup policy on a project may have some performance risks. If a project is going to run
-a policy that will remove large quantities of tags (in the thousands), the GitLab background jobs that
-run the policy may get backed up or fail completely. It is recommended you only enable container cleanup
-policies for projects that were created before GitLab 12.8 if you are confident the amount of tags
-being cleaned up will be minimal.
+NOTE: **Note:**
+If you edit the policy and click **Set cleanup policy** again, the interval is reset.
 
 ### Regex pattern examples
 
@@ -601,6 +592,40 @@ Here are examples of regex patterns you may want to use:
   ```plaintext
   (?:v.+|master|release)
   ```
+
+### Use the cleanup policy API
+
+You can set, update, and disable the cleanup policies using the GitLab API.
+
+Examples:
+
+- Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve any images with the name `master` and the policy is enabled:
+
+  ```shell
+  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-master"}}' 'https://gitlab.example.com/api/v4/projects/2'
+  ```
+
+See the API documentation for further details: [Edit project](../../../api/projects.md#edit-project).
+
+### Use with external container registries
+
+When using an [external container registry](./../../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint),
+running a cleanup policy on a project may have some performance risks. If a project is going to run
+a policy that will remove large quantities of tags (in the thousands), the GitLab background jobs that
+run the policy may get backed up or fail completely. It is recommended you only enable container cleanup
+policies for projects that were created before GitLab 12.8 if you are confident the amount of tags
+being cleaned up will be minimal.
+
+### Troubleshooting cleanup policies
+
+If you see the following message:
+
+"Something went wrong while updating the cleanup policy."
+
+Check the regex patterns to ensure they are valid.
+
+You can use [Rubular](https://rubular.com/) to check your regex.
+View some common [regex pattern examples](#regex-pattern-examples).
 
 ## Use the Container Registry to store Helm Charts
 

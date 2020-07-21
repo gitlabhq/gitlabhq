@@ -227,6 +227,12 @@ GitLab installations that have multiple web nodes will need to be
 [upgraded to 13.1](#1310) before upgrading to 13.2 (and later) due to a
 breaking change in Rails that can result in authorization issues.
 
+GitLab 13.2.0 [remediates](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35492) an [email verification bypass](https://about.gitlab.com/releases/2020/05/27/security-release-13-0-1-released/).
+After upgrading, if some of your users are unexpectedly encountering 404 or 422 errors when signing in,
+or "blocked" messages when using the command line,
+their accounts may have been un-confirmed.
+In that case, please ask them to check their email for a re-confirmation link.
+
 ### 13.1.0
 
 In 13.1.0, you must upgrade to either:

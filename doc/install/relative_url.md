@@ -108,7 +108,7 @@ Make sure to follow all steps below:
    -authBackend http://127.0.0.1:8080/gitlab
    ```
 
-   **Note:**
+   NOTE: **Note:**
    If you are using a custom init script, make sure to edit the above
    GitLab Workhorse setting as needed.
 

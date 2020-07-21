@@ -26,11 +26,12 @@ describe('Ref selector component', () => {
   let tagsApiCallSpy;
   let commitApiCallSpy;
 
-  const createComponent = () => {
+  const createComponent = (props = {}) => {
     wrapper = mount(RefSelector, {
       propsData: {
         projectId,
         value: '',
+        ...props,
       },
       listeners: {
         // simulate a parent component v-model binding
@@ -163,6 +164,38 @@ describe('Ref selector component', () => {
   });
 
   describe('post-initialization behavior', () => {
+    describe('when a ref is pre-selected', () => {
+      const preselectedRef = fixtures.branches[0].name;
+
+      beforeEach(() => {
+        createComponent({ value: preselectedRef });
+
+        return waitForRequests();
+      });
+
+      it('renders the pre-selected ref name', () => {
+        expect(findButtonContent().text()).toBe(preselectedRef);
+      });
+    });
+
+    describe('when the selected ref is updated by the parent component', () => {
+      const updatedRef = fixtures.branches[0].name;
+
+      beforeEach(() => {
+        createComponent();
+
+        return waitForRequests();
+      });
+
+      it('renders the updated ref name', () => {
+        wrapper.setProps({ value: updatedRef });
+
+        return localVue.nextTick().then(() => {
+          expect(findButtonContent().text()).toBe(updatedRef);
+        });
+      });
+    });
+
     describe('when the search query is updated', () => {
       beforeEach(() => {
         createComponent();

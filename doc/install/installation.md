@@ -200,7 +200,8 @@ needs to be installed.
 sudo apt-get install -y graphicsmagick
 ```
 
-**Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/12754) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
+NOTE: **Note:**
+In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/12754) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
 
 ```shell
 sudo apt-get install -y postfix
@@ -219,8 +220,9 @@ sudo apt-get install -y libimage-exiftool-perl
 
 The Ruby interpreter is required to run GitLab.
 
-**Note:** The current supported Ruby (MRI) version is 2.6.x. GitLab 12.2
-  dropped support for Ruby 2.5.x.
+NOTE: **Note:**
+The current supported Ruby (MRI) version is 2.6.x. GitLab 12.2
+dropped support for Ruby 2.5.x.
 
 The use of Ruby version managers such as [RVM](https://rvm.io/), [rbenv](https://github.com/rbenv/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab
 in production, frequently leads to hard to diagnose problems. Version managers
@@ -812,7 +814,8 @@ If you intend to enable GitLab Pages, there is a separate NGINX config you need
 to use. Read all about the needed configuration at the
 [GitLab Pages administration guide](../administration/pages/index.md).
 
-**Note:** If you want to use HTTPS, replace the `gitlab` NGINX config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
+NOTE: **Note:**
+If you want to use HTTPS, replace the `gitlab` NGINX config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
 ### Test Configuration
 

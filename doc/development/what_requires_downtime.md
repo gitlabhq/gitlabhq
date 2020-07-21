@@ -103,7 +103,8 @@ end
 This will take care of renaming the column, ensuring data stays in sync, copying
 over indexes and foreign keys, etc.
 
-**NOTE:** if a column contains 1 or more indexes that do not contain the name of
+NOTE: **Note:**
+If a column contains 1 or more indexes that do not contain the name of
 the original column, the above procedure will fail. In this case you will first
 need to rename these indexes.
 

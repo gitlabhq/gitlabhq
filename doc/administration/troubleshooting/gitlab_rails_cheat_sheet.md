@@ -248,7 +248,8 @@ end
 
 A Projects Wiki can be recreated by
 
-**Note:** This is a destructive operation, the Wiki will be empty
+NOTE: **Note:**
+This is a destructive operation, the Wiki will be empty.
 
 ```ruby
 p = Project.find_by_full_path('<username-or-group>/<project-name>')  ### enter your projects path

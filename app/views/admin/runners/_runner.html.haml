@@ -66,7 +66,7 @@
     .btn-group.table-action-buttons
       .btn-group
         = link_to admin_runner_path(runner), class: 'btn btn-default has-tooltip', title: _('Edit'), ref: 'tooltip', aria: { label: _('Edit') }, data: { placement: 'top', container: 'body'} do
-          = icon('pencil')
+          = sprite_icon('pencil', size: 16)
       .btn-group
         - if runner.active?
           = link_to [:pause, :admin, runner], method: :get, class: 'btn btn-default has-tooltip', title: _('Pause'), ref: 'tooltip', aria: { label: _('Pause') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
