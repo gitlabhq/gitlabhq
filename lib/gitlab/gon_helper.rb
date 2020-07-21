@@ -47,6 +47,7 @@ module Gitlab
       push_frontend_feature_flag(:monaco_ci, default_enabled: false)
       push_frontend_feature_flag(:snippets_edit_vue, default_enabled: false)
       push_frontend_feature_flag(:webperf_experiment, default_enabled: false)
+      push_frontend_feature_flag(:snippets_binary_blob, default_enabled: false)
     end
 
     # Exposes the state of a feature flag to the frontend code.

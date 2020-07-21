@@ -214,7 +214,7 @@ gem 're2', '~> 1.2.0'
 gem 'version_sorter', '~> 2.2.4'
 
 # Export Ruby Regex to Javascript
-gem 'js_regex', '~> 3.1'
+gem 'js_regex', '~> 3.4'
 
 # User agent parsing
 gem 'device_detector'

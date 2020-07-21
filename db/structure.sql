@@ -10918,6 +10918,7 @@ CREATE TABLE public.custom_emoji (
     updated_at timestamp with time zone NOT NULL,
     name text NOT NULL,
     file text NOT NULL,
+    external boolean DEFAULT true NOT NULL,
     CONSTRAINT check_8c586dd507 CHECK ((char_length(name) <= 36)),
     CONSTRAINT check_dd5d60f1fb CHECK ((char_length(file) <= 255))
 );
@@ -23998,5 +23999,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200718040100
 20200718040200
 20200718040300
+20200720154123
 \.
 

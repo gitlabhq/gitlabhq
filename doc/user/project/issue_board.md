@@ -324,8 +324,9 @@ As in other list types, click the trash icon to remove a list.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11403) in GitLab 12.7
 
-You can set Work In Progress (WIP) limits per issues list. When a limit is set, the list's header
-shows the number of issues in the list and the soft limit of issues.
+You can set a Work In Progress (WIP) limit for each issue list on an issue board. When a limit is
+set, the list's header shows the number of issues in the list and the soft limit of issues.
+You cannot set a WIP limit on the default lists (**Open** and **Closed**).
 
 Examples:
 

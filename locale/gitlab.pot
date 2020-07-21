@@ -21387,9 +21387,6 @@ msgstr ""
 msgid "ServerlessURL|Copy URL"
 msgstr ""
 
-msgid "Serverless| In order to start using functions as a service, you must first install Knative on your Kubernetes cluster."
-msgstr ""
-
 msgid "Serverless|Getting started with serverless"
 msgstr ""
 
@@ -21397,6 +21394,9 @@ msgid "Serverless|Help shape the future of Serverless at GitLab"
 msgstr ""
 
 msgid "Serverless|If you believe none of these apply, please check back later as the function data may be in the process of becoming available."
+msgstr ""
+
+msgid "Serverless|In order to start using functions as a service, you must first install Knative on your Kubernetes cluster. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "Serverless|Install Knative"

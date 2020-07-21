@@ -1,40 +1,38 @@
 <script>
+import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { mapState } from 'vuex';
+
 export default {
-  props: {
-    clustersPath: {
-      type: String,
-      required: true,
-    },
-    helpPath: {
-      type: String,
-      required: true,
-    },
+  components: {
+    GlEmptyState,
+    GlLink,
+    GlSprintf,
+  },
+  computed: {
+    ...mapState(['clustersPath', 'emptyImagePath', 'helpPath']),
   },
 };
 </script>
 
 <template>
-  <div class="row empty-state js-empty-state">
-    <div class="col-12">
-      <div class="text-content">
-        <h4 class="state-title text-center">
-          {{ s__('Serverless|Getting started with serverless') }}
-        </h4>
-        <p class="state-description">
-          {{
-            s__(`Serverless| In order to start using functions as a service,
-                 you must first install Knative on your Kubernetes cluster.`)
-          }}
-
-          <a :href="helpPath"> {{ __('More information') }} </a>
-        </p>
-
-        <div class="text-center">
-          <a :href="clustersPath" class="btn btn-success">
-            {{ s__('Serverless|Install Knative') }}
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <gl-empty-state
+    :svg-path="emptyImagePath"
+    :title="s__('Serverless|Getting started with serverless')"
+    :primary-button-link="clustersPath"
+    :primary-button-text="s__('Serverless|Install Knative')"
+  >
+    <template #description>
+      <gl-sprintf
+        :message="
+          s__(
+            'Serverless|In order to start using functions as a service, you must first install Knative on your Kubernetes cluster. %{linkStart}More information%{linkEnd}',
+          )
+        "
+      >
+        <template #link="{ content }">
+          <gl-link :href="helpPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </template>
+  </gl-empty-state>
 </template>

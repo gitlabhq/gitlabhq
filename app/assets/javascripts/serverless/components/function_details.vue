@@ -23,14 +23,6 @@ export default {
       required: false,
       default: false,
     },
-    clustersPath: {
-      type: String,
-      required: true,
-    },
-    helpPath: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
@@ -96,8 +88,6 @@ export default {
     <area-chart v-if="hasPrometheusData" :graph-data="graphData" :container-width="elWidth" />
     <missing-prometheus
       v-if="!hasPrometheus || hasPrometheusMissingData"
-      :help-path="helpPath"
-      :clusters-path="clustersPath"
       :missing-data="hasPrometheusMissingData"
     />
   </section>

@@ -6,6 +6,9 @@ import { createStore } from './store';
 export default class Serverless {
   constructor() {
     if (document.querySelector('.js-serverless-function-details-page') != null) {
+      const entryPointData = document.querySelector('.js-serverless-function-details-page').dataset;
+      const store = createStore(entryPointData);
+
       const {
         serviceName,
         serviceDescription,
@@ -15,9 +18,7 @@ export default class Serverless {
         servicePodcount,
         serviceMetricsUrl,
         prometheus,
-        clustersPath,
-        helpPath,
-      } = document.querySelector('.js-serverless-function-details-page').dataset;
+      } = entryPointData;
       const el = document.querySelector('#js-serverless-function-details');
 
       const service = {
@@ -32,35 +33,26 @@ export default class Serverless {
 
       this.functionDetails = new Vue({
         el,
-        store: createStore(),
+        store,
         render(createElement) {
           return createElement(FunctionDetails, {
             props: {
               func: service,
               hasPrometheus: prometheus !== undefined,
-              clustersPath,
-              helpPath,
             },
           });
         },
       });
     } else {
-      const { statusPath, clustersPath, helpPath } = document.querySelector(
-        '.js-serverless-functions-page',
-      ).dataset;
+      const entryPointData = document.querySelector('.js-serverless-functions-page').dataset;
+      const store = createStore(entryPointData);
 
       const el = document.querySelector('#js-serverless-functions');
       this.functions = new Vue({
         el,
-        store: createStore(),
+        store,
         render(createElement) {
-          return createElement(Functions, {
-            props: {
-              clustersPath,
-              helpPath,
-              statusPath,
-            },
-          });
+          return createElement(Functions);
         },
       });
     }

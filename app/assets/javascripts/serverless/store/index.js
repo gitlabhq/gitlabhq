@@ -7,12 +7,12 @@ import createState from './state';
 
 Vue.use(Vuex);
 
-export const createStore = () =>
+export const createStore = (entryPointData = {}) =>
   new Vuex.Store({
     actions,
     getters,
     mutations,
-    state: createState(),
+    state: createState(entryPointData),
   });
 
-export default createStore();
+export default createStore;

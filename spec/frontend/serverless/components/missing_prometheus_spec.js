@@ -1,25 +1,23 @@
+import { createStore } from '~/serverless/store';
 import { GlDeprecatedButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import missingPrometheusComponent from '~/serverless/components/missing_prometheus.vue';
 
-const createComponent = missingData =>
-  shallowMount(missingPrometheusComponent, {
-    propsData: {
-      clustersPath: '/clusters',
-      helpPath: '/help',
-      missingData,
-    },
-  });
-
 describe('missingPrometheusComponent', () => {
   let wrapper;
+
+  const createComponent = missingData => {
+    const store = createStore({ clustersPath: '/clusters', helpPath: '/help' });
+
+    wrapper = shallowMount(missingPrometheusComponent, { store, propsData: { missingData } });
+  };
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   it('should render missing prometheus message', () => {
-    wrapper = createComponent(false);
+    createComponent(false);
     const { vm } = wrapper;
 
     expect(vm.$el.querySelector('.state-description').innerHTML.trim()).toContain(
@@ -30,7 +28,7 @@ describe('missingPrometheusComponent', () => {
   });
 
   it('should render no prometheus data message', () => {
-    wrapper = createComponent(true);
+    createComponent(true);
     const { vm } = wrapper;
 
     expect(vm.$el.querySelector('.state-description').innerHTML.trim()).toContain(

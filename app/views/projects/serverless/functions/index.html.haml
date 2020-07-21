@@ -7,7 +7,8 @@
 .serverless-functions-page.js-serverless-functions-page{ data: { status_path: status_path,
   installed: @installed,
   clusters_path: clusters_path,
-  help_path: help_page_path('user/project/clusters/serverless/index') } }
+  help_path: help_page_path('user/project/clusters/serverless/index'),
+  empty_image_path: image_path('illustrations/empty-state/empty-serverless-lg.svg') } }
 
 %div{ class: [('limit-container-width' unless fluid_layout)] }
   .js-serverless-survey-banner{ data: { user_name: current_user.name, user_email: current_user.email } }
@@ -15,5 +16,5 @@
   .js-serverless-functions-notice
     .flash-container
 
-  .top-area.adjust.d-flex.justify-content-center
+  .top-area.adjust.d-flex.justify-content-center.gl-border-none
     .serverless-functions-table#js-serverless-functions
