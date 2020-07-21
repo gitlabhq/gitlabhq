@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in test coverage spec
-merge_request: 32134
-author: Rajendra Kadam
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add initial custom HTML renderer to the Static Site Editor to prevent editing in WYSIWYG mode
-merge_request: 36250
-author:
-type: added

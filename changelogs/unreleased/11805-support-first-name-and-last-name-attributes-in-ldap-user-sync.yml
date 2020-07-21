@@ -1,5 +1,0 @@
----
-title: Support first_name and last_name attributes in LDAP user sync
-merge_request: 29542
-author:
-type: added

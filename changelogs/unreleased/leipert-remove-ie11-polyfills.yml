@@ -1,5 +1,0 @@
----
-title: Remove Internet Explorer 11 specific polyfills
-merge_request: 36830
-author:
-type: removed

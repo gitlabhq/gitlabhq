@@ -1,5 +1,0 @@
----
-title: Add email and email_verified claims to OAuth ID token
-merge_request: 35468
-author: André Hänsel
-type: fixed

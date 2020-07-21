@@ -1,5 +1,0 @@
----
-title: Fix pagination for resource milestone events api
-merge_request: 33845
-author:
-type: fixed

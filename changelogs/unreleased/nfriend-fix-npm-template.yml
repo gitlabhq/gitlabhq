@@ -1,5 +1,0 @@
----
-title: Remove hardcoded reference to gitlab.com in NPM .gitlab-ci.yml template
-merge_request: 36124
-author:
-type: fixed

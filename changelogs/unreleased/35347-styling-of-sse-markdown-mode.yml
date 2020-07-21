@@ -1,5 +1,0 @@
----
-title: Update the static site editor's markdown mode text to monospace to better reflect a code-editing experience
-merge_request: 35347
-author: Derek Knox
-type: changed

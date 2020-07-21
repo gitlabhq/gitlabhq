@@ -1,5 +1,0 @@
----
-title: Validate the existing not null constraints on columns for ci_job_artifacts, lfs_objects, and uploads tables.
-merge_request: 34568
-author:
-type: other

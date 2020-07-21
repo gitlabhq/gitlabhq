@@ -1,5 +1,0 @@
----
-title: Enable BulkInsertSafe on Ci::BuildNeed
-merge_request: 36815
-author:
-type: performance

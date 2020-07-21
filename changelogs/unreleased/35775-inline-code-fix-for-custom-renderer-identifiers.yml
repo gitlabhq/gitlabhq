@@ -1,5 +1,0 @@
----
-title: Fix unique case where static site editor's custom renderer for identifier syntax didn't robustly handle inline code
-merge_request: 35775
-author: Derek Knox
-type: fixed

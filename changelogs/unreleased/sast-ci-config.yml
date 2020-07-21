@@ -1,5 +1,0 @@
----
-title: Implement GraphQL query to generate JSON for SAST config UI
-merge_request: 35397
-author:
-type: added

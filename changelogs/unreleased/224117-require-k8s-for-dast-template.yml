@@ -1,5 +1,0 @@
----
-title: Only run DAST job if Kubernetes active
-merge_request: 35259
-author:
-type: fixed

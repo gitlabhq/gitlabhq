@@ -1,5 +1,0 @@
----
-title: 'MR diff migration: perform I/O outside of database transaction'
-merge_request: 35734
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Ensure to run unassign issuables worker when not in a transaction
-merge_request: 36680
-author:
-type: fixed

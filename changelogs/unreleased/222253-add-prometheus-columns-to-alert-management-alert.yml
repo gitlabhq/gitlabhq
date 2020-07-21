@@ -1,5 +1,0 @@
----
-title: Add prometheus_alert_id and environment_id to Alert management alerts
-merge_request: 34995
-author:
-type: added

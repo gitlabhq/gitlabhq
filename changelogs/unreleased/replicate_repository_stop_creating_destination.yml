@@ -1,5 +1,0 @@
----
-title: Use snapshot transfers for repository shard moves when possible
-merge_request: 34113
-author:
-type: performance

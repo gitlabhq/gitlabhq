@@ -1,6 +1,0 @@
----
-title: Expands Jira integration to allow viewing and searching a list of of Jira issues
-  directly within GitLab
-merge_request: 36435
-author:
-type: added

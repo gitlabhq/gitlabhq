@@ -1,5 +1,0 @@
----
-title: Fix Gitaly duration tracking of RefService RPCs
-merge_request: 34904
-author:
-type: other

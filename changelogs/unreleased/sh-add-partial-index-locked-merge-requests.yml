@@ -1,5 +1,0 @@
----
-title: Add partial index on locked merge requets
-merge_request: 34127
-author:
-type: performance

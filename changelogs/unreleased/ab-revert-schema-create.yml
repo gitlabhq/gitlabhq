@@ -1,5 +1,0 @@
----
-title: Drop partitions_dynamic schema if it exists
-merge_request: 35426
-author:
-type: other

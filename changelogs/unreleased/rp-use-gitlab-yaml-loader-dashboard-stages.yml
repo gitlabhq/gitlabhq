@@ -1,5 +1,0 @@
----
-title: Display error if metrics dashboard YAML is too large
-merge_request: 34834
-author:
-type: changed

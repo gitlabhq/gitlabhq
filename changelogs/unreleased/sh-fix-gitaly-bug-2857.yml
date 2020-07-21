@@ -1,5 +1,0 @@
----
-title: Fix 500 errors with filenames that contain glob characters
-merge_request: 34864
-author:
-type: fixed

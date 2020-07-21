@@ -1,5 +1,0 @@
----
-title: Restrict alert assignee user search to current project in alert management details
-merge_request: 34649
-author:
-type: fixed

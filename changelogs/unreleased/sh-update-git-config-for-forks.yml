@@ -1,5 +1,0 @@
----
-title: Ensure .git/config is updated for forks
-merge_request: 35305
-author:
-type: fixed

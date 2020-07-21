@@ -1,5 +1,0 @@
----
-title: Fix leaky constant issue in task completion status spec
-merge_request: 32043
-author: Rajendra Kadam
-type: fixed

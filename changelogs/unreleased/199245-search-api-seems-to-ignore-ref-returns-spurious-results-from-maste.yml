@@ -1,5 +1,0 @@
----
-title: Fix incorrect commit search results returned when searching with ref
-merge_request: 33216
-author:
-type: fixed

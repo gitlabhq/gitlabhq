@@ -1,5 +1,0 @@
----
-title: Hid copy contents button when blob has rendering error
-merge_request: 32632
-author:
-type: fixed

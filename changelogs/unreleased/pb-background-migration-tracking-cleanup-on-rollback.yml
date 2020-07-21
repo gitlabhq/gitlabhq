@@ -1,5 +1,0 @@
----
-title: Delete tracking records on partitioning migration rollback
-merge_request: 36743
-author:
-type: fixed

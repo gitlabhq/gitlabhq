@@ -1,5 +1,0 @@
----
-title: Move profiles/keys#get_keys to users#ssh_keys
-merge_request: 35507
-author: Takuya Noguchi
-type: other

@@ -1,5 +1,0 @@
----
-title: Avoid updating snippet content when snippet_files content is not present
-merge_request: 34865
-author:
-type: fixed

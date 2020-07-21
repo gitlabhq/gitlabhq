@@ -1,5 +1,0 @@
----
-title: Fix for metrics creation when saving MR
-merge_request: 32668
-author:
-type: fixed

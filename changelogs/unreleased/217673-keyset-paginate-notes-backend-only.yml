@@ -1,5 +1,0 @@
----
-title: Paginate the notes incremental fetch endpoint
-merge_request: 34628
-author:
-type: performance

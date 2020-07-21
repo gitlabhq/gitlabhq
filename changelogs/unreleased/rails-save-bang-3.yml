@@ -1,5 +1,0 @@
----
-title: Refactor projects controllers specs to fix SaveBang Cop
-merge_request: 36920
-author: Rajendra Kadam
-type: fixed
