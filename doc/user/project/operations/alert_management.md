@@ -225,6 +225,24 @@ The following actions will result in a system note:
 
 ![Alert Management Details View System Notes](img/alert_detail_system_notes_v13_1.png)
 
+### Create a To-Do from an Alert
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
+
+You can manually create [To-Do list items](../../todos.md) for yourself from the
+Alert details screen, and view them later on your **To-Do List**. To add a To-Do:
+
+1. To display the list of current alerts, click
+   **{cloud-gear}** **Operations > Alerts**.
+1. Select your desired alert to display its **Alert Management Details View**.
+1. Click the **Add a To-Do** button in the right sidebar:
+
+   ![Alert Management Details Add A To Do](img/alert_detail_add_todo_v13_1.png)
+
+Click the **To-Do** **{todo-done}** in the navigation bar to view your current To-Do list.
+
+![Alert Management Details Added to Do](img/alert_detail_added_todo_v13_1.png)
+
 ### View an Alert's metrics data
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.2.

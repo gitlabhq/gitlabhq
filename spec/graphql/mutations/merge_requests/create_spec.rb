@@ -22,7 +22,8 @@ RSpec.describe Mutations::MergeRequests::Create do
         title: title,
         source_branch: source_branch,
         target_branch: target_branch,
-        description: description
+        description: description,
+        labels: labels
       )
     end
 
@@ -30,6 +31,7 @@ RSpec.describe Mutations::MergeRequests::Create do
     let(:source_branch) { 'feature' }
     let(:target_branch) { 'master' }
     let(:description) { nil }
+    let(:labels) { nil }
 
     let(:mutated_merge_request) { subject[:merge_request] }
 
@@ -66,6 +68,15 @@ RSpec.describe Mutations::MergeRequests::Create do
 
         it 'returns a new merge request with a description' do
           expect(mutated_merge_request.description).to eq(description)
+          expect(subject[:errors]).to be_empty
+        end
+      end
+
+      context 'when optional labels field is set' do
+        let(:labels) { %w[label-1 label-2] }
+
+        it 'returns a new merge request with labels' do
+          expect(mutated_merge_request.labels.map(&:title)).to eq(labels)
           expect(subject[:errors]).to be_empty
         end
       end

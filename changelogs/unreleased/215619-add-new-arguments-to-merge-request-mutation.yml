@@ -1,0 +1,5 @@
+---
+title: Allow labels argument for merge request create mutation
+merge_request: 32637
+author:
+type: added

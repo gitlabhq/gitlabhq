@@ -26,7 +26,7 @@ RSpec.describe 'User browses a job', :js do
 
     # scroll to the top of the page first
     execute_script "window.scrollTo(0,0)"
-    accept_confirm { find('.js-erase-link').click }
+    accept_confirm { find('[data-testid="job-log-erase-link"]').click }
 
     expect(page).to have_no_css('.artifacts')
     expect(build).not_to have_trace

@@ -12,7 +12,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MilestoneCombobox from '~/milestones/project_milestone_combobox.vue';
 
 export default {
-  name: 'ReleaseEditApp',
+  name: 'ReleaseEditNewApp',
   components: {
     GlFormInput,
     GlFormGroup,

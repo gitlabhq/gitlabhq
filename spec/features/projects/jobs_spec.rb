@@ -282,7 +282,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
           href = new_project_issue_path(project, options)
 
           page.within('.build-sidebar') do
-            expect(find('.js-new-issue')['href']).to include(href)
+            expect(find('[data-testid="job-new-issue"]')['href']).to include(href)
           end
         end
       end
@@ -425,7 +425,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it do
         wait_for_all_requests
-        expect(page).to have_css('.js-raw-link-controller')
+        expect(page).to have_css('[data-testid="job-raw-link-controller"]')
       end
     end
 
@@ -875,7 +875,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
         wait_for_requests
 
-        page.within('.js-job-erased-block') do
+        page.within('[data-testid="job-erased-block"]') do
           expect(page).to have_content('Job has been erased')
         end
       end
@@ -888,7 +888,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
         wait_for_requests
 
-        expect(page).not_to have_css('.js-job-erased-block')
+        expect(page).not_to have_css('[data-testid="job-erased-block"]')
       end
     end
 
@@ -901,8 +901,8 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
         wait_for_requests
 
-        expect(page).to have_css('.js-job-sidebar.right-sidebar-collapsed', visible: false)
-        expect(page).not_to have_css('.js-job-sidebar.right-sidebar-expanded', visible: false)
+        expect(page).to have_css('[data-testid="job-sidebar"].right-sidebar-collapsed', visible: false)
+        expect(page).not_to have_css('[data-testid="job-sidebar"].right-sidebar-expanded', visible: false)
       end
     end
 
@@ -913,8 +913,8 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
         wait_for_requests
 
-        expect(page).to have_css('.js-job-sidebar.right-sidebar-expanded')
-        expect(page).not_to have_css('.js-job-sidebar.right-sidebar-collapsed')
+        expect(page).to have_css('[data-testid="job-sidebar"].right-sidebar-expanded')
+        expect(page).not_to have_css('[data-testid="job-sidebar"].right-sidebar-collapsed')
       end
     end
 
@@ -929,7 +929,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
 
         it 'renders message about job being stuck because no runners are active' do
-          expect(page).to have_css('.js-stuck-no-active-runner')
+          expect(page).to have_selector('[data-testid="job-stuck-no-active-runners"]')
           expect(page).to have_content("This job is stuck because you don't have any active runners that can run this job.")
         end
       end
@@ -939,7 +939,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner, tag_list: %w(docker linux)) }
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
-          expect(page).to have_css('.js-stuck-with-tags')
+          expect(page).to have_selector('[data-testid="job-stuck-with-tags"')
           expect(page).to have_content("This job is stuck because you don't have any active runners online or available with any of these tags assigned to them:")
         end
       end
@@ -949,7 +949,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner, tag_list: %w(docker linux)) }
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
-          expect(page).to have_css('.js-stuck-with-tags')
+          expect(page).to have_selector('[data-testid="job-stuck-with-tags"')
           expect(page).to have_content("This job is stuck because you don't have any active runners online or available with any of these tags assigned to them:")
         end
       end
@@ -957,8 +957,8 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       context 'without any runners available' do
         let(:job) { create(:ci_build, :pending, pipeline: pipeline) }
 
-        it 'renders message about job being stuck because not runners are available' do
-          expect(page).to have_css('.js-stuck-no-active-runner')
+        it 'renders message about job being stuck because no runners are available' do
+          expect(page).to have_selector('[data-testid="job-stuck-no-active-runners"]')
           expect(page).to have_content("This job is stuck because you don't have any active runners that can run this job.")
         end
       end
@@ -968,7 +968,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
 
         it 'renders message about job being stuck because runners are offline' do
-          expect(page).to have_css('.js-stuck-no-runners')
+          expect(page).to have_selector('[data-testid="job-stuck-no-runners"')
           expect(page).to have_content("This job is stuck because the project doesn't have any runners online assigned to it.")
         end
       end

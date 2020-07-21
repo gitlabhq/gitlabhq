@@ -290,8 +290,8 @@ because it’s friendly and easy to understand.
 When creating documentation, limit or avoid the use of the following verb
 tenses, words, and phrases:
 
-- Avoid jargon.
-- Avoid uncommon words.
+- Avoid jargon when possible, and when not possible, define the term or [link to a definition](#links-to-external-documentation).
+- Avoid uncommon words when a more-common alternative is possible, ensuring that content is accessible to more readers.
 - Don't write in the first person singular.
   (Tested in [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml).)
   - Instead of "I" or "me," use "we," "you," "us," or "one."

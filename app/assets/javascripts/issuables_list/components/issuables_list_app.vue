@@ -356,7 +356,13 @@ export default {
     </ul>
     <div v-else-if="issuables.length">
       <div v-if="isBulkEditing" class="issue px-3 py-3 border-bottom border-light">
-        <input type="checkbox" :checked="allIssuablesSelected" class="mr-2" @click="onSelectAll" />
+        <input
+          id="check-all-issues"
+          type="checkbox"
+          :checked="allIssuablesSelected"
+          class="mr-2"
+          @click="onSelectAll"
+        />
         <strong>{{ __('Select all') }}</strong>
       </div>
       <ul

@@ -100,7 +100,7 @@ export default {
 };
 </script>
 <template>
-  <div class="js-manual-vars-form col-12">
+  <div class="col-12" data-testid="manual-vars-form">
     <label>{{ s__('CiVariables|Variables') }}</label>
 
     <div class="ci-table">

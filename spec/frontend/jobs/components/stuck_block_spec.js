@@ -1,31 +1,50 @@
-import Vue from 'vue';
-import component from '~/jobs/components/stuck_block.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import { GlLink } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import StuckBlock from '~/jobs/components/stuck_block.vue';
 
 describe('Stuck Block Job component', () => {
-  const Component = Vue.extend(component);
-  let vm;
+  let wrapper;
 
   afterEach(() => {
-    vm.$destroy();
+    if (wrapper?.destroy) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
+
+  const createWrapper = props => {
+    wrapper = shallowMount(StuckBlock, {
+      propsData: {
+        ...props,
+      },
+    });
+  };
+
+  const tags = ['docker', 'gitlab-org'];
+
+  const findStuckNoActiveRunners = () =>
+    wrapper.find('[data-testid="job-stuck-no-active-runners"]');
+  const findStuckNoRunners = () => wrapper.find('[data-testid="job-stuck-no-runners"]');
+  const findStuckWithTags = () => wrapper.find('[data-testid="job-stuck-with-tags"]');
+  const findRunnerPathLink = () => wrapper.find(GlLink);
+  const findAllBadges = () => wrapper.findAll('[data-testid="badge"]');
 
   describe('with no runners for project', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
+      createWrapper({
         hasNoRunnersForProject: true,
         runnersPath: '/root/project/runners#js-runners-settings',
       });
     });
 
     it('renders only information about project not having runners', () => {
-      expect(vm.$el.querySelector('.js-stuck-no-runners')).not.toBeNull();
-      expect(vm.$el.querySelector('.js-stuck-with-tags')).toBeNull();
-      expect(vm.$el.querySelector('.js-stuck-no-active-runner')).toBeNull();
+      expect(findStuckNoRunners().exists()).toBe(true);
+      expect(findStuckWithTags().exists()).toBe(false);
+      expect(findStuckNoActiveRunners().exists()).toBe(false);
     });
 
     it('renders link to runners page', () => {
-      expect(vm.$el.querySelector('.js-runners-path').getAttribute('href')).toEqual(
+      expect(findRunnerPathLink().attributes('href')).toBe(
         '/root/project/runners#js-runners-settings',
       );
     });
@@ -33,26 +52,27 @@ describe('Stuck Block Job component', () => {
 
   describe('with tags', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
+      createWrapper({
         hasNoRunnersForProject: false,
-        tags: ['docker', 'gitlab-org'],
+        tags,
         runnersPath: '/root/project/runners#js-runners-settings',
       });
     });
 
     it('renders information about the tags not being set', () => {
-      expect(vm.$el.querySelector('.js-stuck-no-runners')).toBeNull();
-      expect(vm.$el.querySelector('.js-stuck-with-tags')).not.toBeNull();
-      expect(vm.$el.querySelector('.js-stuck-no-active-runner')).toBeNull();
+      expect(findStuckWithTags().exists()).toBe(true);
+      expect(findStuckNoActiveRunners().exists()).toBe(false);
+      expect(findStuckNoRunners().exists()).toBe(false);
     });
 
     it('renders tags', () => {
-      expect(vm.$el.textContent).toContain('docker');
-      expect(vm.$el.textContent).toContain('gitlab-org');
+      findAllBadges().wrappers.forEach((badgeElt, index) => {
+        return expect(badgeElt.text()).toBe(tags[index]);
+      });
     });
 
     it('renders link to runners page', () => {
-      expect(vm.$el.querySelector('.js-runners-path').getAttribute('href')).toEqual(
+      expect(findRunnerPathLink().attributes('href')).toBe(
         '/root/project/runners#js-runners-settings',
       );
     });
@@ -60,20 +80,20 @@ describe('Stuck Block Job component', () => {
 
   describe('without active runners', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
+      createWrapper({
         hasNoRunnersForProject: false,
         runnersPath: '/root/project/runners#js-runners-settings',
       });
     });
 
     it('renders information about project not having runners', () => {
-      expect(vm.$el.querySelector('.js-stuck-no-runners')).toBeNull();
-      expect(vm.$el.querySelector('.js-stuck-with-tags')).toBeNull();
-      expect(vm.$el.querySelector('.js-stuck-no-active-runner')).not.toBeNull();
+      expect(findStuckNoActiveRunners().exists()).toBe(true);
+      expect(findStuckNoRunners().exists()).toBe(false);
+      expect(findStuckWithTags().exists()).toBe(false);
     });
 
     it('renders link to runners page', () => {
-      expect(vm.$el.querySelector('.js-runners-path').getAttribute('href')).toEqual(
+      expect(findRunnerPathLink().attributes('href')).toBe(
         '/root/project/runners#js-runners-settings',
       );
     });

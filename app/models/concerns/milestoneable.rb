@@ -15,7 +15,7 @@ module Milestoneable
     validate :milestone_is_valid
 
     scope :of_milestones, ->(ids) { where(milestone_id: ids) }
-    scope :any_milestone, -> { where('milestone_id IS NOT NULL') }
+    scope :any_milestone, -> { where.not(milestone_id: nil) }
     scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
     scope :without_particular_milestone, ->(title) { left_outer_joins(:milestone).where("milestones.title != ? OR milestone_id IS NULL", title) }
     scope :any_release, -> { joins_milestone_releases }

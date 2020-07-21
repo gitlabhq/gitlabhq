@@ -114,7 +114,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 ```
 
 The included template will create a `license_scanning` job in your CI/CD pipeline
@@ -175,7 +175,7 @@ For example:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 variables:
   LICENSE_MANAGEMENT_SETUP_CMD: sh my-custom-install-script.sh
@@ -196,7 +196,7 @@ after the template inclusion and specify any additional keys under it. For examp
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -211,7 +211,7 @@ Feel free to use it for the customization of Maven execution. For example:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -239,7 +239,7 @@ or internally trusted certificate. For example:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -262,7 +262,7 @@ by setting the `LM_PYTHON_VERSION` environment variable to `2`.
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -282,7 +282,7 @@ to inject a custom [`pip.conf`](https://pip.pypa.io/en/stable/user_guide/#config
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -503,7 +503,7 @@ environment variable. For example:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -560,7 +560,7 @@ Should be changed to:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   artifacts:
@@ -625,7 +625,7 @@ the License Compliance Docker image hosted on your local Docker container regist
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   image:
@@ -742,7 +742,7 @@ project's `.gitlab-ci.yml` file.
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:

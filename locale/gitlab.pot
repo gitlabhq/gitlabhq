@@ -13836,9 +13836,6 @@ msgstr ""
 msgid "LicenseCompliance|Allowed"
 msgstr ""
 
-msgid "LicenseCompliance|Cancel"
-msgstr ""
-
 msgid "LicenseCompliance|Denied"
 msgstr ""
 
@@ -13909,9 +13906,6 @@ msgid "LicenseCompliance|Remove license"
 msgstr ""
 
 msgid "LicenseCompliance|Remove license?"
-msgstr ""
-
-msgid "LicenseCompliance|Submit"
 msgstr ""
 
 msgid "LicenseCompliance|There are currently no approved or blacklisted licenses in this project."
@@ -22751,6 +22745,9 @@ msgid "Subject Key Identifier:"
 msgstr ""
 
 msgid "Subkeys"
+msgstr ""
+
+msgid "Submit"
 msgstr ""
 
 msgid "Submit %{humanized_resource_name}"

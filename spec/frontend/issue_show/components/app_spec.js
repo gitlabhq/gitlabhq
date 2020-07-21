@@ -8,6 +8,7 @@ import '~/behaviors/markdown/render_gfm';
 import IssuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
 import { initialRequest, secondRequest } from '../mock_data';
+import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
@@ -22,6 +23,8 @@ const zoomMeetingUrl = 'https://gitlab.zoom.us/j/95919234811';
 const publishedIncidentUrl = 'https://status.com/';
 
 describe('Issuable output', () => {
+  useMockIntersectionObserver();
+
   let mock;
   let realtimeRequestCount = 0;
   let wrapper;
@@ -44,11 +47,6 @@ describe('Issuable output', () => {
         <span id="task_status"></span>
       </div>
     `);
-
-    window.IntersectionObserver = class {
-      disconnect = jest.fn();
-      observe = jest.fn();
-    };
 
     mock = new MockAdapter(axios);
     mock
@@ -84,7 +82,6 @@ describe('Issuable output', () => {
   });
 
   afterEach(() => {
-    delete window.IntersectionObserver;
     mock.restore();
     realtimeRequestCount = 0;
 

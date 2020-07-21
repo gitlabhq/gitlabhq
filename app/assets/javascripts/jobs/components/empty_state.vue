@@ -71,9 +71,9 @@ export default {
 
     <div class="col-12">
       <div class="text-content">
-        <h4 class="js-job-empty-state-title text-center">{{ title }}</h4>
+        <h4 class="text-center" data-testid="job-empty-state-title">{{ title }}</h4>
 
-        <p v-if="content" class="js-job-empty-state-content">{{ content }}</p>
+        <p v-if="content" data-testid="job-empty-state-content">{{ content }}</p>
       </div>
       <manual-variables-form
         v-if="shouldRenderManualVariables"
@@ -85,7 +85,8 @@ export default {
           <gl-link
             :href="action.path"
             :data-method="action.method"
-            class="js-job-empty-state-action btn btn-primary"
+            class="btn btn-primary"
+            data-testid="job-empty-state-action"
             >{{ action.button_title }}</gl-link
           >
         </div>

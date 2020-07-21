@@ -4,7 +4,7 @@ group: APM
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Embedding Grafana charts
+# Embedding Grafana charts **(CORE)**
 
 Grafana metrics can be embedded in [GitLab Flavored Markdown](../../user/markdown.md).
 

@@ -7,7 +7,7 @@ Gitlab::Seeder.quiet do
   PersonalAccessToken.create!(
     user_id: User.find_by(username: 'root').id,
     name: "seeded-api-token",
-    scopes: ["api"],
+    scopes: Gitlab::Auth.all_available_scopes,
     token_digest: "/O0jfLERYT/L5gG8nfByQxqTj43TeLlRzOtJGTzRsbQ="
   )
 

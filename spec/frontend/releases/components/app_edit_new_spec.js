@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { mount } from '@vue/test-utils';
-import ReleaseEditApp from '~/releases/components/app_edit.vue';
+import ReleaseEditNewApp from '~/releases/components/app_edit_new.vue';
 import { release as originalRelease, milestones as originalMilestones } from '../mock_data';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { BACK_URL_PARAM } from '~/releases/constants';
@@ -9,7 +9,7 @@ import { merge } from 'lodash';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 
-describe('Release edit component', () => {
+describe('Release edit/new component', () => {
   let wrapper;
   let release;
   let actions;
@@ -57,7 +57,7 @@ describe('Release edit component', () => {
       ),
     );
 
-    wrapper = mount(ReleaseEditApp, {
+    wrapper = mount(ReleaseEditNewApp, {
       store,
       provide: {
         glFeatures: featureFlags,

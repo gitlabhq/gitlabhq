@@ -67,7 +67,7 @@ module Gitlab
       end
 
       def self.parallel_matrix_enabled?
-        ::Feature.enabled?(:ci_parallel_matrix_enabled, default_enabled: true)
+        ::Feature.enabled?(:ci_parallel_matrix_enabled)
       end
 
       def self.bulk_insert_on_create?(project)

@@ -843,15 +843,15 @@
     eslint-plugin-vue "^6.2.1"
     vue-eslint-parser "^7.0.0"
 
-"@gitlab/svgs@1.152.0":
-  version "1.152.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.152.0.tgz#663c9a5f073f59b66f4241ef2d3fea2205846905"
-  integrity sha512-daZHOBVAwjsU6n60IycanoO/JymfQ36vrr46OUdWjHdp0ATYrgh+01LcxiSNLdlyndIRqHWGtwmuilokM9q6Vg==
+"@gitlab/svgs@1.153.0":
+  version "1.153.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.153.0.tgz#79db0598382e6990d242f2e8dc0911903b1f558c"
+  integrity sha512-9letemutba300jT8BgxmYjUjMGDJifFFulPBNT4bxT+U2Ki+X+xs57Il3o/FNv5feJOPAlYS8Z/aEII8145g1g==
 
-"@gitlab/ui@17.34.0":
-  version "17.34.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-17.34.0.tgz#4f3708579d6822280c26e27b6055e29336be4871"
-  integrity sha512-g8mhdB8lOn7lFeWvWkEu5xqV/A0RZDfAMEU2aylLeInTCIrn2V638y80U4Kb2Suu78ji/rYgtjZRSmy8ZDvAQA==
+"@gitlab/ui@17.35.0":
+  version "17.35.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-17.35.0.tgz#dfbdae98dbc0e184c5d1bf0d1cd991f7aa915dcd"
+  integrity sha512-KvGOh5dPE+sCQKbvj4KlKtnmVOxP97K54Ibh9R6n4N37jAc71mlDInMXpNow1nf+7mAL6ca1cPknIkmuf2+B3g==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -863,6 +863,7 @@
     lodash "^4.17.14"
     portal-vue "^2.1.6"
     resize-observer-polyfill "^1.5.1"
+    sanitize-html "^1.22.0"
     url-search-params-polyfill "^5.0.0"
     vue-runtime-helpers "^1.1.2"
 

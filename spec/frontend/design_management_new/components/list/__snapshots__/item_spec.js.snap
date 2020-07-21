@@ -31,9 +31,7 @@ exports[`Design management list item component with no notes renders item with c
       </span>
     </div>
      
-    <gl-intersection-observer-stub
-      options="[object Object]"
-    >
+    <gl-intersection-observer-stub>
       <!---->
        
       <img
@@ -99,9 +97,7 @@ exports[`Design management list item component with no notes renders item with c
       </span>
     </div>
      
-    <gl-intersection-observer-stub
-      options="[object Object]"
-    >
+    <gl-intersection-observer-stub>
       <!---->
        
       <img
@@ -167,9 +163,7 @@ exports[`Design management list item component with no notes renders item with c
       </span>
     </div>
      
-    <gl-intersection-observer-stub
-      options="[object Object]"
-    >
+    <gl-intersection-observer-stub>
       <!---->
        
       <img
@@ -222,9 +216,7 @@ exports[`Design management list item component with no notes renders item with n
   >
     <!---->
      
-    <gl-intersection-observer-stub
-      options="[object Object]"
-    >
+    <gl-intersection-observer-stub>
       <!---->
        
       <img
@@ -277,9 +269,7 @@ exports[`Design management list item component with no notes renders loading spi
   >
     <!---->
      
-    <gl-intersection-observer-stub
-      options="[object Object]"
-    >
+    <gl-intersection-observer-stub>
       <gl-loading-icon-stub
         color="orange"
         label="Loading"
@@ -337,9 +327,7 @@ exports[`Design management list item component with notes renders item with mult
   >
     <!---->
      
-    <gl-intersection-observer-stub
-      options="[object Object]"
-    >
+    <gl-intersection-observer-stub>
       <!---->
        
       <img
@@ -409,9 +397,7 @@ exports[`Design management list item component with notes renders item with sing
   >
     <!---->
      
-    <gl-intersection-observer-stub
-      options="[object Object]"
-    >
+    <gl-intersection-observer-stub>
       <!---->
        
       <img

@@ -239,6 +239,7 @@ export default {
       <!-- Bulk edit checkbox -->
       <div v-if="isBulkEditing" class="gl-mr-3">
         <input
+          :id="`selected_issue_${issuable.id}`"
           :checked="selected"
           class="selected-issuable"
           type="checkbox"

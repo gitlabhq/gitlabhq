@@ -7463,6 +7463,11 @@ input MergeRequestCreateInput {
   description: String
 
   """
+  Labels of the merge request
+  """
+  labels: [String!]
+
+  """
   Project full path the merge request is associated with
   """
   projectPath: ID!

@@ -132,7 +132,7 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 
 - [Change your personal details](#change-your-personal-details)
 - [Change your company details](#change-your-company-details)
-- [Change the payment method](#change-payment-method)
+- [Change your payment method](#change-your-payment-method)
 - [Change the linked account](#change-the-linked-account)
 - [Change the associated namespace](#change-the-associated-namespace)
 - [Change customers portal account password](#change-customer-portal-account-password)
@@ -160,14 +160,31 @@ To change your company details, including company name and VAT number:
 1. Edit the company details.
 1. Click **Save changes**.
 
-### Change payment method
+### Change your payment method
 
-To change payment method or update credit card information:
+Purchases in the Customers Portal require a credit card on record as a payment method. You can add
+multiple credit cards to your account, so that purchases for different products are charged to the
+correct card.
+
+If you would like to use an alternative method to pay, please [contact our Sales
+team](https://about.gitlab.com/sales/).
+
+To change your payment method:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **My account** drop-down and click on **Payment methods**.
-1. **Edit** the existing payment method information or **Add new payment method**.
-1. Save changes.
+1. Select **My account > Payment methods**.
+1. **Edit** an existing payment method's information or **Add new payment method**.
+1. Click **Save Changes**.
+
+#### Set a default payment method
+
+Automatic renewal of a subscription is charged to your default payment method. To mark a payment
+method as the default:
+
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **My account > Payment methods**.
+1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
+1. Click **Save Changes**.
 
 ### Change the linked account
 

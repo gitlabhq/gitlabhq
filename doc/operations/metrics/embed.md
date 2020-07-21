@@ -4,7 +4,7 @@ group: APM
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Embedding metric charts within GitLab-flavored Markdown
+# Embedding metric charts within GitLab-flavored Markdown **(CORE)**
 
 You can display metrics charts within
 [GitLab Flavored Markdown](../../user/markdown.md#gitlab-flavored-markdown-gfm)

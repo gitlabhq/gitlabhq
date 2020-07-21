@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import ReleaseEditApp from './components/app_edit.vue';
+import ReleaseEditNewApp from './components/app_edit_new.vue';
 import createStore from './stores';
 import createDetailModule from './stores/modules/detail';
 
@@ -18,6 +18,6 @@ export default () => {
   return new Vue({
     el,
     store,
-    render: h => h(ReleaseEditApp),
+    render: h => h(ReleaseEditNewApp),
   });
 };

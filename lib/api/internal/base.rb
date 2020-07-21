@@ -67,7 +67,7 @@ module API
                                    "uploadpack.allowAnySHA1InWant=true"],
               gitaly: gitaly_payload(params[:action]),
               gl_console_messages: check_result.console_messages
-            }
+            }.merge!(actor.key_details)
 
             # Custom option for git-receive-pack command
 

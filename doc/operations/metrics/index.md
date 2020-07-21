@@ -4,7 +4,7 @@ group: APM
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Monitor metrics for your CI/CD environment
+# Monitor metrics for your CI/CD environment **(CORE)**
 
 After [configuring Prometheus for a cluster](../../user/project/integrations/prometheus.md),
 GitLab attempts to retrieve performance metrics for any [environment](../../ci/environments/index.md) with

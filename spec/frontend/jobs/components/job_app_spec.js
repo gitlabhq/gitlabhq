@@ -1,9 +1,16 @@
 import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { getJSONFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import JobApp from '~/jobs/components/job_app.vue';
+import Sidebar from '~/jobs/components/sidebar.vue';
+import StuckBlock from '~/jobs/components/stuck_block.vue';
+import UnmetPrerequisitesBlock from '~/jobs/components/unmet_prerequisites_block.vue';
+import EnvironmentsBlock from '~/jobs/components/environments_block.vue';
+import ErasedBlock from '~/jobs/components/erased_block.vue';
+import EmptyState from '~/jobs/components/empty_state.vue';
 import createStore from '~/jobs/store';
 import job from '../mock_data';
 import { TEST_HOST } from 'jest/helpers/test_constants';
@@ -55,6 +62,26 @@ describe('Job App', () => {
       .then(() => wrapper.vm.$nextTick());
   };
 
+  const findLoadingComponent = () => wrapper.find(GlLoadingIcon);
+  const findSidebar = () => wrapper.find(Sidebar);
+  const findJobContent = () => wrapper.find('[data-testid="job-content"');
+  const findStuckBlockComponent = () => wrapper.find(StuckBlock);
+  const findStuckBlockWithTags = () => wrapper.find('[data-testid="job-stuck-with-tags"');
+  const findStuckBlockNoActiveRunners = () =>
+    wrapper.find('[data-testid="job-stuck-no-active-runners"');
+  const findFailedJobComponent = () => wrapper.find(UnmetPrerequisitesBlock);
+  const findEnvironmentsBlockComponent = () => wrapper.find(EnvironmentsBlock);
+  const findErasedBlock = () => wrapper.find(ErasedBlock);
+  const findArchivedJob = () => wrapper.find('[data-testid="archived-job"]');
+  const findEmptyState = () => wrapper.find(EmptyState);
+  const findJobNewIssueLink = () => wrapper.find('[data-testid="job-new-issue"]');
+  const findJobEmptyStateTitle = () => wrapper.find('[data-testid="job-empty-state-title"]');
+  const findJobTraceScrollTop = () => wrapper.find('[data-testid="job-controller-scroll-top"]');
+  const findJobTraceScrollBottom = () =>
+    wrapper.find('[data-testid="job-controller-scroll-bottom"]');
+  const findJobTraceController = () => wrapper.find('[data-testid="job-raw-link-controller"]');
+  const findJobTraceEraseLink = () => wrapper.find('[data-testid="job-log-erase-link"]');
+
   beforeEach(() => {
     mock = new MockAdapter(axios);
     store = createStore();
@@ -72,9 +99,9 @@ describe('Job App', () => {
     });
 
     it('renders loading icon', () => {
-      expect(wrapper.find('.js-job-loading').exists()).toBe(true);
-      expect(wrapper.find('.js-job-sidebar').exists()).toBe(false);
-      expect(wrapper.find('.js-job-content').exists()).toBe(false);
+      expect(findLoadingComponent().exists()).toBe(true);
+      expect(findSidebar().exists()).toBe(false);
+      expect(findJobContent().exists()).toBe(false);
     });
   });
 
@@ -115,7 +142,7 @@ describe('Job App', () => {
         });
 
         it('should render new issue link', () => {
-          expect(wrapper.find('.js-new-issue').attributes('href')).toEqual(job.new_issue_path);
+          expect(findJobNewIssueLink().attributes('href')).toEqual(job.new_issue_path);
         });
       });
 
@@ -134,7 +161,7 @@ describe('Job App', () => {
     });
 
     describe('stuck block', () => {
-      describe('without active runners availabl', () => {
+      describe('without active runners available', () => {
         it('renders stuck block when there are no runners', () =>
           setupAndMount({
             jobData: {
@@ -153,8 +180,8 @@ describe('Job App', () => {
               tags: [],
             },
           }).then(() => {
-            expect(wrapper.find('.js-job-stuck').exists()).toBe(true);
-            expect(wrapper.find('.js-job-stuck .js-stuck-no-active-runner').exists()).toBe(true);
+            expect(findStuckBlockComponent().exists()).toBe(true);
+            expect(findStuckBlockNoActiveRunners().exists()).toBe(true);
           }));
       });
 
@@ -176,8 +203,8 @@ describe('Job App', () => {
               },
             },
           }).then(() => {
-            expect(wrapper.find('.js-job-stuck').text()).toContain(job.tags[0]);
-            expect(wrapper.find('.js-job-stuck .js-stuck-with-tags').exists()).toBe(true);
+            expect(findStuckBlockComponent().text()).toContain(job.tags[0]);
+            expect(findStuckBlockWithTags().exists()).toBe(true);
           }));
       });
 
@@ -199,8 +226,8 @@ describe('Job App', () => {
               },
             },
           }).then(() => {
-            expect(wrapper.find('.js-job-stuck').text()).toContain(job.tags[0]);
-            expect(wrapper.find('.js-job-stuck .js-stuck-with-tags').exists()).toBe(true);
+            expect(findStuckBlockComponent().text()).toContain(job.tags[0]);
+            expect(findStuckBlockWithTags().exists()).toBe(true);
           }));
       });
 
@@ -210,7 +237,7 @@ describe('Job App', () => {
             runners: { available: true },
           },
         }).then(() => {
-          expect(wrapper.find('.js-job-stuck').exists()).toBe(false);
+          expect(findStuckBlockComponent().exists()).toBe(false);
         }));
     });
 
@@ -239,7 +266,7 @@ describe('Job App', () => {
             tags: [],
           },
         }).then(() => {
-          expect(wrapper.find('.js-job-failed').exists()).toBe(true);
+          expect(findFailedJobComponent().exists()).toBe(true);
         }));
     });
 
@@ -255,12 +282,12 @@ describe('Job App', () => {
             },
           },
         }).then(() => {
-          expect(wrapper.find('.js-job-environment').exists()).toBe(true);
+          expect(findEnvironmentsBlockComponent().exists()).toBe(true);
         }));
 
       it('does not render environment block when job has environment', () =>
         setupAndMount().then(() => {
-          expect(wrapper.find('.js-job-environment').exists()).toBe(false);
+          expect(findEnvironmentsBlockComponent().exists()).toBe(false);
         }));
     });
 
@@ -275,7 +302,7 @@ describe('Job App', () => {
             erased_at: '2016-11-07T11:11:16.525Z',
           },
         }).then(() => {
-          expect(wrapper.find('.js-job-erased-block').exists()).toBe(true);
+          expect(findErasedBlock().exists()).toBe(true);
         }));
 
       it('does not render erased block when `erased` is false', () =>
@@ -284,7 +311,7 @@ describe('Job App', () => {
             erased_at: null,
           },
         }).then(() => {
-          expect(wrapper.find('.js-job-erased-block').exists()).toBe(false);
+          expect(findErasedBlock().exists()).toBe(false);
         }));
     });
 
@@ -313,7 +340,7 @@ describe('Job App', () => {
             },
           },
         }).then(() => {
-          expect(wrapper.find('.js-job-empty-state').exists()).toBe(true);
+          expect(findEmptyState().exists()).toBe(true);
         }));
 
       it('does not render empty state when job does not have trace but it is running', () =>
@@ -329,12 +356,12 @@ describe('Job App', () => {
             },
           },
         }).then(() => {
-          expect(wrapper.find('.js-job-empty-state').exists()).toBe(false);
+          expect(findEmptyState().exists()).toBe(false);
         }));
 
       it('does not render empty state when job has trace but it is not running', () =>
         setupAndMount({ jobData: { has_trace: true } }).then(() => {
-          expect(wrapper.find('.js-job-empty-state').exists()).toBe(false);
+          expect(findEmptyState().exists()).toBe(false);
         }));
 
       it('displays remaining time for a delayed job', () => {
@@ -345,9 +372,9 @@ describe('Job App', () => {
             () => new Date(delayedJobFixture.scheduled_at).getTime() - oneHourInMilliseconds,
           );
         return setupAndMount({ jobData: delayedJobFixture }).then(() => {
-          expect(wrapper.find('.js-job-empty-state').exists()).toBe(true);
+          expect(findEmptyState().exists()).toBe(true);
 
-          const title = wrapper.find('.js-job-empty-state-title').text();
+          const title = findJobEmptyStateTitle().text();
 
           expect(title).toEqual('This is a delayed job to run in 01:00:00');
         });
@@ -386,7 +413,7 @@ describe('Job App', () => {
     beforeEach(() => setupAndMount({ jobData: { archived: true } }));
 
     it('renders warning about job being archived', () => {
-      expect(wrapper.find('.js-archived-job ').exists()).toBe(true);
+      expect(findArchivedJob().exists()).toBe(true);
     });
   });
 
@@ -394,7 +421,7 @@ describe('Job App', () => {
     beforeEach(() => setupAndMount());
 
     it('does not warning about job being archived', () => {
-      expect(wrapper.find('.js-archived-job ').exists()).toBe(false);
+      expect(findArchivedJob().exists()).toBe(false);
     });
   });
 
@@ -413,16 +440,16 @@ describe('Job App', () => {
     );
 
     it('should render scroll buttons', () => {
-      expect(wrapper.find('.js-scroll-top').exists()).toBe(true);
-      expect(wrapper.find('.js-scroll-bottom').exists()).toBe(true);
+      expect(findJobTraceScrollTop().exists()).toBe(true);
+      expect(findJobTraceScrollBottom().exists()).toBe(true);
     });
 
     it('should render link to raw ouput', () => {
-      expect(wrapper.find('.js-raw-link-controller').exists()).toBe(true);
+      expect(findJobTraceController().exists()).toBe(true);
     });
 
     it('should render link to erase job', () => {
-      expect(wrapper.find('.js-erase-link').exists()).toBe(true);
+      expect(findJobTraceEraseLink().exists()).toBe(true);
     });
   });
 });

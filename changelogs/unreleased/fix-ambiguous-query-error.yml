@@ -1,0 +1,6 @@
+---
+title: Fix ambiguous query error when filtering for Any milestone in Value Stream
+  Analytics
+merge_request: 37451
+author:
+type: fixed
