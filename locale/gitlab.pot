@@ -18313,9 +18313,6 @@ msgstr ""
 msgid "ProjectService|%{service_title}: status on"
 msgstr ""
 
-msgid "ProjectService|Comment"
-msgstr ""
-
 msgid "ProjectService|Event will be triggered by a push to the repository"
 msgstr ""
 

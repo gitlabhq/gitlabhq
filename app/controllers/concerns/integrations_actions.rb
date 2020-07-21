@@ -8,9 +8,6 @@ module IntegrationsActions
 
     before_action :not_found, unless: :integrations_enabled?
     before_action :integration, only: [:edit, :update, :test]
-    before_action only: :edit do
-      push_frontend_feature_flag(:integration_form_refactor, default_enabled: true)
-    end
   end
 
   def edit

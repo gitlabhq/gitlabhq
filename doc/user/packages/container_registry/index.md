@@ -510,7 +510,6 @@ The cleanup policy is enabled for all projects by default.
 - For GitLab.com, the project must have been created before February, 2020.
   Support for projects created earlier
   [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/196124).
-
 - For self-managed GitLab instances, the project must have been created
   before GitLab 12.7. However, an administrator can enable the cleanup policy
   for all projects (even those created before 12.7) in

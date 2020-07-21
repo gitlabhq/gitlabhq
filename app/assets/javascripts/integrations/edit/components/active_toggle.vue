@@ -1,7 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import eventHub from '../event_hub';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { GlFormGroup, GlToggle } from '@gitlab/ui';
 
 export default {
@@ -10,7 +9,6 @@ export default {
     GlFormGroup,
     GlToggle,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     initialActivated: {
       type: Boolean,
@@ -40,28 +38,13 @@ export default {
 </script>
 
 <template>
-  <div v-if="glFeatures.integrationFormRefactor">
-    <gl-form-group :label="__('Enable integration')" label-for="service[active]">
-      <gl-toggle
-        v-model="activated"
-        name="service[active]"
-        class="gl-display-block gl-line-height-0"
-        :disabled="isInheriting"
-        @change="onToggle"
-      />
-    </gl-form-group>
-  </div>
-  <div v-else>
-    <div class="form-group row" role="group">
-      <label for="service[active]" class="col-form-label col-sm-2">{{ __('Active') }}</label>
-      <div class="col-sm-10 pt-1">
-        <gl-toggle
-          v-model="activated"
-          name="service[active]"
-          :disabled="isInheriting"
-          @change="onToggle"
-        />
-      </div>
-    </div>
-  </div>
+  <gl-form-group :label="__('Enable integration')" label-for="service[active]">
+    <gl-toggle
+      v-model="activated"
+      name="service[active]"
+      class="gl-display-block gl-line-height-0"
+      :disabled="isInheriting"
+      @change="onToggle"
+    />
+  </gl-form-group>
 </template>

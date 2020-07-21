@@ -63,7 +63,7 @@ the following documents:
 If you're migrating from another CI/CD tool, check out our handy references:
 
 - [Migrating from CircleCI](migration/circleci.md)
-- [Migrating from Jenkins](jenkins/index.md)
+- [Migrating from Jenkins](migration/jenkins.md)
 
 You can also get started by using one of the
 [`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates)

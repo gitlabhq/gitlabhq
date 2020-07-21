@@ -1,5 +1,4 @@
 <script>
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import { GlFormGroup, GlFormCheckbox, GlFormRadio } from '@gitlab/ui';
@@ -26,7 +25,6 @@ export default {
     GlFormCheckbox,
     GlFormRadio,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     initialTriggerCommit: {
       type: Boolean,
@@ -65,7 +63,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="glFeatures.integrationFormRefactor">
+  <div>
     <gl-form-group
       :label="__('Trigger')"
       label-for="service[trigger]"
@@ -129,74 +127,5 @@ export default {
         </template>
       </gl-form-radio>
     </gl-form-group>
-  </div>
-
-  <div v-else class="form-group row pt-2" role="group">
-    <label for="service[trigger]" class="col-form-label col-sm-2 pt-0">{{ __('Trigger') }}</label>
-    <div class="col-sm-10">
-      <label class="weight-normal mb-2">
-        {{
-          s__(
-            'Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) will be created.',
-          )
-        }}
-      </label>
-
-      <input name="service[commit_events]" type="hidden" :value="triggerCommit || false" />
-      <gl-form-checkbox v-model="triggerCommit" :disabled="isInheriting">
-        {{ __('Commit') }}
-      </gl-form-checkbox>
-
-      <input
-        name="service[merge_requests_events]"
-        type="hidden"
-        :value="triggerMergeRequest || false"
-      />
-      <gl-form-checkbox v-model="triggerMergeRequest" :disabled="isInheriting">
-        {{ __('Merge request') }}
-      </gl-form-checkbox>
-
-      <div
-        v-show="triggerCommit || triggerMergeRequest"
-        class="mt-4"
-        data-testid="comment-settings"
-      >
-        <label>
-          {{ s__('Integrations|Comment settings:') }}
-        </label>
-        <input
-          name="service[comment_on_event_enabled]"
-          type="hidden"
-          :value="enableComments || false"
-        />
-        <gl-form-checkbox v-model="enableComments" :disabled="isInheriting">
-          {{ s__('Integrations|Enable comments') }}
-        </gl-form-checkbox>
-
-        <div v-show="enableComments" class="mt-4" data-testid="comment-detail">
-          <label>
-            {{ s__('Integrations|Comment detail:') }}
-          </label>
-          <input
-            v-if="isInheriting"
-            name="service[comment_detail]"
-            type="hidden"
-            :value="commentDetail"
-          />
-          <gl-form-radio
-            v-for="commentDetailOption in commentDetailOptions"
-            :key="commentDetailOption.value"
-            v-model="commentDetail"
-            :value="commentDetailOption.value"
-            :disabled="isInheriting"
-          >
-            {{ commentDetailOption.label }}
-            <template #help>
-              {{ commentDetailOption.help }}
-            </template>
-          </gl-form-radio>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
