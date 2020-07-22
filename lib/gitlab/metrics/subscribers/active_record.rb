@@ -12,10 +12,14 @@ module Gitlab
         DB_COUNTERS = %i{db_count db_write_count db_cached_count}.freeze
 
         def sql(event)
+          # Mark this thread as requiring a database connection. This is used
+          # by the Gitlab::Metrics::Samplers::ThreadsSampler to count threads
+          # using a connection.
+          Thread.current[:uses_db_connection] = true
+
           return unless current_transaction
 
           payload = event.payload
-
           return if payload[:name] == 'SCHEMA' || IGNORABLE_SQL.include?(payload[:sql])
 
           self.class.gitlab_sql_duration_seconds.observe(current_transaction.labels, event.duration / 1000.0)

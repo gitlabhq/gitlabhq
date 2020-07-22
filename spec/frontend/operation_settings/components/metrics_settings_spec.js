@@ -56,7 +56,7 @@ describe('operation settings external dashboard component', () => {
 
   it('renders header text', () => {
     mountComponent();
-    expect(wrapper.find('.js-section-header').text()).toBe('Metrics Dashboard');
+    expect(wrapper.find('.js-section-header').text()).toBe('Metrics dashboard');
   });
 
   describe('expand/collapse button', () => {

@@ -257,5 +257,3 @@ class Projects::BlobController < Projects::ApplicationController
     params.permit(:full, :since, :to, :bottom, :unfold, :offset, :indent)
   end
 end
-
-Projects::BlobController.prepend_if_ee('EE::Projects::BlobController')

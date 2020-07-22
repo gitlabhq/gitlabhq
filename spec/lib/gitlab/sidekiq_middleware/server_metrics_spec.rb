@@ -128,6 +128,13 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
             subject.call(worker, job, :test) { nil }
           end
 
+          it 'sets the thread name if it was nil' do
+            allow(Thread.current).to receive(:name).and_return(nil)
+            expect(Thread.current).to receive(:name=).with(Gitlab::Metrics::Samplers::ThreadsSampler::SIDEKIQ_WORKER_THREAD_NAME)
+
+            subject.call(worker, job, :test) { nil }
+          end
+
           context 'when job_duration is not available' do
             let(:queue_duration_for_job) { nil }
 

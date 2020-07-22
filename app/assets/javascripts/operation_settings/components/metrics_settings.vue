@@ -32,7 +32,7 @@ export default {
   <section class="settings no-animate">
     <div class="settings-header">
       <h3 class="js-section-header h4">
-        {{ s__('MetricsSettings|Metrics Dashboard') }}
+        {{ s__('MetricsSettings|Metrics dashboard') }}
       </h3>
       <gl-deprecated-button class="js-settings-toggle">{{ __('Expand') }}</gl-deprecated-button>
       <p class="js-section-sub-header">

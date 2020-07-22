@@ -44,7 +44,7 @@ describe('grafana integration component', () => {
   it('renders header text', () => {
     wrapper = shallowMount(GrafanaIntegration, { store });
 
-    expect(wrapper.find('.js-section-header').text()).toBe('Grafana Authentication');
+    expect(wrapper.find('.js-section-header').text()).toBe('Grafana authentication');
   });
 
   describe('expand/collapse button', () => {

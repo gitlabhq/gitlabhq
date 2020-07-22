@@ -78,6 +78,13 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         subscriber.sql(event)
       end
 
+      it 'marks the current thread as using the database' do
+        # since it would already have been toggled by other specs
+        Thread.current[:uses_db_connection] = nil
+
+        expect { subscriber.sql(event) }.to change { Thread.current[:uses_db_connection] }.from(nil).to(true)
+      end
+
       context 'with read query' do
         let(:expected_counters) do
           {
@@ -217,7 +224,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         end
 
         it 'skips schema/begin/commit sql commands' do
-          expect(subscriber).to receive(:current_transaction)
+          allow(subscriber).to receive(:current_transaction)
                                   .at_least(:once)
                                   .and_return(transaction)
 

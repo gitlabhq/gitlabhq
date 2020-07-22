@@ -9535,6 +9535,9 @@ msgstr ""
 msgid "Error setting up editor. Please try again."
 msgstr ""
 
+msgid "Error tracking"
+msgstr ""
+
 msgid "Error updating %{issuableType}"
 msgstr ""
 
@@ -11530,10 +11533,10 @@ msgstr ""
 msgid "GrafanaIntegration|Enter the base URL of the Grafana instance."
 msgstr ""
 
-msgid "GrafanaIntegration|Grafana Authentication"
+msgid "GrafanaIntegration|Grafana URL"
 msgstr ""
 
-msgid "GrafanaIntegration|Grafana URL"
+msgid "GrafanaIntegration|Grafana authentication"
 msgstr ""
 
 msgid "Grant access"
@@ -14864,7 +14867,7 @@ msgstr ""
 msgid "MetricsSettings|Manage Metrics Dashboard settings."
 msgstr ""
 
-msgid "MetricsSettings|Metrics Dashboard"
+msgid "MetricsSettings|Metrics dashboard"
 msgstr ""
 
 msgid "MetricsSettings|UTC (Coordinated Universal Time)"
