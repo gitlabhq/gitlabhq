@@ -52,7 +52,15 @@ RSpec.describe IncidentManagement::CreateIncidentLabelService do
     end
 
     context 'without label' do
-      it_behaves_like 'new label'
+      context 'when user has permissions to create labels' do
+        it_behaves_like 'new label'
+      end
+
+      context 'when user has no permissions to create labels' do
+        let_it_be(:user) { create(:user) }
+
+        it_behaves_like 'new label'
+      end
     end
   end
 end

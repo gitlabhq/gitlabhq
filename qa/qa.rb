@@ -208,6 +208,7 @@ module QA
       autoload :New, 'qa/page/group/new'
       autoload :Show, 'qa/page/group/show'
       autoload :Menu, 'qa/page/group/menu'
+      autoload :Members, 'qa/page/group/members'
 
       module Milestone
         autoload :Index, 'qa/page/group/milestone/index'
@@ -216,7 +217,6 @@ module QA
 
       module SubMenus
         autoload :Common, 'qa/page/group/sub_menus/common'
-        autoload :Members, 'qa/page/group/sub_menus/members'
       end
 
       module Settings

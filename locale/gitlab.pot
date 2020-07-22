@@ -17158,6 +17158,9 @@ msgstr ""
 msgid "Pipelines|API"
 msgstr ""
 
+msgid "Pipelines|Are you sure you want to run this pipeline?"
+msgstr ""
+
 msgid "Pipelines|Build with confidence"
 msgstr ""
 
@@ -17182,7 +17185,16 @@ msgstr ""
 msgid "Pipelines|Group %{namespace_name} has exceeded its pipeline minutes quota. Unless you buy additional pipeline minutes, no new jobs or pipelines in its projects will run."
 msgstr ""
 
+msgid "Pipelines|If you are unsure, please ask a project maintainer to review it for you."
+msgstr ""
+
+msgid "Pipelines|It is recommended the code is reviewed thoroughly before running this pipeline with the parent project's CI resource."
+msgstr ""
+
 msgid "Pipelines|Loading Pipelines"
+msgstr ""
+
+msgid "Pipelines|More Information"
 msgstr ""
 
 msgid "Pipelines|Project cache successfully reset."
@@ -17204,6 +17216,9 @@ msgid "Pipelines|There was an error fetching the pipelines. Try again in a few m
 msgstr ""
 
 msgid "Pipelines|This is a child pipeline within the parent pipeline"
+msgstr ""
+
+msgid "Pipelines|This pipeline will run code originating from a forked project merge request. This means that the code can potentially have security considerations like exposing CI variables."
 msgstr ""
 
 msgid "Pipelines|This project is not currently set up to run pipelines."
@@ -28470,6 +28485,9 @@ msgid "mrWidget|Fast-forward merge is not possible. To merge this request, first
 msgstr ""
 
 msgid "mrWidget|Fork merge requests do not create merge request pipelines which validate a post merge result"
+msgstr ""
+
+msgid "mrWidget|Fork project merge requests do not create merge request pipelines that validate a post merge result unless invoked by a project member."
 msgstr ""
 
 msgid "mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the"

@@ -53,7 +53,6 @@ graph TB
 
   GitLabShell --TCP 8080 -->Unicorn["Unicorn (GitLab Rails)"]
   GitLabShell --> Praefect
-  GitLabShell --> Redis
   Unicorn --> PgBouncer[PgBouncer]
   Unicorn --> Redis
   Unicorn --> Praefect

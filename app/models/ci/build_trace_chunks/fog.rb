@@ -9,10 +9,29 @@ module Ci
 
       def data(model)
         connection.get_object(bucket_name, key(model))[:body]
+      rescue Excon::Error::NotFound
+        # If the object does not exist in the object storage, this method returns nil.
       end
 
-      def set_data(model, data)
-        connection.put_object(bucket_name, key(model), data)
+      def set_data(model, new_data)
+        connection.put_object(bucket_name, key(model), new_data)
+      end
+
+      def append_data(model, new_data, offset)
+        if offset > 0
+          truncated_data = data(model).to_s.byteslice(0, offset)
+          new_data = truncated_data + new_data
+        end
+
+        set_data(model, new_data)
+        new_data.bytesize
+      end
+
+      def size(model)
+        connection.head_object(bucket_name, key(model))
+          .get_header('Content-Length')
+      rescue Excon::Error::NotFound
+        0
       end
 
       def delete_data(model)

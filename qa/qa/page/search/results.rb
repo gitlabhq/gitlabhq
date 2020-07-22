@@ -16,7 +16,7 @@ module QA
         end
 
         view 'app/views/shared/projects/_project.html.haml' do
-          element :project
+          element :project_content
         end
 
         def switch_to_code
@@ -40,7 +40,7 @@ module QA
         end
 
         def has_project?(project_name)
-          has_element?(:project, project_name: project_name)
+          has_element?(:project_content, project_name: project_name)
         end
 
         private

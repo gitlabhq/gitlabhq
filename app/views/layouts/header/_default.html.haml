@@ -35,21 +35,21 @@
                 = sprite_icon('search', size: 16)
           - if header_link?(:issues)
             = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
-              = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues', aria: { label: _('Issues') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues', aria: { label: _('Issues') }, data: { qa_selector: 'issues_shortcut_button', toggle: 'tooltip', placement: 'bottom', container: 'body' } do
                 = sprite_icon('issues', size: 16)
                 - issues_count = assigned_issuables_count(:issues)
                 %span.badge.badge-pill.issues-count.green-badge{ class: ('hidden' if issues_count.zero?) }
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do
-              = link_to assigned_mrs_dashboard_path, title: _('Merge requests'), class: 'dashboard-shortcuts-merge_requests', aria: { label: _('Merge requests') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to assigned_mrs_dashboard_path, title: _('Merge requests'), class: 'dashboard-shortcuts-merge_requests', aria: { label: _('Merge requests') }, data: { qa_selector: 'merge_requests_shortcut_button', toggle: 'tooltip', placement: 'bottom', container: 'body' } do
                 = sprite_icon('git-merge', size: 16)
                 - merge_requests_count = assigned_issuables_count(:merge_requests)
                 %span.badge.badge-pill.merge-requests-count{ class: ('hidden' if merge_requests_count.zero?) }
                   = number_with_delimiter(merge_requests_count)
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
-              = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos', data: { qa_selector: 'todos_shortcut_button', toggle: 'tooltip', placement: 'bottom', container: 'body' } do
                 = sprite_icon('todo-done', size: 16)
                 %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
                   = todos_count_format(todos_pending_count)

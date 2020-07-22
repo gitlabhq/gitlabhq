@@ -23,17 +23,12 @@ module IncidentManagement
     def create_issue
       label_result = find_or_create_incident_label
 
-      # Create an unlabelled issue if we couldn't create the label
-      # due to a race condition.
-      # See https://gitlab.com/gitlab-org/gitlab-foss/issues/65042
-      extra_params = label_result.success? ? { label_ids: [label_result.payload[:label].id] } : {}
-
       Issues::CreateService.new(
         project,
         current_user,
         title: issue_title,
         description: issue_description,
-        **extra_params
+        label_ids: [label_result.payload[:label].id]
       ).execute
     end
 

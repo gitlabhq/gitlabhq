@@ -66,7 +66,7 @@ to access it. This is where an SSH key pair comes in handy.
      ## Install ssh-agent if not already installed, it is required by Docker.
      ## (change apt-get to yum if you use an RPM-based image)
      ##
-     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
 
      ##
      ## Run ssh-agent (inside the build environment)

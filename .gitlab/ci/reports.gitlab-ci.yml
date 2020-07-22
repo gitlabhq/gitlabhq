@@ -58,7 +58,7 @@ code_quality:
     SAST_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
     SAST_ANALYZER_IMAGE_TAG: 2
     SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
-    SAST_EXCLUDED_PATHS: qa,spec,doc,ee/spec  # GitLab-specific
+    SAST_EXCLUDED_PATHS: qa,spec,doc,ee/spec,config/gitlab.yml.example  # GitLab-specific
     SAST_DISABLE_BABEL: "true"
   script:
     - /analyzer run

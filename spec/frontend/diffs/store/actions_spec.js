@@ -1603,6 +1603,18 @@ describe('DiffsStoreActions', () => {
 
       expect(commit).toHaveBeenCalledWith(types.UPDATE_CURRENT_DIFF_FILE_ID, '123');
     });
+
+    it('does not commit UPDATE_CURRENT_DIFF_FILE_ID when discussion has no diff_file', () => {
+      const commit = jest.fn();
+      const rootGetters = {
+        getDiscussion: () => ({ id: '1' }),
+        notesById: { '1': { discussion_id: '2' } },
+      };
+
+      setCurrentDiffFileIdFromNote({ commit, rootGetters }, '1');
+
+      expect(commit).not.toHaveBeenCalled();
+    });
   });
 
   describe('navigateToDiffFileIndex', () => {

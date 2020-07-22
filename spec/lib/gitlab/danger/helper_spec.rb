@@ -242,6 +242,7 @@ RSpec.describe Gitlab::Danger::Helper do
       '.editorconfig'                                         | [:engineering_productivity]
       'tooling/overcommit/foo'                                | [:engineering_productivity]
       '.codeclimate.yml'                                      | [:engineering_productivity]
+      '.gitlab/CODEOWNERS'                                    | [:engineering_productivity]
 
       'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | [:backend]
 

@@ -132,6 +132,8 @@ module SnippetsActions
   end
 
   def redirect_if_binary
+    return if Feature.enabled?(:snippets_binary_blob)
+
     redirect_to gitlab_snippet_path(snippet) if blob&.binary?
   end
 end

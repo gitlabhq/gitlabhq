@@ -170,6 +170,7 @@ module Gitlab
         %r{\A(ee/)?(danger/|lib/gitlab/danger/)} => :engineering_productivity,
         %r{\A(ee/)?scripts/} => :engineering_productivity,
         %r{\Atooling/} => :engineering_productivity,
+        %r{(CODEOWNERS)} => :engineering_productivity,
 
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|generator_templates|lib|rubocop)/} => :backend,

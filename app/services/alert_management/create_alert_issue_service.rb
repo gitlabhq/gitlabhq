@@ -39,17 +39,12 @@ module AlertManagement
     def create_issue
       label_result = find_or_create_incident_label
 
-      # Create an unlabelled issue if we couldn't create the label
-      # due to a race condition.
-      # See https://gitlab.com/gitlab-org/gitlab-foss/issues/65042
-      extra_params = label_result.success? ? { label_ids: [label_result.payload[:label].id] } : {}
-
       issue = Issues::CreateService.new(
         project,
         user,
         title: alert_presenter.title,
         description: alert_presenter.issue_description,
-        **extra_params
+        label_ids: [label_result.payload[:label].id]
       ).execute
 
       return error(object_errors(issue), issue) unless issue.valid?

@@ -73,7 +73,7 @@ sudo gitlab-rails runner "RAILS_COMMAND"
 # Example with a two-line Ruby script
 sudo gitlab-rails runner "user = User.first; puts user.username"
 
-# Example with a ruby script file
+# Example with a ruby script file (make sure to use the full path)
 sudo gitlab-rails runner /path/to/script.rb
 ```
 
@@ -85,7 +85,7 @@ sudo -u git -H bundle exec rails runner -e production "RAILS_COMMAND"
 # Example with a two-line Ruby script
 sudo -u git -H bundle exec rails runner -e production "user = User.first; puts user.username"
 
-# Example with a ruby script file
+# Example with a ruby script file (make sure to use the full path)
 sudo -u git -H bundle exec rails runner -e production /path/to/script.rb
 ```
 

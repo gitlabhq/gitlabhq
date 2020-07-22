@@ -14,6 +14,10 @@ class MergeRequestWidgetEntity < Grape::Entity
     merge_request.project&.full_path
   end
 
+  expose :can_create_pipeline_in_target_project do |merge_request|
+    can?(current_user, :create_pipeline, merge_request.target_project)
+  end
+
   expose :email_patches_path do |merge_request|
     project_merge_request_path(merge_request.project, merge_request, format: :patch)
   end

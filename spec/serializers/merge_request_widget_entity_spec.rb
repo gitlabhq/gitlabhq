@@ -31,6 +31,28 @@ RSpec.describe MergeRequestWidgetEntity do
     end
   end
 
+  describe 'can_create_pipeline_in_target_project' do
+    context 'when user has permission' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'includes the correct permission info' do
+        expect(subject[:can_create_pipeline_in_target_project]).to eq(true)
+      end
+    end
+
+    context 'when user does not have permission' do
+      before do
+        project.add_guest(user)
+      end
+
+      it 'includes the correct permission info' do
+        expect(subject[:can_create_pipeline_in_target_project]).to eq(false)
+      end
+    end
+  end
+
   describe 'issues links' do
     it 'includes issues links when requested' do
       data = described_class.new(resource, request: request, issues_links: true).as_json

@@ -26,7 +26,7 @@
             = image_tag avatar_icon_for_user(project.creator, 48), class: "avatar s48", alt:''
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s48', width: 48, height: 48)
-    .project-details.d-sm-flex.flex-sm-fill.align-items-center{ data: { qa_selector: 'project', qa_project_name: project.name } }
+    .project-details.d-sm-flex.flex-sm-fill.align-items-center{ data: { qa_selector: 'project_content', qa_project_name: project.name } }
       .flex-wrapper
         .d-flex.align-items-center.flex-wrap.project-title
           %h2.d-flex.gl-mt-3
@@ -51,7 +51,7 @@
             -# haml-lint:disable UnnecessaryStringOutput
             = ' ' # prevent haml from eating the space between elements
             .metadata-info.gl-mt-3
-              %span.user-access-role.d-block= Gitlab::Access.human_access(access)
+              %span.user-access-role.d-block{ data: { qa_selector: 'user_role_content' } }= Gitlab::Access.human_access(access)
 
           - if !explore_projects_tab?
             .metadata-info.gl-mt-3

@@ -69,7 +69,7 @@ multiple issue boards within the same project.
 
 ## Use cases
 
-There are many ways to use GitLab issue boards tailored to your own preferred workflow.
+You can tailor GitLab issue boards to your own preferred workflow.
 Here are some common use cases for issue boards.
 
 ### Use cases for a single issue board

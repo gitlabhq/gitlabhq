@@ -16,12 +16,4 @@ RSpec.shared_examples 'create alert issue sets issue labels' do
       expect(issue.labels).to eq([label])
     end
   end
-
-  context 'when create incident label responds with error' do
-    let(:label_service_response) { ServiceResponse.error(payload: { label: label }, message: 'label error') }
-
-    it 'creates an issue without labels' do
-      expect(issue.labels).to be_empty
-    end
-  end
 end

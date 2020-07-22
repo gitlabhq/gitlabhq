@@ -101,7 +101,7 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
 
   describe '#append' do
     shared_examples_for 'appends' do
-      it "truncates and append content" do
+      it "truncates and appends content" do
         stream.append(+"89", 4)
         stream.seek(0)
 

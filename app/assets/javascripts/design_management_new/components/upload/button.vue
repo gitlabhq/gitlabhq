@@ -38,7 +38,7 @@ export default {
         )
       "
       :disabled="isSaving"
-      variant="success"
+      variant="default"
       size="small"
       @click="openFileUpload"
     >

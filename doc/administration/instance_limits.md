@@ -316,50 +316,51 @@ Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
 
 ### Maximum file size per type of artifact
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216097) in GitLab 13.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37226) in GitLab 13.3.
 
-Artifacts that are uploaded by the Runner will be rejected if the file size exceeds the
-maximum file size limit. The limit is determined by picking the smaller value between the project's
+Job artifacts defined with [`artifacts:reports`](../ci/pipelines/job_artifacts.md#artifactsreports)
+that are uploaded by the Runner are rejected if the file size exceeds the maximum
+file size limit. The limit is determined by comparing the project's
 [maximum artifact size setting](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only)
-and the plan limit for the given artifact type.
+with the instance limit for the given artifact type, and choosing the smaller value.
 
-Values are interpreted as megabytes thus the smallest possible value that can be defined is `1 MB`.
+Limits are set in megabytes, so the smallest possible value that can be defined is `1 MB`.
 
-Each type of artifact has its corresponding maximum size limit. For now, only the `lsif` type's plan limit
-is enabled and has a default value defined. The rest of the values and defaults are going to be determined and updated
-in future releases.
+Each type of artifact has a size limit that can be set. A default of `0` means there
+is no limit for that specific artifact type, and the project's maximum artifact size
+setting is used:
 
-| Limit Name                                | Default Value |
-| ----------------------------------------- | ------------- |
-| ci_max_artifact_size_lsif                 | 20            |
-| ci_max_artifact_size_archive              | 0             |
-| ci_max_artifact_size_metadata             | 0             |
-| ci_max_artifact_size_trace                | 0             |
-| ci_max_artifact_size_junit                | 0             |
-| ci_max_artifact_size_sast                 | 0             |
-| ci_max_artifact_size_dependency_scanning  | 0             |
-| ci_max_artifact_size_container_scanning   | 0             |
-| ci_max_artifact_size_dast                 | 0             |
-| ci_max_artifact_size_codequality          | 0             |
-| ci_max_artifact_size_license_management   | 0             |
-| ci_max_artifact_size_license_scanning     | 0             |
-| ci_max_artifact_size_performance          | 0             |
-| ci_max_artifact_size_metrics              | 0             |
-| ci_max_artifact_size_metrics_referee      | 0             |
-| ci_max_artifact_size_network_referee      | 0             |
-| ci_max_artifact_size_dotenv               | 0             |
-| ci_max_artifact_size_cobertura            | 0             |
-| ci_max_artifact_size_terraform            | 0             |
-| ci_max_artifact_size_accessibility        | 0             |
-| ci_max_artifact_size_cluster_applications | 0             |
-| ci_max_artifact_size_secret_detection     | 0             |
-| ci_max_artifact_size_requirements         | 0             |
-| ci_max_artifact_size_coverage_fuzzing     | 0             |
-| ci_max_artifact_size_browser_performance  | 0             |
-| ci_max_artifact_size_load_performance     | 0             |
+| Artifact limit name                         | Default value |
+|---------------------------------------------|---------------|
+| `ci_max_artifact_size_accessibility`        | 0             |
+| `ci_max_artifact_size_archive`              | 0             |
+| `ci_max_artifact_size_browser_performance`  | 0             |
+| `ci_max_artifact_size_cluster_applications` | 0             |
+| `ci_max_artifact_size_cobertura`            | 0             |
+| `ci_max_artifact_size_codequality`          | 0             |
+| `ci_max_artifact_size_container_scanning`   | 0             |
+| `ci_max_artifact_size_coverage_fuzzing`     | 0             |
+| `ci_max_artifact_size_dast`                 | 0             |
+| `ci_max_artifact_size_dependency_scanning`  | 0             |
+| `ci_max_artifact_size_dotenv`               | 0             |
+| `ci_max_artifact_size_junit`                | 0             |
+| `ci_max_artifact_size_license_management`   | 0             |
+| `ci_max_artifact_size_license_scanning`     | 0             |
+| `ci_max_artifact_size_load_performance`     | 0             |
+| `ci_max_artifact_size_lsif`                 | 20 MB ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37226) in GitLab 13.3) |
+| `ci_max_artifact_size_metadata`             | 0             |
+| `ci_max_artifact_size_metrics_referee`      | 0             |
+| `ci_max_artifact_size_metrics`              | 0             |
+| `ci_max_artifact_size_network_referee`      | 0             |
+| `ci_max_artifact_size_performance`          | 0             |
+| `ci_max_artifact_size_requirements`         | 0             |
+| `ci_max_artifact_size_sast`                 | 0             |
+| `ci_max_artifact_size_secret_detection`     | 0             |
+| `ci_max_artifact_size_terraform`            | 5 MB ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37018) in GitLab 13.3) |
+| `ci_max_artifact_size_trace`                | 0             |
 
-To update the limit on a self-managed installation, run the following in the
-[GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
+For example, to set the `ci_max_artifact_size_junit` limit to 10MB on a self-managed
+installation, run the following in the [GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
 
 ```ruby
 Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
