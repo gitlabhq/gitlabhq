@@ -10,6 +10,7 @@ RSpec.describe API::Files do
   let(:guest) { create(:user) { |u| project.add_guest(u) } }
   let(:file_path) { "files%2Fruby%2Fpopen%2Erb" }
   let(:rouge_file_path) { "%2e%2e%2f" }
+  let(:absolute_path) { "%2Fetc%2Fpasswd.rb" }
   let(:invalid_file_message) { 'file_path should be a valid file path' }
   let(:params) do
     {
@@ -57,12 +58,28 @@ RSpec.describe API::Files do
     end
   end
 
+  shared_examples 'when path is absolute' do
+    it 'returns 400 when file path is absolute' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+
+      if response.body.present?
+        expect(json_response['error']).to eq(invalid_file_message)
+      end
+    end
+  end
+
   describe "HEAD /projects/:id/repository/files/:file_path" do
     shared_examples_for 'repository files' do
       it 'returns 400 when file path is invalid' do
         head api(route(rouge_file_path), current_user), params: params
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it_behaves_like 'when path is absolute' do
+        subject { head api(route(absolute_path), current_user), params: params }
       end
 
       it 'returns file attributes in headers' do
@@ -163,6 +180,10 @@ RSpec.describe API::Files do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq(invalid_file_message)
+      end
+
+      it_behaves_like 'when path is absolute' do
+        subject { get api(route(absolute_path), api_user), params: params }
       end
 
       it 'returns file attributes as json' do
@@ -350,6 +371,10 @@ RSpec.describe API::Files do
         expect(json_response['error']).to eq(invalid_file_message)
       end
 
+      it_behaves_like 'when path is absolute' do
+        subject { get api(route(absolute_path) + '/blame', current_user), params: params }
+      end
+
       it 'returns blame file attributes as json' do
         get api(route(file_path) + '/blame', current_user), params: params
 
@@ -471,6 +496,10 @@ RSpec.describe API::Files do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq(invalid_file_message)
+      end
+
+      it_behaves_like 'when path is absolute' do
+        subject { get api(route(absolute_path) + '/raw', current_user), params: params }
       end
 
       it 'returns raw file info' do
@@ -595,6 +624,10 @@ RSpec.describe API::Files do
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq(invalid_file_message)
+    end
+
+    it_behaves_like 'when path is absolute' do
+      subject { post api(route(absolute_path), user), params: params }
     end
 
     it "creates a new file in project repo" do
@@ -735,6 +768,16 @@ RSpec.describe API::Files do
       expect(json_response['error']).to eq(invalid_file_message)
     end
 
+    it_behaves_like 'when path is absolute' do
+      let(:last_commit) do
+        Gitlab::Git::Commit
+        .last_for_path(project.repository, 'master', URI.unescape(file_path))
+      end
+      let(:params_with_correct_id) { params.merge(last_commit_id: last_commit.id) }
+
+      subject { put api(route(absolute_path), user), params: params_with_correct_id }
+    end
+
     it "returns a 400 bad request if no params given" do
       put api(route(file_path), user)
 
@@ -768,6 +811,10 @@ RSpec.describe API::Files do
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq(invalid_file_message)
+    end
+
+    it_behaves_like 'when path is absolute' do
+      subject { delete api(route(absolute_path), user), params: params }
     end
 
     it "deletes existing file in project repo" do

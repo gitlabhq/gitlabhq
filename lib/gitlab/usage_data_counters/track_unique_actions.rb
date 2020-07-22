@@ -35,16 +35,15 @@ module Gitlab
 
           transformed_target = transform_target(event_target)
           transformed_action = transform_action(event_action, transformed_target)
+          target_key = key(transformed_action, time)
 
-          add_event(transformed_action, author_id, time)
+          Gitlab::Redis::HLL.add(key: target_key, value: author_id, expiry: KEY_EXPIRY_LENGTH)
         end
 
         def count_unique_events(event_action:, date_from:, date_to:)
           keys = (date_from.to_date..date_to.to_date).map { |date| key(event_action, date) }
 
-          Gitlab::Redis::SharedState.with do |redis|
-            redis.pfcount(*keys)
-          end
+          Gitlab::Redis::HLL.count(keys: keys)
         end
 
         private
@@ -68,17 +67,6 @@ module Gitlab
         def key(event_action, date)
           year_day = date.strftime('%G-%j')
           "#{year_day}-{#{event_action}}"
-        end
-
-        def add_event(event_action, author_id, date)
-          target_key = key(event_action, date)
-
-          Gitlab::Redis::SharedState.with do |redis|
-            redis.multi do |multi|
-              multi.pfadd(target_key, author_id)
-              multi.expire(target_key, KEY_EXPIRY_LENGTH)
-            end
-          end
         end
       end
     end

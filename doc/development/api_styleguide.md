@@ -173,7 +173,8 @@ guide on how you can add a new custom validator.
   validates the parameter value for different cases. Mainly, it checks whether a
   path is relative and does it contain `../../` relative traversal using
   `File::Separator` or not, and whether the path is absolute, for example
-  `/etc/passwd/`.
+  `/etc/passwd/`. By default, absolute paths are not allowed. However, you can optionally pass in an allowlist for allowed absolute paths in the following way:  
+  `requires :file_path, type: String, file_path: { allowlist: ['/foo/bar/', '/home/foo/', '/app/home'] }`
 
 - `Git SHA`:
 

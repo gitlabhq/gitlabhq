@@ -151,6 +151,15 @@ settings.
 When creating or editing a merge request, find the **Approval rules** section, then follow
 the same steps as [Adding / editing a default approval rule](#adding--editing-a-default-approval-rule).
 
+#### Set up an optional approval rule
+
+MR approvals can be configured to be optional.
+This can be useful if you're working on a team where approvals are appreciated, but not required.
+
+To configure an approval to be optional, set the number of required approvals in **No. approvals required** to `0`.
+
+You can also set an optional approval rule through the [Merge requests approvals API](../../../api/merge_request_approvals.md#update-merge-request-level-rule), by setting the `approvals_required` attribute to `0`.
+
 #### Multiple approval rules **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.

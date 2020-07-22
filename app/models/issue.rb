@@ -87,11 +87,15 @@ class Issue < ApplicationRecord
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
-  scope :with_api_entity_associations, -> { preload(:timelogs, :assignees, :author, :notes, :labels, project: [:route, { namespace: :route }] ) }
   scope :with_label_attributes, ->(label_attributes) { joins(:labels).where(labels: label_attributes) }
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
   scope :with_self_managed_prometheus_alert_events, -> { joins(:issues_self_managed_prometheus_alert_events) }
+  scope :with_api_entity_associations, -> {
+    preload(:timelogs, :closed_by, :assignees, :author, :notes, :labels,
+      milestone: { project: [:route, { namespace: :route }] },
+      project: [:route, { namespace: :route }])
+  }
 
   scope :public_only, -> { where(confidential: false) }
   scope :confidential_only, -> { where(confidential: true) }

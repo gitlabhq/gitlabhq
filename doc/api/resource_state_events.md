@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Resource state events API
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35210/) in GitLab 13.2.
+
 Resource state events keep track of what happens to GitLab [issues](../user/project/issues/) and
 [merge requests](../user/project/merge_requests/).
 

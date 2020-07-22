@@ -25,26 +25,19 @@ module Gitlab
       def track_visit(visitor_id, target_id, time = Time.zone.now)
         target_key = key(target_id, time)
 
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.multi do |multi|
-            multi.pfadd(target_key, visitor_id)
-            multi.expire(target_key, KEY_EXPIRY_LENGTH)
-          end
-        end
+        Gitlab::Redis::HLL.add(key: target_key, value: visitor_id, expiry: KEY_EXPIRY_LENGTH)
       end
 
       def weekly_unique_visits_for_target(target_id, week_of: 7.days.ago)
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.pfcount(key(target_id, week_of))
-        end
+        target_key = key(target_id, week_of)
+
+        Gitlab::Redis::HLL.count(keys: [target_key])
       end
 
       def weekly_unique_visits_for_any_target(week_of: 7.days.ago)
         keys = TARGET_IDS.select { |id| id =~ /_analytics_/ }.map { |target_id| key(target_id, week_of) }
 
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.pfcount(*keys)
-        end
+        Gitlab::Redis::HLL.count(keys: keys)
       end
 
       private

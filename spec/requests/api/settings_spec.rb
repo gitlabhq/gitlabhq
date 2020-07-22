@@ -15,7 +15,7 @@ RSpec.describe API::Settings, 'Settings' do
       expect(json_response).to be_an Hash
       expect(json_response['default_projects_limit']).to eq(42)
       expect(json_response['password_authentication_enabled_for_web']).to be_truthy
-      expect(json_response['repository_storages']).to eq(['default'])
+      expect(json_response['repository_storages_weighted']).to eq({ 'default' => 100 })
       expect(json_response['password_authentication_enabled']).to be_truthy
       expect(json_response['plantuml_enabled']).to be_falsey
       expect(json_response['plantuml_url']).to be_nil
@@ -55,6 +55,28 @@ RSpec.describe API::Settings, 'Settings' do
         stub_feature_flags(sourcegraph: true)
       end
 
+      it "coerces repository_storages_weighted to an int" do
+        put api("/application/settings", admin),
+          params: {
+            repository_storages_weighted: { 'custom' => '75' }
+          }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['repository_storages_weighted']).to eq({ 'custom' => 75 })
+      end
+
+      context "repository_storages_weighted value is outside a 0-100 range" do
+        [-1, 101].each do |out_of_range_int|
+          it "returns a :bad_request for #{out_of_range_int}" do
+            put api("/application/settings", admin),
+              params: {
+                repository_storages_weighted: { 'custom' => out_of_range_int }
+              }
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+      end
+
       it "updates application settings" do
         put api("/application/settings", admin),
           params: {
@@ -62,7 +84,7 @@ RSpec.describe API::Settings, 'Settings' do
             default_projects_limit: 3,
             default_project_creation: 2,
             password_authentication_enabled_for_web: false,
-            repository_storages: 'custom',
+            repository_storages_weighted: { 'custom' => 100 },
             plantuml_enabled: true,
             plantuml_url: 'http://plantuml.example.com',
             sourcegraph_enabled: true,
@@ -104,7 +126,7 @@ RSpec.describe API::Settings, 'Settings' do
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['default_project_creation']).to eq(::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
         expect(json_response['password_authentication_enabled_for_web']).to be_falsey
-        expect(json_response['repository_storages']).to eq(['custom'])
+        expect(json_response['repository_storages_weighted']).to eq({ 'custom' => 100 })
         expect(json_response['plantuml_enabled']).to be_truthy
         expect(json_response['plantuml_url']).to eq('http://plantuml.example.com')
         expect(json_response['sourcegraph_enabled']).to be_truthy

@@ -1,0 +1,5 @@
+---
+title: Remove old export file when requesting new project export using API
+merge_request: 37427
+author:
+type: fixed

@@ -47,6 +47,8 @@ module API
       post ':id/export' do
         check_rate_limit! :project_export, [current_user]
 
+        user_project.remove_exports
+
         project_export_params = declared_params(include_missing: false)
         after_export_params = project_export_params.delete(:upload) || {}
 

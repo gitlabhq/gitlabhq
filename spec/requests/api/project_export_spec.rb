@@ -338,12 +338,28 @@ RSpec.describe API::ProjectExport, :clean_gitlab_redis_cache do
       end
 
       context 'with download strategy' do
+        before do
+          Grape::Endpoint.before_each do |endpoint|
+            allow(endpoint).to receive(:user_project).and_return(project)
+          end
+        end
+
+        after do
+          Grape::Endpoint.before_each nil
+        end
+
         it 'starts' do
           expect_any_instance_of(Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy).not_to receive(:send_file)
 
           post api(path, user)
 
           expect(response).to have_gitlab_http_status(:accepted)
+        end
+
+        it 'removes previously exported archive file' do
+          expect(project).to receive(:remove_exports).once
+
+          post api(path, user)
         end
       end
     end

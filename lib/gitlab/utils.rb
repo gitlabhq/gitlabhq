@@ -7,21 +7,41 @@ module Gitlab
 
     # Ensure that the relative path will not traverse outside the base directory
     # We url decode the path to avoid passing invalid paths forward in url encoded format.
-    # We are ok to pass some double encoded paths to File.open since they won't resolve.
     # Also see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24223#note_284122580
     # It also checks for ALT_SEPARATOR aka '\' (forward slash)
-    def check_path_traversal!(path, allowed_absolute: false)
-      path = CGI.unescape(path)
+    def check_path_traversal!(path)
+      path = decode_path(path)
+      path_regex = /(\A(\.{1,2})\z|\A\.\.[\/\\]|[\/\\]\.\.\z|[\/\\]\.\.[\/\\]|\n)/
 
-      if path.start_with?("..#{File::SEPARATOR}", "..#{File::ALT_SEPARATOR}") ||
-          path.include?("#{File::SEPARATOR}..#{File::SEPARATOR}") ||
-          path.end_with?("#{File::SEPARATOR}..") ||
-          (!allowed_absolute && Pathname.new(path).absolute?)
-
+      if path.match?(path_regex)
         raise PathTraversalAttackError.new('Invalid path')
       end
 
       path
+    end
+
+    def allowlisted?(absolute_path, allowlist)
+      path = absolute_path.downcase
+
+      allowlist.map(&:downcase).any? do |allowed_path|
+        path.start_with?(allowed_path)
+      end
+    end
+
+    def check_allowed_absolute_path!(path, allowlist)
+      return unless Pathname.new(path).absolute?
+      return if allowlisted?(path, allowlist)
+
+      raise StandardError, "path #{path} is not allowed"
+    end
+
+    def decode_path(encoded_path)
+      decoded = CGI.unescape(encoded_path)
+      if decoded != CGI.unescape(decoded)
+        raise StandardError, "path #{encoded_path} is not allowed"
+      end
+
+      decoded
     end
 
     def force_utf8(str)

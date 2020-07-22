@@ -1,0 +1,5 @@
+---
+title: Coerce repository_storages_weighted, removes repository_storages
+merge_request: 36376
+author:
+type: fixed

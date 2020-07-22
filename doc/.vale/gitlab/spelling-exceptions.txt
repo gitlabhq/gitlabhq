@@ -308,6 +308,8 @@ Piwik
 PgBouncer
 plaintext
 Poedit
+polyfill
+polyfills
 pooler
 PostgreSQL
 precompile
