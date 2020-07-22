@@ -87,7 +87,7 @@ module QA
           repository.init_repository
 
           expect { repository.pull(repository_uri_ssh, branch_name) }
-            .to raise_error(QA::Git::Repository::RepositoryCommandError, /[fatal: Could not read from remote repository.]+/)
+            .to raise_error(QA::Git::Repository::RepositoryCommandError, /fatal: Could not read from remote repository\./)
         end
       end
 

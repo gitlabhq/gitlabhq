@@ -6,8 +6,8 @@
 %h3.page-title
   = _('Group: %{group_name}') % { group_name: @group.full_name }
 
-  = link_to admin_group_edit_path(@group), class: "btn float-right", data: { qa_selector: 'edit_group_link' } do
-    %i.fa.fa-pencil-square-o
+  = link_to admin_group_edit_path(@group), class: "btn btn-default gl-button float-right", data: { qa_selector: 'edit_group_link' } do
+    = sprite_icon('pencil-square', css_class: 'gl-icon')
     = _('Edit')
 %hr
 .row
@@ -123,7 +123,9 @@
         = _("<strong>%{group_name}</strong> group members").html_safe % { group_name: @group.name }
         %span.badge.badge-pill= @group.members.size
         .float-right
-          = link_to icon('pencil-square-o', text: _('Manage access')), group_group_members_path(@group), class: "btn btn-sm"
+          = link_to group_group_members_path(@group), class: 'btn btn-default gl-button btn-sm' do
+            = sprite_icon('pencil-square', css_class: 'gl-icon')
+            = _('Manage access')
       %ul.content-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .card-footer

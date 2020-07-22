@@ -1,0 +1,1048 @@
+#
+# PLEASE DO NOT ADD NEW STRINGS TO THIS FILE.
+#
+# See https://docs.gitlab.com/ee/development/i18n/externalization.html#html
+# for information on how to handle HTML in translations.
+
+#
+# This file contains strings that need to be fixed to use the
+# updated HTML guidelines. Any strings in this file will no
+# longer be able to be translated until they have been updated.
+#
+# This file (and the functionality around it) will be removed
+# once https://gitlab.com/gitlab-org/gitlab/-/issues/217933 is complete.
+#
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/19485 for more details
+# why this change has been made.
+#
+
+" or <!merge request id>":
+  translations:
+    - " ወይም <!merge request id>"
+    - " ou <!merge request id>"
+    - " または <!merge request id>"
+    - "或 <!合併請求 id>"
+    - " или <!merge request id>"
+    - "或<!merge request id>"
+    - " або <!merge request id>"
+    - " oder <!merge request id>"
+    - " o <!merge request id>"
+    - " 또는 <!merge request id>"
+    - " o <!merge request id>"
+    - " veya <!merge request id>"
+    - " neu <!merge request id>"
+    - " neu <#issue id>"
+" or <#issue id>":
+  translations:
+    - "或 <#issue id>"
+    - " ወይም ‹#issue id›"
+    - " ou <identificación #issue>"
+    - " ou <#issue id>"
+    - " または <#課題 ID>"
+    - " o <#issue id>"
+    - "或 <#議題 id>"
+    - " ou <#issue id>"
+    - " или <#issue id>"
+    - "或 <#issue id>"
+    - " або <#issue id>"
+    - " oder <#issue id>"
+    - " o <#issue id>"
+    - " 또는 <#issue id>"
+    - " ou <#issue id>"
+    - " o <#issue id>"
+    - " veya <#issue id>"
+    - " neu <#issue id>"
+" or <&epic id>":
+  translations:
+    - " ወይም <&epic id>"
+    - " または <&エピックID>"
+    - " 或 <#史詩 id>"
+    - " или <&epic id>"
+    - " 或<#epic id>"
+    - " або <&epic id>"
+    - " oder <&epic id>"
+    - " o <&epic id>"
+    - " veya <&epic id>"
+    - " neu <#epic id>"
+"< 1 hour":
+  translations:
+    - "1 時間未満"
+    - "< 1 小時"
+    - "< 1 часа"
+    - "< 1小时"
+    - "< 1 години"
+    - "< 1 hora"
+    - "< 1 saat"
+    - "< 1 Stunde"
+"<namespace / project>":
+  plural_id:
+  translations:
+    - "<namespace / project>"
+    - "<простір імен / проєкт>"
+"<no name set>":
+  translations:
+    - "<nenhum nome definido>"
+    - "<no name set>"
+    - "<未設定名稱>"
+    - "<nenhum nome definido>"
+    - "<no name set>"
+    - "<未设置名称>"
+    - "<ім’я не задане>"
+    - "<no name set>"
+    - "<sense nom establert>"
+    - "<no tiene el nombre establecido>"
+    - "<isim belirlenmemiş>"
+"<no scopes selected>":
+  translations:
+    - "<nenhum escopo selecionado>"
+    - "<スコープが選択されていません>"
+    - "<未選擇範圍>"
+    - "<nenhum escopo selecionado>"
+    - "<no scopes selected>"
+    - "<未选择范围>"
+    - "<область дії не вибрано>"
+    - "<keine Bereiche ausgewählt>"
+    - "<ningún alcance seleccionado>"
+    - "<hiçbir kapsam seçilmedi>"
+"<project name>":
+  translations:
+    - "<название проекта>"
+    - "<project name>"
+    - "<proje adı>"
+    - "<naziv projekta>"
+    - "<ім’я проєкту>"
+"AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings > General.":
+  translations:
+    - "Elasticsearch、PlantUML、Slackアプリケーション、サードパーティのオファー、Snowplow、Amazon EKS は 設定 > 全般 に移動しました。"
+    - "Elasticsearch, PlantUML, приложение Slack, предложения от третьих лиц, Snowplow, Amazon EKS были перемещены в Настройки > Общие"
+    - "Elasticsearch, PlantUML, застосунок Slack, пропозиції від третіх осіб, Snowplow, Amazon EKS були переміщені до Налаштувань > Загальне."
+"cannot contain HTML/XML tags, including any word between angle brackets (<,>).":
+  translations:
+"<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> will add \\\"By <a href=\\\"#\\\">@johnsmith</a>\\\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\\\"#\\\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com.":
+  plural_id:
+  translations:
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> 將會在所有原本由 johnsmith@example.com 建立的議題和留言中加上「來自 <a href=\\\"#\\\">@johnsmith</a>」並將原本分配給 johnsmith@example.com 的所有議題設定 <a href=\\\"#\\\">@johnsmith</a> 為被指派人。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> adicionará \\\"Por <a href=\\\"#\\\">@johnsmith</a>\\\" a todas as issues e comentários originalmente criados por johnsmith@example.com e definirá <a href=\\\"#\\\">@johnsmith</a> como o responsável em todas as issues originalmente atribuídas a johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> は johnsmith@example.com による全ての課題とコメントに \\\"By <a href=\\\"#\\\">@johnsmith</a>\\\" を追加します。また、 <a href=\\\"#\\\">@johnsmith</a> を元々 johnsmith@example.com に割り当てられていた全ての課題の担当者として設定します。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> aggiungerà \\\"Da <a href=\\\"#\\\">@johnsmith</a>\\\"per tutti gli issue e i commenti creati originariamente da johnsmith@example.com, e imposterà <a href=\\\"#\\\">@johnsmith</a> come assegnatario su tutti gli issue originariamente assegnati a johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> 將會把「由 <a href=\\\"#\\\">@johnsmith</a>」加入到原本由 johnsmith@example.com 建立的所有議題和留言中，並將 <a href=\\\"#\\\">@johnsmith</a> 設為原本分配給johnsmith@example.com 所有議題的受讓人。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> adicionará \\\"Por <a href=\\\"#\\\">@johnsmith</a>\\\" a todos os problemas e comentários, originalmente, criados por johnsmith@example.com e definirá <a href=\\\"#\\\">@johnsmith</a> como o responsável de todos os problemas, originalmente, atribuídos a johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> 将会把“由<a href=\\\"#\\\">@johnsmith</a>”添加到原本由johnsmith@example.com创建的所有议题和评论中，并将 <a href=\\\"#\\\">@johnsmith</a> 设为原本分配给johnsmith@example.com所有问题的受让人。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> додасть \\\"<a href=\\\"#\\\">@johnsmith</a>\\\" до всіх задач та коментарів, що були створені johnsmith@example.com, а також призначить на <a href=\\\"#\\\">@johnsmith</a> усі задачі, які були призначені на на johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> fügt allen von johnsmith@example.com erstellten Tickets und Kommentaren \\\"Von <a href=\\\"#\\\">@johnsmith</a>\\\" hinzu und setzt <a href=\\\"#\\\">@johnsmith</a> als Zuständigen für alle Tickets die ursprünglich johnsmith@example.com zugewiesen waren."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> 은 원래 johnsmith@example.com이 생성한 모든 이슈와 의견에 \\\"By <a href=\\\"#\\\">@johnsmith</a>\\\"을 추가하고 원래 johnsmith@example.com에 할당된 모든 이슈에 양수인으로 <a href=\\\"#\\\">@ johnsmith</a> 로 설정합니다."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> ajoutera « Par <a href=\\\"#\\\">@johnsmith</a> » à tous les tickets et commentaires créés à l’origine par johnsmith@example.com, et tous les tickets initialement assignés à johnsmith@example.com seront assignés à <a href=\\\"#\\\">@johnsmith</a>."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> añadirá \\\"Por <a href=\\\"#\\\">@johnsmith</a>\\\" a todas las incidencias y comentarios creados por johnsmith@example.com, y colocará a <a href=\\\"#\\\">@johnsmith</a> como la persona asiganda a todas las incidencias inicialmente asignadas a johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> добавил \\\"<a href=\\\"#\\\">@johnsmith</a>\\\" ко всем обсуждениям и комментариям, изначально созданным johnsmith@example.com, и установил <a href=\\\"#\\\">@johnsmith</a> в качестве ответственного по всем обсуждениям, на которые изначально был назначен johnsmith@example.com."
+"<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> will add \\\"By John Smith\\\" to all issues and comments originally created by johnsmith@example.com.":
+  plural_id:
+  translations:
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> 將會在所有原本由 johnsmith@example.com 建立的跟進事宣和留言中加上「來自 John Smith」。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> adicionará \\\"Por John Smith\\\" a todas as issues e comentários originalmente criados por johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> は、johnsmith@example.com によって元々作成された全ての課題とコメントに \\\"By John Smith\\\" を追加します。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> aggiungerà \\\"Da John Smith\\\" per tutti i problemi e i commenti creati originariamente da johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> 將會把「由 John Smith」加入到原本由 johnsmith@example.com 建立的所有議題和留言中。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> adicionará \\\"Por John Smith\\\" a todos os problemas e comentários, originalmente, criados por johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> добавит \\\"От John Smith\\\" ко всем обсуждениям и комментариям, созданным johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> 将会把\\\"由John Smith\\\"添加到原本由johnsmith@example.com创建的所有议题和评论中。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> додасть \\\"John Smith\\\" до усіх задач та коментарів, які були створені johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> fügt \\\"Von John Smith\\\" zu allen Tickets und Kommentaren hinzu, die ursprünglich von johnsmith@example.com erstellt wurden."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> 은 johnsmith@example.com이 처음 생성한 모든 이슈와 주석에 \\\"By John Smith\\\"를 추가합니다."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code> ajoutera « Par John Smith » à tous les tickets et commentaires créés à l’origine par johnsmith@example.com."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"John Smith\\\"</code>añadirá \\\"por John Smith\\\" a todas las incidencias y comentarios creados originalmente por johnsmith@example.com."
+"<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> will add \\\"By johnsm...@example.com\\\" to all issues and comments originally created by johnsmith@example.com. The email address or username is masked to ensure the user's privacy.":
+  plural_id:
+  translations:
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> 將會在所有原本由 johnsmith@example.com 建立的議題和留言中加上「來自 johnsm...@example.com」。電子信箱位址或使用者名稱將受遮蔽，保障用家私隱。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> adicionará \\\"Por johnsm...@example.com\\\" a todas as issues e comentários originalmente criados por johnsmith@example.com. O endereço de e-mail ou nome de usuário é mascarado para garantir a privacidade do usuário."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> は、johnsmith@example.com が作成した全ての課題とコメントに \\\"By johnsm...@example.com\\\" を追加します。このメールアドレスやユーザー名を隠してユーザーのプライバシーを保護されます。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> Aggiungerà \\\"Da johnsm...@example.com\\\"per tutti i problemi e i commenti creati originariamente da johnsmith@example.com. L'indirizzo email o il nome utente sono mascherati per garantire la privacy dell'utente."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> 將會把「由 johnsm...@example.com」加入到原本由 johnsmith@example.com 建立的所有議題和留言中。為保護使用者的隱私，電子郵件地址或使用者名稱會被遮住。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> adicionará \\\"Por johnsm...@example.com\\\" a todos os problemas e comentários, originalmente, criados por johnsmith@example.com. O endereço de email ou nome de utilizador é ocultado para garantir a privacidade do utilizador."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> добавит \\\"От johnsm...@example.com\\\" ко всем обсуждениям и комментариям, созданным пользователем johnsmith@example.com. Почтовый адрес и имя пользователя скрываются для обеспечения конфиденциальности."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> 将会把\\\"由johnsm...@example.com\\\"添加到原本由johnsmith@example.com创建的所有议题和评论中。 为保护用户的隐私，电子邮件地址或用户名将被屏蔽。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> додасть \\\"johnsm...@example.com\\\" до усіх задач та коментарів, які були створені johnsmith@example.com. Ім’я користувача та його електронна адреса замасковані для забезпечення конфіденційності."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> fügt \\\"Von johnsm...@example.com\\\" zu allen Tickets und Kommentaren hinzu, die ursprünglich von johnsmith@example.com erstellt wurden. Die E-Mail-Adresse oder der Benutzername ist maskiert, um die Privatsphäre des/der Benutzers/Benutzerin zu gewährleisten."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm... @ example.com\\\"</code> 은 원래 johnsmith@example.com이 생성한 모든 이슈와 주석에 \\\"By johnsm... @ example.com\\\"을 추가합니다. 전자 메일 주소 또는 사용자 이름은 사용자의 개인 정보를 보호하기 위해 마스킹 처리됩니다."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> ajoutera « Par johnsm...@example.com » à tous les tickets et commentaires créés à l’origine par johnsmith@example.com. L’adresse de courriel ou le nom d’utilisateur est masqué pour garantir la confidentialité de l’utilisateur."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsm...@example.com\\\"</code> añadirá \\\"Por johnsm...@example.com\\\" a todas las incidencias y comentarios originalmente creados por johnsmith@example.com. El correo electrónico o nombre de usuario está oculto para asegurar la privacidad del usuario."
+"<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> will add \\\"By <a href=\\\"#\\\">johnsmith@example.com</a>\\\" to all issues and comments originally created by johnsmith@example.com. By default, the email address or username is masked to ensure the user's privacy. Use this option if you want to show the full email address.":
+  plural_id:
+  translations:
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> adicionará \\\"Por <a href=\\\"#\\\">johnsmith@example.com</a>\\\" a todas as issues e comentários originalmente criados por johnsmith@example.com. Por padrão, o endereço de e-mail ou nome de usuário é mascarado para garantir a privacidade do usuário. Use esta opção se você quiser mostrar o endereço de e-mail completo."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> は、johnsmith@example.com が作成した全ての課題とコメントに \\\"By <a href=\\\"#\\\">johnsmith@example.com</a>\\\" を追加します。デフォルトで、メールアドレスやユーザー名を隠してユーザーのプライバシーを保護されます。メールアドレスを全て表示したい場合、この方法を指定してください。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> 將會把「由 <a href=\\\"#\\\">@johnsmith</a>」加入到原本由 johnsmith@example.com 建立的所有議題和留言中。為保護使用者的隱私，電子郵件地址或使用者名稱預設會被遮住。如需顯示完整郵件地址，可使用此選項。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> adicionará \\\"Por <a href=\\\"#\\\">johnsmith@example.com</a>\\\" a todos os problemas e comentários, originalmente, criados por johnsmith@example.com. Por padrão, o endereço de email ou nome de utilizador é ocultado para garantir a privacidade do utilizador. Use esta opção se quiser mostrar o endereço de email completo."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> добавит \\\"От <a href=\\\"#\\\">johnsmith@example.com</a>\\\" ко всем обсуждениям и комментариям, созданным johnsmith@example.com. По умолчанию адрес почты и имя пользователя скрываются для обеспечения конфиденциальности. Используйте эту опцию, если хотите показывать полный адрес электронной почты."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> 将会把“由<a href=\\\"#\\\">@johnsmith</a>”添加到原本由johnsmith@example.com创建的所有议题和评论中。 为保护用户的隐私，电子邮件地址或用户名默认将被屏蔽。如需显示完整邮件地址，可使用此选项。"
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> додасть \\\"<a href=\\\"#\\\">johnsmith@example.com</a>\\\" до всіх задач та коментарів, які були створені johnsmith@example.com. За замовчуванням ім’я користувача та його електронна адреса заблоковані для забезпечення конфіденційності. Використовуйте цю опцію, якщо ви хочете показувати електронну адресу повністю."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> fügt \\\"Von <a href=\\\"#\\\">johnsmith@example.com</a>\\\" zu allen Tickets und Kommentaren hinzu, die ursprünglich von johnsmith@example.com erstellt wurden. Standardmäßig wird die E-Mail-Adresse maskiert, um den Datenschutz des Nutzers zu gewährleisten. Nutze diese Option, wenn du die volle E-Mail-Adresse anzeigen willst."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> 은 원래 johnsmith@example.com이 생성한 모든 이슈와 주석에 \\\"By <a href=\\\"#\\\">johnsmith@example.com</a>\\\"을 추가합니다. 기본적으로 이메일 주소 또는 사용자 이름은 가려져 있어서 사용자의 개인정보를 보호합니다. 전체 전자 메일 주소를 표시하려면 이 옵션을 사용하십시오."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> ajoutera « Par <a href=\\\"#\\\">johnsmith@example.com</a> » à tous les tickets et commentaires créés à l’origine par johnsmith@example.com. Par défaut, l’adresse de courriel ou le nom d’utilisateur est masqué pour garantir la confidentialité de l’utilisateur. Utilisez cette option si vous souhaitez afficher l’adresse de courriel complète."
+    - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> añadirá \\\"Por <a href=\\\"#\\\">johnsmith@example.com</a>\\\" a todas las incidencias y comentarios originalmente creados por johnsmith@example.com. Por defecto, el correo electrónico o el nombre de usuario está oculto para asegurar la privacidad del usuario. Utilice esta opción si desea mostrar la dirección de correo electrónico completa."
+"<code>Masked</code> to prevent the values from being displayed in job logs (must match certain regexp requirements).":
+  plural_id:
+  translations:
+"<code>Protected</code> to expose them to protected branches or tags only.":
+  plural_id:
+  translations:
+"<strong>%{group_name}</strong> group members":
+  plural_id:
+  translations:
+    - "<strong>%{group_name}</strong> 群組成員"
+    - "Membros do grupo <strong>%{group_name}</strong>"
+    - "<strong>%{group_name}</strong> グループのメンバー"
+    - "<strong>%{group_name}</strong> 群組的成員"
+    - "Membros do grupo <strong>%{group_name}</strong>"
+    - "<strong>%{group_name}</strong> участников группы"
+    - "<strong>%{group_name}</strong> 群组成员"
+    - "<strong>%{group_name}</strong> користувачі групи"
+    - "<strong>%{group_name}</strong> Gruppenmitglieder"
+    - "<strong>%{group_name}</strong> 그룹 멤버"
+    - "Membres du groupe <strong>%{group_name}</strong>"
+    - "miembros del grupo <strong>%{group_name}</strong>"
+    - "<strong>%{group_name}</strong> grup üyeleri"
+"<strong>%{label_name}</strong> <span>will be permanently deleted from %{subject_name}. This cannot be undone.</span>":
+  plural_id:
+  translations:
+"<strong>Deletes</strong> source branch":
+  plural_id:
+  translations:
+    - "<strong>刪除</strong>來源分支"
+    - "<strong>Apagar</strong> branch de origem"
+    - "ソースブランチを<strong>削除</strong>"
+    - "<strong>刪除</strong>來源分支"
+    - "<strong>Apagar</strong> o ramo de origem"
+    - "<strong>Удаляет</strong> исходную ветку"
+    - "<strong>删除</strong>源分支"
+    - "<strong>Видаляє</strong> гілку-джерело"
+    - "<strong>Löscht</strong> den Quellbranch"
+    - "소스 브랜치 <strong>삭제</strong>"
+    - "<strong>Supprime</strong> la branche source"
+    - "<strong>elimina</strong> la rama origen"
+    - "Kaynak dalı <strong>siler</strong>"
+"A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project.":
+  plural_id:
+  translations:
+    - "Um fork é uma cópia de um projeto.<br />Fork de um repositório permite que você faça alterações sem afetar o projeto original."
+    - "フォークはプロジェクトのコピーです。<br />リポジトリをフォークすると、元のプロジェクトに影響を与えずに変更することができます。"
+    - "分叉是專案的複本。<br />分叉版本庫讓您在不影響原始專案的情況下，進行變更。"
+    - "Um fork é uma cópia de um projeto.<br />Bifurcação de um repositório permite que faças alterações sem afetar o projeto original."
+    - "Ответвление - это копия проекта.<br />Ответвление репозитория позволяет вносить изменения, не влияя на исходный проект."
+    - "派生是项目的副本。<br />仓库的派生允许您在不影响原始项目的情况下进行更改。"
+    - "Форк - це копія проєкту.<br />Форк репозиторію дозволяє вносити зміни без впливу на оригінальний проєкт."
+    - "Ein Fork ist eine Kopie eines Projekts.<br />Wenn du ein Repository forkst, kannst du, ohne Auswirkungen auf das ursprüngliche Projekt, Änderungen vornehmen."
+    - "포크는 프로젝트의 사본입니다.<br />저장소를 포크하면 원래 프로젝트에 영향을주지 않고 변경할 수 있습니다."
+    - "Un fork es una copia de un proyecto.<br />Realizar un fork de un repositorio le permite realizar cambios sin afectar al proyecto original."
+"Badges|You are going to delete this badge. Deleted badges <strong>cannot</strong> be restored.":
+  plural_id:
+  translations:
+    - "Você está prestes a excluir este selo. Selos excluídos <strong>não podem</strong> ser restaurados."
+    - "このバッジを削除しようとしています。削除されたバッジは<strong>復元できません</strong>。"
+    - "Estás prestes a apagar este emblema. Emblemas apagados <strong>não podem</strong> ser restaurados."
+    - "Вы собираетесь удалить этот значок. Удаленные значки <strong>не могут</strong> быть восстановлены."
+    - "您即将删除此徽章。徽章被删除后 <strong>不能</strong> 恢复。"
+    - "Ви збираєтеся видалити цей значок. Вилучені значки <strong>не можуть</strong> бути відновлені."
+    - "Du bist gerade dabei dieses Badge zu entfernen. Entfernte Badges können <strong>nicht</strong> rückgängig gemacht werden."
+    - "이 배지를 삭제하려고합니다. 삭제 된 배지는 <strong>복원 할 수 없습니다</strong>."
+    - "Vous êtes sur le point de supprimer ce badge. Les badges supprimés <strong>ne peuvent pas</strong> être restaurés."
+    - "Va a eliminar esta insignia. Las insignias eliminadas <strong>no se pueden</strong> restaurar."
+    - "Bu rozeti sileceksiniz. Silinen rozetler geri <strong>yüklenemez</strong>."
+"BillingPlans|Your GitLab.com %{plan} trial will <strong>expire after %{expiration_date}</strong>. You can retain access to the %{plan} features by upgrading below.":
+  plural_id:
+  translations:
+    - "GitLab.com の %{plan} の試用版は、<strong>%{expiration_date}後に有効期限が切れます</strong>。 以下をアップグレードして、%{plan} の機能へのアクセスをそのままにできます。"
+    - "您的GitLab.com%{plan}试用将在<strong>%{expiration_date}过期</strong>。您可以通过以下方式升级以保留对%{plan}功能的访问权限。"
+    - "Ваш пробний період використання GitLab.com %{plan} закінчується <strong>%{expiration_date}</strong>. Ви можете зберегти доступ до функцій %{plan} шляхом оновленням нижче."
+    - "Su periodo de prueba de GitLab.com %{plan} <strong>caducará después del %{expiration_date}</strong>. Puede conservar el acceso a las %{plan} funciones actualizando la versión %{plan} de GitLab.com a continuación."
+"Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}":
+  plural_id:
+  translations:
+    - "分支 <strong>%{branch_name}</strong> 已創建。如需設置自動部署， 請選擇合適的 GitLab CI Yaml 模板併提交更改。%{link_to_autodeploy_doc}"
+    - "O branch <strong>%{branch_name}</strong> foi criado. Para configurar o deploy automático, selecione um modelo de Yaml do GitLab CI e commit suas mudanças. %{link_to_autodeploy_doc}"
+    - "<strong>%{branch_name}</strong> ブランチが作成されました。自動デプロイを設定するには、GitLab CI Yaml テンプレートを選択して、変更をコミットしてください。 %{link_to_autodeploy_doc}"
+    - "La branch <strong>%{branch_name}</strong> è stata creata. Per impostare un rilascio automatico scegli un template CI di Gitlab e committa le tue modifiche %{link_to_autodeploy_doc}"
+    - "O ramo <strong>%{branch_name}</strong> foi criado. Para configurar a implantação automática, seleciona um modelo de Yaml do GitLab CI e envia as tuas alterações. %{link_to_autodeploy_doc}"
+    - "Ветка <strong>%{branch_name}</strong> создана. Для настройки автоматического развертывания выберите YAML-шаблон для GitLab CI и зафиксируйте свои изменения. %{link_to_autodeploy_doc}"
+    - "已创建分支 <strong>%{branch_name}</strong> 。如需设置自动部署， 请选择合适的 GitLab CI Yaml 模板并提交更改。%{link_to_autodeploy_doc}"
+    - "Гілка <strong>%{branch_name}</strong> створена. Для настройки автоматичного розгортання виберіть GitLab CI Yaml-шаблон і закомітьте зміни. %{link_to_autodeploy_doc}"
+    - "Клонът <strong>%{branch_name}</strong> беше създаден. За да настроите автоматичното внедряване, изберете Yaml шаблон за GitLab CI и подайте промените си. %{link_to_autodeploy_doc}"
+    - "Branch <strong>%{branch_name}</strong> wurde erstellt. Um die automatische Bereitstellung einzurichten, wähle eine GitLab CI Yaml Vorlage und committe deine Änderungen. %{link_to_autodeploy_doc}"
+    - "<strong>%{branch_name}</strong> 브랜치가 생성되었습니다. 자동 배포를 설정하려면 GitLab CI Yaml 템플릿을 선택하고 변경 사항을 적용하십시오. %{link_to_autodeploy_doc}"
+    - "La branĉo <strong>%{branch_name}</strong> estis kreita. Por agordi aŭtomatan disponigadon, bonvolu elekti Yaml-ŝablonon por GitLab CI kaj enmeti viajn ŝanĝojn. %{link_to_autodeploy_doc}"
+    - "La branche <strong>%{branch_name}</strong> a été créée. Pour mettre en place le déploiement automatisé, sélectionnez un modèle de fichier YAML pour l’intégration continue (CI) de GitLab, et validez les modifications. %{link_to_autodeploy_doc}"
+    - "La rama <strong>%{branch_name}</strong> fue creada. Para configurar el auto despliegue, escoge una plantilla Yaml para GitLab CI y envía tus cambios. %{link_to_autodeploy_doc}"
+"Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision.":
+  plural_id:
+  translations:
+    - "Mudanças serão mostradas se revisão de <b>origem</b> tiver sofrido merge na revisão <b>alvo</b>."
+    - "<b>source</b>リビジョンが<b>target</b>リビジョン内に取り込まれているような変更として表示されます"
+    - "As alterações são mostradas como se a revisão de <b>origem</b> estivesse a ser mesclada na revisão de <b>destino</b>."
+    - "Показаны изменения как будто произошло слияние ревизии кода <b>источника</b> с <b>целевой</b> ревизией кода."
+    - "差异显示方式依<b>源</b>版本合并到<b>目标</b>版本的形式。"
+    - "Зміни відображаються так, ніби <b>редакція-джерело</b> була злита в <b>цільову редакцію</b>."
+    - "Änderungen werden angezeigt, als ob die <b>Quell</b>-Revision in die <b>Ziel</b>-Revision gemerged wurde."
+    - "변경 사항은 <b>source</b> 리비전이 <b>target</b> 리비전에 머지된 것처럼 표시됩니다."
+    - "Les modifications sont affichées comme si la révision <b>source</b> était fusionnée dans la révision<b>cible</b>."
+    - "Los cambios se muestran como si la revisión del <b>origen</b> se ha fusionado con la revisión del <b>objetivo</b>."
+"Choose <strong>Create archive</strong> and wait for archiving to complete.":
+  plural_id:
+  translations:
+    - "Escolha <strong>Criar arquivo</strong> e aguarde até que o arquivamento seja concluído."
+    - "<strong>アーカイブの作成</strong>を選択し、アーカイブ作成の完了をお待ちください。"
+    - "Escolhe <strong>Criar arquivo</strong> e aguarda até que o arquivamento seja concluído."
+    - "选择<strong>创建归档</strong> 并等待归档过程完成。"
+    - "Оберіть <strong>Створити архів</strong> і чекайте, поки архівування буде завершено."
+    - "Wähle <strong>Archiv erstellen</strong> und warte, bis die Archivierung abgeschlossen ist."
+    - "<strong>보관 파일 생성</strong>을 선택하고 보관이 완료 될 때까지 기다립니다."
+    - "Sélectionnez <strong>Créer une archive</strong> et attendez que l’archivage soit terminé."
+    - "Elija <strong>Crear archivo</strong> y espere a que se complete el archivo."
+"Choose <strong>Next</strong> at the bottom of the page.":
+  plural_id:
+  translations:
+    - "Escolha <strong>Próximo</strong> na parte inferior da página."
+    - "このページの下部にある<strong>次へ</strong>を選択してください。"
+    - "Escolhe <strong>Próximo</strong> na parte inferior da página."
+    - "选择页面底部的<strong>下一步</strong>。"
+    - "Оберіть <strong>Далі</strong> внизу сторінки."
+    - "Wähle <strong>Nächste</strong> unten auf der Seite."
+    - "페이지의 아래의 <strong>다음</strong> 선택"
+    - "Cliquez sur <strong>Suivant</strong> au bas de la page."
+    - "Elija <strong>Siguiente</strong> en la parte inferior de la página."
+    - "Sayfanın altındaki <strong>Sonraki</strong> düğmesini seçin."
+"Choose between <code>clone</code> or <code>fetch</code> to get the recent application code":
+  plural_id:
+  translations:
+    - "Escolha entre <code>clone</code> ou <code>fetch</code> para obter o código do aplicativo recente"
+    - "<code>clone</code> または <code>fetch</code> を選択して最新のアプリケーションコードを取得してください"
+    - "Escolhe entre <code>clone</code> ou <code>fetch</code> para obter o código da aplicação recente"
+    - "选择 <code>克隆</code> 或 <code>拉取</code> 以获取最近的应用程序代码"
+    - "Оберіть між <code>clone</code> та<code>fetch</code> щоб отримати найновіший код програми"
+    - "Wähle zwischen <code>clone</code> oder <code>fetch</code>, um den aktuellen Anwendungscode zu erhalten"
+    - "최근 응용 프로그램 코드를 얻으려면 <code>클론</code> 또는 <code>fetch</code>를 선택하십시오."
+    - "Choisissez entre <code>clone</code> ou <code>fetch</code> pour obtenir les dernières modifications du code de l’application"
+    - "Elija entre <code>clone</code> o <code>fetch</code> para obtener el código de la aplicación más reciente"
+    - "Wybierz pomiędzy <code>klonem</code> lub <code>pobierz</code> aby uzyskać najnowszy kod aplikacji"
+"Click any <strong>project name</strong> in the project list below to navigate to the project milestone.":
+  plural_id:
+  translations:
+    - "在專案列表點擊任何<strong>專案名稱</strong>，將轉跳到專案的里程碑。"
+    - "Clique em qualquer <strong>nome de projeto</strong> na lista a seguir para navegar para o marco do projeto."
+    - "プロジェクトリストで<strong>プロジェクト名</strong>をクリックすると、プロジェクトのマイルストーンに移動します。"
+    - "Clica em qualquer <strong>nome de projeto</strong> na lista a seguir para navegar para o objetivo do projeto."
+    - "Выберите из списка любой <strong>проект</strong>, чтобы перейти к этапу проекта."
+    - "单击下面项目列表中的任何 <strong>项目名称</strong> 跳转到项目里程碑。"
+    - "Клікніть по будь-якому <strong>імені проекту</strong> зі списку нижче для того, щоб перейти до етапу проекту."
+    - "Klicke auf einen beliebigen <strong>-Projektnamen</strong> in der folgenden Projektliste, um zum Projektmeilenstein zu navigieren."
+    - "아래 프로젝트 목록에서 <strong>프로젝트 이름</strong>을 눌러 프로젝트 마일스톤을 봅니다."
+    - "Cliquez sur n’importe quel <strong>nom de projet</strong> dans la liste des projets ci‐dessous pour naviguer jusqu’au jalon du projet."
+    - "Haga clic en cualquier <strong>nombre de proyecto</strong> en la lista de proyectos que se muestra a continuación para navegar hasta el hito de proyecto correspondiente."
+"Click the <strong>Download</strong> button and wait for downloading to complete.":
+  plural_id:
+  translations:
+    - "Clique no botão <strong>Baixar</strong> e aguarde a conclusão do download."
+    - "<strong>ダウンロード</strong> ボタンをクリックし、ダウンロードの完了をお待ちください。"
+    - "Clica no botão <strong>Transferir</strong> e aguarda a finalização do mesmo."
+    - "点击 <strong>下载</strong> 按钮，等待下载完成。"
+    - "Натисніть кнопку <strong>Завантаження</strong> і зачекайте поки завантаження не завершиться."
+    - "Klicke auf den <strong>Download</strong>-Button und warte bis das Herunterladen abgeschlossen ist."
+    - "<strong>다운로드</strong> 버튼을 클릭하고 다운로드가 완료 될 때까지 기다려 주세요."
+    - "Cliquez sur le bouton <strong>Télécharger</strong> et attendez que le téléchargement soit terminé."
+    - "Haga click en el botón <strong>Descargar</strong> y espere a que se complete la descarga."
+    - "<strong>İndirme</strong> düğmesini tıklayın ve indirme işleminin tamamlanmasını bekleyin."
+"Click the <strong>Promote</strong> button in the top right corner to promote it to a group milestone.":
+  plural_id:
+  translations:
+    - "點擊左上角的<strong>提升</strong>按鈕，將提升至群組里程碑。"
+    - "Clique no botão <strong>Promover</strong> no canto superior direito para promover a um marco de grupo."
+    - "右上の<strong>昇格</strong>ボタンをクリックしてグループマイルストーンへ昇格"
+    - "Clica no botão <strong>Promover</strong> no canto superior direito para promovê-lo para um objetivo de grupo."
+    - "点击右上角的 <strong>升级</strong> 按钮以升级到到群组里程碑。"
+    - "Натисніть кнопку <strong>Перенести</strong> у правому верхному куті щоб перенести етап на рівень групи."
+    - "Klicke auf die Schaltfläche <strong>Hochstufen</strong> in der oberen rechten Ecke, um einen ihn zu einem Gruppenmeilenstein hochzustufen."
+    - "오른쪽 상단 모서리의 <strong>승격</strong> 단추를 눌러 그룹 마일스톤으로 보낼 수 있습니다."
+    - "Cliquez sur le bouton <strong>Promouvoir</strong> en haut à droite pour le promouvoir en tant que jalon de groupe."
+    - "Haga clic sobre el botón <strong>Promocionar</strong> , situado en la esquina superior derecha para promocionarlo a un hito de grupo."
+"Click the <strong>Select none</strong> button on the right, since we only need \\\"Google Code Project Hosting\\\".":
+  plural_id:
+  translations:
+    - "Clique no botão à direita <strong>Selecionar nenhum</strong>, uma vez que só precisamos do \\\"Google Code Project Hosting\\\"."
+    - "右の<strong>Select none</strong>ボタンをクリックしてください。これは、GitLabに必要なのは\\\"Google Code Project Hosting\\\"だけだからです。"
+    - "Clica no botão <strong>Selecionar nenhum</strong> à direita, pois, só precisamos de \\\"Google Code Project Hosting\\\"."
+    - "请点击右边的 <strong>无</strong> 按钮，因为我们只需要“Google Code项目托管”。"
+    - "Натисніть кнопку <strong>Обрати нічого</strong> справа, оскільки нам потрібен лише \\\"Хостинг проектів Google Code\\\"."
+    - "Klicke auf die Schaltfläche <strong>Keine auswählen</strong> auf der rechten Seite, da wir nur \\\"Google Code Project Hosting\\\" benötigen."
+    - "오른쪽의 <strong>선택 없음</strong> 버튼을 클릭 하십시오. 우리는 \\\"\\\"Google Code Project Hosting\\\" 만 사용하기 때문에 다른 것은 필요 없습니다. "
+    - "Cliquez sur le bouton <strong>Sélectionner aucun</strong> sur la droite, puisque nous n’avons seulement besoin que de « Google Code Project Hosting »."
+    - "Haga click en el botón <strong>Seleccionar uno</strong> en la parte derecha, ya que sólo necesitamos \\\"Google Code Project Hosting\\\"."
+"ClusterIntegration| This will permanently delete the following resources: <ul> <li>All installed applications and related resources</li> <li>The <code>gitlab-managed-apps</code> namespace</li> <li>Any project namespaces</li> <li><code>clusterroles</code></li> <li><code>clusterrolebindings</code></li> </ul>":
+  plural_id:
+  translations:
+    - "これにより、次のリソースは完全に削除されます <ul> <li>インストールされているすべてのアプリケーションと関連したリソース</li> <li> <code>gitlab-managed-apps</code> 名前空間</li> <li>任意のプロジェクト名前空間</li> <li><code>clusterroles</code></li> <li><code>clusterrolebindings</code></li> </ul>"
+    - "此操作将永久删除下列资源： <ul> <li>所有已安装的应用程序和相关资源</li> <li> <code>GitLab管理的应用</code> 命名空间</li> <li>任何项目命名空间</li> <li><code>clusterroles</code></li> <li><code>clusterrolebindings</code></li> </ul>"
+    - "Esto eliminará permanentemente los siguientes recursos: <ul> <li>Todas las aplicaciones instaladas y sus recursos relacionados</li> <li>El espacio de nombres <code>gitlab-managed-apps</code></li> <li>Cualquier espacio de nombres de proyecto</li> <li><code> clusterroles </code></li> <li><code>clusterrolebindings</code></li> </ul>"
+"ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes <code>cluster-admin</code> privileges.":
+  plural_id:
+  translations:
+    - "クラスター管理プロジェクトを使用して、Kubernetes <code> cluster-admin </code>特権で展開ジョブを実行できます。"
+    - "Проект управления кластером можно использовать для запуска заданий развертывания с привилегиями Kubernetes <code>cluster-admin</code>."
+    - "集群管理的项目可以通过Kubernetes<code>cluster-admin</code>权限来运行部署作业。"
+    - "Проєкт управління кластером може використовуватися для виконання завдань розгортання з привілеями Kubernetes <code>cluster-admin</code>."
+"Configure a <code>.gitlab-webide.yml</code> file in the <code>.gitlab</code> directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}":
+  plural_id:
+  translations:
+    - "Configure um arquivo <code>.gitlab-webide.yml</code> no diretório <code>.gitlab</code> para começar a usar o Terminal Web. %{helpStart}Saiba mais.%{helpEnd}"
+    - "Webターミナルの使用を開始するには、 <code>.gitlab</code> ディレクトリの <code>.gitlab-webide.yml</code> ファイルを設定します。 詳細は%{helpStart}こちら%{helpEnd}です。"
+    - "Сконфигурируйте файл <code>.gitlab-webide.yml</code> в каталоге <code>.gitlab</code> чтобы начать использовать веб-терминал. %{helpStart}Узнайте больше.%{helpEnd}"
+    - "在 <code>.gitlab</code> 目录中配置 <code>.gitlab-webide.yml</code> 文件以开始使用Web终端。 %{helpStart}了解更多。%{helpEnd}"
+    - "Налаштуйте файл <code>.gitlab-webide.yml</code> у директорії <code>.gitlab</code>, щоб почати використовувати Веб-термінал. %{helpStart}Докладніше.%{helpEnd}"
+    - "웹 터미널 사용을 시작하도록 <code>.gitlab</code> 디렉토리에서 <code>.gitlab-webide.yml</code> 파일을 구성하십시오. %{helpStart}자세히 알아보십시오.%{helpEnd}"
+    - "Configure un archivo <code>.gitlab-webide.yml</code> en el directorio <code>.gitlab</code> para comenzar a utilizar el Terminal Web. %{helpStart}Aprende más.%{helpEnd}"
+"ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed.":
+  plural_id:
+  translations:
+    - "<strong>%{created_count}</strong> 件を作成、<strong>%{closed_count}</strong>件をクローズしました。"
+    - "已创建<strong>%{created_count}</strong> 个，已关闭<strong>%{closed_count}</strong>个。"
+    - "<strong>%{created_count}</strong> створено, <strong>%{closed_count}</strong> закрито."
+    - "<strong>%{created_count}</strong> creado, <strong>%{closed_count}</strong> cerrado."
+    - "<strong>%{created_count}</strong> oluşturuldu, <strong>%{closed_count}</strong> kapatıldı."
+"ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{merged_count}</strong> merged.":
+  plural_id:
+  translations:
+"ContributionAnalytics|<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors.":
+  plural_id:
+  translations:
+    - "<strong>%{pushes}</strong>回のプッシュ、<strong>%{commits}</strong>回以上のコミットが貢献者<strong>%{people}</strong>によって行われました。"
+    - "<strong>%{pushes}</strong>次推送，含来自<strong>%{people}</strong>位贡献者的<strong>%{commits}</strong>次以上提交。"
+    - "<strong>%{pushes}</strong> отправок — больше чем <strong>%{commits}</strong> коммитов от <strong>%{people}</strong> участников."
+"Contributions for <strong>%{calendar_date}</strong>":
+  plural_id:
+  translations:
+    - "Contribuições para <strong>%{calendar_date}</strong>"
+    - "<strong>%{calendar_date}</strong>の貢献"
+    - "<strong>%{calendar_date}</strong>的贡献"
+    - "Внески за <strong>%{calendar_date}</strong>"
+    - "Beiträge am <strong>%{calendar_date}</strong>"
+    - "<strong>%{calendar_date}</strong>의 기여도"
+    - "Contributions du <strong>%{calendar_date}</strong>"
+    - "Contribuciones para <strong>%{calendar_date}</strong>"
+    - "<strong>%{calendar_date}</strong> için katkılar"
+"Create and provide your GitHub %{link_start}Personal Access Token%{link_end}. You will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import.":
+  plural_id:
+  translations:
+    - "GitHub の%{link_start}Personal Access Token%{link_end} を作成して、提供してください。<code>repo</code> スコープを選択する必要があります。これによりインポートできる公開または非公開リポジトリの一覧を表示できます。"
+    - "请创建并提供您的GitHub%{link_start}个人访问令牌%{link_end}。您需要选择<code>repo</code>范围，这样我们才可以显示可导入的公共和私有仓库的列表。"
+    - "Створіть або вкажіть ваш %{link_start}Персональний токен доступу%{link_end} GitHub. Вам необхідно буде вибрати область дії <code>repo</code> для того, щоб ми змогли відобразити список ваших публічних та приватних репозиторіїв, доступних для імпорту."
+    - "Cree y proporcione su %{link_start}token de acceso personal %{link_end}de GitHub. Necesitará seleccionar el alcance del <code>repositorio</code>, para que podamos mostrar una lista de sus repositorios públicos y privados que estén disponibles para importar."
+"Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here.":
+  plural_id:
+  translations:
+    - "デプロイステージの環境を <code>.gitlab-ci.yml</code> で定義して、デプロイを追跡します。"
+    - "Обозначьте окружения на этапе(ах) развёртывания в <code>.gitlab-ci.yml</code> для отслеживания развёртывания здесь."
+    - "在<code>.githab-ci.yml</code>的 deploy 阶段中定义 environment 来跟踪部署。"
+    - "Визначте середовища на стадії розгортання у <code>.gitlab-ci.yml</code> щоб відстежувати розгортання тут."
+    - "Defina entornos en las distintas etapas de despliegue en el fichero <code>.gitlab-ci.yml</code> para llevar un registro de las implementaciones desde aquí."
+"Depends on <strong>%d closed</strong> merge request.":
+  plural_id: "Depends on <strong>%d closed</strong> merge requests."
+  translations:
+    - "В зависимости от <strong>%d закрытого</strong> запроса на слияние."
+    - "В зависимости от <strong>%d закрытых</strong> запросов на слияние."
+    - "В зависимости от <strong>%d закрытых</strong> запросов на слияние."
+    - "В зависимости от <strong>%d закрытых</strong> запросов на слияние."
+    - "依赖于<strong>%d个已关闭的</strong>合并请求"
+    - "Залежить від %d <strong>закритого</strong> запиту на злиття."
+    - "Залежить від %d <strong>закритих</strong> запитів на злиття."
+    - "Залежить від %d <strong>закритих</strong> запитів на злиття."
+    - "Залежить від %d <strong>закритих</strong> запитів на злиття."
+    - "<strong>%d kapanan</strong> birleştirme isteğine bağlıdır."
+    - "<strong>%d kapanan</strong> birleştirme isteğine bağlıdır."
+"Don't worry, you can access this tour by clicking on the help icon in the top right corner and choose <strong>Learn GitLab</strong>.":
+  plural_id:
+  translations:
+    - "心配しないでください。右上にあるヘルプアイコンをクリックして、このツアーにアクセスし、 <strong> GitLabを学ぶ </strong>を選択してください。"
+    - "Не беспокойтесь, вы можете получить доступ к этому туру, нажав на значок справа в верхнем углу и выберите <strong>Узнать GitLab</strong>."
+    - "不用担心，您可以通过单击右上角的帮助图标来访问此导览，然后选择 <strong>Learn GitLab</strong>。"
+    - "Не хвилюйтеся, ви завжди зможете отримати доступ до цієї екскурсії, натиснувши кнопку довідки у верхньому правому куті і вибравши <strong>Дізнатися про GitLab</strong>."
+    - "No se preocupe, puede acceder a este visita haciendo clic sobre el ícono de ayuda situado en la esquina superior derecha y seleccionando <strong>aprender GitLab</strong>."
+"Environment variables are applied to all project environments in this instance via the Runner. You can use environment variables for passwords, secret keys, etc. Make variables available to the running application by prepending the variable key with <code>K8S_SECRET_</code>. You can set variables to be:":
+  plural_id:
+  translations:
+"Example: <code>acme.com,acme.co.in,acme.uk</code>.":
+  plural_id:
+  translations:
+"Fill in the fields below, turn on <strong>%{enable_label}</strong>, and press <strong>%{save_changes}</strong>":
+  plural_id:
+  translations:
+    - "Preencha nos campos abaixo, ative o <strong>%{enable_label}</strong> e pressione <strong>%{save_changes}</strong>"
+    - "下記項目に必要事項を入力し、 <strong>%{enable_label}</strong>をオンにして、 <strong>%{save_changes}</strong>を押してください。"
+    - "填写下面的字段，启用<strong>%{enable_label}</strong>，然后点击<strong>%{save_changes}</strong>"
+    - "Заповніть поля нижче, увімкніть <strong>%{enable_label}</strong> та натисніть <strong>%{save_changes}</strong>"
+    - "Fülle die Felder unten aus, schalte <strong>%{enable_label}</strong> an, und drücke <strong>%{save_changes}</strong>"
+    - "Renseignez les champs ci‐dessous, activez <strong>%{enable_label}</strong> et appuyez sur <strong>%{save_changes}</strong>"
+    - "Rellene los siguientes campos, active <strong>%{enable_label}</strong>y presione <strong>%{save_changes}</strong>"
+"Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file.":
+  plural_id:
+  translations:
+    - "Encontre o arquivo recém-extraído <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code>."
+    - "新しく抽出された <code>テイクアウト/ Googleコードプロジェクトホスティング/ GoogleCodeProjectHosting.json</code> ファイルを探します。"
+    - "查找新提取的 <code>Takeout/Google Code项目托管/GoogleCodeProjectHosting. json</code> 文件。"
+    - "Знайдіть щойно розпакований <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> файл."
+    - "Suche die neu extrahierte Datei <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code>."
+    - "Cherchez le fichier <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> fraîchement extrait."
+    - "Busque el archivo extraído <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code>."
+"Finish setting up your dedicated account for <strong>%{group_name}</strong>.":
+  plural_id:
+  translations:
+    - "Termine de configurar sua conta dedicada para <strong>%{group_name}</strong>."
+    - "<strong>%{group_name} </strong>の専用アカウントの設定を完了してください。"
+    - "Завершите настройку вашей учетной записи для <strong>%{group_name}</strong>."
+    - "完成您的<strong>%{group_name}</strong>专用帐户设置。"
+    - "Завершіть налаштування вашого виділеного облікового запису для <strong>%{group_name}</strong>."
+    - "Finalizar la configuración de su cuenta dedicada para <strong>%{group_name}</strong>."
+"From <code>%{source_title}</code> into":
+  plural_id:
+  translations:
+    - "<code>%{source_title}</code> から"
+    - "Від <code>%{source_title}</code> до"
+"Geo|You are on a secondary, <b>read-only</b> Geo node. If you want to make changes, you must visit this page on the %{primary_node}.":
+  plural_id:
+  translations:
+    - "Você está em um nó Geo secundário <b>somente para leitura</b>. Se você quiser fazer mudanças, você deve visitar essa página no %{primary_node}."
+    - "あなたは<b>読み取り専用の</b>セカンダリGeoノードにいます。変更を加えたい場合は、%{primary_node} のこのページにアクセスする必要があります。"
+    - "Вы находитесь на вторичном узле Geo в режиме <b>только для чтения</b>. Если вы хотите внести изменения, вы должны зайти на эту же страницу на %{primary_node}."
+    - "当前正在访问Geo次要 <b>只读 </b>节点。如需进行任何写入操作，必须访问%{primary_node}。"
+    - "Ви знаходитесь на вторинному <b>лише для читання</b> Geo-вузлі. Якщо ви хочете внести будь-які зміни, ви повинні відвідати %{primary_node}."
+    - "Du befindest dich auf einem sekundären, <b>read-only</b> Geo-Knoten. Um Änderungen vorzunehmen, musst du diese Seite auf dem %{primary_node} aufrufen."
+    - "Vous êtes sur un nœud Geo secondaire <b>en lecture seule</b>. Si vous voulez apporter des modifications, vous devez le faire depuis cette page sur le %{primary_node}."
+    - "Está en un nodo Geo secundario de <b>sólo lectura</b>. Si quiere realizar cambios, debe visitar esta página en %{primary_node}."
+"Geo|You are on a secondary, <b>read-only</b> Geo node. You may be able to make a limited amount of changes or perform a limited amount of actions on this page.":
+  plural_id:
+  translations:
+    - "Você está em um nó Geo secundário <b>somente para leitura </b>. Você pode ser capaz de fazer um número limitado de mudanças ou executar uma quantidade limitada de ações nessa página."
+    - "あなたは<b>読み取り専用の</b>セカンダリGeoノードにいます。このページでは限定的な変更・操作をすることができます。"
+    - "Вы находитесь на вторичном, доступном <b>только для чтения</b>, узле Geo. Вы можете осуществлять ограниченное количество изменений и действий на данной странице."
+    - "当前正在访问Geo次要 <b>只读 </b>节点。您可以在此页面上进行有限的更改或执行有限的操作。"
+    - "Ви знаходитесь на вторинному <b>лише для читання</b> Geo-вузлі. Ви зможете вносити лише обмежену кількість змін та виконувати обмежений набір операцій з цієї сторінки."
+    - "Du befindest dich auf einem sekundären, <b>read-only</b> Geo-Knoten. Möglicherweise kannst du nur eine begrenzte Anzahl an Änderungen oder Aktionen auf dieser Seite durchführen."
+    - "Vous êtes sur un nœud Geo secondaire <b>en lecture seule</b>. Nous ne pourrez effectuer que des modifications ou des actions limitées depuis cette page."
+    - "Está en un nodo secundario, <b>de solo lectura</b> Geo. Es posible que pueda realizar una cantidad limitada de cambios o realizar una cantidad limitada de acciones en esta página."
+"Git LFS objects will be synced in pull mirrors if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. They will <strong>not</strong> be synced in push mirrors.":
+  plural_id:
+  translations:
+    - "Objetos Git de LFS serão sincronizados em espelhos de pull se o LFS for %{docs_link_start}ativado para o projeto%{docs_link_end}. Eles <strong>não</strong> serão sincronizados em espelhos de push."
+    - "LFSが %{docs_link_start} このプロジェクトで有効になっている %{docs_link_end} 場合にGit LFS オブジェクト プルミラーに同期されます。これらはプッシュミラーに同期 <strong>しません</strong> 。"
+    - "Объекты GIt LFS будут синхронизироваться в pull-зеркала, если LFS %{docs_link_start} доступно для этого проекта%{docs_link_end}. Они <strong>не</strong> будут синхронизироваться в push-зеркала."
+    - "如%{docs_link_start}为项目启用%{docs_link_end}了LFS，则Git LFS对象将在拉取镜像时同步， 但<strong>不会</strong>在推送镜像时同步。"
+    - "Об’єкти Git LFS будуть синхронізуватися у pull-дзеркалах якщо LFS %{docs_link_start}увімкнено для проекту%{docs_link_end}. Вони <strong>не</strong> будуть синхронізуватися для push-дзеркал."
+    - "Los objetos Git LFS se sincronizarán en los servidores de replica si LFS está %{docs_link_start}habilitado para el proyecto%{docs_link_end}. <strong>no</strong> se sincronizarán en servidores espejos de push."
+"GitLabPages|Access Control is enabled for this Pages website; only authorized users will be able to access it. To make your website publicly available, navigate to your project's %{strong_start}Settings > General > Visibility%{strong_end} and select %{strong_start}Everyone%{strong_end} in pages section. Read the %{link_start}documentation%{link_end} for more information.":
+  plural_id:
+  translations:
+    - "此Pages网站已启用访问控制；只有经过授权的用户才能访问它。如果要公开您的网站，请转到你的项目的%{strong_start}设置 > 常规 > 可见性%{strong_end}并在Pages部分选择%{strong_start}所有人%{strong_end}。请查阅%{link_start}文档%{link_end}以获取更多信息。"
+    - "Контроль доступу увімкнено для цього сайту Pages; лише авторизовані користувачі зможуть отримати доступ до нього. Для того, щоб зробити його загальнодоступним, перейдіть у вашому проєкті до %{strong_start}Налаштування > Загальні > Видимість%{strong_end} та виберіть%{strong_start}Будь-хто%{strong_end} у розділі pages. Перегляньте %{link_start}документацію%{link_end} для додаткової інформації."
+"GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project's %{strong_start}Settings > General > Visibility%{strong_end} page.":
+  plural_id:
+  translations:
+    - "GitLab Pagesはこのプロジェクトでは無効になっています。 プロジェクトの%{strong_start} 設定> 全般> 可視性%{strong_end}ページで有効にできます。"
+    - "GitLab Pages отключены для этого проекта. Вы можете включить в поле %{strong_start}Настройки > Общие > Видимость%{strong_end} вашего проекта."
+    - "此项目禁用GitLab Pages。您可以在您的项目的%{strong_start}设置 > 常规 > 可见性%{strong_end} 页面启用。"
+    - "GitLab Pages вимкнено для цього проєкту. Ви можете їх увімкнути перейшовши на сторінку проєкту %{strong_start}Налаштування > Загальні > Видимість%{strong_end}."
+    - "Las páginas de GitLab están deshabilitadas para este proyecto. Puede habilitarlas en los ajustes %{strong_start} de su proyecto > General > Visibilidad%{strong_end}."
+"Go to <strong>Issues</strong> > <strong>Boards</strong> to access your personalized learning issue board.":
+  plural_id:
+  translations:
+"Groups with access to <strong>%{project_name}</strong>":
+  plural_id:
+  translations:
+    - "Grupos com acesso a <strong>%{project_name}</strong>"
+    - "<strong>%{project_name}</strong>へのアクセス権を持つグループ"
+    - "可以访问 <strong>%{project_name}</strong>"
+    - "Групи з доступом до <strong>%{project_name}</strong>"
+    - "Los grupos con acceso a <strong>%{project_name}</strong>"
+"In order to personalize your experience with GitLab<br>we would like to know a bit more about you.":
+  plural_id:
+  translations:
+    - "Для того, чтобы адаптировать ваш опыт работы с GitLab<br>, мы хотели бы узнать о вас немного больше."
+    - "Con el fin de adaptar su experiencia con GitLab<br>nos gustaría saber un poco más sobre usted."
+    - "Для того, щоб персоналізувати ваш досвід роботи з GitLab<br>,ми хотіли б дізнатися більше про вас."
+"In order to tailor your experience with GitLab we<br>would like to know a bit more about you.":
+  plural_id:
+  translations:
+    - "GitLabでの経験を調整するために、<br>もう少しあなたについて知りたいです。"
+    - "为了能量身定制您在GitLab的体验，我们<br>希望对您有更多了解。"
+    - "Для того, щоб адаптувати GitLab до вас нам<br>потрібно більше про вас дізнатися."
+    - "Para personalizar su experiencia con GitLab <br>nos gustaría conocer un poco más sobre usted."
+"Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>.":
+  plural_id:
+  translations:
+    - "Inclua o nome de usuário no URL, se necessário: <code>https: //username@gitlab.company.com/group/project.git</code>."
+    - "必要な場合、URL にユーザー名を含めます <code>https://username@gitlab.company.com/group/project.git</code>。"
+    - "如果需要，请在URL中包含用户名： <code>https://username@gitlab.company.com/group/project.git</code>。"
+    - "Якщо необхідно додайте ім'я користувача в URL: <code>https: //username@gitlab.company.com/group/project.git</code>."
+    - "Füge bei Bedarf den Benutzernamen in die URL ein: <code>https://benutzername@gitlab.company.com/group/project.git</code>."
+    - "Si besoin, ajouter le nom d’utilisateur dans l’URL : <code>https: //username@gitlab.company.com/group/project.git</code>."
+    - "Incluya el nombre de usuario en la URL en caso de que sea necesario: <code>https://nombredeusuario@gitlab.empresa.com/grupo/proyecto.git</code>."
+"Labels|<span>Promote label</span> %{labelTitle} <span>to Group Label?</span>":
+  plural_id:
+  translations:
+    - "<span>要讓標籤</span> %{labelTitle} <span>提升到群組標籤嗎？</span>"
+    - "<span>Promover a etiqueta</span> %{labelTitle} <span>para etiqueta do Grupo?</span>"
+    - "%{labelTitle} <span>ラベルをグループラベルに昇格しますか？</span>"
+    - "<span>Повысить метку</span> %{labelTitle} <span>до групповой метки?</span>"
+    - "<span>将标记</span> %{labelTitle} <span>升级为群组标记？</span>"
+    - "<span>Перенести мітку</span> %{labelTitle} <span>на рівень групи?</span>"
+    - "<span>Label</span> %{labelTitle} <span>zu Gruppenlabel hochstufen?</span>"
+    - "<span>라벨</span> %{labelTitle} <span>(을)를 그룹 라벨로 승격하시겠습니까?</span>"
+    - "<span>Promouvoir l’étiquette</span> %{labelTitle} <span>en étiquette de groupe ?</span>"
+    - "<span>¿Promocionar la etiqueta</span> %{labelTitle} <span>a etiqueta de grupo?</span>"
+"Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment.":
+  plural_id:
+  translations:
+    - "Travar este %{issuableDisplayName}? Apenas <strong>membros do projeto</strong> poderão comentar."
+    - "%{issuableDisplayName} をロックしますか？<strong>プロジェクトメンバー</strong> のみコメントできます。"
+    - "锁定此%{issuableDisplayName}吗？锁定后将只有<strong>项目成员</strong>可以发表评论。"
+    - "Заблокувати цю %{issuableDisplayName}? Лише <strong>учасники проекту</strong> зможуть коментувати."
+    - "%{issuableDisplayName} sperren? Es werden nur noch <strong>Projektmitglieder</strong> kommentieren können."
+    - "Verrouiller ce·t·te %{issuableDisplayName} ? Seuls les <strong>membres du projet</strong> seront en mesure de commenter."
+    - "¿Bloquear este %{issuableDisplayName}? Sólo los <strong>miembros del proyecto</strong> podrán comentar."
+"Members can be added by project <i>Maintainers</i> or <i>Owners</i>":
+  plural_id:
+  translations:
+    - "Os membros podem ser adicionados pelos <i>mantenedores</i> ou <i>proprietários</i> do projeto"
+    - "プロジェクト毎の<i>メンテナー</i>または<i>オーナー</i>がメンバーを追加することができます"
+    - "Os membros podem ser adicionados ao projeto <i>Responsáveis</i> ou <i>Proprietários</i>"
+    - "Участники могут быть добавлены в проект <i>Сопровождающим</i> или <i>Владельцем</i>"
+    - "项目 <i>维护者</i> 或 <i>所有者</i>可以添加成员"
+    - "Учасники можуть будуть додані <i>Керівниками</i> або <i>Власниками</i> проекту"
+    - "Los miembros se pueden añadir por proyecto <i>Mantenedores</i> o <i>Propietarios</i>"
+    - "Üyeler, <i>Sorumlu</i> veya <i>Sahipleri</i> tarafından eklenebilir"
+"Members of <strong>%{project_name}</strong>":
+  plural_id:
+  translations:
+    - "Membros de <strong>%{project_name}</strong>"
+    - "<strong>%{project_name}</strong>のメンバー"
+    - "Участники <strong>%{project_name}</strong>"
+    - "<strong>%{project_name}</strong>的成员"
+    - "Учасники <strong>%{project_name}</strong>"
+    - "Miembros de <strong>%{project_name}</strong>"
+    - "<strong>%{project_name}</strong> projesinin üyeleri"
+"Please refer to <a href=\\\"%{docs_url}\\\">%{docs_url}</a>":
+  plural_id:
+  translations:
+    - "<a href=\\\"%{docs_url}\\\">%{docs_url}</a>を参照してください"
+    - "请参考<a href=\\\"%{docs_url}\\\">%{docs_url}</a>"
+    - "Будь ласка перегляньте <a href=\\\"%{docs_url}\\\">%{docs_url}</a>"
+    - "Por favor, consulte <a href=\\\"%{docs_url}\\\">%{docs_url}</a>"
+"PrometheusService|<p class=\\\"text-tertiary\\\">No <a href=\\\"%{docsUrl}\\\">common metrics</a> were found</p>":
+  plural_id:
+  translations:
+    - "<p class=\\\"text-tertiary\\\">Nenhuma <a href=\\\"%{docsUrl}\\\">métrica comum</a> foi encontrada</p>"
+    - "<p class=\\\"text-tertiary\\\"><a href=\\\"%{docsUrl}\\\">共通メトリクス</a>は見つかりませんでした</p>"
+    - "<p class=\\\"text-tertiary\\\">Ни одной <a href=\\\"%{docsUrl}\\\">общей метрики</a> не найдено</p>"
+    - "<p class=\\\"text-tertiary\\\">无<a href=\\\"%{docsUrl}\\\">常用指标</a> </p>"
+    - "<p class=\\\"text-tertiary\\\">Ніяких <a href=\\\"%{docsUrl}\\\">загальних метрик</a> не знайдено</p>"
+    - "<p class=\\\"text-tertiary\\\">Es wurden keine <a href=\\\"%{docsUrl}\\\">allgemeinen Metriken</a> gefunden</p>"
+    - "<p class=\\\"text-tertiary\\\"><a href=\\\"%{docsUrl}\\\">공통 메트릭스</a>가 발견되지 않았습니다.</p>"
+    - "<p class=\\\"text-tertiary\\\">Aucune <a href=\\\"%{docsUrl}\\\">métrique commune</a> trouvée</p>"
+    - "<p class=\\\"text-tertiary\\\">No se han encontrado<a href=\\\"%{docsUrl}\\\">métricas comunes</a> </p>"
+"Read more about project permissions <strong>%{link_to_help}</strong>":
+  plural_id:
+  translations:
+    - "Saiba mais sobre as permissões do projeto <strong>%{link_to_help}</strong>"
+    - "プロジェクトの権限については <strong>%{link_to_help}</strong> を参照"
+    - "了解有关项目权限的更多信息 <strong>%{link_to_help}</strong>"
+    - "Дізнайтеся більше про права доступу в проекті <strong>%{link_to_help}</strong>"
+    - "Lies mehr über Projektberechtigungen <strong>%{link_to_help}</strong>"
+    - "Pour en savoir plus sur les autorisations de projet : <strong>%{link_to_help}</strong>"
+    - "Lea más sobre los permisos de este proyecto <strong>%{link_to_help}</strong>"
+"SSH host keys are not available on this system. Please use <code>ssh-keyscan</code> command or contact your GitLab administrator for more information.":
+  plural_id:
+  translations:
+    - "このシステムでは SSH ホスト鍵は使用できません。 <code>ssh-keyscan</code> コマンドを使用するか、GitLab の管理者に詳細をお問い合わせください。"
+    - "Ключи SSH хоста недоступны в этой системе. Пожалуйста, используйте команду <code>ssh-keyscan</code> или свяжитесь со своим администратором GitLab для получения дополнительной информации."
+    - "SSH主机密钥在此系统上不可用。请使用<code>ssh-keyscan</code>命令或与您的GitLab管理员联系以获取更多信息。"
+    - "SSH-ключі хоста не доступні в цій системі. Будь ласка, використовуйте команду <code>ssh-keyscan</code> або зверніться до вашого адміністратора GitLab для додаткової інформації."
+    - "Las claves SSH del host no se encuentran disponibles en este sistema. Utilice el comando <code>ssh-keyscan</code> o póngase en contacto con su administrador de GitLab para obtener más información."
+"Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right.":
+  plural_id:
+  translations:
+    - "Role para baixo até <strong>Google Code Project Hosting</strong> e ative a opção à direita."
+    - "<strong>Google Code Project Hosting</strong> にスクロールし、右側のスイッチを有効にします。"
+    - "向下滚动到 <strong>Google Code项目托管</strong> 并通过右侧的开关启用。"
+    - "Прокрутіть вниз до <strong>Google Code Project Hosting</strong> і увімкніть перемикач праворуч."
+    - "Scrolle nach unten zu <strong>Google Code Project Hosting</strong> und aktiviere den Schalter auf der rechten Seite."
+    - "Faites défiler jusqu’à <strong>Hébergement de projet Google Code</strong> et activez le commutateur sur la droite."
+    - "Desplácese hasta <strong>Google Code Project</strong> y active el selector de la derecha."
+"Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \\\"By <a href=\\\"#\\\">@johnsmith</a>\\\"). It will also associate and/or assign these issues and comments with the selected user.":
+  plural_id:
+  translations:
+    - "A seleção de um usuário do GitLab adicionará um link para o usuário do GitLab nas descrições de issues e comentários (por exemplo, \\\"Por <a href=\\\"#\\\">@johnsmith</a>\\\"). Isto também associará e/ou atribuirá esses issues e comentários ao usuário selecionado."
+    - "GitLab ユーザーを選択すると、GitLab ユーザーへのリンクが課題やコメントの説明に追加されます (例:\\\"By <a href=\\\"#\\\">@johnsmith</a>\\\")。また、これらの課題やコメントを選択したユーザーに関連付けや割り当てができます。"
+    - "选中GitLab用户将在议题和评论的描述中加入指向该GitLab用户的链接（例如“By <a href=\\\"#\\\">@johnsmith</a>”）。它还将与所选用户关联和/或分配这些议题和评论。"
+    - "При виборі користувача Gitlab посилання на нього буде додане до опису задачі та коментарів (напр. \\\"<a href=\\\"#\\\"> @johnsmith</a>\\\"). Також це призведе до асоціації та/або призначення цих задач та коментарів на вибраного користувача."
+    - "Wenn du eine(n) GitLab-Benutzer(in) azswählst, wird in der Beschreibung des Tickets und den Kommentaren ein Link zum/zur Benutzer(in) hinzugefügt (z. B. \\\"Von <a href=\\\"#\\\">@johnsmith</a>\\\"). Außerdem wird der/die ausgewählte Benutzer(in) dem Ticket oder Kommentar zugeordnet und/oder es ihm/ihr zugewiesen."
+    - "La sélection d’un utilisateur de GitLab va ajouter un lien vers cet utilisateur dans les descriptions des tickets et des commentaires (p. ex., « Par <a href=\\\"#\\\">@johnsmith</a> »). Les tickets et commentaires seront également associés ou assignés à cet utilisateur."
+    - "Al seleccionar un usuario de GitLab añadirá un link al usuario en la descripción de las incidencias, así como también, en los comentarios (por ejemplo, \\\"Por <a href=\\\"#\\\">@johnsmith</a>\\\"). Al hacer esto, también asociará y asignará dichas incidencias y comentarios con el usuario seleccionado."
+"Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: <code>4 mins 2 sec</code>, <code>2h42min</code>.":
+  plural_id:
+  translations:
+    - "各ジョブのアーティファクトのデフォルトの有効期限を設定します。 無制限の場合は0。 デフォルトの単位は秒ですが、代わりのものを定義できます。 例：<code>4分2秒</code>、<code>2時間42分</code>"
+    - "设置每个作业的产物的默认到期时间。 0 表示无限制。默认以秒为单位，但您可以定义替代方案。例如：<code>4 mins 2 sec</code>,  <code>2h42min</code>.。"
+    - "Задайте стандартний час зберігання для артефактів кожного із завдань. 0 означає необмежений. Стандартною одиницею вимірювання є секунда (sec), але ви можете вибрати й іншу. Наприклад: <code>4 mins 2 sec</code>, <code>2h42min</code>."
+    - "Establezca el tiempo de caducidad predeterminado para los artefactos generados en cada trabajo. 0 para una caducidad ilimitada. La unidad predeterminada son segundos, pero puede definir una alternativa. Por ejemplo: <code>4 minutos 2 segundos</code>, <code>2h42min</code>."
+"Set the duration for which the jobs will be considered as old and expired. Once that time passes, the jobs will be archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.":
+  plural_id:
+  translations:
+    - "ジョブが期限切れとなる期間を設定します。設定された時間を経過するとジョブはアーカイブされ、再試行できなくなります。ジョブの期限を無期限にする場合、空のままにしてください。これらは1日以上で指定しなければなりません。例えば、<code>15 days</code>、 <code>1 month</code>、 <code>2 years</code> など。"
+    - "设置作业的过期时间。一旦逾期，作业将被归档并且不能重试。留空则永不过期。必须设置为 1 天以上，例如： <code>15 days</code>, <code>1 month</code>,  <code>2 years</code>。"
+    - "Встановіть тривалість, протягом якої завдання будуть вважатися застарілими. Як тільки пройде цей час, вони будуть заархівовані і більше не зможуть бути повтореними. Залиште порожнім, щоб завдання ніколи не застарівали. Має бути не менше 1 дня, наприклад: <code>15 днів</code>, <code>1 місяць</code>, <code>2 роки</code>."
+    - "Establezca la duración durante la cual los trabajos se considerarán antiguos y vencidos. Una vez pasado ese tiempo, los trabajos se archivarán y ya no se podrá volver a reintentar su ejecución. Establezca este campo como nulo para que los trabajos no caduquen. Este valor, no debe ser inferior a 1 día, por ejemplo: <code>15 días</code>, <code>1 mes</code>, <code>2 años</code>."
+"Share the <strong>%{sso_label}</strong> with members so they can sign in to your group through your identity provider":
+  plural_id:
+  translations:
+    - "Compartilhe o <strong>%{sso_label}</strong> com membros de forma que eles possam entrar em seu grupo por meio de seu provedor de identidade"
+    - "メンバーと<strong>%{sso_label}</strong>を共有すると、自身の ID プロバイダーでサインインすることができます"
+    - "分享<strong>%{sso_label}</strong> 给组员，以便他们可以通过您的身份提供商登录您的群组"
+    - "Поділіться <strong>%{sso_label}</strong> із учасниками для того, щоб вони могли увійти до вашої групи через провайдера ідентифікації"
+    - "Teile das <strong>%{sso_label}</strong> mit Mitgliedern, damit sie sich über deinen Identitätsanbieter bei deiner Gruppe anmelden können"
+    - "회원과 <strong>%{sso_label}</strong> 항목을 공유해 신원 제공 업체를 통해 그룹에 로그인할 수 있도록 합니다."
+    - "Partager le <strong>%{sso_label}</strong> avec les membres afin qu’ils puissent se connecter à votre groupe via votre fournisseur d’identité"
+    - "Comparta <strong>%{sso_label}</strong> con los diferentes miembros para que puedan iniciar sesión en su grupo a través de su proveedor de identidad"
+"SlackIntegration|<strong>Note:</strong> Usernames and private channels are not supported.":
+  plural_id:
+  translations:
+    - "<strong> 注: </strong> ユーザー名とプライベートチャネルはサポートしていません。"
+    - "<strong>Примечание:</strong> Имена пользователей и частные каналы не поддерживаются."
+"SlackIntegration|Paste the <strong>Webhook URL</strong> into the field below.":
+  plural_id:
+  translations:
+    - "Вставьте <strong>URL веб-обработчика</strong> в поле ниже."
+"SlackIntegration|Select events below to enable notifications. The <strong>Slack channel names</strong> and <strong>Slack username</strong> fields are optional.":
+  plural_id:
+  translations:
+"SlackService|2. Paste the <strong>Token</strong> into the field below":
+  plural_id:
+  translations:
+    - "2. <strong>トークン</strong> を下のフィールドに貼り付けます"
+    - "2. 将<strong>Token</strong>粘贴到下面的字段中"
+    - "2. Вставте <strong>Токен</strong> у поле нижче"
+    - "2. Pegue el <strong>Token</strong> en el campo que se muestra a continuación"
+"SlackService|3. Select the <strong>Active</strong> checkbox, press <strong>Save changes</strong> and start using GitLab inside Slack!":
+  plural_id:
+  translations:
+    - "3. <strong>アクティブな</strong> チェックボックスを選択し、 <strong>変更を保存</strong> を押して、Slack内でGitLabの使用を開始します！"
+    - "Выберите флажок <strong>Активный</strong>, нажмите на <strong>Сохранить изменения</strong> и начните использовать GitLab внутри Slack!"
+    - "3. 选择<strong>Active</strong>复选框，点击<strong>Save change</strong>后开始在Slack中使用GitLab！"
+    - "3. Встановіть прапорець в пункті <strong>Активний</strong>, натисніть <strong>Зберегти зміни</strong> та починайте використовувати GitLab в Slack!"
+"Speed up your DevOps<br>with GitLab":
+  plural_id:
+  translations:
+    - "Acelere sus DevOps<br>con GitLab"
+"The CSV export will be created in the background. Once finished, it will be sent to <strong>%{email}</strong> in an attachment.":
+  plural_id:
+  translations:
+    - "CSVエクスポートをバックグラウンドで作成します。終了後に、<strong>%{email}</strong> に添付してメールで送信されます。"
+    - "Экспорт в CSV будет произведён в фоновом режиме. По завершении результат будет отправлен на <strong>%{email}</strong> во вложении."
+    - "CSV导出将在后台创建。完成后，它将以附件形式发送到<strong>%{email}</strong>。"
+    - "Експорт CSV буде створено у фоновому режимі. Після завершення його буде надіслано на <strong>%{email}</strong> у вкладенні."
+    - "La exportación CSV se creará en segundo plano. Una vez finalizada, será enviada a <strong>%{email}</strong> como un fichero adjunto al correo electrónico."
+"The Git LFS objects will <strong>not</strong> be synced.":
+  plural_id:
+  translations:
+    - "Os objetos LFS do Git <strong>não</strong> serão sincronizados."
+    - "Git の LFS オブジェクトは<strong>同期しません</strong>。"
+    - "Git LFS对象将<strong>不会</strong>被同步。"
+    - "Об'єкти Git LFS <strong>не</strong> будуть синхронізуватися."
+    - "Die Git LFS-Objekte werden <strong>nicht</strong> synchronisiert werden."
+    - "Les objets Git LFS <strong>ne sont pas</strong> synchronisés."
+    - "Los objetos Git LFS <strong>no</strong> serán sincronizados."
+    - "Obiekty Git LFS <strong>nie będą</strong> zsynchronizowane."
+"The path to the CI configuration file. Defaults to <code>.gitlab-ci.yml</code>":
+  plural_id:
+  translations:
+    - "CI 設定ファイルへのパス。デフォルトは <code>.gitlab-ci.yml</code>"
+    - "Путь к файлу конфигурации CI. По умолчанию это <code>.gitlab-ci.yml</code>"
+    - "CI配置文件的路径。默认为<code>.gitlab-ci.yml</code>"
+    - "Шлях до кофігураційного файлу CI. За замовчуванням <code>.gitlab-ci.yml</code>"
+    - "La ruta al archivo de configuración CI. Por defecto <code>.gitlab-ci.yml</code>"
+"The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>.":
+  plural_id:
+  translations:
+    - "O repositório deve ser acessível por <code>http://</code>, <code>https://</code> ou <code>git://</code>."
+    - "リポジトリには、<code>http://</code>、 <code>https://</code> または <code>git://</code>で接続できなければなりません。"
+    - "Репозиторий должен быть доступен через протоколы <code>http: //</code>, <code>https: //</code> или <code>git: //</code>."
+    - "该仓库必须可通过<code>http://</code>, <code>https://</code> 或 <code>git://</code>进行访问。"
+    - "Репозиторій має бути доступним через <code>http://</code>, <code>https://</code> або <code>git://</code>."
+    - "Das Repository muss über <code>http://</code>, <code>https://</code> oder <code>git://</code> erreichbar sein."
+    - "저장소를 <code>http://</code>, <code>https://</code> 또는 <code>git://</code> 통해 액세스할 수 있어야 합니다."
+    - "Le dépôt doit être accessible via <code>http://</code>, <code>https://</code> ou <code>git://</code>."
+    - "El repositorio debe ser accesible a través de <code>http://</code>, <code>https://</code> o <code>git://</code>."
+"The repository must be accessible over <code>http://</code>, <code>https://</code>, <code>ssh://</code> or <code>git://</code>.":
+  plural_id:
+  translations:
+    - "リポジトリは <code>http://</code>、<code>https://</code>、<code>ssh://</code>、<code>git://</code>のいずれかでアクセスできる必要があります。"
+    - "Репозиторий должен быть доступен через <code>http://</code>, <code>https://</code>, <code>ssh://</code> или <code>git://</code>."
+    - "该仓库必须可通过 <code>http://</code>，<code>https://</code>，<code>ssh://</code> 或 <code>git://</code>进行访问。"
+    - "Репозиторій має бути доступним через <code>http://</code>, <code>https://</code>, <code>ssh://</code> or <code>git://</code>."
+    - "El repositorio debe ser accesible a través de <code>http://</code>, <code>https://</code>, <code>ssh://</code> y <code>git://</code>."
+"The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side.":
+  plural_id:
+  translations:
+    - "O mapa do usuário é um documento JSON que mapeia os usuários do Google Code que participaram de seus projetos para a maneira como seus endereços de e-mail e nomes de usuários são importados para o GitLab. Você pode mudar isso alterando o valor no lado direito de <code>:</code>. Certifique-se de preservar as aspas duplas adjacentes, outros sinais de pontuação e o endereço de e-mail ou nome de usuário no lado esquerdo."
+    - "ユーザーマップは、あなたのプロジェクトに参加した Google コードのユーザーのメールアドレスとユーザー名を GitLab にインポートするときにマッピングする JSON ファイルです。これを変更するには、 <code>:</code> の右側の値を変更します。左側の二重引用符、その他の句読点、メールアドレスまたはユーザー名が保存されます。"
+    - "用户映射是一个JSON文档，将参与项目的Google Code用户映射到他们将导入GitLab的电子邮件地址和用户名的方式。您可以通过更改 <code>:</code>右侧的值来更改此值。请务必在左侧保留周围的双引号，其他标点符号以及电子邮件地址或用户名。"
+    - "Мапа користувачів — це JSON-документ, який задає як адреси електронної пошти та імена користувачів Google Code, що приймали участь у ваших проектах будуть імпортовані у GitLab. Ви можете змінити його шляхом зміни значень, що стоять справа від <code>:</code>. Не видаляйте лапки та інші знаки пунктуації, а також не змінюйте адреси електронної пошти чи імена користувачів зліва."
+    - "Die Benutzerzuordnung ist ein JSON-Dokument das festlegt, wie die E-Mail-Adressen und Benutzernamen der Google Code-Benutzer(innen), die an deinem Projekt teilnehmen, in GitLab importiert werden. Du kannst dies ändern, indem du den Wert auf der rechten Seite von <code>:</code> anpasst. Stelle sicher, dass du umgebenden Anführungszeichen, andere Interpunktion sowie die E-Mail-Adresse oder den Benutzernamen auf der linken Seite erhältst."
+    - "La carte des utilisateurs (<code>user map</code>) est un document JSON qui met en correspondance les utilisateurs de Google Code qui ont participé à vos projets en précisant la manière dont leurs adresses de courriel et leurs noms d’utilisateur sont importés dans GitLab. Vous pouvez y apporter des modifications en changeant la valeur à droite du « <code>:</code> ». Assurez‐vous de conserver les guillemets droits doubles (<code>\\\"</code>), les autres signes de ponctuation, ainsi que l’adresse de courriel ou le nom d’utilisateur à gauche du deux‐points."
+    - "El mapa del usuarios es un documento JSON que asigna los usuarios de Google Code que participaron en sus proyectos a la forma en que se importarán sus direcciones de correo electrónico y nombres de usuario en GitLab. Puede cambiar esto cambiando el valor en el lado derecho de <code>:</code>. Asegúrese de conservar las comillas dobles circundantes, otros signos de puntuación y la dirección de correo electrónico o nombre de usuario en el lado izquierdo."
+    - "Mapa użytkownika to dokument JSON mapujący użytkowników Google Code, którzy uczestniczyli w Twoich projektach, w celu zaimportowania ich adresów e-mail i nazw użytkowników do GitLab. Możesz to zmienić poprzez zmianę wartości po prawej stronie <code>:</code>. Pamiętaj, aby zachować występujące podwójne cudzysłowy, inną interpunkcję i adres e-mail lub nazwę użytkownika po lewej stronie."
+"This %{issuable} is locked. Only <strong>project members</strong> can comment.":
+  plural_id:
+  translations:
+    - "この %{issuable} はロックされています。<strong>プロジェクトメンバー</strong> だけがコメントできます。"
+    - "Этот %{issuable} заблокировано. Только <strong>участники проекта</strong> могут комментировать."
+    - "此%{issuable}已被锁定。只有<strong>项目成员</strong>可以发表评论。"
+    - "Ця %{issuable} заблокована. Лише <strong>учасники проекту</strong> можуть коментувати."
+    - "Este %{issuable} está bloqueado. Solo los <strong>miembros del proyecto</strong> pueden comentar."
+"This commit was signed with a <strong>verified</strong> signature and the committer email is verified to belong to the same user.":
+  plural_id:
+  translations:
+    - "このコミットは <strong>検証済み</strong> の署名でサインされており、このコミッターのメールは同じユーザーのものであることが検証されています。"
+    - "Это коммит был подписан <strong>верифицированной</strong> подписью и коммитер подтвердил, что адрес почты принадлежит ему."
+    - "此提交使用 <strong>已验证</strong> 的签名进行签名，并且已验证提交者的电子邮件属于同一用户。"
+    - "Цей коміт підписано <strong>перевіреним</strong> підписом і адреса електронної пошти комітера гарантовано належить тому самому користувачу."
+    - "Este commit fue firmado con una firma verificada, y <strong>se ha verificado</strong> que la dirección de correo electrónico del committer y la firma pertenecen al mismo usuario."
+"This commit was signed with a verified signature, but the committer email is <strong>not verified</strong> to belong to the same user.":
+  plural_id:
+  translations:
+    - "このコミットは検証済みの署名でサインされています。しかしコミッターのメールは、 同じユーザーのものと<strong>検証されていません</strong>。"
+    - "Этот коммит был подписан верифицированной подписью, но <strong>не подтверждена</strong> принадлежность электронной почты коммитеру."
+    - "此提交已使用经过验证的签名进行签名，但<strong>未验证</strong>的提交者电子邮件属于同一用户。"
+    - "Цей коміт підписано перевіреним підписом але адреса електронної пошти комітера <strong>не гарантовано</strong> належить тому самому користувачу."
+    - "Este commit fue firmado con una firma verificada, pero <strong>no se ha verificado</strong> si la dirección de correo electrónico del commiter y la firma pertenecen al mismo usuario."
+"This commit was signed with an <strong>unverified</strong> signature.":
+  plural_id:
+  translations:
+    - "このコミットは<strong>検証されていない</strong> 署名でサインされています。"
+    - "Этот коммит был подписан <strong>непроверенной</strong> подписью."
+    - "此提交使用 <strong>未经验证的</strong> 签名进行签名。"
+    - "Цей коміт підписано <strong>неперевіреним</strong> підписом."
+    - "Esta commit fue firmado con una firma <strong>no verificada</strong>."
+"This group, including all subgroups, projects and git repositories, will only be reachable from the specified IP address range. Multiple addresses are supported with comma delimiters.<br>Example: <code>192.168.0.0/24,192.168.1.0/24</code>. %{read_more_link}.":
+  plural_id:
+  translations:
+    - "すべてのサブグループ、プロジェクト、gitリポジトリを含むこのグループは、指定されたIPアドレス範囲からのみ到達できます。コンマで区切ることで複数のアドレスを指定できます。<br>例: <code>192.168.0.0/24,192.168.1.0/24</code> %{read_more_link}。"
+    - "Эта группа, включая все подгруппы, проекты и репозитории git, будет доступна только из указанного диапазона IP адресов. Несколько диапазонов адресов поддерживаются через разделитель - запятую.<br>Пример: <code>192.168.0/24,192.168.1.0/24</code>. %{read_more_link}."
+    - "此群组，包括所有子群组、项目和git仓库，只能从指定的IP地址范围中访问。支持用逗号分隔符分隔的多个地址列表。例如： <code>192.168.0.0/24,168.1.0/24</code>. %{read_more_link}。"
+    - "Ця група разом із усіма її підгрупами, проектами та репозиторями Git буде доступна тільки із вказаного діапазону IP-адрес. Підтримується декілька адрес, розділених комами. <br>Наприклад: <code>192.168.0.0/24</code>.%{read_more_link}."
+    - "Este grupo, incluyendo todos los subgrupos, proyectos y repositorios git, sólo será accesible desde el rango de direcciones IP especificado. Se admiten múltiples direcciones delimitadas con comas. <br>Ejemplo: <code>192.168.0.0/24,192.168.1.0/24</code>. %{read_more_link}."
+"This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>":
+  plural_id:
+  translations:
+    - "このパイプラインは、<b>Auto DevOps</b>によって有効化された定義済みのCI/CD構成を利用します。"
+    - "此流水线使用了 <b>Auto DevOps 预先定义的并已启用的 CI/CD 配置。</b>"
+    - "Цей конвеєр використовує попередньо визначену конфігурацію CI / CD, увімкнену за допомогою <b>Auto DevOps</b>"
+    - "Este pipeline utiliza una configuración de CI/CD predefinida habilitada por <b>Auto DevOps.</b>"
+"This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">enable billing <i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> and try again.":
+  plural_id:
+  translations:
+    - "Este projeto não possui faturamento ativado. Para criar um cluster, <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">ative o faturamento <i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> e tente novamente."
+    - "このプロジェクトでは課金が有効になっていません。クラスターを作成するには、<a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\"> 課金を有効<i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> にして再度お試しください。"
+    - "此项目未启用账单。要创建群集，请 <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">启用账单 <i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> 并重试。"
+    - "Для цього проекту вимкнено білінг. Щоб створити кластер, <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">увімкніть білінг <i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> і спробуйте знову."
+    - "Für dieses Projekt ist keine Abrechnung aktiviert. Um ein Cluster zu erstellen, <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">aktiviere die Abrechnung<i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> und versuche es erneut."
+    - "Ce projet n’a pas de facturation activée. Afin de créer une grappe de serveurs, veuillez <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">activer la facturation<i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> et réessayer."
+    - "Este proyecto no tiene la facturación habilitada. Para crear un clúster, <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">habilite la facturación <i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> e inténtelo de nuevo."
+"This project will live in your group <strong>%{namespace}</strong>. A project is where you house your files (repository), plan your work (issues), publish your documentation (wiki), and so much more.":
+  plural_id:
+  translations:
+"To connect GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to connect.":
+  plural_id:
+  translations:
+    - "Para conectar repositórios do GitHub, você pode usar um %{personal_access_token_link}. Ao criar seu Token de Acesso Pessoal, você precisará selecionar o escopo do <code>repositório</code>, então podemos exibir uma lista de seus repositórios públicos e privados que estão disponíveis para conexão."
+    - "GitHub リポジトリに接続するために %{personal_access_token_link} を使用できます。個人用アクセストークンを作成するには<code>リポジトリ</code> スコープを選択する必要があります。これにより接続できる公開・非公開リポジトリの一覧を表示することができます。"
+    - "可以使用 %{personal_access_token_link} 连接GitHub仓库。当创建个人访问令牌时，需要选择 <code>repo</code> 范围，以显示可供连接的公开和私有的仓库列表。"
+    - "Для підключення репозиторіїв з GitHub, ви можете використовувати %{personal_access_token_link}. Коли ви створюватимете ваш персональний токен доступу, вам потрібно буде вибрати область дії <code>repo</code>, щоб ми могли відобразити список ваших публічних та приватних репозиторіїв, доступних для підключення."
+    - "Um GitHub-Repositories zu verbinden kannst du einen %{personal_access_token_link} verwenden. Wenn du deinen persönlichen Access-Token erzeugst, musst du den Gültigkeitsbereich <code>repo</code> auswählen, damit wir eine Liste deiner öffentlichen und privaten Repositories anzeigen können, die für die Verbindung verfügbar sind."
+    - "GitHub 저장소 연결할때, %{personal_access_token_link}을 사용할 수 있습니다. 개인 엑세스 토큰을 생성할때 <code>repo</code> scope를 선택해야 연결에 사용할 수 있는 공개, 비공개 저장소가 표시되어 연결할 수 있게 됩니다."
+    - "Pour connecter des dépôts GitHub, vous pouvez utiliser un %{personal_access_token_link}. Lorsque vous créerez votre jeton d’accès, vous devrez sélectionner la portée <code>dépôt</code>, afin de permettre l’affichage d’une liste de vos dépôts publics et privés disponibles à la connexion."
+    - "Para conectar a los repositorios de GitHub, puede utilizar un %{personal_access_token_link}. Cuando cree su token de acceso personal, deberá seleccionar el alcance del <code>repo</code>, para que podamos mostrarle una lista de sus repositorios públicos y privados que están disponibles para conectarse."
+"To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>.":
+  plural_id:
+  translations:
+    - "Para usar apenas recursos CI/CD para um repositório externo, escolha <strong>CI/CD para repo externo</strong>."
+    - "外部リポジトリにのみ CI/CD の機能を使用するには、<strong>外部リポジトリ用 CI/CD</strong>を選択してください。"
+    - "要仅为外部仓库使用CI / CD功能时，请选择</strong>使用外部仓库运行CI/CD<strong>。"
+    - "Щоб використовувати лише функції CI/CD для зовнішнього репозиторію, виберіть <strong>CI/CD для зовнішнього репозиторію</strong>."
+    - "Um die CI/CD-Funktionen nur für ein externes Repository zu verwenden, wähle <strong>CI/CD für externes Repo</strong> aus."
+    - "CI/CD 기능만 외부 저장소를 위해 사용할 수 있습니다, <strong>외부 저장소용 CI/CD 저장소</strong>를 선택하십시오."
+    - "Pour n’utiliser uniquement que les fonctionnalités d’intégration et livraison continues (CI / CD) pour un dépôt externe, choisissez <strong>Intégration et livraison continues (CI / CD) pour dépôt externe</strong>."
+    - "Para utilizar únicamente las funciones de CI/CD en un repositorio externo, seleccione <strong>CI/CD para un repositorio externo</strong>."
+    - "Harici bir depoda yalnızca CI/CD özelliklerini kullanmak için <strong>Harici depo için CI/CD</strong>'yi seçin."
+"To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed.":
+  plural_id:
+  translations:
+    - "パフォーマンス維持のため、 <strong>%{real_size} 個中 %{display_size} 個</strong> のファイルのみが表示されています。"
+    - "为了保持性能，仅显示文件中的 <strong>%{display_size}/%{real_size}</strong>。"
+    - "Для збереження швидкодії відображаються лише <strong>%{display_size} із %{real_size}</strong> файлів."
+    - "Para mantener el rendimiento, solo se muestran <strong>%{display_size} de %{real_size}</strong> archivos."
+"Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment.":
+  plural_id:
+  translations:
+    - "Desbloquear este %{issuableDisplayName}? <strong>Todos</strong> poderão comentar."
+    - "%{issuableDisplayName} のロックを解除しますか？ <strong>全員</strong>がコメントできるようになります。"
+    - "解锁此%{issuableDisplayName}吗？解锁后<strong>所有人</strong>都将可以发表评论。"
+    - "Розблокувати %{issuableDisplayName}? <strong>Будь-хто</strong> зможе залишати коментарі."
+    - "Dieses %{issuableDisplayName} entsperren? <strong>Jeder</strong> wird in der Lage sein zu kommentieren."
+    - "%{issuableDisplayName}(을)를 잠금해제 하시겠습니까? <strong>모두가</strong> 코멘트 할 수 있게 됩니다."
+    - "Déverrouiller %{issuableDisplayName} ? <strong>Tout le monde</strong> sera en mesure de commenter."
+    - "Desbloquear este %{issuableDisplayName}? <strong>Todos</strong> podrán comentar."
+"Upload <code>GoogleCodeProjectHosting.json</code> here:":
+  plural_id:
+  translations:
+    - "Envie o <code>GoogleCodeProjectHosting.json</code> aqui:"
+    - "<code>GoogleCodeProjectHosting.json</code> をアップロードします:"
+    - "Enviar <code>GoogleCodeProjectHosting.json</code> aqui:"
+    - "在这里上传 <code>GoogleCodeProjectHosting.json</code>:"
+    - "Надіслати <code>GoogleCodeProjectHosting.json</code> тут:"
+    - "Lade <code>GoogleCodeProjectHosting.json</code> hier hoch:"
+    - "Téléversez le fichier <code>GoogleCodeProjectHosting.json</code> ici :"
+    - "Subir el fichero <code>GoogleCodeProjectHosting.json</code> aquí:"
+"Upon performing this action, the contents of this group, its subgroup and projects will be permanently removed after %{deletion_adjourned_period} days on <strong>%{date}</strong>. Until that time:":
+  plural_id:
+  translations:
+"Use <code>%{native_redirect_uri}</code> for local tests":
+  plural_id:
+  translations:
+    - "Use <code>%{native_redirect_uri}</code> para testes locais"
+    - "ローカルテストに <code>%{native_redirect_uri}</code> を使用"
+    - "使用<code>%{native_redirect_uri}</code>进行本地测试"
+    - "Використовувати <code>%{native_redirect_uri}</code> для локальних тестів"
+    - "Verwende <code>%{native_redirect_uri}</code> für lokale Tests"
+    - "Utiliser <code>%{native_redirect_uri}</code> pour les tests locaux"
+    - "Use <code>%{native_redirect_uri}</code> para los tests locales"
+"UserOnboardingTour|Issues are great for communicating and keeping track of progress in GitLab. These are all issues that are open in the %{emphasisStart}%{projectName}%{emphasisEnd}.%{lineBreak}%{lineBreak}You can help us improve GitLab by contributing work to issues that are labeled <span class=\\\"badge color-label accept-mr-label\\\">Accepting merge requests</span>.%{lineBreak}%{lineBreak}This list can be filtered by labels, milestones, assignees, authors... We'll show you how it looks when the list is filtered by a label.":
+  plural_id:
+  translations:
+    - "課題は、GitLab 上でコミュニケーションを取り、進行状況を追跡するのに最適な機能です。これらはすべて %{emphasisStart}%{projectName}%{emphasisEnd} の未解決の課題です。%{lineBreak}%{lineBreak} <span class=\\\"badge color-label accept-mr-label\\\">マージリクエストの承認</span> というラベルの付いた課題に作業を貢献することで、GitLab 本体の改善にご協力いただけます。%{lineBreak}%{lineBreak}このリストはラベル、マイルストーン、担当者、作成者などで絞り込むことができます。リストがラベルで絞り込まれたときの様子を紹介します。"
+    - "Обсуждения в GitLab отлично подходят для коммуникации и отслеживания прогресса. Перед вами все обсуждения, открытые в %{emphasisStart}%{projectName}%{emphasisEnd}.%{lineBreak}%{lineBreak}Вы можете помочь нам улучшить GitLab, приняв участие в работе над обсуждениями с меткой <span class=\\\"badge color-label accept-mr-label\\\">Accepting merge requests</span> (принимаются запросы на слияние).%{lineBreak}%{lineBreak}Этот список может быть отфильтрован по меткам, этапам, испонителям, авторам... Мы покажем вам, как выглядит отфильтрованный по метке список."
+    - "议题非常适合在GitLab中进行沟通和跟踪进展。这些是在%{emphasisStart}%{projectName}%{emphasisEnd}中开启的全部议题。%{lineBreak}%{lineBreak}您可以通过为标记为<span class=\\\"badge color-label accept-mr-label\\\">Accepting merge requests</span>的议题作出贡献来帮助我们改进GitLab。%{lineBreak}%{lineBreak}此列表可以按标签，里程碑，受让人，作者进行过滤......我们将向您展示列表按标签过滤时的样子。"
+    - "Задачі добре підходять для комунікації та відстеження прогресу в GitLab. Ось задачі, які відкриті в %{emphasisStart}%{projectName}%{emphasisEnd}.%{lineBreak}%{lineBreak}Ви можете допомогти нам покращити GitLab шляхом внесків у задачі, що відмічені <span class=\\\"badge color-label accept-mr-label\\\">Приймаються запити на злиття</span>.%{lineBreak}%{lineBreak}Цей список може бути відвільтрований за мітками, етапами, виконавцями, авторами... Ми продоемонструємо як виглядає список, відфільтрований за міткою."
+"Welcome to GitLab.com<br>@%{name}!":
+  plural_id:
+  translations:
+    - "Добро пожаловать в GitLab.com<br>@%{name}!"
+    - "Ласкаво просимо до GitLab.com<br>@%{name}!"
+    - "¡Bienvenido a GitLab.com<br>@%{name}!"
+"When using the <code>http://</code> or <code>https://</code> protocols, please provide the exact URL to the repository. HTTP redirects will not be followed.":
+  plural_id:
+  translations:
+    - "<code>http://</code> または <code>https://</code> プロトコルを使用する場合、リポジトリの正確なURLを指定してください。 HTTPリダイレクトは追跡されません。"
+    - "Используя <code>http://</code> или <code>https://</code> протокол, пожалуйста указывайте точный адрес репозитория. Переадресация выполняться не будет."
+    - "使用<code>http://</code>或<code>https://</code>协议时，请提供仓库的实际地址。不支持HTTP重定向。"
+    - "При використанні протоколів <code>http://</code> або <code>https://</code> вказуйте, будь ласка, точну URL-адресу репозиторію. Перенаправлення HTTP не будуть виконуватися."
+    - "Al utilizar los protocolos <code>http://</code> o <code>https://</code>, por favor, proporcione la URL exacta del repositorio. No se seguirán las redirecciones HTTP."
+"WikiMarkdownTip|To link to a (new) page, simply type <code class=\\\"js-markup-link-example\\\">%{link_example}</code>":
+  plural_id:
+  translations:
+"You are an admin, which means granting access to <strong>%{client_name}</strong> will allow them to interact with GitLab as an admin as well. Proceed with caution.":
+  plural_id:
+  translations:
+    - "Você é um administrador, o que significa que conceder acesso a <strong>%{client_name}</strong> permitirá que eles também interajam com o GitLab como administrador. Prossiga com cuidado."
+    - "あなたは管理者です。つまり、 <strong>%{client_name}</strong> へのアクセスを許可すると、それは管理者としてGitLabとやりとりできます。注意してください。"
+    - "您是一名管理员，这意味着授予对 <strong>%{client_name}</strong> 访问权限将允许他们作为管理员与GitLab进行交互。请谨慎操作。"
+    - "Ви — адміністратор, а це означає, що надання доступу для <strong>%{client_name}</strong> дозволить їм взаємодіяти з GitLab як адміністратору. Продовжуйте обережно."
+    - "Du bist Administrator(in). Wenn du <strong>%{client_name}</strong> Zugriff gewährst, wird es auch als Administrator mit GitLab interagieren können. Mit Vorsicht fortfahren."
+    - "Vous êtes un administrateur ou une administratrice, ce qui signifie qu’accorder un accès à <strong>%{client_name}</strong> lui permettra d’interagir avec GitLab en tant qu’administrateur également. Faites‐le avec prudence."
+    - "Es administrador, lo que significa que otorgar acceso a <strong>%{client_name}</strong> le permitirá interactuar con GitLab como también administrador. Por favor, proceda con precaución."
+"You can invite a new member to <strong>%{project_name}</strong> or invite another group.":
+  plural_id:
+  translations:
+    - "新しいメンバーを<strong>%{project_name} </strong>に招待するか、別のグループを招待することができます。"
+    - "Podes convidar um novo para <strong>%{project_name}</strong> ou convidar outro grupo."
+    - "邀请新成员或另一个群组加入<strong>%{project_name}</strong>。"
+    - "Puede invitar a un nuevo miembro a <strong>%{project_name}</strong> o invitar a otro grupo."
+    - "<strong>%{project_name}</strong> projesine yeni bir üye davet edebilir veya başka bir grubu davet edebilirsiniz."
+    - "Вы можете пригласить нового участника в <strong>%{project_name}</strong> или пригласить другую группу."
+    - "Ви можете запросити нового учасника до <strong>%{project_name}</strong> або запросити іншу групу."
+"You can invite a new member to <strong>%{project_name}</strong>.":
+  plural_id:
+  translations:
+    - "新しいメンバーを<strong>%{project_name} </strong>に招待できます。"
+    - "Podes convidar um novo membro para <strong>%{project_name}</strong>."
+    - "邀请新成员加入<strong>%{project_name}</strong>。"
+    - "Puedes invitar a un nuevo miembro a <strong>%{project_name}</strong>."
+    - "<strong>%{project_name}</strong> projesine yeni bir üye davet edebilirsiniz."
+    - "Вы можете пригласить нового участника в <strong>%{project_name}</strong>."
+    - "Ви можете запросити нового учасника до <strong>%{project_name}</strong>."
+"You can invite another group to <strong>%{project_name}</strong>.":
+  plural_id:
+  translations:
+    - "他のグループを<strong>%{project_name} </strong>に招待できます。"
+    - "Podes convidar outro grupo para <strong>%{project_name}</strong>."
+    - "您可以邀请另一个群组加入<strong>%{project_name}</strong>。"
+    - "Ви можете запросити нову групу до <strong>%{project_name}</strong>."
+    - "Puedes invitar a otro grupo a <strong>%{project_name}</strong>."
+"You may also add variables that are made available to the running application by prepending the variable key with <code>K8S_SECRET_</code>.":
+  plural_id:
+  translations:
+    - "変数名の前に <code>K8S_SECRET_</code>を指定することで、実行中のアプリケーションで使用する変数を追加することもできます。"
+    - "您还可以通过在变量键前面加上<code>K8S_SECRET_</code>来添加可用于正在运行的应用程序的变量。"
+    - "Ви також можете додати змінні, що будуть доступними для запущеного застосунку шляхом додавання префіксу <code>K8S_SECRET_</code> до їх імен."
+    - "También puede añadir variables que están disponibles para la aplicación en ejecución, anteponiendo la clave de variable con <code>K8S_SECRET_</code>."
+"Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your <code>.gitlab-license</code> file.":
+  plural_id:
+  translations:
+"confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue.":
+  plural_id:
+  translations:
+    - "Você está prestes a desligar a confidencialidade. Isso significa que <strong>todos</strong> serão capazes de ver e deixar comentários nesse issue."
+    - "あなたは公開設定に変更しようとしています。これは<strong>すべての人</strong> が閲覧可能になり、課題に対してコメントを残すことができるようになることを意味します。"
+    - "即将关闭私密性。这将使得 <strong>所有用户</strong>都可以查看并且评论当前议题。"
+    - "Ви вимикаєте конфіденційність. Це означає, що <strong>будь-хто</strong> зможе бачити і залишати коментарі для цієї задачі."
+    - "Du willst die Vertraulichkeit deaktivieren. Das bedeutet, dass <strong>alle</strong> das Ticket betrachten und kommentieren können."
+    - "Vous êtes sur le point de désactiver la confidentialité. Cela signifie que <strong>tout le monde</strong> sera en mesure de voir et de laisser un commentaire sur ce ticket."
+    - "Va a desactivar la confidencialidad. Esto significa que <strong>todos</strong> podrán ver y dejar un comentario sobre este tema."
+"confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue.":
+  plural_id:
+  translations:
+    - "Você está prestes a ligar a confidencialidade. Isso significa que apenas membros da equipe com <strong>ao menos acesso de Relator</strong> serão capazes de ver e deixar comentários nesse issue."
+    - "あなたは公開設定に変更しようとしています。これはチームに限定していた<strong>最小限の報告権限</strong>をなくし、課題に対してコメントを残すことができるようになることを意味します。"
+    - "即将设置私密性。这将使得 <strong>至少有Reporter以上权限</strong>的团队成员才能查看并且评论当前议题。"
+    - "Ви вмикаєте конфіденційність. Це означає що лише учасники команди <strong>рівня репортер або вище</strong> матимуть змогу бачити та залишати коментарі для цієї задачі."
+    - "Du willst die Vertraulichkeit aktivieren. Das bedeutet, dass nur Teammitglieder mit <strong>mindestens Reporter-Zugriff</strong> das Ticket betrachten und kommentieren können."
+    - "Vous êtes sur le point de d’activer la confidentialité. Cela signifie que seuls les membres de l’équipe avec <strong>au moins un accès en tant que rapporteur</strong> seront en mesure de voir et de laisser des commentaires sur le ticket."
+    - "Va a activar la confidencialidad. Esto significa que solo los miembros del equipo con como mínimo,<strong>acceso como Reporter</strong> podrán ver y dejar comentarios sobre la incidencia."
+    - "あなたは非公開設定をオンにしようとしています。これは、最低でも<strong>報告権限</strong>を持ったチームメンバーのみが課題を表示したりコメントを残したりすることができるようになるということです。"
+"Configure the Jira integration first on your project's %{strong_start} Settings > Integrations > Jira%{strong_end} page.":
+  plural_id:
+  translations:
+"ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted.":
+  plural_id:
+  translations:
+"Only users with an email address in this domain can be added to the group.<br>Example: <code>gitlab.com</code>. Some common domains are not allowed. %{read_more_link}.":
+  plural_id:
+  translations:
+"PackageRegistry|You are about to delete <b>%{packageName}</b>, this operation is irreversible, are you sure?":
+  plural_id:
+  translations:
+"Pagination|Last »":
+  plural_id:
+  translations:
+    - "Último >>"
+"Pagination|« First":
+  plural_id:
+  translations:
+    - "<< Primeiro"
+"Example: <code>192.168.0.0/24</code>. %{read_more_link}.":
+  plural_id:
+  translations:
+"Note that PostgreSQL %{pg_version_upcoming} will become the minimum required version in GitLab %{gl_version_upcoming} (%{gl_version_upcoming_date}). Please consider upgrading your environment to a supported PostgreSQL version soon, see <a href=\\\"%{pg_version_upcoming_url}\\\">the related epic</a> for details.":
+  plural_id:
+  translations:
+"Authorize <strong>%{user}</strong> to use your account?":
+  plural_id:
+  translations:
+"DeployFreeze|Specify times when deployments are not allowed for an environment. The <code>gitlab-ci.yml</code> file must be updated to make deployment jobs aware of the %{freeze_period_link_start}freeze period%{freeze_period_link_end}.":
+  plural_id:
+  translations:

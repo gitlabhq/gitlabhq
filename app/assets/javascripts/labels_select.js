@@ -3,7 +3,7 @@
 /* global ListLabel */
 
 import $ from 'jquery';
-import { difference, isEqual, escape, sortBy, template } from 'lodash';
+import { difference, isEqual, escape, sortBy, template, union } from 'lodash';
 import { sprintf, s__, __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
@@ -560,15 +560,15 @@ export default class LabelsSelect {
     IssuableBulkUpdateActions.willUpdateLabels = true;
   }
   // eslint-disable-next-line class-methods-use-this
-  setDropdownData($dropdown, isChecking, labelId) {
+  setDropdownData($dropdown, isMarking, labelId) {
     let userCheckedIds = $dropdown.data('user-checked') || [];
     let userUncheckedIds = $dropdown.data('user-unchecked') || [];
 
-    if (isChecking) {
-      userCheckedIds = userCheckedIds.concat(labelId);
+    if (isMarking) {
+      userCheckedIds = union(userCheckedIds, [labelId]);
       userUncheckedIds = difference(userUncheckedIds, [labelId]);
     } else {
-      userUncheckedIds = userUncheckedIds.concat(labelId);
+      userUncheckedIds = union(userUncheckedIds, [labelId]);
       userCheckedIds = difference(userCheckedIds, [labelId]);
     }
 

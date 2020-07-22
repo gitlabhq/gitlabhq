@@ -11591,6 +11591,24 @@
               "deprecationReason": null
             },
             {
+              "name": "blocked",
+              "description": "Indicates the issue is blocked",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "closedAt",
               "description": "Timestamp of when the issue was closed",
               "args": [
@@ -15863,6 +15881,24 @@
               "deprecationReason": null
             },
             {
+              "name": "blocked",
+              "description": "Indicates the issue is blocked",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "closedAt",
               "description": "Timestamp of when the issue was closed",
               "args": [
@@ -16936,7 +16972,7 @@
             },
             {
               "name": "iid",
-              "description": "The iid of the issue to mutate",
+              "description": "The IID of the issue to mutate",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17066,7 +17102,7 @@
             },
             {
               "name": "iid",
-              "description": "The iid of the issue to mutate",
+              "description": "The IID of the issue to mutate",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17196,7 +17232,7 @@
             },
             {
               "name": "iid",
-              "description": "The iid of the issue to mutate",
+              "description": "The IID of the issue to mutate",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17322,7 +17358,7 @@
             },
             {
               "name": "iid",
-              "description": "The iid of the issue to mutate",
+              "description": "The IID of the issue to mutate",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17452,7 +17488,7 @@
             },
             {
               "name": "iid",
-              "description": "The iid of the issue to mutate",
+              "description": "The IID of the issue to mutate",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -41369,7 +41405,7 @@
             },
             {
               "name": "iid",
-              "description": "The iid of the issue to mutate",
+              "description": "The IID of the issue to mutate",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

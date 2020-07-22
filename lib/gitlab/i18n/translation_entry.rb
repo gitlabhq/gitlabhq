@@ -4,12 +4,14 @@ module Gitlab
   module I18n
     class TranslationEntry
       PERCENT_REGEX = /(?:^|[^%])%(?!{\w*}|[a-z%])/.freeze
+      ANGLE_BRACKET_REGEX = /[<>]/.freeze
 
-      attr_reader :nplurals, :entry_data
+      attr_reader :nplurals, :entry_data, :html_allowed
 
-      def initialize(entry_data, nplurals)
+      def initialize(entry_data:, nplurals:, html_allowed:)
         @entry_data = entry_data
         @nplurals = nplurals
+        @html_allowed = html_allowed
       end
 
       def msgid
@@ -83,7 +85,37 @@ module Gitlab
         string =~ PERCENT_REGEX
       end
 
+      def msgid_contains_potential_html?
+        contains_angle_brackets?(msgid)
+      end
+
+      def plural_id_contains_potential_html?
+        contains_angle_brackets?(plural_id)
+      end
+
+      def translations_contain_potential_html?
+        all_translations.any? { |translation| contains_angle_brackets?(translation) }
+      end
+
+      def msgid_html_allowed?
+        html_allowed.present?
+      end
+
+      def plural_id_html_allowed?
+        html_allowed.present? && html_allowed['plural_id'] == plural_id
+      end
+
+      def translations_html_allowed?
+        html_allowed.present? && all_translations.all? do |translation|
+          html_allowed['translations'].include?(translation)
+        end
+      end
+
       private
+
+      def contains_angle_brackets?(string)
+        string =~ ANGLE_BRACKET_REGEX
+      end
 
       def translation_entries
         @translation_entries ||= entry_data.fetch_values(*translation_keys)

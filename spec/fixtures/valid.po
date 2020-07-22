@@ -73,9 +73,6 @@ msgid_plural "Branches"
 msgstr[0] "Rama"
 msgstr[1] "Ramas"
 
-msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
-msgstr "La rama <strong>%{branch_name}</strong> fue creada. Para configurar el auto despliegue, escoge una plantilla Yaml para GitLab CI y envía tus cambios. %{link_to_autodeploy_doc}"
-
 msgid "BranchSwitcherPlaceholder|Search branches"
 msgstr "Buscar ramas"
 

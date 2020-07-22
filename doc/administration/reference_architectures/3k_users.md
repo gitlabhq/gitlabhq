@@ -804,10 +804,11 @@ SSH into the **primary node**:
    gitlab-psql -d gitlabhq_production
    ```
 
-1. Enable the `pg_trgm` extension:
+1. Enable the `pg_trgm` and `btree_gist` extensions:
 
    ```shell
    CREATE EXTENSION pg_trgm;
+   CREATE EXTENSION btree_gist;
    ```
 
 1. Exit the database prompt by typing `\q` and Enter.

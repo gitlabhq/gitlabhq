@@ -296,6 +296,74 @@ Namespaces should be PascalCase.
 Note: The namespace should be removed from the translation. See the [translation
 guidelines for more details](translation.md#namespaced-strings).
 
+### HTML
+
+We no longer include HTML directly in the strings that are submitted for translation. This is for a couple of reasons:
+
+1. It introduces a chance for the translated string to accidentally include invalid HTML.
+1. It introduces a security risk where translated strings become an attack vector for XSS, as noted by the
+   [Open Web Application Security Project (OWASP)](https://owasp.org/www-community/attacks/xss/).
+
+To include formatting in the translated string, we can do the following:
+
+- In Ruby/HAML:
+
+  ```ruby
+    html_escape(_('Some %{strongOpen}bold%{strongClose} text.')) % { strongOpen: '<strong>'.html_safe, strongClose: '</strong>'.html_safe }
+
+    # => 'Some <strong>bold</strong> text.'
+  ```
+
+- In JavaScript:
+
+  ```javascript
+    sprintf(__('Some %{strongOpen}bold%{strongClose} text.'), { strongOpen: '<strong>', strongClose: '</strong>'}, false);
+
+    // => 'Some <strong>bold</strong> text.'
+  ```
+
+- In Vue
+
+  See the section on [interpolation](#interpolation).
+
+When [this translation helper issue](https://gitlab.com/gitlab-org/gitlab/-/issues/217935) is complete, we'll update the
+process of including formatting in translated strings.
+
+#### Including Angle Brackets
+
+If a string contains angles brackets (`<`/`>`) that are not used for HTML, it will still be flagged by the
+`rake gettext:lint` linter.
+To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) instead:
+
+- In Ruby/HAML:
+
+   ```ruby
+   html_escape_once(_('In &lt; 1 hour')).html_safe
+
+   # => 'In < 1 hour'
+   ```
+
+- In JavaScript:
+
+  ```javascript
+  import sanitize from 'sanitize-html';
+
+  const i18n = { LESS_THAN_ONE_HOUR: sanitize(__('In &lt; 1 hours'), { allowedTags: [] }) };
+
+  // ... using the string
+  element.innerHTML = i18n.LESS_THAN_ONE_HOUR;
+
+  // => 'In < 1 hour'
+  ```
+
+- In Vue:
+
+  ```vue
+  <gl-sprintf :message="s__('In &lt; 1 hours')"/>
+
+  // => 'In < 1 hour'
+  ```
+
 ### Dates / times
 
 - In JavaScript:
@@ -555,6 +623,7 @@ The linter will take the following into account:
   - There should be no variables used in a translation that aren't in the
     message ID
 - Errors during translation.
+- Presence of angle brackets (`<` or `>`)
 
 The errors are grouped per file, and per message ID:
 

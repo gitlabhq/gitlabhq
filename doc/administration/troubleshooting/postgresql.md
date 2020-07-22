@@ -57,6 +57,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 - [GitLab database requirements](../../install/requirements.md#database) including
   - Support for MySQL was removed in GitLab 12.1; [migrate to PostgreSQL](../../update/mysql_to_postgresql.md)
   - required extension `pg_trgm`
+  - required extension `btree_gist`
   - required extension `postgres_fdw` for Geo
 
 - Errors like this in the `production/sidekiq` log; see: [Set default_transaction_isolation into read committed](https://docs.gitlab.com/omnibus/settings/database.html#set-default_transaction_isolation-into-read-committed):

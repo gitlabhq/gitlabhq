@@ -314,11 +314,6 @@ export default {
         {{ __('An error occurred while loading designs. Please try again.') }}
       </gl-alert>
       <ol v-else class="list-unstyled row">
-        <span
-          v-if="isDesignListEmpty && !allVersions.length"
-          class="gl-font-weight-bold gl-font-weight-bold gl-ml-5 gl-mb-4"
-          >{{ s__('DesignManagement|Designs') }}</span
-        >
         <li :class="designDropzoneWrapperClass" data-testid="design-dropzone-wrapper">
           <design-dropzone
             :class="{ 'design-list-item design-list-item-new': !isDesignListEmpty }"

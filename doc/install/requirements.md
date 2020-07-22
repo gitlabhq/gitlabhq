@@ -140,8 +140,8 @@ GitLab version | Minimum PostgreSQL version
 12.10 | 11
 13.0 | 11
 
-You must also ensure the `pg_trgm` extension is loaded into every
-GitLab database. This extension [can be enabled](https://www.postgresql.org/docs/11/sql-createextension.html) using a PostgreSQL super user.
+You must also ensure the `pg_trgm` and `btree_gist` extensions are loaded into every
+GitLab database. These extensions [can be enabled](https://www.postgresql.org/docs/11/sql-createextension.html) using a PostgreSQL super user.
 
 On some systems you may need to install an additional package (for example,
 `postgresql-contrib`) for this extension to become available.

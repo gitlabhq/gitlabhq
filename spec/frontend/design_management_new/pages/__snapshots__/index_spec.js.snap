@@ -13,8 +13,6 @@ exports[`Design management index page designs does not render toolbar when there
     <ol
       class="list-unstyled row"
     >
-      <!---->
-       
       <li
         class="gl-flex-direction-column col-md-6 col-lg-3 gl-mb-3"
         data-testid="design-dropzone-wrapper"
@@ -144,8 +142,6 @@ exports[`Design management index page designs renders designs list and header wi
     <ol
       class="list-unstyled row"
     >
-      <!---->
-       
       <li
         class="gl-flex-direction-column col-md-6 col-lg-3 gl-mb-3"
         data-testid="design-dropzone-wrapper"
@@ -292,12 +288,6 @@ exports[`Design management index page when has no designs renders design dropzon
     <ol
       class="list-unstyled row"
     >
-      <span
-        class="gl-font-weight-bold gl-font-weight-bold gl-ml-5 gl-mb-4"
-      >
-        Designs
-      </span>
-       
       <li
         class="col-12"
         data-testid="design-dropzone-wrapper"

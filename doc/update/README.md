@@ -233,6 +233,10 @@ or "blocked" messages when using the command line,
 their accounts may have been un-confirmed.
 In that case, please ask them to check their email for a re-confirmation link.
 
+GitLab 13.2.0 relies on the `btree_gist` extension for PostgreSQL. For installations with an externally managed PostgreSQL setup, please make sure to
+[install the extension manually](https://www.postgresql.org/docs/11/sql-createextension.html) before upgrading GitLab if the database user for GitLab
+is not a superuser. This is not necessary for installations using a GitLab managed PostgreSQL database.
+
 ### 13.1.0
 
 In 13.1.0, you must upgrade to either:

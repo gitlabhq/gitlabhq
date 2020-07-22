@@ -473,9 +473,9 @@ Since we're adding our SSL certificate at the load balancer, we do not need GitL
    sudo gitlab-ctl reconfigure
    ```
 
-#### Install the `pg_trgm` extension for PostgreSQL
+#### Install the required extensions for PostgreSQL
 
-From your GitLab instance, connect to the RDS instance to verify access and to install the required `pg_trgm` extension.
+From your GitLab instance, connect to the RDS instance to verify access and to install the required `pg_trgm` and `btree_gist` extensions.
 
 To find the host or endpoint, navigate to **Amazon RDS > Databases** and click on the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
 
@@ -492,6 +492,7 @@ psql (10.9)
 Type "help" for help.
 
 gitlab=# CREATE EXTENSION pg_trgm;
+gitlab=# CREATE EXTENSION btree_gist;
 gitlab=# \q
 ```
 

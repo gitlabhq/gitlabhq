@@ -305,6 +305,12 @@ Select one node as a primary node.
    CREATE EXTENSION pg_trgm;
    ```
 
+1. Enable the `btree_gist` extension:
+
+   ```shell
+   CREATE EXTENSION btree_gist;
+   ```
+
 1. Exit the database prompt by typing `\q` and Enter.
 
 1. Verify the cluster is initialized with one node:
@@ -736,9 +742,9 @@ consul['configuration'] = {
 
 After deploying the configuration follow these steps:
 
-1. On `10.6.0.31`, our primary database
+1. On `10.6.0.31`, our primary database:
 
-   Enable the `pg_trgm` extension
+   Enable the `pg_trgm` and `btree_gist` extensions:
 
    ```shell
    gitlab-psql -d gitlabhq_production
@@ -746,33 +752,34 @@ After deploying the configuration follow these steps:
 
    ```shell
    CREATE EXTENSION pg_trgm;
+   CREATE EXTENSION btree_gist;
    ```
 
-1. On `10.6.0.32`, our first standby database
+1. On `10.6.0.32`, our first standby database:
 
-   Make this node a standby of the primary
+   Make this node a standby of the primary:
 
    ```shell
    gitlab-ctl repmgr standby setup 10.6.0.21
    ```
 
-1. On `10.6.0.33`, our second standby database
+1. On `10.6.0.33`, our second standby database:
 
-   Make this node a standby of the primary
+   Make this node a standby of the primary:
 
    ```shell
    gitlab-ctl repmgr standby setup 10.6.0.21
    ```
 
-1. On `10.6.0.41`, our application server
+1. On `10.6.0.41`, our application server:
 
-   Set `gitlab-consul` user's PgBouncer password to `toomanysecrets`
+   Set `gitlab-consul` user's PgBouncer password to `toomanysecrets`:
 
    ```shell
    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
    ```
 
-   Run database migrations
+   Run database migrations:
 
    ```shell
    gitlab-rake gitlab:db:configure
@@ -1324,7 +1331,7 @@ You can switch an exiting database cluster to use Patroni instead of repmgr with
 
    NOTE: **Note:**
    Ensure that there is no `walsender` process running on the primary node.
-   `ps aux | grep walsender` must not show any running process.  
+   `ps aux | grep walsender` must not show any running process.
 
 1. On the primary node, [configure Patroni](#configuring-patroni-cluster). Remove `repmgr` and any other
    repmgr-specific configuration. Also remove any configuration that is related to PostgreSQL replication.

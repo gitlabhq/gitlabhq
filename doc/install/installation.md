@@ -333,10 +333,16 @@ Starting from GitLab 12.1, only PostgreSQL is supported. Since GitLab 13.0, we r
    sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
    ```
 
-1. Create the `pg_trgm` extension (required for GitLab 8.6+):
+1. Create the `pg_trgm` extension:
 
    ```shell
    sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+   ```
+
+1. Create the `btree_gist` extension (required for GitLab 13.1+):
+
+   ```shell
+   sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS btree_gist;"
    ```
 
 1. Create the GitLab production database and grant all privileges on the database:
@@ -357,6 +363,24 @@ Starting from GitLab 12.1, only PostgreSQL is supported. Since GitLab 13.0, we r
    SELECT true AS enabled
    FROM pg_available_extensions
    WHERE name = 'pg_trgm'
+   AND installed_version IS NOT NULL;
+   ```
+
+   If the extension is enabled this will produce the following output:
+
+   ```plaintext
+   enabled
+   ---------
+    t
+   (1 row)
+   ```
+
+1. Check if the `btree_gist` extension is enabled:
+
+   ```sql
+   SELECT true AS enabled
+   FROM pg_available_extensions
+   WHERE name = 'btree_gist'
    AND installed_version IS NOT NULL;
    ```
 

@@ -15,6 +15,7 @@
       = render "shared/ping_consent"
       = render_account_recovery_regular_check
       = render_if_exists "layouts/header/ee_subscribable_banner"
+      = render_if_exists "shared/namespace_storage_limit_alert"
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"
       .d-flex

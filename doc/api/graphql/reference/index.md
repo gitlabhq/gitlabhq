@@ -705,6 +705,7 @@ Relationship between an epic and an issue
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `author` | User! | User that created the issue |
+| `blocked` | Boolean! | Indicates the issue is blocked |
 | `closedAt` | Time | Timestamp of when the issue was closed |
 | `confidential` | Boolean! | Indicates the issue is confidential |
 | `createdAt` | Time! | Timestamp of when the issue was created |
@@ -864,6 +865,7 @@ Represents a Group Member
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `author` | User! | User that created the issue |
+| `blocked` | Boolean! | Indicates the issue is blocked |
 | `closedAt` | Time | Timestamp of when the issue was closed |
 | `confidential` | Boolean! | Indicates the issue is confidential |
 | `createdAt` | Time! | Timestamp of when the issue was created |
