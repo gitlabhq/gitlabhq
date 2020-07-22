@@ -25,8 +25,8 @@
             title: s_('UserProfile|Report abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = icon('exclamation-circle')
       - if can?(current_user, :read_user_profile, @user)
-        = link_to user_path(@user, rss_url_options), class: link_classes + 'btn btn-default has-tooltip', title: s_('UserProfile|Subscribe'), 'aria-label': 'Subscribe' do
-          = icon('rss')
+        = link_to user_path(@user, rss_url_options), class: link_classes + 'btn btn-svg btn-default has-tooltip', title: s_('UserProfile|Subscribe'), 'aria-label': 'Subscribe' do
+          = sprite_icon('rss', css_class: 'qa-rss-icon', size: 16)
       - if current_user && current_user.admin?
         = link_to [:admin, @user], class: link_classes + 'btn btn-default', title: s_('UserProfile|View user in admin area'),
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do

@@ -69,8 +69,8 @@
       = render layout: 'users/cover_controls' do
         = link_to '#', class: link_classes + 'btn btn-default' do
           = sprite_icon('pencil')
-        = link_to '#', class: link_classes + 'btn btn-default' do
-          = icon('rss')
+        = link_to '#', class: link_classes + 'btn btn-svg btn-default' do
+          = sprite_icon('rss', css_class: 'qa-rss-icon', size: 16)
       .avatar-holder
         = image_tag avatar_icon_for_email('admin@example.com', 90), class: "avatar s90", alt: ''
       .cover-title

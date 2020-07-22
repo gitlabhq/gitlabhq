@@ -1031,11 +1031,11 @@ also be logged with an accompanying replication job ID.
 If your GitLab instance already has repositories, these won't be migrated
 automatically.
 
-Repositories may be moved from one storage location using the [Repository
-API](../../api/projects.html#edit-project):
+Repositories may be moved from one storage location using the [Project repository storage moves API](../../api/project_repository_storage_moves.md):
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "repository_storage=praefect" https://example.gitlab.com/api/v4/projects/123
+curl --request POST --header "PRIVATE_TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+--data '{"destination_storage_name":"praefect"}' "https://gitlab.example.com/api/v4/projects/123/repository_storage_moves"
 ```
 
 ## Debugging Praefect

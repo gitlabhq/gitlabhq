@@ -9,8 +9,7 @@ end
 RSpec.shared_examples "it has an RSS button with current_user's feed token" do
   it "shows the RSS button with current_user's feed token" do
     expect(page)
-      .to have_css("a:has(.fa-rss)[href*='feed_token=#{user.feed_token}']")
-      .or have_css("a.js-rss-button[href*='feed_token=#{user.feed_token}']")
+      .to have_css("a:has(.qa-rss-icon)[href*='feed_token=#{user.feed_token}']")
   end
 end
 
@@ -23,7 +22,6 @@ end
 RSpec.shared_examples "it has an RSS button without a feed token" do
   it "shows the RSS button without a feed token" do
     expect(page)
-      .to have_css("a:has(.fa-rss):not([href*='feed_token'])")
-      .or have_css("a.js-rss-button:not([href*='feed_token'])")
+      .to have_css("a:has(.qa-rss-icon):not([href*='feed_token'])")
   end
 end
