@@ -29,6 +29,21 @@ describe('Mutations TestReports Store', () => {
     });
   });
 
+  describe('set suite', () => {
+    it('should set the suite at the given index', () => {
+      mockState.testReports = testReports;
+      const suite = { name: 'test_suite' };
+      const index = 0;
+      const expectedState = { ...mockState };
+      expectedState.testReports.test_suites[index] = { suite, hasFullSuite: true };
+      mutations[types.SET_SUITE](mockState, { suite, index });
+
+      expect(mockState.testReports.test_suites[index]).toEqual(
+        expectedState.testReports.test_suites[index],
+      );
+    });
+  });
+
   describe('set selected suite index', () => {
     it('should set selectedSuiteIndex', () => {
       const selectedSuiteIndex = 0;

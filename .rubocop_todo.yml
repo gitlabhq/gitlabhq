@@ -153,23 +153,6 @@ Layout/SpaceInsideBlockBraces:
 Layout/SpaceInsideParens:
   Enabled: false
 
-# Offense count: 19
-Lint/DuplicateMethods:
-  Exclude:
-    - 'app/models/commit.rb'
-    - 'app/models/note.rb'
-    - 'lib/bitbucket/representation/repo.rb'
-    - 'lib/declarative_policy/base.rb'
-    - 'lib/gitlab/auth/ldap/person.rb'
-    - 'lib/gitlab/auth/o_auth/user.rb'
-    - 'lib/gitlab/ci/build/artifacts/metadata/entry.rb'
-    - 'lib/gitlab/cycle_analytics/base_event_fetcher.rb'
-    - 'lib/gitlab/diff/formatters/base_formatter.rb'
-    - 'lib/gitlab/git/blob.rb'
-    - 'lib/gitlab/git/repository.rb'
-    - 'lib/gitlab/git/tree.rb'
-    - 'lib/gitlab/git/wiki_page.rb'
-
 # Offense count: 157
 # Configuration parameters: MaximumRangeSize.
 Lint/MissingCopEnableDirective:

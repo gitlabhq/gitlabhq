@@ -311,7 +311,7 @@ This feature:
   For example:
 
   ```shell
-  kubectl logs -n gitlab-managed-apps $(kubectl get pod -n gitlab-managed-apps -l app=nginx-ingress,component=controller --no-headers=true -o custom-columns=:metadata.name) modsecurity-log -f
+  kubectl -n gitlab-managed-apps logs -l app=nginx-ingress,component=controller -c modsecurity-log -f
   ```
 
 To enable WAF, switch its respective toggle to the enabled position when installing or updating [Ingress application](#ingress).
@@ -1004,7 +1004,7 @@ The Cilium monitor log for traffic is logged out by the
 `cilium-monitor` sidecar container. You can check these logs with the following command:
 
 ```shell
-kubectl -n gitlab-managed-apps logs cilium-XXXX cilium-monitor
+kubectl -n gitlab-managed-apps logs -l k8s-app=cilium -c cilium-monitor
 ```
 
 You can disable the monitor log in `.gitlab/managed-apps/cilium/values.yaml`:
@@ -1127,7 +1127,7 @@ falco:
 You can check these logs with the following command:
 
 ```shell
-kubectl logs -l app=falco -n gitlab-managed-apps
+kubectl -n gitlab-managed-apps logs -l app=falco
 ```
 
 NOTE: **Note:**

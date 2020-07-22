@@ -77,6 +77,10 @@ module Gitlab
       def self.allow_to_create_merge_request_pipelines_in_target_project?(target_project)
         ::Feature.enabled?(:ci_allow_to_create_merge_request_pipelines_in_target_project, target_project)
       end
+
+      def self.job_entry_matches_all_keys?
+        ::Feature.enabled?(:ci_job_entry_matches_all_keys)
+      end
     end
   end
 end

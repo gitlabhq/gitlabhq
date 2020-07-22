@@ -5,6 +5,8 @@ mutation($input: JiraImportUsersInput!) {
       jiraDisplayName
       jiraEmail
       gitlabId
+      gitlabName
+      gitlabUsername
     }
     errors
   }

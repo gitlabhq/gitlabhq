@@ -443,7 +443,7 @@ describe('Dashboard Panel', () => {
 
     describe('csvText', () => {
       it('converts metrics data from json to csv', () => {
-        const header = `timestamp,${graphData.y_label}`;
+        const header = `timestamp,"${graphData.y_label} > ${graphData.metrics[0].label}"`;
         const data = graphData.metrics[0].result[0].values;
         const firstRow = `${data[0][0]},${data[0][1]}`;
         const secondRow = `${data[1][0]},${data[1][1]}`;

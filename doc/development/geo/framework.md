@@ -360,11 +360,33 @@ Widgets should now be replicated by Geo!
      DOWNTIME = false
 
      def change
-       add_column :widgets, :verification_retry_at, :datetime_with_timezone
-       add_column :widgets, :verified_at, :datetime_with_timezone
-       add_column :widgets, :verification_checksum, :binary, using: 'verification_checksum::bytea'
-       add_column :widgets, :verification_failure, :string
-       add_column :widgets, :verification_retry_count, :integer
+       change_table(:widgets) do |t|
+         t.integer :verification_retry_count, limit: 2
+         t.column :verification_retry_at, :datetime_with_timezone
+         t.column :verified_at, :datetime_with_timezone
+         t.binary :verification_checksum, using: 'verification_checksum::bytea'
+
+         # rubocop:disable Migration/AddLimitToTextColumns
+         t.text :verification_failure
+         # rubocop:enable Migration/AddLimitToTextColumns
+       end
+     end
+   end
+   ```
+
+   Adding a `text` column also [requires](../database/strings_and_the_text_data_type.md#add-a-text-column-to-an-existing-table)
+   setting a limit:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   class AddVerificationFailureLimitToWidgets < ActiveRecord::Migration[6.0]
+     DOWNTIME = false
+
+     disable_ddl_transaction!
+
+     def change
+       add_text_limit :widgets, :verification_failure, 255
      end
    end
    ```

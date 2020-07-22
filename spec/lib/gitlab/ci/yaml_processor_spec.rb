@@ -2484,6 +2484,14 @@ module Gitlab
           end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs config should contain at least one visible job")
         end
 
+        it "returns errors if the job script is not defined" do
+          config = YAML.dump({ rspec: { before_script: "test" } })
+
+          expect do
+            Gitlab::Ci::YamlProcessor.new(config)
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec script can't be blank")
+        end
+
         it "returns errors if there are no visible jobs defined" do
           config = YAML.dump({ before_script: ["bundle update"], '.hidden'.to_sym => { script: 'ls' } })
           expect do

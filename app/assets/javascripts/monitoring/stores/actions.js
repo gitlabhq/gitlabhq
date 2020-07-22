@@ -506,6 +506,3 @@ export const fetchVariableMetricLabelValues = ({ state, commit }, { defaultQuery
 
   return Promise.all(optionsRequests);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

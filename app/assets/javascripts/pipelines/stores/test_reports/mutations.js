@@ -5,6 +5,10 @@ export default {
     Object.assign(state, { testReports, hasFullReport: true });
   },
 
+  [types.SET_SUITE](state, { suite = {}, index = null }) {
+    state.testReports.test_suites[index] = { ...suite, hasFullSuite: true };
+  },
+
   [types.SET_SELECTED_SUITE_INDEX](state, selectedSuiteIndex) {
     Object.assign(state, { selectedSuiteIndex });
   },

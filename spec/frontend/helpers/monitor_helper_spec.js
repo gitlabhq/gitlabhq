@@ -1,12 +1,38 @@
-import * as monitorHelper from '~/helpers/monitor_helper';
+import { getSeriesLabel, makeDataSeries } from '~/helpers/monitor_helper';
 
 describe('monitor helper', () => {
   const defaultConfig = { default: true, name: 'default name' };
   const name = 'data name';
   const series = [[1, 1], [2, 2], [3, 3]];
-  const data = ({ metric = { default_name: name }, values = series } = {}) => [{ metric, values }];
+
+  describe('getSeriesLabel', () => {
+    const metricAttributes = { __name__: 'up', app: 'prometheus' };
+
+    it('gets a single attribute label', () => {
+      expect(getSeriesLabel('app', metricAttributes)).toBe('app: prometheus');
+    });
+
+    it('gets a templated label', () => {
+      expect(getSeriesLabel('{{__name__}}', metricAttributes)).toBe('up');
+      expect(getSeriesLabel('{{app}}', metricAttributes)).toBe('prometheus');
+      expect(getSeriesLabel('{{missing}}', metricAttributes)).toBe('{{missing}}');
+    });
+
+    it('gets a multiple label', () => {
+      expect(getSeriesLabel(null, metricAttributes)).toBe('__name__: up, app: prometheus');
+      expect(getSeriesLabel('', metricAttributes)).toBe('__name__: up, app: prometheus');
+    });
+
+    it('gets a simple label', () => {
+      expect(getSeriesLabel('A label', {})).toBe('A label');
+    });
+  });
 
   describe('makeDataSeries', () => {
+    const data = ({ metric = { default_name: name }, values = series } = {}) => [
+      { metric, values },
+    ];
+
     const expectedDataSeries = [
       {
         ...defaultConfig,
@@ -15,19 +41,17 @@ describe('monitor helper', () => {
     ];
 
     it('converts query results to data series', () => {
-      expect(monitorHelper.makeDataSeries(data({ metric: {} }), defaultConfig)).toEqual(
-        expectedDataSeries,
-      );
+      expect(makeDataSeries(data({ metric: {} }), defaultConfig)).toEqual(expectedDataSeries);
     });
 
     it('returns an empty array if no query results exist', () => {
-      expect(monitorHelper.makeDataSeries([], defaultConfig)).toEqual([]);
+      expect(makeDataSeries([], defaultConfig)).toEqual([]);
     });
 
     it('handles multi-series query results', () => {
       const expectedData = { ...expectedDataSeries[0], name: 'default name: data name' };
 
-      expect(monitorHelper.makeDataSeries([...data(), ...data()], defaultConfig)).toEqual([
+      expect(makeDataSeries([...data(), ...data()], defaultConfig)).toEqual([
         expectedData,
         expectedData,
       ]);
@@ -39,10 +63,7 @@ describe('monitor helper', () => {
         name: '{{cmd}}',
       };
 
-      const [result] = monitorHelper.makeDataSeries(
-        [{ metric: { cmd: 'brpop' }, values: series }],
-        config,
-      );
+      const [result] = makeDataSeries([{ metric: { cmd: 'brpop' }, values: series }], config);
 
       expect(result.name).toEqual('brpop');
     });
@@ -53,7 +74,7 @@ describe('monitor helper', () => {
         name: '',
       };
 
-      const [result] = monitorHelper.makeDataSeries(
+      const [result] = makeDataSeries(
         [
           {
             metric: {
@@ -79,7 +100,7 @@ describe('monitor helper', () => {
         name: 'backend: {{ backend }}',
       };
 
-      const [result] = monitorHelper.makeDataSeries(
+      const [result] = makeDataSeries(
         [{ metric: { backend: 'HA Server' }, values: series }],
         config,
       );
@@ -90,10 +111,7 @@ describe('monitor helper', () => {
     it('supports repeated template variables', () => {
       const config = { ...defaultConfig, name: '{{cmd}}, {{cmd}}' };
 
-      const [result] = monitorHelper.makeDataSeries(
-        [{ metric: { cmd: 'brpop' }, values: series }],
-        config,
-      );
+      const [result] = makeDataSeries([{ metric: { cmd: 'brpop' }, values: series }], config);
 
       expect(result.name).toEqual('brpop, brpop');
     });
@@ -101,7 +119,7 @@ describe('monitor helper', () => {
     it('supports hyphenated template variables', () => {
       const config = { ...defaultConfig, name: 'expired - {{ test-attribute }}' };
 
-      const [result] = monitorHelper.makeDataSeries(
+      const [result] = makeDataSeries(
         [{ metric: { 'test-attribute': 'test-attribute-value' }, values: series }],
         config,
       );
@@ -115,7 +133,7 @@ describe('monitor helper', () => {
         name: '{{job}}: {{cmd}}',
       };
 
-      const [result] = monitorHelper.makeDataSeries(
+      const [result] = makeDataSeries(
         [{ metric: { cmd: 'brpop', job: 'redis' }, values: series }],
         config,
       );
@@ -129,7 +147,7 @@ describe('monitor helper', () => {
         name: '{{cmd}}',
       };
 
-      const [firstSeries, secondSeries] = monitorHelper.makeDataSeries(
+      const [firstSeries, secondSeries] = makeDataSeries(
         [
           { metric: { cmd: 'brpop' }, values: series },
           { metric: { cmd: 'zrangebyscore' }, values: series },

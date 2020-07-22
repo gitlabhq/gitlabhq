@@ -1,7 +1,7 @@
 .file-content.code.js-syntax-highlight
   .line-numbers
     - if blob.data.present?
-      - link_icon = icon('link')
+      - link_icon = sprite_icon('link', size: 12)
       - link = blob_link if defined?(blob_link)
       - blob.data.each_line.each_with_index do |_, index|
         - offset = defined?(first_line_number) ? first_line_number : 1

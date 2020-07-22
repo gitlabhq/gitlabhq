@@ -122,11 +122,12 @@ const createTestDetails = () => {
   }
 
   const el = document.querySelector('#js-pipeline-tests-detail');
-  const { fullReportEndpoint, summaryEndpoint, countEndpoint } = el?.dataset || {};
+  const { fullReportEndpoint, summaryEndpoint, suiteEndpoint, countEndpoint } = el?.dataset || {};
 
   const testReportsStore = createTestReportsStore({
     fullReportEndpoint,
     summaryEndpoint: summaryEndpoint || countEndpoint,
+    suiteEndpoint,
     useBuildSummaryReport: window.gon?.features?.buildReportSummary,
   });
 

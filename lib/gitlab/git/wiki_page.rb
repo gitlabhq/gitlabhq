@@ -3,7 +3,7 @@
 module Gitlab
   module Git
     class WikiPage
-      attr_reader :url_path, :title, :format, :path, :version, :raw_data, :name, :text_data, :historical, :formatted_data
+      attr_reader :url_path, :title, :format, :path, :version, :raw_data, :name, :historical, :formatted_data
 
       # This class abstracts away Gitlab::GitalyClient::WikiPage
       def initialize(gitaly_page, version)

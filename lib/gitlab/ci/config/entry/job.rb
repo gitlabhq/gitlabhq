@@ -11,9 +11,8 @@ module Gitlab
           include ::Gitlab::Ci::Config::Entry::Processable
 
           ALLOWED_WHEN = %w[on_success on_failure always manual delayed].freeze
-          ALLOWED_KEYS = %i[tags script type image services
-                            allow_failure type when start_in artifacts cache
-                            dependencies before_script needs after_script
+          ALLOWED_KEYS = %i[tags script type image services start_in artifacts
+                            cache dependencies before_script after_script
                             environment coverage retry parallel interruptible timeout
                             resource_group release secrets].freeze
 
@@ -129,9 +128,39 @@ module Gitlab
                      :needs, :retry, :parallel, :start_in,
                      :interruptible, :timeout, :resource_group, :release
 
+          Matcher = Struct.new(:name, :config) do
+            def applies?
+              job_is_not_hidden? &&
+              config_is_a_hash? &&
+              has_job_keys?
+            end
+
+            private
+
+            def job_is_not_hidden?
+              !name.to_s.start_with?('.')
+            end
+
+            def config_is_a_hash?
+              config.is_a?(Hash)
+            end
+
+            def has_job_keys?
+              if name == :default
+                config.key?(:script)
+              else
+                (ALLOWED_KEYS & config.keys).any?
+              end
+            end
+          end
+
           def self.matching?(name, config)
-            !name.to_s.start_with?('.') &&
-              config.is_a?(Hash) && config.key?(:script)
+            if Gitlab::Ci::Features.job_entry_matches_all_keys?
+              Matcher.new(name, config).applies?
+            else
+              !name.to_s.start_with?('.') &&
+                config.is_a?(Hash) && config.key?(:script)
+            end
           end
 
           def self.visible?

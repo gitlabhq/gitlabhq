@@ -22,7 +22,7 @@ describe('Test reports app', () => {
   const testSummaryTable = () => wrapper.find(TestSummaryTable);
 
   const actionSpies = {
-    fetchFullReport: jest.fn(),
+    fetchTestSuite: jest.fn(),
     fetchSummary: jest.fn(),
     setSelectedSuiteIndex: jest.fn(),
     removeSelectedSuiteIndex: jest.fn(),
@@ -91,28 +91,14 @@ describe('Test reports app', () => {
   });
 
   describe('when a suite is clicked', () => {
-    describe('when the full test report has already been received', () => {
-      beforeEach(() => {
-        createComponent({ hasFullReport: true });
-        testSummaryTable().vm.$emit('row-click', 0);
-      });
-
-      it('should only call setSelectedSuiteIndex', () => {
-        expect(actionSpies.setSelectedSuiteIndex).toHaveBeenCalled();
-        expect(actionSpies.fetchFullReport).not.toHaveBeenCalled();
-      });
+    beforeEach(() => {
+      createComponent({ hasFullReport: true });
+      testSummaryTable().vm.$emit('row-click', 0);
     });
 
-    describe('when the full test report has not been received', () => {
-      beforeEach(() => {
-        createComponent({ hasFullReport: false });
-        testSummaryTable().vm.$emit('row-click', 0);
-      });
-
-      it('should call setSelectedSuiteIndex and fetchFullReport', () => {
-        expect(actionSpies.setSelectedSuiteIndex).toHaveBeenCalled();
-        expect(actionSpies.fetchFullReport).toHaveBeenCalled();
-      });
+    it('should call setSelectedSuiteIndex and fetchTestSuite', () => {
+      expect(actionSpies.setSelectedSuiteIndex).toHaveBeenCalled();
+      expect(actionSpies.fetchTestSuite).toHaveBeenCalled();
     });
   });
 

@@ -10,7 +10,7 @@ RSpec.describe Gitlab::IncomingEmail do
       end
 
       it 'returns true' do
-        expect(described_class.enabled?).to be_truthy
+        expect(described_class.enabled?).to be(true)
       end
     end
 
@@ -20,7 +20,7 @@ RSpec.describe Gitlab::IncomingEmail do
       end
 
       it "returns false" do
-        expect(described_class.enabled?).to be_falsey
+        expect(described_class.enabled?).to be(false)
       end
     end
   end
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::IncomingEmail do
       end
 
       it 'confirms that wildcard is supported' do
-        expect(described_class.supports_wildcard?).to be_truthy
+        expect(described_class.supports_wildcard?).to be(true)
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::IncomingEmail do
       end
 
       it 'returns that wildcard is not supported' do
-        expect(described_class.supports_wildcard?).to be_falsey
+        expect(described_class.supports_wildcard?).to be(false)
       end
     end
 
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::IncomingEmail do
       end
 
       it 'returns that wildcard is not supported' do
-        expect(described_class.supports_wildcard?).to be_falsey
+        expect(described_class.supports_wildcard?).to be(false)
       end
     end
   end

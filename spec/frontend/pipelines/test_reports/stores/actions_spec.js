@@ -17,9 +17,11 @@ describe('Actions TestReports Store', () => {
   const summary = { total_count: 1 };
 
   const fullReportEndpoint = `${TEST_HOST}/test_reports.json`;
+  const suiteEndpoint = `${TEST_HOST}/tests/:suite_name.json`;
   const summaryEndpoint = `${TEST_HOST}/test_reports/summary.json`;
   const defaultState = {
     fullReportEndpoint,
+    suiteEndpoint,
     summaryEndpoint,
     testReports: {},
     selectedSuite: null,
@@ -96,6 +98,65 @@ describe('Actions TestReports Store', () => {
             done();
           },
         );
+      });
+    });
+  });
+
+  describe('fetch test suite', () => {
+    beforeEach(() => {
+      const buildIds = [1];
+      testReports.test_suites[0].build_ids = buildIds;
+      const endpoint = suiteEndpoint.replace(':suite_name', testReports.test_suites[0].name);
+      mock
+        .onGet(endpoint, { params: { build_ids: buildIds } })
+        .replyOnce(200, testReports.test_suites[0], {});
+    });
+
+    it('sets test suite and shows tests', done => {
+      const suite = testReports.test_suites[0];
+      const index = 0;
+
+      testAction(
+        actions.fetchTestSuite,
+        index,
+        { ...state, testReports },
+        [{ type: types.SET_SUITE, payload: { suite, index } }],
+        [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
+        done,
+      );
+    });
+
+    it('should create flash on API error', done => {
+      const index = 0;
+
+      testAction(
+        actions.fetchTestSuite,
+        index,
+        { ...state, testReports, suiteEndpoint: null },
+        [],
+        [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
+        () => {
+          expect(createFlash).toHaveBeenCalled();
+          done();
+        },
+      );
+    });
+
+    describe('when we already have the suite data', () => {
+      it('should not fetch suite', done => {
+        const index = 0;
+        testReports.test_suites[0].hasFullSuite = true;
+
+        testAction(actions.fetchTestSuite, index, { ...state, testReports }, [], [], done);
+      });
+    });
+
+    describe('when we already have the full report data', () => {
+      it('should not fetch suite', done => {
+        const index = 0;
+        testReports.hasFullReport = true;
+
+        testAction(actions.fetchTestSuite, index, { ...state, testReports }, [], [], done);
       });
     });
   });

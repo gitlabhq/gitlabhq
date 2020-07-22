@@ -10,7 +10,6 @@ module Gitlab
         attr_reader :base_sha
         attr_reader :start_sha
         attr_reader :head_sha
-        attr_reader :position_type
 
         def initialize(attrs)
           if diff_file = attrs[:diff_file]

@@ -16516,6 +16516,9 @@ msgstr ""
 msgid "Other merge requests block this MR"
 msgstr ""
 
+msgid "Other versions"
+msgstr ""
+
 msgid "Other visibility settings have been disabled by the administrator."
 msgstr ""
 
@@ -23383,6 +23386,9 @@ msgstr ""
 msgid "TestReports|There was an error fetching the test reports."
 msgstr ""
 
+msgid "TestReports|There was an error fetching the test suite."
+msgstr ""
+
 msgid "Tests"
 msgstr ""
 
@@ -26191,9 +26197,6 @@ msgid "Verify configuration"
 msgstr ""
 
 msgid "Version"
-msgstr ""
-
-msgid "Versions"
 msgstr ""
 
 msgid "View Documentation"

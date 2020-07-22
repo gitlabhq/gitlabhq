@@ -165,7 +165,6 @@
     "babel-jest": "^24.1.0",
     "babel-plugin-dynamic-import-node": "^2.2.0",
     "babel-plugin-istanbul": "^5.1.0",
-    "babel-plugin-rewire": "^1.2.0",
     "chalk": "^2.4.1",
     "commander": "^2.18.0",
     "custom-jquery-matchers": "^2.1.0",

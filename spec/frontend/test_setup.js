@@ -24,7 +24,7 @@ afterEach(() =>
   }),
 );
 
-initializeTestTimeout(process.env.CI ? 5000 : 500);
+initializeTestTimeout(process.env.CI ? 6000 : 500);
 
 Vue.config.devtools = false;
 Vue.config.productionTip = false;

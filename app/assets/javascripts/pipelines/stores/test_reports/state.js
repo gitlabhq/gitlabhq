@@ -1,9 +1,11 @@
 export default ({
   fullReportEndpoint = '',
   summaryEndpoint = '',
+  suiteEndpoint = '',
   useBuildSummaryReport = false,
 }) => ({
   summaryEndpoint,
+  suiteEndpoint,
   fullReportEndpoint,
   testReports: {},
   selectedSuiteIndex: null,

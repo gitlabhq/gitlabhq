@@ -49,7 +49,7 @@ const multiMetricLabel = metricAttributes => {
  * @param {Object} metricAttributes - Default metric attribute values (e.g. method, instance)
  * @returns {String} The formatted query label
  */
-const getSeriesLabel = (queryLabel, metricAttributes) => {
+export const getSeriesLabel = (queryLabel, metricAttributes) => {
   return (
     singleAttributeLabel(queryLabel, metricAttributes) ||
     templatedLabel(queryLabel, metricAttributes) ||
@@ -63,7 +63,6 @@ const getSeriesLabel = (queryLabel, metricAttributes) => {
  * @param {Object} defaultConfig - Default chart config values (e.g. lineStyle, name)
  * @returns {Array} The formatted values
  */
-// eslint-disable-next-line import/prefer-default-export
 export const makeDataSeries = (queryResults, defaultConfig) =>
   queryResults.map(result => {
     return {

@@ -13,7 +13,7 @@ Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/
 
 ## Documentation
 
-API endpoints must come with [documentation](documentation/styleguide.md#api), unless it is internal or behind a feature flag.
+API endpoints must come with [documentation](documentation/styleguide.md#restful-api), unless it is internal or behind a feature flag.
 The docs should be in the same merge request, or, if strictly necessary,
 in a follow-up with the same milestone as the original merge request.
 

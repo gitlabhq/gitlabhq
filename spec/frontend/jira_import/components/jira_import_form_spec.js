@@ -1,10 +1,10 @@
-import { GlButton, GlFormSelect, GlLabel, GlTable } from '@gitlab/ui';
+import { GlButton, GlNewDropdown, GlFormSelect, GlLabel, GlTable } from '@gitlab/ui';
 import { getByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
-import { issuesPath, jiraProjects, userMappings } from '../mock_data';
+import { issuesPath, jiraProjects, userMappings as defaultUserMappings } from '../mock_data';
 
 describe('JiraImportForm', () => {
   let axiosMock;
@@ -16,11 +16,21 @@ describe('JiraImportForm', () => {
 
   const getSelectDropdown = () => wrapper.find(GlFormSelect);
 
+  const getContinueButton = () => wrapper.find(GlButton);
+
   const getCancelButton = () => wrapper.findAll(GlButton).at(1);
+
+  const getTable = () => wrapper.find(GlTable);
+
+  const getUserDropdown = () => getTable().find(GlNewDropdown);
 
   const getHeader = name => getByRole(wrapper.element, 'columnheader', { name });
 
-  const mountComponent = ({ isSubmitting = false, mountFunction = shallowMount } = {}) =>
+  const mountComponent = ({
+    isSubmitting = false,
+    userMappings = defaultUserMappings,
+    mountFunction = shallowMount,
+  } = {}) =>
     mountFunction(JiraImportForm, {
       propsData: {
         importLabel,
@@ -121,13 +131,53 @@ describe('JiraImportForm', () => {
       it('shows all user mappings', () => {
         wrapper = mountComponent({ mountFunction: mount });
 
-        expect(wrapper.find(GlTable).findAll('tbody tr').length).toBe(userMappings.length);
+        expect(getTable().findAll('tbody tr')).toHaveLength(2);
       });
 
       it('shows correct information in each cell', () => {
         wrapper = mountComponent({ mountFunction: mount });
 
-        expect(wrapper.find(GlTable).element).toMatchSnapshot();
+        expect(getTable().element).toMatchSnapshot();
+      });
+
+      describe('when there is no Jira->GitLab user mapping', () => {
+        it('shows the logged in user in the dropdown', () => {
+          wrapper = mountComponent({
+            mountFunction: mount,
+            userMappings: [
+              {
+                jiraAccountId: 'aei23f98f-q23fj98qfj',
+                jiraDisplayName: 'Jane Doe',
+                jiraEmail: 'janedoe@example.com',
+                gitlabId: undefined,
+                gitlabUsername: undefined,
+              },
+            ],
+          });
+
+          expect(getUserDropdown().text()).toContain(currentUsername);
+        });
+      });
+
+      describe('when there is a Jira->GitLab user mapping', () => {
+        it('shows the mapped user in the dropdown', () => {
+          const gitlabUsername = 'mai';
+
+          wrapper = mountComponent({
+            mountFunction: mount,
+            userMappings: [
+              {
+                jiraAccountId: 'aei23f98f-q23fj98qfj',
+                jiraDisplayName: 'Jane Doe',
+                jiraEmail: 'janedoe@example.com',
+                gitlabId: 14,
+                gitlabUsername,
+              },
+            ],
+          });
+
+          expect(getUserDropdown().text()).toContain(gitlabUsername);
+        });
       });
     });
   });
@@ -137,13 +187,13 @@ describe('JiraImportForm', () => {
       it('is shown', () => {
         wrapper = mountComponent();
 
-        expect(wrapper.find(GlButton).text()).toBe('Continue');
+        expect(getContinueButton().text()).toBe('Continue');
       });
 
       it('is in loading state when the form is submitting', async () => {
         wrapper = mountComponent({ isSubmitting: true });
 
-        expect(wrapper.find(GlButton).props('loading')).toBe(true);
+        expect(getContinueButton().props('loading')).toBe(true);
       });
     });
 

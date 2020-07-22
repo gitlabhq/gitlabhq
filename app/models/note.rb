@@ -61,7 +61,7 @@ class Note < ApplicationRecord
   attr_accessor :commands_changes
 
   # A special role that may be displayed on issuable's discussions
-  attr_accessor :special_role
+  attr_reader :special_role
 
   default_value_for :system, false
 

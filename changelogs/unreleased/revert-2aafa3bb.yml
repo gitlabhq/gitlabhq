@@ -1,0 +1,5 @@
+---
+title: Fix CSV downloads for multiple series in the same chart
+merge_request: 37377
+author:
+type: fixed

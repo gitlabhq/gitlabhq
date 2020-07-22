@@ -1204,3 +1204,7 @@ See the [schema reference](../api/graphql/reference/index.md) for details.
 This generated GraphQL documentation needs to be updated when the schema changes.
 For information on generating GraphQL documentation and schema files, see
 [updating the schema documentation](rake_tasks.md#update-graphql-documentation-and-schema-definitions).
+
+To help our readers, you should also add a new page to our [GraphQL API](../api/graphql/index.md) documentation.
+For guidance, see the [GraphQL API](documentation/styleguide.md#graphql-api) section
+of our documentation style guide.

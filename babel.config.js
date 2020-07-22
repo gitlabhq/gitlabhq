@@ -35,11 +35,6 @@ if (BABEL_ENV === 'coverage') {
   ]);
 }
 
-// add rewire support when running tests
-if (BABEL_ENV === 'karma' || BABEL_ENV === 'coverage') {
-  plugins.push('babel-plugin-rewire');
-}
-
 // Jest is running in node environment, so we need additional plugins
 const isJest = Boolean(process.env.JEST_WORKER_ID);
 if (isJest) {

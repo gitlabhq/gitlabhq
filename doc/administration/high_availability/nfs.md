@@ -35,6 +35,20 @@ kernel version:
 If you are using that kernel version, be sure to upgrade GitLab to avoid
 errors.
 
+## Fast lookup of authorized SSH keys
+
+The [fast SSH key lookup](../operations/fast_ssh_key_lookup.md) feature can improve
+performance of GitLab instances even if they're using block storage.
+
+[Fast SSH key lookup](../operations/fast_ssh_key_lookup.md) is a replacement for
+`authorized_keys` (in `/var/opt/gitlab/.ssh`) using the GitLab database.
+
+NFS increases latency, so fast lookup is recommended if `/var/opt/gitlab`
+is moved to NFS.
+
+We are investigating the use of
+[fast lookup as the default](https://gitlab.com/groups/gitlab-org/-/epics/3104).
+
 ## NFS Server features
 
 ### Required features

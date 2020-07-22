@@ -8,11 +8,11 @@ module Gitlab
 
     class << self
       def enabled?
-        config.enabled && config.address
+        config.enabled && config.address.present?
       end
 
       def supports_wildcard?
-        config.address && config.address.include?(WILDCARD_PLACEHOLDER)
+        config.address.present? && config.address.include?(WILDCARD_PLACEHOLDER)
       end
 
       def supports_issue_creation?

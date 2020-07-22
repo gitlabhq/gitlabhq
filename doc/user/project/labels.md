@@ -43,7 +43,7 @@ To assign a label to an issue, merge request or epic:
      click on them. You can search repeatedly and add more labels.
 1. Click **X** or anywhere outside the label section and the labels are applied.
 
-You can also assign a label with the [`/assign @username` quick action](quick_actions.md).
+You can also assign a label with the [`/label ~label1 ~label2` quick action](quick_actions.md).
 
 ## Label management
 

@@ -12,7 +12,7 @@ module Gitlab
         SignupDisabledError = Class.new(StandardError)
         SigninDisabledForProviderError = Class.new(StandardError)
 
-        attr_accessor :auth_hash, :gl_user
+        attr_reader :auth_hash
 
         def initialize(auth_hash)
           self.auth_hash = auth_hash

@@ -50,7 +50,7 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do
         visit_blob
 
         find("##{ending_fragment}").hover
-        find("##{ending_fragment} i").click
+        find("##{ending_fragment} svg").click
 
         expect(find('.js-data-file-blob-permalink-url')['href']).to eq(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: ending_fragment)))
       end
@@ -100,7 +100,7 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do
         visit_blob
 
         find("##{ending_fragment}").hover
-        find("##{ending_fragment} i").click
+        find("##{ending_fragment} svg").click
 
         expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: ending_fragment)))
       end

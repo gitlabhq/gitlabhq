@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'fetchFullReport',
+      'fetchTestSuite',
       'fetchSummary',
       'setSelectedSuiteIndex',
       'removeSelectedSuiteIndex',
@@ -40,10 +40,8 @@ export default {
     summaryTableRowClick(index) {
       this.setSelectedSuiteIndex(index);
 
-      // Fetch the full report when the user clicks to see more details
-      if (!this.hasFullReport) {
-        this.fetchFullReport();
-      }
+      // Fetch the test suite when the user clicks to see more details
+      this.fetchTestSuite(index);
     },
     beforeEnterTransition() {
       document.documentElement.style.overflowX = 'hidden';

@@ -88,5 +88,6 @@
   #js-tab-tests.tab-pane
     #js-pipeline-tests-detail{ data: { full_report_endpoint: test_report_project_pipeline_path(@project, @pipeline, format: :json),
       summary_endpoint: Feature.enabled?(:build_report_summary, @project) ? summary_project_pipeline_tests_path(@project, @pipeline, format: :json) : '',
+      suite_endpoint: Feature.enabled?(:build_report_summary, @project) ? project_pipeline_test_path(@project, @pipeline, suite_name: ':suite_name', format: :json) : '',
       count_endpoint: test_reports_count_project_pipeline_path(@project, @pipeline, format: :json) } }
   = render_if_exists "projects/pipelines/tabs_content", pipeline: @pipeline, project: @project

@@ -76,9 +76,9 @@ Dangerfile @gl-quality/eng-prod
 /doc/user/project/code_owners.md @reprazent @kerrizor @garyh
 
 [Telemetry]
-/ee/lib/gitlab/usage_data_counters/ @gitlab-org/growth/telemetry
-/ee/lib/ee/gitlab/usage_data.rb @gitlab-org/growth/telemetry
-/lib/gitlab/grafana_embed_usage_data.rb @gitlab-org/growth/telemetry
-/lib/gitlab/usage_data.rb @gitlab-org/growth/telemetry
-/lib/gitlab/cycle_analytics/usage_data.rb @gitlab-org/growth/telemetry
-/lib/gitlab/usage_data_counters/ @gitlab-org/growth/telemetry
+/ee/lib/gitlab/usage_data_counters/ @gitlab-org/growth/telemetry/engineers
+/ee/lib/ee/gitlab/usage_data.rb @gitlab-org/growth/telemetry/engineers
+/lib/gitlab/grafana_embed_usage_data.rb @gitlab-org/growth/telemetry/engineers
+/lib/gitlab/usage_data.rb @gitlab-org/growth/telemetry/engineers
+/lib/gitlab/cycle_analytics/usage_data.rb @gitlab-org/growth/telemetry/engineers
+/lib/gitlab/usage_data_counters/ @gitlab-org/growth/telemetry/engineers
