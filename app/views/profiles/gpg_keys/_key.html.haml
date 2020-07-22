@@ -1,6 +1,6 @@
 %li.key-list-item
   .float-left.gl-mr-3
-    = icon 'key', class: "settings-list-icon d-none d-sm-block"
+    = sprite_icon('key', size: 16, css_class: "settings-list-icon d-none d-sm-block gl-mt-4")
   .key-list-item-info
     - key.emails_with_verified_status.map do |email, verified|
       = render partial: 'shared/email_with_badge', locals: { email: email, verified: verified }

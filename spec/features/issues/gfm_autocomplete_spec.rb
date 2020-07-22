@@ -644,6 +644,45 @@ RSpec.describe 'GFM autocomplete', :js do
         expect(find('.tribute-container ul')).to have_content(unassigned_user.username)
       end
     end
+
+    context 'when other notes are destroyed' do
+      let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
+
+      # This is meant to protect against this issue https://gitlab.com/gitlab-org/gitlab/-/issues/228729
+      it 'keeps autocomplete key listeners' do
+        visit project_issue_path(project, issue)
+        note = find('#note-body')
+
+        start_comment_with_emoji(note)
+
+        start_and_cancel_discussion
+
+        note.fill_in(with: '')
+        start_comment_with_emoji(note)
+        note.native.send_keys(:enter)
+
+        expect(note.value).to eql('Hello :100: ')
+      end
+
+      def start_comment_with_emoji(note)
+        note.native.send_keys('Hello :10')
+
+        # Wait for emoji popup
+        find('.atwho-view li', text: '100')
+      end
+
+      def start_and_cancel_discussion
+        click_button('Reply...')
+
+        fill_in('note_note', with: 'Whoops!')
+
+        page.accept_alert 'Are you sure you want to cancel creating this comment?' do
+          click_button('Cancel')
+        end
+
+        wait_for_requests
+      end
+    end
   end
 
   private

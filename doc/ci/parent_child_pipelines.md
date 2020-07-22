@@ -145,6 +145,8 @@ build a matrix of targets and architectures.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Create child pipelines using dynamically generated configurations](https://youtu.be/nMdfus2JWHM).
 
+We also have an [example project using Dynamic Child Pipelines with Jsonnet](https://gitlab.com/gitlab-org/project-templates/jsonnet) which shows how to use a data templating language to generate your `.gitlab-ci.yml` at runtime. You could use a similar process for other templating languages like [Dhall](https://dhall-lang.org/) or [`ytt`](https://get-ytt.io/).
+
 In GitLab 12.9, the child pipeline could fail to be created in certain cases, causing the parent pipeline to fail.
 This is [resolved in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/209070).
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow, no-param-reassign,consistent-return */
 /* global List */
-
+/* global ListIssue */
 import $ from 'jquery';
 import { sortBy } from 'lodash';
 import Vue from 'vue';
@@ -641,7 +641,9 @@ const boardsStore = {
           list.issues = [];
         }
 
-        list.createIssues(data.issues);
+        data.issues.forEach(issueObj => {
+          list.addIssue(new ListIssue(issueObj));
+        });
 
         return data;
       });

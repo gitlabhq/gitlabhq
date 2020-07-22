@@ -521,7 +521,7 @@
   }
 
   &.board-card-weight {
-    color: $gl-text-color;
+    color: $gl-text-color-secondary;
     cursor: pointer;
 
     &:hover {
@@ -531,8 +531,9 @@
   }
 
   .board-card-info-icon {
-    color: $gray-600;
+    color: $gray-700;
     margin-right: $gl-padding-4;
+    vertical-align: text-top;
   }
 
   @include media-breakpoint-down(md) {

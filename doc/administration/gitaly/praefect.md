@@ -212,6 +212,7 @@ application server, or a Gitaly node.
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
+   alertmanager['enable'] = false
    prometheus['enable'] = false
    grafana['enable'] = false
    puma['enable'] = false

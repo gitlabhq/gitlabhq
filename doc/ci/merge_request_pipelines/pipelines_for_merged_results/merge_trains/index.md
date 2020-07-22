@@ -11,6 +11,8 @@ last_update: 2019-07-03
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
 > - [Squash and merge](../../../../user/project/merge_requests/squash_and_merge.md) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13001) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
 
+For more information about why you might want to use Merge Trains, read [How merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
+
 When [pipelines for merged results](../index.md#pipelines-for-merged-results-premium) are
 enabled, the pipeline jobs run as if the changes from your source branch have already
 been merged into the target branch.

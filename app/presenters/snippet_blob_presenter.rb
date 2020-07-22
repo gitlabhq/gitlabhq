@@ -17,7 +17,7 @@ class SnippetBlobPresenter < BlobPresenter
   end
 
   def raw_path
-    return gitlab_raw_snippet_blob_path(blob) if snippet_multiple_files?
+    return gitlab_raw_snippet_blob_path(snippet, blob.path) if snippet_multiple_files?
 
     gitlab_raw_snippet_path(snippet)
   end

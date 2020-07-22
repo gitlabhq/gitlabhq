@@ -8,6 +8,7 @@ All template files reside in the `lib/gitlab/ci/templates` directory, and are ca
 
 | Sub-directroy | Content                                                      | [Selectable in UI](#make-sure-the-new-template-can-be-selected-in-ui) |
 |---------------|--------------------------------------------------------------|-----------------------------------------------------------------------|
+| `/AWS/*`      | Cloud Deployment (AWS) related jobs                          | No                                                                    |
 | `/Jobs/*`     | Auto DevOps related jobs                                     | Yes                                                                   |
 | `/Pages/*`    | Static site generators for GitLab Pages (for example Jekyll) | Yes                                                                   |
 | `/Security/*` | Security related jobs                                        | Yes                                                                   |
@@ -25,8 +26,36 @@ Also, all templates must be named with the `*.gitlab-ci.yml` suffix.
 ### Backward compatibility
 
 A template might be dynamically included with the `include:template:` keyword. If
-you make a change to an *existing* template, you must make sure that it won't break
+you make a change to an *existing* template, you **must** make sure that it won't break
 CI/CD in existing projects.
+
+For example, changing a job name in a template could break pipelines in an existing project.
+Let's say there is a template named `Performance.gitlab-ci.yml` with the following content:
+
+```yaml
+performance:
+  image: registry.gitlab.com/gitlab-org/verify-tools/performance:v0.1.0
+  script: ./performance-test $TARGET_URL
+```
+
+and users include this template with passing an argument to the `performance` job.
+This can be done by specifying the environment variable `TARGET_URL` in _their_ `.gitlab-ci.yml`:
+
+```yaml
+include:
+  template: Performance.gitlab-ci.yml
+
+performance:
+  variables:
+    TARGET_URL: https://awesome-app.com
+```
+
+If the job name `performance` in the template is renamed to `browser-performance`,
+user's `.gitlab-ci.yml` will immediately cause a lint error because there
+are no such jobs named `performance` in the included template anymore. Therefore,
+users have to fix their `.gitlab-ci.yml` that could annoy their workflow.
+
+Please read [versioning](#versioning) section for introducing breaking change safely.
 
 ## Testing
 
@@ -64,3 +93,13 @@ You should write an RSpec test to make sure that pipeline jobs will be generated
 A template could contain malicious code. For example, a template that contains the `export` shell command in a job
 might accidentally expose project secret variables in a job log.
 If you're unsure if it's secure or not, you need to ask security experts for cross-validation.
+
+## Versioning
+
+Versioning allows you to introduce a new template without modifying the existing
+one. This is useful process especially when we need to introduce a breaking change,
+but don't want to affect the existing projects that depends on the current template.
+
+There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/17716) for
+introducing versioning concept in GitLab Ci Template. Please follow the issue for
+checking the progress.

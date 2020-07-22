@@ -1,11 +1,11 @@
 <script>
 import { __, sprintf } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 
 export default {
   name: 'DesignNotePin',
   components: {
-    Icon,
+    GlIcon,
   },
   props: {
     position: {
@@ -47,13 +47,13 @@ export default {
       'btn-transparent comment-indicator': isNewNote,
       'js-image-badge badge badge-pill': !isNewNote,
     }"
-    class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center"
+    class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-0"
     type="button"
     @mousedown="$emit('mousedown', $event)"
     @mouseup="$emit('mouseup', $event)"
     @click="$emit('click', $event)"
   >
-    <icon v-if="isNewNote" name="image-comment-dark" />
+    <gl-icon v-if="isNewNote" name="image-comment-dark" :size="24" />
     <template v-else>
       {{ label }}
     </template>

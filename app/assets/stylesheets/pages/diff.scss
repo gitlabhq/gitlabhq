@@ -992,7 +992,8 @@ table.code {
 }
 
 .frame .badge.badge-pill,
-.frame .image-comment-badge {
+.frame .image-comment-badge,
+.frame .comment-indicator {
   // Center align badges on the frame
   transform: translate(-50%, -50%);
 }

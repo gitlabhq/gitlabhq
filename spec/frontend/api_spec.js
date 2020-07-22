@@ -666,6 +666,97 @@ describe('Api', () => {
     });
   });
 
+  describe('release', () => {
+    const dummyProjectPath = 'gitlab-org/gitlab';
+    const dummyTagName = 'v1.3';
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+      dummyProjectPath,
+    )}/releases/${encodeURIComponent(dummyTagName)}`;
+
+    describe('when the release is successfully returned', () => {
+      it('resolves the Promise', () => {
+        mock.onGet(expectedUrl).replyOnce(200);
+
+        return Api.release(dummyProjectPath, dummyTagName).then(() => {
+          expect(mock.history.get).toHaveLength(1);
+        });
+      });
+    });
+
+    describe('when an error occurs while fetching the release', () => {
+      it('rejects the Promise', () => {
+        mock.onGet(expectedUrl).replyOnce(500);
+
+        return Api.release(dummyProjectPath, dummyTagName).catch(() => {
+          expect(mock.history.get).toHaveLength(1);
+        });
+      });
+    });
+  });
+
+  describe('createRelease', () => {
+    const dummyProjectPath = 'gitlab-org/gitlab';
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+      dummyProjectPath,
+    )}/releases`;
+
+    const release = {
+      name: 'Version 1.0',
+    };
+
+    describe('when the release is successfully created', () => {
+      it('resolves the Promise', () => {
+        mock.onPost(expectedUrl, release).replyOnce(201);
+
+        return Api.createRelease(dummyProjectPath, release).then(() => {
+          expect(mock.history.post).toHaveLength(1);
+        });
+      });
+    });
+
+    describe('when an error occurs while creating the release', () => {
+      it('rejects the Promise', () => {
+        mock.onPost(expectedUrl, release).replyOnce(500);
+
+        return Api.createRelease(dummyProjectPath, release).catch(() => {
+          expect(mock.history.post).toHaveLength(1);
+        });
+      });
+    });
+  });
+
+  describe('updateRelease', () => {
+    const dummyProjectPath = 'gitlab-org/gitlab';
+    const dummyTagName = 'v1.3';
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+      dummyProjectPath,
+    )}/releases/${encodeURIComponent(dummyTagName)}`;
+
+    const release = {
+      name: 'Version 1.0',
+    };
+
+    describe('when the release is successfully created', () => {
+      it('resolves the Promise', () => {
+        mock.onPut(expectedUrl, release).replyOnce(200);
+
+        return Api.updateRelease(dummyProjectPath, dummyTagName, release).then(() => {
+          expect(mock.history.put).toHaveLength(1);
+        });
+      });
+    });
+
+    describe('when an error occurs while creating the release', () => {
+      it('rejects the Promise', () => {
+        mock.onPut(expectedUrl, release).replyOnce(500);
+
+        return Api.updateRelease(dummyProjectPath, dummyTagName, release).catch(() => {
+          expect(mock.history.put).toHaveLength(1);
+        });
+      });
+    });
+  });
+
   describe('createReleaseLink', () => {
     const dummyProjectPath = 'gitlab-org/gitlab';
     const dummyReleaseTag = 'v1.3';

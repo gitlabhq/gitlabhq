@@ -530,6 +530,12 @@ const Api = {
     return axios.get(url);
   },
 
+  createRelease(projectPath, release) {
+    const url = Api.buildUrl(this.releasesPath).replace(':id', encodeURIComponent(projectPath));
+
+    return axios.post(url, release);
+  },
+
   updateRelease(projectPath, tagName, release) {
     const url = Api.buildUrl(this.releasePath)
       .replace(':id', encodeURIComponent(projectPath))

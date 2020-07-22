@@ -1,12 +1,11 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
-
-import ListIssue from 'ee_else_ce/boards/models/issue';
 import { __ } from '~/locale';
 import ListLabel from './label';
 import ListAssignee from './assignee';
 import flash from '~/flash';
 import boardsStore from '../stores/boards_store';
 import ListMilestone from './milestone';
+import 'ee_else_ce/boards/models/issue';
 
 const TYPES = {
   backlog: {
@@ -98,12 +97,6 @@ class List {
 
   newIssue(issue) {
     return boardsStore.newListIssue(this, issue);
-  }
-
-  createIssues(data) {
-    data.forEach(issueObj => {
-      this.addIssue(new ListIssue(issueObj));
-    });
   }
 
   addMultipleIssues(issues, listFrom, newIndex) {

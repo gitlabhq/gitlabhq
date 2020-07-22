@@ -34,10 +34,9 @@ export default {
 <template>
   <span>
     <span ref="issueTimeEstimate" class="board-card-info card-number">
-      <icon name="hourglass" class="board-card-info-icon align-top" /><time
-        class="board-card-info-text"
-        >{{ timeEstimate }}</time
-      >
+      <icon name="hourglass" class="board-card-info-icon" /><time class="board-card-info-text">{{
+        timeEstimate
+      }}</time>
     </span>
     <gl-tooltip
       :target="() => $refs.issueTimeEstimate"

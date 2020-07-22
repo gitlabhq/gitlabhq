@@ -8192,7 +8192,7 @@ msgstr ""
 msgid "DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again."
 msgstr ""
 
-msgid "DesignManagement|To upload designs, you'll need to %{requirements_link_start}enable LFS%{requirements_link_end}."
+msgid "DesignManagement|To upload designs, you'll need to enable LFS. %{requirements_link_start}More information%{requirements_link_end}"
 msgstr ""
 
 msgid "DesignManagement|Unresolve thread"
@@ -15537,6 +15537,9 @@ msgstr ""
 msgid "NetworkPolicies|Name"
 msgstr ""
 
+msgid "NetworkPolicies|New policy"
+msgstr ""
+
 msgid "NetworkPolicies|No policies detected"
 msgstr ""
 
@@ -15547,6 +15550,12 @@ msgid "NetworkPolicies|Policy %{policyName} was successfully changed"
 msgstr ""
 
 msgid "NetworkPolicies|Policy definition"
+msgstr ""
+
+msgid "NetworkPolicies|Policy description"
+msgstr ""
+
+msgid "NetworkPolicies|Policy editor"
 msgstr ""
 
 msgid "NetworkPolicies|Something went wrong, failed to update policy"

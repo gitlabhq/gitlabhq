@@ -3,13 +3,13 @@
 exports[`Design note pin component should match the snapshot of note when repositioning 1`] = `
 <button
   aria-label="Comment form position"
-  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center btn-transparent comment-indicator"
+  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-0 btn-transparent comment-indicator"
   style="left: 10px; top: 10px; cursor: move;"
   type="button"
 >
-  <icon-stub
+  <gl-icon-stub
     name="image-comment-dark"
-    size="16"
+    size="24"
   />
 </button>
 `;
@@ -17,7 +17,7 @@ exports[`Design note pin component should match the snapshot of note when reposi
 exports[`Design note pin component should match the snapshot of note with index 1`] = `
 <button
   aria-label="Comment '1' position"
-  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center js-image-badge badge badge-pill"
+  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-0 js-image-badge badge badge-pill"
   style="left: 10px; top: 10px;"
   type="button"
 >
@@ -30,13 +30,13 @@ exports[`Design note pin component should match the snapshot of note with index 
 exports[`Design note pin component should match the snapshot of note without index 1`] = `
 <button
   aria-label="Comment form position"
-  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center btn-transparent comment-indicator"
+  class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-0 btn-transparent comment-indicator"
   style="left: 10px; top: 10px;"
   type="button"
 >
-  <icon-stub
+  <gl-icon-stub
     name="image-comment-dark"
-    size="16"
+    size="24"
   />
 </button>
 `;
