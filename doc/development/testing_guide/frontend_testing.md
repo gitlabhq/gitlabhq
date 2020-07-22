@@ -170,22 +170,14 @@ Some more examples can be found in the [Frontend unit tests section](testing_lev
 
 Another common gotcha is that the specs end up verifying the mock is working. If you are using mocks, the mock should support the test, but not be the target of the test.
 
-**Bad:**
-
 ```javascript
 const spy = jest.spyOn(idGenerator, 'create')
 spy.mockImplementation = () = '1234'
 
+// Bad
 expect(idGenerator.create()).toBe('1234')
-```
 
-**Good:**
-
-```javascript
-const spy = jest.spyOn(idGenerator, 'create')
-spy.mockImplementation = () = '1234'
-
-// Actually focusing on the logic of your component and just leverage the controllable mocks output
+// Good: actually focusing on the logic of your component and just leverage the controllable mocks output
 expect(wrapper.find('div').html()).toBe('<div id="1234">...</div>')
 ```
 
@@ -212,21 +204,21 @@ Preferentially, in component testing with `@vue/test-utils`, you should query fo
 - A `data-testid` attribute ([recommended by maintainers of `@vue/test-utils`](https://github.com/vuejs/vue-test-utils/issues/1498#issuecomment-610133465))
 - a Vue `ref` (if using `@vue/test-utils`)
 
-Examples:
-
 ```javascript
+// Bad
 it('exists', () => {
-    // Good
-    wrapper.find(FooComponent);
-    wrapper.find('input[name=foo]');
-    wrapper.find('[data-testid="foo"]');
-    wrapper.find({ ref: 'foo'});
-
-    // Bad
     wrapper.find('.js-foo');
     wrapper.find('.btn-primary');
     wrapper.find('.qa-foo-component');
     wrapper.find('[data-qa-selector="foo"]');
+});
+
+// Good
+it('exists', () => {
+    wrapper.find(FooComponent);
+    wrapper.find('input[name=foo]');
+    wrapper.find('[data-testid="foo"]');
+    wrapper.find({ ref: 'foo'});
 });
 ```
 
@@ -239,23 +231,26 @@ Do not use a `.qa-*` class or `data-qa-selector` attribute for any tests other t
 When writing describe test blocks to test specific functions/methods,
 please use the method name as the describe block name.
 
-```javascript
-// Good
-describe('methodName', () => {
-  it('passes', () => {
-    expect(true).toEqual(true);
-  });
-});
+**Bad**:
 
-// Bad
+```javascript
 describe('#methodName', () => {
   it('passes', () => {
     expect(true).toEqual(true);
   });
 });
 
-// Bad
 describe('.methodName', () => {
+  it('passes', () => {
+    expect(true).toEqual(true);
+  });
+});
+```
+
+**Good**:
+
+```javascript
+describe('methodName', () => {
   it('passes', () => {
     expect(true).toEqual(true);
   });
@@ -286,36 +281,17 @@ it('tests a promise rejection', async () => {
 
 You can also work with Promise chains. In this case, you can make use of the `done` callback and `done.fail` in case an error occurred. Following are some examples:
 
+**Bad**:
+
 ```javascript
-// Good
-it('tests a promise', done => {
-  promise
-    .then(data => {
-      expect(data).toBe(asExpected);
-    })
-    .then(done)
-    .catch(done.fail);
-});
-
-// Good
-it('tests a promise rejection', done => {
-  promise
-    .then(done.fail)
-    .catch(error => {
-      expect(error).toBe(expectedError);
-    })
-    .then(done)
-    .catch(done.fail);
-});
-
-// Bad (missing done callback)
+// missing done callback
 it('tests a promise', () => {
   promise.then(data => {
     expect(data).toBe(asExpected);
   });
 });
 
-// Bad (missing catch)
+// missing catch
 it('tests a promise', done => {
   promise
     .then(data => {
@@ -324,7 +300,7 @@ it('tests a promise', done => {
     .then(done);
 });
 
-// Bad (use done.fail in asynchronous tests)
+// use done.fail in asynchronous tests
 it('tests a promise', done => {
   promise
     .then(data => {
@@ -334,13 +310,38 @@ it('tests a promise', done => {
     .catch(fail);
 });
 
-// Bad (missing catch)
+// missing catch
 it('tests a promise rejection', done => {
   promise
     .catch(error => {
       expect(error).toBe(expectedError);
     })
     .then(done);
+});
+```
+
+**Good**:
+
+```javascript
+// handling success
+it('tests a promise', done => {
+  promise
+    .then(data => {
+      expect(data).toBe(asExpected);
+    })
+    .then(done)
+    .catch(done.fail);
+});
+
+// failure case
+it('tests a promise rejection', done => {
+  promise
+    .then(done.fail)
+    .catch(error => {
+      expect(error).toBe(expectedError);
+    })
+    .then(done)
+    .catch(done.fail);
 });
 ```
 
@@ -564,11 +565,11 @@ Examples:
 ```javascript
 const foo = 1;
 
-// good
-expect(foo).toBe(1);
-
-// bad
+// Bad
 expect(foo).toEqual(1);
+
+// Good
+expect(foo).toBe(1);
 ```
 
 #### Prefer more befitting matchers
@@ -621,12 +622,11 @@ Jest has the tricky `toBeDefined` matcher that can produce false positive test. 
 the given value for `undefined` only.
 
 ```javascript
-// good
-expect(wrapper.find('foo').exists()).toBe(true);
-
-// bad
-// if finder returns null, the test will pass
+// Bad: if finder returns null, the test will pass
 expect(wrapper.find('foo')).toBeDefined();
+
+// Good
+expect(wrapper.find('foo').exists()).toBe(true);
 ```
 
 #### Avoid using `setImmediate`

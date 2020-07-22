@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-
 require 'timecop'
 require 'rspec-parameterized'
 
@@ -10,16 +8,16 @@ require 'gitlab/danger/teammate'
 RSpec.describe Gitlab::Danger::Teammate do
   using RSpec::Parameterized::TableSyntax
 
-  subject { described_class.new(options.stringify_keys) }
+  subject { described_class.new(options) }
 
   let(:tz_offset_hours) { 2.0 }
   let(:options) do
     {
-      username: 'luigi',
-      projects: projects,
-      role: role,
-      markdown_name: '[Luigi](https://gitlab.com/luigi) (`@luigi`)',
-      tz_offset_hours: tz_offset_hours
+      'username' => 'luigi',
+      'projects' => projects,
+      'role' => role,
+      'markdown_name' => '[Luigi](https://gitlab.com/luigi) (`@luigi`)',
+      'tz_offset_hours' => tz_offset_hours
     }
   end
   let(:capabilities) { ['reviewer backend'] }
@@ -27,6 +25,26 @@ RSpec.describe Gitlab::Danger::Teammate do
   let(:role) { 'Engineer, Manage' }
   let(:labels) { [] }
   let(:project) { double }
+
+  describe '#==' do
+    it 'compares Teammate username' do
+      joe1 = described_class.new('username' => 'joe', 'projects' => projects)
+      joe2 = described_class.new('username' => 'joe', 'projects' => [])
+      jane1 = described_class.new('username' => 'jane', 'projects' => projects)
+      jane2 = described_class.new('username' => 'jane', 'projects' => [])
+
+      expect(joe1).to eq(joe2)
+      expect(jane1).to eq(jane2)
+      expect(jane1).not_to eq(nil)
+      expect(described_class.new('username' => nil)).not_to eq(nil)
+    end
+  end
+
+  describe '#to_h' do
+    it 'returns the given options' do
+      expect(subject.to_h).to eq(options)
+    end
+  end
 
   context 'when having multiple capabilities' do
     let(:capabilities) { ['reviewer backend', 'maintainer frontend', 'trainee_maintainer qa'] }
@@ -153,21 +171,21 @@ RSpec.describe Gitlab::Danger::Teammate do
   describe '#markdown_name' do
     context 'when timezone_experiment == false' do
       it 'returns markdown name as-is' do
-        expect(subject.markdown_name).to eq(options[:markdown_name])
-        expect(subject.markdown_name(timezone_experiment: false)).to eq(options[:markdown_name])
+        expect(subject.markdown_name).to eq(options['markdown_name'])
+        expect(subject.markdown_name(timezone_experiment: false)).to eq(options['markdown_name'])
       end
     end
 
     context 'when timezone_experiment == true' do
       it 'returns markdown name with timezone info' do
-        expect(subject.markdown_name(timezone_experiment: true)).to eq("#{options[:markdown_name]} (UTC+2)")
+        expect(subject.markdown_name(timezone_experiment: true)).to eq("#{options['markdown_name']} (UTC+2)")
       end
 
       context 'when offset is 1.5' do
         let(:tz_offset_hours) { 1.5 }
 
         it 'returns markdown name with timezone info, not truncated' do
-          expect(subject.markdown_name(timezone_experiment: true)).to eq("#{options[:markdown_name]} (UTC+1.5)")
+          expect(subject.markdown_name(timezone_experiment: true)).to eq("#{options['markdown_name']} (UTC+1.5)")
         end
       end
 
@@ -185,12 +203,12 @@ RSpec.describe Gitlab::Danger::Teammate do
 
         with_them do
           it 'returns markdown name with timezone info' do
-            author = described_class.new(options.merge(username: 'mario', tz_offset_hours: author_offset).stringify_keys)
+            author = described_class.new(options.merge('username' => 'mario', 'tz_offset_hours' => author_offset))
 
             floored_offset_hours = subject.__send__(:floored_offset_hours)
             utc_offset = floored_offset_hours >= 0 ? "+#{floored_offset_hours}" : floored_offset_hours
 
-            expect(subject.markdown_name(timezone_experiment: true, author: author)).to eq("#{options[:markdown_name]} (UTC#{utc_offset}, #{diff_text})")
+            expect(subject.markdown_name(timezone_experiment: true, author: author)).to eq("#{options['markdown_name']} (UTC#{utc_offset}, #{diff_text})")
           end
         end
       end

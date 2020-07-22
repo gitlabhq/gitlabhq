@@ -51,7 +51,7 @@ A pipeline consists of multiple jobs, including SAST and DAST scanning. If any j
 
 ## Requirements
 
-To run SAST jobs, by default, you need GitLab Runner with the
+To run SAST jobs, by default, you need a GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 If you're using the shared Runners on GitLab.com, this is enabled by default.
@@ -208,7 +208,7 @@ Read more on [how to use private Maven repositories](../index.md#using-private-m
 If needed, you can enable Docker-in-Docker to restore the SAST behavior that existed prior to GitLab
 13.0. Follow these steps to do so:
 
-1. Configure GitLab Runner with Docker-inDocker in [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
+1. Configure a GitLab Runner with Docker-in-Docker in [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
 1. Set the variable `SAST_DISABLE_DIND` set to `false`:
 
    ```yaml
@@ -503,8 +503,8 @@ run successfully. For more information, see [Offline environments](../offline_de
 To use SAST in an offline environment, you need:
 
 - To keep Docker-In-Docker disabled (default).
-- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
-- Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
+- A GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- A Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),

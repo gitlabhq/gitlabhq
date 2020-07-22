@@ -98,21 +98,21 @@ RSpec.describe Gitlab::Danger::Helper do
 
     it 'delegates to CHANGELOG-EE.md existence if CI_PROJECT_NAME is set to something else' do
       stub_env('CI_PROJECT_NAME', 'something else')
-      expect(Dir).to receive(:exist?).with('../../ee') { true }
+      expect(Dir).to receive(:exist?).with(File.expand_path('../../../../ee', __dir__)) { true }
 
       is_expected.to be_truthy
     end
 
     it 'returns true if ee exists' do
       stub_env('CI_PROJECT_NAME', nil)
-      expect(Dir).to receive(:exist?).with('../../ee') { true }
+      expect(Dir).to receive(:exist?).with(File.expand_path('../../../../ee', __dir__)) { true }
 
       is_expected.to be_truthy
     end
 
     it "returns false if ee doesn't exist" do
       stub_env('CI_PROJECT_NAME', nil)
-      expect(Dir).to receive(:exist?).with('../../ee') { false }
+      expect(Dir).to receive(:exist?).with(File.expand_path('../../../../ee', __dir__)) { false }
 
       is_expected.to be_falsy
     end

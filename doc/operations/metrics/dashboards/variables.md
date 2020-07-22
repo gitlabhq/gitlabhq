@@ -4,9 +4,9 @@ group: APM
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Using Variables **(CORE)**
+# Using variables **(CORE)**
 
-## Query Variables
+## Query variables
 
 Variables can be specified using double curly braces, such as `"{{ci_environment_slug}}"` ([added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20793) in GitLab 12.7).
 
@@ -41,7 +41,7 @@ For example, if the dashboard time range is set to 8 hours, the value of
 
 [Variables can be defined](../../../operations/metrics/dashboards/yaml.md#templating-templating-properties) in a custom dashboard YAML file.
 
-## Query Variables from URL
+## Query variables from URL
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214500) in GitLab 13.0.
 

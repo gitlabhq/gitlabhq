@@ -12,6 +12,78 @@ CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 
+CREATE FUNCTION public.table_sync_function_2be879775d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (TG_OP = 'DELETE') THEN
+  DELETE FROM audit_events_part_5fc467ac26 where id = OLD.id;
+ELSIF (TG_OP = 'UPDATE') THEN
+  UPDATE audit_events_part_5fc467ac26
+  SET author_id = NEW.author_id,
+    type = NEW.type,
+    entity_id = NEW.entity_id,
+    entity_type = NEW.entity_type,
+    details = NEW.details,
+    updated_at = NEW.updated_at,
+    ip_address = NEW.ip_address,
+    author_name = NEW.author_name,
+    entity_path = NEW.entity_path,
+    target_details = NEW.target_details,
+    created_at = NEW.created_at
+  WHERE audit_events_part_5fc467ac26.id = NEW.id;
+ELSIF (TG_OP = 'INSERT') THEN
+  INSERT INTO audit_events_part_5fc467ac26 (id,
+    author_id,
+    type,
+    entity_id,
+    entity_type,
+    details,
+    updated_at,
+    ip_address,
+    author_name,
+    entity_path,
+    target_details,
+    created_at)
+  VALUES (NEW.id,
+    NEW.author_id,
+    NEW.type,
+    NEW.entity_id,
+    NEW.entity_type,
+    NEW.details,
+    NEW.updated_at,
+    NEW.ip_address,
+    NEW.author_name,
+    NEW.entity_path,
+    NEW.target_details,
+    NEW.created_at);
+END IF;
+RETURN NULL;
+
+END
+$$;
+
+COMMENT ON FUNCTION public.table_sync_function_2be879775d() IS 'Partitioning migration: table sync for audit_events table';
+
+CREATE TABLE public.audit_events_part_5fc467ac26 (
+    id bigint NOT NULL,
+    author_id integer NOT NULL,
+    type character varying NOT NULL,
+    entity_id integer NOT NULL,
+    entity_type character varying NOT NULL,
+    details text,
+    updated_at timestamp without time zone,
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    target_details text,
+    created_at timestamp without time zone NOT NULL,
+    CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT check_d493ec90b5 CHECK ((char_length(target_details) <= 5500))
+)
+PARTITION BY RANGE (created_at);
+
 CREATE TABLE public.product_analytics_events_experimental (
     id bigint NOT NULL,
     project_id integer NOT NULL,
@@ -17443,6 +17515,9 @@ ALTER TABLE ONLY public.approvers
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
 
+ALTER TABLE ONLY public.audit_events_part_5fc467ac26
+    ADD CONSTRAINT audit_events_part_5fc467ac26_pkey PRIMARY KEY (id, created_at);
+
 ALTER TABLE ONLY public.audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id);
 
@@ -21054,6 +21129,8 @@ ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION g
 
 ALTER INDEX public.product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
 
+CREATE TRIGGER table_sync_trigger_ee39a25f9d AFTER INSERT OR DELETE OR UPDATE ON public.audit_events FOR EACH ROW EXECUTE PROCEDURE public.table_sync_function_2be879775d();
+
 ALTER TABLE ONLY public.chat_names
     ADD CONSTRAINT fk_00797a2bf9 FOREIGN KEY (service_id) REFERENCES public.services(id) ON DELETE CASCADE;
 
@@ -23860,6 +23937,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200528123703
 20200528125905
 20200528171933
+20200601120434
 20200601210148
 20200602013900
 20200602013901
@@ -23995,6 +24073,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200715135130
 20200715202659
 20200716044023
+20200716120000
 20200716120419
 20200716145156
 20200718040100

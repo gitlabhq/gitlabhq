@@ -69,9 +69,11 @@ It can be set to:
 ## Feature flag strategies
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35555) in GitLab 13.0.
-> - It's deployed behind a feature flag, disabled by default.
+> - It was deployed behind a feature flag, disabled by default.
+> - It became [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/214684) in GitLab 13.2.
+> - It's recommended for production use.
 > - It's enabled on GitLab.com.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-feature-flag-strategies). **(CORE ONLY)**
+> - For GitLab self-managed instances, a GitLab administrator can choose to [disable it](#enable-or-disable-feature-flag-strategies). **(CORE ONLY)**
 
 You can apply a feature flag strategy across multiple environments, without defining
 the strategy multiple times.
@@ -140,21 +142,21 @@ activation strategy.
 
 ### Enable or disable feature flag strategies
 
-This feature is under development, but is ready for testing. It's
+This feature is under development, but is ready for production use. It's
 deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
 can disable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:feature_flags_new_version)
-```
 
 To disable it:
 
 ```ruby
 Feature.disable(:feature_flags_new_version)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:feature_flags_new_version)
 ```
 
 ## Disable a feature flag for a specific environment

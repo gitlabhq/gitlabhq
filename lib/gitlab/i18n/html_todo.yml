@@ -323,20 +323,6 @@
     - "Choisissez entre <code>clone</code> ou <code>fetch</code> pour obtenir les dernières modifications du code de l’application"
     - "Elija entre <code>clone</code> o <code>fetch</code> para obtener el código de la aplicación más reciente"
     - "Wybierz pomiędzy <code>klonem</code> lub <code>pobierz</code> aby uzyskać najnowszy kod aplikacji"
-"Click any <strong>project name</strong> in the project list below to navigate to the project milestone.":
-  plural_id:
-  translations:
-    - "在專案列表點擊任何<strong>專案名稱</strong>，將轉跳到專案的里程碑。"
-    - "Clique em qualquer <strong>nome de projeto</strong> na lista a seguir para navegar para o marco do projeto."
-    - "プロジェクトリストで<strong>プロジェクト名</strong>をクリックすると、プロジェクトのマイルストーンに移動します。"
-    - "Clica em qualquer <strong>nome de projeto</strong> na lista a seguir para navegar para o objetivo do projeto."
-    - "Выберите из списка любой <strong>проект</strong>, чтобы перейти к этапу проекта."
-    - "单击下面项目列表中的任何 <strong>项目名称</strong> 跳转到项目里程碑。"
-    - "Клікніть по будь-якому <strong>імені проекту</strong> зі списку нижче для того, щоб перейти до етапу проекту."
-    - "Klicke auf einen beliebigen <strong>-Projektnamen</strong> in der folgenden Projektliste, um zum Projektmeilenstein zu navigieren."
-    - "아래 프로젝트 목록에서 <strong>프로젝트 이름</strong>을 눌러 프로젝트 마일스톤을 봅니다."
-    - "Cliquez sur n’importe quel <strong>nom de projet</strong> dans la liste des projets ci‐dessous pour naviguer jusqu’au jalon du projet."
-    - "Haga clic en cualquier <strong>nombre de proyecto</strong> en la lista de proyectos que se muestra a continuación para navegar hasta el hito de proyecto correspondiente."
 "Click the <strong>Download</strong> button and wait for downloading to complete.":
   plural_id:
   translations:
@@ -350,19 +336,6 @@
     - "Cliquez sur le bouton <strong>Télécharger</strong> et attendez que le téléchargement soit terminé."
     - "Haga click en el botón <strong>Descargar</strong> y espere a que se complete la descarga."
     - "<strong>İndirme</strong> düğmesini tıklayın ve indirme işleminin tamamlanmasını bekleyin."
-"Click the <strong>Promote</strong> button in the top right corner to promote it to a group milestone.":
-  plural_id:
-  translations:
-    - "點擊左上角的<strong>提升</strong>按鈕，將提升至群組里程碑。"
-    - "Clique no botão <strong>Promover</strong> no canto superior direito para promover a um marco de grupo."
-    - "右上の<strong>昇格</strong>ボタンをクリックしてグループマイルストーンへ昇格"
-    - "Clica no botão <strong>Promover</strong> no canto superior direito para promovê-lo para um objetivo de grupo."
-    - "点击右上角的 <strong>升级</strong> 按钮以升级到到群组里程碑。"
-    - "Натисніть кнопку <strong>Перенести</strong> у правому верхному куті щоб перенести етап на рівень групи."
-    - "Klicke auf die Schaltfläche <strong>Hochstufen</strong> in der oberen rechten Ecke, um einen ihn zu einem Gruppenmeilenstein hochzustufen."
-    - "오른쪽 상단 모서리의 <strong>승격</strong> 단추를 눌러 그룹 마일스톤으로 보낼 수 있습니다."
-    - "Cliquez sur le bouton <strong>Promouvoir</strong> en haut à droite pour le promouvoir en tant que jalon de groupe."
-    - "Haga clic sobre el botón <strong>Promocionar</strong> , situado en la esquina superior derecha para promocionarlo a un hito de grupo."
 "Click the <strong>Select none</strong> button on the right, since we only need \\\"Google Code Project Hosting\\\".":
   plural_id:
   translations:
@@ -1046,3 +1019,37 @@
 "DeployFreeze|Specify times when deployments are not allowed for an environment. The <code>gitlab-ci.yml</code> file must be updated to make deployment jobs aware of the %{freeze_period_link_start}freeze period%{freeze_period_link_end}.":
   plural_id:
   translations:
+
+#
+# Strings below are fixed in the source code but the translations are still present in CrowdIn so the
+# locale files will fail the linter. They can be deleted after next CrowdIn sync, likely in:
+# https://gitlab.com/gitlab-org/gitlab/-/issues/226008
+#
+
+"Click the <strong>Promote</strong> button in the top right corner to promote it to a group milestone.":
+  plural_id:
+  translations:
+    - "點擊左上角的<strong>提升</strong>按鈕，將提升至群組里程碑。"
+    - "Clique no botão <strong>Promover</strong> no canto superior direito para promover a um marco de grupo."
+    - "右上の<strong>昇格</strong>ボタンをクリックしてグループマイルストーンへ昇格"
+    - "Clica no botão <strong>Promover</strong> no canto superior direito para promovê-lo para um objetivo de grupo."
+    - "点击右上角的 <strong>升级</strong> 按钮以升级到到群组里程碑。"
+    - "Натисніть кнопку <strong>Перенести</strong> у правому верхному куті щоб перенести етап на рівень групи."
+    - "Klicke auf die Schaltfläche <strong>Hochstufen</strong> in der oberen rechten Ecke, um einen ihn zu einem Gruppenmeilenstein hochzustufen."
+    - "오른쪽 상단 모서리의 <strong>승격</strong> 단추를 눌러 그룹 마일스톤으로 보낼 수 있습니다."
+    - "Cliquez sur le bouton <strong>Promouvoir</strong> en haut à droite pour le promouvoir en tant que jalon de groupe."
+    - "Haga clic sobre el botón <strong>Promocionar</strong> , situado en la esquina superior derecha para promocionarlo a un hito de grupo."
+"Click any <strong>project name</strong> in the project list below to navigate to the project milestone.":
+  plural_id:
+  translations:
+    - "在專案列表點擊任何<strong>專案名稱</strong>，將轉跳到專案的里程碑。"
+    - "Clique em qualquer <strong>nome de projeto</strong> na lista a seguir para navegar para o marco do projeto."
+    - "プロジェクトリストで<strong>プロジェクト名</strong>をクリックすると、プロジェクトのマイルストーンに移動します。"
+    - "Clica em qualquer <strong>nome de projeto</strong> na lista a seguir para navegar para o objetivo do projeto."
+    - "Выберите из списка любой <strong>проект</strong>, чтобы перейти к этапу проекта."
+    - "单击下面项目列表中的任何 <strong>项目名称</strong> 跳转到项目里程碑。"
+    - "Клікніть по будь-якому <strong>імені проекту</strong> зі списку нижче для того, щоб перейти до етапу проекту."
+    - "Klicke auf einen beliebigen <strong>-Projektnamen</strong> in der folgenden Projektliste, um zum Projektmeilenstein zu navigieren."
+    - "아래 프로젝트 목록에서 <strong>프로젝트 이름</strong>을 눌러 프로젝트 마일스톤을 봅니다."
+    - "Cliquez sur n’importe quel <strong>nom de projet</strong> dans la liste des projets ci‐dessous pour naviguer jusqu’au jalon du projet."
+    - "Haga clic en cualquier <strong>nombre de proyecto</strong> en la lista de proyectos que se muestra a continuación para navegar hasta el hito de proyecto correspondiente."

@@ -1,0 +1,5 @@
+---
+title: Store user mentions from merge request title or description in the DB
+merge_request: 34378
+author:
+type: changed

@@ -6,7 +6,8 @@ class SearchController < ApplicationController
   include RendersCommits
 
   SCOPE_PRELOAD_METHOD = {
-    projects: :with_web_entity_associations
+    projects: :with_web_entity_associations,
+    issues: :with_web_entity_associations
   }.freeze
 
   around_action :allow_gitaly_ref_name_caching

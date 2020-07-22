@@ -3,10 +3,11 @@
 module Gitlab
   module Danger
     class Teammate
-      attr_reader :username, :name, :role, :projects, :available, :tz_offset_hours
+      attr_reader :options, :username, :name, :role, :projects, :available, :tz_offset_hours
 
       # The options data are produced by https://gitlab.com/gitlab-org/gitlab-roulette/-/blob/master/lib/team_member.rb
       def initialize(options = {})
+        @options = options
         @username = options['username']
         @name = options['name']
         @markdown_name = options['markdown_name']
@@ -14,6 +15,16 @@ module Gitlab
         @projects = options['projects']
         @available = options['available']
         @tz_offset_hours = options['tz_offset_hours']
+      end
+
+      def to_h
+        options
+      end
+
+      def ==(other)
+        return false unless other.respond_to?(:username)
+
+        other.username == username
       end
 
       def in_project?(name)

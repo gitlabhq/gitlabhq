@@ -4875,13 +4875,7 @@ msgstr ""
 msgid "Clears weight."
 msgstr ""
 
-msgid "Click any <strong>project name</strong> in the project list below to navigate to the project milestone."
-msgstr ""
-
 msgid "Click the <strong>Download</strong> button and wait for downloading to complete."
-msgstr ""
-
-msgid "Click the <strong>Promote</strong> button in the top right corner to promote it to a group milestone."
 msgstr ""
 
 msgid "Click the <strong>Select none</strong> button on the right, since we only need \"Google Code Project Hosting\"."
@@ -10700,9 +10694,6 @@ msgid "Generate new export"
 msgstr ""
 
 msgid "Generate new token"
-msgstr ""
-
-msgid "GenericReports|Report"
 msgstr ""
 
 msgid "Geo"
@@ -18982,9 +18973,6 @@ msgstr ""
 msgid "Promote issue to an epic"
 msgstr ""
 
-msgid "Promote these project milestones into a group milestone."
-msgstr ""
-
 msgid "Promote to group label"
 msgstr ""
 
@@ -19899,9 +19887,6 @@ msgid "Reported %{timeAgo} by %{reportedBy}"
 msgstr ""
 
 msgid "Reporting"
-msgstr ""
-
-msgid "Reports"
 msgstr ""
 
 msgid "Reports|%{combinedString} and %{resolvedString}"
@@ -24029,9 +24014,6 @@ msgstr ""
 msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
-msgid "There was an error while fetching configuration data."
-msgstr ""
-
 msgid "There was an error while fetching value stream analytics data."
 msgstr ""
 
@@ -24402,9 +24384,6 @@ msgid "This option is only available on GitLab.com"
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
-msgstr ""
-
-msgid "This page will be removed in a future release."
 msgstr ""
 
 msgid "This pipeline does not use the %{codeStart}needs%{codeEnd} keyword and can't be represented as a directed acyclic graph."
@@ -25822,9 +25801,6 @@ msgid "Use an one time password authenticator on your mobile device or computer 
 msgstr ""
 
 msgid "Use custom color #FF0000"
-msgstr ""
-
-msgid "Use group milestones to manage issues from multiple projects in the same milestone."
 msgstr ""
 
 msgid "Use hashed storage"

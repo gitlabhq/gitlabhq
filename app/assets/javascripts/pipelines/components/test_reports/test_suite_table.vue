@@ -71,22 +71,14 @@ export default {
         >
           <div class="table-section section-20 section-wrap">
             <div role="rowheader" class="table-mobile-header">{{ __('Suite') }}</div>
-            <div
-              v-gl-tooltip
-              :title="testCase.classname"
-              class="table-mobile-content pr-md-1 text-truncate"
-            >
+            <div class="table-mobile-content pr-md-1 gl-overflow-wrap-break">
               {{ testCase.classname }}
             </div>
           </div>
 
           <div class="table-section section-20 section-wrap">
             <div role="rowheader" class="table-mobile-header">{{ __('Name') }}</div>
-            <div
-              v-gl-tooltip
-              :title="testCase.name"
-              class="table-mobile-content pr-md-1 text-truncate"
-            >
+            <div class="table-mobile-content pr-md-1 gl-overflow-wrap-break">
               {{ testCase.name }}
             </div>
           </div>

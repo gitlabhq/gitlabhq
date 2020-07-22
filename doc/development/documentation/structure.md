@@ -27,7 +27,7 @@ be used. There is no need to add a title called "Introduction" or "Overview," be
  search for these terms. Just put this information after the title.
 - **Use cases**: describes real use case scenarios for that feature/configuration.
 - **Requirements**: describes what software, configuration, account, or knowledge is required.
-- **Instructions**: One or more sets of detailed instructions to follow.
+- **Instructions**: one or more sets of detailed instructions to follow.
 - **Troubleshooting** guide (recommended but not required).
 
 For additional details on each, see the [template for new docs](#template-for-new-docs),
@@ -167,3 +167,23 @@ Disqus, therefore, don't add both keys to the same document.
 
 The click events in the feedback section are tracked with Google Tag Manager. The
 conversions can be viewed on Google Analytics by navigating to **Behavior > Events > Top events > docs**.
+
+## Guidelines for good practices
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36576/) in GitLab 13.2 as GitLab Development documentation.
+
+'Good practice' examples demonstrate encouraged ways of writing code while comparing with examples of practices to avoid.
+These examples are labeled as "Bad" or "Good".
+In GitLab development guidelines, when presenting the cases, it is recommended
+to follow a **first-bad-then-good** strategy. First demonstrate the "Bad" practice (how things _could_ be done, which is often still working code),
+and then how things _should_ be done better, using a "Good" example. This is typically an improved example of the same code.
+
+Consider the following guidelines when offering examples:
+
+- First, offer the "Bad" example, then the "Good" one.
+- When only one bad case and one good case is given, use the same code block.
+- When more than one bad case or one good case is offered, use separated code blocks for each.
+With many examples being presented, a clear separation helps the reader to go directly to the good part.
+Consider offering an explanation (for example, a comment, a link to a resource, etc.) on why something is bad practice.
+- Better and best cases can be considered part of the good case(s) code block.
+In the same code block, precede each with comments: `# Better` and `# Best`.

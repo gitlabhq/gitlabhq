@@ -19,6 +19,7 @@ RSpec.describe 'Database schema' do
     approver_groups: %w[target_id],
     approvers: %w[target_id user_id],
     audit_events: %w[author_id entity_id],
+    audit_events_part_5fc467ac26: %w[author_id entity_id],
     award_emoji: %w[awardable_id user_id],
     aws_roles: %w[role_external_id],
     boards: %w[milestone_id],

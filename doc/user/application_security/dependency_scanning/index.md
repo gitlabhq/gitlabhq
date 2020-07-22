@@ -390,7 +390,9 @@ Here are the requirements for using Dependency Scanning in an offline environmen
 - Keep Docker-In-Docker disabled (default).
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - Docker Container Registry with locally available copies of Dependency Scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
-- Host an offline Git copy of the [gemnasium-db advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/)
+- Host an offline Git copy of the [gemnasium-db advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/).
+  This is required because in an offline environment, the Gemnasium analyzer can't fetch the latest
+  advisories from the online repository.
 - _Only if scanning Ruby projects_: Host an offline Git copy of the [advisory database](https://github.com/rubysec/ruby-advisory-db).
 - _Only if scanning npm/yarn projects_: Host an offline copy of the [retire.js](https://github.com/RetireJS/retire.js/) [node](https://github.com/RetireJS/retire.js/blob/master/repository/npmrepository.json) and [js](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json) advisory databases.
 
@@ -428,8 +430,10 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
 ### Set Dependency Scanning CI job variables to use local Dependency Scanning analyzers
 
-Add the following configuration to your `.gitlab-ci.yml` file. You must replace
-`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
+Add the following configuration to your `.gitlab-ci.yml` file. You must change the value of
+`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry. You must also change the
+value of `GEMNASIUM_DB_REMOTE_URL` to the location of your offline Git copy of the
+[gemnasium-db advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/):
 
 ```yaml
 include:

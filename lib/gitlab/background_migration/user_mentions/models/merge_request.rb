@@ -6,6 +6,7 @@ module Gitlab
     module UserMentions
       module Models
         class MergeRequest < ActiveRecord::Base
+          include EachBatch
           include Concerns::IsolatedMentionable
           include CacheMarkdownField
           include Concerns::MentionableMigrationMethods

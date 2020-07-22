@@ -159,7 +159,8 @@ module Gitlab
             usage_counters,
             user_preferences_usage,
             ingress_modsecurity_usage,
-            container_expiration_policies_usage
+            container_expiration_policies_usage,
+            service_desk_counts
           ).tap do |data|
             data[:snippets] = data[:personal_snippets] + data[:project_snippets]
           end
@@ -527,7 +528,9 @@ module Gitlab
           issues: distinct_count(::Issue.where(time_period), :author_id),
           notes: distinct_count(::Note.where(time_period), :author_id),
           projects: distinct_count(::Project.where(time_period), :creator_id),
-          todos: distinct_count(::Todo.where(time_period), :author_id)
+          todos: distinct_count(::Todo.where(time_period), :author_id),
+          service_desk_enabled_projects: distinct_count_service_desk_enabled_projects(time_period),
+          service_desk_issues: count(::Issue.service_desk.where(time_period))
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -614,6 +617,30 @@ module Gitlab
       end
 
       private
+
+      def distinct_count_service_desk_enabled_projects(time_period)
+        project_creator_id_start = user_minimum_id
+        project_creator_id_finish = user_maximum_id
+
+        distinct_count(::Project.service_desk_enabled.where(time_period), :creator_id, start: project_creator_id_start, finish: project_creator_id_finish) # rubocop: disable CodeReuse/ActiveRecord
+      end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def service_desk_counts
+        projects_with_service_desk = ::Project.where(service_desk_enabled: true)
+
+        {
+          service_desk_enabled_projects: count(projects_with_service_desk),
+          service_desk_issues: count(
+            ::Issue.where(
+              project: projects_with_service_desk,
+              author: ::User.support_bot,
+              confidential: true
+            )
+          )
+        }
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def unique_visit_service
         strong_memoize(:unique_visit_service) do

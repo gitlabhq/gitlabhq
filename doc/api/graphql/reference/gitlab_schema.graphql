@@ -5055,6 +5055,11 @@ type Group {
   id: ID!
 
   """
+  Status of the temporary storage increase
+  """
+  isTemporaryStorageIncreaseEnabled: Boolean!
+
+  """
   Issues of the group
   """
   issues(
@@ -8315,6 +8320,11 @@ type Namespace {
   ID of the namespace
   """
   id: ID!
+
+  """
+  Status of the temporary storage increase
+  """
+  isTemporaryStorageIncreaseEnabled: Boolean!
 
   """
   Indicates if Large File Storage (LFS) is enabled for namespace

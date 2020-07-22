@@ -1336,11 +1336,12 @@ export default class Notes {
   toggleCommitList(e) {
     const $element = $(e.currentTarget);
     const $closestSystemCommitList = $element.siblings('.system-note-commit-list');
+    const $svgChevronUpElement = $element.find('svg.js-chevron-up');
+    const $svgChevronDownElement = $element.find('svg.js-chevron-down');
 
-    $element
-      .find('.fa')
-      .toggleClass('fa-angle-down')
-      .toggleClass('fa-angle-up');
+    $svgChevronUpElement.toggleClass('gl-display-none');
+    $svgChevronDownElement.toggleClass('gl-display-none');
+
     $closestSystemCommitList.toggleClass('hide-shade');
   }
 

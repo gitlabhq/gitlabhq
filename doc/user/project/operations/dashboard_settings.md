@@ -4,7 +4,7 @@ group: APM
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Metrics dashboard settings
+# Dashboard settings
 
 You can configure your [Monitoring dashboard](../integrations/prometheus.md) to
 display the time zone of your choice, and the links of your choice.

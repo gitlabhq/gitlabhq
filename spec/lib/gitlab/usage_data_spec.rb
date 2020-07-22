@@ -155,13 +155,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           expect(described_class.uncached_data[:usage_activity_by_stage][:manage]).to include(
             events: 2,
             groups: 2,
-            users_created: Gitlab.ee? ? 6 : 5,
+            users_created: 6,
             omniauth_providers: ['google_oauth2']
           )
           expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:manage]).to include(
             events: 1,
             groups: 1,
-            users_created: Gitlab.ee? ? 4 : 3,
+            users_created: 4,
             omniauth_providers: ['google_oauth2']
           )
         end
@@ -203,21 +203,26 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             user = create(:user)
             project = create(:project, creator: user)
             issue = create(:issue, project: project, author: user)
+            create(:issue, project: project, author: User.support_bot)
             create(:note, project: project, noteable: issue, author: user)
             create(:todo, project: project, target: issue, author: user)
           end
 
           expect(described_class.uncached_data[:usage_activity_by_stage][:plan]).to include(
-            issues: 2,
+            issues: 3,
             notes: 2,
             projects: 2,
-            todos: 2
+            todos: 2,
+            service_desk_enabled_projects: 2,
+            service_desk_issues: 2
           )
           expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:plan]).to include(
-            issues: 1,
+            issues: 2,
             notes: 1,
             projects: 1,
-            todos: 1
+            todos: 1,
+            service_desk_enabled_projects: 1,
+            service_desk_issues: 1
           )
         end
       end
@@ -972,6 +977,19 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           'analytics_unique_visits_for_any_target' => 543
         }
       })
+    end
+  end
+
+  describe '.service_desk_counts' do
+    subject { described_class.send(:service_desk_counts) }
+
+    let(:project) { create(:project, :service_desk_enabled) }
+
+    it 'gathers Service Desk data' do
+      create_list(:issue, 2, :confidential, author: User.support_bot, project: project)
+
+      expect(subject).to eq(service_desk_enabled_projects: 1,
+                            service_desk_issues: 2)
     end
   end
 end

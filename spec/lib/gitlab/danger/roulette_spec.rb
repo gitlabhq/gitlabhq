@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
 require 'webmock/rspec'
 require 'timecop'
 
@@ -11,102 +10,95 @@ RSpec.describe Gitlab::Danger::Roulette do
     Timecop.freeze(Time.utc(2020, 06, 22, 10)) { example.run }
   end
 
+  let(:backend_available) { true }
+  let(:backend_tz_offset_hours) { 2.0 }
   let(:backend_maintainer) do
-    {
-      username: 'backend-maintainer',
-      name: 'Backend maintainer',
-      role: 'Backend engineer',
-      projects: { 'gitlab' => 'maintainer backend' },
-      available: true,
-      tz_offset_hours: 2.0
-    }
+    Gitlab::Danger::Teammate.new(
+      'username' => 'backend-maintainer',
+      'name' => 'Backend maintainer',
+      'role' => 'Backend engineer',
+      'projects' => { 'gitlab' => 'maintainer backend' },
+      'available' => backend_available,
+      'tz_offset_hours' => backend_tz_offset_hours
+    )
   end
   let(:frontend_reviewer) do
-    {
-      username: 'frontend-reviewer',
-      name: 'Frontend reviewer',
-      role: 'Frontend engineer',
-      projects: { 'gitlab' => 'reviewer frontend' },
-      available: true,
-      tz_offset_hours: 2.0
-    }
+    Gitlab::Danger::Teammate.new(
+      'username' => 'frontend-reviewer',
+      'name' => 'Frontend reviewer',
+      'role' => 'Frontend engineer',
+      'projects' => { 'gitlab' => 'reviewer frontend' },
+      'available' => true,
+      'tz_offset_hours' => 2.0
+    )
   end
   let(:frontend_maintainer) do
-    {
-      username: 'frontend-maintainer',
-      name: 'Frontend maintainer',
-      role: 'Frontend engineer',
-      projects: { 'gitlab' => "maintainer frontend" },
-      available: true,
-      tz_offset_hours: 2.0
-    }
+    Gitlab::Danger::Teammate.new(
+      'username' => 'frontend-maintainer',
+      'name' => 'Frontend maintainer',
+      'role' => 'Frontend engineer',
+      'projects' => { 'gitlab' => "maintainer frontend" },
+      'available' => true,
+      'tz_offset_hours' => 2.0
+    )
   end
   let(:software_engineer_in_test) do
-    {
-      username: 'software-engineer-in-test',
-      name: 'Software Engineer in Test',
-      role: 'Software Engineer in Test, Create:Source Code',
-      projects: {
-        'gitlab' => 'reviewer qa',
-        'gitlab-qa' => 'maintainer'
-      },
-      available: true,
-      tz_offset_hours: 2.0
-    }
+    Gitlab::Danger::Teammate.new(
+      'username' => 'software-engineer-in-test',
+      'name' => 'Software Engineer in Test',
+      'role' => 'Software Engineer in Test, Create:Source Code',
+      'projects' => { 'gitlab' => 'reviewer qa', 'gitlab-qa' => 'maintainer' },
+      'available' => true,
+      'tz_offset_hours' => 2.0
+    )
   end
   let(:engineering_productivity_reviewer) do
-    {
-      username: 'eng-prod-reviewer',
-      name: 'EP engineer',
-      role: 'Engineering Productivity',
-      projects: { 'gitlab' => 'reviewer backend' },
-      available: true,
-      tz_offset_hours: 2.0
-    }
+    Gitlab::Danger::Teammate.new(
+      'username' => 'eng-prod-reviewer',
+      'name' => 'EP engineer',
+      'role' => 'Engineering Productivity',
+      'projects' => { 'gitlab' => 'reviewer backend' },
+      'available' => true,
+      'tz_offset_hours' => 2.0
+    )
   end
 
   let(:teammate_json) do
     [
-      backend_maintainer,
-      frontend_maintainer,
-      frontend_reviewer,
-      software_engineer_in_test,
-      engineering_productivity_reviewer
+      backend_maintainer.to_h,
+      frontend_maintainer.to_h,
+      frontend_reviewer.to_h,
+      software_engineer_in_test.to_h,
+      engineering_productivity_reviewer.to_h
     ].to_json
   end
 
   subject(:roulette) { Object.new.extend(described_class) }
 
-  def matching_teammate(person)
-    satisfy do |teammate|
-      teammate.username == person[:username] &&
-        teammate.name == person[:name] &&
-        teammate.role == person[:role] &&
-        teammate.projects == person[:projects]
-    end
-  end
+  describe 'Spin#==' do
+    it 'compares Spin attributes' do
+      spin1 = described_class::Spin.new(:backend, frontend_reviewer, frontend_maintainer, false, false)
+      spin2 = described_class::Spin.new(:backend, frontend_reviewer, frontend_maintainer, false, false)
+      spin3 = described_class::Spin.new(:backend, frontend_reviewer, frontend_maintainer, false, true)
+      spin4 = described_class::Spin.new(:backend, frontend_reviewer, frontend_maintainer, true, false)
+      spin5 = described_class::Spin.new(:backend, frontend_reviewer, backend_maintainer, false, false)
+      spin6 = described_class::Spin.new(:backend, backend_maintainer, frontend_maintainer, false, false)
+      spin7 = described_class::Spin.new(:frontend, frontend_reviewer, frontend_maintainer, false, false)
 
-  def matching_spin(category, reviewer: { username: nil }, maintainer: { username: nil }, optional: nil)
-    satisfy do |spin|
-      bool = spin.category == category
-      bool &&= spin.reviewer&.username == reviewer[:username]
-
-      bool &&=
-        if maintainer
-          spin.maintainer&.username == maintainer[:username]
-        else
-          spin.maintainer.nil?
-        end
-
-      bool && spin.optional_role == optional
+      expect(spin1).to eq(spin2)
+      expect(spin1).not_to eq(spin3)
+      expect(spin1).not_to eq(spin4)
+      expect(spin1).not_to eq(spin5)
+      expect(spin1).not_to eq(spin6)
+      expect(spin1).not_to eq(spin7)
     end
   end
 
   describe '#spin' do
     let!(:project) { 'gitlab' }
-    let!(:branch_name) { 'a-branch' }
+    let!(:mr_source_branch) { 'a-branch' }
     let!(:mr_labels) { ['backend', 'devops::create'] }
-    let!(:author) { Gitlab::Danger::Teammate.new('username' => 'filipa') }
+    let!(:author) { Gitlab::Danger::Teammate.new('username' => 'johndoe') }
     let(:timezone_experiment) { false }
     let(:spins) do
       # Stub the request at the latest time so that we can modify the raw data, e.g. available fields.
@@ -114,12 +106,13 @@ RSpec.describe Gitlab::Danger::Roulette do
         .stub_request(:get, described_class::ROULETTE_DATA_URL)
         .to_return(body: teammate_json)
 
-      subject.spin(project, categories, branch_name, timezone_experiment: timezone_experiment)
+      subject.spin(project, categories, timezone_experiment: timezone_experiment)
     end
 
     before do
-      allow(subject).to receive_message_chain(:gitlab, :mr_author).and_return(author.username)
-      allow(subject).to receive_message_chain(:gitlab, :mr_labels).and_return(mr_labels)
+      allow(subject).to receive(:mr_author_username).and_return(author.username)
+      allow(subject).to receive(:mr_labels).and_return(mr_labels)
+      allow(subject).to receive(:mr_source_branch).and_return(mr_source_branch)
     end
 
     context 'when timezone_experiment == false' do
@@ -127,16 +120,16 @@ RSpec.describe Gitlab::Danger::Roulette do
         let(:categories) { [:backend] }
 
         it 'assigns backend reviewer and maintainer' do
-          expect(spins).to contain_exactly(matching_spin(:backend, reviewer: engineering_productivity_reviewer, maintainer: backend_maintainer))
+          expect(spins[0].reviewer).to eq(engineering_productivity_reviewer)
+          expect(spins[0].maintainer).to eq(backend_maintainer)
+          expect(spins).to eq([described_class::Spin.new(:backend, engineering_productivity_reviewer, backend_maintainer, false, false)])
         end
 
         context 'when teammate is not available' do
-          before do
-            backend_maintainer[:available] = false
-          end
+          let(:backend_available) { false }
 
           it 'assigns backend reviewer and no maintainer' do
-            expect(spins).to contain_exactly(matching_spin(:backend, reviewer: engineering_productivity_reviewer, maintainer: nil))
+            expect(spins).to eq([described_class::Spin.new(:backend, engineering_productivity_reviewer, nil, false, false)])
           end
         end
       end
@@ -145,7 +138,7 @@ RSpec.describe Gitlab::Danger::Roulette do
         let(:categories) { [:frontend] }
 
         it 'assigns frontend reviewer and maintainer' do
-          expect(spins).to contain_exactly(matching_spin(:frontend, reviewer: frontend_reviewer, maintainer: frontend_maintainer))
+          expect(spins).to eq([described_class::Spin.new(:frontend, frontend_reviewer, frontend_maintainer, false, false)])
         end
       end
 
@@ -153,7 +146,7 @@ RSpec.describe Gitlab::Danger::Roulette do
         let(:categories) { [:qa] }
 
         it 'assigns QA reviewer' do
-          expect(spins).to contain_exactly(matching_spin(:qa, reviewer: software_engineer_in_test))
+          expect(spins).to eq([described_class::Spin.new(:qa, software_engineer_in_test, nil, false, false)])
         end
       end
 
@@ -161,7 +154,7 @@ RSpec.describe Gitlab::Danger::Roulette do
         let(:categories) { [:engineering_productivity] }
 
         it 'assigns Engineering Productivity reviewer and fallback to backend maintainer' do
-          expect(spins).to contain_exactly(matching_spin(:engineering_productivity, reviewer: engineering_productivity_reviewer, maintainer: backend_maintainer))
+          expect(spins).to eq([described_class::Spin.new(:engineering_productivity, engineering_productivity_reviewer, backend_maintainer, false, false)])
         end
       end
 
@@ -169,7 +162,7 @@ RSpec.describe Gitlab::Danger::Roulette do
         let(:categories) { [:test] }
 
         it 'assigns corresponding SET' do
-          expect(spins).to contain_exactly(matching_spin(:test, reviewer: software_engineer_in_test))
+          expect(spins).to eq([described_class::Spin.new(:test, software_engineer_in_test, nil, :maintainer, false)])
         end
       end
     end
@@ -181,16 +174,14 @@ RSpec.describe Gitlab::Danger::Roulette do
         let(:categories) { [:backend] }
 
         it 'assigns backend reviewer and maintainer' do
-          expect(spins).to contain_exactly(matching_spin(:backend, reviewer: engineering_productivity_reviewer, maintainer: backend_maintainer))
+          expect(spins).to eq([described_class::Spin.new(:backend, engineering_productivity_reviewer, backend_maintainer, false, true)])
         end
 
         context 'when teammate is not in a good timezone' do
-          before do
-            backend_maintainer[:tz_offset_hours] = 5.0
-          end
+          let(:backend_tz_offset_hours) { 5.0 }
 
           it 'assigns backend reviewer and no maintainer' do
-            expect(spins).to contain_exactly(matching_spin(:backend, reviewer: engineering_productivity_reviewer, maintainer: nil))
+            expect(spins).to eq([described_class::Spin.new(:backend, engineering_productivity_reviewer, nil, false, true)])
           end
         end
       end
@@ -203,18 +194,29 @@ RSpec.describe Gitlab::Danger::Roulette do
         end
 
         it 'assigns backend reviewer and maintainer' do
-          expect(spins).to contain_exactly(matching_spin(:backend, reviewer: engineering_productivity_reviewer, maintainer: backend_maintainer))
+          expect(spins).to eq([described_class::Spin.new(:backend, engineering_productivity_reviewer, backend_maintainer, false, false)])
         end
 
         context 'when teammate is not in a good timezone' do
-          before do
-            backend_maintainer[:tz_offset_hours] = 5.0
-          end
+          let(:backend_tz_offset_hours) { 5.0 }
 
           it 'assigns backend reviewer and maintainer' do
-            expect(spins).to contain_exactly(matching_spin(:backend, reviewer: engineering_productivity_reviewer, maintainer: backend_maintainer))
+            expect(spins).to eq([described_class::Spin.new(:backend, engineering_productivity_reviewer, backend_maintainer, false, false)])
           end
         end
+      end
+    end
+  end
+
+  RSpec::Matchers.define :match_teammates do |expected|
+    match do |actual|
+      expected.each do |expected_person|
+        actual_person_found = actual.find { |actual_person| actual_person.name == expected_person.username }
+
+        actual_person_found &&
+        actual_person_found.name == expected_person.name &&
+        actual_person_found.role == expected_person.role &&
+        actual_person_found.projects == expected_person.projects
       end
     end
   end
@@ -254,15 +256,13 @@ RSpec.describe Gitlab::Danger::Roulette do
       end
 
       it 'returns an array of teammates' do
-        expected_teammates = [
-          matching_teammate(backend_maintainer),
-          matching_teammate(frontend_reviewer),
-          matching_teammate(frontend_maintainer),
-          matching_teammate(software_engineer_in_test),
-          matching_teammate(engineering_productivity_reviewer)
-        ]
-
-        is_expected.to contain_exactly(*expected_teammates)
+        is_expected.to match_teammates([
+          backend_maintainer,
+          frontend_reviewer,
+          frontend_maintainer,
+          software_engineer_in_test,
+          engineering_productivity_reviewer
+        ])
       end
 
       it 'memoizes the result' do
@@ -281,7 +281,9 @@ RSpec.describe Gitlab::Danger::Roulette do
     end
 
     it 'filters team by project_name' do
-      is_expected.to contain_exactly(matching_teammate(software_engineer_in_test))
+      is_expected.to match_teammates([
+        software_engineer_in_test
+      ])
     end
   end
 
@@ -289,32 +291,32 @@ RSpec.describe Gitlab::Danger::Roulette do
     let(:person_tz_offset_hours) { 0.0 }
     let(:person1) do
       Gitlab::Danger::Teammate.new(
-        'username' => 'rymai',
+        'username' => 'user1',
         'available' => true,
         'tz_offset_hours' => person_tz_offset_hours
       )
     end
     let(:person2) do
       Gitlab::Danger::Teammate.new(
-        'username' => 'godfat',
+        'username' => 'user2',
         'available' => true,
         'tz_offset_hours' => person_tz_offset_hours)
     end
     let(:author) do
       Gitlab::Danger::Teammate.new(
-        'username' => 'filipa',
+        'username' => 'johndoe',
         'available' => true,
         'tz_offset_hours' => 0.0)
     end
     let(:unavailable) do
       Gitlab::Danger::Teammate.new(
-        'username' => 'jacopo-beschi',
+        'username' => 'janedoe',
         'available' => false,
         'tz_offset_hours' => 0.0)
     end
 
     before do
-      allow(subject).to receive_message_chain(:gitlab, :mr_author).and_return(author.username)
+      allow(subject).to receive(:mr_author_username).and_return(author.username)
     end
 
     (-4..4).each do |utc_offset|
@@ -328,7 +330,7 @@ RSpec.describe Gitlab::Danger::Roulette do
 
               selected = subject.spin_for_person(persons, random: Random.new, timezone_experiment: timezone_experiment)
 
-              expect(selected.username).to be_in(persons.map(&:username))
+              expect(persons.map(&:username)).to include(selected.username)
             end
           end
         end
@@ -349,7 +351,7 @@ RSpec.describe Gitlab::Danger::Roulette do
               if timezone_experiment
                 expect(selected).to be_nil
               else
-                expect(selected.username).to be_in(persons.map(&:username))
+                expect(persons.map(&:username)).to include(selected.username)
               end
             end
           end

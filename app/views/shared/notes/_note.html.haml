@@ -63,7 +63,8 @@
         - if note.system
           .system-note-commit-list-toggler.hide
             = _("Toggle commit list")
-            %i.fa.fa-angle-down
+            = sprite_icon('chevron-down', size: 16, css_class: 'js-chevron-down gl-ml-1 gl-vertical-align-text-bottom')
+            = sprite_icon('chevron-up', size: 16, css_class: 'js-chevron-up gl-ml-1 gl-vertical-align-text-bottom gl-display-none')
       - if note.attachment.url
         .note-attachment
           - if note.attachment.image?
