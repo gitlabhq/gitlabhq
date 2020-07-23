@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.2.1 (2020-07-23)
+
+### Fixed (4 changes)
+
+- Resolve Pasting an image into a comment also uploads design. !37171
+- Fix merge request approvals for EE without a license. !37246
+- Fix local Tiller not being default-enabled on the frontend. !37494
+- Fix missing path for avatars of bots. !37671
+
+### Changed (2 changes)
+
+- Limit database deprecation notice window. !37009
+- Shorten 'enable LFS' manage for design management. !37385
+
+
 ## 13.2.0 (2020-07-22)
 
 ### Security (3 changes)
