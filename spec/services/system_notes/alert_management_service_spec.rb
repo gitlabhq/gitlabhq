@@ -22,7 +22,7 @@ RSpec.describe ::SystemNotes::AlertManagementService do
   describe '#new_alert_issue' do
     let_it_be(:issue) { noteable.issue }
 
-    subject { described_class.new(noteable: noteable, project: project, author: author).new_alert_issue(noteable, issue) }
+    subject { described_class.new(noteable: noteable, project: project, author: author).new_alert_issue(issue) }
 
     it_behaves_like 'a system note' do
       let(:action) { 'alert_issue_added' }
@@ -30,6 +30,20 @@ RSpec.describe ::SystemNotes::AlertManagementService do
 
     it 'has the appropriate message' do
       expect(subject.note).to eq("created issue #{issue.to_reference(project)} for this alert")
+    end
+  end
+
+  describe '#closed_alert_issue' do
+    let_it_be(:issue) { noteable.issue }
+
+    subject { described_class.new(noteable: noteable, project: project, author: author).closed_alert_issue(issue) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'status' }
+    end
+
+    it 'has the appropriate message' do
+      expect(subject.note).to eq("changed the status to **Resolved** by closing issue #{issue.to_reference(project)}")
     end
   end
 end

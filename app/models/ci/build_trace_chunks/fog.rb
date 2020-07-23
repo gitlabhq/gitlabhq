@@ -28,10 +28,7 @@ module Ci
       end
 
       def size(model)
-        connection.head_object(bucket_name, key(model))
-          .get_header('Content-Length')
-      rescue Excon::Error::NotFound
-        0
+        data(model).to_s.bytesize
       end
 
       def delete_data(model)

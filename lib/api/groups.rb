@@ -76,7 +76,7 @@ module API
           params: project_finder_params,
           options: finder_options
         ).execute
-        projects = reorder_projects(projects)
+        projects = reorder_projects_with_similarity_order_support(group, projects)
         paginate(projects)
       end
 
@@ -112,6 +112,24 @@ module API
 
         accepted!
       end
+
+      def reorder_projects_with_similarity_order_support(group, projects)
+        return handle_similarity_order(group, projects) if params[:order_by] == 'similarity'
+
+        reorder_projects(projects)
+      end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def handle_similarity_order(group, projects)
+        if params[:search].present? && Feature.enabled?(:similarity_search, group)
+          projects.sorted_by_similarity_desc(params[:search])
+        else
+          order_options = { name: :asc }
+          order_options['id'] ||= params[:sort] || 'asc'
+          projects.reorder(order_options)
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     resource :groups do
@@ -222,7 +240,7 @@ module API
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
-        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
+        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at similarity],
                             default: 'created_at', desc: 'Return projects ordered by field'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return projects sorted in ascending and descending order'

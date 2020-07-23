@@ -297,7 +297,7 @@ module SystemNoteService
   end
 
   def new_alert_issue(alert, issue, author)
-    ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project, author: author).new_alert_issue(alert, issue)
+    ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project, author: author).new_alert_issue(issue)
   end
 
   private

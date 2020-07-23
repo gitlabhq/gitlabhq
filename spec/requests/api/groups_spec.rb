@@ -860,6 +860,66 @@ RSpec.describe API::Groups do
         end
       end
 
+      context 'with similarity ordering' do
+        let_it_be(:group_with_projects) { create(:group) }
+        let_it_be(:project_1) { create(:project, name: 'Project', path: 'project', group: group_with_projects) }
+        let_it_be(:project_2) { create(:project, name: 'Test Project', path: 'test-project', group: group_with_projects) }
+        let_it_be(:project_3) { create(:project, name: 'Test', path: 'test', group: group_with_projects) }
+
+        let(:params) { { order_by: 'similarity', search: 'test' } }
+
+        subject { get api("/groups/#{group_with_projects.id}/projects", user1), params: params }
+
+        before do
+          group_with_projects.add_owner(user1)
+        end
+
+        it 'returns items based ordered by similarity' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response.length).to eq(2)
+
+          project_names = json_response.map { |proj| proj['name'] }
+          expect(project_names).to eq(['Test', 'Test Project'])
+        end
+
+        context 'when `search` parameter is not given' do
+          before do
+            params.delete(:search)
+          end
+
+          it 'returns items ordered by name' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(3)
+
+            project_names = json_response.map { |proj| proj['name'] }
+            expect(project_names).to eq(['Project', 'Test', 'Test Project'])
+          end
+        end
+
+        context 'when `similarity_search` feature flag is off' do
+          before do
+            stub_feature_flags(similarity_search: false)
+          end
+
+          it 'returns items ordered by name' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(2)
+
+            project_names = json_response.map { |proj| proj['name'] }
+            expect(project_names).to eq(['Test', 'Test Project'])
+          end
+        end
+      end
+
       it "returns the group's projects with simple representation" do
         get api("/groups/#{group1.id}/projects", user1), params: { simple: true }
 

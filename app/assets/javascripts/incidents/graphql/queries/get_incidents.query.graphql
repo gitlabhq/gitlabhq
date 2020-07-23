@@ -1,0 +1,22 @@
+query getIncidents($projectPath: ID!, $labelNames: [String], $state: IssuableState) {
+  project(fullPath: $projectPath) {
+    issues(state: $state, labelName: $labelNames) {
+      nodes {
+        iid
+        title
+        createdAt
+        labels {
+          nodes {
+            title
+            color
+          }
+        }
+        assignees {
+          nodes {
+            username
+          }
+        }
+      }
+    }
+  }
+}

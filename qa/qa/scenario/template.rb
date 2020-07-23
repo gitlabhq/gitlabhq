@@ -30,6 +30,8 @@ module QA
 
         Runtime::Feature.enable(options[:enable_feature]) if options.key?(:enable_feature)
 
+        Runtime::Feature.disable(options[:disable_feature]) if options.key?(:disable_feature) && (@feature_enabled = Runtime::Feature.enabled?(options[:disable_feature]))
+
         Specs::Runner.perform do |specs|
           specs.tty = true
           specs.tags = self.class.focus
@@ -37,6 +39,7 @@ module QA
         end
       ensure
         Runtime::Feature.disable(options[:enable_feature]) if options.key?(:enable_feature)
+        Runtime::Feature.enable(options[:disable_feature]) if options.key?(:disable_feature) && @feature_enabled
       end
 
       def extract_option(name, options, args)

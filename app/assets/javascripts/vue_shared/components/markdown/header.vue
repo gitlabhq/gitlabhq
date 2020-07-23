@@ -1,6 +1,8 @@
 <script>
 import $ from 'jquery';
 import { GlPopover, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { getSelectedFragment } from '~/lib/utils/common_utils';
+import { CopyAsGFM } from '../../../behaviors/markdown/copy_as_gfm';
 import ToolbarButton from './toolbar_button.vue';
 import Icon from '../icon.vue';
 
@@ -34,6 +36,11 @@ export default {
       required: false,
       default: false,
     },
+  },
+  data() {
+    return {
+      tag: '> ',
+    };
   },
   computed: {
     mdTable() {
@@ -81,6 +88,24 @@ export default {
     handleSuggestDismissed() {
       this.$emit('handleSuggestDismissed');
     },
+    handleQuote() {
+      const documentFragment = getSelectedFragment();
+
+      if (!documentFragment || !documentFragment.textContent) {
+        this.tag = '> ';
+        return;
+      }
+      this.tag = '';
+
+      const transformed = CopyAsGFM.transformGFMSelection(documentFragment);
+      const area = this.$el.parentNode.querySelector('textarea');
+
+      CopyAsGFM.nodeToGFM(transformed)
+        .then(gfm => {
+          CopyAsGFM.insertPastedText(area, documentFragment.textContent, CopyAsGFM.quoted(gfm));
+        })
+        .catch(() => {});
+    },
   },
 };
 </script>
@@ -108,9 +133,10 @@ export default {
           <toolbar-button tag="*" :button-title="__('Add italic text')" icon="italic" />
           <toolbar-button
             :prepend="true"
-            tag="> "
+            :tag="tag"
             :button-title="__('Insert a quote')"
             icon="quote"
+            @click="handleQuote"
           />
         </div>
         <div class="d-inline-block ml-md-2 ml-0">

@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": ["url"],
+  "properties": {
+    "url": { "type": "string" },
+    "title": { "type": "string" },
+    "type": {
+      "type": "string",
+      "enum": ["grafana"]
+    }
+  }
+}

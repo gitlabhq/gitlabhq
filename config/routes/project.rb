@@ -300,6 +300,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         post 'incidents/integrations/pagerduty', to: 'incident_management/pager_duty_incidents#create'
 
+        resources :incidents, only: [:index]
+
         namespace :error_tracking do
           resources :projects, only: :index
         end

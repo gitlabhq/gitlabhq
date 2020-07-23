@@ -184,7 +184,7 @@ Parameters:
 | `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `archived`                    | boolean        | no       | Limit by archived status |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private` |
-| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` (1), or `last_activity_at` fields. Default is `created_at` |
 | `sort`                        | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search`                      | string         | no       | Return list of authorized projects matching the search criteria |
 | `simple`                      | boolean        | no       | Return only the ID, URL, name, and path of each project |
@@ -197,6 +197,13 @@ Parameters:
 | `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_security_reports`       | boolean        | no       | **(ULTIMATE)** Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
+
+1. Order by similarity: Orders the results by a similarity score calculated from the provided `search`
+URL parameter. This is an [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) feature [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221043) in GitLab 13.3.
+
+   The feature is behind a feature flag, you can [enable it](../administration/feature_flags.md#enable-or-disable-the-feature)
+with the `similarity_search` flag. When using `order_by=similarity` the `sort` parameter is
+ignored. When the `search` parameter is not provided, the API returns the projects ordered by `name`.
 
 Example response:
 

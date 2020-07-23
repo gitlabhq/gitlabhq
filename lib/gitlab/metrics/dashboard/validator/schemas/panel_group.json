@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": ["group", "panels"],
+  "properties": {
+    "group": { "type": "string" },
+    "priority": { "type": "number" },
+    "panels": {
+      "type": "array",
+      "items": { "$ref": "./panel.json" }
+    }
+  }
+}

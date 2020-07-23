@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Issue do
   include ExternalAuthorizationServiceHelpers
 
+  let_it_be(:user) { create(:user) }
+
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to belong_to(:iteration) }
@@ -166,39 +168,9 @@ RSpec.describe Issue do
 
       expect { issue.close }.to change { issue.state_id }.from(open_state).to(closed_state)
     end
-
-    context 'when there is an associated Alert Management Alert' do
-      context 'when alert can be resolved' do
-        let!(:alert) { create(:alert_management_alert, project: issue.project, issue: issue) }
-
-        it 'resolves an alert' do
-          expect { issue.close }.to change { alert.reload.resolved? }.to(true)
-        end
-      end
-
-      context 'when alert cannot be resolved' do
-        let!(:alert) { create(:alert_management_alert, :with_validation_errors, project: issue.project, issue: issue) }
-
-        before do
-          allow(Gitlab::AppLogger).to receive(:warn).and_call_original
-        end
-
-        it 'writes a warning into the log' do
-          issue.close
-
-          expect(Gitlab::AppLogger).to have_received(:warn).with(
-            message: 'Cannot resolve an associated Alert Management alert',
-            issue_id: issue.id,
-            alert_id: alert.id,
-            alert_errors: { hosts: ['hosts array is over 255 chars'] }
-          )
-        end
-      end
-    end
   end
 
   describe '#reopen' do
-    let(:user) { create(:user) }
     let(:issue) { create(:issue, state: 'closed', closed_at: Time.current, closed_by: user) }
 
     it 'sets closed_at to nil when an issue is reopend' do
@@ -282,7 +254,6 @@ RSpec.describe Issue do
   end
 
   describe '#assignee_or_author?' do
-    let(:user) { create(:user) }
     let(:issue) { create(:issue) }
 
     it 'returns true for a user that is assigned to an issue' do
@@ -303,7 +274,6 @@ RSpec.describe Issue do
   end
 
   describe '#can_move?' do
-    let(:user) { create(:user) }
     let(:issue) { create(:issue) }
 
     subject { issue.can_move?(user) }

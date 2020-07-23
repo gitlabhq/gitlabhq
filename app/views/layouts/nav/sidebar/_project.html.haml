@@ -228,9 +228,15 @@
 
             - if project_nav_tab?(:alert_management)
               = nav_link(controller: :alert_management) do
-                = link_to project_alert_management_index_path(@project), title: _('Alerts'), class: 'shortcuts-tracking qa-operations-tracking-link' do
+                = link_to project_alert_management_index_path(@project), title: _('Alerts') do
                   %span
                     = _('Alerts')
+
+              - if project_nav_tab?(:incidents)
+                = nav_link(controller: :incidents) do
+                  = link_to project_incidents_path(@project), title: _('Incidents') do
+                    %span
+                      = _('Incidents')
 
             - if project_nav_tab? :environments
               = render_if_exists "layouts/nav/sidebar/tracing_link"
@@ -242,7 +248,7 @@
 
             - if project_nav_tab?(:error_tracking)
               = nav_link(controller: :error_tracking) do
-                = link_to project_error_tracking_index_path(@project), title: _('Error Tracking'), class: 'shortcuts-tracking qa-operations-tracking-link' do
+                = link_to project_error_tracking_index_path(@project), title: _('Error Tracking') do
                   %span
                     = _('Error Tracking')
 

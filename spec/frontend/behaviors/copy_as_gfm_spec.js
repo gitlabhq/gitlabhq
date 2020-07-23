@@ -123,4 +123,14 @@ describe('CopyAsGFM', () => {
       });
     });
   });
+
+  describe('CopyAsGFM.quoted', () => {
+    const sampleGFM = '* List 1\n* List 2\n\n`Some code`';
+
+    it('adds quote char `> ` to each line', done => {
+      const expectedQuotedGFM = '> * List 1\n> * List 2\n> \n> `Some code`';
+      expect(CopyAsGFM.quoted(sampleGFM)).toEqual(expectedQuotedGFM);
+      done();
+    });
+  });
 });

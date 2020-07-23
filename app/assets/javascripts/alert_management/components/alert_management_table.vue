@@ -318,7 +318,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="alert-management-list">
+    <div class="incident-management-list">
       <gl-alert v-if="showNoAlertsMsg" @dismiss="isAlertDismissed = true">
         <gl-sprintf :message="$options.i18n.noAlertsMsg">
           <template #link="{ content }">

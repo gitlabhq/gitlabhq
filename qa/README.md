@@ -178,11 +178,13 @@ another test has `:ldap` and `:quarantine` metadata. If the tests are run with
 `--tag smoke --tag quarantine`, only the first test will run. The test with
 `:ldap` will not run even though it also has `:quarantine`.
 
-### Running tests with a feature flag enabled
+### Running tests with a feature flag enabled or disabled
 
-Tests can be run with with a feature flag enabled by using the command-line
-option `--enable-feature FEATURE_FLAG`. For example, to enable the feature flag
-that enforces Gitaly request limits, you would use the command:
+Tests can be run with with a feature flag enabled or disabled by using the command-line
+option `--enable-feature FEATURE_FLAG` or `--disable-feature FEATURE_FLAG`.
+
+For example, to enable the feature flag that enforces Gitaly request limits,
+you would use the command:
 
 ```
 bundle exec bin/qa Test::Instance::All http://localhost:3000 --enable-feature gitaly_enforce_requests_limits
@@ -193,9 +195,20 @@ feature flag ([via the API](https://docs.gitlab.com/ee/api/features.html)), run
 all the tests in the `Test::Instance::All` scenario, and then disable the
 feature flag again.
 
+Similarly, to disable the feature flag that enforces Gitaly request limits,
+you would use the command:
+
+```
+bundle exec bin/qa Test::Instance::All http://localhost:3000 --disable-feature gitaly_enforce_requests_limits
+```
+This will instruct the QA framework to disable the `gitaly_enforce_requests_limits`
+feature flag ([via the API](https://docs.gitlab.com/ee/api/features.html)) if not already disabled,
+run all the tests in the `Test::Instance::All` scenario, and then enable the
+feature flag again if it was enabled earlier.
+
 Note: the QA framework doesn't currently allow you to easily toggle a feature
 flag during a single test, [as you can in unit tests](https://docs.gitlab.com/ee/development/feature_flags.html#specs),
 but [that capability is planned](https://gitlab.com/gitlab-org/quality/team-tasks/issues/77).
 
-Note also that the `--` separator isn't used because `--enable-feature` is a QA
-framework option, not an `rspec` option.
+Note also that the `--` separator isn't used because `--enable-feature` and `--disable-feature`
+are QA framework options, not `rspec` options.

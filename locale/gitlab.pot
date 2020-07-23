@@ -6860,6 +6860,9 @@ msgstr ""
 msgid "Create Project"
 msgstr ""
 
+msgid "Create Value Stream"
+msgstr ""
+
 msgid "Create a GitLab account first, and then connect it to your %{label} account."
 msgstr ""
 
@@ -6956,6 +6959,9 @@ msgstr ""
 msgid "Create new"
 msgstr ""
 
+msgid "Create new Value Stream"
+msgstr ""
+
 msgid "Create new board"
 msgstr ""
 
@@ -6977,9 +6983,6 @@ msgstr ""
 msgid "Create new label"
 msgstr ""
 
-msgid "Create new value stream"
-msgstr ""
-
 msgid "Create new..."
 msgstr ""
 
@@ -6993,9 +6996,6 @@ msgid "Create requirement"
 msgstr ""
 
 msgid "Create snippet"
-msgstr ""
-
-msgid "Create value stream"
 msgstr ""
 
 msgid "Create wildcard: %{searchTerm}"
@@ -7456,10 +7456,19 @@ msgstr ""
 msgid "DastProfiles|Do you want to discard this site profile?"
 msgstr ""
 
+msgid "DastProfiles|Manage Profiles"
+msgstr ""
+
 msgid "DastProfiles|Manage profiles"
 msgstr ""
 
+msgid "DastProfiles|New Site Profile"
+msgstr ""
+
 msgid "DastProfiles|New site profile"
+msgstr ""
+
+msgid "DastProfiles|No profiles created yet"
 msgstr ""
 
 msgid "DastProfiles|Please enter a valid URL format, ex: http://www.example.com/home"
@@ -7468,7 +7477,13 @@ msgstr ""
 msgid "DastProfiles|Profile name"
 msgstr ""
 
+msgid "DastProfiles|Save commonly used configurations for target sites and scan specifications as profiles. Use these with an on-demand scan."
+msgstr ""
+
 msgid "DastProfiles|Save profile"
+msgstr ""
+
+msgid "DastProfiles|Site Profiles"
 msgstr ""
 
 msgid "DastProfiles|Target URL"
@@ -9709,7 +9724,7 @@ msgstr ""
 msgid "Example: @sub\\.company\\.com$"
 msgstr ""
 
-msgid "Example: My value stream"
+msgid "Example: My Value Stream"
 msgstr ""
 
 msgid "Example: Usage = single query. (Requested) / (Capacity) = multiple queries combined into a formula."
@@ -12641,6 +12656,27 @@ msgstr ""
 msgid "Incident Management Limits"
 msgstr ""
 
+msgid "IncidentManagement|Assignees"
+msgstr ""
+
+msgid "IncidentManagement|Date created"
+msgstr ""
+
+msgid "IncidentManagement|Incident"
+msgstr ""
+
+msgid "IncidentManagement|Incidents"
+msgstr ""
+
+msgid "IncidentManagement|No incidents to display."
+msgstr ""
+
+msgid "IncidentManagement|There was an error displaying the incidents."
+msgstr ""
+
+msgid "IncidentManagement|Unassigned"
+msgstr ""
+
 msgid "IncidentSettings|Alert integration"
 msgstr ""
 
@@ -12654,6 +12690,9 @@ msgid "IncidentSettings|PagerDuty integration"
 msgstr ""
 
 msgid "IncidentSettings|Set up integrations with external tools to help better manage incidents."
+msgstr ""
+
+msgid "Incidents"
 msgstr ""
 
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."

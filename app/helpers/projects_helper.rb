@@ -465,6 +465,7 @@ module ProjectsHelper
       serverless:         :read_cluster,
       error_tracking:     :read_sentry_issue,
       alert_management:   :read_alert_management_alert,
+      incidents:          :read_incidents,
       labels:             :read_label,
       issues:             :read_issue,
       project_members:    :read_project_member,
@@ -732,6 +733,8 @@ module ProjectsHelper
       functions
       error_tracking
       alert_management
+      incidents
+      incident_management
       user
       gcp
       logs

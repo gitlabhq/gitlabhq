@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "required": ["dashboard", "panel_groups"],
+  "properties": {
+    "dashboard": { "type": "string" },
+    "panel_groups": {
+      "type": "array",
+      "items": { "$ref": "./panel_group.json" }
+    },
+    "templating": {
+      "$ref": "./templating.json"
+    },
+    "links": {
+      "type": "array",
+      "items": { "$ref": "./link.json" }
+    }
+  }
+}
