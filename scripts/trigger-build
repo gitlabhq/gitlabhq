@@ -29,10 +29,17 @@ module Trigger
   end
 
   class Base
-    def invoke!(post_comment: false, downstream_job_name: nil)
-      # gitlab-bot's token "GitLab multi-project pipeline polling"
-      Gitlab.private_token = access_token
+    # Can be overridden
+    def self.access_token
+      ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
+    end
 
+    def initialize
+      # gitlab-bot's token "GitLab multi-project pipeline polling"
+      Gitlab.private_token = self.class.access_token
+    end
+
+    def invoke!(post_comment: false, downstream_job_name: nil)
       pipeline_variables = variables
 
       puts "Triggering downstream pipeline on #{downstream_project_path}"
@@ -74,14 +81,9 @@ module Trigger
       raise NotImplementedError
     end
 
-    # Must be overridden
+    # Can be overridden
     def trigger_token
-      raise NotImplementedError
-    end
-
-    # Must be overridden
-    def access_token
-      raise NotImplementedError
+      ENV['CI_JOB_TOKEN']
     end
 
     # Can be overridden
@@ -133,14 +135,6 @@ module Trigger
       ENV['OMNIBUS_BRANCH'] || 'master'
     end
 
-    def trigger_token
-      ENV['CI_JOB_TOKEN']
-    end
-
-    def access_token
-      ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
-    end
-
     def extra_variables
       # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results
       # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
@@ -176,10 +170,6 @@ module Trigger
       ENV['BUILD_TRIGGER_TOKEN']
     end
 
-    def access_token
-      ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
-    end
-
     def extra_variables
       edition = Trigger.ee? ? 'EE' : 'CE'
 
@@ -202,6 +192,108 @@ module Trigger
       else
         raw_version
       end
+    end
+  end
+
+  class Docs < Base
+    SUCCESS_MESSAGE = <<~MSG
+    => You should now be able to preview your changes under the following URL:
+
+    %<app_url>s
+
+    => For more information, see the documentation
+    => https://docs.gitlab.com/ee/development/documentation/index.html#previewing-the-changes-live
+
+    => If something doesn't work, drop a line in the #docs chat channel.
+    MSG
+
+    # Create a remote branch in gitlab-docs and immediately cancel the pipeline
+    # to avoid race conditions, since a triggered pipeline will also run right
+    # after the branch creation. This only happens the very first time a branch
+    # is created and will be skipped in subsequent runs. Read more in
+    # https://gitlab.com/gitlab-org/gitlab-docs/issues/154.
+    #
+    def deploy!
+      create_remote_branch!
+      cancel_latest_pipeline!
+      invoke!.wait!
+      display_success_message
+    end
+
+    #
+    # Remove a remote branch in gitlab-docs.
+    #
+    def cleanup!
+      Gitlab.delete_branch(downstream_project_path, ref)
+      puts "=> Remote branch '#{downstream_project_path}' deleted"
+    end
+
+    private
+
+    def downstream_project_path
+      ENV['DOCS_PROJECT_PATH'] || 'gitlab-org/gitlab-docs'
+    end
+
+    def ref
+      if ENV['CI_MERGE_REQUEST_IID'].nil?
+        "docs-preview-#{slug}-#{ENV['CI_COMMIT_REF_SLUG']}"
+      else
+        "docs-preview-#{slug}-#{ENV['CI_MERGE_REQUEST_IID']}"
+      end
+    end
+
+    def extra_variables
+      {
+        "BRANCH_#{slug.upcase}" => ENV['CI_COMMIT_REF_NAME']
+      }
+    end
+
+    def slug
+      case ENV['CI_PROJECT_PATH']
+      when 'gitlab-org/gitlab-foss'
+        'ce'
+      when 'gitlab-org/gitlab'
+        'ee'
+      when 'gitlab-org/gitlab-runner'
+        'runner'
+      when 'gitlab-org/omnibus-gitlab'
+        'omnibus'
+      when 'gitlab-org/charts/gitlab'
+        'charts'
+      end
+    end
+
+    def app_url
+      "http://#{ref}.#{ENV['DOCS_REVIEW_APPS_DOMAIN']}/#{slug}"
+    end
+
+    def create_remote_branch!
+      Gitlab.create_branch(downstream_project_path, ref, 'master')
+      puts "=> Remote branch '#{ref}' created"
+    end
+
+    def cancel_latest_pipeline!
+      pipelines = nil
+
+      # Wait until the pipeline is started
+      loop do
+        sleep 1
+        puts "=> Waiting for pipeline to start..."
+        pipelines = Gitlab.pipelines(downstream_project_path, { ref: ref })
+        break if pipelines.any?
+      end
+
+      # Get the first pipeline ID which should be the only one for the branch
+      pipeline_id = pipelines.first.id
+
+      # Cancel the pipeline
+      Gitlab.cancel_pipeline(downstream_project_path, pipeline_id)
+    rescue Gitlab::Error::BadRequest
+      puts "=> Remote branch '#{ref}' already exists!"
+    end
+
+    def display_success_message
+      format(SUCCESS_MESSAGE, app_url: app_url)
     end
   end
 
@@ -282,6 +374,18 @@ when 'omnibus'
   Trigger::Omnibus.new.invoke!(post_comment: true, downstream_job_name: 'Trigger:qa-test').wait!
 when 'cng'
   Trigger::CNG.new.invoke!.wait!
+when 'docs'
+  docs_trigger = Trigger::Docs.new
+
+  case ARGV[1]
+  when 'deploy'
+    docs_trigger.deploy!
+  when 'cleanup'
+    docs_trigger.cleanup!
+  else
+    puts 'usage: trigger-build docs <deploy|cleanup>'
+    exit 1
+  end
 else
   puts "Please provide a valid option:
   omnibus - Triggers a pipeline that builds the omnibus-gitlab package

@@ -229,8 +229,8 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | Buildkite project GitLab token |
-| `project_url` | string | true | `https://buildkite.com/example/project` |
-| `enable_ssl_verification` | boolean | false | Enable SSL verification |
+| `project_url` | string | true | Pipeline URL. For example, `https://buildkite.com/example/pipeline` |
+| `enable_ssl_verification` | boolean | false | DEPRECATED: This parameter has no effect since SSL verification will always be enabled |
 | `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Buildkite service

@@ -445,8 +445,8 @@ In case the review app URL returns 404, follow these steps to debug:
 If you want to know the in-depth details, here's what's really happening:
 
 1. You manually run the `review-docs-deploy` job in a merge request.
-1. The job runs the [`scripts/trigger-build-docs`](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/trigger-build-docs)
-   script with the `deploy` flag, which in turn:
+1. The job runs the [`scripts/trigger-build`](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/trigger-build)
+   script with the `docs deploy` flag, which in turn:
    1. Takes your branch name and applies the following:
       - The `docs-preview-` prefix is added.
       - The product slug is used to know the project the review app originated

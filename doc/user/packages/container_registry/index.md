@@ -505,14 +505,14 @@ To delete the underlying layers and images that aren't associated with any tags,
 
 ### Enable the cleanup policy
 
-The cleanup policy is enabled for all projects by default.
+Cleanup policies can be run on all projects, with these exceptions:
 
-- For GitLab.com, the project must have been created before February, 2020.
+- For GitLab.com, the project must have been created after 2020-02-22.
   Support for projects created earlier
   [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/196124).
 - For self-managed GitLab instances, the project must have been created
-  before GitLab 12.7. However, an administrator can enable the cleanup policy
-  for all projects (even those created before 12.7) in
+  in GitLab 12.8 or later. However, an administrator can enable the cleanup policy
+  for all projects (even those created before 12.8) in
   [GitLab application settings](../../../api/settings.md#change-application-settings)
   by setting `container_expiration_policies_enable_historic_entries` to true.
 
