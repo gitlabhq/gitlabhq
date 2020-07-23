@@ -32,15 +32,24 @@ Git LFS files can only be removed by an Administrator using a
 
 ## Purge files from repository history
 
-To make cloning your project faster, rewrite branches and tags to remove unwanted files.
+To reduce the size of your repository in GitLab, you must remove references to large files from branches, tags, and
+other internal references (refs) that are automatically created by GitLab. These refs include:
+
+- `refs/merge-requests/*` for merge requests.
+- `refs/pipelines/*` for
+  [pipelines](../../../ci/pipelines/index.md#troubleshooting-fatal-reference-is-not-a-tree).
+- `refs/environments/*` for environments.
+
+Git doesn't usually download these refs to make cloning and fetch faster, but we can use the `--mirror` option to
+download all the advertised refs.
 
 1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
    using a supported package manager or from source.
 
-1. Clone a fresh copy of the repository using `--bare`:
+1. Clone a fresh copy of the repository using `--bare` and `--mirror`:
 
    ```shell
-   git clone --bare https://example.gitlab.com/my/project.git
+   git clone --bare --mirror https://example.gitlab.com/my/project.git
    ```
 
 1. Using `git filter-repo`, purge any files from the history of your repository.
@@ -74,16 +83,10 @@ To make cloning your project faster, rewrite branches and tags to remove unwante
    [`git filter-repo` documentation](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html#EXAMPLES)
    for more examples and the complete documentation.
 
-1. Running `git filter-repo` removes all remotes. To restore the remote for your project, run:
-
-   ```shell
-   git remote add origin https://example.gitlab.com/<namespace>/<project_name>.git
-   ```
-
 1. Force push your changes to overwrite all branches on GitLab:
 
    ```shell
-   git push origin --force --all
+   git push origin --force 'refs/heads/*'
    ```
 
    [Protected branches](../protected_branches.md) will cause this to fail. To proceed, you must
@@ -92,13 +95,21 @@ To make cloning your project faster, rewrite branches and tags to remove unwante
 1. To remove large files from tagged releases, force push your changes to all tags on GitLab:
 
    ```shell
-   git push origin --force --tags
+   git push origin --force 'refs/tags/*'
    ```
 
    [Protected tags](../protected_tags.md) will cause this to fail. To proceed, you must remove tag
    protection, push, and then re-enable protected tags.
 
-1. Manually run [project housekeeping](../../../administration/housekeeping.md#manual-housekeeping)
+1. To prevent dead links to commits that no longer exist, push the `refs/replace` created by `git filter-repo`.
+
+   ```shell
+   git push origin --force 'refs/replace/*'
+   ```
+
+   Refer to the Git [`replace`](https://git-scm.com/book/en/v2/Git-Tools-Replace) documentation for information on how this works.
+
+1. Run a [repository cleanup](#repository-cleanup).
 
 NOTE: **Note:**
 Project statistics are cached for performance. You may need to wait 5-10 minutes
@@ -106,26 +117,9 @@ to see a reduction in storage utilization.
 
 ## Purge files from GitLab storage
 
-To reduce the size of your repository in GitLab, you must remove GitLab internal references to
-commits that contain large files. Before completing these steps,
-[purge files from your repository history](#purge-files-from-repository-history).
+In addition to the refs mentioned above, GitLab also creates hidden `refs/keep-around/*`to prevent commits being deleted. Hidden refs are not advertised, which means we can't download them using Git, but these refs are included in a project export.
 
-As well as [branches](branches/index.md) and tags, which are a type of Git ref, GitLab automatically
-creates other refs. These refs prevent dead links to commits, or missing diffs when viewing merge
-requests. [Repository cleanup](#repository-cleanup) can be used to remove these from GitLab.
-
-The following internal refs are not advertised:
-
-- `refs/merge-requests/*` for merge requests.
-- `refs/pipelines/*` for
-  [pipelines](../../../ci/pipelines/index.md#troubleshooting-fatal-reference-is-not-a-tree).
-- `refs/environments/*` for environments.
-
-This means they are not usually included when fetching, which makes fetching faster. In addition,
-`refs/keep-around/*` are hidden refs to prevent commits with discussion from being deleted and
-cannot be fetched at all.
-
-However, these refs can be accessed from the Git bundle inside a project export.
+To purge files from GitLab storage:
 
 1. [Install `git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
    using a supported package manager or from source.
@@ -173,6 +167,39 @@ However, these refs can be accessed from the Git bundle inside a project export.
    [`git filter-repo` documentation](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html#EXAMPLES)
    for more examples and the complete documentation.
 
+1. Because cloning from a bundle file sets the `origin` remote to the local bundle file, delete this `origin` remote, and set it to the URL to your repository:
+
+   ```shell
+   git remote remove origin
+   git remote add origin https://gitlab.example.com/<namespace>/<project_name>.git
+   ```
+
+1. Force push your changes to overwrite all branches on GitLab:
+
+   ```shell
+   git push origin --force 'refs/heads/*'
+   ```
+
+   [Protected branches](../protected_branches.md) will cause this to fail. To proceed, you must
+   remove branch protection, push, and then re-enable protected branches.
+
+1. To remove large files from tagged releases, force push your changes to all tags on GitLab:
+
+   ```shell
+   git push origin --force 'refs/tags/*'
+   ```
+
+   [Protected tags](../protected_tags.md) will cause this to fail. To proceed, you must remove tag
+   protection, push, and then re-enable protected tags.
+
+1. To prevent dead links to commits that no longer exist, push the `refs/replace` created by `git filter-repo`.
+
+   ```shell
+   git push origin --force 'refs/replace/*'
+   ```
+
+   Refer to the Git [`replace`](https://git-scm.com/book/en/v2/Git-Tools-Replace) documentation for information on how this works.
+
 1. Run a [repository cleanup](#repository-cleanup).
 
 ## Repository cleanup
@@ -188,15 +215,26 @@ To clean up a repository:
 
 1. Go to the project for the repository.
 1. Navigate to **{settings}** **Settings > Repository**.
-1. Upload a list of objects. For example, a `commit-map` file.
+1. Upload a list of objects. For example, a `commit-map` file created by `git filter-repo` which is located in the
+   `filter-repo` directory.
+
+   If your `commit-map` file is larger than 10MB, the file can be split and uploaded piece by piece:
+
+   ```shell
+   split -l 100000 filter-repo/commit-map filter-repo/commit-map-
+   ```
+
 1. Click **Start cleanup**.
 
 This will:
 
 - Remove any internal Git references to old commits.
-- Run `git gc` against the repository.
+- Run `git gc` against the repository to remove unreferenced objects. Repacking your repository will temporarily
+  cause the size of your repository to increase significantly, because the old pack files are not removed until the
+  new pack files have been created.
+- Recalculate the size of your repository on disk.
 
-You will receive an email once it has completed.
+You will receive an email notification with the recalculated repository size after the cleanup has completed.
 
 When using repository cleanup, note:
 

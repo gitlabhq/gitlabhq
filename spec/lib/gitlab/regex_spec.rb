@@ -131,6 +131,22 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('9/9/2018') }
   end
 
+  describe '.cluster_agent_name_regex' do
+    subject { described_class.cluster_agent_name_regex }
+
+    it { is_expected.to match('foo') }
+    it { is_expected.to match('foo-bar') }
+    it { is_expected.to match('1foo-bar') }
+    it { is_expected.to match('foo-bar2') }
+    it { is_expected.to match('foo-1bar') }
+    it { is_expected.not_to match('foo.bar') }
+    it { is_expected.not_to match('Foo') }
+    it { is_expected.not_to match('FoO') }
+    it { is_expected.not_to match('FoO-') }
+    it { is_expected.not_to match('-foo-') }
+    it { is_expected.not_to match('foo/bar') }
+  end
+
   describe '.kubernetes_namespace_regex' do
     subject { described_class.kubernetes_namespace_regex }
 

@@ -8,6 +8,13 @@ module Clusters
 
     has_many :agent_tokens, class_name: 'Clusters::AgentToken'
 
-    validates :name, presence: true, length: { maximum: 255 }, uniqueness: { scope: :project_id }
+    validates :name,
+      presence: true,
+      length: { maximum: 63 },
+      uniqueness: { scope: :project_id },
+      format: {
+        with: Gitlab::Regex.cluster_agent_name_regex,
+        message: Gitlab::Regex.cluster_agent_name_regex_message
+      }
   end
 end

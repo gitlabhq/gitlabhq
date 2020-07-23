@@ -274,6 +274,7 @@ excluded_attributes:
   timelogs:
     - :issue_id
     - :merge_request_id
+    - :note_id
   notes:
     - :noteable_id
     - :review_id

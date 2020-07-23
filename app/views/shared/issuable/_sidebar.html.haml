@@ -32,7 +32,7 @@
         - milestone = issuable_sidebar[:milestone] || {}
         .block.milestone{ data: { qa_selector: 'milestone_block' } }
           .sidebar-collapsed-icon.has-tooltip{ title: sidebar_milestone_tooltip_label(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
-            = icon('clock-o', 'aria-hidden': 'true')
+            = sprite_icon('clock', size: 16)
             %span.milestone-title.collapse-truncated-title
               - if milestone.present?
                 = milestone[:title]

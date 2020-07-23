@@ -25,7 +25,7 @@
           %span.issuable-milestone.d-none.d-sm-inline-block
             &nbsp;
             = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
-              = icon('clock-o')
+              = sprite_icon('clock', size: 16, css_class: 'gl-vertical-align-text-bottom')
               = merge_request.milestone.title
         - if merge_request.target_project.default_branch != merge_request.target_branch
           %span.project-ref-path.has-tooltip{ title: _('Target branch') }

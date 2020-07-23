@@ -26584,9 +26584,6 @@ msgstr ""
 msgid "We want to be sure it is you, please confirm you are not a robot."
 msgstr ""
 
-msgid "We will automatically renew your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} on %{strong}%{expires_on}%{strong_close}. There's nothing that you need to do, we'll let you know when the renewal is complete. Need more seats, a higher plan or just want to review your payment method?"
-msgstr ""
-
 msgid "We've found no vulnerabilities"
 msgstr ""
 
@@ -27628,9 +27625,6 @@ msgid "Your subscription expired!"
 msgstr ""
 
 msgid "Your subscription has been downgraded."
-msgstr ""
-
-msgid "Your subscription will automatically renew in %{remaining_days}."
 msgstr ""
 
 msgid "Your subscription will expire in %{remaining_days}."

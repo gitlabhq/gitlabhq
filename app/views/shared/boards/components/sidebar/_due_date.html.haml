@@ -1,9 +1,9 @@
 .block.due_date
-  .title
+  .title.gl-h-5.gl-display-flex.gl-align-items-center
     = _("Due date")
     - if can_admin_issue?
-      = icon("spinner spin", class: "block-loading")
-      = link_to _("Edit"), "#", class: "js-sidebar-dropdown-toggle edit-link float-right"
+      = loading_icon(css_class: 'gl-ml-2 block-loading')
+      = link_to _("Edit"), "#", class: "js-sidebar-dropdown-toggle edit-link gl-ml-auto"
   .value
     .value-content
       %span.no-value{ "v-if" => "!issue.dueDate" }

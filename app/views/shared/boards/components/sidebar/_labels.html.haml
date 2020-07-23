@@ -1,9 +1,9 @@
 .block.labels
-  .title
+  .title.gl-h-5.gl-display-flex.gl-align-items-center
     = _("Labels")
     - if can_admin_issue?
-      = icon("spinner spin", class: "block-loading")
-      = link_to _("Edit"), "#", class: "js-sidebar-dropdown-toggle edit-link float-right"
+      = loading_icon(css_class: 'gl-ml-2 block-loading')
+      = link_to _("Edit"), "#", class: "js-sidebar-dropdown-toggle edit-link gl-ml-auto"
   .value.issuable-show-labels.dont-hide
     %span.no-value{ "v-if" => "issue.labels && issue.labels.length === 0" }
       = _("None")

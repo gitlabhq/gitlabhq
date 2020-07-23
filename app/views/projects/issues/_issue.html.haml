@@ -30,7 +30,7 @@
             %span.issuable-milestone.d-none.d-sm-inline-block
               &nbsp;
               = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(issue.milestone) } do
-                = icon('clock-o')
+                = sprite_icon('clock', size: 16, css_class: 'gl-vertical-align-text-bottom')
                 = issue.milestone.title
           - if issue.due_date
             %span.issuable-due-date.d-none.d-sm-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue?}", title: _('Due date') }

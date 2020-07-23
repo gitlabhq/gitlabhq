@@ -76,8 +76,9 @@ describe('Issuable component', () => {
   });
 
   const checkExists = findFn => () => findFn().exists();
-  const hasConfidentialIcon = () =>
-    wrapper.findAll(GlIcon).wrappers.some(iconWrapper => iconWrapper.props('name') === 'eye-slash');
+  const hasIcon = (iconName, iconWrapper = wrapper) =>
+    iconWrapper.findAll(GlIcon).wrappers.some(icon => icon.props('name') === iconName);
+  const hasConfidentialIcon = () => hasIcon('eye-slash');
   const findTaskStatus = () => wrapper.find('.task-status');
   const findOpenedAgoContainer = () => wrapper.find('[data-testid="openedByMessage"]');
   const findAuthor = () => wrapper.find({ ref: 'openedAgoByContainer' });
@@ -288,11 +289,7 @@ describe('Issuable component', () => {
 
     it('renders milestone', () => {
       expect(findMilestone().exists()).toBe(true);
-      expect(
-        findMilestone()
-          .find('.fa-clock-o')
-          .exists(),
-      ).toBe(true);
+      expect(hasIcon('clock', findMilestone())).toBe(true);
       expect(findMilestone().text()).toEqual(TEST_MILESTONE.title);
     });
 

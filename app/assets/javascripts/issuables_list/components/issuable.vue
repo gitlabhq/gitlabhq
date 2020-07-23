@@ -153,6 +153,7 @@ export default {
           value: this.issuable.merge_requests_count,
           title: __('Related merge requests'),
           dataTestId: 'merge-requests',
+          class: 'js-merge-requests icon-merge-request-unmerged',
           icon: 'merge-request',
         },
         {
@@ -161,6 +162,7 @@ export default {
           value: this.issuable.upvotes,
           title: __('Upvotes'),
           dataTestId: 'upvotes',
+          class: 'js-upvotes issuable-upvotes',
           icon: 'thumb-up',
         },
         {
@@ -169,6 +171,7 @@ export default {
           value: this.issuable.downvotes,
           title: __('Downvotes'),
           dataTestId: 'downvotes',
+          class: 'js-downvotes issuable-downvotes',
           icon: 'thumb-down',
         },
         {
@@ -187,7 +190,7 @@ export default {
           title: __('Comments'),
           dataTestId: 'notes-count',
           href: `${this.issuable.web_url}#notes`,
-          class: !this.issuable.user_notes_count ? 'no-comments' : '',
+          class: { 'no-comments': !this.issuable.user_notes_count, 'issuable-comments': true },
           icon: 'comments',
         },
       ];
@@ -274,9 +277,8 @@ export default {
           <span
             v-if="issuable.has_tasks"
             class="gl-ml-2 task-status gl-display-none d-sm-inline-block"
+            >{{ issuable.task_status }}</span
           >
-            {{ issuable.task_status }}
-          </span>
         </div>
 
         <div class="issuable-info">
@@ -304,9 +306,8 @@ export default {
                   v-bind="popoverDataAttrs"
                   :href="issuableAuthor.web_url"
                   :target="linkTarget"
+                  >{{ issuableAuthor.name }}</gl-link
                 >
-                  {{ issuableAuthor.name }}
-                </gl-link>
               </template>
             </gl-sprintf>
           </span>
@@ -318,7 +319,7 @@ export default {
             :href="milestoneLink"
             :title="milestoneTooltipText"
           >
-            <i class="fa fa-clock-o"></i>
+            <gl-icon name="clock" class="s16 gl-vertical-align-text-bottom" />
             {{ issuable.milestone.title }}
           </gl-link>
 

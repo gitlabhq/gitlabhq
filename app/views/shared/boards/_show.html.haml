@@ -32,7 +32,7 @@
   - else
     .boards-list.w-100.py-3.px-2.text-nowrap{ data: { qa_selector: "boards_list" } }
       .boards-app-loading.w-100.text-center{ "v-if" => "loading" }
-        = icon("spinner spin 2x")
+        = loading_icon(css_class: 'gl-mb-3')
       %board{ "v-cloak" => "true",
         "v-for" => "list in state.lists",
         "ref" => "board",

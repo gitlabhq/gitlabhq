@@ -15672,7 +15672,8 @@ CREATE TABLE public.timelogs (
     updated_at timestamp without time zone NOT NULL,
     issue_id integer,
     merge_request_id integer,
-    spent_at timestamp without time zone
+    spent_at timestamp without time zone,
+    note_id integer
 );
 
 CREATE SEQUENCE public.timelogs_id_seq
@@ -20579,6 +20580,8 @@ CREATE INDEX index_timelogs_on_issue_id ON public.timelogs USING btree (issue_id
 
 CREATE INDEX index_timelogs_on_merge_request_id ON public.timelogs USING btree (merge_request_id);
 
+CREATE INDEX index_timelogs_on_note_id ON public.timelogs USING btree (note_id);
+
 CREATE INDEX index_timelogs_on_spent_at ON public.timelogs USING btree (spent_at) WHERE (spent_at IS NOT NULL);
 
 CREATE INDEX index_timelogs_on_user_id ON public.timelogs USING btree (user_id);
@@ -21430,6 +21433,9 @@ ALTER TABLE ONLY public.issues
 
 ALTER TABLE ONLY public.protected_branch_merge_access_levels
     ADD CONSTRAINT fk_8a3072ccb3 FOREIGN KEY (protected_branch_id) REFERENCES public.protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.timelogs
+    ADD CONSTRAINT fk_8d058cd571 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.releases
     ADD CONSTRAINT fk_8e4456f90f FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE SET NULL;
@@ -24042,6 +24048,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200701221303
 20200702123805
 20200702201039
+20200703035021
 20200703064117
 20200703121557
 20200703124823

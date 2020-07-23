@@ -6,7 +6,7 @@
     - @events.sort_by(&:created_at).each do |event|
       %li
         %span.light
-          %i.fa.fa-clock-o
+          = sprite_icon('clock', size: 16, css_class: 'gl-vertical-align-text-bottom')
           = event.created_at.to_time.in_time_zone.strftime('%-I:%M%P')
         - if event.visible_to_user?(current_user)
           - if event.push_action?

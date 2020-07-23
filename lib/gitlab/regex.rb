@@ -160,6 +160,15 @@ module Gitlab
       "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.', '*' and spaces"
     end
 
+    # https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/identity_and_auth.md#agent-identity-and-name
+    def cluster_agent_name_regex
+      /\A[a-z0-9]([-a-z0-9]*[a-z0-9])?\z/
+    end
+
+    def cluster_agent_name_regex_message
+      %q{can contain only lowercase letters, digits, and '-', but cannot start or end with '-'}
+    end
+
     def kubernetes_namespace_regex
       /\A[a-z0-9]([-a-z0-9]*[a-z0-9])?\z/
     end

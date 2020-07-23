@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
+import httpStatus from '~/lib/utils/http_status';
 
 describe('Api', () => {
   const dummyApiVersion = 'v3000';
@@ -57,7 +58,7 @@ describe('Api', () => {
       it('fetch all group packages', () => {
         const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/packages`;
         jest.spyOn(axios, 'get');
-        mock.onGet(expectedUrl).replyOnce(200, apiResponse);
+        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
 
         return Api.groupPackages(groupId).then(({ data }) => {
           expect(data).toEqual(apiResponse);
@@ -70,7 +71,7 @@ describe('Api', () => {
       it('fetch all project packages', () => {
         const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/packages`;
         jest.spyOn(axios, 'get');
-        mock.onGet(expectedUrl).replyOnce(200, apiResponse);
+        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
 
         return Api.projectPackages(projectId).then(({ data }) => {
           expect(data).toEqual(apiResponse);
@@ -92,7 +93,7 @@ describe('Api', () => {
         const expectedUrl = `foo`;
         jest.spyOn(Api, 'buildProjectPackageUrl').mockReturnValue(expectedUrl);
         jest.spyOn(axios, 'get');
-        mock.onGet(expectedUrl).replyOnce(200, apiResponse);
+        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
 
         return Api.projectPackage(projectId, packageId).then(({ data }) => {
           expect(data).toEqual(apiResponse);
@@ -107,7 +108,7 @@ describe('Api', () => {
 
         jest.spyOn(Api, 'buildProjectPackageUrl').mockReturnValue(expectedUrl);
         jest.spyOn(axios, 'delete');
-        mock.onDelete(expectedUrl).replyOnce(200, true);
+        mock.onDelete(expectedUrl).replyOnce(httpStatus.OK, true);
 
         return Api.deleteProjectPackage(projectId, packageId).then(({ data }) => {
           expect(data).toEqual(true);
@@ -121,7 +122,7 @@ describe('Api', () => {
     it('fetches a group', done => {
       const groupId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}`;
-      mock.onGet(expectedUrl).reply(200, {
+      mock.onGet(expectedUrl).reply(httpStatus.OK, {
         name: 'test',
       });
 
@@ -137,7 +138,7 @@ describe('Api', () => {
       const groupId = '54321';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/members`;
       const expectedData = [{ id: 7 }];
-      mock.onGet(expectedUrl).reply(200, expectedData);
+      mock.onGet(expectedUrl).reply(httpStatus.OK, expectedData);
 
       Api.groupMembers(groupId)
         .then(({ data }) => {
@@ -153,7 +154,7 @@ describe('Api', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups.json`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           name: 'test',
         },
@@ -171,7 +172,7 @@ describe('Api', () => {
     it('fetches namespaces', done => {
       const query = 'dummy query';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/namespaces.json`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           name: 'test',
         },
@@ -191,7 +192,7 @@ describe('Api', () => {
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects.json`;
       window.gon.current_user_id = 1;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           name: 'test',
         },
@@ -208,7 +209,7 @@ describe('Api', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects.json`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           name: 'test',
         },
@@ -226,7 +227,7 @@ describe('Api', () => {
     it('update a project with the given payload', done => {
       const projectPath = 'foo';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}`;
-      mock.onPut(expectedUrl).reply(200, { foo: 'bar' });
+      mock.onPut(expectedUrl).reply(httpStatus.OK, { foo: 'bar' });
 
       Api.updateProject(projectPath, { foo: 'bar' })
         .then(({ data }) => {
@@ -243,7 +244,7 @@ describe('Api', () => {
       const options = { unused: 'option' };
       const projectPath = 'gitlab-org%2Fgitlab-ce';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/users`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           name: 'test',
         },
@@ -265,7 +266,7 @@ describe('Api', () => {
 
     it('fetches all merge requests for a project', done => {
       const mockData = [{ source_branch: 'foo' }, { source_branch: 'bar' }];
-      mock.onGet(expectedUrl).reply(200, mockData);
+      mock.onGet(expectedUrl).reply(httpStatus.OK, mockData);
       Api.projectMergeRequests(projectPath)
         .then(({ data }) => {
           expect(data.length).toEqual(2);
@@ -281,7 +282,7 @@ describe('Api', () => {
         source_branch: 'bar',
       };
       const mockData = [{ source_branch: 'bar' }];
-      mock.onGet(expectedUrl, { params }).reply(200, mockData);
+      mock.onGet(expectedUrl, { params }).reply(httpStatus.OK, mockData);
 
       Api.projectMergeRequests(projectPath, params)
         .then(({ data }) => {
@@ -298,7 +299,7 @@ describe('Api', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}`;
-      mock.onGet(expectedUrl).reply(200, {
+      mock.onGet(expectedUrl).reply(httpStatus.OK, {
         title: 'test',
       });
 
@@ -316,7 +317,7 @@ describe('Api', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}/changes`;
-      mock.onGet(expectedUrl).reply(200, {
+      mock.onGet(expectedUrl).reply(httpStatus.OK, {
         title: 'test',
       });
 
@@ -334,7 +335,7 @@ describe('Api', () => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}/versions`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           id: 123,
         },
@@ -356,7 +357,7 @@ describe('Api', () => {
       const params = { scope: 'active' };
       const mockData = [{ id: 4 }];
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/runners`;
-      mock.onGet(expectedUrl, { params }).reply(200, mockData);
+      mock.onGet(expectedUrl, { params }).reply(httpStatus.OK, mockData);
 
       Api.projectRunners(projectPath, { params })
         .then(({ data }) => {
@@ -380,7 +381,7 @@ describe('Api', () => {
         expect(config.data).toBe(JSON.stringify(expectedData));
 
         return [
-          200,
+          httpStatus.OK,
           {
             name: 'test',
           },
@@ -404,7 +405,7 @@ describe('Api', () => {
         expect(config.data).toBe(JSON.stringify(expectedData));
 
         return [
-          200,
+          httpStatus.OK,
           {
             name: 'test',
           },
@@ -423,7 +424,7 @@ describe('Api', () => {
       const groupId = '123456';
       const query = 'dummy query';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/projects.json`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           name: 'test',
         },
@@ -445,7 +446,7 @@ describe('Api', () => {
     )}/repository/commits/${sha}`;
 
     it('fetches a single commit', () => {
-      mock.onGet(expectedUrl).reply(200, { id: sha });
+      mock.onGet(expectedUrl).reply(httpStatus.OK, { id: sha });
 
       return Api.commit(projectId, sha).then(({ data: commit }) => {
         expect(commit.id).toBe(sha);
@@ -453,7 +454,7 @@ describe('Api', () => {
     });
 
     it('fetches a single commit without stats', () => {
-      mock.onGet(expectedUrl, { params: { stats: false } }).reply(200, { id: sha });
+      mock.onGet(expectedUrl, { params: { stats: false } }).reply(httpStatus.OK, { id: sha });
 
       return Api.commit(projectId, sha, { stats: false }).then(({ data: commit }) => {
         expect(commit.id).toBe(sha);
@@ -470,7 +471,7 @@ describe('Api', () => {
       const expectedUrl = `${dummyUrlRoot}/${namespace}/${project}/templates/${templateType}/${encodeURIComponent(
         templateKey,
       )}`;
-      mock.onGet(expectedUrl).reply(200, 'test');
+      mock.onGet(expectedUrl).reply(httpStatus.OK, 'test');
 
       Api.issueTemplate(namespace, project, templateKey, templateType, (error, response) => {
         expect(response).toBe('test');
@@ -483,7 +484,7 @@ describe('Api', () => {
     it('fetches a list of templates', done => {
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/gitlab-org%2Fgitlab-ce/templates/licenses`;
 
-      mock.onGet(expectedUrl).reply(200, 'test');
+      mock.onGet(expectedUrl).reply(httpStatus.OK, 'test');
 
       Api.projectTemplates('gitlab-org/gitlab-ce', 'licenses', {}, response => {
         expect(response).toBe('test');
@@ -497,7 +498,7 @@ describe('Api', () => {
       const data = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/gitlab-org%2Fgitlab-ce/templates/licenses/test%20license`;
 
-      mock.onGet(expectedUrl).reply(200, 'test');
+      mock.onGet(expectedUrl).reply(httpStatus.OK, 'test');
 
       Api.projectTemplate('gitlab-org/gitlab-ce', 'licenses', 'test license', data, response => {
         expect(response).toBe('test');
@@ -511,7 +512,7 @@ describe('Api', () => {
       const query = 'dummy query';
       const options = { unused: 'option' };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users.json`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           name: 'test',
         },
@@ -531,7 +532,7 @@ describe('Api', () => {
     it('fetches single user', done => {
       const userId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}`;
-      mock.onGet(expectedUrl).reply(200, {
+      mock.onGet(expectedUrl).reply(httpStatus.OK, {
         name: 'testuser',
       });
 
@@ -547,7 +548,7 @@ describe('Api', () => {
   describe('user counts', () => {
     it('fetches single user counts', done => {
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/user_counts`;
-      mock.onGet(expectedUrl).reply(200, {
+      mock.onGet(expectedUrl).reply(httpStatus.OK, {
         merge_requests: 4,
       });
 
@@ -564,7 +565,7 @@ describe('Api', () => {
     it('fetches single user status', done => {
       const userId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}/status`;
-      mock.onGet(expectedUrl).reply(200, {
+      mock.onGet(expectedUrl).reply(httpStatus.OK, {
         message: 'testmessage',
       });
 
@@ -583,7 +584,7 @@ describe('Api', () => {
       const options = { unused: 'option' };
       const userId = '123456';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}/projects`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           name: 'test',
         },
@@ -602,7 +603,7 @@ describe('Api', () => {
       const projectId = 'example/foobar';
       const commitSha = 'abc123def';
       const expectedUrl = `${dummyUrlRoot}/${projectId}/commit/${commitSha}/pipelines`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           name: 'test',
         },
@@ -629,7 +630,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'post');
 
-      mock.onPost(expectedUrl).replyOnce(200, {
+      mock.onPost(expectedUrl).replyOnce(httpStatus.OK, {
         name: branch,
       });
 
@@ -652,7 +653,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'get');
 
-      mock.onGet(expectedUrl).replyOnce(200, ['fork']);
+      mock.onGet(expectedUrl).replyOnce(httpStatus.OK, ['fork']);
 
       Api.projectForks(dummyProjectPath, { visibility: 'private' })
         .then(({ data }) => {
@@ -666,153 +667,166 @@ describe('Api', () => {
     });
   });
 
-  describe('release', () => {
+  describe('release-related methods', () => {
     const dummyProjectPath = 'gitlab-org/gitlab';
     const dummyTagName = 'v1.3';
-    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
-      dummyProjectPath,
-    )}/releases/${encodeURIComponent(dummyTagName)}`;
-
-    describe('when the release is successfully returned', () => {
-      it('resolves the Promise', () => {
-        mock.onGet(expectedUrl).replyOnce(200);
-
-        return Api.release(dummyProjectPath, dummyTagName).then(() => {
-          expect(mock.history.get).toHaveLength(1);
-        });
-      });
-    });
-
-    describe('when an error occurs while fetching the release', () => {
-      it('rejects the Promise', () => {
-        mock.onGet(expectedUrl).replyOnce(500);
-
-        return Api.release(dummyProjectPath, dummyTagName).catch(() => {
-          expect(mock.history.get).toHaveLength(1);
-        });
-      });
-    });
-  });
-
-  describe('createRelease', () => {
-    const dummyProjectPath = 'gitlab-org/gitlab';
-    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+    const baseReleaseUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
       dummyProjectPath,
     )}/releases`;
 
-    const release = {
-      name: 'Version 1.0',
-    };
+    describe('releases', () => {
+      const expectedUrl = baseReleaseUrl;
 
-    describe('when the release is successfully created', () => {
-      it('resolves the Promise', () => {
-        mock.onPost(expectedUrl, release).replyOnce(201);
+      describe('when releases are successfully returned', () => {
+        it('resolves the Promise', () => {
+          mock.onGet(expectedUrl).replyOnce(httpStatus.OK);
 
-        return Api.createRelease(dummyProjectPath, release).then(() => {
-          expect(mock.history.post).toHaveLength(1);
+          return Api.releases(dummyProjectPath).then(() => {
+            expect(mock.history.get).toHaveLength(1);
+          });
+        });
+      });
+
+      describe('when an error occurs while fetching releases', () => {
+        it('rejects the Promise', () => {
+          mock.onGet(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+
+          return Api.releases(dummyProjectPath).catch(() => {
+            expect(mock.history.get).toHaveLength(1);
+          });
         });
       });
     });
 
-    describe('when an error occurs while creating the release', () => {
-      it('rejects the Promise', () => {
-        mock.onPost(expectedUrl, release).replyOnce(500);
+    describe('release', () => {
+      const expectedUrl = `${baseReleaseUrl}/${encodeURIComponent(dummyTagName)}`;
 
-        return Api.createRelease(dummyProjectPath, release).catch(() => {
-          expect(mock.history.post).toHaveLength(1);
+      describe('when the release is successfully returned', () => {
+        it('resolves the Promise', () => {
+          mock.onGet(expectedUrl).replyOnce(httpStatus.OK);
+
+          return Api.release(dummyProjectPath, dummyTagName).then(() => {
+            expect(mock.history.get).toHaveLength(1);
+          });
         });
       });
-    });
-  });
 
-  describe('updateRelease', () => {
-    const dummyProjectPath = 'gitlab-org/gitlab';
-    const dummyTagName = 'v1.3';
-    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
-      dummyProjectPath,
-    )}/releases/${encodeURIComponent(dummyTagName)}`;
+      describe('when an error occurs while fetching the release', () => {
+        it('rejects the Promise', () => {
+          mock.onGet(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
 
-    const release = {
-      name: 'Version 1.0',
-    };
-
-    describe('when the release is successfully created', () => {
-      it('resolves the Promise', () => {
-        mock.onPut(expectedUrl, release).replyOnce(200);
-
-        return Api.updateRelease(dummyProjectPath, dummyTagName, release).then(() => {
-          expect(mock.history.put).toHaveLength(1);
+          return Api.release(dummyProjectPath, dummyTagName).catch(() => {
+            expect(mock.history.get).toHaveLength(1);
+          });
         });
       });
     });
 
-    describe('when an error occurs while creating the release', () => {
-      it('rejects the Promise', () => {
-        mock.onPut(expectedUrl, release).replyOnce(500);
+    describe('createRelease', () => {
+      const expectedUrl = baseReleaseUrl;
 
-        return Api.updateRelease(dummyProjectPath, dummyTagName, release).catch(() => {
-          expect(mock.history.put).toHaveLength(1);
+      const release = {
+        name: 'Version 1.0',
+      };
+
+      describe('when the release is successfully created', () => {
+        it('resolves the Promise', () => {
+          mock.onPost(expectedUrl, release).replyOnce(httpStatus.CREATED);
+
+          return Api.createRelease(dummyProjectPath, release).then(() => {
+            expect(mock.history.post).toHaveLength(1);
+          });
         });
       });
-    });
-  });
 
-  describe('createReleaseLink', () => {
-    const dummyProjectPath = 'gitlab-org/gitlab';
-    const dummyReleaseTag = 'v1.3';
-    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
-      dummyProjectPath,
-    )}/releases/${dummyReleaseTag}/assets/links`;
-    const expectedLink = {
-      url: 'https://example.com',
-      name: 'An example link',
-    };
+      describe('when an error occurs while creating the release', () => {
+        it('rejects the Promise', () => {
+          mock.onPost(expectedUrl, release).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
 
-    describe('when the Release is successfully created', () => {
-      it('resolves the Promise', () => {
-        mock.onPost(expectedUrl, expectedLink).replyOnce(201);
-
-        return Api.createReleaseLink(dummyProjectPath, dummyReleaseTag, expectedLink).then(() => {
-          expect(mock.history.post).toHaveLength(1);
+          return Api.createRelease(dummyProjectPath, release).catch(() => {
+            expect(mock.history.post).toHaveLength(1);
+          });
         });
       });
     });
 
-    describe('when an error occurs while creating the Release', () => {
-      it('rejects the Promise', () => {
-        mock.onPost(expectedUrl, expectedLink).replyOnce(500);
+    describe('updateRelease', () => {
+      const expectedUrl = `${baseReleaseUrl}/${encodeURIComponent(dummyTagName)}`;
 
-        return Api.createReleaseLink(dummyProjectPath, dummyReleaseTag, expectedLink).catch(() => {
-          expect(mock.history.post).toHaveLength(1);
+      const release = {
+        name: 'Version 1.0',
+      };
+
+      describe('when the release is successfully updated', () => {
+        it('resolves the Promise', () => {
+          mock.onPut(expectedUrl, release).replyOnce(httpStatus.OK);
+
+          return Api.updateRelease(dummyProjectPath, dummyTagName, release).then(() => {
+            expect(mock.history.put).toHaveLength(1);
+          });
+        });
+      });
+
+      describe('when an error occurs while updating the release', () => {
+        it('rejects the Promise', () => {
+          mock.onPut(expectedUrl, release).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+
+          return Api.updateRelease(dummyProjectPath, dummyTagName, release).catch(() => {
+            expect(mock.history.put).toHaveLength(1);
+          });
         });
       });
     });
-  });
 
-  describe('deleteReleaseLink', () => {
-    const dummyProjectPath = 'gitlab-org/gitlab';
-    const dummyReleaseTag = 'v1.3';
-    const dummyLinkId = '4';
-    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
-      dummyProjectPath,
-    )}/releases/${dummyReleaseTag}/assets/links/${dummyLinkId}`;
+    describe('createReleaseLink', () => {
+      const expectedUrl = `${baseReleaseUrl}/${dummyTagName}/assets/links`;
+      const expectedLink = {
+        url: 'https://example.com',
+        name: 'An example link',
+      };
 
-    describe('when the Release is successfully deleted', () => {
-      it('resolves the Promise', () => {
-        mock.onDelete(expectedUrl).replyOnce(200);
+      describe('when the Release is successfully created', () => {
+        it('resolves the Promise', () => {
+          mock.onPost(expectedUrl, expectedLink).replyOnce(httpStatus.CREATED);
 
-        return Api.deleteReleaseLink(dummyProjectPath, dummyReleaseTag, dummyLinkId).then(() => {
-          expect(mock.history.delete).toHaveLength(1);
+          return Api.createReleaseLink(dummyProjectPath, dummyTagName, expectedLink).then(() => {
+            expect(mock.history.post).toHaveLength(1);
+          });
+        });
+      });
+
+      describe('when an error occurs while creating the Release', () => {
+        it('rejects the Promise', () => {
+          mock.onPost(expectedUrl, expectedLink).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+
+          return Api.createReleaseLink(dummyProjectPath, dummyTagName, expectedLink).catch(() => {
+            expect(mock.history.post).toHaveLength(1);
+          });
         });
       });
     });
 
-    describe('when an error occurs while deleting the Release', () => {
-      it('rejects the Promise', () => {
-        mock.onDelete(expectedUrl).replyOnce(500);
+    describe('deleteReleaseLink', () => {
+      const dummyLinkId = '4';
+      const expectedUrl = `${baseReleaseUrl}/${dummyTagName}/assets/links/${dummyLinkId}`;
 
-        return Api.deleteReleaseLink(dummyProjectPath, dummyReleaseTag, dummyLinkId).catch(() => {
-          expect(mock.history.delete).toHaveLength(1);
+      describe('when the Release is successfully deleted', () => {
+        it('resolves the Promise', () => {
+          mock.onDelete(expectedUrl).replyOnce(httpStatus.OK);
+
+          return Api.deleteReleaseLink(dummyProjectPath, dummyTagName, dummyLinkId).then(() => {
+            expect(mock.history.delete).toHaveLength(1);
+          });
+        });
+      });
+
+      describe('when an error occurs while deleting the Release', () => {
+        it('rejects the Promise', () => {
+          mock.onDelete(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+
+          return Api.deleteReleaseLink(dummyProjectPath, dummyTagName, dummyLinkId).catch(() => {
+            expect(mock.history.delete).toHaveLength(1);
+          });
         });
       });
     });
@@ -827,7 +841,7 @@ describe('Api', () => {
 
     describe('when the raw file is successfully fetched', () => {
       it('resolves the Promise', () => {
-        mock.onGet(expectedUrl).replyOnce(200);
+        mock.onGet(expectedUrl).replyOnce(httpStatus.OK);
 
         return Api.getRawFile(dummyProjectPath, dummyFilePath).then(() => {
           expect(mock.history.get).toHaveLength(1);
@@ -837,7 +851,7 @@ describe('Api', () => {
 
     describe('when an error occurs while getting a raw file', () => {
       it('rejects the Promise', () => {
-        mock.onPost(expectedUrl).replyOnce(500);
+        mock.onPost(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
 
         return Api.getRawFile(dummyProjectPath, dummyFilePath).catch(() => {
           expect(mock.history.get).toHaveLength(1);
@@ -859,7 +873,7 @@ describe('Api', () => {
 
     describe('when the merge request is successfully created', () => {
       it('resolves the Promise', () => {
-        mock.onPost(expectedUrl, options).replyOnce(201);
+        mock.onPost(expectedUrl, options).replyOnce(httpStatus.CREATED);
 
         return Api.createProjectMergeRequest(dummyProjectPath, options).then(() => {
           expect(mock.history.post).toHaveLength(1);
@@ -869,7 +883,7 @@ describe('Api', () => {
 
     describe('when an error occurs while getting a raw file', () => {
       it('rejects the Promise', () => {
-        mock.onPost(expectedUrl).replyOnce(500);
+        mock.onPost(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
 
         return Api.createProjectMergeRequest(dummyProjectPath).catch(() => {
           expect(mock.history.post).toHaveLength(1);
@@ -884,7 +898,7 @@ describe('Api', () => {
       const issue = 1;
       const expectedArray = [1, 2, 3];
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/issues/${issue}`;
-      mock.onPut(expectedUrl).reply(200, { assigneeIds: expectedArray });
+      mock.onPut(expectedUrl).reply(httpStatus.OK, { assigneeIds: expectedArray });
 
       Api.updateIssue(projectId, issue, { assigneeIds: expectedArray })
         .then(({ data }) => {
@@ -901,7 +915,7 @@ describe('Api', () => {
       const mergeRequest = 1;
       const expectedArray = [1, 2, 3];
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/merge_requests/${mergeRequest}`;
-      mock.onPut(expectedUrl).reply(200, { assigneeIds: expectedArray });
+      mock.onPut(expectedUrl).reply(httpStatus.OK, { assigneeIds: expectedArray });
 
       Api.updateMergeRequest(projectId, mergeRequest, { assigneeIds: expectedArray })
         .then(({ data }) => {
@@ -918,7 +932,7 @@ describe('Api', () => {
       const options = { unused: 'option' };
       const projectId = 8;
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/repository/tags`;
-      mock.onGet(expectedUrl).reply(200, [
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [
         {
           name: 'test',
         },
@@ -946,7 +960,7 @@ describe('Api', () => {
         updated_at: '2020-07-10T05:10:35.122Z',
       };
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/freeze_periods`;
-      mock.onGet(expectedUrl).reply(200, [freezePeriod]);
+      mock.onGet(expectedUrl).reply(httpStatus.OK, [freezePeriod]);
 
       return Api.freezePeriods(projectId).then(({ data }) => {
         expect(data[0]).toStrictEqual(freezePeriod);
@@ -974,7 +988,7 @@ describe('Api', () => {
 
     describe('when the freeze period is successfully created', () => {
       it('resolves the Promise', () => {
-        mock.onPost(expectedUrl, options).replyOnce(201, expectedResult);
+        mock.onPost(expectedUrl, options).replyOnce(httpStatus.CREATED, expectedResult);
 
         return Api.createFreezePeriod(projectId, options).then(({ data }) => {
           expect(data).toStrictEqual(expectedResult);
@@ -998,7 +1012,7 @@ describe('Api', () => {
 
       jest.spyOn(axios, 'post');
 
-      mock.onPost(expectedUrl).replyOnce(200, {
+      mock.onPost(expectedUrl).replyOnce(httpStatus.OK, {
         web_url: redirectUrl,
       });
 

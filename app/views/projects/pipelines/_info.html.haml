@@ -7,8 +7,8 @@
 
 .info-well
   .well-segment.pipeline-info
-    .icon-container
-      = icon('clock-o')
+    .icon-container.gl-vertical-align-text-bottom
+      = sprite_icon('clock', size: 16)
     = pluralize @pipeline.total_size, "job"
     = @pipeline.ref_text
     - if @pipeline.duration
