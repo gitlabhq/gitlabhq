@@ -123,11 +123,11 @@ RSpec.describe ::API::Entities::Snippet do
     it_behaves_like 'common attributes'
 
     it 'returns snippet web_url attribute' do
-      expect(subject[:web_url]).to match("/snippets/#{snippet.id}")
+      expect(subject[:web_url]).to match("/-/snippets/#{snippet.id}")
     end
 
     it 'returns snippet raw_url attribute' do
-      expect(subject[:raw_url]).to match("/snippets/#{snippet.id}/raw")
+      expect(subject[:raw_url]).to match("/-/snippets/#{snippet.id}/raw")
     end
   end
 
@@ -137,11 +137,11 @@ RSpec.describe ::API::Entities::Snippet do
     it_behaves_like 'common attributes'
 
     it 'returns snippet web_url attribute' do
-      expect(subject[:web_url]).to match("#{snippet.project.full_path}/snippets/#{snippet.id}")
+      expect(subject[:web_url]).to match("#{snippet.project.full_path}/-/snippets/#{snippet.id}")
     end
 
     it 'returns snippet raw_url attribute' do
-      expect(subject[:raw_url]).to match("#{snippet.project.full_path}/snippets/#{snippet.id}/raw")
+      expect(subject[:raw_url]).to match("#{snippet.project.full_path}/-/snippets/#{snippet.id}/raw")
     end
   end
 end

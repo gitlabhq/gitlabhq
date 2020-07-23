@@ -242,7 +242,7 @@ export default {
         <gl-form-group
           :label="__('Type')"
           label-for="ci-variable-type"
-          class="w-50 append-right-15"
+          class="w-50 gl-mr-5"
           :class="{ 'w-100': isGroup }"
         >
           <gl-form-select id="ci-variable-type" v-model="variable_type" :options="typeOptions" />

@@ -78,7 +78,8 @@ the following preparations into account.
 
 #### Preparation when adding migrations
 
-- Ensure `db/structure.sql` is updated as [documented](migration_style_guide.md#schema-changes).
+- Ensure `db/structure.sql` is updated as [documented](migration_style_guide.md#schema-changes), and additionally ensure that the relevant version files under
+`db/schema_migrations` were added or removed.
 - Make migrations reversible by using the `change` method or include a `down` method when using `up`.
   - Include either a rollback procedure or describe how to rollback changes.
 - Add the output of both migrating and rolling back for all migrations into the MR description.
@@ -149,6 +150,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
     - Ensure it was added in a post-migration.
     - Maintainer: After the merge request is merged, notify Release Managers about it on `#f_upcoming_release` Slack channel.
   - Check consistency with `db/structure.sql` and that migrations are [reversible](migration_style_guide.md#reversibility)
+  - Check that the relevant version files under `db/schema_migrations` were added or removed.
   - Check queries timing (If any): Queries executed in a migration
     need to fit comfortably within `15s` - preferably much less than that - on GitLab.com.
   - For column removals, make sure the column has been [ignored in a previous release](what_requires_downtime.md#dropping-columns)

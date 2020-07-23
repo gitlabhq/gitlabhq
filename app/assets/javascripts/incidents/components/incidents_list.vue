@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon, GlTable, GlAlert } from '@gitlab/ui';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__ } from '~/locale';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
 import { I18N } from '../constants';
@@ -36,6 +37,7 @@ export default {
     GlLoadingIcon,
     GlTable,
     GlAlert,
+    TimeAgoTooltip,
   },
   inject: ['projectPath'],
   apollo: {
@@ -108,7 +110,7 @@ export default {
       </template>
 
       <template #cell(createdAt)="{ item }">
-        {{ item.createdAt }}
+        <time-ago-tooltip :time="item.createdAt" />
       </template>
 
       <template #cell(assignees)="{ item }">

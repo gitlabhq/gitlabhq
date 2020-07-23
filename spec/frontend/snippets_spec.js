@@ -7,7 +7,7 @@ describe('Snippets', () => {
   let shareBtn;
   let scriptTag;
 
-  const snippetUrl = 'http://test.host/snippets/1';
+  const snippetUrl = 'http://test.host/-/snippets/1';
 
   beforeEach(() => {
     loadHTMLFixture('snippets/show.html');

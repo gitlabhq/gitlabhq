@@ -183,7 +183,7 @@ describe('Snippet Edit app', () => {
 
     it.each`
       isNew    | status        | expectation
-      ${true}  | ${`new`}      | ${`/snippets`}
+      ${true}  | ${`new`}      | ${`/-/snippets`}
       ${false} | ${`existing`} | ${newlyEditedSnippetUrl}
     `('sets correct href for the cancel button on a $status snippet', ({ isNew, expectation }) => {
       createComponent({

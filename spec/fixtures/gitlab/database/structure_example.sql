@@ -77,19 +77,3 @@ ALTER TABLE ONLY public.abuse_reports
 
 CREATE INDEX index_abuse_reports_on_user_id ON public.abuse_reports USING btree (user_id);
 
-
-
-INSERT INTO "schema_migrations" (version) VALUES
-('20200305121159'),
-('20200306095654'),
-('20200306160521'),
-('20200306170211'),
-('20200306170321'),
-('20200306170531'),
-('20200309140540'),
-('20200309195209'),
-('20200309195710'),
-('20200310132654'),
-('20200310135823');
-
-

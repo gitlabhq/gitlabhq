@@ -19,9 +19,21 @@ class MergeRequestPollWidgetEntity < Grape::Entity
   # User entities
   expose :merge_user, using: UserEntity
 
-  expose :actual_head_pipeline, with: PipelineDetailsEntity, as: :pipeline, if: -> (mr, _) { presenter(mr).can_read_pipeline? }
+  expose :actual_head_pipeline, as: :pipeline, if: -> (mr, _) { presenter(mr).can_read_pipeline? } do |merge_request, options|
+    if Feature.enabled?(:merge_request_short_pipeline_serializer, merge_request.project)
+      MergeRequests::PipelineEntity.represent(merge_request.actual_head_pipeline, options)
+    else
+      PipelineDetailsEntity.represent(merge_request.actual_head_pipeline, options)
+    end
+  end
 
-  expose :merge_pipeline, with: PipelineDetailsEntity, if: ->(mr, _) { mr.merged? && can?(request.current_user, :read_pipeline, mr.target_project)}
+  expose :merge_pipeline, if: ->(mr, _) { mr.merged? && can?(request.current_user, :read_pipeline, mr.target_project)} do |merge_request, options|
+    if Feature.enabled?(:merge_request_short_pipeline_serializer, merge_request.project)
+      MergeRequests::PipelineEntity.represent(merge_request.merge_pipeline, options)
+    else
+      PipelineDetailsEntity.represent(merge_request.merge_pipeline, options)
+    end
+  end
 
   expose :default_merge_commit_message
 

@@ -145,10 +145,27 @@ authorizations for both projects.
 
 GitLab doesn't skip jobs scheduled in the future, as we assume that
 the state will have changed by the time the job is scheduled to
-execute.
+execute. If you do want to deduplicate jobs scheduled in the future
+this can be specified on the worker as follows:
 
-More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/195). If you are implementing a worker that
-could benefit from a different strategy, please comment in the issue.
+```ruby
+module AuthorizedProjectUpdate
+  class UserRefreshOverUserRangeWorker
+    include ApplicationWorker
+
+    deduplicate :until_executing, including_scheduled: true
+    idempotent!
+
+    # ...
+  end
+end
+```
+
+This strategy is called `until_executing`. More [deduplication
+strategies have been
+suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/195). If
+you are implementing a worker that could benefit from a different
+strategy, please comment in the issue.
 
 If the automatic deduplication were to cause issues in certain
 queues. This can be temporarily disabled by enabling a feature flag

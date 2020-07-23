@@ -84,7 +84,7 @@
                 = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
         - if @user.bio.present?
           .cover-desc.cgray
-            %p.profile-user-bio
+            .profile-user-bio
               = markdown(@user.bio_html)
 
 

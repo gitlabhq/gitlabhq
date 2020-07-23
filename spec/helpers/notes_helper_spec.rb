@@ -225,7 +225,7 @@ RSpec.describe NotesHelper do
     it 'return snippet notes path for personal snippet' do
       @snippet = create(:personal_snippet)
 
-      expect(helper.notes_url).to eq("/snippets/#{@snippet.id}/notes")
+      expect(helper.notes_url).to eq("/-/snippets/#{@snippet.id}/notes")
     end
 
     it 'return project notes path for project snippet' do
@@ -250,7 +250,7 @@ RSpec.describe NotesHelper do
     it 'return snippet notes path for personal snippet' do
       note = create(:note_on_personal_snippet)
 
-      expect(helper.note_url(note)).to eq("/snippets/#{note.noteable.id}/notes/#{note.id}")
+      expect(helper.note_url(note)).to eq("/-/snippets/#{note.noteable.id}/notes/#{note.id}")
     end
 
     it 'return project notes path for project snippet' do

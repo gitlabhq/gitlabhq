@@ -874,6 +874,11 @@ type Blob implements Entry {
   type: EntryType!
 
   """
+  Web path of the blob
+  """
+  webPath: String
+
+  """
   Web URL of the blob
   """
   webUrl: String
@@ -1187,6 +1192,11 @@ type Commit {
   description: String
 
   """
+  The GitLab Flavored Markdown rendering of `description`
+  """
+  descriptionHtml: String
+
+  """
   ID (global ID) of the commit
   """
   id: ID!
@@ -1275,6 +1285,11 @@ type Commit {
   The GitLab Flavored Markdown rendering of `title`
   """
   titleHtml: String
+
+  """
+  Web path of the commit
+  """
+  webPath: String!
 
   """
   Web URL of the commit
@@ -13690,6 +13705,11 @@ type TreeEntry implements Entry {
   type: EntryType!
 
   """
+  Web path for the tree entry (directory)
+  """
+  webPath: String
+
+  """
   Web URL for the tree entry (directory)
   """
   webUrl: String
@@ -14594,6 +14614,11 @@ type User {
   Username of the user. Unique within this instance of GitLab
   """
   username: String!
+
+  """
+  Web path of the user
+  """
+  webPath: String!
 
   """
   Web URL of the user

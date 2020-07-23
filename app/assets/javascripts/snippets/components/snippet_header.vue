@@ -91,8 +91,8 @@ export default {
           condition: this.canCreateSnippet,
           text: __('New snippet'),
           href: this.snippet.project
-            ? `${this.snippet.project.webUrl}/snippets/new`
-            : '/snippets/new',
+            ? `${this.snippet.project.webUrl}/-/snippets/new`
+            : '/-/snippets/new',
           variant: 'success',
           category: 'secondary',
           cssClass: 'ml-2',
@@ -130,7 +130,9 @@ export default {
   },
   methods: {
     redirectToSnippets() {
-      window.location.pathname = `${this.snippet.project?.fullPath || 'dashboard'}/snippets`;
+      window.location.pathname = this.snippet.project
+        ? `${this.snippet.project.fullPath}/-/snippets`
+        : 'dashboard/snippets';
     },
     closeDeleteModal() {
       this.$refs.deleteModal.hide();

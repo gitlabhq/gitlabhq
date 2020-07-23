@@ -23,6 +23,10 @@ module Gitlab
         structure.gsub!(/\n{3,}/, "\n\n")
 
         io << structure
+        io << <<~MSG
+          -- schema_migrations.version information is no longer stored in this file,
+          -- but instead tracked in the db/schema_migrations directory
+        MSG
 
         nil
       end

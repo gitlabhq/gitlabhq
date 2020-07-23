@@ -24,11 +24,11 @@ describe('Blob viewer', () => {
 
     blob = new BlobViewer();
 
-    mock.onGet('http://test.host/snippets/1.json?viewer=rich').reply(200, {
+    mock.onGet('http://test.host/-/snippets/1.json?viewer=rich').reply(200, {
       html: '<div>testing</div>',
     });
 
-    mock.onGet('http://test.host/snippets/1.json?viewer=simple').reply(200, {
+    mock.onGet('http://test.host/-/snippets/1.json?viewer=simple').reply(200, {
       html: '<div>testing</div>',
     });
 

@@ -178,6 +178,8 @@ Rails.application.routes.draw do
     # in case we decide to move away from doorkeeper-openid_connect
     get 'jwks' => 'doorkeeper/openid_connect/discovery#keys'
 
+    draw :snippets
+
     # Product analytics collector
     match '/collector/i', to: ProductAnalytics::CollectorApp.new, via: :all
   end
@@ -258,7 +260,6 @@ Rails.application.routes.draw do
   draw :api
   draw :sidekiq
   draw :help
-  draw :snippets
   draw :google_api
   draw :import
   draw :uploads
@@ -269,11 +270,8 @@ Rails.application.routes.draw do
   draw :user
   draw :project
 
-  # Serve snippet routes under /-/snippets.
-  # To ensure an old unscoped routing is used for the UI we need to
-  # add prefix 'as' to the scope routing and place it below original routing.
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
-  scope '-', as: :scoped do
+  scope as: 'deprecated' do
     draw :snippets
   end
 

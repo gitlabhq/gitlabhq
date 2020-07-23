@@ -17,12 +17,15 @@ module Types
     markdown_field :title_html, null: true
     field :description, type: GraphQL::STRING_TYPE, null: true,
           description: 'Description of the commit message'
+    markdown_field :description_html, null: true
     field :message, type: GraphQL::STRING_TYPE, null: true,
           description: 'Raw commit message'
     field :authored_date, type: Types::TimeType, null: true,
           description: 'Timestamp of when the commit was authored'
     field :web_url, type: GraphQL::STRING_TYPE, null: false,
           description: 'Web URL of the commit'
+    field :web_path, type: GraphQL::STRING_TYPE, null: false,
+          description: 'Web path of the commit'
     field :signature_html, type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
           description: 'Rendered HTML of the commit signature'
     field :author_name, type: GraphQL::STRING_TYPE, null: true,

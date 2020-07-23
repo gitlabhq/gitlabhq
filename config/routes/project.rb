@@ -346,6 +346,13 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :import do
           resource :jira, only: [:show], controller: :jira
         end
+
+        resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
+          member do
+            get :raw
+            post :mark_as_spam
+          end
+        end
       end
       # End of the /-/ scope.
 
@@ -378,26 +385,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :verify
             post :retry_auto_ssl
             delete :clean_certificate
-          end
-        end
-      end
-
-      resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do # rubocop: disable Cop/PutProjectRoutesUnderScope
-        member do
-          get :raw
-          post :mark_as_spam
-        end
-      end
-
-      # Serve snippet routes under /-/snippets.
-      # To ensure an old unscoped routing is used for the UI we need to
-      # add prefix 'as' to the scope routing and place it below original routing.
-      # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/29572
-      scope '-', as: :scoped do
-        resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do # rubocop: disable Cop/PutProjectRoutesUnderScope
-          member do
-            get :raw
-            post :mark_as_spam
           end
         end
       end
@@ -511,10 +498,18 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       # Deprecated unscoped routing.
-      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
       scope as: 'deprecated' do
+        # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
         draw :pipelines
         draw :repository
+
+        # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/29572
+        resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do # rubocop: disable Cop/PutProjectRoutesUnderScope
+          member do
+            get :raw
+            post :mark_as_spam
+          end
+        end
       end
 
       # All new routes should go under /-/ scope.

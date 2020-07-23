@@ -1,7 +1,9 @@
 import { mount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { I18N } from '~/incidents/constants';
+import mockIncidents from '../mocks/incidents.json';
 
 describe('Incidents List', () => {
   let wrapper;
@@ -10,6 +12,7 @@ describe('Incidents List', () => {
   const findTableRows = () => wrapper.findAll('table tbody tr');
   const findAlert = () => wrapper.find(GlAlert);
   const findLoader = () => wrapper.find(GlLoadingIcon);
+  const findTimeAgo = () => wrapper.findAll(TimeAgoTooltip);
 
   function mountComponent({ data = { incidents: [] }, loading = false }) {
     wrapper = mount(IncidentsList, {
@@ -40,7 +43,6 @@ describe('Incidents List', () => {
 
   it('shows the loading state', () => {
     mountComponent({
-      props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
       loading: true,
     });
     expect(findLoader().exists()).toBe(true);
@@ -63,16 +65,20 @@ describe('Incidents List', () => {
     expect(findAlert().exists()).toBe(true);
   });
 
-  it('displays basic list', () => {
-    const incidents = [
-      { title: 1, assignees: [] },
-      { title: 2, assignees: [] },
-      { title: 3, assignees: [] },
-    ];
-    mountComponent({
-      data: { incidents },
-      loading: false,
+  describe('Incident Management list', () => {
+    beforeEach(() => {
+      mountComponent({
+        data: { incidents: mockIncidents },
+        loading: false,
+      });
     });
-    expect(findTableRows().length).toBe(incidents.length);
+
+    it('renders rows based on provided data', () => {
+      expect(findTableRows().length).toBe(mockIncidents.length);
+    });
+
+    it('renders a createdAt with timeAgo component per row', () => {
+      expect(findTimeAgo().length).toBe(mockIncidents.length);
+    });
   });
 });

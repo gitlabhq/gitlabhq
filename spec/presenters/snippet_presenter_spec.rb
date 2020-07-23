@@ -23,7 +23,7 @@ RSpec.describe SnippetPresenter do
       let(:snippet) { personal_snippet }
 
       it 'returns snippet web url' do
-        expect(subject).to match "/snippets/#{snippet.id}"
+        expect(subject).to match "/-/snippets/#{snippet.id}"
       end
     end
 
@@ -31,7 +31,7 @@ RSpec.describe SnippetPresenter do
       let(:snippet) { project_snippet }
 
       it 'returns snippet web url' do
-        expect(subject).to match "/#{project.full_path}/snippets/#{snippet.id}"
+        expect(subject).to match "/#{project.full_path}/-/snippets/#{snippet.id}"
       end
     end
   end
@@ -43,7 +43,7 @@ RSpec.describe SnippetPresenter do
       let(:snippet) { personal_snippet }
 
       it 'returns snippet web url' do
-        expect(subject).to match "/snippets/#{snippet.id}/raw"
+        expect(subject).to match "/-/snippets/#{snippet.id}/raw"
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe SnippetPresenter do
       let(:snippet) { project_snippet }
 
       it 'returns snippet web url' do
-        expect(subject).to match "/#{project.full_path}/snippets/#{snippet.id}/raw"
+        expect(subject).to match "/#{project.full_path}/-/snippets/#{snippet.id}/raw"
       end
     end
   end

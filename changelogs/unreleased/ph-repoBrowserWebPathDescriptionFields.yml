@@ -1,0 +1,5 @@
+---
+title: Added webPath and descriptionHtml types to the repository GraphQL entities
+merge_request: 37416
+author:
+type: added

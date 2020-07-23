@@ -95,7 +95,7 @@ export default {
     },
     cancelButtonHref() {
       if (this.newSnippet) {
-        return this.projectPath ? `/${this.projectPath}/snippets` : `/snippets`;
+        return this.projectPath ? `/${this.projectPath}/-/snippets` : `/-/snippets`;
       }
       return this.snippet.webUrl;
     },

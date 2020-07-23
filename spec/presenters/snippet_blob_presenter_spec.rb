@@ -13,7 +13,7 @@ RSpec.describe SnippetBlobPresenter do
     subject { described_class.new(snippet.blob).rich_data }
 
     context 'with PersonalSnippet' do
-      let(:raw_url) { "http://127.0.0.1:3000/snippets/#{snippet.id}/raw" }
+      let(:raw_url) { "http://127.0.0.1:3000/-/snippets/#{snippet.id}/raw" }
       let(:snippet) { build(:personal_snippet) }
 
       it 'returns nil when the snippet blob is binary' do
@@ -40,7 +40,7 @@ RSpec.describe SnippetBlobPresenter do
         let(:snippet) { create(:personal_snippet, file_name: 'test.ipynb') }
 
         it 'returns rich notebook content' do
-          expect(subject.strip).to eq %Q(<div class="file-content" data-endpoint="/snippets/#{snippet.id}/raw" id="js-notebook-viewer"></div>)
+          expect(subject.strip).to eq %Q(<div class="file-content" data-endpoint="/-/snippets/#{snippet.id}/raw" id="js-notebook-viewer"></div>)
         end
       end
 
@@ -48,7 +48,7 @@ RSpec.describe SnippetBlobPresenter do
         let(:snippet) { create(:personal_snippet, file_name: 'openapi.yml') }
 
         it 'returns rich openapi content' do
-          expect(subject).to eq %Q(<div class="file-content" data-endpoint="/snippets/#{snippet.id}/raw" id="js-openapi-viewer"></div>\n)
+          expect(subject).to eq %Q(<div class="file-content" data-endpoint="/-/snippets/#{snippet.id}/raw" id="js-openapi-viewer"></div>\n)
         end
       end
 
@@ -131,7 +131,7 @@ RSpec.describe SnippetBlobPresenter do
         let(:snippet) { project_snippet }
 
         it 'returns the raw path' do
-          expect(subject).to eq "/#{snippet.project.full_path}/snippets/#{snippet.id}/raw"
+          expect(subject).to eq "/#{snippet.project.full_path}/-/snippets/#{snippet.id}/raw"
         end
       end
 
@@ -139,7 +139,7 @@ RSpec.describe SnippetBlobPresenter do
         let(:snippet) { personal_snippet }
 
         it 'returns the raw path' do
-          expect(subject).to eq "/snippets/#{snippet.id}/raw"
+          expect(subject).to eq "/-/snippets/#{snippet.id}/raw"
         end
       end
     end

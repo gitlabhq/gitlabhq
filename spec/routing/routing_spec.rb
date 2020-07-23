@@ -76,39 +76,39 @@ end
 #          DELETE /snippets/:id(.:format)      snippets#destroy
 RSpec.describe SnippetsController, "routing" do
   it "to #raw" do
-    expect(get("/snippets/1/raw")).to route_to('snippets#raw', id: '1')
+    expect(get("/-/snippets/1/raw")).to route_to('snippets#raw', id: '1')
   end
 
   it "to #index" do
-    expect(get("/snippets")).to route_to('snippets#index')
+    expect(get("/-/snippets")).to route_to('snippets#index')
   end
 
   it "to #create" do
-    expect(post("/snippets")).to route_to('snippets#create')
+    expect(post("/-/snippets")).to route_to('snippets#create')
   end
 
   it "to #new" do
-    expect(get("/snippets/new")).to route_to('snippets#new')
+    expect(get("/-/snippets/new")).to route_to('snippets#new')
   end
 
   it "to #edit" do
-    expect(get("/snippets/1/edit")).to route_to('snippets#edit', id: '1')
+    expect(get("/-/snippets/1/edit")).to route_to('snippets#edit', id: '1')
   end
 
   it "to #show" do
-    expect(get("/snippets/1")).to route_to('snippets#show', id: '1')
+    expect(get("/-/snippets/1")).to route_to('snippets#show', id: '1')
   end
 
   it "to #update" do
-    expect(put("/snippets/1")).to route_to('snippets#update', id: '1')
+    expect(put("/-/snippets/1")).to route_to('snippets#update', id: '1')
   end
 
   it "to #destroy" do
-    expect(delete("/snippets/1")).to route_to('snippets#destroy', id: '1')
+    expect(delete("/-/snippets/1")).to route_to('snippets#destroy', id: '1')
   end
 
-  it 'to #show from scope routing' do
-    expect(get("/-/snippets/1")).to route_to('snippets#show', id: '1')
+  it 'to #show from unscoped routing' do
+    expect(get("/snippets/1")).to route_to('snippets#show', id: '1')
   end
 end
 
