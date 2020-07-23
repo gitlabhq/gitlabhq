@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 
 export default {
-  name: 'DeployFreezeTimezoneDropdown',
+  name: 'TimezoneDropdown',
   components: {
     GlNewDropdown,
     GlDropdownItem,
@@ -17,7 +17,7 @@ export default {
   props: {
     value: {
       type: String,
-      required: false,
+      required: true,
       default: '',
     },
     timezoneData: {
@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      searchTerm: this.value || '',
+      searchTerm: '',
     };
   },
   tranlations: {
@@ -47,18 +47,13 @@ export default {
         timezone.formattedTimezone.toLowerCase().includes(lowerCasedSearchTerm),
       );
     },
-    selectTimezoneLabel() {
+    selectedTimezoneLabel() {
       return this.value || __('Select timezone');
     },
   },
-  watch: {
-    value(newVal) {
-      this.searchTerm = newVal;
-    },
-  },
   methods: {
-    selectTimezone(selected) {
-      this.$emit('selectTimezone', selected);
+    selectTimezone(selectedTimezone) {
+      this.$emit('input', selectedTimezone);
       this.searchTerm = '';
     },
     isSelected(timezone) {
@@ -81,9 +76,9 @@ export default {
 <template>
   <gl-new-dropdown :text="value" block lazy menu-class="gl-w-full!">
     <template #button-content>
-      <span ref="buttonText" class="gl-flex-grow-1" :class="{ 'gl-text-gray-500': !value }">{{
-        selectTimezoneLabel
-      }}</span>
+      <span class="gl-flex-grow-1" :class="{ 'gl-text-gray-500': !value }">
+        {{ selectedTimezoneLabel }}
+      </span>
       <gl-icon name="chevron-down" />
     </template>
 
@@ -100,7 +95,7 @@ export default {
       />
       {{ timezone.formattedTimezone }}
     </gl-dropdown-item>
-    <gl-dropdown-item v-if="!filteredResults.length" ref="noMatchingResults">
+    <gl-dropdown-item v-if="!filteredResults.length" data-testid="noMatchingResults">
       {{ $options.tranlations.noResultsText }}
     </gl-dropdown-item>
   </gl-new-dropdown>

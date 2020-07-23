@@ -304,9 +304,9 @@ Examples:
   # does not include index.html at the end
 
   docs:
-    - doc_title: Service Desk
-      doc_url: 'user/project/service_desk.html'
-      ee_only: false
+    - doc_title: Container Scanning
+      doc_url: 'user/application_security/container_scanning/'
+      ee_only: true
       # note that the URL above ends in html and, as the
       # document is EE-only, the attribute ee_only is set to true.
 ```

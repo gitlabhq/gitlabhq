@@ -85,7 +85,7 @@ User.create(params) # imagine the user submitted `admin=1`... :)
 User.create(declared(params, include_parent_namespaces: false).to_h)
 ```
 
->**Note:**
+NOTE: **Note:**
 `declared(params)` return a `Hashie::Mash` object, on which you will have to
 call `.to_h`.
 

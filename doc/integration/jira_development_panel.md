@@ -105,12 +105,11 @@ There are no special requirements if you are using GitLab.com.
    for all the projects in the GitLab group you specified in the previous step. These are refreshed
    every 60 minutes.
 
-   > **Note:**
-   > In the future, we plan on implementing real-time integration. If you need
-   > to refresh the data manually, you can do this from the `Applications -> DVCS
-   > accounts` screen where you initially set up the integration:
-   >
-   > ![Refresh GitLab information in Jira](img/jira_dev_panel_manual_refresh.png)
+   In the future, we plan on implementing real-time integration. If you need
+   to refresh the data manually, you can do this from the `Applications -> DVCS
+   accounts` screen where you initially set up the integration:
+
+   ![Refresh GitLab information in Jira](img/jira_dev_panel_manual_refresh.png)
 
 To connect additional GitLab projects from other GitLab top-level groups (or personal namespaces), repeat the above
 steps with additional Jira DVCS accounts.

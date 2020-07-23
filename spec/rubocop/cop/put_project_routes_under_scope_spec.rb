@@ -9,19 +9,20 @@ RSpec.describe RuboCop::Cop::PutProjectRoutesUnderScope, type: :rubocop do
 
   subject(:cop) { described_class.new }
 
-  before do
-    allow(cop).to receive(:in_project_routes?).and_return(true)
-  end
+  %w[resource resources get post put patch delete].each do |route_method|
+    it "registers an offense when route is outside scope for `#{route_method}`" do
+      offense = "#{route_method} :notes"
+      marker = '^' * offense.size
 
-  it 'registers an offense when route is outside scope' do
-    expect_offense(<<~PATTERN)
+      expect_offense(<<~PATTERN)
       scope '-' do
         resource :issues
       end
 
-      resource :notes
-      ^^^^^^^^^^^^^^^ Put new project routes under /-/ scope
-    PATTERN
+      #{offense}
+      #{marker} Put new project routes under /-/ scope
+      PATTERN
+    end
   end
 
   it 'does not register an offense when resource inside the scope' do

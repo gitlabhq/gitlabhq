@@ -2,9 +2,9 @@
 
 module QA
   RSpec.describe 'Monitor' do
-    describe 'with Prometheus in a Gitlab-managed cluster', :orchestrated, :kubernetes do
+    describe 'with Prometheus in a Gitlab-managed cluster', :orchestrated, :kubernetes, :requires_admin do
       before :all do
-        @cluster = Service::KubernetesCluster.new.create!
+        @cluster = Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::K3s).create!
         @project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'monitoring-project'
           project.auto_devops_enabled = true

@@ -40,3 +40,5 @@ class IssuePolicy < IssuablePolicy
     prevent :destroy_design
   end
 end
+
+IssuePolicy.prepend_if_ee('EE::IssuePolicy')

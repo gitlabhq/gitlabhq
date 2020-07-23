@@ -9,7 +9,16 @@
     "iid": "14",
     "title": "Create issue4",
     "createdAt": "2020-05-19T09:26:07Z",
-    "assignees": {}
+    "assignees": {
+      "nodes": [
+        {
+          "name": "Benjamin Braun",
+          "username": "kami.hegmann",
+          "avatarUrl": "https://invalid'",
+          "webUrl": "https://invalid"
+        }
+      ]
+    }
   },
   {
     "iid": "13",

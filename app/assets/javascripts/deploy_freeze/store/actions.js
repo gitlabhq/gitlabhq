@@ -64,6 +64,7 @@ export const fetchFreezePeriods = ({ dispatch, state }) => {
 export const setSelectedTimezone = ({ commit }, timezone) => {
   commit(types.SET_SELECTED_TIMEZONE, timezone);
 };
+
 export const setFreezeStartCron = ({ commit }, { freezeStartCron }) => {
   commit(types.SET_FREEZE_START_CRON, freezeStartCron);
 };

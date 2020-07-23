@@ -1228,7 +1228,7 @@ PUT /projects/:id
 | `only_mirror_protected_branches` | boolean | no | **(STARTER)** Only mirror protected branches |
 | `mirror_overwrites_diverged_branches` | boolean | no | **(STARTER)** Pull mirror overwrites diverged branches |
 | `packages_enabled` | boolean | no | Enable or disable packages repository feature |
-| `service_desk_enabled` | boolean | no | Enable or disable service desk feature |
+| `service_desk_enabled` | boolean | no | Enable or disable Service Desk feature |
 
 NOTE: **Note:**
 If your HTTP repository is not publicly accessible,
@@ -1258,7 +1258,7 @@ POST /projects/:id/fork
 
 ## List Forks of a project
 
->**Note:** This feature was introduced in GitLab 10.1
+> Introduced in GitLab 10.1.
 
 List the projects accessible to the calling user that have an established, forked relationship with the specified project
 

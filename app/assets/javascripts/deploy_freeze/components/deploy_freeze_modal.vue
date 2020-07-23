@@ -4,7 +4,7 @@ import { mapActions, mapState } from 'vuex';
 import { mapComputed } from '~/vuex_shared/bindings';
 import { __ } from '~/locale';
 import { MODAL_ID } from '../constants';
-import DeployFreezeTimezoneDropdown from './deploy_freeze_timezone_dropdown.vue';
+import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
 import { isValidCron } from 'cron-validator';
 
 export default {
@@ -14,7 +14,7 @@ export default {
     GlModal,
     GlSprintf,
     GlLink,
-    DeployFreezeTimezoneDropdown,
+    TimezoneDropdown,
   },
   modalOptions: {
     ref: 'modal',
@@ -39,7 +39,6 @@ export default {
       'timezoneData',
       'freezeStartCron',
       'freezeEndCron',
-      'selectedTimezone',
     ]),
     ...mapComputed([
       { key: 'freezeStartCron', updateFn: 'setFreezeStartCron' },
@@ -70,6 +69,14 @@ export default {
     },
     freezeEndCronState() {
       return Boolean(!this.freezeEndCron || isValidCron(this.freezeEndCron));
+    },
+    timezone: {
+      get() {
+        return this.selectedTimezone;
+      },
+      set(selectedTimezone) {
+        this.setSelectedTimezone(selectedTimezone);
+      },
     },
   },
   methods: {
@@ -137,11 +144,7 @@ export default {
     </gl-form-group>
 
     <gl-form-group :label="__('Cron time zone')" label-for="cron-time-zone-dropdown">
-      <deploy-freeze-timezone-dropdown
-        :timezone-data="timezoneData"
-        :value="selectedTimezone"
-        @selectTimezone="setSelectedTimezone"
-      />
+      <timezone-dropdown v-model="timezone" :timezone-data="timezoneData" />
     </gl-form-group>
   </gl-modal>
 </template>

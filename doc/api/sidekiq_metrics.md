@@ -1,6 +1,6 @@
 # Sidekiq Metrics API
 
->**Note:** This endpoint is only available on GitLab 8.9 and above.
+> Introduced in GitLab 8.9.
 
 This API endpoint allows you to retrieve some information about the current state
 of Sidekiq, its jobs, queues, and processes.

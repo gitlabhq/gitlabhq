@@ -1,6 +1,6 @@
 # Migration guide from Git Annex to Git LFS
 
->**Note:**
+NOTE: **Note:**
 Git Annex support [has been removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1648) in GitLab Enterprise
 Edition 9.0 (2017/03/22).
 
@@ -30,7 +30,7 @@ ones that GitLab developed.
 
 ## Migration steps
 
->**Note:**
+NOTE: **Note:**
 Since Git Annex files are stored in a sub-directory of the normal repositories
 (`.git/annex/objects`) and LFS files are stored outside of the repositories,
 they are not compatible as they are using a different scheme. Therefore, the

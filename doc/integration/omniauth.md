@@ -43,9 +43,9 @@ contains some settings that are common for all providers.
 Before configuring individual OmniAuth providers there are a few global settings
 that are in common for all providers that we need to consider.
 
-> **NOTE:**
-> Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
-> earlier version, you'll need to explicitly enable it.
+NOTE: **Note:**
+Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
+earlier version, you'll need to explicitly enable it.
 
 - `allow_single_sign_on` allows you to specify the providers you want to allow to
   automatically create an account. It defaults to `false`. If `false` users must
@@ -57,16 +57,16 @@ that are in common for all providers that we need to consider.
   be blocked by default and will have to be unblocked by an administrator before
   they are able to sign in.
 
-> **Note:**
-> If you set `block_auto_created_users` to `false`, make sure to only
-> define providers under `allow_single_sign_on` that you are able to control, like
-> SAML, Shibboleth, Crowd or Google, or set it to `false` otherwise any user on
-> the Internet will be able to successfully sign in to your GitLab without
-> administrative approval.
->
-> **Note:**
-> `auto_link_ldap_user` requires the `uid` of the user to be the same in both LDAP
-> and the OmniAuth provider.
+NOTE: **Note:**
+If you set `block_auto_created_users` to `false`, make sure to only
+define providers under `allow_single_sign_on` that you are able to control, like
+SAML, Shibboleth, Crowd or Google, or set it to `false` otherwise any user on
+the Internet will be able to successfully sign in to your GitLab without
+administrative approval.
+
+NOTE: **Note:**
+`auto_link_ldap_user` requires the `uid` of the user to be the same in both LDAP
+and the OmniAuth provider.
 
 To change these settings:
 
@@ -142,8 +142,7 @@ The chosen OmniAuth provider is now active and can be used to sign in to GitLab 
 
 ## Configure OmniAuth Providers as External
 
->**Note:**
-This setting was introduced with version 8.7 of GitLab
+> Introduced in GitLab 8.7.
 
 You can define which OmniAuth providers you want to be `external` so that all users
 **creating accounts, or logging in via these providers** will not be able to have
@@ -151,7 +150,7 @@ access to internal projects. You will need to use the full name of the provider,
 like `google_oauth2` for Google. Refer to the examples for the full names of the
 supported providers.
 
->**Note:**
+NOTE: **Note:**
 If you decide to remove an OmniAuth provider from the external providers list
 you will need to manually update the users that use this method to login, if you
 want their accounts to be upgraded to full internal accounts.
@@ -171,7 +170,7 @@ omniauth:
 
 ## Using Custom OmniAuth Providers
 
->**Note:**
+NOTE: **Note:**
 The following information only applies for installations from source.
 
 GitLab uses [OmniAuth](https://github.com/omniauth/omniauth) for authentication and already ships
@@ -224,12 +223,11 @@ we'd like to at least help those with specific needs.
 
 ## Enable or disable Sign In with an OmniAuth provider without disabling import sources
 
->**Note:**
-This setting was introduced with version 8.8 of GitLab.
+> Introduced in GitLab 8.8.
 
 Administrators are able to enable or disable Sign In via some OmniAuth providers.
 
->**Note:**
+NOTE: **Note:**
 By default Sign In is enabled via all the OAuth Providers that have been configured in `config/gitlab.yml`.
 
 In order to enable/disable an OmniAuth provider, go to Admin Area -> Settings -> Sign-in Restrictions section -> Enabled OAuth Sign-In sources and select the providers you want to enable or disable.

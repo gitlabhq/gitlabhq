@@ -242,7 +242,7 @@ After you click on the image, a comment form will be displayed that would be the
 of your thread. Once you save your comment, you will see a new badge displayed on
 top of your image. This badge represents your thread.
 
->**Note:**
+NOTE: **Note:**
 This thread badge is typically associated with a number that is only used as a visual
 reference for each thread. In the merge request thread tab,
 this badge will be indicated with a comment icon since each thread will render a new

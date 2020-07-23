@@ -28,6 +28,12 @@ export default {
     dragging() {
       return this.dragCounter !== 0;
     },
+    iconStyles() {
+      return {
+        size: this.hasDesigns ? 24 : 16,
+        class: this.hasDesigns ? 'gl-mb-2' : 'gl-mr-3 gl-text-gray-700',
+      };
+    },
   },
   methods: {
     isValidUpload(files) {
@@ -90,7 +96,7 @@ export default {
           class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center"
           data-testid="dropzone-area"
         >
-          <gl-icon name="upload" :size="24" :class="hasDesigns ? 'gl-mb-2' : 'gl-mr-4'" />
+          <gl-icon name="upload" :size="iconStyles.size" :class="iconStyles.class" />
           <p class="gl-font-weight-bold gl-mb-0">
             <gl-sprintf :message="__('Drop or %{linkStart}upload%{linkEnd} Designs to attach')">
               <template #link="{ content }">

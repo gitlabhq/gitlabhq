@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlAlert, GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlTable, GlAvatar } from '@gitlab/ui';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { I18N } from '~/incidents/constants';
@@ -13,6 +13,7 @@ describe('Incidents List', () => {
   const findAlert = () => wrapper.find(GlAlert);
   const findLoader = () => wrapper.find(GlLoadingIcon);
   const findTimeAgo = () => wrapper.findAll(TimeAgoTooltip);
+  const findAssingees = () => wrapper.findAll('[data-testid="incident-assignees"]');
 
   function mountComponent({ data = { incidents: [] }, loading = false }) {
     wrapper = mount(IncidentsList, {
@@ -30,6 +31,9 @@ describe('Incidents List', () => {
       },
       provide: {
         projectPath: '/project/path',
+      },
+      stubs: {
+        GlAvatar: true,
       },
     });
   }
@@ -79,6 +83,28 @@ describe('Incidents List', () => {
 
     it('renders a createdAt with timeAgo component per row', () => {
       expect(findTimeAgo().length).toBe(mockIncidents.length);
+    });
+
+    describe('Assignees', () => {
+      it('shows Unassigned when there are no assignees', () => {
+        expect(
+          findAssingees()
+            .at(0)
+            .text(),
+        ).toBe(I18N.unassigned);
+      });
+
+      it('renders an avatar component when there is an assignee', () => {
+        const avatar = findAssingees()
+          .at(1)
+          .find(GlAvatar);
+        const { src, label } = avatar.attributes();
+        const { name, avatarUrl } = mockIncidents[1].assignees.nodes[0];
+
+        expect(avatar.exists()).toBe(true);
+        expect(label).toBe(name);
+        expect(src).toBe(avatarUrl);
+      });
     });
   });
 });

@@ -2,7 +2,7 @@ import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlButton, GlModal } from '@gitlab/ui';
 import DeployFreezeModal from '~/deploy_freeze/components/deploy_freeze_modal.vue';
-import DeployFreezeTimezoneDropdown from '~/deploy_freeze/components/deploy_freeze_timezone_dropdown.vue';
+import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
 import createStore from '~/deploy_freeze/store';
 import { mockDeployFreezePayload, mockTimezoneData } from '../mock_data';
 
@@ -41,7 +41,7 @@ describe('Deploy freeze modal', () => {
 
     wrapper.find('#deploy-freeze-start').trigger('input');
     wrapper.find('#deploy-freeze-end').trigger('input');
-    wrapper.find(DeployFreezeTimezoneDropdown).trigger('input');
+    wrapper.find(TimezoneDropdown).trigger('input');
   };
 
   afterEach(() => {

@@ -13,7 +13,7 @@ according to your intended website's URL.
 
 ## GitLab Pages default domain names
 
->**Note:**
+NOTE: **Note:**
 If you use your own GitLab instance to deploy your
 site with GitLab Pages, check with your sysadmin what's your
 Pages wildcard domain. This guide is valid for any GitLab instance,

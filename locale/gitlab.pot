@@ -19557,6 +19557,9 @@ msgstr ""
 msgid "Related Merged Requests"
 msgstr ""
 
+msgid "Related issues"
+msgstr ""
+
 msgid "Related merge requests"
 msgstr ""
 
@@ -26443,6 +26446,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Confirmed %{timeago} by %{user}"
 msgstr ""
 
+msgid "VulnerabilityManagement|Could not process %{issueReference}: %{errorMessage}."
+msgstr ""
+
 msgid "VulnerabilityManagement|Detected %{timeago} in pipeline %{pipelineLink}"
 msgstr ""
 
@@ -26470,6 +26476,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Something went wrong while trying to save the comment. Please try again later."
 msgstr ""
 
+msgid "VulnerabilityManagement|Something went wrong while trying to unlink the issue. Please try again later."
+msgstr ""
+
 msgid "VulnerabilityManagement|Something went wrong, could not create an issue."
 msgstr ""
 
@@ -26483,6 +26492,9 @@ msgid "VulnerabilityManagement|Verified as fixed or mitigated"
 msgstr ""
 
 msgid "VulnerabilityManagement|Will not fix or a false-positive"
+msgstr ""
+
+msgid "VulnerabilityManagement|invalid issue link or ID"
 msgstr ""
 
 msgid "VulnerabilityStatusTypes|All"
@@ -28451,6 +28463,9 @@ msgstr ""
 msgid "mrWidget|Are you adding technical debt or code vulnerabilities?"
 msgstr ""
 
+msgid "mrWidget|Before this can be merged, one or more threads must be resolved."
+msgstr ""
+
 msgid "mrWidget|Cancel automatic merge"
 msgstr ""
 
@@ -28473,9 +28488,6 @@ msgid "mrWidget|Closed by"
 msgstr ""
 
 msgid "mrWidget|Closes"
-msgstr ""
-
-msgid "mrWidget|Create an issue to resolve them later"
 msgstr ""
 
 msgid "mrWidget|Delete source branch"
@@ -28509,6 +28521,9 @@ msgid "mrWidget|If the %{missingBranchName} branch exists in your local reposito
 msgstr ""
 
 msgid "mrWidget|In the merge train at position %{mergeTrainPosition}"
+msgstr ""
+
+msgid "mrWidget|Jump to first unresolved thread"
 msgstr ""
 
 msgid "mrWidget|Loading deployment statistics"
@@ -28574,6 +28589,9 @@ msgstr ""
 msgid "mrWidget|Request to merge"
 msgstr ""
 
+msgid "mrWidget|Resolve all threads in new issue"
+msgstr ""
+
 msgid "mrWidget|Resolve conflicts"
 msgstr ""
 
@@ -28623,9 +28641,6 @@ msgid "mrWidget|The source branch will not be deleted"
 msgstr ""
 
 msgid "mrWidget|There are merge conflicts"
-msgstr ""
-
-msgid "mrWidget|There are unresolved threads. Please resolve these threads"
 msgstr ""
 
 msgid "mrWidget|This feature merges changes from the target branch to the source branch. You cannot use this feature since the source branch is protected."

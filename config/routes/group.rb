@@ -5,23 +5,27 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         controller: :groups,
         constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom|ics)/ }) do
     scope(path: '-') do
-      get :edit, as: :edit_group
-      get :issues, as: :issues_group_calendar, action: :issues_calendar, constraints: lambda { |req| req.format == :ics }
-      get :issues, as: :issues_group
-      get :merge_requests, as: :merge_requests_group
-      get :projects, as: :projects_group
-      get :details, as: :details_group
-      get :activity, as: :activity_group
-      put :transfer, as: :transfer_group
-      post :export, as: :export_group
-      get :download_export, as: :download_export_group
+      # These routes are legit and the cop rule will be improved in
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/230703
+      get :edit, as: :edit_group # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get :issues, as: :issues_group_calendar, action: :issues_calendar, constraints: lambda { |req| req.format == :ics } # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get :issues, as: :issues_group # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get :merge_requests, as: :merge_requests_group # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get :projects, as: :projects_group # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get :details, as: :details_group # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get :activity, as: :activity_group # rubocop:disable Cop/PutGroupRoutesUnderScope
+      put :transfer, as: :transfer_group # rubocop:disable Cop/PutGroupRoutesUnderScope
+      post :export, as: :export_group # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get :download_export, as: :download_export_group # rubocop:disable Cop/PutGroupRoutesUnderScope
 
       # TODO: Remove as part of refactor in https://gitlab.com/gitlab-org/gitlab-foss/issues/49693
-      get 'shared', action: :show, as: :group_shared
-      get 'archived', action: :show, as: :group_archived
+      get 'shared', action: :show, as: :group_shared # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get 'archived', action: :show, as: :group_archived # rubocop:disable Cop/PutGroupRoutesUnderScope
     end
 
-    get '/', action: :show, as: :group_canonical
+    # These routes are legit and the cop rule will be improved in
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/230703
+    get '/', action: :show, as: :group_canonical # rubocop:disable Cop/PutGroupRoutesUnderScope
   end
 
   scope(path: 'groups/*group_id/-',
@@ -106,9 +110,11 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         as: :group,
         constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ },
         controller: :groups) do
-    get '/', action: :show
-    patch '/', action: :update
-    put '/', action: :update
-    delete '/', action: :destroy
+    # These routes are legit and the cop rule will be improved in
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/230703
+    get '/', action: :show # rubocop:disable Cop/PutGroupRoutesUnderScope
+    patch '/', action: :update # rubocop:disable Cop/PutGroupRoutesUnderScope
+    put '/', action: :update # rubocop:disable Cop/PutGroupRoutesUnderScope
+    delete '/', action: :destroy # rubocop:disable Cop/PutGroupRoutesUnderScope
   end
 end

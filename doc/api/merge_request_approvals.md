@@ -392,8 +392,10 @@ DELETE /projects/:id/approval_rules/:approval_rule_id
 
 ### Change allowed approvers
 
->**Note:** This API endpoint has been deprecated. Please use Approval Rule API instead.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/183) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
+
+NOTE: **Note:**
+This API endpoint has been deprecated. Please use Approval Rule API instead.
 
 If you are allowed to, you can change approvers and approver groups using
 the following endpoint:
@@ -541,8 +543,10 @@ POST /projects/:id/merge_requests/:merge_request_iid/approvals
 
 ### Change allowed approvers for Merge Request
 
->**Note:** This API endpoint has been deprecated. Please use Approval Rule API instead.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/183) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
+
+NOTE: **Note:**
+This API endpoint has been deprecated. Please use Approval Rule API instead.
 
 If you are allowed to, you can change approvers and approver groups using
 the following endpoint:

@@ -1,7 +1,9 @@
 /* global Mousetrap */
 import 'mousetrap';
+import Vue from 'vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import DiscussionKeyboardNavigator from '~/notes/components/discussion_keyboard_navigator.vue';
+import eventHub from '~/notes/event_hub';
 
 describe('notes/components/discussion_keyboard_navigator', () => {
   const localVue = createLocalVue();
@@ -29,8 +31,27 @@ describe('notes/components/discussion_keyboard_navigator', () => {
   });
 
   afterEach(() => {
-    wrapper.destroy();
+    if (wrapper) {
+      wrapper.destroy();
+    }
     wrapper = null;
+  });
+
+  describe('on create', () => {
+    let onSpy;
+    let vm;
+
+    beforeEach(() => {
+      onSpy = jest.spyOn(eventHub, '$on');
+      vm = new (Vue.extend(DiscussionKeyboardNavigator))();
+    });
+
+    it('listens for jumpToFirstUnresolvedDiscussion events', () => {
+      expect(onSpy).toHaveBeenCalledWith(
+        'jumpToFirstUnresolvedDiscussion',
+        vm.jumpToFirstUnresolvedDiscussion,
+      );
+    });
   });
 
   describe('on mount', () => {
@@ -52,10 +73,15 @@ describe('notes/components/discussion_keyboard_navigator', () => {
   });
 
   describe('on destroy', () => {
+    let jumpFn;
+
     beforeEach(() => {
       jest.spyOn(Mousetrap, 'unbind');
+      jest.spyOn(eventHub, '$off');
 
       createComponent();
+
+      jumpFn = wrapper.vm.jumpToFirstUnresolvedDiscussion;
 
       wrapper.destroy();
     });
@@ -63,6 +89,10 @@ describe('notes/components/discussion_keyboard_navigator', () => {
     it('unbinds keys', () => {
       expect(Mousetrap.unbind).toHaveBeenCalledWith('n');
       expect(Mousetrap.unbind).toHaveBeenCalledWith('p');
+    });
+
+    it('unbinds event hub listeners', () => {
+      expect(eventHub.$off).toHaveBeenCalledWith('jumpToFirstUnresolvedDiscussion', jumpFn);
     });
 
     it('does not call jumpToNextDiscussion when pressing `n`', () => {

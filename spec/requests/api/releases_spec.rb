@@ -420,7 +420,17 @@ RSpec.describe API::Releases do
       {
         name: 'New release',
         tag_name: 'v0.1',
-        description: 'Super nice release'
+        description: 'Super nice release',
+        assets: {
+          links: [
+            {
+              name: 'An example runbook link',
+              url: 'https://example.com/runbook',
+              link_type: 'runbook',
+              filepath: '/permanent/path/to/runbook'
+            }
+          ]
+        }
       }
     end
 
@@ -435,9 +445,17 @@ RSpec.describe API::Releases do
         post api("/projects/#{project.id}/releases", maintainer), params: params
       end.to change { Release.count }.by(1)
 
-      expect(project.releases.last.name).to eq('New release')
-      expect(project.releases.last.tag).to eq('v0.1')
-      expect(project.releases.last.description).to eq('Super nice release')
+      release = project.releases.last
+
+      aggregate_failures do
+        expect(release.name).to eq('New release')
+        expect(release.tag).to eq('v0.1')
+        expect(release.description).to eq('Super nice release')
+        expect(release.links.last.name).to eq('An example runbook link')
+        expect(release.links.last.url).to eq('https://example.com/runbook')
+        expect(release.links.last.link_type).to eq('runbook')
+        expect(release.links.last.filepath).to eq('/permanent/path/to/runbook')
+      end
     end
 
     it 'creates a new release without description' do

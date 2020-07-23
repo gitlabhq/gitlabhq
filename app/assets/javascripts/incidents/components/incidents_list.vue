@@ -1,5 +1,13 @@
 <script>
-import { GlLoadingIcon, GlTable, GlAlert } from '@gitlab/ui';
+import {
+  GlLoadingIcon,
+  GlTable,
+  GlAlert,
+  GlAvatarsInline,
+  GlAvatarLink,
+  GlAvatar,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__ } from '~/locale';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
@@ -37,7 +45,13 @@ export default {
     GlLoadingIcon,
     GlTable,
     GlAlert,
+    GlAvatarsInline,
+    GlAvatarLink,
+    GlAvatar,
     TimeAgoTooltip,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: ['projectPath'],
   apollo: {
@@ -78,10 +92,8 @@ export default {
     },
   },
   methods: {
-    getAssignees(assignees) {
-      return assignees.nodes?.length > 0
-        ? assignees.nodes[0]?.username
-        : s__('IncidentManagement|Unassigned');
+    hasAssignees(assignees) {
+      return Boolean(assignees.nodes?.length);
     },
   },
 };
@@ -114,8 +126,32 @@ export default {
       </template>
 
       <template #cell(assignees)="{ item }">
-        <div class="gl-max-w-full text-truncate" data-testid="assigneesField">
-          {{ getAssignees(item.assignees) }}
+        <div data-testid="incident-assignees">
+          <template v-if="hasAssignees(item.assignees)">
+            <gl-avatars-inline
+              :avatars="item.assignees.nodes"
+              :collapsed="true"
+              :max-visible="4"
+              :avatar-size="24"
+              badge-tooltip-prop="name"
+              :badge-tooltip-max-chars="100"
+            >
+              <template #avatar="{ avatar }">
+                <gl-avatar-link
+                  :key="avatar.username"
+                  v-gl-tooltip
+                  target="_blank"
+                  :href="avatar.webUrl"
+                  :title="avatar.name"
+                >
+                  <gl-avatar :src="avatar.avatarUrl" :label="avatar.name" :size="24" />
+                </gl-avatar-link>
+              </template>
+            </gl-avatars-inline>
+          </template>
+          <template v-else>
+            {{ $options.i18n.unassigned }}
+          </template>
         </div>
       </template>
 

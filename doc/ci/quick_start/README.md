@@ -82,7 +82,7 @@ blog about it](https://about.gitlab.com/blog/2015/05/06/why-were-replacing-gitla
 
 ### Creating a simple `.gitlab-ci.yml` file
 
->**Note:**
+NOTE: **Note:**
 `.gitlab-ci.yml` is a [YAML](https://en.wikipedia.org/wiki/YAML) file
 so you have to pay extra attention to indentation. Always use spaces, not tabs.
 

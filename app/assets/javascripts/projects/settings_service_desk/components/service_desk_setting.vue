@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedButton, GlFormSelect, GlToggle, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlFormSelect, GlToggle, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -13,7 +13,7 @@ export default {
   },
   components: {
     ClipboardButton,
-    GlDeprecatedButton,
+    GlButton,
     GlFormSelect,
     GlToggle,
     GlLoadingIcon,
@@ -157,12 +157,14 @@ export default {
             }}
           </span>
         </template>
-        <gl-deprecated-button
+        <gl-button
           variant="success"
+          class="gl-mt-5"
           :disabled="isTemplateSaving"
           @click="onSaveTemplate"
-          >{{ __('Save template') }}</gl-deprecated-button
         >
+          {{ __('Save template') }}
+        </gl-button>
       </div>
     </div>
   </div>

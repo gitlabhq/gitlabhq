@@ -1,6 +1,7 @@
 # Services API
 
->**Note:** This API requires an access token with Maintainer or Owner permissions
+NOTE: **Note:**
+This API requires an access token with Maintainer or Owner permissions
 
 ## List all active services
 
@@ -636,9 +637,9 @@ GET /projects/:id/services/github
 
 ## Hangouts Chat
 
-Google GSuite team collaboration tool.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20290) in GitLab 11.2.
 
->**Note:** This service was [introduced in v11.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20290)
+Google GSuite team collaboration tool.
 
 ### Create/Edit Hangouts Chat service
 
@@ -648,7 +649,8 @@ Set Hangouts Chat service for a project.
 PUT /projects/:id/services/hangouts-chat
 ```
 
->**Note:** Specific event parameters (for example, `push_events` flag) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
+NOTE: **Note:**
+Specific event parameters (for example, `push_events` flag) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
 
 Parameters:
 
@@ -1151,7 +1153,8 @@ Set Slack service for a project.
 PUT /projects/:id/services/slack
 ```
 
->**Note:** Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
+NOTE: **Note:**
+Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
 
 Parameters:
 
@@ -1260,7 +1263,8 @@ Set Mattermost service for a project.
 PUT /projects/:id/services/mattermost
 ```
 
->**Note:** Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
+NOTE: **Note:**
+Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
 
 Parameters:
 

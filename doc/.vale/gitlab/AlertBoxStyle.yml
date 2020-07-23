@@ -5,7 +5,7 @@
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
-message: 'Alert box "%s" must use the formatting detailed in the documentation style guide.'
+message: 'Alert box "%s" must use the formatting in the style guide.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#alert-boxes
 level: error
 scope: raw
@@ -13,4 +13,4 @@ raw:
   - '((NOTE|TIP|CAUTION|DANGER): \*\*[^:]*\*\*)|'
   - '((NOTE: \*\*(NOTE|note):\*\*)|(TIP: \*\*(TIP|tip):\*\*)|(CAUTION: \*\*(CAUTION|caution):\*\*)|(DANGER: \*\*(DANGER|danger):\*\*))|'
   - '((NOTE|TIP|CAUTION|DANGER): \*\*.*\*\*.+)|'
-  - '((\n[ ]*(\*){1,2}(NOTE|Note|note|TIP|Tip|tip|CAUTION|Caution|caution|DANGER|Danger|danger):(\*){1,2})'
+  - '((\n[> ]*(\*){1,2}(NOTE|Note|note|TIP|Tip|tip|CAUTION|Caution|caution|DANGER|Danger|danger):(\*){1,2}))'

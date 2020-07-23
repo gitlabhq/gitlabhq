@@ -266,11 +266,11 @@ One option is to use continuous integration (CI) to merge in `master` at the sta
 Another option is to only merge in from well-defined points in time, for example, a tagged release.
 You could also use [feature toggles](https://martinfowler.com/bliki/FeatureToggle.html) to hide incomplete features so you can still merge back into `master` every day.
 
-> **Note:** Don't confuse automatic branch testing with continuous integration.
-> Martin Fowler makes this distinction in [his article about feature branches](https://martinfowler.com/bliki/FeatureBranch.html):
->
-> "I've heard people say they are doing CI because they are running builds, perhaps using a CI server, on every branch with every commit.
-> That's continuous building, and a Good Thing, but there's no *integration*, so it's not CI."
+NOTE: **Note:**
+Don't confuse automatic branch testing with continuous integration.
+Martin Fowler makes this distinction in [his article about feature branches](https://martinfowler.com/bliki/FeatureBranch.html):
+"I've heard people say they are doing CI because they are running builds, perhaps using a CI server, on every branch with every commit.
+That's continuous building, and a Good Thing, but there's no *integration*, so it's not CI."
 
 In conclusion, you should try to prevent merge commits, but not eliminate them.
 Your codebase should be clean, but your history should represent what actually happened.

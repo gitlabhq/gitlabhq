@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Pages administration for source installations
 
->**Note:**
+NOTE: **Note:**
 Before attempting to enable GitLab Pages, first make sure you have
 [installed GitLab](../../install/installation.md) successfully.
 
@@ -77,7 +77,7 @@ host that GitLab runs. For example, an entry would look like this:
 where `example.io` is the domain under which GitLab Pages will be served
 and `192.0.2.1` is the IP address of your GitLab instance.
 
-> **Note:**
+NOTE: **Note:**
 You should not use the GitLab domain to serve user pages. For more information
 see the [security section](#security).
 
@@ -349,7 +349,7 @@ world. Custom domains and TLS are supported.
 
 ## NGINX caveats
 
->**Note:**
+NOTE: **Note:**
 The following information applies only for installations from source.
 
 Be extra careful when setting up the domain name in the NGINX configuration. You must

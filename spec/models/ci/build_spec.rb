@@ -1195,18 +1195,6 @@ RSpec.describe Ci::Build do
 
             is_expected.to eq('review/host')
           end
-
-          context 'when ci_persisted_expanded_environment_name feature flag is disabled' do
-            before do
-              stub_feature_flags(ci_persisted_expanded_environment_name: false)
-            end
-
-            it 'returns an expanded environment name with a list of variables' do
-              expect(build).to receive(:simple_variables).once.and_call_original
-
-              is_expected.to eq('review/host')
-            end
-          end
         end
       end
 
@@ -2009,23 +1997,13 @@ RSpec.describe Ci::Build do
       it { is_expected.to be_nil }
     end
 
-    context 'when build has a start environment' do
-      let(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
-
-      it 'does not expand environment name' do
-        expect(build).not_to receive(:expanded_environment_name)
-
-        subject
-      end
-    end
-
     context 'when build has a stop environment' do
-      let(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline, environment: "foo-#{project.default_branch}") }
 
       it 'expands environment name' do
-        expect(build).to receive(:expanded_environment_name)
+        expect(build).to receive(:expanded_environment_name).and_call_original
 
-        subject
+        is_expected.to eq(environment)
       end
     end
   end

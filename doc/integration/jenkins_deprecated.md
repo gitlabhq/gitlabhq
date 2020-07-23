@@ -1,6 +1,7 @@
 # Jenkins CI (deprecated) service
 
->**Note:** In GitLab 8.3, Jenkins integration using the
+NOTE: **Note:**
+In GitLab 8.3, Jenkins integration using the
 [GitLab Hook Plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Hook+Plugin)
 was deprecated in favor of the
 [GitLab Plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Plugin).

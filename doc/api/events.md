@@ -255,7 +255,8 @@ Example response:
 
 ## List a Project's visible events
 
->**Note:** This endpoint has been around longer than the others. Documentation was formerly located in the [Projects API pages](projects.md).
+NOTE: **Note:**
+This endpoint has been around longer than the others. Documentation was formerly located in the [Projects API pages](projects.md).
 
 Get a list of visible events for a particular project.
 

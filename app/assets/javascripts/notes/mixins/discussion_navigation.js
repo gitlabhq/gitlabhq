@@ -113,6 +113,14 @@ export default {
       handleDiscussionJump(this, this.previousUnresolvedDiscussionId);
     },
 
+    jumpToFirstUnresolvedDiscussion() {
+      this.setCurrentDiscussionId(null)
+        .then(() => {
+          this.jumpToNextDiscussion();
+        })
+        .catch(() => {});
+    },
+
     /**
      * Go to the next discussion from the given discussionId
      * @param {String} discussionId The id we are jumping from

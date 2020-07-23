@@ -89,7 +89,7 @@ This example uses NFS. We do not recommend using EFS for storage as it may impac
 
 1. [Restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
->**Note:**
+NOTE: **Note:**
 The [`gitlab_shell: repos_path` entry](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/8-9-stable/config/gitlab.yml.example#L457) in `gitlab.yml` will be
 deprecated and replaced by `repositories: storages` in the future, so if you
 are upgrading from a version prior to 8.10, make sure to add the configuration

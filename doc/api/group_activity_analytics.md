@@ -1,6 +1,6 @@
 # Group Activity Analytics API
 
-> **Note:** This feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26460) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26460) in GitLab 12.9.
 
 ## Get count of recently created issues for group
 

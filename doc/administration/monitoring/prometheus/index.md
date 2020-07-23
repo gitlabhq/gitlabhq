@@ -227,7 +227,7 @@ To use an external Prometheus server:
 
 You can visit `http://localhost:9090` for the dashboard that Prometheus offers by default.
 
->**Note:**
+NOTE: **Note:**
 If SSL has been enabled on your GitLab instance, you may not be able to access
 Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security). We plan to
 [provide access via GitLab](https://gitlab.com/gitlab-org/multi-user-prometheus), but in the interim there are

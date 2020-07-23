@@ -104,7 +104,7 @@ RSpec.describe IssuePolicy do
       end
 
       it 'does not allow issue author to read or update confidential issue moved to an private project' do
-        confidential_issue.project = build(:project, :private)
+        confidential_issue.project = create(:project, :private)
 
         expect(permissions(author, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue)
       end
@@ -117,7 +117,7 @@ RSpec.describe IssuePolicy do
       end
 
       it 'does not allow issue assignees to read or update confidential issue moved to an private project' do
-        confidential_issue.project = build(:project, :private)
+        confidential_issue.project = create(:project, :private)
 
         expect(permissions(assignee, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue)
       end

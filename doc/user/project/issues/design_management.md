@@ -110,7 +110,7 @@ instead of directly on the issue description.
 To upload Design images, drag files from your computer and drop them in the Design Management section,
 or click **upload** to select images from your file browser:
 
-![Designs empty state](img/design_management_upload_v13.2.png)
+![Designs empty state](img/design_management_upload_v13.3.png)
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9,
 you can drag and drop designs onto the dedicated drop zone to upload them.

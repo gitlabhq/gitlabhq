@@ -46,7 +46,8 @@ system note in the issue's comments.
 
 ## Indications of a confidential issue
 
->**Note:** If you don't have [enough permissions](#permissions-and-access-to-confidential-issues),
+NOTE: **Note:**
+If you don't have [enough permissions](#permissions-and-access-to-confidential-issues),
 you won't be able to see the confidential issues at all.
 
 There are a few things that visually separate a confidential issue from a

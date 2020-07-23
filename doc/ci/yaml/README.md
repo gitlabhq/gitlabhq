@@ -305,18 +305,50 @@ To define your own `workflow: rules`, the configuration options currently availa
 - [`if`](#rulesif): Define a rule.
 - [`when`](#when): May be set to `always` or `never` only. If not provided, the default value is `always`​.
 
-The list of `if` rules is evaluated until a single one is matched. If none
-match, the last `when` will be used:
+If a pipeline attempts to run but matches no rule, it's dropped and doesn't run.
+
+For example, with the following configuration, pipelines run for all `push` events (changes to
+branches and new tags) as long as they *don't* have `-wip` in the commit message. Scheduled
+pipelines and merge request pipelines don't run, as there's no rule allowing them.
 
 ```yaml
 workflow:
   rules:
     - if: $CI_COMMIT_REF_NAME =~ /-wip$/
       when: never
-    - if: $CI_COMMIT_TAG
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+```
+
+This example has strict rules, and no other pipelines can run.
+
+Alternatively, you can have loose rules by using only `when: never` rules, followed
+by a final `when: always` rule. This allows all types of pipelines, except for any
+that match the `when: never` rules:
+
+```yaml
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "push"'
       when: never
     - when: always
 ```
+
+This example never allows pipelines for schedules or `push` (branches and tags) pipelines,
+but does allow pipelines in **all** other cases, *including* merge request pipelines.
+
+As with `rules` defined in jobs, be careful not to use a configuration that allows
+merge request pipelines and branch pipelines to run at the same time, or you could
+have [duplicate pipelines](#differences-between-rules-and-onlyexcept).
+
+Useful workflow rules clauses:
+
+| Clause                                                                    | Details                                                                                       |
+|---------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'`                      | Allow or block merge request pipelines.                                                        |
+| `if: '$CI_PIPELINE_SOURCE == "push"'`                                     | Allow or block both branch pipelines and tag pipelines.                                        |
+| `if: $CI_COMMIT_BEFORE_SHA == '0000000000000000000000000000000000000000'` | Allow or block pipeline creation when new branches are created or pushed with no commits. |
 
 #### `workflow:rules` templates
 

@@ -1,6 +1,6 @@
 # Group and project access requests API
 
- >**Note:** This feature was introduced in GitLab 8.11
+> Introduced in GitLab 8.11.
 
 ## Valid access levels
 

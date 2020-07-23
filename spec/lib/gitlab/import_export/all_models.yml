@@ -46,6 +46,7 @@ issues:
 - system_note_metadata
 - alert_management_alert
 - status_page_published_incident
+- namespace
 events:
 - author
 - project

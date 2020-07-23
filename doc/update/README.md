@@ -200,7 +200,7 @@ Below you can find some guides to help you change editions easily.
 
 ### Community to Enterprise Edition
 
->**Note:**
+NOTE: **Note:**
 The following guides are for subscribers of the Enterprise Edition only.
 
 If you wish to upgrade your GitLab installation from Community to Enterprise

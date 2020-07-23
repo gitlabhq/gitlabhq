@@ -107,6 +107,10 @@ module QA
         ENV['CI'] || ENV['CI_SERVER']
       end
 
+      def cluster_api_url
+        ENV['CLUSTER_API_URL']
+      end
+
       def qa_cookies
         ENV['QA_COOKIES'] && ENV['QA_COOKIES'].split(';')
       end

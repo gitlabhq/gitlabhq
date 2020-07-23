@@ -432,7 +432,7 @@ instance and project. In addition, all admins can use the admin interface under
 NOTE: **Note:**
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
->**Note:**
+NOTE: **Note:**
 GitLab 8.12 has a completely redesigned job permissions system.
 Read all about the [new model and its implications](project/new_ci_build_permissions_model.md).
 

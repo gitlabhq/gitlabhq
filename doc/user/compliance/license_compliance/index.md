@@ -64,6 +64,7 @@ The following languages and package managers are supported.
 
 NOTE: **Note:**
 Java 8 and Gradle 1.x projects are not supported.
+The minimum supported version of Maven is 3.2.5.
 
 ### Experimental support
 
@@ -99,10 +100,6 @@ For older versions of GitLab from 11.9 to 12.7, you must
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
 
-NOTE: **Note:**
-GitLab 13.0 removes the `License-Management.gitlab-ci.yml` template.
-Use `License-Scanning.gitlab-ci.yml` instead.
-
 Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
@@ -110,13 +107,12 @@ include:
   - template: Security/License-Scanning.gitlab-ci.yml
 ```
 
-The included template will create a `license_scanning` job in your CI/CD pipeline
-and scan your dependencies to find their licenses.
+The included template creates a `license_scanning` job in your CI/CD pipeline and scans your
+dependencies to find their licenses.
 
 NOTE: **Note:**
-Before GitLab 12.8, the `license_scanning` job was named `license_management`.
-GitLab 13.0 removes the `license_management` job,
-so you're advised to migrate to the `license_scanning` job and used the new
+Before GitLab 12.8, the `license_scanning` job was named `license_management`. GitLab 13.0 removes
+the `license_management` job, so you must migrate to the `license_scanning` job and use the new
 `License-Scanning.gitlab-ci.yml` template.
 
 The results will be saved as a

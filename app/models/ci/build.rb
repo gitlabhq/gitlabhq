@@ -73,8 +73,7 @@ module Ci
       return unless has_environment?
 
       strong_memoize(:persisted_environment) do
-        deployment&.environment ||
-          Environment.find_by(name: expanded_environment_name, project: project)
+        Environment.find_by(name: expanded_environment_name, project: project)
       end
     end
 
@@ -457,8 +456,7 @@ module Ci
       strong_memoize(:expanded_environment_name) do
         # We're using a persisted expanded environment name in order to avoid
         # variable expansion per request.
-        if Feature.enabled?(:ci_persisted_expanded_environment_name, project, default_enabled: true) &&
-          metadata&.expanded_environment_name.present?
+        if metadata&.expanded_environment_name.present?
           metadata.expanded_environment_name
         else
           ExpandVariables.expand(environment, -> { simple_variables })

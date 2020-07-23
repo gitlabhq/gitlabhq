@@ -1,0 +1,6 @@
+---
+title: Prompt to resolve unresolved threads on an MR is a button that jumps to the
+  first such thread
+merge_request: 36164
+author:
+type: added
