@@ -23,7 +23,7 @@ module Gitlab
             }
         end
 
-        if Gitlab::Database.postgresql_upcoming_deprecation?
+        if Gitlab::Database.postgresql_upcoming_deprecation? && Gitlab::Database.within_deprecation_notice_window?
           upcoming_deprecation = Gitlab::Database::UPCOMING_POSTGRES_VERSION_DETAILS
 
           notices <<

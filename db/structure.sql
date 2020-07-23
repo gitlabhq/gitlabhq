@@ -19852,6 +19852,8 @@ CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON public.pack
 
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON public.packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
 
+CREATE INDEX index_packages_package_files_on_file_store ON public.packages_package_files USING btree (file_store);
+
 CREATE INDEX index_packages_package_files_on_package_id_and_file_name ON public.packages_package_files USING btree (package_id, file_name);
 
 CREATE INDEX index_packages_packages_on_name_trigram ON public.packages_packages USING gin (name public.gin_trgm_ops);
@@ -23862,6 +23864,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200712235622
 20200713071042
 20200713152443
+20200715202659
 20200716044023
 20200716120419
 \.

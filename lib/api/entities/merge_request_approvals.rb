@@ -8,8 +8,7 @@ module API
       end
 
       expose :user_can_approve do |merge_request, options|
-        !merge_request.approved_by?(options[:current_user]) &&
-          options[:current_user].can?(:approve_merge_request, merge_request)
+        merge_request.can_be_approved_by?(options[:current_user])
       end
 
       expose :approved do |merge_request|

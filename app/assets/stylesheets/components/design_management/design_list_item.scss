@@ -1,3 +1,12 @@
+.designs-root {
+  border: 2px dashed transparent;
+  transition: border $gl-transition-duration-medium $general-hover-transition-curve;
+
+  &:hover {
+    border-color: $gray-100;
+  }
+}
+
 .design-list-item {
   height: 280px;
   text-decoration: none;

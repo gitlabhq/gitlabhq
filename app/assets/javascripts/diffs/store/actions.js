@@ -748,9 +748,11 @@ export const setCurrentDiffFileIdFromNote = ({ commit, rootGetters }, noteId) =>
 
   if (!note) return;
 
-  const fileHash = rootGetters.getDiscussion(note.discussion_id).diff_file.file_hash;
+  const fileHash = rootGetters.getDiscussion(note.discussion_id).diff_file?.file_hash;
 
-  commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
+  if (fileHash) {
+    commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
+  }
 };
 
 export const navigateToDiffFileIndex = ({ commit, state }, index) => {

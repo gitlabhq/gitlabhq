@@ -38,7 +38,7 @@ module Avatarable
 
   class_methods do
     def bot_avatar(image:)
-      Rails.root.join('app', 'assets', 'images', 'bot_avatars', image).open
+      Rails.root.join('lib', 'assets', 'images', 'bot_avatars', image).open
     end
   end
 

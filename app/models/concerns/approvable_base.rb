@@ -13,4 +13,8 @@ module ApprovableBase
 
     approved_by_users.include?(user)
   end
+
+  def can_be_approved_by?(user)
+    user && !approved_by?(user) && user.can?(:approve_merge_request, self)
+  end
 end

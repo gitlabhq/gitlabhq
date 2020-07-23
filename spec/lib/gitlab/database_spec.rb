@@ -129,6 +129,26 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.within_deprecation_notice_window?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:case_name, :days, :result) do
+      'outside window'  | Gitlab::Database::DEPRECATION_WINDOW_DAYS + 1 | false
+      'equal to window' | Gitlab::Database::DEPRECATION_WINDOW_DAYS     | true
+      'within window'   | Gitlab::Database::DEPRECATION_WINDOW_DAYS - 1 | true
+    end
+
+    with_them do
+      it "returns #{params[:result]} when #{params[:case_name]}" do
+        allow(Date)
+          .to receive(:today)
+          .and_return Date.parse(Gitlab::Database::UPCOMING_POSTGRES_VERSION_DETAILS[:gl_version_date]) - days
+
+        expect(described_class.within_deprecation_notice_window?).to eq(result)
+      end
+    end
+  end
+
   describe '.check_postgres_version_and_print_warning' do
     subject { described_class.check_postgres_version_and_print_warning }
 

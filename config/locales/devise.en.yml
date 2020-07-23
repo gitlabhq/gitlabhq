@@ -53,7 +53,7 @@ en:
   errors:
     messages:
       already_confirmed: "was already confirmed, please try signing in"
-      confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one"
+      confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one below"
       expired: "has expired, please request a new one"
       not_found: "not found"
       not_locked: "was not locked"

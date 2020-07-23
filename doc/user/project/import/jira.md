@@ -15,14 +15,26 @@ Jira issues import is an MVC, project-level feature, meaning that issues from mu
 Jira projects can be imported into a GitLab project. MVC version imports issue title and description
 as well as some other issue metadata as a section in the issue description.
 
-## Future iterations
+## Known limitations
 
-As of GitLab 12.10, the Jira issue importer only brings across the title and description of
-an issue.
+The information imported into GitLab fields from Jira depends on the version of GitLab:
 
-There is an [epic](https://gitlab.com/groups/gitlab-org/-/epics/2738) tracking the
-addition of items such as issue assignees, labels, comments, user mapping, and much more.
-These will be included in the future iterations of the GitLab Jira importer.
+- From GitLab 12.10 to GitLab 13.1, only the issue's title and description are imported
+  directly.
+- From GitLab 13.2:
+  - The issue's labels are also imported directly.
+  - You're also able to map Jira users to GitLab project members when preparing for the
+    import.
+
+Other Jira issue metadata that is not formally mapped to GitLab issue fields is
+imported into the GitLab issue's description as plain text.
+
+Our parser for converting text in Jira issues to GitLab Flavored Markdown is only compatible with
+Jira V3 REST API.
+
+There is an [epic](https://gitlab.com/groups/gitlab-org/-/epics/2738) tracking the addition of
+items, such as issue assignees, comments, and much more. These will be included in the future
+iterations of the GitLab Jira importer.
 
 ## Prerequisites
 
