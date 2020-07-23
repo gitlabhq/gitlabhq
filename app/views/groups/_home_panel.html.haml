@@ -12,7 +12,7 @@
           %h1.home-panel-title.gl-mt-3.gl-mb-2
             = @group.name
             %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
-              = visibility_level_icon(@group.visibility_level, fw: false, options: {class: 'icon'})
+              = visibility_level_icon(@group.visibility_level, options: {class: 'icon'})
         .home-panel-metadata.d-flex.align-items-center.text-secondary
           %span
             = _("Group ID: %{group_id}") % { group_id: @group.id }

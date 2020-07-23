@@ -18,12 +18,12 @@
 
   .stats.gl-text-gray-700.gl-flex-shrink-0
     %span.gl-ml-5
-      = icon('bookmark')
+      = sprite_icon('bookmark', size: 16, css_class: 'gl-vertical-align-text-bottom')
       = number_with_delimiter(group.projects.non_archived.count)
 
     %span.gl-ml-5
-      = icon('users')
+      = sprite_icon('users', size: 16, css_class: 'gl-vertical-align-text-bottom')
       = number_with_delimiter(group.users.count)
 
     %span.gl-ml-5.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
-      = visibility_level_icon(group.visibility_level, fw: false)
+      = visibility_level_icon(group.visibility_level)

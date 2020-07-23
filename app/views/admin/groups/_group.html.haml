@@ -22,15 +22,15 @@
     = render_if_exists 'admin/groups/marked_for_deletion_badge', group: group, css_class: 'gl-ml-5'
 
     %span.gl-ml-5
-      = icon('bookmark')
+      = sprite_icon('bookmark', size: 16, css_class: 'gl-vertical-align-text-bottom')
       = number_with_delimiter(group.projects.count)
 
     %span.gl-ml-5
-      = icon('users')
+      = sprite_icon('users', size: 16, css_class: 'gl-vertical-align-text-bottom')
       = number_with_delimiter(group.users.count)
 
     %span.gl-ml-5.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
-      = visibility_level_icon(group.visibility_level, fw: false)
+      = visibility_level_icon(group.visibility_level)
 
   .controls.gl-flex-shrink-0.gl-ml-5
     = link_to _('Edit'), admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn'

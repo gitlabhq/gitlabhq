@@ -658,6 +658,13 @@ internal traffic from the GitLab application to the Praefect nodes. The
 specifics on which load balancer to use or the exact configuration is beyond the
 scope of the GitLab documentation.
 
+NOTE: **Note:**
+The load balancer must be configured to accept traffic from the Gitaly nodes in
+addition to the GitLab nodes. Some requests handled by
+[`gitaly-ruby`](index.md#gitaly-ruby) sidecar processes call into the main Gitaly
+process. `gitaly-ruby` uses the Gitaly address set in the GitLab server's
+`git_data_dirs` setting to make this connection.
+
 We hope that if you’re managing HA systems like GitLab, you have a load balancer
 of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
 (open-source), [Google Internal Load Balancer](https://cloud.google.com/load-balancing/docs/internal/),

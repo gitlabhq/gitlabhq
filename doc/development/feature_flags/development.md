@@ -32,8 +32,11 @@ request removing the feature flag or the merge request where the default value o
 the feature flag is set to true. If the feature contains any DB migration it
 should include a changelog entry for DB changes.
 
-If you need the feature flag to be on automatically, use `default_enabled: true`
-when checking:
+NOTE: **Note:**
+All newly-introduced feature flags should be [off by default](./process.md#feature-flags-in-gitlab-development).
+
+In rare cases you may need to set the feature flag on by default. If so, please explain the reasoning
+in the merge request. To enable an active feature flag, use `default_enabled: true` when checking:
 
 ```ruby
 Feature.enabled?(:feature_flag, project, default_enabled: true)

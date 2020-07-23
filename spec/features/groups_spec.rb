@@ -34,7 +34,7 @@ RSpec.describe 'Group' do
 
         expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
         expect(current_path).to eq(group_path(group))
-        expect(page).to have_selector '.visibility-icon .fa-globe'
+        expect(page).to have_selector '.visibility-icon [data-testid="earth-icon"]'
       end
     end
 

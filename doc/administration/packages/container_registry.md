@@ -446,12 +446,24 @@ to be in read-only mode for a while. During this time,
 you can pull from the Container Registry, but you cannot push.
 
 1. Optional: To reduce the amount of data to be migrated, run the [garbage collection tool without downtime](#performing-garbage-collection-without-downtime).
-1. Copy initial data to your S3 bucket, for example with the AWS CLI [`cp`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/cp.html)
+1. This example uses the `aws` CLI. If you haven't configured the
+   CLI before, you have to configure your credentials by running `sudo aws configure`.
+   Because a non-admin user likely can't access the Container Registry folder,
+   ensure you use `sudo`. To check your credential configuration, run [`ls`]
+   to list all buckets.
+
+   ```shell
+   sudo aws --endpoint-url https://your-object-storage-backend.com s3 ls
+   ```
+
+   If you are using AWS as your back end, you do not need the [`--endpoint-url`](https://docs.aws.amazon.com/cli/latest/reference/#:~:text=--endpoint-url).
+1. Copy initial data to your S3 bucket, for example with the `aws` CLI
+   [`cp`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/cp.html)
    or [`sync`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html)
    command. Make sure to keep the `docker` folder as the top-level folder inside the bucket.
 
    ```shell
-   aws s3 sync registry s3://mybucket
+   sudo aws --endpoint-url https://your-object-storage-backend.com s3 sync registry s3://mybucket
    ```
 
 1. To perform the final data sync,
@@ -460,11 +472,16 @@ you can pull from the Container Registry, but you cannot push.
 1. Sync any changes since the initial data load to your S3 bucket and delete files that exist in the destination bucket but not in the source:
 
    ```shell
-   aws s3 sync registry s3://mybucket --delete
+   sudo aws --endpoint-url https://your-object-storage-backend.com s3 sync registry s3://mybucket --delete --dryrun
    ```
 
+   After verifying the command is going to perform as expected, remove the
+   [`--dryrun`](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html)
+   flag and run the command.
+
    DANGER: **Danger:**
-   The `--delete` flag will delete files that exist in the destination but not in the source.
+   The [`--delete`](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html)
+   flag will delete files that exist in the destination but not in the source.
    Make sure not to swap the source and destination, or you will delete all data in the Registry.
 
 1. Configure your registry to [use the S3 bucket for storage](#use-object-storage).

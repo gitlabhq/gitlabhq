@@ -50,17 +50,17 @@ RSpec.describe IconsHelper do
 
     it 'returns svg icon html' do
       expect(sprite_icon(icon_name).to_s)
-        .to eq "<svg><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
+        .to eq "<svg data-testid=\"#{icon_name}-icon\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
     it 'returns svg icon html + size classes' do
       expect(sprite_icon(icon_name, size: 72).to_s)
-        .to eq "<svg class=\"s72\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
+        .to eq "<svg class=\"s72\" data-testid=\"#{icon_name}-icon\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
     it 'returns svg icon html + size classes + additional class' do
       expect(sprite_icon(icon_name, size: 72, css_class: 'icon-danger').to_s)
-        .to eq "<svg class=\"s72 icon-danger\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
+        .to eq "<svg class=\"s72 icon-danger\" data-testid=\"#{icon_name}-icon\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
     describe 'non existing icon' do

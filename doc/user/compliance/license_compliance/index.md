@@ -9,10 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 
-## Overview
-
-If you are using [GitLab CI/CD](../../../ci/README.md), you can search your project dependencies for their licenses
-using License Compliance.
+If you're using [GitLab CI/CD](../../../ci/README.md), you can use License Compliance to search your
+project's dependencies for their licenses. You can then decide whether to allow or deny the use of
+each license. For example, if your application uses an external (open source) library whose license
+is incompatible with yours, then you can deny the use of that license.
 
 You can take advantage of License Compliance by either [including the job](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
@@ -48,28 +48,21 @@ You can view and modify existing policies from the [policies](#policies) tab.
 
 ![Edit Policy](img/policies_maintainer_edit_v13_2.png)
 
-## Use cases
-
-It helps you find what licenses your project uses in its dependencies, and decide for each of then
-whether to allow it or forbid it. For example, your application is using an external (open source)
-library whose license is incompatible with yours.
-
 ## Supported languages and package managers
 
 The following languages and package managers are supported.
 
-| Language   | Package managers                                                  | Scan Tool                                                |
-|------------|-------------------------------------------------------------------|----------------------------------------------------------|
-| JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Go         | [Godep](https://github.com/tools/godep), [go mod](https://github.com/golang/go/wiki/Modules) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| .NET       | [Nuget](https://www.nuget.org/) (.NET Framework is supported via the [mono project](https://www.mono-project.com/). Windows specific dependencies are not supported at this time.)  |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Python     | [pip](https://pip.pypa.io/en/stable/) (Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock).) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Ruby       | [gem](https://rubygems.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Language   | Package managers | Notes | Scan Tool |
+|------------|------------------|-------|-----------|
+| JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
+| Go         | [Godep](https://github.com/tools/godep), [go mod](https://github.com/golang/go/wiki/Modules) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
+| Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
+| .NET       | [Nuget](https://www.nuget.org/) | The .NET Framework is supported via the [mono project](https://www.mono-project.com/). There are, however, some limitations. The scanner doesn't support Windows-specific dependencies and doesn't report dependencies of your project's listed dependencies. Also, the scanner always marks detected licenses for all dependencies as `unknown`. | [License Finder](https://github.com/pivotal/LicenseFinder) |
+| Python     | [pip](https://pip.pypa.io/en/stable/) | Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock). | [License Finder](https://github.com/pivotal/LicenseFinder) |
+| Ruby       | [gem](https://rubygems.org/) |  | [License Finder](https://github.com/pivotal/LicenseFinder)|
+| Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
 
 NOTE: **Note:**
-
 Java 8 and Gradle 1.x projects are not supported.
 
 ### Experimental support

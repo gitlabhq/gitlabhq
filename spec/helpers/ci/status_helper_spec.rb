@@ -127,7 +127,7 @@ RSpec.describe Ci::StatusHelper do
       subject { helper.render_status_with_link("success", icon_size: 24) }
 
       it "has the svg class to change size" do
-        is_expected.to include("<svg class=\"s24\">")
+        is_expected.to include("<svg class=\"s24\"")
       end
     end
   end
