@@ -389,4 +389,8 @@ FactoryBot.define do
       create(:design, project: project, issue: issue)
     end
   end
+
+  trait :in_subgroup do
+    namespace factory: [:group, :nested]
+  end
 end

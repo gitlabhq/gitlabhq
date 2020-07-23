@@ -26,7 +26,7 @@ For managed Prometheus instances using auto configuration, you can
 1. Set threshold and operator.
 1. Click **Add** to save and activate the alert.
 
-![Adding an alert](../../user/project/integrations/img/prometheus_alert.png)
+![Adding an alert](img/prometheus_alert.png)
 
 To remove the alert, click back on the alert icon for the desired metric, and click **Delete**.
 
@@ -41,7 +41,7 @@ use with Prometheus webhooks. If you have manual configuration enabled, an
 This section contains the **URL** and **Authorization Key** you will need. The
 **Reset Key** button will invalidate the key and generate a new one.
 
-![Prometheus service configuration of Alerts](../../user/project/integrations/img/prometheus_service_alerts.png)
+![Prometheus service configuration of Alerts](img/prometheus_service_alerts.png)
 
 To send GitLab alert notifications, copy the **URL** and **Authorization Key** into the
 [`webhook_configs`](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config)

@@ -3333,6 +3333,12 @@ msgstr[1] ""
 msgid "Attaching the file failed."
 msgstr ""
 
+msgid "Attachment"
+msgstr ""
+
+msgid "Attachments"
+msgstr ""
+
 msgid "Audit Events"
 msgstr ""
 
@@ -6353,7 +6359,13 @@ msgstr ""
 msgid "Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for Auto DevOps to work."
 msgstr ""
 
+msgid "Container repositories"
+msgstr ""
+
 msgid "Container repositories sync capacity"
+msgstr ""
+
+msgid "Container repository"
 msgstr ""
 
 msgid "ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature."
@@ -8094,6 +8106,12 @@ msgid "Deselect all"
 msgstr ""
 
 msgid "Design Management files and data"
+msgstr ""
+
+msgid "Design repositories"
+msgstr ""
+
+msgid "Design repository"
 msgstr ""
 
 msgid "DesignManagement|%{current_design} of %{designs_count}"
@@ -13372,6 +13390,12 @@ msgstr ""
 msgid "Job ID"
 msgstr ""
 
+msgid "Job artifact"
+msgstr ""
+
+msgid "Job artifacts"
+msgstr ""
+
 msgid "Job has been erased"
 msgstr ""
 
@@ -13562,6 +13586,9 @@ msgid "LDAP sync in progress. This could take a few minutes. Refresh the page to
 msgstr ""
 
 msgid "LFS"
+msgstr ""
+
+msgid "LFS object"
 msgstr ""
 
 msgid "LFS objects"
@@ -20008,6 +20035,9 @@ msgstr ""
 msgid "Reports|no changed test results"
 msgstr ""
 
+msgid "Repositories"
+msgstr ""
+
 msgid "Repository"
 msgstr ""
 
@@ -25959,10 +25989,31 @@ msgstr ""
 msgid "UserLists|Cancel"
 msgstr ""
 
+msgid "UserLists|Create"
+msgstr ""
+
 msgid "UserLists|Define a set of users to be used within feature flag strategies"
 msgstr ""
 
+msgid "UserLists|Edit %{name}"
+msgstr ""
+
 msgid "UserLists|Enter a comma separated list of user IDs. These IDs should be the users of the system in which the feature flag is set, not GitLab IDs"
+msgstr ""
+
+msgid "UserLists|Feature flag list"
+msgstr ""
+
+msgid "UserLists|Lists allow you to define a set of users to be used with feature flags. %{linkStart}Read more about feature flag lists.%{linkEnd}"
+msgstr ""
+
+msgid "UserLists|Name"
+msgstr ""
+
+msgid "UserLists|New list"
+msgstr ""
+
+msgid "UserLists|Save"
 msgstr ""
 
 msgid "UserLists|There are no users"
@@ -26896,6 +26947,9 @@ msgid "WikiPageEdit|Update %{pageTitle}"
 msgstr ""
 
 msgid "WikiPage|Write your content or drag files here…"
+msgstr ""
+
+msgid "Wikis"
 msgstr ""
 
 msgid "Wiki|Create New Page"

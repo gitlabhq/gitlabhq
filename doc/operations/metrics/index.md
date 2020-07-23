@@ -70,7 +70,7 @@ helps quickly create a deployment:
 1. When the pipeline has run successfully, graphs are available on the
    **{cloud-gear}** **Operations > Metrics** page.
 
-![Monitoring Dashboard](../../user/project/integrations/img/prometheus_monitoring_dashboard_v13_1.png)
+![Monitoring Dashboard](img/prometheus_monitoring_dashboard_v13_1.png)
 
 ## Customize your metrics dashboard
 
@@ -104,7 +104,7 @@ After saving them, they display on the environment metrics dashboard provided th
   [Prometheus installed on the cluster](../../user/project/integrations/prometheus.md#enabling-prometheus-integration).
 - Prometheus is [manually configured](../../user/project/integrations/prometheus.md#manual-configuration-of-prometheus).
 
-![Add New Metric](../../user/project/integrations/img/prometheus_add_metric.png)
+![Add New Metric](img/prometheus_add_metric.png)
 
 A few fields are required:
 
@@ -127,7 +127,7 @@ suggested if this feature is used.
 You can edit existing additional custom metrics for your dashboard by clicking the
 **{ellipsis_v}** **More actions** dropdown and selecting **Edit metric**.
 
-![Edit metric](../../user/project/integrations/img/prometheus_dashboard_edit_metric_link_v_12_9.png)
+![Edit metric](img/prometheus_dashboard_edit_metric_link_v_12_9.png)
 
 ## Keyboard shortcuts for charts
 

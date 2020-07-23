@@ -24,17 +24,17 @@ To display metric charts, include a link of the form
 `https://<root_url>/<project>/-/environments/<environment_id>/metrics` in a field
 that supports GitLab-flavored Markdown:
 
-![Embedded Metrics Markdown](../../user/project/integrations/img/embedded_metrics_markdown_v12_8.png)
+![Embedded Metrics Markdown](img/embedded_metrics_markdown_v12_8.png)
 
 GitLab unfurls the link as an embedded metrics panel:
 
-![Embedded Metrics Rendered](../../user/project/integrations/img/embedded_metrics_rendered_v12_8.png)
+![Embedded Metrics Rendered](img/embedded_metrics_rendered_v12_8.png)
 
 You can also embed a single chart. To get a link to a chart, click the
 **{ellipsis_v}** **More actions** menu in the upper right corner of the chart,
 and select **Copy link to chart**, as shown in this example:
 
-![Copy Link To Chart](../../user/project/integrations/img/copy_link_to_chart_v12_10.png)
+![Copy Link To Chart](img/copy_link_to_chart_v12_10.png)
 
 The following requirements must be met for the metric to unfurl:
 
@@ -46,11 +46,11 @@ The following requirements must be met for the metric to unfurl:
 
  If all of the above are true, then the metric unfurls as seen below:
 
-![Embedded Metrics](../../user/project/integrations/img/view_embedded_metrics_v12_10.png)
+![Embedded Metrics](img/view_embedded_metrics_v12_10.png)
 
 Metric charts may also be hidden:
 
-![Show Hide](../../user/project/integrations/img/hide_embedded_metrics_v12_10.png)
+![Show Hide](img/hide_embedded_metrics_v12_10.png)
 
 You can open the link directly into your browser for a
 [detailed view of the data](dashboards/index.md#chart-context-menu).
@@ -61,7 +61,7 @@ You can also embed either the default dashboard metrics or individual metrics in
 issue templates. For charts to render side-by-side, separate links to the entire metrics
 dashboard or individual metrics by either a comma or a space.
 
-![Embedded Metrics in issue templates](../../user/project/integrations/img/embed_metrics_issue_template.png)
+![Embedded Metrics in issue templates](img/embed_metrics_issue_template.png)
 
 ## Embedding metrics based on alerts in incident issues
 
@@ -106,4 +106,4 @@ The following requirements must be met for the metric to unfurl:
 
  If the above requirements are met, then the metric unfurls as seen below.
 
-![Embedded Cluster Metric in issue descriptions](../../user/project/integrations/img/prometheus_cluster_health_embed_v12_9.png)
+![Embedded Cluster Metric in issue descriptions](img/prometheus_cluster_health_embed_v12_9.png)

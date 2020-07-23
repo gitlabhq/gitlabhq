@@ -23,9 +23,8 @@ special searches:
 
 ## Installing Elasticsearch
 
-Elasticsearch is _not_ included in the Omnibus packages. You will have to
-[install it yourself](https://www.elastic.co/guide/en/elasticsearch/reference/6.8/install-elasticsearch.html "Elasticsearch 6.8 installation documentation")
-whether you are using the Omnibus package or installed GitLab from source.
+Elasticsearch is _not_ included in the Omnibus packages or when you install from source. You must
+[install it separately](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/install-elasticsearch.html "Elasticsearch 7.x installation documentation"). Be sure to select your version.
 Providing detailed information on installing Elasticsearch is out of the scope
 of this document.
 
@@ -118,14 +117,21 @@ Once installed, enable it under your instance's Elasticsearch settings explained
 ## System Requirements
 
 Elasticsearch requires additional resources in excess of those documented in the
-[GitLab system requirements](../install/requirements.md). These will vary by
-installation size, but you should ensure **at least** an additional **8 GiB of RAM**
-for each Elasticsearch node, per the [official guidelines](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html).
+[GitLab system requirements](../install/requirements.md).
 
-Keep in mind, this is the **minimum requirements** as per Elasticsearch. For
-production instances, they recommend considerably more resources.
+The amount of resources (memory, CPU, storage) will vary greatly, based on the amount of data being indexed into the Elasticsearch cluster. According to [Elasticsearch official guidelines](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_memory), each node should have:
 
-The necessary storage space largely depends on the size of the repositories you want to store in GitLab but as a rule of thumb you should have at least 50% of free space as all your repositories combined take up.
+- [RAM](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_disks): **8 GiB as the bare minimum**
+- [CPU](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_cpus): Modern processor with multiple cores
+- [Storage](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html#_disks): Use SSD storage. As a guide you will need enough storage for 50% of the total size of your Git repositories.
+
+A few notes on CPU and storage:
+
+- CPU requirements for Elasticsearch tend to be light. There are specific scenarios where this isn't true, but GitLab.com isn't using Elasticsearch in an exceptionally CPU-heavy way. More cores will be more performant than faster CPUs. Extra concurrency from multiple cores will far outweigh a slightly faster clock speed in Elasticsearch.
+
+- Storage requirements for Elasticsearch are important, especially for indexing-heavy clusters. When possible, use SSDs, Their speed is far superior to any spinning media for Elasticsearch. In testing, nodes that use SSD storage see boosts in both query and indexing performance.
+
+Keep in mind, these are **minimum requirements** for Elasticsearch. Heavily-utilized Elasticsearch clusters will likely require considerably more resources.
 
 ## Enabling Elasticsearch
 
@@ -142,7 +148,7 @@ The following Elasticsearch settings are available:
 | `Elasticsearch pause indexing`                        | Enables/disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until unpaused. |
 | `Search with Elasticsearch enabled`                   | Enables/disables using Elasticsearch in search. |
 | `URL`                                                 | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., `http://host1, https://host2:9200`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (e.g., `http://<username>:<password>@<elastic_host>:9200/`). |
-| `Number of Elasticsearch shards`                      | Elasticsearch indexes are split into multiple shards for performance reasons. In general, larger indexes need to have more shards. Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-create-index.html#create-index-settings) |
+| `Number of Elasticsearch shards`                      | Elasticsearch indexes are split into multiple shards for performance reasons. In general, larger indexes need to have more shards. Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). |
 | `Number of Elasticsearch replicas`                    | Each Elasticsearch shard can have a number of replicas. These are a complete copy of the shard, and can provide increased query performance or resilience against hardware failure. Increasing this value will greatly increase total disk space required by the index. |
 | `Limit namespaces and projects that can be indexed`   | Enabling this will allow you to select namespaces and projects to index. All other namespaces and projects will use database search instead. Please note that if you enable this option but do not select any namespaces or projects, none will be indexed. [Read more below](#limiting-namespaces-and-projects).
 | `Using AWS hosted Elasticsearch with IAM credentials` | Sign your Elasticsearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html). The policies must be configured to allow `es:*` actions. |
@@ -284,9 +290,16 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    ```
 
 1. [Enable **Elasticsearch indexing**](#enabling-elasticsearch).
-1. Indexing large Git repositories can take a while. To speed up the process, you
-   can temporarily disable auto-refreshing and replicating. In our experience, you can expect a 20%
-   decrease in indexing time. We'll enable them when indexing is done. This step is optional!
+1. Indexing large Git repositories can take a while. To speed up the process, you can [tune for indexing speed](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-indexing-speed.html#tune-for-indexing-speed):
+
+   - You can temporarily disable [`refresh`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html), the operation responsible for making changes to an index available to search.
+
+   - You can set the number of replicas to 0. This setting controls the number of copies each primary shard of an index will have. Thus, having 0 replicas effectively disables the replication of shards across nodes, which should increase the indexing performance. This is an important trade-off in terms of reliability and query performance. It is important to remember to set the replicas to a considered value after the initial indexing is complete.
+
+   In our experience, you can expect a 20% decrease in indexing time. After completing indexing in a later step, you can return `refresh` and `number_of_replicas` to their desired settings.
+
+   NOTE: **Note:**
+   This step is optional but may help significantly speed up large indexing operations.
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
@@ -602,7 +615,7 @@ Here are some common pitfalls and how to overcome them:
   ```
 
   This is because we changed the index mapping in GitLab 8.12 and the old indexes should be removed and built from scratch again,
-  see details in the [8-11-to-8-12 update guide](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/8.11-to-8.12.md#11-elasticsearch-index-update-if-you-currently-use-elasticsearch).
+  see details in the [update guide](../update/upgrading_from_source.md).
 
 - Exception `Elasticsearch::Transport::Transport::Errors::BadRequest`
 

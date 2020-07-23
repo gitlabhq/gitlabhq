@@ -953,10 +953,11 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     it 'returns the number of unique visits to pages with analytics features' do
       ::Gitlab::Analytics::UniqueVisits::TARGET_IDS.each do |target_id|
-        expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:weekly_unique_visits_for_target).with(target_id).and_return(123)
+        expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: target_id).and_return(123)
       end
 
-      expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:weekly_unique_visits_for_any_target).and_return(543)
+      expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: :any).and_return(543)
+      expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: :any, weeks: 4).and_return(987)
 
       expect(subject).to eq({
         analytics_unique_visits: {
@@ -971,10 +972,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           'p_analytics_insights' => 123,
           'p_analytics_issues' => 123,
           'p_analytics_repo' => 123,
-          'u_todos' => 123,
           'i_analytics_cohorts' => 123,
           'i_analytics_dev_ops_score' => 123,
-          'analytics_unique_visits_for_any_target' => 543
+          'analytics_unique_visits_for_any_target' => 543,
+          'analytics_unique_visits_for_any_target_monthly' => 987
         }
       })
     end

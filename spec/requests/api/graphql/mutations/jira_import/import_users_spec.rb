@@ -8,15 +8,17 @@ RSpec.describe 'Importing Jira Users' do
 
   let_it_be(:user)    { create(:user) }
   let_it_be(:project) { create(:project) }
+  let(:importer) { instance_double(JiraImport::UsersImporter) }
   let(:project_path)  { project.full_path }
   let(:start_at)      { 7 }
-
-  let(:mutation) do
-    variables = {
+  let(:variables) do
+    {
       start_at: start_at,
       project_path: project_path
     }
+  end
 
+  let(:mutation) do
     graphql_mutation(:jira_import_users, variables)
   end
 
@@ -65,9 +67,38 @@ RSpec.describe 'Importing Jira Users' do
       end
     end
 
-    context 'when all params and permissions are ok' do
-      let(:importer) { instance_double(JiraImport::UsersImporter) }
+    context 'with start_at' do
+      RSpec.shared_examples 'start users import at zero' do
+        it 'returns imported users' do
+          users = [{ jira_account_id: '12a', jira_display_name: 'user 1' }]
+          result = ServiceResponse.success(payload: users)
 
+          expect(importer).to receive(:execute).and_return(result)
+          expect(JiraImport::UsersImporter).to receive(:new).with(current_user, project, 0).and_return(importer)
+
+          post_graphql_mutation(mutation, current_user: current_user)
+        end
+      end
+
+      context 'when nil' do
+        let(:variables) do
+          {
+            start_at: nil,
+            project_path: project_path
+          }
+        end
+
+        it_behaves_like 'start users import at zero'
+      end
+
+      context 'when not provided' do
+        let(:variables) { { project_path: project_path } }
+
+        it_behaves_like 'start users import at zero'
+      end
+    end
+
+    context 'when all params and permissions are ok' do
       before do
         expect(JiraImport::UsersImporter).to receive(:new).with(current_user, project, 7)
           .and_return(importer)

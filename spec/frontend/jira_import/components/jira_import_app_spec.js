@@ -306,7 +306,6 @@ describe('JiraImportApp', () => {
         variables: {
           input: {
             projectPath: 'gitlab-org/gitlab-test',
-            startAt: 1,
           },
         },
       };

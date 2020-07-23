@@ -573,9 +573,10 @@ module Gitlab
 
       def analytics_unique_visits_data
         results = ::Gitlab::Analytics::UniqueVisits::TARGET_IDS.each_with_object({}) do |target_id, hash|
-          hash[target_id] = redis_usage_data { unique_visit_service.weekly_unique_visits_for_target(target_id) }
+          hash[target_id] = redis_usage_data { unique_visit_service.unique_visits_for(targets: target_id) }
         end
-        results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.weekly_unique_visits_for_any_target }
+        results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :any) }
+        results['analytics_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :any, weeks: 4) }
 
         { analytics_unique_visits: results }
       end

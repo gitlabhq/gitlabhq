@@ -99,7 +99,7 @@ metrics:
 
 This may render a legend like this:
 
-![repeated legend label chart](../../../user/project/integrations/img/prometheus_dashboard_repeated_label.png)
+![repeated legend label chart](img/prometheus_dashboard_repeated_label.png)
 
 For labels to be more explicit, using variables that reflect time series labels is a good practice. The variables will be replaced by the values of the time series labels when the legend is rendered:
 
@@ -113,7 +113,7 @@ metrics:
 
 The resulting rendered legend will look like this:
 
-![legend with label variables](../../../user/project/integrations/img/prometheus_dashboard_label_variables.png)
+![legend with label variables](img/prometheus_dashboard_label_variables.png)
 
 There is also a shorthand value for dynamic dashboard labels that make use of only one time series label:
 
@@ -127,7 +127,7 @@ metrics:
 
 This works by lowercasing the value of `label` and, if there are more words separated by spaces, replacing those spaces with an underscore (`_`). The transformed value is then checked against the labels of the time series returned by the Prometheus query. If a time series label is found that is equal to the transformed value, then the label value will be used and rendered in the legend like this:
 
-![legend with label shorthand variable](../../../user/project/integrations/img/prometheus_dashboard_label_variable_shorthand.png)
+![legend with label shorthand variable](img/prometheus_dashboard_label_variable_shorthand.png)
 
 ## Dashboard YAML syntax validation
 
@@ -142,19 +142,19 @@ To confirm your dashboard definition contains valid YAML syntax:
 Files with valid syntax display **Metrics Dashboard YAML definition is valid**,
 and files with invalid syntax display **Metrics Dashboard YAML definition is invalid**.
 
-![Metrics Dashboard_YAML_syntax_validation](../../../user/project/integrations/img/prometheus_dashboard_yaml_validation_v13_1.png)
+![Metrics Dashboard_YAML_syntax_validation](img/prometheus_dashboard_yaml_validation_v13_1.png)
 
 When **Metrics Dashboard YAML definition is invalid** at least one of the following messages is displayed:
 
-1. `dashboard: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#dashboard-top-level-properties)
-1. `panel_groups: should be an array of panel_groups objects` [learn more](../../../operations/metrics/dashboards/yaml.md#dashboard-top-level-properties)
-1. `group: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-group-panel_groups-properties)
-1. `panels: should be an array of panels objects` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-group-panel_groups-properties)
-1. `title: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-panels-properties)
-1. `metrics: should be an array of metrics objects` [learn more](../../../operations/metrics/dashboards/yaml.md#panel-panels-properties)
-1. `query: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#metrics-metrics-properties)
-1. `query_range: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#metrics-metrics-properties)
-1. `unit: can't be blank` [learn more](../../../operations/metrics/dashboards/yaml.md#metrics-metrics-properties)
+1. `dashboard: can't be blank` [learn more](#dashboard-top-level-properties)
+1. `panel_groups: should be an array of panel_groups objects` [learn more](#dashboard-top-level-properties)
+1. `group: can't be blank` [learn more](#panel-group-panel_groups-properties)
+1. `panels: should be an array of panels objects` [learn more](#panel-group-panel_groups-properties)
+1. `title: can't be blank` [learn more](#panel-panels-properties)
+1. `metrics: should be an array of metrics objects` [learn more](#panel-panels-properties)
+1. `query: can't be blank` [learn more](#metrics-metrics-properties)
+1. `query_range: can't be blank` [learn more](#metrics-metrics-properties)
+1. `unit: can't be blank` [learn more](#metrics-metrics-properties)
 1. `YAML syntax: The parsed YAML is too big`
 
    This is displayed when the YAML file is larger than 1 MB.

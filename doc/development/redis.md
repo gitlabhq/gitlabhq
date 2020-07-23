@@ -41,8 +41,16 @@ moment, but may wish to in the future: [#118820](https://gitlab.com/gitlab-org/g
 This imposes an additional constraint on naming: where GitLab is performing
 operations that require several keys to be held on the same Redis server - for
 instance, diffing two sets held in Redis - the keys should ensure that by
-enclosing the changeable parts in curly braces, such as, `project:{1}:set_a` and
-`project:{1}:set_b`.
+enclosing the changeable parts in curly braces.
+For example:
+
+```plaintext
+project:{1}:set_a
+project:{1}:set_b
+project:{2}:set_c
+```
+
+`set_a` and `set_b` are guaranteed to be held on the same Redis server, while `set_c` is not.
 
 Currently, we validate this in the development and test environments
 with the [`RedisClusterValidator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/instrumentation/redis_cluster_validator.rb),

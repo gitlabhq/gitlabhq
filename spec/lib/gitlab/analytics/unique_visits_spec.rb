@@ -29,24 +29,26 @@ RSpec.describe Gitlab::Analytics::UniqueVisits, :clean_gitlab_redis_shared_state
       unique_visits.track_visit(visitor1_id, target2_id, 8.days.ago)
       unique_visits.track_visit(visitor1_id, target2_id, 15.days.ago)
 
-      expect(unique_visits.weekly_unique_visits_for_target(target1_id)).to eq(2)
-      expect(unique_visits.weekly_unique_visits_for_target(target2_id)).to eq(1)
+      expect(unique_visits.unique_visits_for(targets: target1_id)).to eq(2)
+      expect(unique_visits.unique_visits_for(targets: target2_id)).to eq(1)
 
-      expect(unique_visits.weekly_unique_visits_for_target(target2_id, week_of: 15.days.ago)).to eq(1)
+      expect(unique_visits.unique_visits_for(targets: target2_id, start_week: 15.days.ago)).to eq(1)
 
-      expect(unique_visits.weekly_unique_visits_for_target(target3_id)).to eq(0)
+      expect(unique_visits.unique_visits_for(targets: target3_id)).to eq(0)
 
-      expect(unique_visits.weekly_unique_visits_for_any_target).to eq(2)
-      expect(unique_visits.weekly_unique_visits_for_any_target(week_of: 15.days.ago)).to eq(1)
-      expect(unique_visits.weekly_unique_visits_for_any_target(week_of: 30.days.ago)).to eq(0)
+      expect(unique_visits.unique_visits_for(targets: :any)).to eq(2)
+      expect(unique_visits.unique_visits_for(targets: :any, start_week: 15.days.ago)).to eq(1)
+      expect(unique_visits.unique_visits_for(targets: :any, start_week: 30.days.ago)).to eq(0)
+
+      expect(unique_visits.unique_visits_for(targets: :any, weeks: 4)).to eq(2)
     end
 
-    it 'sets the keys in Redis to expire automatically after 28 days' do
+    it 'sets the keys in Redis to expire automatically after 12 weeks' do
       unique_visits.track_visit(visitor1_id, target1_id)
 
       Gitlab::Redis::SharedState.with do |redis|
-        redis.scan_each(match: "#{target1_id}-*").each do |key|
-          expect(redis.ttl(key)).to be_within(5.seconds).of(28.days)
+        redis.scan_each(match: "{#{target1_id}}-*").each do |key|
+          expect(redis.ttl(key)).to be_within(5.seconds).of(12.weeks)
         end
       end
     end

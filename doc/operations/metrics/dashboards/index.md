@@ -34,7 +34,7 @@ To create a new dashboard from the GitLab user interface:
 1. Navigate to your dashboard at **{cloud-gear}** **Operations > Metrics**.
 1. In the top-right corner of your dashboard, click the **{file-addition-solid}** **Actions** menu,
    and select **Create new**:
-   ![Monitoring Dashboard actions menu with create new item](../../../user/project/integrations/img/actions_menu_create_new_dashboard_v13_2.png)
+   ![Monitoring Dashboard actions menu with create new item](img/actions_menu_create_new_dashboard_v13_2.png)
 1. In the modal window, click **Open Repository**, then follow the instructions
    for creating a new dashboard from the command line.
 
@@ -106,7 +106,7 @@ To manage the settings for your metrics dashboard:
 1. Navigate to your dashboard at **{cloud-gear}** **Operations > Metrics**.
 1. In the top-right corner of your dashboard, click **{settings}** **Metrics Settings**:
 
-   ![Monitoring Dashboard actions menu with create new item](../../../user/project/integrations/img/metrics_settings_button_v13_2.png)
+   ![Monitoring Dashboard actions menu with create new item](img/metrics_settings_button_v13_2.png)
 
 ## Chart Context Menu
 
@@ -114,7 +114,7 @@ You can take action related to a chart's data by clicking the
 **{ellipsis_v}** **More actions** dropdown box above the upper right corner of
 any chart on a dashboard:
 
-![Context Menu](../../../user/project/integrations/img/panel_context_menu_v13_0.png)
+![Context Menu](img/panel_context_menu_v13_0.png)
 
 The options are:
 
@@ -152,7 +152,7 @@ its description.
 You can create annotations by making requests to the
 [Metrics dashboard annotations API](../../../api/metrics_dashboard_annotations.md)
 
-![Annotations UI](../../../user/project/integrations/img/metrics_dashboard_annotations_ui_v13.0.png)
+![Annotations UI](img/metrics_dashboard_annotations_ui_v13.0.png)
 
 ### Annotation retention policy
 
@@ -188,7 +188,7 @@ The dashboard's time range is appended to the `url` as URL parameters.
 The following example shows two related links (`GitLab.com` and `GitLab Documentation`)
 added to a dashboard:
 
-![Links UI](../../../user/project/integrations/img/related_links_v13_1.png)
+![Links UI](img/related_links_v13_1.png)
 
 ### Links Syntax
 

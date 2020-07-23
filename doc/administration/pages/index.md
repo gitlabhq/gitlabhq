@@ -388,9 +388,9 @@ To do that:
 1. Click **Save changes**.
 
 CAUTION: **Warning:**
-This action will not make all currently public web-sites private until they redeployed.
-This issue among others will be resolved by
-[changing GitLab Pages configuration mechanism](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/282).
+For self-managed installations, all public websites remain private until they are
+redeployed. This issue will be resolved by
+[sourcing domain configuration from the GitLab API](https://gitlab.com/gitlab-org/gitlab/-/issues/218357).
 
 ### Running behind a proxy
 

@@ -104,7 +104,6 @@ export default {
           variables: {
             input: {
               projectPath: this.projectPath,
-              startAt: 1,
             },
           },
         })

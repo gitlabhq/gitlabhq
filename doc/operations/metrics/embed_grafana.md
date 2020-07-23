@@ -15,7 +15,7 @@ charts in issues as a
 [direct linked rendered image](https://grafana.com/docs/grafana/latest/reference/share_panel/#direct-link-rendered-image).
 The **Direct link rendered image** sharing dialog within Grafana provides the link:
 
-![Grafana Direct Linked Rendered Image](../../user/project/integrations/img/grafana_live_embed.png)
+![Grafana Direct Linked Rendered Image](img/grafana_live_embed.png)
 
 NOTE: **Note:**
 For this embed to display correctly, the Grafana instance must be available to the
@@ -32,7 +32,7 @@ markup for a live chart from GitLab's public dashboard:
 
 This markup renders a graph of `5xx` errors, like this:
 
-![Grafana dashboard embedded preview](../../user/project/integrations/img/grafana_embedded.png)
+![Grafana dashboard embedded preview](img/grafana_embedded.png)
 
 ## Embedding charts via integration with Grafana HTTP API
 
@@ -46,7 +46,7 @@ from a Grafana instance, the data source must:
 1. Be a Prometheus instance.
 1. Be proxyable, so the HTTP Access setting should be set to `Server`:
 
-   ![HTTP Proxy Access](../../user/project/integrations/img/http_proxy_access_v12_5.png)
+   ![HTTP Proxy Access](img/http_proxy_access_v12_5.png)
 
 ## Setting up the Grafana integration
 
@@ -60,10 +60,10 @@ from a Grafana instance, the data source must:
 ## Generating a link to a chart
 
 1. In Grafana, navigate to the dashboard you wish to embed a panel from.
-   ![Grafana Metric Panel](../../user/project/integrations/img/grafana_panel_v12_5.png)
+   ![Grafana Metric Panel](img/grafana_panel_v12_5.png)
 1. In the upper-left corner of the page, select a specific value for each variable
    required for the queries in the chart.
-   ![Select Query Variables](../../user/project/integrations/img/select_query_variables_v12_5.png)
+   ![Select Query Variables](img/select_query_variables_v12_5.png)
 1. In Grafana, click on a panel's title, then click **Share** to open the panel's
    sharing dialog to the **Link** tab. If you click the _dashboard's_ share panel
    instead, GitLab attempts to embed the first supported panel on the dashboard (if available).
@@ -72,8 +72,8 @@ from a Grafana instance, the data source must:
    variables, only `$__interval`, `$__from`, and `$__to` are supported.
 1. Toggle **On** the **Current time range** option to specify the time range of
    the chart. Otherwise, the default range is the last 8 hours.
-   ![Grafana Sharing Dialog](../../user/project/integrations/img/grafana_sharing_dialog_v12_5.png)
+   ![Grafana Sharing Dialog](img/grafana_sharing_dialog_v12_5.png)
 1. Click **Copy** to copy the URL to the clipboard.
 1. In GitLab, paste the URL into a Markdown field and save. The chart takes a few
    moments to render.
-   ![GitLab Rendered Grafana Panel](../../user/project/integrations/img/rendered_grafana_embed_v12_5.png)
+   ![GitLab Rendered Grafana Panel](img/rendered_grafana_embed_v12_5.png)

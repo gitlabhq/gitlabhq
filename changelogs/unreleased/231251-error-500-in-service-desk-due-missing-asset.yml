@@ -1,0 +1,5 @@
+---
+title: Fix missing path for avatars of bots
+merge_request: 37671
+author:
+type: fixed
