@@ -25,10 +25,10 @@ RSpec.describe IncidentManagement::CreateIssueService do
     create(:project_incident_management_setting, project: project)
   end
 
-  subject { service.execute }
+  subject(:execute) { service.execute }
 
   context 'when create_issue enabled' do
-    let(:issue) { subject[:issue] }
+    let(:issue) { execute.payload[:issue] }
 
     before do
       setting.update!(create_issue: true)
@@ -36,7 +36,7 @@ RSpec.describe IncidentManagement::CreateIssueService do
 
     context 'without issue_template_content' do
       it 'creates an issue with alert summary only' do
-        expect(subject).to include(status: :success)
+        expect(execute).to be_success
 
         expect(issue.author).to eq(user)
         expect(issue.title).to eq(alert_title)
@@ -61,7 +61,8 @@ RSpec.describe IncidentManagement::CreateIssueService do
           .to receive(:log_error)
           .with(error_message(issue_error))
 
-        expect(subject).to include(status: :error, message: issue_error)
+        expect(execute).to be_error
+        expect(execute.message).to eq(issue_error)
       end
     end
 
@@ -70,7 +71,7 @@ RSpec.describe IncidentManagement::CreateIssueService do
         let(:template_content) { 'some content' }
 
         it 'creates an issue appending issue template' do
-          expect(subject).to include(status: :success)
+          expect(execute).to be_success
 
           expect(issue.description).to include(alert_presenter.issue_summary_markdown)
           expect(separator_count(issue.description)).to eq(1)
@@ -95,7 +96,7 @@ RSpec.describe IncidentManagement::CreateIssueService do
         end
 
         it 'creates an issue interpreting quick actions' do
-          expect(subject).to include(status: :success)
+          expect(execute).to be_success
 
           expect(issue.description).to include(plain_text)
           expect(issue.due_date).to be_present
@@ -128,7 +129,7 @@ RSpec.describe IncidentManagement::CreateIssueService do
         end
 
         it 'includes both templates' do
-          expect(subject).to include(status: :success)
+          expect(execute).to be_success
 
           expect(issue.description).to include(alert_presenter.issue_summary_markdown)
           expect(issue.description).to include(template_content)
@@ -162,7 +163,7 @@ RSpec.describe IncidentManagement::CreateIssueService do
       it 'creates an issue' do
         query_title = "#{gitlab_alert.title} #{gitlab_alert.computed_operator} #{gitlab_alert.threshold}"
 
-        expect(subject).to include(status: :success)
+        expect(execute).to be_success
 
         expect(issue.author).to eq(user)
         expect(issue.title).to eq(alert_presenter.full_title)
@@ -181,7 +182,8 @@ RSpec.describe IncidentManagement::CreateIssueService do
             .to receive(:log_error)
             .with(error_message('invalid alert'))
 
-          expect(subject).to eq(status: :error, message: 'invalid alert')
+          expect(execute).to be_error
+          expect(execute.message).to eq('invalid alert')
         end
       end
 
@@ -197,10 +199,6 @@ RSpec.describe IncidentManagement::CreateIssueService do
         it_behaves_like 'invalid alert'
       end
     end
-
-    describe "label `incident`" do
-      it_behaves_like 'create alert issue sets issue labels'
-    end
   end
 
   context 'when create_issue disabled' do
@@ -213,7 +211,8 @@ RSpec.describe IncidentManagement::CreateIssueService do
         .to receive(:log_error)
         .with(error_message('setting disabled'))
 
-      expect(subject).to eq(status: :error, message: 'setting disabled')
+      expect(execute).to be_error
+      expect(execute.message).to eq('setting disabled')
     end
   end
 

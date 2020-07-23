@@ -743,14 +743,14 @@ export function moveToNeighboringCommit({ dispatch, state }, { direction }) {
   }
 }
 
-export const setCurrentDiffFileIdFromNote = ({ commit, rootGetters }, noteId) => {
+export const setCurrentDiffFileIdFromNote = ({ commit, state, rootGetters }, noteId) => {
   const note = rootGetters.notesById[noteId];
 
   if (!note) return;
 
   const fileHash = rootGetters.getDiscussion(note.discussion_id).diff_file?.file_hash;
 
-  if (fileHash) {
+  if (fileHash && state.diffFiles.some(f => f.file_hash === fileHash)) {
     commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
   }
 };

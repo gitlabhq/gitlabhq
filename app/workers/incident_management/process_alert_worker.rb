@@ -16,9 +16,10 @@ module IncidentManagement
       alert = find_alert(alert_id)
       return unless alert
 
-      new_issue = create_issue_for(alert)
-      return unless new_issue&.persisted?
+      result = create_issue_for(alert)
+      return unless result.success?
 
+      new_issue = result.payload[:issue]
       link_issue_with_alert(alert, new_issue.id)
     end
 
@@ -36,7 +37,6 @@ module IncidentManagement
       IncidentManagement::CreateIssueService
         .new(alert.project, parsed_payload(alert))
         .execute
-        .dig(:issue)
     end
 
     def link_issue_with_alert(alert, issue_id)

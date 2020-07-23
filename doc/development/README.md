@@ -5,6 +5,17 @@ description: 'Learn how to contribute to GitLab.'
 
 # Contributor and Development Docs
 
+Learn the processes and technical information needed for contributing to GitLab.
+
+This content is intended for members of the GitLab Team as well as community contributors.
+Content specific to the GitLab Team should instead be included in the [Handbook](https://about.gitlab.com/handbook/).
+
+For information on using GitLab to work on your own software projects, see the [GitLab user documentation](../user/index.md).
+
+For information on working with GitLab's API, see the [API documentation](../api/README.md).
+
+For information on how to install, configure, update, and upgrade your own GitLab instance, see the [administration documentation](../administration/index.md).
+
 ## Get started
 
 - Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)

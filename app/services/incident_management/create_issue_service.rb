@@ -3,32 +3,30 @@
 module IncidentManagement
   class CreateIssueService < BaseService
     include Gitlab::Utils::StrongMemoize
+    include IncidentManagement::Settings
 
     def initialize(project, params)
       super(project, User.alert_bot, params)
     end
 
     def execute
-      return error_with('setting disabled') unless incident_management_setting.create_issue?
-      return error_with('invalid alert') unless alert.valid?
+      return error('setting disabled') unless incident_management_setting.create_issue?
+      return error('invalid alert') unless alert.valid?
 
-      issue = create_issue
-      return error_with(issue_errors(issue)) unless issue.valid?
+      result = create_incident
+      return error(result.message, result.payload[:issue]) unless result.success?
 
-      success(issue: issue)
+      result
     end
 
     private
 
-    def create_issue
-      label_result = find_or_create_incident_label
-
-      Issues::CreateService.new(
+    def create_incident
+      ::IncidentManagement::Incidents::CreateService.new(
         project,
         current_user,
         title: issue_title,
-        description: issue_description,
-        label_ids: [label_result.payload[:label].id]
+        description: issue_description
       ).execute
     end
 
@@ -44,10 +42,6 @@ module IncidentManagement
         alert_markdown,
         issue_template_content
       ].compact.join(horizontal_line)
-    end
-
-    def find_or_create_incident_label
-      IncidentManagement::CreateIncidentLabelService.new(project, current_user).execute
     end
 
     def alert_summary
@@ -68,21 +62,10 @@ module IncidentManagement
       incident_management_setting.issue_template_content
     end
 
-    def incident_management_setting
-      strong_memoize(:incident_management_setting) do
-        project.incident_management_setting ||
-          project.build_incident_management_setting
-      end
-    end
-
-    def issue_errors(issue)
-      issue.errors.full_messages.to_sentence
-    end
-
-    def error_with(message)
+    def error(message, issue = nil)
       log_error(%{Cannot create incident issue for "#{project.full_name}": #{message}})
 
-      error(message)
+      ServiceResponse.error(payload: { issue: issue }, message: message)
     end
   end
 end
