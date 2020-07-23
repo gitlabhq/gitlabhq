@@ -741,7 +741,7 @@ GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test f
 - There should be only one top-level factory definition per file.
 - FactoryBot methods are mixed in to all RSpec groups. This means you can (and
   should) call `create(...)` instead of `FactoryBot.create(...)`.
-- Make use of [traits](https://www.rubydoc.info/gems/factory_bot/file/GETTING_STARTED.md#Traits) to clean up definitions and usages.
+- Make use of [traits](https://www.rubydoc.info/gems/factory_bot/file/GETTING_STARTED.md#traits) to clean up definitions and usages.
 - When defining a factory, don't define attributes that are not required for the
   resulting record to pass validation.
 - When instantiating from a factory, don't supply attributes that aren't

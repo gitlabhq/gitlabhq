@@ -148,7 +148,7 @@ requests you're assigned to.
 
 [Snippets](snippets.md) are code blocks that you want to store in GitLab, from which
 you have quick access to. You can also gather feedback on them through
-[Discussions](#Discussions).
+[Discussions](#discussions).
 
 ## Keyboard shortcuts
 

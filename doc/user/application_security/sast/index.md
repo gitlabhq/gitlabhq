@@ -222,7 +222,7 @@ a `before_script` execution to prepare your scan job.
 
 To pass your project's dependencies as artifacts, the dependencies must be included
 in the project's working directory and specified using the `artifacts:path` configuration.
-If all dependencies are present, the `-compile=false` flag can be provided to the
+If all dependencies are present, the `COMPILE=false` variable can be provided to the
 analyzer and compilation will be skipped:
 
 ```yaml
@@ -247,10 +247,9 @@ build:
 spotbugs-sast:
   dependencies:
     - build
-  script:
-    - /analyzer run -compile=false
   variables:
     MAVEN_REPO_PATH: ./.m2/repository
+    COMPILE: false
   artifacts:
     reports:
       sast: gl-sast-report.json
@@ -315,11 +314,12 @@ The following variables configure the Docker-in-Docker orchestrator, and therefo
 
 Some analyzers can be customized with environment variables.
 
-| Environment variable        | Analyzer | Description |
-|-----------------------------|----------|-------------|
+| Environment variable                  | Analyzer             | Description |
+|---------------------------------------|----------------------|-------------|
 | `SCAN_KUBERNETES_MANIFESTS`           | Kubesec              | Set to `"true"` to scan Kubernetes manifests. |
 | `KUBESEC_HELM_CHARTS_PATH`            | Kubesec              | Optional path to Helm charts that `helm` will use to generate a Kubernetes manifest that `kubesec` will scan. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`                | Kubesec              | Additional arguments for the `helm` executable. |
+| `COMPILE`                             | SpotBugs             | Set to `false` to disable project compilation and dependency fetching. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195252) in GitLab 13.1. |
 | `ANT_HOME`                            | SpotBugs             | The `ANT_HOME` environment variable. |
 | `ANT_PATH`                            | SpotBugs             | Path to the `ant` executable. |
 | `GRADLE_PATH`                         | SpotBugs             | Path to the `gradle` executable. |

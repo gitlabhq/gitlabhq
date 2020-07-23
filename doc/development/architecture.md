@@ -567,7 +567,7 @@ For monitoring deployed apps, see the [Sentry integration docs](../user/project/
   - [GDK](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - Process: `sidekiq`
-- GitLab.com: [Sidekiq](../user/gitlab_com/index.md#Sidekiq)
+- GitLab.com: [Sidekiq](../user/gitlab_com/index.md#sidekiq)
 
 Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue and processes them. Background jobs allow GitLab to provide a faster request/response cycle by moving work into the background.
 

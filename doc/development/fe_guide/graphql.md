@@ -646,7 +646,7 @@ defaultClient.query({ query })
   .then(result => console.log(result));
 ```
 
-When [using Vuex](#Using-with-Vuex), disable the cache when:
+When [using Vuex](#using-with-vuex), disable the cache when:
 
 - The data is being cached elsewhere
 - The use case does not need caching

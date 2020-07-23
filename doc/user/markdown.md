@@ -92,7 +92,7 @@ to change.
 GitLab makes full use of the standard (CommonMark) formatting, but also includes additional
 functionality useful for GitLab users.
 
-It makes use of [new Markdown features](#new-GFM-markdown-extensions),
+It makes use of [new Markdown features](#new-gfm-markdown-extensions),
 not found in standard Markdown:
 
 - [Color "chips" written in HEX, RGB or HSL](#colors)
