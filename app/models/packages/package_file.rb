@@ -37,11 +37,12 @@ class Packages::PackageFile < ApplicationRecord
 
   update_project_statistics project_statistics_name: :packages_size
 
+  before_save :update_size_from_file
+
   def update_file_metadata
     # The file.object_store is set during `uploader.store!`
     # which happens after object is inserted/updated
     self.update_column(:file_store, file.object_store)
-    self.update_column(:size, file.size) unless file.size == self.size
   end
 
   def download_path
@@ -50,6 +51,12 @@ class Packages::PackageFile < ApplicationRecord
 
   def local?
     file_store == ::Packages::PackageFileUploader::Store::LOCAL
+  end
+
+  private
+
+  def update_size_from_file
+    self.size ||= file.size
   end
 end
 

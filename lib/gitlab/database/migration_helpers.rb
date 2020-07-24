@@ -815,7 +815,7 @@ module Gitlab
         BEFORE INSERT OR UPDATE
         ON #{table}
         FOR EACH ROW
-        EXECUTE PROCEDURE #{trigger}()
+        EXECUTE FUNCTION #{trigger}()
         EOF
       end
 

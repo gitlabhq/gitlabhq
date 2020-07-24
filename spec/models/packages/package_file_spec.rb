@@ -32,11 +32,17 @@ RSpec.describe Packages::PackageFile, type: :model do
     end
   end
 
-  it_behaves_like 'UpdateProjectStatistics' do
-    subject { build(:package_file, :jar, size: 42) }
+  context 'updating project statistics' do
+    context 'when the package file has an explicit size' do
+      it_behaves_like 'UpdateProjectStatistics' do
+        subject { build(:package_file, :jar, size: 42) }
+      end
+    end
 
-    before do
-      allow_any_instance_of(Packages::PackageFileUploader).to receive(:size).and_return(42)
+    context 'when the package file does not have a size' do
+      it_behaves_like 'UpdateProjectStatistics' do
+        subject { build(:package_file, size: nil) }
+      end
     end
   end
 

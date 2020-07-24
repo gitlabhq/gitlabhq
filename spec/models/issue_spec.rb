@@ -58,6 +58,26 @@ RSpec.describe Issue do
     end
   end
 
+  describe 'validations' do
+    subject { issue.valid? }
+
+    describe 'issue_type' do
+      let(:issue) { build(:issue, issue_type: issue_type) }
+
+      context 'when a valid type' do
+        let(:issue_type) { :issue }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'empty type' do
+        let(:issue_type) { nil }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
   subject { create(:issue) }
 
   describe 'callbacks' do

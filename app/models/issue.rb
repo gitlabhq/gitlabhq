@@ -68,6 +68,12 @@ class Issue < ApplicationRecord
   accepts_nested_attributes_for :sentry_issue
 
   validates :project, presence: true
+  validates :issue_type, presence: true
+
+  enum issue_type: {
+    issue: 0,
+    incident: 1
+  }
 
   alias_attribute :parent_ids, :project_id
   alias_method :issuing_parent, :project
