@@ -1,0 +1,5 @@
+---
+title: Allow LFS to be enabled in project settings even when Repository is disabled
+merge_request: 37401
+author:
+type: fixed

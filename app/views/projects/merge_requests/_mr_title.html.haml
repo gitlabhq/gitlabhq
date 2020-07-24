@@ -15,8 +15,7 @@
         = state_human_name
 
     .issuable-meta
-      - if @merge_request.discussion_locked?
-        .issuable-warning-icon.inline= sprite_icon('lock', size: 16, css_class: 'icon')
+      #js-issuable-header-warnings
       = issuable_meta(@merge_request, @project, "Merge request")
 
     %a.btn.btn-default.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }

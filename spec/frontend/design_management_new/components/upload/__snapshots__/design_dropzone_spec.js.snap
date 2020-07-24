@@ -18,10 +18,10 @@ exports[`Design management dropzone component when dragging renders correct temp
       />
        
       <p
-        class="gl-font-weight-bold gl-mb-0"
+        class="gl-mb-0"
       >
         <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+          message="Drop or %{linkStart}upload%{linkEnd} designs to attach"
         />
       </p>
     </div>
@@ -94,10 +94,10 @@ exports[`Design management dropzone component when dragging renders correct temp
       />
        
       <p
-        class="gl-font-weight-bold gl-mb-0"
+        class="gl-mb-0"
       >
         <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+          message="Drop or %{linkStart}upload%{linkEnd} designs to attach"
         />
       </p>
     </div>
@@ -170,10 +170,10 @@ exports[`Design management dropzone component when dragging renders correct temp
       />
        
       <p
-        class="gl-font-weight-bold gl-mb-0"
+        class="gl-mb-0"
       >
         <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+          message="Drop or %{linkStart}upload%{linkEnd} designs to attach"
         />
       </p>
     </div>
@@ -245,10 +245,10 @@ exports[`Design management dropzone component when dragging renders correct temp
       />
        
       <p
-        class="gl-font-weight-bold gl-mb-0"
+        class="gl-mb-0"
       >
         <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+          message="Drop or %{linkStart}upload%{linkEnd} designs to attach"
         />
       </p>
     </div>
@@ -320,10 +320,10 @@ exports[`Design management dropzone component when dragging renders correct temp
       />
        
       <p
-        class="gl-font-weight-bold gl-mb-0"
+        class="gl-mb-0"
       >
         <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+          message="Drop or %{linkStart}upload%{linkEnd} designs to attach"
         />
       </p>
     </div>
@@ -395,10 +395,10 @@ exports[`Design management dropzone component when no slot provided renders defa
       />
        
       <p
-        class="gl-font-weight-bold gl-mb-0"
+        class="gl-mb-0"
       >
         <gl-sprintf-stub
-          message="Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+          message="Drop or %{linkStart}upload%{linkEnd} designs to attach"
         />
       </p>
     </div>

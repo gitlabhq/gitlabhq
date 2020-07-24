@@ -52,9 +52,9 @@ describe('Alert Details Sidebar To Do', () => {
       });
     });
 
-    it('renders a button for adding a To Do', () => {
+    it('renders a button for adding a To-Do', () => {
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find('[data-testid="alert-todo-button"]').text()).toBe('Add a To Do');
+        expect(wrapper.find('[data-testid="alert-todo-button"]').text()).toBe('Add a To-Do');
       });
     });
 

@@ -5,6 +5,7 @@ import store from '~/mr_notes/stores';
 import notesApp from '../notes/components/notes_app.vue';
 import discussionKeyboardNavigator from '../notes/components/discussion_keyboard_navigator.vue';
 import initWidget from '../vue_merge_request_widget';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default () => {
   // eslint-disable-next-line no-new
@@ -20,6 +21,7 @@ export default () => {
       const noteableData = JSON.parse(notesDataset.noteableData);
       noteableData.noteableType = notesDataset.noteableType;
       noteableData.targetType = notesDataset.targetType;
+      noteableData.discussion_locked = parseBoolean(notesDataset.isLocked);
 
       return {
         noteableData,

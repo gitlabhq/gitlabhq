@@ -70,7 +70,8 @@
                 noteable_type: 'MergeRequest',
                 target_type: 'merge_request',
                 help_page_path: suggest_changes_help_path,
-                current_user_data: @current_user_data} }
+                current_user_data: @current_user_data,
+                is_locked: @merge_request.discussion_locked.to_s } }
 
       = render "projects/merge_requests/tabs/pane", name: "commits", id: "commits", class: "commits" do
         -# This tab is always loaded via AJAX

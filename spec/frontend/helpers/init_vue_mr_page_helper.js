@@ -22,6 +22,7 @@ export default function initVueMRPage() {
   mrDiscussionsEl.setAttribute('data-noteable-data', JSON.stringify(noteableDataMock));
   mrDiscussionsEl.setAttribute('data-notes-data', JSON.stringify(notesDataMock));
   mrDiscussionsEl.setAttribute('data-noteable-type', 'merge-request');
+  mrDiscussionsEl.setAttribute('data-is-locked', 'false');
   mrTestEl.appendChild(mrDiscussionsEl);
 
   const discussionCounterEl = document.createElement('div');

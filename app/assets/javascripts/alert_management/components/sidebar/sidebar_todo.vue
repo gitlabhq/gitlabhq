@@ -7,7 +7,7 @@ import createAlertTodo from '../../graphql/mutations/alert_todo_create.graphql';
 export default {
   i18n: {
     UPDATE_ALERT_TODO_ERROR: s__(
-      'AlertManagement|There was an error while updating the To Do of the alert.',
+      'AlertManagement|There was an error while updating the To-Do of the alert.',
     ),
   },
   components: {

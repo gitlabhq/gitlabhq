@@ -1402,6 +1402,9 @@ msgstr ""
 msgid "Add a To Do"
 msgstr ""
 
+msgid "Add a To-Do"
+msgstr ""
+
 msgid "Add a bullet list"
 msgstr ""
 
@@ -1429,6 +1432,9 @@ msgstr ""
 msgid "Add a numbered list"
 msgstr ""
 
+msgid "Add a related issue"
+msgstr ""
+
 msgid "Add a table"
 msgstr ""
 
@@ -1445,9 +1451,6 @@ msgid "Add an existing issue"
 msgstr ""
 
 msgid "Add an impersonation token"
-msgstr ""
-
-msgid "Add an issue"
 msgstr ""
 
 msgid "Add another link"
@@ -2118,7 +2121,7 @@ msgstr ""
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
 msgstr ""
 
-msgid "AlertManagement|There was an error while updating the To Do of the alert."
+msgid "AlertManagement|There was an error while updating the To-Do of the alert."
 msgstr ""
 
 msgid "AlertManagement|There was an error while updating the assignee(s) list. Please try again."
@@ -8557,7 +8560,7 @@ msgstr ""
 msgid "Draft merge requests can't be merged."
 msgstr ""
 
-msgid "Drop or %{linkStart}upload%{linkEnd} Designs to attach"
+msgid "Drop or %{linkStart}upload%{linkEnd} designs to attach"
 msgstr ""
 
 msgid "Drop your designs to start your upload."
@@ -20901,6 +20904,9 @@ msgstr ""
 msgid "SecurityConfiguration|Configure"
 msgstr ""
 
+msgid "SecurityConfiguration|Customize common SAST settings to suit your requirements. More advanced configuration options exist, which you can add to the configuration file this tool generates. It's important to note that if you make any configurations, they will be saved as overrides and will be %{strongStart}excluded from automatic updates%{strongEnd}."
+msgstr ""
+
 msgid "SecurityConfiguration|Enable via Merge Request"
 msgstr ""
 
@@ -25015,6 +25021,9 @@ msgid "To widen your search, change or remove filters above"
 msgstr ""
 
 msgid "To widen your search, change or remove filters."
+msgstr ""
+
+msgid "To-Do"
 msgstr ""
 
 msgid "To-Do List"

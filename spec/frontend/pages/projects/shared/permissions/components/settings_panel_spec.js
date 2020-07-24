@@ -6,6 +6,8 @@ import {
   visibilityLevelDescriptions,
   visibilityOptions,
 } from '~/pages/projects/shared/permissions/constants';
+import projectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
+import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
 
 const defaultProps = {
   currentSettings: {
@@ -65,7 +67,13 @@ describe('Settings Panel', () => {
     return mountComponent({ ...extraProps, currentSettings: currentSettingsProps });
   };
 
-  const findLFSSettingsMessage = () => wrapper.find({ ref: 'git-lfs-settings' }).find('p');
+  const findLFSSettingsRow = () => wrapper.find({ ref: 'git-lfs-settings' });
+  const findLFSSettingsMessage = () => findLFSSettingsRow().find('p');
+  const findLFSFeatureToggle = () => findLFSSettingsRow().find(projectFeatureToggle);
+
+  const findRepositoryFeatureProjectRow = () => wrapper.find({ ref: 'repository-settings' });
+  const findRepositoryFeatureSetting = () =>
+    findRepositoryFeatureProjectRow().find(projectFeatureSetting);
 
   beforeEach(() => {
     wrapper = mountComponent();
@@ -154,7 +162,7 @@ describe('Settings Panel', () => {
     it('should set the repository help text when the visibility level is set to private', () => {
       wrapper = overrideCurrentSettings({ visibilityLevel: visibilityOptions.PRIVATE });
 
-      expect(wrapper.find({ ref: 'repository-settings' }).props().helpText).toEqual(
+      expect(findRepositoryFeatureProjectRow().props().helpText).toBe(
         'View and edit files in this project',
       );
     });
@@ -162,7 +170,7 @@ describe('Settings Panel', () => {
     it('should set the repository help text with a read access warning when the visibility level is set to non-private', () => {
       wrapper = overrideCurrentSettings({ visibilityLevel: visibilityOptions.PUBLIC });
 
-      expect(wrapper.find({ ref: 'repository-settings' }).props().helpText).toEqual(
+      expect(findRepositoryFeatureProjectRow().props().helpText).toBe(
         'View and edit files in this project. Non-project members will only have read access',
       );
     });
@@ -176,7 +184,7 @@ describe('Settings Panel', () => {
         wrapper
           .find('[name="project[project_feature_attributes][merge_requests_access_level]"]')
           .props().disabledInput,
-      ).toEqual(false);
+      ).toBe(false);
     });
 
     it('should disable the merge requests access level input when the repository is disabled', () => {
@@ -186,7 +194,7 @@ describe('Settings Panel', () => {
         wrapper
           .find('[name="project[project_feature_attributes][merge_requests_access_level]"]')
           .props().disabledInput,
-      ).toEqual(true);
+      ).toBe(true);
     });
   });
 
@@ -197,7 +205,7 @@ describe('Settings Panel', () => {
       expect(
         wrapper.find('[name="project[project_feature_attributes][forking_access_level]"]').props()
           .disabledInput,
-      ).toEqual(false);
+      ).toBe(false);
     });
 
     it('should disable the forking access level input when the repository is disabled', () => {
@@ -206,7 +214,7 @@ describe('Settings Panel', () => {
       expect(
         wrapper.find('[name="project[project_feature_attributes][forking_access_level]"]').props()
           .disabledInput,
-      ).toEqual(true);
+      ).toBe(true);
     });
   });
 
@@ -217,7 +225,7 @@ describe('Settings Panel', () => {
       expect(
         wrapper.find('[name="project[project_feature_attributes][builds_access_level]"]').props()
           .disabledInput,
-      ).toEqual(false);
+      ).toBe(false);
     });
 
     it('should disable the builds access level input when the repository is disabled', () => {
@@ -226,7 +234,7 @@ describe('Settings Panel', () => {
       expect(
         wrapper.find('[name="project[project_feature_attributes][builds_access_level]"]').props()
           .disabledInput,
-      ).toEqual(true);
+      ).toBe(true);
     });
   });
 
@@ -287,7 +295,7 @@ describe('Settings Panel', () => {
 
       expect(
         wrapper.find('[name="project[container_registry_enabled]"]').props().disabledInput,
-      ).toEqual(false);
+      ).toBe(false);
     });
 
     it('should disable the container registry input when the repository is disabled', () => {
@@ -298,7 +306,7 @@ describe('Settings Panel', () => {
 
       expect(
         wrapper.find('[name="project[container_registry_enabled]"]').props().disabledInput,
-      ).toEqual(true);
+      ).toBe(true);
     });
   });
 
@@ -307,7 +315,7 @@ describe('Settings Panel', () => {
       wrapper.setProps({ lfsAvailable: true });
 
       return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'git-lfs-settings' }).exists()).toEqual(true);
+        expect(findLFSSettingsRow().exists()).toBe(true);
       });
     });
 
@@ -315,14 +323,12 @@ describe('Settings Panel', () => {
       wrapper.setProps({ lfsAvailable: false });
 
       return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'git-lfs-settings' }).exists()).toEqual(false);
+        expect(findLFSSettingsRow().exists()).toBe(false);
       });
     });
 
     it('should set the LFS settings help path', () => {
-      expect(wrapper.find({ ref: 'git-lfs-settings' }).props().helpPath).toBe(
-        defaultProps.lfsHelpPath,
-      );
+      expect(findLFSSettingsRow().props().helpPath).toBe(defaultProps.lfsHelpPath);
     });
 
     it('should enable the LFS input when the repository is enabled', () => {
@@ -331,7 +337,7 @@ describe('Settings Panel', () => {
         { lfsAvailable: true },
       );
 
-      expect(wrapper.find('[name="project[lfs_enabled]"]').props().disabledInput).toEqual(false);
+      expect(findLFSFeatureToggle().props().disabledInput).toBe(false);
     });
 
     it('should disable the LFS input when the repository is disabled', () => {
@@ -340,7 +346,27 @@ describe('Settings Panel', () => {
         { lfsAvailable: true },
       );
 
-      expect(wrapper.find('[name="project[lfs_enabled]"]').props().disabledInput).toEqual(true);
+      expect(findLFSFeatureToggle().props().disabledInput).toBe(true);
+    });
+
+    it('should not change lfsEnabled when disabling the repository', async () => {
+      // mount over shallowMount, because we are aiming to test rendered state of toggle
+      wrapper = mountComponent({ currentSettings: { lfsEnabled: true } }, mount);
+
+      const repositoryFeatureToggleButton = findRepositoryFeatureSetting().find('button');
+      const lfsFeatureToggleButton = findLFSFeatureToggle().find('button');
+      const isToggleButtonChecked = toggleButton => toggleButton.classes('is-checked');
+
+      // assert the initial state
+      expect(isToggleButtonChecked(lfsFeatureToggleButton)).toBe(true);
+      expect(isToggleButtonChecked(repositoryFeatureToggleButton)).toBe(true);
+
+      repositoryFeatureToggleButton.trigger('click');
+      await wrapper.vm.$nextTick();
+
+      expect(isToggleButtonChecked(repositoryFeatureToggleButton)).toBe(false);
+      // LFS toggle should still be checked
+      expect(isToggleButtonChecked(lfsFeatureToggleButton)).toBe(true);
     });
 
     describe.each`
@@ -364,14 +390,14 @@ describe('Settings Panel', () => {
             expect(message.text()).toContain(
               'LFS objects from this repository are still available to forks',
             );
-            expect(link.text()).toEqual('How do I remove them?');
-            expect(link.attributes('href')).toEqual(
+            expect(link.text()).toBe('How do I remove them?');
+            expect(link.attributes('href')).toBe(
               '/help/topics/git/lfs/index#removing-objects-from-lfs',
             );
           });
         } else {
           it('does not show warning message', () => {
-            expect(findLFSSettingsMessage().exists()).toEqual(false);
+            expect(findLFSSettingsMessage().exists()).toBe(false);
           });
         }
       },
@@ -383,7 +409,7 @@ describe('Settings Panel', () => {
       wrapper.setProps({ packagesAvailable: true });
 
       return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'package-settings' }).exists()).toEqual(true);
+        expect(wrapper.find({ ref: 'package-settings' }).exists()).toBe(true);
       });
     });
 
@@ -391,7 +417,7 @@ describe('Settings Panel', () => {
       wrapper.setProps({ packagesAvailable: false });
 
       return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'package-settings' }).exists()).toEqual(false);
+        expect(wrapper.find({ ref: 'package-settings' }).exists()).toBe(false);
       });
     });
 
@@ -411,9 +437,7 @@ describe('Settings Panel', () => {
         { packagesAvailable: true },
       );
 
-      expect(wrapper.find('[name="project[packages_enabled]"]').props().disabledInput).toEqual(
-        false,
-      );
+      expect(wrapper.find('[name="project[packages_enabled]"]').props().disabledInput).toBe(false);
     });
 
     it('should disable the packages input when the repository is disabled', () => {
@@ -422,9 +446,7 @@ describe('Settings Panel', () => {
         { packagesAvailable: true },
       );
 
-      expect(wrapper.find('[name="project[packages_enabled]"]').props().disabledInput).toEqual(
-        true,
-      );
+      expect(wrapper.find('[name="project[packages_enabled]"]').props().disabledInput).toBe(true);
     });
   });
 
@@ -503,7 +525,7 @@ describe('Settings Panel', () => {
     });
 
     it('should contain help text', () => {
-      expect(wrapper.find({ ref: 'metrics-visibility-settings' }).props().helpText).toEqual(
+      expect(wrapper.find({ ref: 'metrics-visibility-settings' }).props().helpText).toBe(
         'With Metrics Dashboard you can visualize this project performance metrics',
       );
     });
@@ -514,7 +536,7 @@ describe('Settings Panel', () => {
       const metricsSettingsRow = wrapper.find({ ref: 'metrics-visibility-settings' });
 
       expect(wrapper.vm.metricsOptionsDropdownEnabled).toBe(true);
-      expect(metricsSettingsRow.find('select').attributes('disabled')).toEqual('disabled');
+      expect(metricsSettingsRow.find('select').attributes('disabled')).toBe('disabled');
     });
   });
 });
