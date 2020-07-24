@@ -55,7 +55,7 @@ Panels in a panel group are laid out in rows consisting of two panels per row. A
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------- |
-| `type` | enum | no, defaults to `area-chart` | Specifies the panel type to use, for example `area-chart`, `line-chart` or `anomaly-chart`. [View documentation on all panel types.](panel_types.md) |
+| `type` | string | no, defaults to `area-chart` | Specifies the panel type to use, for example `area-chart`, `line-chart` or `anomaly-chart`. Only types listed among [all panel types](panel_types.md) are allowed. |
 | `title` | string | yes | Heading for the panel. |
 | `y_label` | string | no, but highly encouraged | Y-Axis label for the panel. |
 | `y_axis` | string | no | Y-Axis configuration for the panel. |

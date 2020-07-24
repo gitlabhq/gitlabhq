@@ -18,7 +18,7 @@ RSpec.describe 'gitlab:packages namespace rake task' do
 
     context 'object storage disabled' do
       before do
-        stub_packages_object_storage(enabled: false)
+        stub_package_file_object_storage(enabled: false)
       end
 
       it "doesn't migrate files" do
@@ -28,7 +28,7 @@ RSpec.describe 'gitlab:packages namespace rake task' do
 
     context 'object storage enabled' do
       before do
-        stub_packages_object_storage
+        stub_package_file_object_storage
       end
 
       it 'migrates local file to object storage' do

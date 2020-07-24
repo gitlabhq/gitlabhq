@@ -142,6 +142,9 @@ the following node pools:
 
 - `e2-highcpu-16` (16 vCPU, 16 GB memory) pre-emptible nodes with autoscaling
 
+Node pool image type must be `Container-Optimized OS (cos)`, not `Container-Optimized OS with Containerd (cos_containerd)`,
+due to this [known issue on GitLab Runner Kubernetes executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4755)
+
 ### Helm
 
 The Helm version used is defined in the

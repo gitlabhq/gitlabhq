@@ -17,7 +17,7 @@ module QA
       end
 
       with_them do
-        let(:project) do
+        let!(:project) do
           Resource::Project.fabricate_via_api! do |project|
             project.name = "#{template}-autodevops-project-template"
             project.template_name = template

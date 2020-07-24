@@ -1,0 +1,5 @@
+---
+title: Preload number of pipeline warnings for commits
+merge_request: 37669
+author:
+type: performance

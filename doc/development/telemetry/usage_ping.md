@@ -738,8 +738,8 @@ appear to be associated to any of the services running, since they all appear to
 | `server`                                                  | `topology > nodes > node_services`   | `enablement`  |                  |         | The type of web server used (Unicorn or Puma)                              |
 | `network_policy_forwards`                                 | `counts`                             | `defend`      |                  | EE      | Cumulative count of forwarded packets by Container Network                 |
 | `network_policy_drops`                                    | `counts`                             | `defend`      |                  | EE      | Cumulative count of dropped packets by Container Network                   |
-| `vendor`                                                  | `container_registry`                 | `package`     |                  | CE+EE   | The Container Registry vendor (GitLab or third-party)                      |
-| `version`                                                 | `container_registry`                 | `package`     |                  | CE+EE   | The Container Registry version (only when vendor is GitLab)                |
+| `vendor`                                                  | `container_registry_server`          | `package`     |                  | CE+EE   | The Container Registry vendor (GitLab or third-party)                      |
+| `version`                                                 | `container_registry_server`          | `package`     |                  | CE+EE   | The Container Registry version (only when vendor is GitLab)                |
 
 ## Example Usage Ping payload
 
@@ -814,7 +814,7 @@ The following is example content of the Usage Ping payload.
     "enabled": true,
     "version": "1.17.0"
   },
-  "container_registry": {
+  "container_registry_server": {
     "vendor": "gitlab",
     "version": "2.9.1-gitlab"
   },

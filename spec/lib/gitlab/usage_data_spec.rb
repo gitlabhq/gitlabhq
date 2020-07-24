@@ -591,8 +591,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:gitaly][:clusters]).to be >= 0
         expect(subject[:gitaly][:filesystems]).to be_an(Array)
         expect(subject[:gitaly][:filesystems].first).to be_a(String)
-        expect(subject[:container_registry][:vendor]).to eq('gitlab')
-        expect(subject[:container_registry][:version]).to eq('x.y.z')
+        expect(subject[:container_registry_server][:vendor]).to eq('gitlab')
+        expect(subject[:container_registry_server][:version]).to eq('x.y.z')
       end
     end
 

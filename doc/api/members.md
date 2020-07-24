@@ -16,6 +16,12 @@ Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
 projects in personal namespaces will not show owner (`50`) permission
 for owner.
 
+## Limitations
+
+The `group_saml_identity` attribute is only visible to a group owner for [SSO enabled groups](../user/group/saml_sso/index.md).
+
+The `email` attribute is only visible to a group owner who manages the user through [Group Managed Accounts](../user/group/saml_sso/group_managed_accounts.md).
+
 ## List all members of a group or project
 
 Gets a list of group or project members viewable by the authenticated user.
@@ -389,9 +395,3 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ## Give a group access to a project
 
 See [share project with group](projects.md#share-project-with-group)
-
-## Limitations
-
-The `group_saml_identity` attribute is only visible to a group owner for [SSO enabled groups](../user/group/saml_sso/index.md).
-
-The `email` attribute is only visible to a group owner who manages the user through [Group Managed Accounts](../user/group/saml_sso/group_managed_accounts.md).

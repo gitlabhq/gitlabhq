@@ -52,26 +52,37 @@ RSpec.describe CommitCollection do
   end
 
   describe '#with_latest_pipeline' do
+    let(:another_commit) { project.commit("60ecb67744cb56576c30214ff52294f8ce2def98") }
+
     let!(:pipeline) do
-      create(
-        :ci_empty_pipeline,
-        ref: 'master',
-        sha: commit.id,
-        status: 'success',
-        project: project
-      )
+      create(:ci_empty_pipeline, ref: 'master', sha: commit.id, status: 'success', project: project)
     end
-    let(:collection) { described_class.new(project, [commit]) }
+
+    let!(:another_pipeline) do
+      create(:ci_empty_pipeline, ref: 'master', sha: another_commit.id, status: 'success', project: project)
+    end
+
+    let(:collection) { described_class.new(project, [commit, another_commit]) }
 
     it 'sets the latest pipeline for every commit so no additional queries are necessary' do
       commits = collection.with_latest_pipeline('master')
 
       recorder = ActiveRecord::QueryRecorder.new do
         expect(commits.map { |c| c.latest_pipeline('master') })
-          .to eq([pipeline])
+          .to eq([pipeline, another_pipeline])
       end
 
       expect(recorder.count).to be_zero
+    end
+
+    it 'performs a single query to fetch pipeline warnings' do
+      recorder = ActiveRecord::QueryRecorder.new do
+        collection.with_latest_pipeline('master').each do |c|
+          c.latest_pipeline('master').number_of_warnings.itself
+        end
+      end
+
+      expect(recorder.count).to eq(2) # 1 for pipelines, 1 for warnings counts
     end
   end
 

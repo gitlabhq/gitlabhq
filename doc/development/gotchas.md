@@ -238,3 +238,34 @@ This problem will disappear as soon as we upgrade to Rails 6 and use the Zeitwer
 - Rails Guides: [Autoloading and Reloading Constants (Classic Mode)](https://guides.rubyonrails.org/autoloading_and_reloading_constants_classic_mode.html)
 - Ruby Constant lookup: [Everything you ever wanted to know about constant lookup in Ruby](http://cirw.in/blog/constant-lookup)
 - Rails 6 and Zeitwerk autoloader: [Understanding Zeitwerk in Rails 6](https://medium.com/cedarcode/understanding-zeitwerk-in-rails-6-f168a9f09a1f)
+
+## Storing assets that do not require pre-compiling
+
+Assets that need to be served to the user are stored under the `app/assets` directory, which is later pre-compiled and placed in the `public/` directory.
+
+However, you cannot access the content of any file from within `app/assets` from the application code, as we do not include that folder in production installations as a [space saving measure](https://gitlab.com/gitlab-org/omnibus-gitlab/-/commit/ca049f990b223f5e1e412830510a7516222810be).
+
+```ruby
+support_bot = User.support_bot
+
+# accessing a file from the `app/assets` folder
+support_bot.avatar = Rails.root.join('app', 'assets', 'images', 'bot_avatars', 'support_bot.png').open
+
+support_bot.save!
+```
+
+While the code above works in local environments, it errors out in production installations as the `app/assets` folder is not included.
+
+### Solution
+
+The alternative is the `lib/assets` folder. Use it if you need to add assets (like images) to the repo that meet the following conditions:
+
+- The assets do not need to be directly served to the user (and hence need not be pre-compiled).
+- The assets do need to be accessed via application code.
+
+In short:
+
+Use `app/assets` for storing any asset that needs to be precompiled and served to the end user.
+Use `lib/assets` for storing any asset that does not need to be served to the end user directly, but is still required to be accessed by the application code.
+
+MR for reference: [!37671](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37671)

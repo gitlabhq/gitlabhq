@@ -243,6 +243,36 @@ Click this button to create a merge request to apply the solution onto the sourc
 
 ![Create merge request from vulnerability](img/create_issue_with_list_hover.png)
 
+### Managing related issues for a vulnerability
+
+Issues can be linked to a vulnerability using the related issues block on the vulnerability page.
+The relationship is uni-directional. The vulnerability page shows related issues, but the issue page
+doesn't show the vulnerability it's related to. An issue can only be related to one vulnerability at
+a time. Issues can be linked across groups and projects.
+
+#### Adding a related issue
+
+You can link an issue by clicking the **{plus}** button in the **Related Issues** block.
+
+![Vulnerability related issues add button](img/vulnerability_related_issues_add_button_v13_2.png)
+
+A text box appears that lets you type an issue number or paste an issue link. You can enter multiple
+issues at once. Pressing the space bar after each issue number or link converts them to tags that
+you can remove by clicking the **{close}** icon to the tag's right. Typing `#` followed by a number
+shows an autocomplete menu. Click an issue in the menu to add it as a tag. When you're finished
+entering issues, click the **Add** button to link the issues to the vulnerability. Alternatively,
+click **Cancel** to exit without linking any issues.
+
+![Vulnerability related issues text box tags animation](img/vulnerability_related_issues_text_box_tags_v13_2.gif)
+
+### Removing a related issue
+
+Click the **{close}** icon to right of an issue to remove it as a related issue. Note that this only
+removes it as a related issue of the vulnerability; it doesn't modify or remove the issue itself.
+You can link it to the vulnerability again if desired.
+
+![Vulnerability related issues remove issue animation](img/vulnerability_related_issues_remove_v13_2.gif)
+
 ## Security approvals in merge requests
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.2.
