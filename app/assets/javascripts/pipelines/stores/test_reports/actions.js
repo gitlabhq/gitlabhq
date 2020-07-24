@@ -45,7 +45,10 @@ export const fetchTestSuite = ({ state, commit, dispatch }, index) => {
   const { name = '', build_ids = [] } = state.testReports?.test_suites?.[index] || {};
   // Replacing `/:suite_name.json` with the name of the suite. Including the extra characters
   // to ensure that we replace exactly the template part of the URL string
-  const endpoint = state.suiteEndpoint?.replace('/:suite_name.json', `/${name}.json`);
+  const endpoint = state.suiteEndpoint?.replace(
+    '/:suite_name.json',
+    `/${encodeURIComponent(name)}.json`,
+  );
 
   return axios
     .get(endpoint, { params: { build_ids } })

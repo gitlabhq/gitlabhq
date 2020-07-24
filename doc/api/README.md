@@ -218,6 +218,7 @@ Only available to [administrators](../user/permissions.md).
 
 All API requests support performing an API call as if you were another user,
 provided you are authenticated as an administrator with an OAuth or Personal Access Token that has the `sudo` scope.
+The API requests are executed with the permissions of the impersonated user.
 
 You need to pass the `sudo` parameter either via query string or a header with an ID/username of
 the user you want to perform the operation as. If passed as a header, the
