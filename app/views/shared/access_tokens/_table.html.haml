@@ -42,7 +42,7 @@
                     = _('In %{time_to_now}') % { time_to_now: distance_of_time_in_words_to_now(token.expires_at) }
               - else
                 %span.token-never-expires-label= _('Never')
-            %td= token.scopes.present? ? token.scopes.join(', ') : _('<no scopes selected>')
+            %td= token.scopes.present? ? token.scopes.join(', ') : html_escape_once(_('&lt;no scopes selected&gt;')).html_safe
             %td= link_to _('Revoke'), revoke_route_helper.call(token), method: :put, class: 'btn btn-danger float-right qa-revoke-button', data: { confirm: _('Are you sure you want to revoke this %{type}? This action cannot be undone.') % { type: type } }
 - else
   .settings-message.text-center

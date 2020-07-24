@@ -559,8 +559,8 @@ module API
       finder_params[:search_namespaces] = true if params[:search_namespaces].present?
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
-      finder_params[:id_after] = params[:id_after] if params[:id_after]
-      finder_params[:id_before] = params[:id_before] if params[:id_before]
+      finder_params[:id_after] = sanitize_id_param(params[:id_after]) if params[:id_after]
+      finder_params[:id_before] = sanitize_id_param(params[:id_before]) if params[:id_before]
       finder_params[:last_activity_after] = params[:last_activity_after] if params[:last_activity_after]
       finder_params[:last_activity_before] = params[:last_activity_before] if params[:last_activity_before]
       finder_params[:repository_storage] = params[:repository_storage] if params[:repository_storage]
@@ -658,6 +658,10 @@ module API
 
     def ip_address
       env["action_dispatch.remote_ip"].to_s || request.ip
+    end
+
+    def sanitize_id_param(id)
+      id.present? ? id.to_i : nil
     end
   end
 end

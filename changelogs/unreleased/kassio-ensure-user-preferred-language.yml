@@ -1,0 +1,5 @@
+---
+title: Ensure User's preferred_language always has a value.
+merge_request: 37464
+author:
+type: fixed

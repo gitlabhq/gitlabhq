@@ -88,6 +88,7 @@ export default {
       :img-size="iconSize"
       class="js-no-trigger"
       tooltip-placement="bottom"
+      data-qa-selector="assignee_link"
     >
       <span class="js-assignee-tooltip">
         <span class="bold d-block">{{ __('Assignee') }}</span> {{ assignee.name }}
@@ -100,6 +101,7 @@ export default {
       :title="assigneesCounterTooltip"
       class="avatar-counter"
       data-placement="bottom"
+      data-qa-selector="avatar_counter_content"
       >{{ assigneeCounterLabel }}</span
     >
   </div>

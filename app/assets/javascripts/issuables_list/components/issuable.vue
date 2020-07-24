@@ -237,6 +237,8 @@ export default {
     :data-id="issuable.id"
     :data-labels="labelIdsString"
     :data-url="issuable.web_url"
+    data-qa-selector="issue_container"
+    :data-qa-issue-title="issuable.title"
   >
     <div class="gl-display-flex">
       <!-- Bulk edit checkbox -->
@@ -265,7 +267,12 @@ export default {
               :title="$options.confidentialTooltipText"
               :aria-label="$options.confidentialTooltipText"
             />
-            <gl-link :href="issuable.web_url" :target="linkTarget" data-testid="issuable-title">
+            <gl-link
+              :href="issuable.web_url"
+              :target="linkTarget"
+              data-testid="issuable-title"
+              data-qa-selector="issue_link"
+            >
               {{ issuable.title }}
               <gl-icon
                 v-if="isJiraIssue"
@@ -355,6 +362,7 @@ export default {
             :title="__('Weight')"
             class="gl-display-none d-sm-inline-block"
             data-testid="weight"
+            data-qa-selector="issuable_weight_content"
           >
             <gl-icon name="weight" class="align-text-bottom" />
             {{ issuable.weight }}

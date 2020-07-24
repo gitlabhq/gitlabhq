@@ -1,5 +1,5 @@
-- pretty_name = @project&.full_name || _('<project name>')
-- run_actions_text = s_("ProjectService|Perform common operations on GitLab project: %{project_name}") % { project_name: pretty_name }
+- pretty_name = @project&.full_name || _('&lt;project name&gt;')
+- run_actions_text = html_escape_once(s_("ProjectService|Perform common operations on GitLab project: %{project_name}") % { project_name: pretty_name })
 
 .info-well
   .well-segment
@@ -67,7 +67,7 @@
         .form-group
           = label_tag :autocomplete_description, _('Autocomplete description'), class: 'col-12 col-form-label label-bold'
           .col-12.input-group
-            = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
+            = text_field_tag :autocomplete_description, run_actions_text.html_safe, class: 'form-control form-control-sm', readonly: 'readonly'
             .input-group-append
               = clipboard_button(target: '#autocomplete_description', class: 'input-group-text')
 

@@ -386,6 +386,14 @@ RSpec.describe API::Projects do
           let(:current_user) { user }
           let(:projects) { [public_project, project, project2, project3].select { |p| p.id > project2.id } }
         end
+
+        context 'regression: empty string is ignored' do
+          it_behaves_like 'projects response' do
+            let(:filter) { { id_after: '' } }
+            let(:current_user) { user }
+            let(:projects) { [public_project, project, project2, project3] }
+          end
+        end
       end
 
       context 'and using id_before' do
@@ -393,6 +401,14 @@ RSpec.describe API::Projects do
           let(:filter) { { id_before: project2.id } }
           let(:current_user) { user }
           let(:projects) { [public_project, project, project2, project3].select { |p| p.id < project2.id } }
+        end
+
+        context 'regression: empty string is ignored' do
+          it_behaves_like 'projects response' do
+            let(:filter) { { id_before: '' } }
+            let(:current_user) { user }
+            let(:projects) { [public_project, project, project2, project3] }
+          end
         end
       end
 

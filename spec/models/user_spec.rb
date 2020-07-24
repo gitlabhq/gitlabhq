@@ -241,6 +241,22 @@ RSpec.describe User do
       it { is_expected.to validate_length_of(:last_name).is_at_most(127) }
     end
 
+    describe 'preferred_language' do
+      context 'when its value is nil in the database' do
+        let(:user) { build(:user, preferred_language: nil) }
+
+        it 'falls back to I18n.default_locale when empty in the database' do
+          expect(user.preferred_language).to eq I18n.default_locale.to_s
+        end
+
+        it 'falls back to english when I18n.default_locale is not an available language' do
+          I18n.default_locale = :kl
+
+          expect(user.preferred_language).to eq 'en'
+        end
+      end
+    end
+
     describe 'username' do
       it 'validates presence' do
         expect(subject).to validate_presence_of(:username)

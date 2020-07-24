@@ -762,6 +762,15 @@ msgstr ""
 msgid "%{webhooks_link_start}%{webhook_type}%{link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{link_end} in preference to a webhook."
 msgstr ""
 
+msgid "&lt;no name set&gt;"
+msgstr ""
+
+msgid "&lt;no scopes selected&gt;"
+msgstr ""
+
+msgid "&lt;project name&gt;"
+msgstr ""
+
 msgid "'%{level}' is not a valid visibility level"
 msgstr ""
 
@@ -1017,12 +1026,6 @@ msgid "<code>Masked</code> to prevent the values from being displayed in job log
 msgstr ""
 
 msgid "<code>Protected</code> to expose them to protected branches or tags only."
-msgstr ""
-
-msgid "<no name set>"
-msgstr ""
-
-msgid "<no scopes selected>"
 msgstr ""
 
 msgid "<project name>"
@@ -1729,7 +1732,7 @@ msgstr ""
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
-msgid "AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings > General."
+msgid "AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings &gt; General."
 msgstr ""
 
 msgid "AdminSettings|Enable shared runners for new projects"
@@ -10309,6 +10312,9 @@ msgstr ""
 msgid "FeatureFlags|Rollout Strategy"
 msgstr ""
 
+msgid "FeatureFlags|Set the Unleash client application name to the name of the environment your application runs in. This value is used to match environment scopes. See the %{linkStart}example client configuration%{linkEnd}."
+msgstr ""
+
 msgid "FeatureFlags|Status"
 msgstr ""
 
@@ -11281,7 +11287,7 @@ msgstr ""
 msgid "GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}."
 msgstr ""
 
-msgid "GitLabPages|Access Control is enabled for this Pages website; only authorized users will be able to access it. To make your website publicly available, navigate to your project's %{strong_start}Settings > General > Visibility%{strong_end} and select %{strong_start}Everyone%{strong_end} in pages section. Read the %{link_start}documentation%{link_end} for more information."
+msgid "GitLabPages|Access Control is enabled for this Pages website; only authorized users will be able to access it. To make your website publicly available, navigate to your project's %{strong_start}Settings &gt; General &gt; Visibility%{strong_end} and select %{strong_start}Everyone%{strong_end} in pages section. Read the %{link_start}documentation%{link_end} for more information."
 msgstr ""
 
 msgid "GitLabPages|Access pages"
@@ -27869,7 +27875,7 @@ msgstr ""
 msgid "cannot block others"
 msgstr ""
 
-msgid "cannot contain HTML/XML tags, including any word between angle brackets (<,>)."
+msgid "cannot contain HTML/XML tags, including any word between angle brackets (&lt;,&gt;)."
 msgstr ""
 
 msgid "cannot include leading slash or directory traversal."

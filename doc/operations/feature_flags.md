@@ -196,9 +196,11 @@ To get the access credentials that your application needs to communicate with Gi
 1. Click the **Configure** button to view the following:
    - **API URL**: URL where the client (application) connects to get a list of feature flags.
    - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.
-   - **Application name**: The name of the running environment. For instance,
-     if the application runs for a production server, the application name would be
-     `production` or similar. This value is used for the environment spec evaluation.
+   - **Application name**: The name of the *environment* the application runs in
+     (not the name of the application itself).
+
+     For example, if the application runs for a production server, the **Application name**
+     could be `production` or similar. This value is used for the environment spec evaluation.
 
 NOTE: **Note:**
 The meaning of these fields might change over time. For example, we are not sure
@@ -247,7 +249,7 @@ func init() {
     unleash.Initialize(
         unleash.WithUrl("https://gitlab.com/api/v4/feature_flags/unleash/42"),
         unleash.WithInstanceId("29QmjsW6KngPR5JNPMWx"),
-        unleash.WithAppName("production"),
+        unleash.WithAppName("production"), // Set to the running environment of your application
         unleash.WithListener(&metricsInterface{}),
     )
 }
@@ -280,7 +282,7 @@ require 'unleash/context'
 
 unleash = Unleash::Client.new({
   url: 'http://gitlab.com/api/v4/feature_flags/unleash/42',
-  app_name: 'production',
+  app_name: 'production', # Set to the running environment of your application
   instance_id: '29QmjsW6KngPR5JNPMWx'
 })
 

@@ -355,6 +355,12 @@ class User < ApplicationRecord
   scope :order_recent_last_activity, -> { reorder(Gitlab::Database.nulls_last_order('last_activity_on', 'DESC')) }
   scope :order_oldest_last_activity, -> { reorder(Gitlab::Database.nulls_first_order('last_activity_on', 'ASC')) }
 
+  def preferred_language
+    read_attribute('preferred_language') ||
+      I18n.default_locale.to_s.presence_in(Gitlab::I18n::AVAILABLE_LANGUAGES.keys) ||
+      'en'
+  end
+
   def active_for_authentication?
     super && can?(:log_in)
   end

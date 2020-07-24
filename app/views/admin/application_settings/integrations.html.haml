@@ -10,7 +10,7 @@
         = sprite_icon('close', size: 16, css_class: 'gl-icon')
       .gl-alert-body
         %h4.gl-alert-title= s_('AdminSettings|Some settings have moved')
-        = s_('AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings > General.')
+        = html_escape_once(s_('AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings &gt; General.')).html_safe
       .gl-alert-actions
         = link_to s_('AdminSettings|Go to General Settings'), general_admin_application_settings_path, class: 'btn gl-alert-action btn-info new-gl-button'
 

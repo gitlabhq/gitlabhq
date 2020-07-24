@@ -92,7 +92,7 @@ module QA
           CMD
         end
 
-        # Ping CloudFlare DNS, should fail
+        # Ping Cloudflare DNS, should fail
         # Ping Registry, should fail to resolve
         def prove_airgap
           gitlab_ip = Resolv.getaddress 'registry.gitlab.com'

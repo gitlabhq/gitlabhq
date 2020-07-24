@@ -74,50 +74,6 @@
     - "< 1 hora"
     - "< 1 saat"
     - "< 1 Stunde"
-"<namespace / project>":
-  plural_id:
-  translations:
-    - "<namespace / project>"
-    - "<простір імен / проєкт>"
-"<no name set>":
-  translations:
-    - "<nenhum nome definido>"
-    - "<no name set>"
-    - "<未設定名稱>"
-    - "<nenhum nome definido>"
-    - "<no name set>"
-    - "<未设置名称>"
-    - "<ім’я не задане>"
-    - "<no name set>"
-    - "<sense nom establert>"
-    - "<no tiene el nombre establecido>"
-    - "<isim belirlenmemiş>"
-"<no scopes selected>":
-  translations:
-    - "<nenhum escopo selecionado>"
-    - "<スコープが選択されていません>"
-    - "<未選擇範圍>"
-    - "<nenhum escopo selecionado>"
-    - "<no scopes selected>"
-    - "<未选择范围>"
-    - "<область дії не вибрано>"
-    - "<keine Bereiche ausgewählt>"
-    - "<ningún alcance seleccionado>"
-    - "<hiçbir kapsam seçilmedi>"
-"<project name>":
-  translations:
-    - "<название проекта>"
-    - "<project name>"
-    - "<proje adı>"
-    - "<naziv projekta>"
-    - "<ім’я проєкту>"
-"AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings > General.":
-  translations:
-    - "Elasticsearch、PlantUML、Slackアプリケーション、サードパーティのオファー、Snowplow、Amazon EKS は 設定 > 全般 に移動しました。"
-    - "Elasticsearch, PlantUML, приложение Slack, предложения от третьих лиц, Snowplow, Amazon EKS были перемещены в Настройки > Общие"
-    - "Elasticsearch, PlantUML, застосунок Slack, пропозиції від третіх осіб, Snowplow, Amazon EKS були переміщені до Налаштувань > Загальне."
-"cannot contain HTML/XML tags, including any word between angle brackets (<,>).":
-  translations:
 "<code>\\\"johnsmith@example.com\\\": \\\"@johnsmith\\\"</code> will add \\\"By <a href=\\\"#\\\">@johnsmith</a>\\\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\\\"#\\\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com.":
   plural_id:
   translations:
@@ -1053,3 +1009,47 @@
     - "아래 프로젝트 목록에서 <strong>프로젝트 이름</strong>을 눌러 프로젝트 마일스톤을 봅니다."
     - "Cliquez sur n’importe quel <strong>nom de projet</strong> dans la liste des projets ci‐dessous pour naviguer jusqu’au jalon du projet."
     - "Haga clic en cualquier <strong>nombre de proyecto</strong> en la lista de proyectos que se muestra a continuación para navegar hasta el hito de proyecto correspondiente."
+"<namespace / project>":
+  plural_id:
+  translations:
+    - "<namespace / project>"
+    - "<простір імен / проєкт>"
+"<no name set>":
+  translations:
+    - "<nenhum nome definido>"
+    - "<no name set>"
+    - "<未設定名稱>"
+    - "<nenhum nome definido>"
+    - "<no name set>"
+    - "<未设置名称>"
+    - "<ім’я не задане>"
+    - "<no name set>"
+    - "<sense nom establert>"
+    - "<no tiene el nombre establecido>"
+    - "<isim belirlenmemiş>"
+"<no scopes selected>":
+  translations:
+    - "<nenhum escopo selecionado>"
+    - "<スコープが選択されていません>"
+    - "<未選擇範圍>"
+    - "<nenhum escopo selecionado>"
+    - "<no scopes selected>"
+    - "<未选择范围>"
+    - "<область дії не вибрано>"
+    - "<keine Bereiche ausgewählt>"
+    - "<ningún alcance seleccionado>"
+    - "<hiçbir kapsam seçilmedi>"
+"<project name>":
+  translations:
+    - "<название проекта>"
+    - "<project name>"
+    - "<proje adı>"
+    - "<naziv projekta>"
+    - "<ім’я проєкту>"
+"AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings > General.":
+  translations:
+    - "Elasticsearch、PlantUML、Slackアプリケーション、サードパーティのオファー、Snowplow、Amazon EKS は 設定 > 全般 に移動しました。"
+    - "Elasticsearch, PlantUML, приложение Slack, предложения от третьих лиц, Snowplow, Amazon EKS были перемещены в Настройки > Общие"
+    - "Elasticsearch, PlantUML, застосунок Slack, пропозиції від третіх осіб, Snowplow, Amazon EKS були переміщені до Налаштувань > Загальне."
+"cannot contain HTML/XML tags, including any word between angle brackets (<,>).":
+  translations:
