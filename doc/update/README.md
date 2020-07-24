@@ -232,6 +232,7 @@ After upgrading, if some of your users are unexpectedly encountering 404 or 422 
 or "blocked" messages when using the command line,
 their accounts may have been un-confirmed.
 In that case, please ask them to check their email for a re-confirmation link.
+For more information, see our discussion of [Email confirmation issues](../user/upgrade_email_bypass.md).
 
 GitLab 13.2.0 relies on the `btree_gist` extension for PostgreSQL. For installations with an externally managed PostgreSQL setup, please make sure to
 [install the extension manually](https://www.postgresql.org/docs/11/sql-createextension.html) before upgrading GitLab if the database user for GitLab

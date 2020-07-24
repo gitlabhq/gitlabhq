@@ -390,13 +390,13 @@ to respect the CIDR format (i.e. `1.2.3.4/32`).
 
 GitLab places a timeout on all repository clones, including project imports
 and Geo synchronization operations. If a fresh `git clone` of a repository
-on the **primary** takes more than a few minutes, you may be affected by this.
+on the **primary** takes more than the default three hours, you may be affected by this.
 
 To increase the timeout, add the following line to `/etc/gitlab/gitlab.rb`
 on the **secondary** node:
 
 ```ruby
-gitlab_rails['gitlab_shell_git_timeout'] = 10800
+gitlab_rails['gitlab_shell_git_timeout'] = 14400
 ```
 
 Then reconfigure GitLab:
@@ -405,7 +405,7 @@ Then reconfigure GitLab:
 sudo gitlab-ctl reconfigure
 ```
 
-This will increase the timeout to three hours (10800 seconds). Choose a time
+This will increase the timeout to four hours (14400 seconds). Choose a time
 long enough to accommodate a full clone of your largest repositories.
 
 ### New LFS objects are never replicated

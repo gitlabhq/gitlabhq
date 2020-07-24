@@ -270,7 +270,7 @@ to remove a fork relationship.
 
 ### Error Tracking
 
-Configure Error Tracking to discover and view [Sentry errors within GitLab](../operations/error_tracking.md).
+Configure Error Tracking to discover and view [Sentry errors within GitLab](../../../operations/error_tracking.md).
 
 ### Jaeger tracing **(ULTIMATE)**
 

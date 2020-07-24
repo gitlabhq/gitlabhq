@@ -87,6 +87,7 @@ The following table depicts the various user permission levels in a project.
 | Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
 | Pull [packages](packages/index.md)                |         | ✓          | ✓           | ✓        | ✓      |
 | Publish [packages](packages/index.md)             |         |            | ✓           | ✓        | ✓      |
+| Create/edit/delete a Cleanup policy               |         |            | ✓           | ✓        | ✓      |
 | Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
 | Create/edit/delete [Releases](project/releases/index.md)|   |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
@@ -128,7 +129,7 @@ The following table depicts the various user permission levels in a project.
 | Push to protected branches                        |         |            |             | ✓        | ✓      |
 | Turn on/off protected branch push for devs        |         |            |             | ✓        | ✓      |
 | Enable/disable tag protections                    |         |            |             | ✓        | ✓      |
-| Edit project                                      |         |            |             | ✓        | ✓      |
+| Edit project settings                             |         |            |             | ✓        | ✓      |
 | Edit project badges                               |         |            |             | ✓        | ✓      |
 | Share (invite) projects with groups               |         |            |             | ✓ (*8*)  | ✓ (*8*)|
 | Add deploy keys to project                        |         |            |             | ✓        | ✓      |

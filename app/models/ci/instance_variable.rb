@@ -14,12 +14,14 @@ module Ci
     alias_attribute :secret_value, :value
 
     validates :key, uniqueness: {
-      message: "(%{value}) has already been taken"
+      message: -> (object, data) { _("(%{value}) has already been taken") }
     }
 
-    validates :encrypted_value, length: {
-      maximum: 1024,
-      too_long: 'The encrypted value of the provided variable exceeds %{count} bytes. Variables over 700 characters risk exceeding the limit.'
+    validates :value, length: {
+      maximum: 10_000,
+      too_long: -> (object, data) do
+        _('The value of the provided variable exceeds the %{count} character limit')
+      end
     }
 
     scope :unprotected, -> { where(protected: false) }

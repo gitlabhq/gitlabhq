@@ -1740,7 +1740,7 @@ class Project < ApplicationRecord
   end
 
   def pages_deployed?
-    Dir.exist?(public_pages_path)
+    pages_metadatum&.deployed?
   end
 
   def pages_group_url
@@ -1771,10 +1771,6 @@ class Project < ApplicationRecord
   def pages_path
     # TODO: when we migrate Pages to work with new storage types, change here to use disk_path
     File.join(Settings.pages.path, full_path)
-  end
-
-  def public_pages_path
-    File.join(pages_path, 'public')
   end
 
   def pages_available?

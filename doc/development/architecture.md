@@ -553,7 +553,7 @@ An external registry can also be configured to use GitLab as an auth endpoint.
 Sentry fundamentally is a service that helps you monitor and fix crashes in real time.
 The server is in Python, but it contains a full API for sending events from any language, in any application.
 
-For monitoring deployed apps, see the [Sentry integration docs](../user/project/operations/error_tracking.md)
+For monitoring deployed apps, see the [Sentry integration docs](../operations/error_tracking.md)
 
 #### Sidekiq
 

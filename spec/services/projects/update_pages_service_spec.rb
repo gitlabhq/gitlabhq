@@ -53,7 +53,7 @@ RSpec.describe Projects::UpdatePagesService do
 
         # Check that all expected files are extracted
         %w[index.html zero .hidden/file].each do |filename|
-          expect(File.exist?(File.join(project.public_pages_path, filename))).to be_truthy
+          expect(File.exist?(File.join(project.pages_path, 'public', filename))).to be_truthy
         end
       end
 
@@ -65,15 +65,17 @@ RSpec.describe Projects::UpdatePagesService do
       it 'removes pages after destroy' do
         expect(PagesWorker).to receive(:perform_in)
         expect(project.pages_deployed?).to be_falsey
+        expect(Dir.exist?(File.join(project.pages_path))).to be_falsey
 
         expect(execute).to eq(:success)
 
         expect(project.pages_metadatum).to be_deployed
         expect(project.pages_deployed?).to be_truthy
+        expect(Dir.exist?(File.join(project.pages_path))).to be_truthy
 
         project.destroy
 
-        expect(project.pages_deployed?).to be_falsey
+        expect(Dir.exist?(File.join(project.pages_path))).to be_falsey
         expect(ProjectPagesMetadatum.find_by_project_id(project)).to be_nil
       end
 

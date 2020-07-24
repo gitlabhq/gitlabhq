@@ -444,11 +444,11 @@ To add an instance-level variable:
 1. Navigate to your admin area's **Settings > CI/CD** and expand the **Variables** section.
 1. Click the **Add variable** button, and fill in the details:
 
-    - **Key**: Must be one line, using only letters, numbers, or `_` (underscore), with no spaces.
-    - **Value**: 700 characters allowed.
-    - **Type**: `File` or `Variable`.
-    - **Protect variable** (Optional): If selected, the variable will only be available in pipelines that run on protected branches or tags.
-    - **Mask variable** (Optional): If selected, the variable's **Value** will not be shown in job logs. The variable will not be saved if the value does not meet the [masking requirements](#masked-variable-requirements).
+   - **Key**: Must be one line, using only letters, numbers, or `_` (underscore), with no spaces.
+   - **Value**: [Since GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/220028), 10,000 characters allowed. This is also bounded by the limits of the selected Runner operating system. In GitLab 13.0 to 13.2, 700 characters allowed.
+   - **Type**: `File` or `Variable`.
+   - **Protect variable** (Optional): If selected, the variable will only be available in pipelines that run on protected branches or tags.
+   - **Mask variable** (Optional): If selected, the variable's **Value** will not be shown in job logs. The variable will not be saved if the value does not meet the [masking requirements](#masked-variable-requirements).
 
 After a variable is created, you can update any of the details by clicking the **{pencil}** **Edit** button.
 

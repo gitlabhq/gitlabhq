@@ -1698,9 +1698,9 @@ RSpec.describe Project do
 
     subject { project.pages_deployed? }
 
-    context 'if public folder does exist' do
+    context 'if pages are deployed' do
       before do
-        allow(Dir).to receive(:exist?).with(project.public_pages_path).and_return(true)
+        project.pages_metadatum.update_column(:deployed, true)
       end
 
       it { is_expected.to be_truthy }

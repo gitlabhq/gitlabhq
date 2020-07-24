@@ -1053,6 +1053,10 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Get a list of currently authenticated user's emails.
 
+NOTE: **Note:**
+Due to [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/25077) this endpoint currently
+does not return the primary email address.
+
 ```plaintext
 GET /user/emails
 ```
@@ -1077,6 +1081,10 @@ Parameters:
 ## List emails for user
 
 Get a list of a specified user's emails. Available only for admin
+
+NOTE: **Note:**
+Due to [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/25077) this endpoint currently
+does not return the primary email address.
 
 ```plaintext
 GET /users/:id/emails

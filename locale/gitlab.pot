@@ -794,6 +794,9 @@ msgstr[1] ""
 msgid "(%{mrCount} merged)"
 msgstr ""
 
+msgid "(%{value}) has already been taken"
+msgstr ""
+
 msgid "(No changes)"
 msgstr ""
 
@@ -23874,6 +23877,9 @@ msgid "The user you are trying to deactivate has been active in the past %{minim
 msgstr ""
 
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
+msgstr ""
+
+msgid "The value of the provided variable exceeds the %{count} character limit"
 msgstr ""
 
 msgid "The vulnerability is no longer detected. Verify the vulnerability has been fixed or removed before changing its status."

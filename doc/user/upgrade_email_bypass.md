@@ -47,7 +47,7 @@ Use the following code to search for users who:
 - Are also pending confirmation on or after the date of upgrade.
 
 ```ruby
-users_apparently_pending_reconfirmation = User.where(confirmed_at: nil).where('confirmation_sent_at >= ?', date_of_upgrade_to_13_2)
+User.where(confirmed_at: nil).where('LENGTH(confirmation_token) = 32')
 ```
 
 ## What does it look like when a user is blocked?

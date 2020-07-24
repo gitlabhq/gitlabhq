@@ -9990,7 +9990,7 @@ CREATE TABLE public.ci_instance_variables (
     encrypted_value_iv text,
     CONSTRAINT check_07a45a5bcb CHECK ((char_length(encrypted_value_iv) <= 255)),
     CONSTRAINT check_5aede12208 CHECK ((char_length(key) <= 255)),
-    CONSTRAINT check_5ebd0515a0 CHECK ((char_length(encrypted_value) <= 1024))
+    CONSTRAINT check_956afd70f1 CHECK ((char_length(encrypted_value) <= 13579))
 );
 
 CREATE SEQUENCE public.ci_instance_variables_id_seq

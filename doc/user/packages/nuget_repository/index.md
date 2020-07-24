@@ -43,6 +43,9 @@ Available commands:
 [output truncated]
 ```
 
+NOTE: **Note:**
+GitLab currently only supports NuGet v3. Earlier versions are not supported.
+
 ### macOS support
 
 For macOS, you can also use [Mono](https://www.mono-project.com/) to run

@@ -9,10 +9,37 @@ RSpec.describe Ci::InstanceVariable do
 
   it { is_expected.to include_module(Ci::Maskable) }
   it { is_expected.to validate_uniqueness_of(:key).with_message(/\(\w+\) has already been taken/) }
-  it { is_expected.to validate_length_of(:encrypted_value).is_at_most(1024).with_message(/Variables over 700 characters risk exceeding the limit/) }
+  it { is_expected.to validate_length_of(:value).is_at_most(10_000).with_message(/The value of the provided variable exceeds the 10000 character limit/) }
 
   it_behaves_like 'includes Limitable concern' do
     subject { build(:ci_instance_variable) }
+  end
+
+  describe '#value' do
+    context 'without application limit' do
+      # Ensures breakage if encryption algorithm changes
+      let(:variable) { build(:ci_instance_variable, key: 'too_long', value: value) }
+
+      before do
+        allow(variable).to receive(:valid?).and_return(true)
+      end
+
+      context 'when value is over the limit' do
+        let(:value) { SecureRandom.alphanumeric(10_002) }
+
+        it 'raises a database level error' do
+          expect { variable.save }.to raise_error(ActiveRecord::StatementInvalid)
+        end
+      end
+
+      context 'when value is under the limit' do
+        let(:value) { SecureRandom.alphanumeric(10_000) }
+
+        it 'does not raise database level error' do
+          expect { variable.save }.not_to raise_error
+        end
+      end
+    end
   end
 
   describe '.unprotected' do

@@ -140,6 +140,9 @@ java:
       junit: build/test-results/test/**/TEST-*.xml
 ```
 
+NOTE: **Note:**
+Support for `**` was added in [GitLab Runner 13.0](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620).
+
 #### Maven
 
 For parsing [Surefire](https://maven.apache.org/surefire/maven-surefire-plugin/)
