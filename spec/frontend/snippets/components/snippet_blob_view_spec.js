@@ -1,7 +1,6 @@
 import { mount } from '@vue/test-utils';
 import SnippetBlobView from '~/snippets/components/snippet_blob_view.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
-import BlobEmbeddable from '~/blob/components/blob_embeddable.vue';
 import BlobContent from '~/blob/components/blob_content.vue';
 import {
   BLOB_RENDER_EVENT_LOAD,
@@ -9,11 +8,7 @@ import {
   BLOB_RENDER_ERRORS,
 } from '~/blob/components/constants';
 import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
-import {
-  SNIPPET_VISIBILITY_PRIVATE,
-  SNIPPET_VISIBILITY_INTERNAL,
-  SNIPPET_VISIBILITY_PUBLIC,
-} from '~/snippets/constants';
+import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
 
 import { Blob as BlobMock, SimpleViewerMock, RichViewerMock } from 'jest/blob/components/mock_data';
 
@@ -71,18 +66,6 @@ describe('Blob Embeddable', () => {
       expect(wrapper.find(BlobHeader).exists()).toBe(true);
       expect(wrapper.find(BlobContent).exists()).toBe(true);
     });
-
-    it.each([SNIPPET_VISIBILITY_INTERNAL, SNIPPET_VISIBILITY_PRIVATE, 'foo'])(
-      'does not render blob-embeddable by default',
-      visibilityLevel => {
-        createComponent({
-          snippetProps: {
-            visibilityLevel,
-          },
-        });
-        expect(wrapper.find(BlobEmbeddable).exists()).toBe(false);
-      },
-    );
 
     it('sets simple viewer correctly', () => {
       createComponent();

@@ -292,6 +292,9 @@ msgstr[1] ""
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
 
+msgid "%{author_link} wrote:"
+msgstr ""
+
 msgid "%{authorsName}'s thread"
 msgstr ""
 
@@ -3430,6 +3433,9 @@ msgid "Authentication via U2F device failed."
 msgstr ""
 
 msgid "Author"
+msgstr ""
+
+msgid "Author: %{author_name}"
 msgstr ""
 
 msgid "Authored %{timeago} by %{author}"
@@ -11203,6 +11209,9 @@ msgstr ""
 msgid "GitLab Issue"
 msgstr ""
 
+msgid "GitLab Service Desk is a simple way to allow people to create issues in your GitLab instance without needing their own user account. It provides a unique email address for end users to create issues in a project, and replies can be sent either through the GitLab interface or by email. End users will only see the thread through email."
+msgstr ""
+
 msgid "GitLab Shared Runners execute code of different projects on the same Runner unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is on GitLab.com)."
 msgstr ""
 
@@ -12648,6 +12657,9 @@ msgid "Improve Issue boards with GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Improve Merge Requests and customer support with GitLab Enterprise Edition."
+msgstr ""
+
+msgid "Improve customer support with GitLab Service Desk."
 msgstr ""
 
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
@@ -15771,6 +15783,9 @@ msgid "New release"
 msgstr ""
 
 msgid "New requirement"
+msgstr ""
+
+msgid "New response for issue #%{issue_iid}:"
 msgstr ""
 
 msgid "New runners registration token has been generated!"
@@ -23464,6 +23479,9 @@ msgstr ""
 msgid "Thank you for your report. A GitLab administrator will look into it shortly."
 msgstr ""
 
+msgid "Thank you for your support request! We are tracking your request as ticket #%{issue_iid}, and will respond as soon as we can."
+msgstr ""
+
 msgid "Thanks for your purchase!"
 msgstr ""
 
@@ -25009,6 +25027,9 @@ msgid "To start serving your jobs you can add Runners to your group"
 msgstr ""
 
 msgid "To start serving your jobs you can either add specific Runners to your project or use shared Runners"
+msgstr ""
+
+msgid "To unsubscribe from this issue, please paste the following link into your browser:"
 msgstr ""
 
 msgid "To view all %{scannedResourcesCount} scanned URLs, please download the CSV file"

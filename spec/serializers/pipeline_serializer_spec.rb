@@ -231,7 +231,7 @@ RSpec.describe PipelineSerializer do
           # :source_pipeline and :source_job
           # Existing numbers are high and require performance optimization
           # https://gitlab.com/gitlab-org/gitlab/-/issues/225156
-          expected_queries = Gitlab.ee? ? 101 : 92
+          expected_queries = Gitlab.ee? ? 95 : 86
 
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)

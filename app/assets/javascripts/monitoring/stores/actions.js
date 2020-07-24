@@ -13,16 +13,11 @@ import trackDashboardLoad from '../monitoring_tracking_helper';
 import getEnvironments from '../queries/getEnvironments.query.graphql';
 import getAnnotations from '../queries/getAnnotations.query.graphql';
 import getDashboardValidationWarnings from '../queries/getDashboardValidationWarnings.query.graphql';
-import statusCodes from '../../lib/utils/http_status';
-import { backOff, convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
+import { getDashboard, getPrometheusQueryData } from '../requests';
 
-import {
-  PROMETHEUS_TIMEOUT,
-  ENVIRONMENT_AVAILABLE_STATE,
-  DEFAULT_DASHBOARD_PATH,
-  VARIABLE_TYPES,
-} from '../constants';
+import { ENVIRONMENT_AVAILABLE_STATE, DEFAULT_DASHBOARD_PATH, VARIABLE_TYPES } from '../constants';
 
 function prometheusMetricQueryParams(timeRange) {
   const { start, end } = convertToFixedRange(timeRange);
@@ -36,31 +31,6 @@ function prometheusMetricQueryParams(timeRange) {
     end_time: end,
     step: Math.max(minStep, Math.ceil(timeDiff / queryDataPoints)),
   };
-}
-
-function backOffRequest(makeRequestCallback) {
-  return backOff((next, stop) => {
-    makeRequestCallback()
-      .then(resp => {
-        if (resp.status === statusCodes.NO_CONTENT) {
-          next();
-        } else {
-          stop(resp);
-        }
-      })
-      .catch(stop);
-  }, PROMETHEUS_TIMEOUT);
-}
-
-function getPrometheusQueryData(prometheusEndpoint, params) {
-  return backOffRequest(() => axios.get(prometheusEndpoint, { params }))
-    .then(res => res.data)
-    .then(response => {
-      if (response.status === 'error') {
-        throw new Error(response.error);
-      }
-      return response.data;
-    });
 }
 
 // Setup
@@ -126,8 +96,7 @@ export const fetchDashboard = ({ state, commit, dispatch, getters }) => {
     params.dashboard = getters.fullDashboardPath;
   }
 
-  return backOffRequest(() => axios.get(state.dashboardEndpoint, { params }))
-    .then(resp => resp.data)
+  return getDashboard(state.dashboardEndpoint, params)
     .then(response => {
       dispatch('receiveMetricsDashboardSuccess', { response });
       /**
@@ -484,12 +453,10 @@ export const fetchVariableMetricLabelValues = ({ state, commit }, { defaultQuery
     if (variable.type === VARIABLE_TYPES.metric_label_values) {
       const { prometheusEndpointPath, label } = variable.options;
 
-      const optionsRequest = backOffRequest(() =>
-        axios.get(prometheusEndpointPath, {
-          params: { start_time, end_time },
-        }),
-      )
-        .then(({ data }) => data.data)
+      const optionsRequest = getPrometheusQueryData(prometheusEndpointPath, {
+        start_time,
+        end_time,
+      })
         .then(data => {
           commit(types.UPDATE_VARIABLE_METRIC_LABEL_VALUES, { variable, label, data });
         })

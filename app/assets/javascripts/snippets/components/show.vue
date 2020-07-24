@@ -3,6 +3,7 @@ import BlobEmbeddable from '~/blob/components/blob_embeddable.vue';
 import SnippetHeader from './snippet_header.vue';
 import SnippetTitle from './snippet_title.vue';
 import SnippetBlob from './snippet_blob_view.vue';
+import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 
 import { getSnippetMixin } from '../mixins/snippets';
@@ -15,11 +16,15 @@ export default {
     SnippetTitle,
     GlLoadingIcon,
     SnippetBlob,
+    CloneDropdownButton,
   },
   mixins: [getSnippetMixin],
   computed: {
     embeddable() {
       return this.snippet.visibilityLevel === SNIPPET_VISIBILITY_PUBLIC;
+    },
+    canBeCloned() {
+      return Boolean(this.snippet.sshUrlToRepo || this.snippet.httpUrlToRepo);
     },
   },
 };
@@ -35,7 +40,16 @@ export default {
     <template v-else>
       <snippet-header :snippet="snippet" />
       <snippet-title :snippet="snippet" />
-      <blob-embeddable v-if="embeddable" class="gl-mb-5" :url="snippet.webUrl" />
+      <div class="gl-display-flex gl-justify-content-end gl-mb-5">
+        <blob-embeddable v-if="embeddable" class="gl-flex-fill-1" :url="snippet.webUrl" />
+        <clone-dropdown-button
+          v-if="canBeCloned"
+          class="gl-ml-3"
+          :ssh-link="snippet.sshUrlToRepo"
+          :http-link="snippet.httpUrlToRepo"
+          data-qa-selector="clone_button"
+        />
+      </div>
       <div v-for="blob in blobs" :key="blob.path">
         <snippet-blob :snippet="snippet" :blob="blob" />
       </div>

@@ -4006,7 +4006,7 @@ input EpicAddIssueInput {
   issueIid: String!
 
   """
-  The project the issue belongs to
+  The full path of the project the issue belongs to
   """
   projectPath: ID!
 }

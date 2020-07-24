@@ -38,7 +38,7 @@ module QA
             element :delete_snippet_button
           end
 
-          base.view 'app/assets/javascripts/snippets/components/snippet_blob_view.vue' do
+          base.view 'app/assets/javascripts/snippets/components/show.vue' do
             element :clone_button
           end
 
