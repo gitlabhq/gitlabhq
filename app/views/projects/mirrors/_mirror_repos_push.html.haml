@@ -7,7 +7,7 @@
   = rm_f.hidden_field :keep_divergent_refs, class: 'js-mirror-keep-divergent-refs-hidden'
   = render partial: 'projects/mirrors/ssh_host_keys', locals: { f: rm_f }
   = render partial: 'projects/mirrors/authentication_method', locals: { f: rm_f }
-  .form-check.append-bottom-10
+  .form-check.gl-mb-3
     = check_box_tag :keep_divergent_refs, '1', false, class: 'js-mirror-keep-divergent-refs form-check-input'
     = label_tag :keep_divergent_refs, _('Keep divergent refs'), class: 'form-check-label'
     = link_to icon('question-circle'), help_page_path('user/project/repository/repository_mirroring', anchor: 'keep-divergent-refs-core'), target: '_blank'

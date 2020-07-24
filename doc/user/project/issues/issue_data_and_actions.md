@@ -316,4 +316,4 @@ Read more how to [add or remove a zoom meeting](associate_zoom_meeting.md).
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
 
-If a status page application is associated with the project, you can use the `/publish` [quick action](../quick_actions.md) to publish the issue. Refer to [GitLab Status Page](../status_page/index.md) for more information.
+If a status page application is associated with the project, you can use the `/publish` [quick action](../quick_actions.md) to publish the issue. Refer to [GitLab Status Page](../../../operations/incident_management/status_page.md) for more information.

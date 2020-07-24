@@ -227,6 +227,20 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     end
   end
 
+  describe '#cilium_networking_client' do
+    subject { client.cilium_networking_client }
+
+    it_behaves_like 'a Kubeclient'
+
+    it 'has the cilium API group endpoint' do
+      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/cilium.io\Z})
+    end
+
+    it 'has the api_version' do
+      expect(subject.instance_variable_get(:@api_version)).to eq('v2')
+    end
+  end
+
   describe '#metrics_client' do
     subject { client.metrics_client }
 
@@ -371,6 +385,30 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
 
         it 'delegates to the networking client' do
           expect(client).to delegate_method(method).to(:networking_client)
+        end
+
+        it 'responds to the method' do
+          expect(client).to respond_to method
+        end
+      end
+    end
+  end
+
+  describe 'cilium API group' do
+    let(:cilium_networking_client) { client.cilium_networking_client }
+
+    [
+      :create_cilium_network_policy,
+      :get_cilium_network_policies,
+      :update_cilium_network_policy,
+      :delete_cilium_network_policy
+    ].each do |method|
+      describe "##{method}" do
+        include_examples 'redirection not allowed', method
+        include_examples 'dns rebinding not allowed', method
+
+        it 'delegates to the cilium client' do
+          expect(client).to delegate_method(method).to(:cilium_networking_client)
         end
 
         it 'responds to the method' do

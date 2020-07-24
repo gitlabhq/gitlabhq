@@ -278,5 +278,5 @@ Add the URL of a Jaeger server to allow your users to [easily access the Jaeger 
 
 ### Status Page
 
-[Add Storage credentials](../status_page/#syncing-incidents-to-the-status-page)
-to enable the syncing of public Issues to a [deployed status page](../status_page/#status-page-project).
+[Add Storage credentials](../../../operations/incident_management/status_page.md#syncing-incidents-to-the-status-page)
+to enable the syncing of public Issues to a [deployed status page](../../../operations/incident_management/status_page.md#status-page-project).

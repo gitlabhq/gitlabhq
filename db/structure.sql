@@ -11004,6 +11004,26 @@ CREATE SEQUENCE public.custom_emoji_id_seq
 
 ALTER SEQUENCE public.custom_emoji_id_seq OWNED BY public.custom_emoji.id;
 
+CREATE TABLE public.dast_scanner_profiles (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id integer NOT NULL,
+    spider_timeout smallint,
+    target_timeout smallint,
+    name text NOT NULL,
+    CONSTRAINT check_568568fabf CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE public.dast_scanner_profiles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.dast_scanner_profiles_id_seq OWNED BY public.dast_scanner_profiles.id;
+
 CREATE TABLE public.dast_site_profiles (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -16762,6 +16782,8 @@ ALTER TABLE ONLY public.conversational_development_index_metrics ALTER COLUMN id
 
 ALTER TABLE ONLY public.custom_emoji ALTER COLUMN id SET DEFAULT nextval('public.custom_emoji_id_seq'::regclass);
 
+ALTER TABLE ONLY public.dast_scanner_profiles ALTER COLUMN id SET DEFAULT nextval('public.dast_scanner_profiles_id_seq'::regclass);
+
 ALTER TABLE ONLY public.dast_site_profiles ALTER COLUMN id SET DEFAULT nextval('public.dast_site_profiles_id_seq'::regclass);
 
 ALTER TABLE ONLY public.dast_sites ALTER COLUMN id SET DEFAULT nextval('public.dast_sites_id_seq'::regclass);
@@ -17744,6 +17766,9 @@ ALTER TABLE ONLY public.conversational_development_index_metrics
 
 ALTER TABLE ONLY public.custom_emoji
     ADD CONSTRAINT custom_emoji_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.dast_scanner_profiles
+    ADD CONSTRAINT dast_scanner_profiles_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.dast_site_profiles
     ADD CONSTRAINT dast_site_profiles_pkey PRIMARY KEY (id);
@@ -19272,6 +19297,8 @@ CREATE INDEX index_container_repository_on_name_trigram ON public.container_repo
 CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON public.custom_emoji USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON public.ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
+
+CREATE UNIQUE INDEX index_dast_scanner_profiles_on_project_id_and_name ON public.dast_scanner_profiles USING btree (project_id, name);
 
 CREATE INDEX index_dast_site_profiles_on_dast_site_id ON public.dast_site_profiles USING btree (dast_site_id);
 
@@ -22283,6 +22310,9 @@ ALTER TABLE ONLY public.list_user_preferences
 
 ALTER TABLE ONLY public.project_custom_attributes
     ADD CONSTRAINT fk_rails_719c3dccc5 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.dast_scanner_profiles
+    ADD CONSTRAINT fk_rails_72a8ba7141 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.vulnerability_historical_statistics
     ADD CONSTRAINT fk_rails_72b73ed023 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;

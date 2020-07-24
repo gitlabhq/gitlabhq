@@ -27,7 +27,7 @@
 
             = render 'projects/mirrors/mirror_repos_form', f: f
 
-            .form-check.append-bottom-10
+            .form-check.gl-mb-3
               = check_box_tag :only_protected_branches, '1', false, class: 'js-mirror-protected form-check-input'
               = label_tag :only_protected_branches, _('Only mirror protected branches'), class: 'form-check-label'
               = link_to icon('question-circle'), help_page_path('user/project/protected_branches'), target: '_blank'

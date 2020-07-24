@@ -133,7 +133,7 @@ They require:
 | `www.example.com`                                 | CNAME      | `namespace.gitlab.io`  |
 | `_gitlab-pages-verification-code.www.example.com` | TXT        | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
-If you're using CloudFlare, check
+If you're using Cloudflare, check
 [Redirecting `www.domain.com` to `domain.com` with Cloudflare](#redirecting-wwwdomaincom-to-domaincom-with-cloudflare).
 
 > **Notes**:
@@ -245,7 +245,7 @@ To secure your custom domain with GitLab Pages you can opt by:
   the part of the encryption keychain that identifies the CA.
   Usually it's combined with the PEM certificate, but there are
   some cases in which you need to add them manually.
-  [CloudFlare certs](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)
+  [Cloudflare certs](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)
   are one of these cases.
 - **A private key**, it's an encrypted key which validates
   your PEM against your domain.
@@ -288,7 +288,7 @@ To enable this setting:
 1. Tick the checkbox **Force HTTPS (requires valid certificates)**.
 
 NOTE: **Note:**
-If you use CloudFlare CDN in front of GitLab Pages, make sure to set the SSL connection setting to `full` instead of `flexible`. For more details, see the [CloudFlare CDN directions](https://support.cloudflare.com/hc/en-us/articles/200170416-End-to-end-HTTPS-with-Cloudflare-Part-3-SSL-options#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef).
+If you use Cloudflare CDN in front of GitLab Pages, make sure to set the SSL connection setting to `full` instead of `flexible`. For more details, see the [Cloudflare CDN directions](https://support.cloudflare.com/hc/en-us/articles/200170416-End-to-end-HTTPS-with-Cloudflare-Part-3-SSL-options#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef).
 
 <!-- ## Troubleshooting
 

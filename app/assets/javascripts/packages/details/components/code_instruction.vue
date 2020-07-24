@@ -44,7 +44,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="!multiline" class="input-group append-bottom-10">
+  <div v-if="!multiline" class="input-group gl-mb-3">
     <input
       :value="instruction"
       type="text"

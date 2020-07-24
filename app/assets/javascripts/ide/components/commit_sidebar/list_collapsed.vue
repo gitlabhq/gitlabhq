@@ -84,7 +84,7 @@ export default {
       :title="additionsTooltip"
       data-container="body"
       data-placement="left"
-      class="append-bottom-10"
+      class="gl-mb-3"
     >
       <icon :name="additionIconName" :size="18" :class="addedFilesIconClass" />
     </div>
@@ -94,7 +94,7 @@ export default {
       :title="modifiedTooltip"
       data-container="body"
       data-placement="left"
-      class="prepend-top-10 append-bottom-10"
+      class="prepend-top-10 gl-mb-3"
     >
       <icon :name="modifiedIconName" :size="18" :class="modifiedFilesClass" />
     </div>

@@ -90,7 +90,7 @@ Access the default page for admin area settings by navigating to
 | [User and IP rate limits](user_and_ip_rate_limits.md) | Configure limits for web and API requests. |
 | [Outbound requests](../../../security/webhooks.md) | Allow requests to the local network from hooks and services. |
 | [Protected Paths](protected_paths.md) | Configure paths to be protected by Rack Attack. |
-| [Incident Management](../../incident_management/index.md) Limits | Configure limits on the number of inbound alerts able to be sent to a project. |
+| [Incident Management](../../../operations/incident_management/index.md) Limits | Configure limits on the number of inbound alerts able to be sent to a project. |
 
 ## Geo
 

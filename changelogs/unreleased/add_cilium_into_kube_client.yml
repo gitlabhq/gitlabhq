@@ -1,0 +1,5 @@
+---
+title: Add Cilium APIs as part of kube_client
+merge_request: 37526
+author:
+type: changed

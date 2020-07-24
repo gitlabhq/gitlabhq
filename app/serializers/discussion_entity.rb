@@ -72,6 +72,6 @@ class DiscussionEntity < Grape::Entity
     return unless discussion.diff_discussion?
     return if discussion.legacy_diff_discussion?
 
-    Feature.enabled?(:merge_ref_head_comments, discussion.project)
+    Feature.enabled?(:merge_ref_head_comments, discussion.project, default_enabled: true)
   end
 end

@@ -17,7 +17,7 @@
     - if current_user.two_factor_enabled?
       = link_to _('Manage two-factor authentication'), profile_two_factor_auth_path, class: 'btn btn-info'
     - else
-      .append-bottom-10
+      .gl-mb-3
         = link_to _('Enable two-factor authentication'), profile_two_factor_auth_path, class: 'btn btn-success'
 
 %hr

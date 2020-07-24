@@ -21,7 +21,8 @@ module Gitlab
         istio: { group: 'apis/networking.istio.io', version: 'v1alpha3' },
         knative: { group: 'apis/serving.knative.dev', version: 'v1alpha1' },
         metrics: { group: 'apis/metrics.k8s.io', version: 'v1beta1' },
-        networking: { group: 'apis/networking.k8s.io', version: 'v1' }
+        networking: { group: 'apis/networking.k8s.io', version: 'v1' },
+        cilium_networking: { group: 'apis/cilium.io', version: 'v2' }
       }.freeze
 
       SUPPORTED_API_GROUPS.each do |name, params|
@@ -94,6 +95,14 @@ module Gitlab
         :update_network_policy,
         :delete_network_policy,
         to: :networking_client
+
+      # CiliumNetworkPolicy methods delegate to the apis/cilium.io api
+      # group client
+      delegate :create_cilium_network_policy,
+        :get_cilium_network_policies,
+        :update_cilium_network_policy,
+        :delete_cilium_network_policy,
+        to: :cilium_networking_client
 
       attr_reader :api_prefix, :kubeclient_options
 

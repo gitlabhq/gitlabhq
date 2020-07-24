@@ -13,7 +13,7 @@ multiline text
 
 exports[`Package code instruction single line to match the default snapshot 1`] = `
 <div
-  class="input-group append-bottom-10"
+  class="input-group gl-mb-3"
 >
   <input
     class="form-control monospace js-instruction-input"
