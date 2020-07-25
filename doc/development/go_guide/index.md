@@ -108,13 +108,13 @@ lint:
     - '[ -e .golangci.yml ] || cp /golangci/.golangci.yml .'
     # Write the code coverage report to gl-code-quality-report.json
     # and print linting issues to stdout in the format: path/to/file:line description
-    - golangci-lint run --out-format code-climate | tee gl-code-quality-report.json | jq -r '.[] | "\(.location.path):\(.location.lines.begin) \(.description)"'
+    # remove `--issues-exit-code 0` or set to non-zero to fail the job if linting issues are detected
+    - golangci-lint run --issues-exit-code 0 --out-format code-climate | tee gl-code-quality-report.json | jq -r '.[] | "\(.location.path):\(.location.lines.begin) \(.description)"'
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
     paths:
       - gl-code-quality-report.json
-  allow_failure: true
 ```
 
 Including a `.golangci.yml` in the root directory of the project allows for

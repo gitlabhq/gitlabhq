@@ -3,7 +3,7 @@ import {
   GlFilteredSearchToken,
   GlAvatar,
   GlFilteredSearchSuggestion,
-  GlDropdownDivider,
+  GlDeprecatedDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
@@ -19,7 +19,7 @@ export default {
     GlFilteredSearchToken,
     GlAvatar,
     GlFilteredSearchSuggestion,
-    GlDropdownDivider,
+    GlDeprecatedDropdownDivider,
     GlLoadingIcon,
   },
   props: {
@@ -102,7 +102,7 @@ export default {
       <gl-filtered-search-suggestion :value="$options.anyAuthor">
         {{ __('Any') }}
       </gl-filtered-search-suggestion>
-      <gl-dropdown-divider />
+      <gl-deprecated-dropdown-divider />
       <gl-loading-icon v-if="loading" />
       <template v-else>
         <gl-filtered-search-suggestion

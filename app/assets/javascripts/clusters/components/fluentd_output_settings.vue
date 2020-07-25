@@ -4,8 +4,8 @@ import { APPLICATION_STATUS, FLUENTD } from '~/clusters/constants';
 import {
   GlAlert,
   GlDeprecatedButton,
-  GlDropdown,
-  GlDropdownItem,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownItem,
   GlFormCheckbox,
 } from '@gitlab/ui';
 import eventHub from '~/clusters/event_hub';
@@ -17,8 +17,8 @@ export default {
   components: {
     GlAlert,
     GlDeprecatedButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownItem,
     GlFormCheckbox,
   },
   props: {
@@ -203,15 +203,15 @@ export default {
         <label for="fluentd-protocol">
           <strong>{{ s__('ClusterIntegration|SIEM Protocol') }}</strong>
         </label>
-        <gl-dropdown :text="protocolName" class="w-100">
-          <gl-dropdown-item
+        <gl-deprecated-dropdown :text="protocolName" class="w-100">
+          <gl-deprecated-dropdown-item
             v-for="(value, index) in protocols"
             :key="index"
             @click="selectProtocol(value.toLowerCase())"
           >
             {{ value }}
-          </gl-dropdown-item>
-        </gl-dropdown>
+          </gl-deprecated-dropdown-item>
+        </gl-deprecated-dropdown>
       </div>
       <div class="form-group flex flex-wrap">
         <gl-form-checkbox :checked="wafLogEnabled" @input="wafLogChanged">

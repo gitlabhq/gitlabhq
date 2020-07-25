@@ -269,7 +269,7 @@ Example of response
 ]
 ```
 
-Since GitLab 13.2, this endpoint [returns data for any pipeline](pipelines.md#single-pipeline-requests)
+In GitLab 13.3 and later, this endpoint [returns data for any pipeline](pipelines.md#single-pipeline-requests)
 including [child pipelines](../ci/parent_child_pipelines.md).
 
 ## List pipeline bridges

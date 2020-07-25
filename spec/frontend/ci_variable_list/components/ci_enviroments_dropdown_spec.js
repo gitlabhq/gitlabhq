@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem, GlIcon } from '@gitlab/ui';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -26,8 +26,8 @@ describe('Ci environments dropdown', () => {
     });
   };
 
-  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
-  const findDropdownItemByIndex = index => wrapper.findAll(GlDropdownItem).at(index);
+  const findAllDropdownItems = () => wrapper.findAll(GlDeprecatedDropdownItem);
+  const findDropdownItemByIndex = index => wrapper.findAll(GlDeprecatedDropdownItem).at(index);
   const findActiveIconByIndex = index => wrapper.findAll(GlIcon).at(index);
 
   afterEach(() => {

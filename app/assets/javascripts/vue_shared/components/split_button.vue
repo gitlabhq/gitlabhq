@@ -1,15 +1,19 @@
 <script>
 import { isString } from 'lodash';
-import { GlDropdown, GlDropdownDivider, GlDropdownItem } from '@gitlab/ui';
+import {
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownDivider,
+  GlDeprecatedDropdownItem,
+} from '@gitlab/ui';
 
 const isValidItem = item =>
   isString(item.eventName) && isString(item.title) && isString(item.description);
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownDivider,
-    GlDropdownItem,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownDivider,
+    GlDeprecatedDropdownItem,
   },
 
   props: {
@@ -57,7 +61,7 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown
+  <gl-deprecated-dropdown
     :menu-class="`dropdown-menu-selectable ${menuClass}`"
     split
     :text="dropdownToggleText"
@@ -66,7 +70,7 @@ export default {
     @click="triggerEvent"
   >
     <template v-for="(item, itemIndex) in actionItems">
-      <gl-dropdown-item
+      <gl-deprecated-dropdown-item
         :key="item.eventName"
         :active="selectedItem === item"
         active-class="is-active"
@@ -74,12 +78,12 @@ export default {
       >
         <strong>{{ item.title }}</strong>
         <div>{{ item.description }}</div>
-      </gl-dropdown-item>
+      </gl-deprecated-dropdown-item>
 
-      <gl-dropdown-divider
+      <gl-deprecated-dropdown-divider
         v-if="itemIndex < actionItems.length - 1"
         :key="`${item.eventName}-divider`"
       />
     </template>
-  </gl-dropdown>
+  </gl-deprecated-dropdown>
 </template>

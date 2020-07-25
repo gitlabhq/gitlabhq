@@ -4,7 +4,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import createStore from '~/deploy_freeze/store';
 import { mockTimezoneData } from '../mock_data';
 
-import { GlDropdownItem, GlNewDropdown } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem, GlNewDropdown } from '@gitlab/ui';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -30,8 +30,8 @@ describe('Deploy freeze timezone dropdown', () => {
     wrapper.setData({ searchTerm });
   };
 
-  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
-  const findDropdownItemByIndex = index => wrapper.findAll(GlDropdownItem).at(index);
+  const findAllDropdownItems = () => wrapper.findAll(GlDeprecatedDropdownItem);
+  const findDropdownItemByIndex = index => wrapper.findAll(GlDeprecatedDropdownItem).at(index);
 
   afterEach(() => {
     wrapper.destroy();

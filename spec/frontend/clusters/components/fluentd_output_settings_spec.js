@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import FluentdOutputSettings from '~/clusters/components/fluentd_output_settings.vue';
 import { APPLICATION_STATUS, FLUENTD } from '~/clusters/constants';
-import { GlAlert, GlDropdown, GlFormCheckbox } from '@gitlab/ui';
+import { GlAlert, GlDeprecatedDropdown, GlFormCheckbox } from '@gitlab/ui';
 import eventHub from '~/clusters/event_hub';
 
 const { UPDATING } = APPLICATION_STATUS;
@@ -36,7 +36,7 @@ describe('FluentdOutputSettings', () => {
   };
   const findSaveButton = () => wrapper.find({ ref: 'saveBtn' });
   const findCancelButton = () => wrapper.find({ ref: 'cancelBtn' });
-  const findProtocolDropdown = () => wrapper.find(GlDropdown);
+  const findProtocolDropdown = () => wrapper.find(GlDeprecatedDropdown);
   const findCheckbox = name =>
     wrapper.findAll(GlFormCheckbox).wrappers.find(x => x.text() === name);
   const findHost = () => wrapper.find('#fluentd-host');

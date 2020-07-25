@@ -5,10 +5,10 @@ import {
   GlButton,
   GlIcon,
   GlDeprecatedButton,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownHeader,
-  GlDropdownDivider,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownItem,
+  GlDeprecatedDropdownHeader,
+  GlDeprecatedDropdownDivider,
   GlNewDropdown,
   GlNewDropdownDivider,
   GlNewDropdownItem,
@@ -41,11 +41,11 @@ export default {
     GlButton,
     GlIcon,
     GlDeprecatedButton,
-    GlDropdown,
+    GlDeprecatedDropdown,
     GlLoadingIcon,
-    GlDropdownItem,
-    GlDropdownHeader,
-    GlDropdownDivider,
+    GlDeprecatedDropdownItem,
+    GlDeprecatedDropdownHeader,
+    GlDeprecatedDropdownDivider,
     GlNewDropdown,
     GlNewDropdownDivider,
     GlNewDropdownItem,
@@ -240,7 +240,7 @@ export default {
     <span aria-hidden="true" class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"></span>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">
-      <gl-dropdown
+      <gl-deprecated-dropdown
         id="monitor-environments-dropdown"
         ref="monitorEnvironmentsDropdown"
         class="flex-grow-1"
@@ -250,20 +250,20 @@ export default {
         :text="currentEnvironmentName"
       >
         <div class="d-flex flex-column overflow-hidden">
-          <gl-dropdown-header class="monitor-environment-dropdown-header text-center">
+          <gl-deprecated-dropdown-header class="monitor-environment-dropdown-header text-center">
             {{ __('Environment') }}
-          </gl-dropdown-header>
-          <gl-dropdown-divider />
+          </gl-deprecated-dropdown-header>
+          <gl-deprecated-dropdown-divider />
           <gl-search-box-by-type class="m-2" @input="debouncedEnvironmentsSearch" />
           <gl-loading-icon v-if="environmentsLoading" :inline="true" />
           <div v-else class="flex-fill overflow-auto">
-            <gl-dropdown-item
+            <gl-deprecated-dropdown-item
               v-for="environment in filteredEnvironments"
               :key="environment.id"
               :active="environment.name === currentEnvironmentName"
               active-class="is-active"
               :href="getEnvironmentPath(environment.id)"
-              >{{ environment.name }}</gl-dropdown-item
+              >{{ environment.name }}</gl-deprecated-dropdown-item
             >
           </div>
           <div
@@ -274,7 +274,7 @@ export default {
             {{ __('No matching results') }}
           </div>
         </div>
-      </gl-dropdown>
+      </gl-deprecated-dropdown>
     </div>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">

@@ -5,10 +5,10 @@ import {
   GlSprintf,
   GlIcon,
   GlAlert,
-  GlDropdown,
-  GlDropdownHeader,
-  GlDropdownItem,
-  GlDropdownDivider,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownHeader,
+  GlDeprecatedDropdownItem,
+  GlDeprecatedDropdownDivider,
   GlInfiniteScroll,
 } from '@gitlab/ui';
 
@@ -25,10 +25,10 @@ export default {
     GlSprintf,
     GlIcon,
     GlAlert,
-    GlDropdown,
-    GlDropdownHeader,
-    GlDropdownItem,
-    GlDropdownDivider,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownHeader,
+    GlDeprecatedDropdownItem,
+    GlDeprecatedDropdownDivider,
     GlInfiniteScroll,
     LogSimpleFilters,
     LogAdvancedFilters,
@@ -174,16 +174,16 @@ export default {
 
     <div class="top-bar d-md-flex border bg-secondary-50 pt-2 pr-1 pb-0 pl-2">
       <div class="flex-grow-0">
-        <gl-dropdown
+        <gl-deprecated-dropdown
           id="environments-dropdown"
           :text="environments.current || managedApps.current"
           :disabled="environments.isLoading"
           class="mb-2 gl-h-32 pr-2 d-flex d-md-block js-environments-dropdown"
         >
-          <gl-dropdown-header class="gl-text-center">
+          <gl-deprecated-dropdown-header class="gl-text-center">
             {{ s__('Environments|Environments') }}
-          </gl-dropdown-header>
-          <gl-dropdown-item
+          </gl-deprecated-dropdown-header>
+          <gl-deprecated-dropdown-item
             v-for="env in environments.options"
             :key="env.id"
             @click="showEnvironment(env.name)"
@@ -195,12 +195,12 @@ export default {
               />
               <div class="gl-flex-grow-1">{{ env.name }}</div>
             </div>
-          </gl-dropdown-item>
-          <gl-dropdown-divider />
-          <gl-dropdown-header class="gl-text-center">
+          </gl-deprecated-dropdown-item>
+          <gl-deprecated-dropdown-divider />
+          <gl-deprecated-dropdown-header class="gl-text-center">
             {{ s__('Environments|Managed apps') }}
-          </gl-dropdown-header>
-          <gl-dropdown-item
+          </gl-deprecated-dropdown-header>
+          <gl-deprecated-dropdown-item
             v-for="app in managedApps.options"
             :key="app.id"
             @click="showManagedApp(app.name)"
@@ -212,8 +212,8 @@ export default {
               />
               <div class="gl-flex-grow-1">{{ app.name }}</div>
             </div>
-          </gl-dropdown-item>
-        </gl-dropdown>
+          </gl-deprecated-dropdown-item>
+        </gl-deprecated-dropdown>
       </div>
 
       <log-advanced-filters

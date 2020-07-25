@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem } from '@gitlab/ui';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import { APPLICATION_STATUS } from '~/clusters/constants';
@@ -113,7 +113,7 @@ describe('KnativeDomainEditor', () => {
       createComponent({ knative: { ...knative, availableDomains: [newDomain] } });
       jest.spyOn(wrapper.vm, 'selectDomain');
 
-      wrapper.find(GlDropdownItem).vm.$emit('click');
+      wrapper.find(GlDeprecatedDropdownItem).vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.selectDomain).toHaveBeenCalledWith(newDomain);

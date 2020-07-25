@@ -7,9 +7,11 @@ import {
   GlAvatarLink,
   GlAvatar,
   GlTooltipDirective,
+  GlButton,
 } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__ } from '~/locale';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
 import { I18N } from '../constants';
 
@@ -48,12 +50,13 @@ export default {
     GlAvatarsInline,
     GlAvatarLink,
     GlAvatar,
+    GlButton,
     TimeAgoTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['projectPath'],
+  inject: ['projectPath', 'newIssuePath', 'incidentTemplateName'],
   apollo: {
     incidents: {
       query: getIncidents,
@@ -73,6 +76,7 @@ export default {
     return {
       errored: false,
       isErrorAlertDismissed: false,
+      redirecting: false,
     };
   },
   computed: {
@@ -90,6 +94,9 @@ export default {
         [bodyTrClass]: !this.loading && this.hasIncidents,
       };
     },
+    newIncidentPath() {
+      return mergeUrlParams({ issuable_template: this.incidentTemplateName }, this.newIssuePath);
+    },
   },
   methods: {
     hasAssignees(assignees) {
@@ -103,6 +110,21 @@ export default {
     <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="isErrorAlertDismissed = true">
       {{ $options.i18n.errorMsg }}
     </gl-alert>
+
+    <div class="gl-display-flex gl-justify-content-end">
+      <gl-button
+        class="gl-mt-3 create-incident-button"
+        data-testid="createIncidentBtn"
+        :loading="redirecting"
+        :disabled="redirecting"
+        category="primary"
+        variant="success"
+        :href="newIncidentPath"
+        @click="redirecting = true"
+      >
+        {{ $options.i18n.createIncidentBtnLabel }}
+      </gl-button>
+    </div>
 
     <h4 class="gl-display-block d-md-none my-3">
       {{ s__('IncidentManagement|Incidents') }}

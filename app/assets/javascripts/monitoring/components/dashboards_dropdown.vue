@@ -2,10 +2,10 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 import {
   GlIcon,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownHeader,
-  GlDropdownDivider,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownItem,
+  GlDeprecatedDropdownHeader,
+  GlDeprecatedDropdownDivider,
   GlSearchBoxByType,
   GlModalDirective,
 } from '@gitlab/ui';
@@ -17,10 +17,10 @@ const events = {
 export default {
   components: {
     GlIcon,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownHeader,
-    GlDropdownDivider,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownItem,
+    GlDeprecatedDropdownHeader,
+    GlDeprecatedDropdownDivider,
     GlSearchBoxByType,
   },
   directives: {
@@ -81,16 +81,16 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown
+  <gl-deprecated-dropdown
     toggle-class="dropdown-menu-toggle"
     menu-class="monitor-dashboard-dropdown-menu"
     :text="selectedDashboardText"
   >
     <div class="d-flex flex-column overflow-hidden">
-      <gl-dropdown-header class="monitor-dashboard-dropdown-header text-center">{{
+      <gl-deprecated-dropdown-header class="monitor-dashboard-dropdown-header text-center">{{
         __('Dashboard')
-      }}</gl-dropdown-header>
-      <gl-dropdown-divider />
+      }}</gl-deprecated-dropdown-header>
+      <gl-deprecated-dropdown-divider />
       <gl-search-box-by-type
         ref="monitorDashboardsDropdownSearch"
         v-model="searchTerm"
@@ -98,7 +98,7 @@ export default {
       />
 
       <div class="flex-fill overflow-auto">
-        <gl-dropdown-item
+        <gl-deprecated-dropdown-item
           v-for="dashboard in starredDashboards"
           :key="dashboard.path"
           :active="dashboard.path === selectedDashboardPath"
@@ -109,14 +109,14 @@ export default {
             {{ dashboardDisplayName(dashboard) }}
             <gl-icon class="text-muted ml-auto" name="star" />
           </div>
-        </gl-dropdown-item>
+        </gl-deprecated-dropdown-item>
 
-        <gl-dropdown-divider
+        <gl-deprecated-dropdown-divider
           v-if="starredDashboards.length && nonStarredDashboards.length"
           ref="starredListDivider"
         />
 
-        <gl-dropdown-item
+        <gl-deprecated-dropdown-item
           v-for="dashboard in nonStarredDashboards"
           :key="dashboard.path"
           :active="dashboard.path === selectedDashboardPath"
@@ -124,7 +124,7 @@ export default {
           @click="selectDashboard(dashboard)"
         >
           {{ dashboardDisplayName(dashboard) }}
-        </gl-dropdown-item>
+        </gl-deprecated-dropdown-item>
       </div>
 
       <div
@@ -140,12 +140,12 @@ export default {
            in https://gitlab.com/gitlab-org/gitlab/-/issues/223223
       -->
       <template v-if="isOutOfTheBoxDashboard">
-        <gl-dropdown-divider />
+        <gl-deprecated-dropdown-divider />
 
-        <gl-dropdown-item v-gl-modal="modalId" data-testid="duplicateDashboardItem">
+        <gl-deprecated-dropdown-item v-gl-modal="modalId" data-testid="duplicateDashboardItem">
           {{ s__('Metrics|Duplicate dashboard') }}
-        </gl-dropdown-item>
+        </gl-deprecated-dropdown-item>
       </template>
     </div>
-  </gl-dropdown>
+  </gl-deprecated-dropdown>
 </template>

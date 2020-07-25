@@ -2,7 +2,6 @@
 
 require_relative '../qa'
 require 'rspec/retry'
-require 'rspec-parameterized'
 
 if ENV['CI'] && QA::Runtime::Env.knapsack? && !ENV['NO_KNAPSACK']
   require 'knapsack'

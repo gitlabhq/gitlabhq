@@ -1,5 +1,5 @@
 <script>
-import { GlNewDropdown, GlDropdownItem, GlSearchBoxByType, GlIcon } from '@gitlab/ui';
+import { GlNewDropdown, GlDeprecatedDropdownItem, GlSearchBoxByType, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 
@@ -7,7 +7,7 @@ export default {
   name: 'TimezoneDropdown',
   components: {
     GlNewDropdown,
-    GlDropdownItem,
+    GlDeprecatedDropdownItem,
     GlSearchBoxByType,
     GlIcon,
   },
@@ -83,7 +83,7 @@ export default {
     </template>
 
     <gl-search-box-by-type v-model.trim="searchTerm" v-autofocusonshow autofocus class="gl-m-3" />
-    <gl-dropdown-item
+    <gl-deprecated-dropdown-item
       v-for="timezone in filteredResults"
       :key="timezone.formattedTimezone"
       @click="selectTimezone(timezone)"
@@ -94,9 +94,9 @@ export default {
         class="gl-vertical-align-middle"
       />
       {{ timezone.formattedTimezone }}
-    </gl-dropdown-item>
-    <gl-dropdown-item v-if="!filteredResults.length" data-testid="noMatchingResults">
+    </gl-deprecated-dropdown-item>
+    <gl-deprecated-dropdown-item v-if="!filteredResults.length" data-testid="noMatchingResults">
       {{ $options.tranlations.noResultsText }}
-    </gl-dropdown-item>
+    </gl-deprecated-dropdown-item>
   </gl-new-dropdown>
 </template>

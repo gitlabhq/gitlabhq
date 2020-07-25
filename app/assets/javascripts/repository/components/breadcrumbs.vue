@@ -1,5 +1,10 @@
 <script>
-import { GlDropdown, GlDropdownDivider, GlDropdownHeader, GlDropdownItem } from '@gitlab/ui';
+import {
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownDivider,
+  GlDeprecatedDropdownHeader,
+  GlDeprecatedDropdownItem,
+} from '@gitlab/ui';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import { __ } from '../../locale';
 import Icon from '../../vue_shared/components/icon.vue';
@@ -15,10 +20,10 @@ const ROW_TYPES = {
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownDivider,
-    GlDropdownHeader,
-    GlDropdownItem,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownDivider,
+    GlDeprecatedDropdownHeader,
+    GlDeprecatedDropdownItem,
     Icon,
   },
   apollo: {
@@ -221,11 +226,11 @@ export default {
     getComponent(type) {
       switch (type) {
         case ROW_TYPES.divider:
-          return 'gl-dropdown-divider';
+          return 'gl-deprecated-dropdown-divider';
         case ROW_TYPES.header:
-          return 'gl-dropdown-header';
+          return 'gl-deprecated-dropdown-header';
         default:
-          return 'gl-dropdown-item';
+          return 'gl-deprecated-dropdown-item';
       }
     },
   },
@@ -241,7 +246,7 @@ export default {
         </router-link>
       </li>
       <li v-if="renderAddToTreeDropdown" class="breadcrumb-item">
-        <gl-dropdown toggle-class="add-to-tree qa-add-to-tree ml-1">
+        <gl-deprecated-dropdown toggle-class="add-to-tree qa-add-to-tree ml-1">
           <template #button-content>
             <span class="sr-only">{{ __('Add to tree') }}</span>
             <icon name="plus" :size="16" class="float-left" />
@@ -252,7 +257,7 @@ export default {
               {{ item.text }}
             </component>
           </template>
-        </gl-dropdown>
+        </gl-deprecated-dropdown>
       </li>
     </ol>
   </nav>

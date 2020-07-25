@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
-import { GlAlert, GlIcon, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlAlert, GlIcon, GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 
 import axios from '~/lib/utils/axios_utils';
@@ -17,7 +17,7 @@ describe('Code Coverage', () => {
 
   const findAlert = () => wrapper.find(GlAlert);
   const findAreaChart = () => wrapper.find(GlAreaChart);
-  const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
+  const findAllDropdownItems = () => wrapper.findAll(GlDeprecatedDropdownItem);
   const findFirstDropdownItem = () => findAllDropdownItems().at(0);
   const findSecondDropdownItem = () => findAllDropdownItems().at(1);
 
@@ -124,7 +124,7 @@ describe('Code Coverage', () => {
     });
 
     it('renders the dropdown with all custom names as options', () => {
-      expect(wrapper.contains(GlDropdown)).toBeDefined();
+      expect(wrapper.contains(GlDeprecatedDropdown)).toBeDefined();
       expect(findAllDropdownItems()).toHaveLength(codeCoverageMockData.length);
       expect(findFirstDropdownItem().text()).toBe(codeCoverageMockData[0].group_name);
     });

@@ -88,4 +88,10 @@
       background-color: $white-normal;
     }
   }
+
+  @include media-breakpoint-down(xs) {
+    .create-incident-button {
+      @include gl-w-full;
+    }
+  }
 }

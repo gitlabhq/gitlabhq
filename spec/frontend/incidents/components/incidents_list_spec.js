@@ -7,6 +7,8 @@ import mockIncidents from '../mocks/incidents.json';
 
 describe('Incidents List', () => {
   let wrapper;
+  const newIssuePath = 'namespace/project/-/issues/new';
+  const incidentTemplateName = 'incident';
 
   const findTable = () => wrapper.find(GlTable);
   const findTableRows = () => wrapper.findAll('table tbody tr');
@@ -14,6 +16,7 @@ describe('Incidents List', () => {
   const findLoader = () => wrapper.find(GlLoadingIcon);
   const findTimeAgo = () => wrapper.findAll(TimeAgoTooltip);
   const findAssingees = () => wrapper.findAll('[data-testid="incident-assignees"]');
+  const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
 
   function mountComponent({ data = { incidents: [] }, loading = false }) {
     wrapper = mount(IncidentsList, {
@@ -31,8 +34,11 @@ describe('Incidents List', () => {
       },
       provide: {
         projectPath: '/project/path',
+        newIssuePath,
+        incidentTemplateName,
       },
       stubs: {
+        GlButton: true,
         GlAvatar: true,
       },
     });
@@ -104,6 +110,29 @@ describe('Incidents List', () => {
         expect(avatar.exists()).toBe(true);
         expect(label).toBe(name);
         expect(src).toBe(avatarUrl);
+      });
+    });
+  });
+
+  describe('Create Incident', () => {
+    beforeEach(() => {
+      mountComponent({
+        data: { incidents: [] },
+        loading: false,
+      });
+    });
+
+    it('shows the button linking to new incidents page with prefilled incident template', () => {
+      expect(findCreateIncidentBtn().exists()).toBe(true);
+      expect(findCreateIncidentBtn().attributes('href')).toBe(
+        `${newIssuePath}?issuable_template=${incidentTemplateName}`,
+      );
+    });
+
+    it('sets button loading on click', () => {
+      findCreateIncidentBtn().vm.$emit('click');
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findCreateIncidentBtn().attributes('loading')).toBe('true');
       });
     });
   });

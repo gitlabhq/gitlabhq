@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem } from '@gitlab/ui';
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
 
 const commits = [
@@ -39,7 +39,7 @@ describe('Commits message dropdown component', () => {
     wrapper.destroy();
   });
 
-  const findDropdownElements = () => wrapper.findAll(GlDropdownItem);
+  const findDropdownElements = () => wrapper.findAll(GlDeprecatedDropdownItem);
   const findFirstDropdownElement = () => findDropdownElements().at(0);
 
   it('should have 3 elements in dropdown list', () => {

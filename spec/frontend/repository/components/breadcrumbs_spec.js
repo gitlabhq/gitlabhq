@@ -1,5 +1,5 @@
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
-import { GlDropdown } from '@gitlab/ui';
+import { GlDeprecatedDropdown } from '@gitlab/ui';
 import Breadcrumbs from '~/repository/components/breadcrumbs.vue';
 
 let vm;
@@ -61,7 +61,7 @@ describe('Repository breadcrumbs component', () => {
     vm.setData({ userPermissions: { forkProject: false, createMergeRequestIn: false } });
 
     return vm.vm.$nextTick(() => {
-      expect(vm.find(GlDropdown).exists()).toBe(false);
+      expect(vm.find(GlDeprecatedDropdown).exists()).toBe(false);
     });
   });
 
@@ -71,7 +71,7 @@ describe('Repository breadcrumbs component', () => {
     vm.setData({ userPermissions: { forkProject: true, createMergeRequestIn: true } });
 
     return vm.vm.$nextTick(() => {
-      expect(vm.find(GlDropdown).exists()).toBe(true);
+      expect(vm.find(GlDeprecatedDropdown).exists()).toBe(true);
     });
   });
 });

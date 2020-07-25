@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import IngressModsecuritySettings from '~/clusters/components/ingress_modsecurity_settings.vue';
 import { APPLICATION_STATUS, INGRESS } from '~/clusters/constants';
-import { GlAlert, GlToggle, GlDropdown } from '@gitlab/ui';
+import { GlAlert, GlToggle, GlDeprecatedDropdown } from '@gitlab/ui';
 import eventHub from '~/clusters/event_hub';
 
 const { UPDATING } = APPLICATION_STATUS;
@@ -31,7 +31,7 @@ describe('IngressModsecuritySettings', () => {
   const findSaveButton = () => wrapper.find('.btn-success');
   const findCancelButton = () => wrapper.find('[variant="secondary"]');
   const findModSecurityToggle = () => wrapper.find(GlToggle);
-  const findModSecurityDropdown = () => wrapper.find(GlDropdown);
+  const findModSecurityDropdown = () => wrapper.find(GlDeprecatedDropdown);
 
   describe('when ingress is installed', () => {
     beforeEach(() => {

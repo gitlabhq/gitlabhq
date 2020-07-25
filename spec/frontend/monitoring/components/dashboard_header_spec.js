@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
-import { GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import DuplicateDashboardModal from '~/monitoring/components/duplicate_dashboard_modal.vue';
 import CreateDashboardModal from '~/monitoring/components/create_dashboard_modal.vue';
@@ -27,7 +27,7 @@ describe('Dashboard header', () => {
   let wrapper;
 
   const findEnvsDropdown = () => wrapper.find({ ref: 'monitorEnvironmentsDropdown' });
-  const findEnvsDropdownItems = () => findEnvsDropdown().findAll(GlDropdownItem);
+  const findEnvsDropdownItems = () => findEnvsDropdown().findAll(GlDeprecatedDropdownItem);
   const findEnvsDropdownSearch = () => findEnvsDropdown().find(GlSearchBoxByType);
   const findEnvsDropdownSearchMsg = () => wrapper.find({ ref: 'monitorEnvironmentsDropdownMsg' });
   const findEnvsDropdownLoadingIcon = () => findEnvsDropdown().find(GlLoadingIcon);

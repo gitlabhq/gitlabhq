@@ -3,10 +3,10 @@ import { throttle } from 'lodash';
 import {
   GlLoadingIcon,
   GlSearchBoxByType,
-  GlDropdown,
-  GlDropdownDivider,
-  GlDropdownHeader,
-  GlDropdownItem,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownDivider,
+  GlDeprecatedDropdownHeader,
+  GlDeprecatedDropdownItem,
 } from '@gitlab/ui';
 
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -26,10 +26,10 @@ export default {
     BoardForm,
     GlLoadingIcon,
     GlSearchBoxByType,
-    GlDropdown,
-    GlDropdownDivider,
-    GlDropdownHeader,
-    GlDropdownItem,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownDivider,
+    GlDeprecatedDropdownHeader,
+    GlDeprecatedDropdownItem,
   },
   props: {
     currentBoard: {
@@ -235,7 +235,7 @@ export default {
 <template>
   <div class="boards-switcher js-boards-selector gl-mr-3">
     <span class="boards-selector-wrapper js-boards-selector-wrapper">
-      <gl-dropdown
+      <gl-deprecated-dropdown
         data-qa-selector="boards_dropdown"
         toggle-class="dropdown-menu-toggle js-dropdown-toggle"
         menu-class="flex-column dropdown-extended-height"
@@ -248,9 +248,9 @@ export default {
           </div>
         </div>
 
-        <gl-dropdown-header class="mt-0">
+        <gl-deprecated-dropdown-header class="mt-0">
           <gl-search-box-by-type ref="searchBox" v-model="filterTerm" />
-        </gl-dropdown-header>
+        </gl-deprecated-dropdown-header>
 
         <div
           v-if="!loading"
@@ -259,26 +259,26 @@ export default {
           class="dropdown-content flex-fill"
           @scroll.passive="throttledSetScrollFade"
         >
-          <gl-dropdown-item
+          <gl-deprecated-dropdown-item
             v-show="filteredBoards.length === 0"
             class="no-pointer-events text-secondary"
           >
             {{ s__('IssueBoards|No matching boards found') }}
-          </gl-dropdown-item>
+          </gl-deprecated-dropdown-item>
 
           <h6 v-if="showRecentSection" class="dropdown-bold-header my-0">
             {{ __('Recent') }}
           </h6>
 
           <template v-if="showRecentSection">
-            <gl-dropdown-item
+            <gl-deprecated-dropdown-item
               v-for="recentBoard in recentBoards"
               :key="`recent-${recentBoard.id}`"
               class="js-dropdown-item"
               :href="`${boardBaseUrl}/${recentBoard.id}`"
             >
               {{ recentBoard.name }}
-            </gl-dropdown-item>
+            </gl-deprecated-dropdown-item>
           </template>
 
           <hr v-if="showRecentSection" class="my-1" />
@@ -287,21 +287,21 @@ export default {
             {{ __('All') }}
           </h6>
 
-          <gl-dropdown-item
+          <gl-deprecated-dropdown-item
             v-for="otherBoard in filteredBoards"
             :key="otherBoard.id"
             class="js-dropdown-item"
             :href="`${boardBaseUrl}/${otherBoard.id}`"
           >
             {{ otherBoard.name }}
-          </gl-dropdown-item>
-          <gl-dropdown-item v-if="hasMissingBoards" class="small unclickable">
+          </gl-deprecated-dropdown-item>
+          <gl-deprecated-dropdown-item v-if="hasMissingBoards" class="small unclickable">
             {{
               s__(
                 'IssueBoards|Some of your boards are hidden, activate a license to see them again.',
               )
             }}
-          </gl-dropdown-item>
+          </gl-deprecated-dropdown-item>
         </div>
 
         <div
@@ -313,25 +313,25 @@ export default {
         <gl-loading-icon v-if="loading" />
 
         <div v-if="canAdminBoard">
-          <gl-dropdown-divider />
+          <gl-deprecated-dropdown-divider />
 
-          <gl-dropdown-item
+          <gl-deprecated-dropdown-item
             v-if="multipleIssueBoardsAvailable"
             data-qa-selector="create_new_board_button"
             @click.prevent="showPage('new')"
           >
             {{ s__('IssueBoards|Create new board') }}
-          </gl-dropdown-item>
+          </gl-deprecated-dropdown-item>
 
-          <gl-dropdown-item
+          <gl-deprecated-dropdown-item
             v-if="showDelete"
             class="text-danger js-delete-board"
             @click.prevent="showPage('delete')"
           >
             {{ s__('IssueBoards|Delete board') }}
-          </gl-dropdown-item>
+          </gl-deprecated-dropdown-item>
         </div>
-      </gl-dropdown>
+      </gl-deprecated-dropdown>
 
       <board-form
         v-if="currentPage"

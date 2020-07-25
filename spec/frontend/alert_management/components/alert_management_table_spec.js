@@ -3,8 +3,8 @@ import {
   GlTable,
   GlAlert,
   GlLoadingIcon,
-  GlDropdown,
-  GlDropdownItem,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownItem,
   GlIcon,
   GlTabs,
   GlTab,
@@ -32,12 +32,12 @@ describe('AlertManagementTable', () => {
   const findAlerts = () => wrapper.findAll('table tbody tr');
   const findAlert = () => wrapper.find(GlAlert);
   const findLoader = () => wrapper.find(GlLoadingIcon);
-  const findStatusDropdown = () => wrapper.find(GlDropdown);
+  const findStatusDropdown = () => wrapper.find(GlDeprecatedDropdown);
   const findStatusFilterTabs = () => wrapper.findAll(GlTab);
   const findStatusTabs = () => wrapper.find(GlTabs);
   const findStatusFilterBadge = () => wrapper.findAll(GlBadge);
   const findDateFields = () => wrapper.findAll(TimeAgo);
-  const findFirstStatusOption = () => findStatusDropdown().find(GlDropdownItem);
+  const findFirstStatusOption = () => findStatusDropdown().find(GlDeprecatedDropdownItem);
   const findAssignees = () => wrapper.findAll('[data-testid="assigneesField"]');
   const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
   const findSeverityColumnHeader = () => wrapper.findAll('th').at(0);

@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
-import { GlDropdown, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
+import { GlDeprecatedDropdown, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import * as getters from '~/registry/explorer/stores/getters';
 import QuickstartDropdown from '~/registry/explorer/components/list_page/cli_commands.vue';
@@ -23,7 +23,7 @@ describe('cli_commands', () => {
   let wrapper;
   let store;
 
-  const findDropdownButton = () => wrapper.find(GlDropdown);
+  const findDropdownButton = () => wrapper.find(GlDeprecatedDropdown);
   const findFormGroups = () => wrapper.findAll(GlFormGroup);
 
   const mountComponent = () => {

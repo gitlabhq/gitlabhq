@@ -1,11 +1,11 @@
 <script>
-import { GlFormGroup, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlFormGroup, GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
 
 export default {
   components: {
     GlFormGroup,
-    GlDropdown,
-    GlDropdownItem,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownItem,
   },
   props: {
     name: {
@@ -41,13 +41,16 @@ export default {
 </script>
 <template>
   <gl-form-group :label="label">
-    <gl-dropdown toggle-class="dropdown-menu-toggle" :text="text || s__('Metrics|Select a value')">
-      <gl-dropdown-item
+    <gl-deprecated-dropdown
+      toggle-class="dropdown-menu-toggle"
+      :text="text || s__('Metrics|Select a value')"
+    >
+      <gl-deprecated-dropdown-item
         v-for="val in options.values"
         :key="val.value"
         @click="onUpdate(val.value)"
-        >{{ val.text }}</gl-dropdown-item
+        >{{ val.text }}</gl-deprecated-dropdown-item
       >
-    </gl-dropdown>
+    </gl-deprecated-dropdown>
   </gl-form-group>
 </template>

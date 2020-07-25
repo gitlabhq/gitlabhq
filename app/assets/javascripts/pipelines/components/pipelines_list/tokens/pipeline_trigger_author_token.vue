@@ -3,7 +3,7 @@ import {
   GlFilteredSearchToken,
   GlAvatar,
   GlFilteredSearchSuggestion,
-  GlDropdownDivider,
+  GlDeprecatedDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import Api from '~/api';
@@ -21,7 +21,7 @@ export default {
     GlFilteredSearchToken,
     GlAvatar,
     GlFilteredSearchSuggestion,
-    GlDropdownDivider,
+    GlDeprecatedDropdownDivider,
     GlLoadingIcon,
   },
   props: {
@@ -94,7 +94,7 @@ export default {
       <gl-filtered-search-suggestion :value="$options.anyTriggerAuthor">{{
         $options.anyTriggerAuthor
       }}</gl-filtered-search-suggestion>
-      <gl-dropdown-divider />
+      <gl-deprecated-dropdown-divider />
 
       <gl-loading-icon v-if="loading" />
       <template v-else>

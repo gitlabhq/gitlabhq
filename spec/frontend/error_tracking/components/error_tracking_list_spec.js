@@ -1,6 +1,12 @@
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlEmptyState, GlLoadingIcon, GlFormInput, GlPagination, GlDropdown } from '@gitlab/ui';
+import {
+  GlEmptyState,
+  GlLoadingIcon,
+  GlFormInput,
+  GlPagination,
+  GlDeprecatedDropdown,
+} from '@gitlab/ui';
 import stubChildren from 'helpers/stub_children';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
@@ -18,19 +24,19 @@ describe('ErrorTrackingList', () => {
 
   const findErrorListTable = () => wrapper.find('table');
   const findErrorListRows = () => wrapper.findAll('tbody tr');
-  const dropdownsArray = () => wrapper.findAll(GlDropdown);
+  const dropdownsArray = () => wrapper.findAll(GlDeprecatedDropdown);
   const findRecentSearchesDropdown = () =>
     dropdownsArray()
       .at(0)
-      .find(GlDropdown);
+      .find(GlDeprecatedDropdown);
   const findStatusFilterDropdown = () =>
     dropdownsArray()
       .at(1)
-      .find(GlDropdown);
+      .find(GlDeprecatedDropdown);
   const findSortDropdown = () =>
     dropdownsArray()
       .at(2)
-      .find(GlDropdown);
+      .find(GlDeprecatedDropdown);
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findPagination = () => wrapper.find(GlPagination);
   const findErrorActions = () => wrapper.find(ErrorTrackingActions);
@@ -128,8 +134,8 @@ describe('ErrorTrackingList', () => {
       mountComponent({
         stubs: {
           GlTable: false,
-          GlDropdown: false,
-          GlDropdownItem: false,
+          GlDeprecatedDropdown: false,
+          GlDeprecatedDropdownItem: false,
           GlLink: false,
         },
       });
@@ -199,8 +205,8 @@ describe('ErrorTrackingList', () => {
       mountComponent({
         stubs: {
           GlTable: false,
-          GlDropdown: false,
-          GlDropdownItem: false,
+          GlDeprecatedDropdown: false,
+          GlDeprecatedDropdownItem: false,
         },
       });
     });
@@ -335,8 +341,8 @@ describe('ErrorTrackingList', () => {
     beforeEach(() => {
       mountComponent({
         stubs: {
-          GlDropdown: false,
-          GlDropdownItem: false,
+          GlDeprecatedDropdown: false,
+          GlDeprecatedDropdownItem: false,
         },
       });
     });

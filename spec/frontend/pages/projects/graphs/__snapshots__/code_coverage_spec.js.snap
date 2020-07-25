@@ -9,10 +9,10 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
      
     <!---->
      
-    <gl-dropdown-stub
+    <gl-deprecated-dropdown-stub
       text="rspec"
     >
-      <gl-dropdown-item-stub
+      <gl-deprecated-dropdown-item-stub
         value="rspec"
       >
         <div
@@ -32,8 +32,8 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
           
           </span>
         </div>
-      </gl-dropdown-item-stub>
-      <gl-dropdown-item-stub
+      </gl-deprecated-dropdown-item-stub>
+      <gl-deprecated-dropdown-item-stub
         value="cypress"
       >
         <div
@@ -49,8 +49,8 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
           
           </span>
         </div>
-      </gl-dropdown-item-stub>
-      <gl-dropdown-item-stub
+      </gl-deprecated-dropdown-item-stub>
+      <gl-deprecated-dropdown-item-stub
         value="karma"
       >
         <div
@@ -66,8 +66,8 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
           
           </span>
         </div>
-      </gl-dropdown-item-stub>
-    </gl-dropdown-stub>
+      </gl-deprecated-dropdown-item-stub>
+    </gl-deprecated-dropdown-stub>
   </div>
    
   <gl-area-chart-stub

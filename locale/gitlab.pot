@@ -12701,6 +12701,9 @@ msgstr ""
 msgid "IncidentManagement|Assignees"
 msgstr ""
 
+msgid "IncidentManagement|Create incident"
+msgstr ""
+
 msgid "IncidentManagement|Date created"
 msgstr ""
 

@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
+import { GlDeprecatedDropdown, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import Tracking from '~/tracking';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -15,7 +15,7 @@ import {
 
 export default {
   components: {
-    GlDropdown,
+    GlDeprecatedDropdown,
     GlFormGroup,
     GlFormInputGroup,
     ClipboardButton,
@@ -36,7 +36,7 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown
+  <gl-deprecated-dropdown
     :text="$options.i18n.dropdownTitle"
     variant="primary"
     size="sm"
@@ -99,5 +99,5 @@ export default {
         </gl-form-group>
       </form>
     </li>
-  </gl-dropdown>
+  </gl-deprecated-dropdown>
 </template>

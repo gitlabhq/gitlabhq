@@ -2,10 +2,10 @@
 
 ## Single Pipeline Requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36494) in GitLab 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36494) in GitLab 13.3.
 
 Endpoints that request information about a single pipeline return data for any pipeline.
-Before 13.2, requests for [child pipelines](../ci/parent_child_pipelines.md) returned
+Before 13.3, requests for [child pipelines](../ci/parent_child_pipelines.md) returned
 a 404 error.
 
 ## Pipelines pagination

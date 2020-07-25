@@ -9,9 +9,9 @@ import {
   GlBadge,
   GlAlert,
   GlSprintf,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownDivider,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownItem,
+  GlDeprecatedDropdownDivider,
 } from '@gitlab/ui';
 import { __, sprintf, n__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -43,9 +43,9 @@ export default {
     GlBadge,
     GlAlert,
     GlSprintf,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownDivider,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownItem,
+    GlDeprecatedDropdownDivider,
     TimeAgoTooltip,
   },
   directives: {
@@ -331,38 +331,38 @@ export default {
               </gl-button>
             </form>
           </div>
-          <gl-dropdown
+          <gl-deprecated-dropdown
             text="Options"
             class="error-details-options d-md-none"
             right
             :disabled="issueUpdateInProgress"
           >
-            <gl-dropdown-item
+            <gl-deprecated-dropdown-item
               data-qa-selector="update_ignore_status_button"
               @click="onIgnoreStatusUpdate"
-              >{{ ignoreBtnLabel }}</gl-dropdown-item
+              >{{ ignoreBtnLabel }}</gl-deprecated-dropdown-item
             >
-            <gl-dropdown-item
+            <gl-deprecated-dropdown-item
               data-qa-selector="update_resolve_status_button"
               @click="onResolveStatusUpdate"
-              >{{ resolveBtnLabel }}</gl-dropdown-item
+              >{{ resolveBtnLabel }}</gl-deprecated-dropdown-item
             >
-            <gl-dropdown-divider />
-            <gl-dropdown-item
+            <gl-deprecated-dropdown-divider />
+            <gl-deprecated-dropdown-item
               v-if="error.gitlabIssuePath"
               data-qa-selector="view_issue_button"
               :href="error.gitlabIssuePath"
               variant="success"
-              >{{ __('View issue') }}</gl-dropdown-item
+              >{{ __('View issue') }}</gl-deprecated-dropdown-item
             >
-            <gl-dropdown-item
+            <gl-deprecated-dropdown-item
               v-if="!error.gitlabIssuePath"
               :loading="issueCreationInProgress"
               data-qa-selector="create_issue_button"
               @click="createIssue"
-              >{{ __('Create issue') }}</gl-dropdown-item
+              >{{ __('Create issue') }}</gl-deprecated-dropdown-item
             >
-          </gl-dropdown>
+          </gl-deprecated-dropdown>
         </div>
       </div>
       <div>
