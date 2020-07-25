@@ -136,28 +136,6 @@
     - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> 은 원래 johnsmith@example.com이 생성한 모든 이슈와 주석에 \\\"By <a href=\\\"#\\\">johnsmith@example.com</a>\\\"을 추가합니다. 기본적으로 이메일 주소 또는 사용자 이름은 가려져 있어서 사용자의 개인정보를 보호합니다. 전체 전자 메일 주소를 표시하려면 이 옵션을 사용하십시오."
     - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> ajoutera « Par <a href=\\\"#\\\">johnsmith@example.com</a> » à tous les tickets et commentaires créés à l’origine par johnsmith@example.com. Par défaut, l’adresse de courriel ou le nom d’utilisateur est masqué pour garantir la confidentialité de l’utilisateur. Utilisez cette option si vous souhaitez afficher l’adresse de courriel complète."
     - "<code>\\\"johnsmith@example.com\\\": \\\"johnsmith@example.com\\\"</code> añadirá \\\"Por <a href=\\\"#\\\">johnsmith@example.com</a>\\\" a todas las incidencias y comentarios originalmente creados por johnsmith@example.com. Por defecto, el correo electrónico o el nombre de usuario está oculto para asegurar la privacidad del usuario. Utilice esta opción si desea mostrar la dirección de correo electrónico completa."
-"<code>Masked</code> to prevent the values from being displayed in job logs (must match certain regexp requirements).":
-  plural_id:
-  translations:
-"<code>Protected</code> to expose them to protected branches or tags only.":
-  plural_id:
-  translations:
-"<strong>%{group_name}</strong> group members":
-  plural_id:
-  translations:
-    - "<strong>%{group_name}</strong> 群組成員"
-    - "Membros do grupo <strong>%{group_name}</strong>"
-    - "<strong>%{group_name}</strong> グループのメンバー"
-    - "<strong>%{group_name}</strong> 群組的成員"
-    - "Membros do grupo <strong>%{group_name}</strong>"
-    - "<strong>%{group_name}</strong> участников группы"
-    - "<strong>%{group_name}</strong> 群组成员"
-    - "<strong>%{group_name}</strong> користувачі групи"
-    - "<strong>%{group_name}</strong> Gruppenmitglieder"
-    - "<strong>%{group_name}</strong> 그룹 멤버"
-    - "Membres du groupe <strong>%{group_name}</strong>"
-    - "miembros del grupo <strong>%{group_name}</strong>"
-    - "<strong>%{group_name}</strong> grup üyeleri"
 "<strong>%{label_name}</strong> <span>will be permanently deleted from %{subject_name}. This cannot be undone.</span>":
   plural_id:
   translations:
@@ -393,9 +371,6 @@
     - "不用担心，您可以通过单击右上角的帮助图标来访问此导览，然后选择 <strong>Learn GitLab</strong>。"
     - "Не хвилюйтеся, ви завжди зможете отримати доступ до цієї екскурсії, натиснувши кнопку довідки у верхньому правому куті і вибравши <strong>Дізнатися про GitLab</strong>."
     - "No se preocupe, puede acceder a este visita haciendo clic sobre el ícono de ayuda situado en la esquina superior derecha y seleccionando <strong>aprender GitLab</strong>."
-"Environment variables are applied to all project environments in this instance via the Runner. You can use environment variables for passwords, secret keys, etc. Make variables available to the running application by prepending the variable key with <code>K8S_SECRET_</code>. You can set variables to be:":
-  plural_id:
-  translations:
 "Example: <code>acme.com,acme.co.in,acme.uk</code>.":
   plural_id:
   translations:
@@ -574,16 +549,6 @@
     - "<p class=\\\"text-tertiary\\\"><a href=\\\"%{docsUrl}\\\">공통 메트릭스</a>가 발견되지 않았습니다.</p>"
     - "<p class=\\\"text-tertiary\\\">Aucune <a href=\\\"%{docsUrl}\\\">métrique commune</a> trouvée</p>"
     - "<p class=\\\"text-tertiary\\\">No se han encontrado<a href=\\\"%{docsUrl}\\\">métricas comunes</a> </p>"
-"Read more about project permissions <strong>%{link_to_help}</strong>":
-  plural_id:
-  translations:
-    - "Saiba mais sobre as permissões do projeto <strong>%{link_to_help}</strong>"
-    - "プロジェクトの権限については <strong>%{link_to_help}</strong> を参照"
-    - "了解有关项目权限的更多信息 <strong>%{link_to_help}</strong>"
-    - "Дізнайтеся більше про права доступу в проекті <strong>%{link_to_help}</strong>"
-    - "Lies mehr über Projektberechtigungen <strong>%{link_to_help}</strong>"
-    - "Pour en savoir plus sur les autorisations de projet : <strong>%{link_to_help}</strong>"
-    - "Lea más sobre los permisos de este proyecto <strong>%{link_to_help}</strong>"
 "SSH host keys are not available on this system. Please use <code>ssh-keyscan</code> command or contact your GitLab administrator for more information.":
   plural_id:
   translations:
@@ -612,20 +577,6 @@
     - "Wenn du eine(n) GitLab-Benutzer(in) azswählst, wird in der Beschreibung des Tickets und den Kommentaren ein Link zum/zur Benutzer(in) hinzugefügt (z. B. \\\"Von <a href=\\\"#\\\">@johnsmith</a>\\\"). Außerdem wird der/die ausgewählte Benutzer(in) dem Ticket oder Kommentar zugeordnet und/oder es ihm/ihr zugewiesen."
     - "La sélection d’un utilisateur de GitLab va ajouter un lien vers cet utilisateur dans les descriptions des tickets et des commentaires (p. ex., « Par <a href=\\\"#\\\">@johnsmith</a> »). Les tickets et commentaires seront également associés ou assignés à cet utilisateur."
     - "Al seleccionar un usuario de GitLab añadirá un link al usuario en la descripción de las incidencias, así como también, en los comentarios (por ejemplo, \\\"Por <a href=\\\"#\\\">@johnsmith</a>\\\"). Al hacer esto, también asociará y asignará dichas incidencias y comentarios con el usuario seleccionado."
-"Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: <code>4 mins 2 sec</code>, <code>2h42min</code>.":
-  plural_id:
-  translations:
-    - "各ジョブのアーティファクトのデフォルトの有効期限を設定します。 無制限の場合は0。 デフォルトの単位は秒ですが、代わりのものを定義できます。 例：<code>4分2秒</code>、<code>2時間42分</code>"
-    - "设置每个作业的产物的默认到期时间。 0 表示无限制。默认以秒为单位，但您可以定义替代方案。例如：<code>4 mins 2 sec</code>,  <code>2h42min</code>.。"
-    - "Задайте стандартний час зберігання для артефактів кожного із завдань. 0 означає необмежений. Стандартною одиницею вимірювання є секунда (sec), але ви можете вибрати й іншу. Наприклад: <code>4 mins 2 sec</code>, <code>2h42min</code>."
-    - "Establezca el tiempo de caducidad predeterminado para los artefactos generados en cada trabajo. 0 para una caducidad ilimitada. La unidad predeterminada son segundos, pero puede definir una alternativa. Por ejemplo: <code>4 minutos 2 segundos</code>, <code>2h42min</code>."
-"Set the duration for which the jobs will be considered as old and expired. Once that time passes, the jobs will be archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.":
-  plural_id:
-  translations:
-    - "ジョブが期限切れとなる期間を設定します。設定された時間を経過するとジョブはアーカイブされ、再試行できなくなります。ジョブの期限を無期限にする場合、空のままにしてください。これらは1日以上で指定しなければなりません。例えば、<code>15 days</code>、 <code>1 month</code>、 <code>2 years</code> など。"
-    - "设置作业的过期时间。一旦逾期，作业将被归档并且不能重试。留空则永不过期。必须设置为 1 天以上，例如： <code>15 days</code>, <code>1 month</code>,  <code>2 years</code>。"
-    - "Встановіть тривалість, протягом якої завдання будуть вважатися застарілими. Як тільки пройде цей час, вони будуть заархівовані і більше не зможуть бути повтореними. Залиште порожнім, щоб завдання ніколи не застарівали. Має бути не менше 1 дня, наприклад: <code>15 днів</code>, <code>1 місяць</code>, <code>2 роки</code>."
-    - "Establezca la duración durante la cual los trabajos se considerarán antiguos y vencidos. Una vez pasado ese tiempo, los trabajos se archivarán y ya no se podrá volver a reintentar su ejecución. Establezca este campo como nulo para que los trabajos no caduquen. Este valor, no debe ser inferior a 1 día, por ejemplo: <code>15 días</code>, <code>1 mes</code>, <code>2 años</code>."
 "Share the <strong>%{sso_label}</strong> with members so they can sign in to your group through your identity provider":
   plural_id:
   translations:
@@ -919,9 +870,6 @@
     - "您还可以通过在变量键前面加上<code>K8S_SECRET_</code>来添加可用于正在运行的应用程序的变量。"
     - "Ви також можете додати змінні, що будуть доступними для запущеного застосунку шляхом додавання префіксу <code>K8S_SECRET_</code> до їх імен."
     - "También puede añadir variables que están disponibles para la aplicación en ejecución, anteponiendo la clave de variable con <code>K8S_SECRET_</code>."
-"Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your <code>.gitlab-license</code> file.":
-  plural_id:
-  translations:
 "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue.":
   plural_id:
   translations:
@@ -1052,4 +1000,56 @@
     - "Elasticsearch, PlantUML, приложение Slack, предложения от третьих лиц, Snowplow, Amazon EKS были перемещены в Настройки > Общие"
     - "Elasticsearch, PlantUML, застосунок Slack, пропозиції від третіх осіб, Snowplow, Amazon EKS були переміщені до Налаштувань > Загальне."
 "cannot contain HTML/XML tags, including any word between angle brackets (<,>).":
+  translations:
+"Environment variables are applied to all project environments in this instance via the Runner. You can use environment variables for passwords, secret keys, etc. Make variables available to the running application by prepending the variable key with <code>K8S_SECRET_</code>. You can set variables to be:":
+  plural_id:
+  translations:
+"<code>Protected</code> to expose them to protected branches or tags only.":
+  plural_id:
+  translations:
+"<code>Masked</code> to prevent the values from being displayed in job logs (must match certain regexp requirements).":
+  plural_id:
+  translations:
+"Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: <code>4 mins 2 sec</code>, <code>2h42min</code>.":
+  plural_id:
+  translations:
+    - "各ジョブのアーティファクトのデフォルトの有効期限を設定します。 無制限の場合は0。 デフォルトの単位は秒ですが、代わりのものを定義できます。 例：<code>4分2秒</code>、<code>2時間42分</code>"
+    - "设置每个作业的产物的默认到期时间。 0 表示无限制。默认以秒为单位，但您可以定义替代方案。例如：<code>4 mins 2 sec</code>,  <code>2h42min</code>.。"
+    - "Задайте стандартний час зберігання для артефактів кожного із завдань. 0 означає необмежений. Стандартною одиницею вимірювання є секунда (sec), але ви можете вибрати й іншу. Наприклад: <code>4 mins 2 sec</code>, <code>2h42min</code>."
+    - "Establezca el tiempo de caducidad predeterminado para los artefactos generados en cada trabajo. 0 para una caducidad ilimitada. La unidad predeterminada son segundos, pero puede definir una alternativa. Por ejemplo: <code>4 minutos 2 segundos</code>, <code>2h42min</code>."
+"Set the duration for which the jobs will be considered as old and expired. Once that time passes, the jobs will be archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.":
+  plural_id:
+  translations:
+    - "ジョブが期限切れとなる期間を設定します。設定された時間を経過するとジョブはアーカイブされ、再試行できなくなります。ジョブの期限を無期限にする場合、空のままにしてください。これらは1日以上で指定しなければなりません。例えば、<code>15 days</code>、 <code>1 month</code>、 <code>2 years</code> など。"
+    - "设置作业的过期时间。一旦逾期，作业将被归档并且不能重试。留空则永不过期。必须设置为 1 天以上，例如： <code>15 days</code>, <code>1 month</code>,  <code>2 years</code>。"
+    - "Встановіть тривалість, протягом якої завдання будуть вважатися застарілими. Як тільки пройде цей час, вони будуть заархівовані і більше не зможуть бути повтореними. Залиште порожнім, щоб завдання ніколи не застарівали. Має бути не менше 1 дня, наприклад: <code>15 днів</code>, <code>1 місяць</code>, <code>2 роки</code>."
+    - "Establezca la duración durante la cual los trabajos se considerarán antiguos y vencidos. Una vez pasado ese tiempo, los trabajos se archivarán y ya no se podrá volver a reintentar su ejecución. Establezca este campo como nulo para que los trabajos no caduquen. Este valor, no debe ser inferior a 1 día, por ejemplo: <code>15 días</code>, <code>1 mes</code>, <code>2 años</code>."
+"<strong>%{group_name}</strong> group members":
+  plural_id:
+  translations:
+    - "<strong>%{group_name}</strong> 群組成員"
+    - "Membros do grupo <strong>%{group_name}</strong>"
+    - "<strong>%{group_name}</strong> グループのメンバー"
+    - "<strong>%{group_name}</strong> 群組的成員"
+    - "Membros do grupo <strong>%{group_name}</strong>"
+    - "<strong>%{group_name}</strong> участников группы"
+    - "<strong>%{group_name}</strong> 群组成员"
+    - "<strong>%{group_name}</strong> користувачі групи"
+    - "<strong>%{group_name}</strong> Gruppenmitglieder"
+    - "<strong>%{group_name}</strong> 그룹 멤버"
+    - "Membres du groupe <strong>%{group_name}</strong>"
+    - "miembros del grupo <strong>%{group_name}</strong>"
+    - "<strong>%{group_name}</strong> grup üyeleri"
+"Read more about project permissions <strong>%{link_to_help}</strong>":
+  plural_id:
+  translations:
+    - "Saiba mais sobre as permissões do projeto <strong>%{link_to_help}</strong>"
+    - "プロジェクトの権限については <strong>%{link_to_help}</strong> を参照"
+    - "了解有关项目权限的更多信息 <strong>%{link_to_help}</strong>"
+    - "Дізнайтеся більше про права доступу в проекті <strong>%{link_to_help}</strong>"
+    - "Lies mehr über Projektberechtigungen <strong>%{link_to_help}</strong>"
+    - "Pour en savoir plus sur les autorisations de projet : <strong>%{link_to_help}</strong>"
+    - "Lea más sobre los permisos de este proyecto <strong>%{link_to_help}</strong>"
+"Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your <code>.gitlab-license</code> file.":
+  plural_id:
   translations:

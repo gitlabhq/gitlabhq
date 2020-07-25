@@ -106,8 +106,8 @@
           = _('Add user(s) to the group:')
         .card-body.form-holder
           %p.light
-            - link_to_help = link_to(_("here"), help_page_path("user/permissions"))
-            = _('Read more about project permissions <strong>%{link_to_help}</strong>').html_safe % { link_to_help: link_to_help }
+            - help_link_open = '<strong><a href="%{help_url}">'.html_safe % { help_url: help_page_url("user/permissions") }
+            = html_escape(_('Read more about project permissions %{help_link_open}here%{help_link_close}')) % { help_link_open: help_link_open, help_link_close: '</a></strong>'.html_safe }
 
           = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put do
             %div
@@ -120,7 +120,7 @@
 
     .card
       .card-header
-        = _("<strong>%{group_name}</strong> group members").html_safe % { group_name: @group.name }
+        = html_escape(_("%{group_name} group members")) % { group_name: "<strong>#{html_escape(@group.name)}</strong>".html_safe }
         %span.badge.badge-pill= @group.members.size
         .float-right
           = link_to group_group_members_path(@group), class: 'btn btn-default gl-button btn-sm' do
