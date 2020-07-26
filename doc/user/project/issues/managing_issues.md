@@ -272,9 +272,18 @@ of your installation.
 
 ## Deleting issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2982) in GitLab 8.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2982) in GitLab 8.6.
 
 Users with [project owner permission](../../permissions.md) can delete an issue by
 editing it and clicking on the delete button.
 
 ![delete issue - button](img/delete_issue.png)
+
+## Add an issue to an iteration **(STARTER)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216158) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
+
+To add an issue to an [iteration](../../group/iterations/index.md):
+
+1. In an issue sidebar, click **Edit** next to **Iteration**. A dropdown appears.
+1. Click an iteration you'd like to associate this issue with.
