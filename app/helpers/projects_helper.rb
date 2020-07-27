@@ -421,6 +421,10 @@ module ProjectsHelper
       nav_tabs << :operations
     end
 
+    if can_view_product_analytics?(current_user, project)
+      nav_tabs << :product_analytics
+    end
+
     tab_ability_map.each do |tab, ability|
       if can?(current_user, ability, project)
         nav_tabs << tab
@@ -477,6 +481,11 @@ module ProjectsHelper
     [:read_environment, :read_cluster, :metrics_dashboard].any? do |ability|
       can?(current_user, ability, project)
     end
+  end
+
+  def can_view_product_analytics?(current_user, project)
+    Feature.enabled?(:product_analytics, project) &&
+      can?(current_user, :read_product_analytics, project)
   end
 
   def search_tab_ability_map
@@ -738,6 +747,7 @@ module ProjectsHelper
       user
       gcp
       logs
+      product_analytics
     ]
   end
 

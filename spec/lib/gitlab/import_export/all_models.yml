@@ -518,6 +518,7 @@ project:
 - build_report_results
 - vulnerability_statistic
 - vulnerability_historical_statistics
+- product_analytics_events
 award_emoji:
 - awardable
 - user

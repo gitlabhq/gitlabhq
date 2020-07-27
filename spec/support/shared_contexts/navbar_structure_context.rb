@@ -67,6 +67,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Incidents'),
           _('Environments'),
           _('Error Tracking'),
+          _('Product Analytics'),
           _('Serverless'),
           _('Logs'),
           _('Kubernetes')

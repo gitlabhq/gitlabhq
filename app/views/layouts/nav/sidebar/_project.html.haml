@@ -252,6 +252,12 @@
                   %span
                     = _('Error Tracking')
 
+            - if project_nav_tab?(:product_analytics)
+              = nav_link(controller: :product_analytics) do
+                = link_to project_product_analytics_path(@project), title: _('Product Analytics') do
+                  %span
+                    = _('Product Analytics')
+
             - if project_nav_tab? :serverless
               = nav_link(controller: :functions) do
                 = link_to project_serverless_functions_path(@project), title: _('Serverless') do

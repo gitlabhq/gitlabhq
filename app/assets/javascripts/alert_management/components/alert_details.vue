@@ -204,19 +204,12 @@ export default {
       :class="{ 'pr-sm-8': sidebarStatus }"
     >
       <div
-        class="gl-display-flex gl-justify-content-space-between gl-align-items-baseline gl-px-1 py-3 py-md-4 gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid flex-column flex-sm-row"
+        class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-px-1 py-3 py-md-4 gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-flex-direction-column gl-sm-flex-direction-row"
       >
-        <div
-          data-testid="alert-header"
-          class="gl-display-flex gl-align-items-center gl-justify-content-center"
-        >
-          <div
-            class="gl-display-inline-flex gl-align-items-center gl-justify-content-space-between"
-          >
-            <gl-badge class="gl-mr-3">
-              <strong>{{ s__('AlertManagement|Alert') }}</strong>
-            </gl-badge>
-          </div>
+        <div data-testid="alert-header">
+          <gl-badge class="gl-mr-3">
+            <strong>{{ s__('AlertManagement|Alert') }}</strong>
+          </gl-badge>
           <span>
             <gl-sprintf :message="reportedAtMessage">
               <template #when>

@@ -1,0 +1,5 @@
+---
+title: Fix dependency proxy not working with object storage
+merge_request: 37878
+author:
+type: fixed

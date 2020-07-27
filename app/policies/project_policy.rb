@@ -264,6 +264,7 @@ class ProjectPolicy < BasePolicy
     enable :metrics_dashboard
     enable :read_confidential_issues
     enable :read_package
+    enable :read_product_analytics
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee

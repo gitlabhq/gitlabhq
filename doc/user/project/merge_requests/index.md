@@ -4,14 +4,10 @@ type: index, reference
 
 # Merge requests
 
-Merge requests allow you to visualize and collaborate on the proposed changes
-to source code that exist as commits on a given Git branch.
+A Merge Request (**MR**) is a _request_ to _merge_ one branch into another.
 
-![Merge request view](img/merge_request.png)
-
-A Merge Request (**MR**) is the basis of GitLab as a code collaboration and version
-control platform. It's exactly as the name implies: a _request_ to _merge_ one
-branch into another.
+Use merge requests to visualize and collaborate on proposed changes
+to source code.
 
 ## Use cases
 

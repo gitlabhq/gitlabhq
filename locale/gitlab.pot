@@ -1127,6 +1127,9 @@ msgstr ""
 msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
+msgid "A platform value can be web, mob or app."
+msgstr ""
+
 msgid "A project boilerplate for Salesforce App development with Salesforce Developer tools."
 msgstr ""
 
@@ -6777,6 +6780,9 @@ msgid "Copy secret"
 msgstr ""
 
 msgid "Copy source branch name"
+msgstr ""
+
+msgid "Copy the code below to implement tracking in your application:"
 msgstr ""
 
 msgid "Copy token"
@@ -13728,6 +13734,9 @@ msgstr ""
 msgid "Last edited by %{name}"
 msgstr ""
 
+msgid "Last item before this page loaded in your browser:"
+msgstr ""
+
 msgid "Last name"
 msgstr ""
 
@@ -16322,6 +16331,9 @@ msgstr ""
 msgid "Number of employees"
 msgstr ""
 
+msgid "Number of events for this project: %{total_count}."
+msgstr ""
+
 msgid "Number of files touched"
 msgstr ""
 
@@ -17822,6 +17834,9 @@ msgid "Private projects can be created in your personal namespace with:"
 msgstr ""
 
 msgid "Proceed"
+msgstr ""
+
+msgid "Product Analytics"
 msgstr ""
 
 msgid "Productivity"
@@ -21747,6 +21762,9 @@ msgstr ""
 msgid "Settings to prevent self-approval across all projects in the instance. Only an administrator can modify these settings."
 msgstr ""
 
+msgid "Setup"
+msgstr ""
+
 msgid "Severity"
 msgstr ""
 
@@ -23891,6 +23909,9 @@ msgstr ""
 msgid "The vulnerability is no longer detected. Verify the vulnerability has been remediated before changing its status."
 msgstr ""
 
+msgid "There are currently no events."
+msgstr ""
+
 msgid "There are no %{replicableTypeName} to show"
 msgstr ""
 
@@ -24495,6 +24516,9 @@ msgid "This option is only available on GitLab.com"
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
+msgstr ""
+
+msgid "This page sends a payload. Go back to the events page to see a newly created event."
 msgstr ""
 
 msgid "This pipeline does not use the %{codeStart}needs%{codeEnd} keyword and can't be represented as a directed acyclic graph."
