@@ -494,16 +494,18 @@ If you configure GitLab to use object storage for CI logs and artifacts,
 
 ### Proxy Download
 
-A number of the use cases for object storage allow client traffic to be redirected to the
-object storage back end, like when Git clients request large files via LFS or when
-downloading CI artifacts and logs.
+Clients can download files in object storage by receiving a pre-signed, time-limited URL,
+or by GitLab proxying the data from object storage to the client.
+Downloading files from object storage directly
+helps reduce the amount of egress traffic GitLab
+needs to process.
 
 When the files are stored on local block storage or NFS, GitLab has to act as a proxy.
 This is not the default behavior with object storage.
 
 The `proxy_download` setting controls this behavior: the default is generally `false`.
-Verify this in the documentation for each use case. Set it to `true` so that GitLab proxies
-the files.
+Verify this in the documentation for each use case. Set it to `true` if you want
+GitLab to proxy the files.
 
 When not proxying files, GitLab returns an
 [HTTP 302 redirect with a pre-signed, time-limited object storage URL](https://gitlab.com/gitlab-org/gitlab/-/issues/32117#note_218532298).
@@ -524,7 +526,9 @@ certificate, or may return common TLS errors such as:
    x509: certificate signed by unknown authority
    ```
 
-- Clients will need network access to the object storage. Errors that might result
+- Clients will need network access to the object storage.
+Network firewalls could block access.
+Errors that might result
 if this access is not in place include:
 
    ```plaintext
@@ -534,6 +538,10 @@ if this access is not in place include:
 Getting a `403 Forbidden` response is specifically called out on the
 [package repository documentation](packages/index.md#using-object-storage)
 as a side effect of how some build tools work.
+
+Additionally for a short time period users could share pre-signed, time-limited object storage URLs
+with others without authentication. Also bandwidth charges may be incurred
+between the object storage provider and the client.
 
 ### ETag mismatch
 
