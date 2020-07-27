@@ -1,9 +1,16 @@
 import { mount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon, GlTable, GlAvatar } from '@gitlab/ui';
+import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { I18N } from '~/incidents/constants';
 import mockIncidents from '../mocks/incidents.json';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn().mockName('visitUrlMock'),
+  joinPaths: jest.fn().mockName('joinPaths'),
+  mergeUrlParams: jest.fn().mockName('mergeUrlParams'),
+}));
 
 describe('Incidents List', () => {
   let wrapper;
@@ -36,6 +43,7 @@ describe('Incidents List', () => {
         projectPath: '/project/path',
         newIssuePath,
         incidentTemplateName,
+        issuePath: '/project/isssues',
       },
       stubs: {
         GlButton: true,
@@ -111,6 +119,13 @@ describe('Incidents List', () => {
         expect(label).toBe(name);
         expect(src).toBe(avatarUrl);
       });
+
+      it('contains a link to the issue details', () => {
+        findTableRows()
+          .at(0)
+          .trigger('click');
+        expect(visitUrl).toHaveBeenCalledWith(joinPaths(`/project/isssues/`, mockIncidents[0].iid));
+      });
     });
   });
 
@@ -124,9 +139,6 @@ describe('Incidents List', () => {
 
     it('shows the button linking to new incidents page with prefilled incident template', () => {
       expect(findCreateIncidentBtn().exists()).toBe(true);
-      expect(findCreateIncidentBtn().attributes('href')).toBe(
-        `${newIssuePath}?issuable_template=${incidentTemplateName}`,
-      );
     });
 
     it('sets button loading on click', () => {

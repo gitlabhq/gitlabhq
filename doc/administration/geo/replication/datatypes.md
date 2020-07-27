@@ -126,6 +126,33 @@ these epics/issues:
 - [Unreplicated Data Types](https://gitlab.com/groups/gitlab-org/-/epics/893)
 - [Verify all replicated data](https://gitlab.com/groups/gitlab-org/-/epics/1430)
 
+### Replicated data types behind a feature flag
+
+The replication for some data types is behind a corresponding feature flag:
+
+> - They're deployed behind a feature flag, enabled by default.
+> - They're enabled on GitLab.com.
+> - They can't be enabled or disabled per-project.
+> - They are recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types-core-only). **(CORE ONLY)**
+
+#### Enable or disable replication (for some data types) **(CORE ONLY)**
+
+Replication for some data types are released behind feature flags that are **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../feature_flags.md) can opt to disable it for your instance. You can find feature flag names of each of those data types in the notes column of the table below.
+
+To disable, such as for package file replication:
+
+```ruby
+Feature.disable(:geo_package_file_replication)
+```
+
+To enable, such as for package file replication:
+
+```ruby
+Feature.enable(:geo_package_file_replication)
+```
+
 DANGER: **Danger:**
 Features not on this list, or with **No** in the **Replicated** column,
 are not replicated on the **secondary** node. Failing over without manually
@@ -151,12 +178,12 @@ successfully, you must replicate their data using some other means.
 | [Elasticsearch integration](../../../integration/elasticsearch.md)   | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/1186) | No                                                      |                                                                                                            |
 | [GitLab Pages](../../pages/index.md)                                 | [No](https://gitlab.com/groups/gitlab-org/-/epics/589)   | No                                                      |                                                                                                            |
 | [Container Registry](../../packages/container_registry.md)           | **Yes** (12.3)                                                 | No                                                      |                                                                                                            |
-| [NPM Registry](../../../user/packages/npm_registry/index.md)         | **Yes** (13.2)                                                 | No                                                      |                                                                                                            |
-| [Maven Repository](../../../user/packages/maven_repository/index.md) | **Yes** (13.2)                                                 | No                                                      |                                                                                                            |
-| [Conan Repository](../../../user/packages/conan_repository/index.md) | **Yes** (13.2)                                                 | No                                                      |                                                                                                            |
-| [NuGet Repository](../../../user/packages/nuget_repository/index.md) | **Yes** (13.2)                                                 | No                                                      |                                                                                                            |
-| [PyPi Repository](../../../user/packages/pypi_repository/index.md)   | **Yes** (13.2)                                                 | No                                                      |                                                                                                            |
-| [Composer Repository](../../../user/packages/composer_repository/index.md) | **Yes** (13.2)                                             | No                                                      |                                                                                                            |
+| [NPM Registry](../../../user/packages/npm_registry/index.md)         | **Yes** (13.2)                                                 | No                                                      | Behind feature flag `geo_package_file_replication`, enabled by default |                                                                                                            |
+| [Maven Repository](../../../user/packages/maven_repository/index.md) | **Yes** (13.2)                                                 | No                                                      |  Behind feature flag `geo_package_file_replication`, enabled by default |                                                                                                           |
+| [Conan Repository](../../../user/packages/conan_repository/index.md) | **Yes** (13.2)                                                 | No                                                      |  Behind feature flag `geo_package_file_replication`, enabled by default |                                                                                                           |
+| [NuGet Repository](../../../user/packages/nuget_repository/index.md) | **Yes** (13.2)                                                 | No                                                      |  Behind feature flag `geo_package_file_replication`, enabled by default |                                                                                                           |
+| [PyPi Repository](../../../user/packages/pypi_repository/index.md)   | **Yes** (13.2)                                                 | No                                                      |  Behind feature flag `geo_package_file_replication`, enabled by default |                                                                                                           |
+| [Composer Repository](../../../user/packages/composer_repository/index.md) | **Yes** (13.2)                                             | No                                                      |  Behind feature flag `geo_package_file_replication`, enabled by default |                                                                                                           |
 | [External merge request diffs](../../merge_request_diffs.md)         | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/33817)  | No                                                      |                                           |
 | [Terraform State](../../terraform_state.md)                                                                  | [No](https://gitlab.com/groups/gitlab-org/-/epics/3112)(*3*) | No                                                        |                                                                                                            |
 | [Vulnerability Export](../../../user/application_security/security_dashboard/#export-vulnerabilities)      | [No](https://gitlab.com/groups/gitlab-org/-/epics/3111)(*3*) | No                                                        |                                                                                                            |                                                                                                            |

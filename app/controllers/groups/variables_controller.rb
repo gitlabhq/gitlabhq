@@ -15,12 +15,7 @@ module Groups
     end
 
     def update
-      update_result = Ci::ChangeVariablesService.new(
-        container: @group, current_user: current_user,
-        params: group_variables_params
-      ).execute
-
-      if update_result
+      if @group.update(group_variables_params)
         respond_to do |format|
           format.json { render_group_variables }
         end

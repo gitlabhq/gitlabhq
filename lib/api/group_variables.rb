@@ -51,11 +51,9 @@ module API
         optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
       end
       post ':id/variables' do
-        variable = ::Ci::ChangeVariableService.new(
-          container: user_group,
-          current_user: current_user,
-          params: { action: :create, variable_params: declared_params(include_missing: false) }
-        ).execute
+        variable_params = declared_params(include_missing: false)
+
+        variable = user_group.variables.create(variable_params)
 
         if variable.valid?
           present variable, with: Entities::Variable
@@ -76,19 +74,17 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ':id/variables/:key' do
-        variable = ::Ci::ChangeVariableService.new(
-          container: user_group,
-          current_user: current_user,
-          params: { action: :update, variable_params: declared_params(include_missing: false) }
-        ).execute
+        variable = user_group.variables.find_by(key: params[:key])
 
-        if variable.valid?
+        break not_found!('GroupVariable') unless variable
+
+        variable_params = declared_params(include_missing: false).except(:key)
+
+        if variable.update(variable_params)
           present variable, with: Entities::Variable
         else
           render_validation_error!(variable)
         end
-      rescue ::ActiveRecord::RecordNotFound
-        not_found!('GroupVariable')
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -100,17 +96,10 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/variables/:key' do
-        variable = user_group.variables.find_by!(key: params[:key])
+        variable = user_group.variables.find_by(key: params[:key])
+        not_found!('GroupVariable') unless variable
 
-        destroy_conditionally!(variable) do |target_variable|
-          ::Ci::ChangeVariableService.new(
-            container: user_group,
-            current_user: current_user,
-            params: { action: :destroy, variable_params: declared_params(include_missing: false) }
-          ).execute
-        end
-      rescue ::ActiveRecord::RecordNotFound
-        not_found!('GroupVariable')
+        destroy_conditionally!(variable)
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

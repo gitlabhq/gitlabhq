@@ -90,6 +90,14 @@ module Geo
     def self.model
       ::Packages::PackageFile
     end
+
+    # Change this to `true` to release replication of this model. Then remove
+    # this override in the next release.
+    # The feature flag follows the format `geo_#{replicable_name}_replication`,
+    # so here it would be `geo_package_file_replication`
+    def self.replication_enabled_by_default?
+      false
+    end
   end
 end
 ```

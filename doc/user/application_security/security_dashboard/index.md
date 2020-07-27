@@ -69,6 +69,8 @@ You can filter the vulnerabilities by:
 - Severity
 - Report type
 
+By default, detected and confirmed vulnerabilities will be displayed.
+
 You can also dismiss vulnerabilities in the table:
 
 1. Select the checkbox for each vulnerability you want to dismiss.
@@ -96,6 +98,8 @@ You can filter which vulnerabilities the Security Dashboard displays by:
 - Severity
 - Report type
 - Project
+
+By default, detected and confirmed vulnerabilities will be displayed.
 
 A table lists the vulnerabilities, sorted by severity. The table shows each vulnerability's status,
 severity, and description. Clicking a vulnerability takes you to its [Vulnerability Details](../vulnerabilities)

@@ -15,15 +15,14 @@ There are several messages that can be displayed depending on the status of the 
 
 ### "Checking pipeline status"
 
-This message is shown when the merge request has no pipeline associated with the latest commit yet and [Pipelines must succeed](../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds) is turned on. This might be because:
+This message is shown when the merge request has no pipeline associated with the latest commit yet. This might be because:
 
 - GitLab hasn't finished creating the pipeline yet.
 - You are using an external CI service and GitLab hasn't heard back from the service yet.
 - You are not using CI/CD pipelines in your project.
+- The latest pipeline was deleted (this is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214323)).
 
 After the pipeline is created, the message will update with the pipeline status.
-
-Note: Currently if you delete the latest pipeline of a Merge Request, this message will be shown instead of a meaningful error message. This is a known issue and should be resolved soon.
 
 ## Merge request ability to merge widget
 

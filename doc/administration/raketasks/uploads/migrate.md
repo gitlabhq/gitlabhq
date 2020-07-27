@@ -141,7 +141,15 @@ keeping in mind the task name in this case is `gitlab:uploads:migrate_to_local`.
 
 To migrate uploads from object storage to local storage:
 
-1. Disable both `direct_upload` and `background_upload` under `uploads` settings in `gitlab.rb`.
+1. Disable both `direct_upload` and `background_upload` under `uploads` settings in `gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['uploads_object_store_direct_upload'] = false
+   gitlab_rails['uploads_object_store_background_upload'] = false
+   ```
+
+   Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 1. Run the Rake task:
 
    **Omnibus Installation**

@@ -11,7 +11,7 @@ import {
 } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__ } from '~/locale';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { mergeUrlParams, joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
 import { I18N } from '../constants';
 
@@ -19,7 +19,7 @@ const tdClass =
   'table-col gl-display-flex d-md-table-cell gl-align-items-center gl-white-space-nowrap';
 const thClass = 'gl-hover-bg-blue-50';
 const bodyTrClass =
-  'gl-border-1 gl-border-t-solid gl-border-gray-100 gl-hover-bg-blue-50 gl-hover-border-b-solid gl-hover-border-blue-200';
+  'gl-border-1 gl-border-t-solid gl-border-gray-100 gl-hover-cursor-pointer gl-hover-bg-blue-50 gl-hover-border-b-solid gl-hover-border-blue-200';
 
 export default {
   i18n: I18N,
@@ -56,7 +56,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['projectPath', 'newIssuePath', 'incidentTemplateName'],
+  inject: ['projectPath', 'newIssuePath', 'incidentTemplateName', 'issuePath'],
   apollo: {
     incidents: {
       query: getIncidents,
@@ -102,6 +102,9 @@ export default {
     hasAssignees(assignees) {
       return Boolean(assignees.nodes?.length);
     },
+    navigateToIncidentDetails({ iid }) {
+      return visitUrl(joinPaths(this.issuePath, iid));
+    },
   },
 };
 </script>
@@ -138,6 +141,7 @@ export default {
       :tbody-tr-class="tbodyTrClass"
       :no-local-sorting="true"
       fixed
+      @row-clicked="navigateToIncidentDetails"
     >
       <template #cell(title)="{ item }">
         <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
