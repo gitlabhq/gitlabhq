@@ -74,21 +74,20 @@ module SnippetsHelper
     end
   end
 
-  def embedded_raw_snippet_button
-    blob = @snippet.blob
+  def embedded_raw_snippet_button(snippet, blob)
     return if blob.empty? || blob.binary? || blob.stored_externally?
 
     link_to(external_snippet_icon('doc-code'),
-            gitlab_raw_snippet_url(@snippet),
+            gitlab_raw_snippet_blob_url(snippet, blob.path),
             class: 'btn',
             target: '_blank',
             rel: 'noopener noreferrer',
             title: 'Open raw')
   end
 
-  def embedded_snippet_download_button
+  def embedded_snippet_download_button(snippet, blob)
     link_to(external_snippet_icon('download'),
-            gitlab_raw_snippet_url(@snippet, inline: false),
+            gitlab_raw_snippet_blob_url(snippet, blob.path, nil, inline: false),
             class: 'btn',
             target: '_blank',
             title: 'Download',

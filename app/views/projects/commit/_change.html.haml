@@ -21,7 +21,7 @@
       .modal-body
         - if description
           %p= description
-        = form_tag [type.underscore, @project.namespace.becomes(Namespace), @project, commit], method: :post, remote: false, class: "js-#{type}-form js-requires-input" do
+        = form_tag [type.underscore, @project, commit], method: :post, remote: false, class: "js-#{type}-form js-requires-input" do
           .form-group.branch
             = label_tag 'start_branch', branch_label, class: 'label-bold'
 

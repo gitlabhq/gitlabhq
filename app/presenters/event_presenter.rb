@@ -24,7 +24,7 @@ class EventPresenter < Gitlab::View::Presenter::Delegated
     when Group
       [event.group, event.target]
     when Project
-      [event.project.namespace.becomes(Namespace), event.project, event.target]
+      [event.project, event.target]
     else
       ''
     end

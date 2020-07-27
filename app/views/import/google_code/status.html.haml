@@ -37,7 +37,7 @@
           %td
             = link_to project.import_source, "https://code.google.com/p/#{project.import_source}", target: "_blank", rel: 'noopener noreferrer'
           %td
-            = link_to project.full_path, [project.namespace.becomes(Namespace), project]
+            = link_to project.full_path, project
           %td.job-status
             - case project.import_status
             - when 'finished'

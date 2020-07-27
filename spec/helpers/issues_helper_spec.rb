@@ -162,7 +162,7 @@ RSpec.describe IssuesHelper do
     context 'with linked issue' do
       context 'with moved issue' do
         before do
-          issue.update(moved_to: new_issue)
+          issue.update!(moved_to: new_issue)
         end
 
         context 'when user has permission to see new issue' do
@@ -181,7 +181,7 @@ RSpec.describe IssuesHelper do
 
       context 'with duplicated issue' do
         before do
-          issue.update(duplicated_to: new_issue)
+          issue.update!(duplicated_to: new_issue)
         end
 
         context 'when user has permission to see new issue' do
@@ -203,7 +203,7 @@ RSpec.describe IssuesHelper do
       let(:user) { project.owner }
 
       before do
-        issue.update(moved_to: nil, duplicated_to: nil)
+        issue.update!(moved_to: nil, duplicated_to: nil)
       end
 
       it_behaves_like 'does not display link'
@@ -220,7 +220,7 @@ RSpec.describe IssuesHelper do
       allow(Gitlab::IncomingEmail).to receive(:enabled?) { true }
       allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
 
-      old_issue.update(moved_to: new_issue)
+      old_issue.update!(moved_to: new_issue)
     end
 
     it 'is true when moved issue project has service desk disabled' do

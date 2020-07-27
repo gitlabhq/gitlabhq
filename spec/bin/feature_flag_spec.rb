@@ -115,24 +115,45 @@ RSpec.describe 'bin/feature-flag' do
     describe '.read_type' do
       let(:type) { 'development' }
 
-      it 'reads type from $stdin' do
-        expect($stdin).to receive(:gets).and_return(type)
-        expect do
+      context 'when there is only a single type defined' do
+        before do
+          stub_const('FeatureFlagOptionParser::TYPES',
+            development: { description: 'short' }
+          )
+        end
+
+        it 'returns that type' do
           expect(described_class.read_type).to eq(:development)
-        end.to output(/specify the type/).to_stdout
+        end
       end
 
-      context 'invalid type given' do
-        let(:type) { 'invalid' }
+      context 'when there are many types defined' do
+        before do
+          stub_const('FeatureFlagOptionParser::TYPES',
+            development: { description: 'short' },
+            licensed: { description: 'licensed' }
+          )
+        end
 
-        it 'shows error message and retries' do
+        it 'reads type from $stdin' do
           expect($stdin).to receive(:gets).and_return(type)
-          expect($stdin).to receive(:gets).and_raise('EOF')
-
           expect do
-            expect { described_class.read_type }.to raise_error(/EOF/)
+            expect(described_class.read_type).to eq(:development)
           end.to output(/specify the type/).to_stdout
-            .and output(/Invalid type specified/).to_stderr
+        end
+
+        context 'when invalid type is given' do
+          let(:type) { 'invalid' }
+
+          it 'shows error message and retries' do
+            expect($stdin).to receive(:gets).and_return(type)
+            expect($stdin).to receive(:gets).and_raise('EOF')
+
+            expect do
+              expect { described_class.read_type }.to raise_error(/EOF/)
+            end.to output(/specify the type/).to_stdout
+              .and output(/Invalid type specified/).to_stderr
+          end
         end
       end
     end

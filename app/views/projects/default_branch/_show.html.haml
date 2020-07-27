@@ -9,7 +9,7 @@
       = _('Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one.')
 
   .settings-content
-    = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, anchor: 'default-branch-settings' }, authenticity_token: true do |f|
+    = form_for @project, remote: true, html: { multipart: true, anchor: 'default-branch-settings' }, authenticity_token: true do |f|
       %fieldset
         - if @project.empty_repo?
           .text-secondary

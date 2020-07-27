@@ -55,10 +55,9 @@ module SnippetsActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def show
-    conditionally_expand_blob(blob)
-
     respond_to do |format|
       format.html do
+        conditionally_expand_blob(blob)
         @note = Note.new(noteable: @snippet, project: @snippet.project)
         @noteable = @snippet
 
@@ -68,11 +67,14 @@ module SnippetsActions
       end
 
       format.json do
+        conditionally_expand_blob(blob)
         render_blob_json(blob)
       end
 
       format.js do
         if @snippet.embeddable?
+          conditionally_expand_blobs(blobs)
+
           render 'shared/snippets/show'
         else
           head :not_found
@@ -109,13 +111,15 @@ module SnippetsActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def blob
-    return unless snippet
+    @blob ||= blobs.first
+  end
 
-    @blob ||= if snippet.empty_repo?
-                snippet.blob
-              else
-                snippet.blobs.first
-              end
+  def blobs
+    @blobs ||= if snippet.empty_repo?
+                 [snippet.blob]
+               else
+                 snippet.blobs
+               end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

@@ -126,7 +126,7 @@ module NotesHelper
     if @snippet.is_a?(PersonalSnippet)
       [@note]
     else
-      [@project.namespace.becomes(Namespace), @project, @note]
+      [@project, @note]
     end
   end
 

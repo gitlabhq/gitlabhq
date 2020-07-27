@@ -45,10 +45,24 @@ describe('LazyLoader', () => {
     return newImg;
   };
 
+  const mockLoadEvent = () => {
+    const addEventListener = window.addEventListener.bind(window);
+
+    jest.spyOn(window, 'addEventListener').mockImplementation((event, callback) => {
+      if (event === 'load') {
+        callback();
+      } else {
+        addEventListener(event, callback);
+      }
+    });
+  };
+
   beforeEach(() => {
     jest.spyOn(window, 'requestAnimationFrame').mockImplementation(execImmediately);
     jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
     jest.spyOn(LazyLoader, 'loadImage');
+
+    mockLoadEvent();
   });
 
   afterEach(() => {

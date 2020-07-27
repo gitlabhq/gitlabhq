@@ -375,7 +375,6 @@ class JiraService < IssueTrackerService
   def build_entity_url(noteable_type, entity_id)
     polymorphic_url(
       [
-        self.project.namespace.becomes(Namespace),
         self.project,
         noteable_type.to_sym
       ],

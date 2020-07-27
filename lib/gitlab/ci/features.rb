@@ -14,10 +14,6 @@ module Gitlab
         ::Feature.enabled?(:ci_job_heartbeats_runner, project, default_enabled: true)
       end
 
-      def self.pipeline_fixed_notifications?
-        ::Feature.enabled?(:ci_pipeline_fixed_notifications, default_enabled: true)
-      end
-
       def self.instance_variables_ui_enabled?
         ::Feature.enabled?(:ci_instance_variables_ui, default_enabled: true)
       end

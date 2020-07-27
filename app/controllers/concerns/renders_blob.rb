@@ -29,6 +29,12 @@ module RendersBlob
   end
 
   def conditionally_expand_blob(blob)
-    blob.expand! if params[:expanded] == 'true'
+    conditionally_expand_blobs([blob])
+  end
+
+  def conditionally_expand_blobs(blobs)
+    return unless params[:expanded] == 'true'
+
+    blobs.each { |blob| blob.expand! }
   end
 end

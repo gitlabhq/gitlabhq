@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project js-general-settings-form" }, authenticity_token: true do |f|
+= form_for [@project], remote: true, html: { multipart: true, class: "edit-project js-general-settings-form" }, authenticity_token: true do |f|
   %input{ name: 'update_section', type: 'hidden', value: 'js-general-settings' }
   = form_errors(@project)
 

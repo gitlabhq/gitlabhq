@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @deploy_keys.new_key], url: namespace_project_deploy_keys_path, html: { class: "js-requires-input container" } do |f|
+= form_for [@project.namespace, @project, @deploy_keys.new_key], url: namespace_project_deploy_keys_path, html: { class: "js-requires-input container" } do |f|
   = form_errors(@deploy_keys.new_key)
   .form-group.row
     = f.label :title, class: "label-bold"

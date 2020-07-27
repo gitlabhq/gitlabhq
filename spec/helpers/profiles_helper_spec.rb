@@ -31,7 +31,7 @@ RSpec.describe ProfilesHelper do
     end
 
     it 'returns DB stored commit_email' do
-      user.update(commit_email: Gitlab::PrivateCommitEmail::TOKEN)
+      user.update!(commit_email: Gitlab::PrivateCommitEmail::TOKEN)
 
       expect(helper.selected_commit_email(user)).to eq(Gitlab::PrivateCommitEmail::TOKEN)
     end

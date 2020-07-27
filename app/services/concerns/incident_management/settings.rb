@@ -1,7 +1,10 @@
 # frozen_string_literal: true
+
 module IncidentManagement
   module Settings
     include Gitlab::Utils::StrongMemoize
+
+    delegate :send_email?, to: :incident_management_setting
 
     def incident_management_setting
       strong_memoize(:incident_management_setting) do

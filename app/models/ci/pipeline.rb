@@ -1084,8 +1084,6 @@ module Ci
     end
 
     def ensure_ci_ref!
-      return unless Gitlab::Ci::Features.pipeline_fixed_notifications?
-
       self.ci_ref = Ci::Ref.ensure_for(self)
     end
 

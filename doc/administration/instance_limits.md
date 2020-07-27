@@ -440,6 +440,24 @@ Reports that go over the 20 MB limit won't be loaded. Affected reports:
 
 ## Advanced Global Search limits
 
+### Maximum file size indexed
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8638) in GitLab 13.3.
+
+You can set a limit on the content of repository files that are indexed in
+Elasticsearch. Any files larger than this limit will not be indexed, and thus
+will not be searchable.
+
+Setting a limit helps reduce the memory usage of the indexing processes as well
+as the overall index size. This value defaults to `1024 KiB` (1 MiB) as any
+text files larger than this likely aren't meant to be read by humans.
+
+NOTE: **Note:**
+You must set a limit, as an unlimited file size is not supported. Setting this
+value to be greater than the amount of memory on GitLab's Sidekiq nodes will
+lead to GitLab's Sidekiq nodes running out of memory as they will pre-allocate
+this amount of memory during indexing.
+
 ### Maximum field length
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201826) in GitLab 12.8.
@@ -448,6 +466,9 @@ You can set a limit on the content of text fields indexed for Global Search.
 Setting a maximum helps to reduce the load of the indexing processes. If any
 text field exceeds this limit then the text will be truncated to this number of
 characters and the rest will not be indexed and hence will not be searchable.
+This is applicable to all indexed data except repository files that get
+indexed, which have a separate limit (see [Maximum file size
+indexed](#maximum-file-size-indexed)).
 
 - On GitLab.com this is limited to 20000 characters
 - For self-managed installations it is unlimited by default

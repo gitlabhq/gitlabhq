@@ -196,6 +196,10 @@ module Trigger
   end
 
   class Docs < Base
+    def self.access_token
+      ENV['DOCS_API_TOKEN']
+    end
+
     SUCCESS_MESSAGE = <<~MSG
     => You should now be able to preview your changes under the following URL:
 

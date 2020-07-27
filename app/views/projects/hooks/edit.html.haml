@@ -7,7 +7,7 @@
     = render 'shared/web_hooks/title_and_docs', hook: @hook
 
   .col-lg-9.gl-mb-3
-    = form_for [@project.namespace.becomes(Namespace), @project, @hook], as: :hook, url: project_hook_path(@project, @hook) do |f|
+    = form_for [@project, @hook], as: :hook, url: project_hook_path(@project, @hook) do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
 
       %span>= f.submit 'Save changes', class: 'btn btn-success gl-mr-3'

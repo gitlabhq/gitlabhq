@@ -2918,24 +2918,8 @@ RSpec.describe Ci::Pipeline, :mailer do
   describe '#ensure_ci_ref!' do
     subject { pipeline.ensure_ci_ref! }
 
-    shared_examples_for 'protected by feature flag' do
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_pipeline_fixed_notifications: false)
-        end
-
-        it 'does not do anything' do
-          expect(Ci::Ref).not_to receive(:ensure_for)
-
-          subject
-        end
-      end
-    end
-
     context 'when ci_ref does not exist yet' do
       let!(:pipeline) { create(:ci_pipeline, ci_ref_presence: false) }
-
-      it_behaves_like 'protected by feature flag'
 
       it 'creates a new ci_ref and assigns it' do
         expect { subject }.to change { Ci::Ref.count }.by(1)
@@ -2946,8 +2930,6 @@ RSpec.describe Ci::Pipeline, :mailer do
 
     context 'when ci_ref already exists' do
       let!(:pipeline) { create(:ci_pipeline) }
-
-      it_behaves_like 'protected by feature flag'
 
       it 'fetches a new ci_ref and assigns it' do
         expect { subject }.not_to change { Ci::Ref.count }

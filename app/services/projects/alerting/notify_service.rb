@@ -58,10 +58,6 @@ module Projects
         AlertManagement::Alert.not_resolved.for_fingerprint(project, fingerprint).first
       end
 
-      def send_email?
-        incident_management_setting.send_email?
-      end
-
       def process_incident_issues(alert)
         return if alert.issue
 

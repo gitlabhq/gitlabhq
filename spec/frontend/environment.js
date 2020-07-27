@@ -50,16 +50,6 @@ class CustomEnvironment extends JSDOMEnvironment {
      */
     this.global.fetch = () => {};
 
-    // Not yet supported by JSDOM: https://github.com/jsdom/jsdom/issues/317
-    this.global.document.createRange = () => ({
-      setStart: () => {},
-      setEnd: () => {},
-      commonAncestorContainer: {
-        nodeName: 'BODY',
-        ownerDocument: this.global.document,
-      },
-    });
-
     // Expose the jsdom (created in super class) to the global so that we can call reconfigure({ url: '' }) to properly set `window.location`
     this.global.dom = this.dom;
   }

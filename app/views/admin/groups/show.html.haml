@@ -74,7 +74,7 @@
         - @projects.each do |project|
           %li
             %strong
-              = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
+              = link_to project.full_name, [:admin, project]
               %span.badge.badge-pill
                 = storage_counter(project.statistics.storage_size)
             %span.float-right.light
@@ -93,7 +93,7 @@
           - shared_projects.each do |project|
             %li
               %strong
-                = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
+                = link_to project.full_name, [:admin, project]
                 %span.badge.badge-pill
                   = storage_counter(project.statistics.storage_size)
               %span.float-right.light

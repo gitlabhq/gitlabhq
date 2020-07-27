@@ -100,8 +100,12 @@ module GitlabRoutingHelper
     toggle_award_emoji_snippet_path(*args)
   end
 
-  def toggle_award_emoji_namespace_project_project_snippet_path(*args)
-    toggle_award_emoji_namespace_project_snippet_path(*args)
+  def toggle_award_emoji_project_project_snippet_path(*args)
+    toggle_award_emoji_project_snippet_path(*args)
+  end
+
+  def toggle_award_emoji_project_project_snippet_url(*args)
+    toggle_award_emoji_project_snippet_url(*args)
   end
 
   ## Members

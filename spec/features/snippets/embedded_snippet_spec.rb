@@ -3,11 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'Embedded Snippets' do
-  let(:snippet) { create(:personal_snippet, :public, file_name: 'random_dir.rb', content: content) }
-  let(:content) { "require 'fileutils'\nFileUtils.mkdir_p 'some/random_dir'\n" }
+  let_it_be(:snippet) { create(:personal_snippet, :public, :repository) }
+  let(:blobs) { snippet.blobs.first(3) }
 
   it 'loads snippet', :js do
-    script_url = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}/#{snippet_path(snippet, format: 'js')}"
+    expect_any_instance_of(Snippet).to receive(:blobs).and_return(blobs)
+
+    script_url = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}#{snippet_path(snippet, format: 'js')}"
     embed_body = "<html><body><script src=\"#{script_url}\"></script></body></html>"
 
     rack_app = proc do
@@ -19,9 +21,15 @@ RSpec.describe 'Embedded Snippets' do
 
     visit("http://#{server.host}:#{server.port}/embedded_snippet.html")
 
-    expect(page).to have_content("random_dir.rb")
-    expect(page).to have_content("require 'fileutils'")
-    expect(page).to have_link('Open raw')
-    expect(page).to have_link('Download')
+    wait_for_requests
+
+    aggregate_failures do
+      blobs.each do |blob|
+        expect(page).to have_content(blob.path)
+        expect(page.find(".snippet-file-content .blob-content[data-blob-id='#{blob.id}'] code")).to have_content(blob.data.squish)
+        expect(page).to have_link('Open raw', href: /-\/snippets\/#{snippet.id}\/raw\/master\/#{blob.path}/)
+        expect(page).to have_link('Download', href: /-\/snippets\/#{snippet.id}\/raw\/master\/#{blob.path}\?inline=false/)
+      end
+    end
   end
 end

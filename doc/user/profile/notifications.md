@@ -187,7 +187,7 @@ To minimize the number of notifications that do not require any action, from [Gi
 | Remove milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
 | Failed pipeline        | The author of the pipeline |
-| Fixed pipeline    | The author of the pipeline. Enabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1. Administrators can disable this notification option using the `ci_pipeline_fixed_notifications` [feature flag](../../administration/feature_flags.md). |
+| Fixed pipeline    | The author of the pipeline. Enabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1. |
 | Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set. If the pipeline failed previously, a `Fixed pipeline` message will be sent for the first successful pipeline after the failure, then a `Successful pipeline` message for any further successful pipelines. |
 | New epic **(ULTIMATE)** |        |
 | Close epic **(ULTIMATE)** |      |

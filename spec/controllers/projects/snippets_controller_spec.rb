@@ -416,12 +416,13 @@ RSpec.describe Projects::SnippetsController do
 
   describe "GET #show for embeddable content" do
     let(:project_snippet) { create(:project_snippet, :repository, snippet_permission, project: project, author: user) }
+    let(:extra_params) { {} }
 
     before do
       sign_in(user)
     end
 
-    subject { get :show, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param }, format: :js }
+    subject { get :show, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param, **extra_params }, format: :js }
 
     context 'when snippet is private' do
       let(:snippet_permission) { :private }
@@ -436,7 +437,29 @@ RSpec.describe Projects::SnippetsController do
     context 'when snippet is public' do
       let(:snippet_permission) { :public }
 
-      it_behaves_like 'successful response'
+      it 'renders the blob from the repository' do
+        subject
+
+        expect(assigns(:snippet)).to eq(project_snippet)
+        expect(assigns(:blobs)).to eq(project_snippet.blobs)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'does not show the blobs expanded by default' do
+        subject
+
+        expect(project_snippet.blobs.map(&:expanded?)).to be_all(false)
+      end
+
+      context 'when param expanded is set' do
+        let(:extra_params) { { expanded: true } }
+
+        it 'shows all blobs expanded' do
+          subject
+
+          expect(project_snippet.blobs.map(&:expanded?)).to be_all(true)
+        end
+      end
     end
 
     context 'when the project is private' do

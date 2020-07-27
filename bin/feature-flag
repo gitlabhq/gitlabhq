@@ -118,6 +118,9 @@ class FeatureFlagOptionParser
     end
 
     def read_type
+      # if there's only one type, do not ask, return
+      return TYPES.first.first if TYPES.one?
+
       $stdout.puts ">> Please specify the type of your feature flag:"
       $stdout.puts
       TYPES.each do |type, data|

@@ -47,8 +47,6 @@ module Ci
     end
 
     def update_status_by!(pipeline)
-      return unless Gitlab::Ci::Features.pipeline_fixed_notifications?
-
       retry_lock(self) do
         next unless last_finished_pipeline_id == pipeline.id
 

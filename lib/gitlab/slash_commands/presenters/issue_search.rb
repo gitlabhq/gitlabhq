@@ -22,7 +22,7 @@ module Gitlab
 
         def attachments
           resource.map do |issue|
-            url = "[#{issue.to_reference}](#{url_for([namespace, project, issue])})"
+            url = "[#{issue.to_reference}](#{url_for([project, issue])})"
 
             {
               color: color(issue),
@@ -38,10 +38,6 @@ module Gitlab
 
         def project
           @project ||= resource.first.project
-        end
-
-        def namespace
-          @namespace ||= project.namespace.becomes(Namespace)
         end
       end
     end

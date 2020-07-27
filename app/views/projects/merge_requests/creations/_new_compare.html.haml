@@ -1,7 +1,7 @@
 %h3.page-title
   New Merge Request
 
-= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form js-requires-input" } do |f|
+= form_for [@project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form js-requires-input" } do |f|
   - if params[:nav_source].present?
     = hidden_field_tag(:nav_source, params[:nav_source])
   .hide.alert.alert-danger.mr-compare-errors

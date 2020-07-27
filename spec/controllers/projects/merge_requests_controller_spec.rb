@@ -334,7 +334,7 @@ RSpec.describe Projects::MergeRequestsController do
       it 'closes MR without errors' do
         update_merge_request(state_event: 'close')
 
-        expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
+        expect(response).to redirect_to([merge_request.target_project, merge_request])
         expect(merge_request.reload.closed?).to be_truthy
       end
 
@@ -343,7 +343,7 @@ RSpec.describe Projects::MergeRequestsController do
 
         update_merge_request(title: 'New title')
 
-        expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
+        expect(response).to redirect_to([merge_request.target_project, merge_request])
         expect(merge_request.reload.title).to eq 'New title'
       end
 

@@ -5,17 +5,17 @@
 
       %strong.file-title-name
         %a.gitlab-embedded-snippets-title{ href: url_for(only_path: false, overwrite_params: nil) }
-          = @blob.name
+          = blob.name
 
       %small
-        = number_to_human_size(@blob.raw_size)
+        = number_to_human_size(blob.size)
       %a.gitlab-logo-wrapper{ href: url_for(only_path: false, overwrite_params: nil), title: 'view on gitlab' }
         %img.gitlab-logo{ src: image_url('ext_snippet_icons/logo.svg'), alt: "GitLab logo" }
 
     .file-actions.d-none.d-sm-block
       .btn-group{ role: "group" }<
-        = embedded_raw_snippet_button
+        = embedded_raw_snippet_button(@snippet, blob)
 
-        = embedded_snippet_download_button
+        = embedded_snippet_download_button(@snippet, blob)
   %article.file-holder.snippet-file-content
-    = render 'projects/blob/viewer', viewer: @blob.simple_viewer, load_async: false, external_embed: true
+    = render 'projects/blob/viewer', viewer: blob.simple_viewer, load_async: false, external_embed: true

@@ -40,7 +40,7 @@ module TimeboxesHelper
     opts = { milestone_title: milestone.title, state: state }
 
     if @project
-      polymorphic_path([@project.namespace.becomes(Namespace), @project, type], opts)
+      polymorphic_path([@project, type], opts)
     elsif @group
       polymorphic_url([type, @group], opts)
     else

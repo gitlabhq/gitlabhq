@@ -161,16 +161,6 @@ RSpec.describe Ci::Ref do
       it_behaves_like 'no-op'
     end
 
-    context 'when feature flag is disabled' do
-      let(:pipeline) { create(:ci_pipeline, :success, ci_ref: ci_ref) }
-
-      before do
-        stub_feature_flags(ci_pipeline_fixed_notifications: false)
-      end
-
-      it_behaves_like 'no-op'
-    end
-
     context 'when pipeline is not the latest pipeline' do
       let!(:pipeline) { create(:ci_pipeline, :success, ci_ref: ci_ref) }
       let!(:latest_pipeline) { create(:ci_pipeline, :success, ci_ref: ci_ref) }

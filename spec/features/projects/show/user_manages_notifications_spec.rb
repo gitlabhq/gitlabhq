@@ -67,20 +67,6 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
         end
       end
     end
-
-    context 'when ci_pipeline_fixed_notifications is disabled' do
-      before do
-        stub_feature_flags(ci_pipeline_fixed_notifications: false)
-      end
-
-      it 'hides fixed_pipeline checkbox' do
-        visit project_path(project)
-        click_notifications_button
-        page.find('a[data-notification-level="custom"]').click
-
-        expect(page).not_to have_selector("input[name='notification_setting[fixed_pipeline]']")
-      end
-    end
   end
 
   context 'when project emails are disabled' do

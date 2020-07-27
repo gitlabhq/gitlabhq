@@ -160,7 +160,7 @@ RSpec.describe IssuablesHelper do
       end
 
       before do
-        user.destroy
+        user.destroy!
       end
 
       it 'returns "Ghost user" as edited_by' do

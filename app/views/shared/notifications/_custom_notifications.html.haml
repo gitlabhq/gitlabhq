@@ -23,7 +23,6 @@
                   #{ paragraph.html_safe }
               .col-lg-8
                 - notification_setting.email_events.each_with_index do |event, index|
-                  - next if notification_event_disabled?(event)
                   - field_id = "#{notifications_menu_identifier("modal", notification_setting)}_notification_setting[#{event}]"
                   .form-group
                     .form-check{ class: ("gl-mt-0" if index == 0) }

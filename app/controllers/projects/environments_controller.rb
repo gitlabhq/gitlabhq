@@ -105,7 +105,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
     action_or_env_url =
       if stop_action
-        polymorphic_url([project.namespace.becomes(Namespace), project, stop_action])
+        polymorphic_url([project, stop_action])
       else
         project_environment_url(project, @environment)
       end
