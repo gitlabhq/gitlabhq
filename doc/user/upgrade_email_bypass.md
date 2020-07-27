@@ -66,7 +66,7 @@ Your account has been blocked. Fatal: Could not read from remote repository
 You can assure your users that they have not been [Blocked](admin_area/blocking_unblocking_users.md) by an administrator.
 When affected users see this message, they must confirm their email address before they can commit code.
 
-## What do I need to know as an administrator of a GitLab Self-Managed Instance?
+## What do I need to know as an administrator of a GitLab self-managed Instance?
 
 You have the following options to help your users:
 
@@ -86,6 +86,19 @@ admin = User.find_by_username "root" #replace with your admin username
 admin.confirmed_at = Time.zone.now
 admin.save!
 ```
+
+## How do I force-confirm all users on my self-managed instance?
+
+If you are an administrator and would like to force-confirm all users on your system, sign in to your GitLab
+instance with a [Rails console session](../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session).
+Once connected, run the following commands to confirm all user accounts:
+
+```ruby
+User.where('LENGTH(confirmation_token) = 32').where(confirmed_at: nil).find_each { |u| u.confirmed_at = Time.now; u.save }
+```
+
+CAUTION: **Caution:**
+The command described in this section may activate users who have not properly confirmed their email addresses.
 
 ## What about LDAP users?
 

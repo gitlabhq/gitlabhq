@@ -25,14 +25,12 @@ module Banzai
       def initialize(doc, context = nil, result = nil)
         super
 
-        if update_nodes_enabled?
-          @new_nodes = {}
-          @nodes = self.result[:reference_filter_nodes]
-        end
+        @new_nodes = {}
+        @nodes = self.result[:reference_filter_nodes]
       end
 
       def call_and_update_nodes
-        update_nodes_enabled? ? with_update_nodes { call } : call
+        with_update_nodes { call }
       end
 
       # Returns a data attribute String to attach to a reference link
@@ -165,11 +163,7 @@ module Banzai
       end
 
       def replace_text_with_html(node, index, html)
-        if update_nodes_enabled?
-          replace_and_update_new_nodes(node, index, html)
-        else
-          node.replace(html)
-        end
+        replace_and_update_new_nodes(node, index, html)
       end
 
       def replace_and_update_new_nodes(node, index, html)
@@ -208,10 +202,6 @@ module Banzai
           nodes[index, 1] = new_nodes
         end
         result[:reference_filter_nodes] = nodes
-      end
-
-      def update_nodes_enabled?
-        Feature.enabled?(:update_nodes_for_banzai_reference_filter, project)
       end
     end
   end

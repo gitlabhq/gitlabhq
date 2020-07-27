@@ -1,17 +1,12 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { GlEmptyState, GlButton } from '@gitlab/ui';
 import Success from '~/static_site_editor/pages/success.vue';
-import SavedChangesMessage from '~/static_site_editor/components/saved_changes_message.vue';
-import { savedContentMeta, returnUrl } from '../mock_data';
+import { savedContentMeta, returnUrl, sourcePath } from '../mock_data';
 import { HOME_ROUTE } from '~/static_site_editor/router/constants';
 
-const localVue = createLocalVue();
-
-localVue.use(Vuex);
-
 describe('static_site_editor/pages/success', () => {
+  const mergeRequestsIllustrationPath = 'illustrations/merge_requests.svg';
   let wrapper;
-  let store;
   let router;
 
   const buildRouter = () => {
@@ -22,16 +17,22 @@ describe('static_site_editor/pages/success', () => {
 
   const buildWrapper = (data = {}) => {
     wrapper = shallowMount(Success, {
-      localVue,
-      store,
       mocks: {
         $router: router,
+      },
+      stubs: {
+        GlEmptyState,
+        GlButton,
+      },
+      propsData: {
+        mergeRequestsIllustrationPath,
       },
       data() {
         return {
           savedContentMeta,
           appData: {
             returnUrl,
+            sourcePath,
           },
           ...data,
         };
@@ -39,7 +40,8 @@ describe('static_site_editor/pages/success', () => {
     });
   };
 
-  const findSavedChangesMessage = () => wrapper.find(SavedChangesMessage);
+  const findEmptyState = () => wrapper.find(GlEmptyState);
+  const findReturnUrlButton = () => wrapper.find(GlButton);
 
   beforeEach(() => {
     buildRouter();
@@ -50,29 +52,50 @@ describe('static_site_editor/pages/success', () => {
     wrapper = null;
   });
 
-  it('renders saved changes message', () => {
+  it('renders empty state with a link to the created merge request', () => {
     buildWrapper();
 
-    expect(findSavedChangesMessage().exists()).toBe(true);
+    expect(findEmptyState().exists()).toBe(true);
+    expect(findEmptyState().props()).toMatchObject({
+      primaryButtonText: 'View merge request',
+      primaryButtonLink: savedContentMeta.mergeRequest.url,
+      title: 'Your merge request has been created',
+      svgPath: mergeRequestsIllustrationPath,
+    });
   });
 
-  it('passes returnUrl to the saved changes message', () => {
+  it('displays merge request instructions in the empty state', () => {
     buildWrapper();
 
-    expect(findSavedChangesMessage().props('returnUrl')).toBe(returnUrl);
+    expect(findEmptyState().text()).toContain(
+      'To see your changes live you will need to do the following things:',
+    );
+    expect(findEmptyState().text()).toContain('1. Add a clear title to describe the change.');
+    expect(findEmptyState().text()).toContain(
+      '2. Add a description to explain why the change is being made.',
+    );
+    expect(findEmptyState().text()).toContain(
+      '3. Assign a person to review and accept the merge request.',
+    );
   });
 
-  it('passes saved content metadata to the saved changes message', () => {
+  it('displays return to site button', () => {
     buildWrapper();
 
-    expect(findSavedChangesMessage().props('branch')).toBe(savedContentMeta.branch);
-    expect(findSavedChangesMessage().props('commit')).toBe(savedContentMeta.commit);
-    expect(findSavedChangesMessage().props('mergeRequest')).toBe(savedContentMeta.mergeRequest);
+    expect(findReturnUrlButton().text()).toBe('Return to site');
+    expect(findReturnUrlButton().attributes().href).toBe(returnUrl);
+  });
+
+  it('displays source path', () => {
+    buildWrapper();
+
+    expect(wrapper.text()).toContain(`Update ${sourcePath} file`);
   });
 
   it('redirects to the HOME route when content has not been submitted', () => {
     buildWrapper({ savedContentMeta: null });
 
     expect(router.push).toHaveBeenCalledWith(HOME_ROUTE);
+    expect(wrapper.html()).toBe('');
   });
 });

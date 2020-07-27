@@ -1,3 +1,13 @@
+<script>
+export default {
+  props: {
+    mergeRequestsIllustrationPath: {
+      type: String,
+      required: true,
+    },
+  },
+};
+</script>
 <template>
-  <router-view />
+  <router-view :merge-requests-illustration-path="mergeRequestsIllustrationPath" />
 </template>

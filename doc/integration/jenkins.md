@@ -3,7 +3,7 @@
 NOTE: **Note:**
 This documentation focuses only on how to **configure** a Jenkins *integration* with
 GitLab. Learn how to **migrate** from Jenkins to GitLab CI/CD in our
-[Migrating from Jenkins](../ci/jenkins/index.md) documentation.
+[Migrating from Jenkins](../ci/migration/jenkins.md) documentation.
 
 From GitLab, you can trigger a Jenkins build when you push code to a repository, or when a merge
 request is created. In return, Jenkins shows the pipeline status on merge requests widgets and

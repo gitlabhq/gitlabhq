@@ -62,6 +62,11 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
 1. Click **Add Kubernetes cluster**.
 1. Under the **Create new cluster** tab, click **Amazon EKS**. You will be provided with an
    `Account ID` and `External ID` to use in the next step.
+1. In the [IAM Management Console](https://console.aws.amazon.com/iam/home), create an EKS management IAM role.
+   To do so, follow the [Amazon EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) instructions
+   to create a IAM role suitable for managing the AWS EKS cluster's resources on your behalf.
+   In addition to the policies that guide suggests, you must also include the `AmazonEKSServicePolicy`
+   policy for this role in order for GitLab to manage the EKS cluster correctly.
 1. In the [IAM Management Console](https://console.aws.amazon.com/iam/home), create an IAM role:
    1. From the left panel, select **Roles**.
    1. Click **Create role**.
@@ -137,9 +142,15 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - **Kubernetes cluster name** - The name you wish to give the cluster.
    - **Environment scope** - The [associated environment](index.md#setting-the-environment-scope-premium) to this cluster.
    - **Kubernetes version** - The Kubernetes version to use. Currently the only version supported is 1.14.
-   - **Role name** - Select the [IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html)
-     to allow Amazon EKS and the Kubernetes control plane to manage AWS resources on your behalf. This IAM role is separate
-     to the IAM role created above, you will need to create it if it does not yet exist.
+   - **Role name** - Select the **EKS IAM role** you created earlier to allow Amazon EKS
+     and the Kubernetes control plane to manage AWS resources on your behalf.
+
+     NOTE: **Note:**
+     This IAM role is _not_ the IAM role you created in the previous step. It should be
+     the one you created much earlier by following the
+     [Amazon EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html)
+     guide.
+
    - **Region** - The [region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html)
      in which the cluster will be created.
    - **Key pair name** - Select the [key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
@@ -194,10 +205,10 @@ If the `Cluster` resource failed with the error
 the role specified in **Role name** is not configured correctly.
 
 NOTE: **Note:**
-This role should not be the same as the one created above. If you don't have an
-existing
-[EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html),
-you must create one.
+This role should be the role you created by following the
+[EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) guide.
+In addition to the policies that guide suggests, you must also include the
+`AmazonEKSServicePolicy` policy for this role in order for GitLab to manage the EKS cluster correctly.
 
 ## Existing EKS cluster
 

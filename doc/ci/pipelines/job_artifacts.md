@@ -294,7 +294,7 @@ marked as Satisfied.
 
 > - From GitLab 9.2, PDFs, images, videos, and other formats can be previewed directly in the job artifacts browser without the need to download them.
 > - Introduced in [GitLab 10.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14399), HTML files in a public project can be previewed directly in a new tab without the need to download them when [GitLab Pages](../../administration/pages/index.md) is enabled. The same applies for textual formats (currently supported extensions: `.txt`, `.json`, and `.log`).
-> - Introduced in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16675), artifacts in private projects can be previewed when [GitLab Pages access control](../../administration/pages/index.md#access-control) is enabled.
+> - Introduced in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16675), artifacts in internal and private projects can be previewed when [GitLab Pages access control](../../administration/pages/index.md#access-control) is enabled.
 
 After a job finishes, if you visit the job's specific page, there are three
 buttons. You can download the artifacts archive or browse its contents, whereas
@@ -311,6 +311,8 @@ Below you can see what browsing looks like. In this case we have browsed inside
 the archive and at this point there is one directory, a couple files, and
 one HTML file that you can view directly online when
 [GitLab Pages](../../administration/pages/index.md) is enabled (opens in a new tab).
+Select artifacts in internal and private projects can only be previewed when
+[GitLab Pages access control](../../administration/pages/index.md#access-control) is enabled.
 
 ![Job artifacts browser](img/job_artifacts_browser.png)
 

@@ -36,6 +36,9 @@ describe('File Icon component', () => {
     fileName        | iconName
     ${'test.js'}    | ${'javascript'}
     ${'test.png'}   | ${'image'}
+    ${'test.PNG'}   | ${'image'}
+    ${'.npmrc'}     | ${'npm'}
+    ${'.Npmrc'}     | ${'file'}
     ${'webpack.js'} | ${'webpack'}
   `('should render a $iconName icon based on file ending', ({ fileName, iconName }) => {
     createComponent({ fileName });

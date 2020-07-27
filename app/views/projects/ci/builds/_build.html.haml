@@ -97,7 +97,7 @@
   %td
     .float-right
       - if can?(current_user, :read_build, job) && job.artifacts?
-        = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: _('Download artifacts'), class: 'btn btn-build' do
+        = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: _('Download artifacts'), class: 'btn btn-build gl-button btn-icon btn-svg' do
           = sprite_icon('download')
       - if can?(current_user, :update_build, job)
         - if job.active?

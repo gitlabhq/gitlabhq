@@ -9,6 +9,7 @@ require:
 inherit_from:
   - .rubocop_todo.yml
   - ./rubocop/rubocop-migrations.yml
+  - ./rubocop/rubocop-usage-data.yml
 
 inherit_mode:
   merge:

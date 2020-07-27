@@ -10,7 +10,6 @@
 #   alt_usage_data { Gitlab::VERSION }
 #   redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
 #   redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
-
 module Gitlab
   class UsageData
     BATCH_SIZE = 100
@@ -84,9 +83,11 @@ module Gitlab
             auto_devops_enabled: count(::ProjectAutoDevops.enabled),
             auto_devops_disabled: count(::ProjectAutoDevops.disabled),
             deploy_keys: count(DeployKey),
+            # rubocop: disable UsageData/LargeTable:
             deployments: deployment_count(Deployment),
             successful_deployments: deployment_count(Deployment.success),
             failed_deployments: deployment_count(Deployment.failed),
+            # rubocop: enable UsageData/LargeTable:
             environments: count(::Environment),
             clusters: count(::Clusters::Cluster),
             clusters_enabled: count(::Clusters::Cluster.enabled),
@@ -171,9 +172,11 @@ module Gitlab
       def system_usage_data_monthly
         {
           counts_monthly: {
+            # rubocop: disable UsageData/LargeTable:
             deployments: deployment_count(Deployment.where(last_28_days_time_period)),
             successful_deployments: deployment_count(Deployment.success.where(last_28_days_time_period)),
             failed_deployments: deployment_count(Deployment.failed.where(last_28_days_time_period)),
+            # rubocop: enable UsageData/LargeTable:
             personal_snippets: count(PersonalSnippet.where(last_28_days_time_period)),
             project_snippets: count(ProjectSnippet.where(last_28_days_time_period))
           }.tap do |data|
@@ -332,14 +335,18 @@ module Gitlab
         finish = ::Project.maximum(:id)
 
         results[:projects_with_expiration_policy_disabled] = distinct_count(::ContainerExpirationPolicy.where(enabled: false), :project_id, start: start, finish: finish)
+        # rubocop: disable UsageData/LargeTable
         base = ::ContainerExpirationPolicy.active
+        # rubocop: enable UsageData/LargeTable
         results[:projects_with_expiration_policy_enabled] = distinct_count(base, :project_id, start: start, finish: finish)
 
+        # rubocop: disable UsageData/LargeTable
         %i[keep_n cadence older_than].each do |option|
           ::ContainerExpirationPolicy.public_send("#{option}_options").keys.each do |value| # rubocop: disable GitlabSecurity/PublicSend
             results["projects_with_expiration_policy_enabled_with_#{option}_set_to_#{value}".to_sym] = distinct_count(base.where(option => value), :project_id, start: start, finish: finish)
           end
         end
+        # rubocop: enable UsageData/LargeTable
 
         results[:projects_with_expiration_policy_enabled_with_keep_n_unset] = distinct_count(base.where(keep_n: nil), :project_id, start: start, finish: finish)
         results[:projects_with_expiration_policy_enabled_with_older_than_unset] = distinct_count(base.where(older_than: nil), :project_id, start: start, finish: finish)
@@ -350,9 +357,11 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def services_usage
+        # rubocop: disable UsageData/LargeTable:
         Service.available_services_names.without('jira').each_with_object({}) do |service_name, response|
           response["projects_#{service_name}_active".to_sym] = count(Service.active.where(template: false, type: "#{service_name}_service".camelize))
         end.merge(jira_usage).merge(jira_import_usage)
+        # rubocop: enable UsageData/LargeTable:
       end
 
       def jira_usage
@@ -365,6 +374,7 @@ module Gitlab
           projects_jira_active: 0
         }
 
+        # rubocop: disable UsageData/LargeTable:
         JiraService.active.includes(:jira_tracker_data).find_in_batches(batch_size: BATCH_SIZE) do |services|
           counts = services.group_by do |service|
             # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
@@ -376,21 +386,24 @@ module Gitlab
           results[:projects_jira_cloud_active] += counts[:cloud].size if counts[:cloud]
           results[:projects_jira_active] += services.size
         end
-
+        # rubocop: enable UsageData/LargeTable:
         results
       rescue ActiveRecord::StatementInvalid
         { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK, projects_jira_active: FALLBACK }
       end
 
+      # rubocop: disable UsageData/LargeTable
       def successful_deployments_with_cluster(scope)
         scope
           .joins(cluster: :deployments)
           .merge(Clusters::Cluster.enabled)
           .merge(Deployment.success)
       end
+      # rubocop: enable UsageData/LargeTable
       # rubocop: enable CodeReuse/ActiveRecord
 
       def jira_import_usage
+        # rubocop: disable UsageData/LargeTable
         finished_jira_imports = JiraImportState.finished
 
         {
@@ -398,6 +411,7 @@ module Gitlab
           jira_imports_projects_count: distinct_count(finished_jira_imports, :project_id),
           jira_imports_total_imported_issues_count: alt_usage_data { JiraImportState.finished_imports_count }
         }
+        # rubocop: enable UsageData/LargeTable
       end
 
       def user_preferences_usage
@@ -406,13 +420,8 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def merge_requests_users(time_period)
-        query =
-          Event
-            .where(target_type: Event::TARGET_TYPES[:merge_request].to_s)
-            .where(time_period)
-
         distinct_count(
-          query,
+          Event.where(target_type: Event::TARGET_TYPES[:merge_request].to_s).where(time_period),
           :author_id,
           start: user_minimum_id,
           finish: user_maximum_id
@@ -450,6 +459,7 @@ module Gitlab
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
+      # rubocop: disable UsageData/LargeTable
       def usage_activity_by_stage_configure(time_period)
         {
           clusters_applications_cert_managers: cluster_applications_user_distinct_count(::Clusters::Applications::CertManager, time_period),
@@ -470,6 +480,7 @@ module Gitlab
           project_clusters_enabled: clusters_user_distinct_count(::Clusters::Cluster.enabled.project_type, time_period)
         }
       end
+      # rubocop: enable UsageData/LargeTable
       # rubocop: enable CodeReuse/ActiveRecord
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -628,8 +639,9 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def service_desk_counts
+        # rubocop: disable UsageData/LargeTable:
         projects_with_service_desk = ::Project.where(service_desk_enabled: true)
-
+        # rubocop: enable UsageData/LargeTable:
         {
           service_desk_enabled_projects: count(projects_with_service_desk),
           service_desk_issues: count(

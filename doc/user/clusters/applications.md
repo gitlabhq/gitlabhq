@@ -965,6 +965,7 @@ documentation:
 
 - [Google GKE](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-gke/#deploy-cilium)
 - [AWS EKS](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-eks/#deploy-cilium)
+- [Azure AKS](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-aks/#deploy-cilium)
 
 You can customize Cilium's Helm variables by defining the
 `.gitlab/managed-apps/cilium/values.yaml` file in your cluster

@@ -9,6 +9,7 @@
 - can_reopen_issue = can?(current_user, :reopen_issue, @issue)
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
 - can_create_issue = show_new_issue_link?(@project)
+- related_branches_path = related_branches_project_issue_path(@project, @issue)
 
 = render_if_exists "projects/issues/alert_blocked", issue: @issue, current_user: current_user
 = render "projects/issues/alert_moved_from_service_desk", issue: @issue
@@ -82,7 +83,8 @@
     #js-related-merge-requests{ data: { endpoint: expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid)), project_namespace: @project.namespace.path, project_path: @project.path } }
 
     - if can?(current_user, :download_code, @project)
-      #related-branches{ data: { url: related_branches_project_issue_path(@project, @issue) } }
+      - add_page_startup_api_call related_branches_path
+      #related-branches{ data: { url: related_branches_path } }
         -# This element is filled in using JavaScript.
 
   .content-block.emoji-block.emoji-block-sticky

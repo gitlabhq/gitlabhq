@@ -1,21 +1,31 @@
 # frozen_string_literal: true
-require 'spec_helper'
+require "spec_helper"
 
 RSpec.describe DesignManagement::DesignPolicy do
   include DesignManagementTestHelpers
 
-  include_context 'ProjectPolicy context'
-
   let(:guest_design_abilities) { %i[read_design] }
-  let(:developer_design_abilities) do
-    %i[create_design destroy_design]
-  end
+  let(:developer_design_abilities) { %i[create_design destroy_design] }
   let(:design_abilities) { guest_design_abilities + developer_design_abilities }
 
-  let(:issue) { create(:issue, project: project) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:project) { create(:project, :public, namespace: owner.namespace) }
+  let_it_be(:issue) { create(:issue, project: project) }
   let(:design) { create(:design, issue: issue) }
 
   subject(:design_policy) { described_class.new(current_user, design) }
+
+  before_all do
+    project.add_guest(guest)
+    project.add_maintainer(maintainer)
+    project.add_developer(developer)
+    project.add_reporter(reporter)
+  end
 
   shared_examples_for "design abilities not available" do
     context "for owners" do
@@ -71,11 +81,11 @@ RSpec.describe DesignManagement::DesignPolicy do
     context "for admins" do
       let(:current_user) { admin }
 
-      context 'when admin mode enabled', :enable_admin_mode do
+      context "when admin mode enabled", :enable_admin_mode do
         it { is_expected.to be_allowed(*design_abilities) }
       end
 
-      context 'when admin mode disabled' do
+      context "when admin mode disabled" do
         it { is_expected.to be_allowed(*guest_design_abilities) }
         it { is_expected.to be_disallowed(*developer_design_abilities) }
       end
@@ -122,7 +132,7 @@ RSpec.describe DesignManagement::DesignPolicy do
     it_behaves_like "design abilities available for members"
 
     context "for guests in private projects" do
-      let(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
       let(:current_user) { guest }
 
       it { is_expected.to be_allowed(*guest_design_abilities) }
@@ -137,7 +147,7 @@ RSpec.describe DesignManagement::DesignPolicy do
     end
 
     context "when the issue is confidential" do
-      let(:issue) { create(:issue, :confidential, project: project) }
+      let_it_be(:issue) { create(:issue, :confidential, project: project) }
 
       it_behaves_like "design abilities available for members"
 
@@ -155,25 +165,23 @@ RSpec.describe DesignManagement::DesignPolicy do
     end
 
     context "when the issue is locked" do
+      let_it_be(:issue) { create(:issue, :locked, project: project) }
       let(:current_user) { owner }
-      let(:issue) { create(:issue, :locked, project: project) }
 
       it_behaves_like "read-only design abilities"
     end
 
     context "when the issue has moved" do
+      let_it_be(:issue) { create(:issue, project: project, moved_to: create(:issue)) }
       let(:current_user) { owner }
-      let(:issue) { create(:issue, project: project, moved_to: create(:issue)) }
 
       it_behaves_like "read-only design abilities"
     end
 
     context "when the project is archived" do
+      let_it_be(:project) { create(:project, :public, :archived) }
+      let_it_be(:issue) { create(:issue, project: project) }
       let(:current_user) { owner }
-
-      before do
-        project.update!(archived: true)
-      end
 
       it_behaves_like "read-only design abilities"
     end

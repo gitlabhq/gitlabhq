@@ -22720,6 +22720,15 @@ msgstr ""
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
+msgid "StaticSiteEditor|1. Add a clear title to describe the change."
+msgstr ""
+
+msgid "StaticSiteEditor|2. Add a description to explain why the change is being made."
+msgstr ""
+
+msgid "StaticSiteEditor|3. Assign a person to review and accept the merge request."
+msgstr ""
+
 msgid "StaticSiteEditor|An error occurred while submitting your changes."
 msgstr ""
 
@@ -22741,13 +22750,10 @@ msgstr ""
 msgid "StaticSiteEditor|Static site editor"
 msgstr ""
 
-msgid "StaticSiteEditor|Success!"
-msgstr ""
-
-msgid "StaticSiteEditor|Summary of changes"
-msgstr ""
-
 msgid "StaticSiteEditor|The Static Site Editor is currently configured to only edit Markdown content on pages generated from Middleman. Visit the documentation to learn more about configuring your site to use the Static Site Editor."
+msgstr ""
+
+msgid "StaticSiteEditor|To see your changes live you will need to do the following things:"
 msgstr ""
 
 msgid "StaticSiteEditor|Update %{sourcePath} file"
@@ -22756,19 +22762,7 @@ msgstr ""
 msgid "StaticSiteEditor|View documentation"
 msgstr ""
 
-msgid "StaticSiteEditor|View merge request"
-msgstr ""
-
-msgid "StaticSiteEditor|You added a commit:"
-msgstr ""
-
-msgid "StaticSiteEditor|You created a merge request:"
-msgstr ""
-
-msgid "StaticSiteEditor|You created a new branch:"
-msgstr ""
-
-msgid "StaticSiteEditor|Your changes have been submitted and a merge request has been created. The changes won’t be visible on the site until the merge request has been accepted."
+msgid "StaticSiteEditor|Your merge request has been created"
 msgstr ""
 
 msgid "Statistics"
@@ -25689,6 +25683,9 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
+msgid "Update %{sourcePath} file"
+msgstr ""
+
 msgid "Update all"
 msgstr ""
 
@@ -26423,6 +26420,9 @@ msgid "View labels"
 msgstr ""
 
 msgid "View log"
+msgstr ""
+
+msgid "View merge request"
 msgstr ""
 
 msgid "View open merge request"
