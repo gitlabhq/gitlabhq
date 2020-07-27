@@ -14672,6 +14672,9 @@ msgstr ""
 msgid "Merge Request"
 msgstr ""
 
+msgid "Merge Request Analytics"
+msgstr ""
+
 msgid "Merge Request Approvals"
 msgstr ""
 
@@ -16386,6 +16389,9 @@ msgid "OnDemandScans|Attached branch is where the scan job runs."
 msgstr ""
 
 msgid "OnDemandScans|Could not run the scan. Please try again."
+msgstr ""
+
+msgid "OnDemandScans|Could not run the scan: %{backendErrorMessage}"
 msgstr ""
 
 msgid "OnDemandScans|Create new DAST scan"
@@ -23368,6 +23374,12 @@ msgstr ""
 msgid "Templates"
 msgstr ""
 
+msgid "TemporaryStorageIncrease|can only be set once"
+msgstr ""
+
+msgid "TemporaryStorageIncrease|can only be set with more than %{percentage}%% usage"
+msgstr ""
+
 msgid "TemporaryStorage|GitLab allows you a %{strongStart}free, one-time storage increase%{strongEnd}. For 30 days your storage will be unlimited. This gives you time to reduce your storage usage. After 30 days, your original storage limit of %{limit} applies. If you are at maximum storage capacity, your account will be read-only. To continue using GitLab you'll have to purchase additional storage or decrease storage usage."
 msgstr ""
 
@@ -28824,6 +28836,9 @@ msgid "mrWidget|to be merged automatically when the pipeline succeeds"
 msgstr ""
 
 msgid "mrWidget|to start a merge train when the pipeline succeeds"
+msgstr ""
+
+msgid "must be a root namespace"
 msgstr ""
 
 msgid "must be greater than start date"

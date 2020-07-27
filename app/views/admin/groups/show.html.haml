@@ -112,7 +112,7 @@
           = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put do
             %div
               = users_select_tag(:user_ids, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?, scope: :all)
-            .prepend-top-10
+            .gl-mt-3
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr
             = button_tag _('Add users to group'), class: "btn btn-success"

@@ -11,7 +11,7 @@
     .svg-content
       = render svg_path
 
-    %div{ class: is_empty_state ? "text-content" : "prepend-top-10 gl-ml-3" }
+    %div{ class: is_empty_state ? "text-content" : "gl-mt-3 gl-ml-3" }
       - if is_empty_state
         %h4= title_text
       - else
@@ -26,7 +26,7 @@
       = link_to _('Read more'), help_page_path('user/project/service_desk')
 
       - if can_edit_project_settings && !service_desk_enabled
-        %div{ class: is_empty_state ? "text-center" : "prepend-top-10" }
+        %div{ class: is_empty_state ? "text-center" : "gl-mt-3" }
           = link_to _("Turn on Service Desk"), edit_project_path(@project), class: 'btn btn-success'
 - else
   .empty-state

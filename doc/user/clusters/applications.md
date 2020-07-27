@@ -547,7 +547,7 @@ file.
 
 NOTE: **Note:**
 The chart deploys 3 identical Elasticsearch pods which can't be colocated, and each
-require 1 CPU and 2 GB of RAM, making them incompatible with clusters containing
+requires 1 CPU and 2 GB of RAM, making them incompatible with clusters containing
 fewer than 3 nodes or consisting of `f1-micro`, `g1-small`, `n1-standard-1`, or
 `*-highcpu-2` instance types.
 
@@ -1184,7 +1184,7 @@ below are examples and should be replaced with settings specific to your environ
 ui:
   enabled: true
 server:
-  # Disable the built in data storage volume as it's not safe for Hight Availability mode
+  # Disable the built in data storage volume as it's not safe for High Availability mode
   dataStorage:
     enabled: false
   # Enable High Availability Mode
@@ -1213,7 +1213,7 @@ server:
 
 Once you have successfully installed Vault, you will need to [initialize the Vault](https://learn.hashicorp.com/vault/getting-started/deploy#initializing-the-vault)
 and obtain the initial root token. You will need access to your Kubernetes cluster that Vault has been deployed into in order to do this.
-To initialise the Vault, get a shell to one of the Vault pods running inside Kubernetes (typically this is done by using the `kubectl` command line tool).
+To initialize the Vault, get a shell to one of the Vault pods running inside Kubernetes (typically this is done by using the `kubectl` command line tool).
 Once you have a shell into the pod, run the `vault operator init` command:
 
 ```shell
@@ -1588,7 +1588,7 @@ To avoid installation errors:
 If you're using a managed cluster on AWS EKS, and you are not able to install some of the managed
 apps, consider checking the logs.
 
-You can check the logs by running following commands:
+You can check the logs by running the following commands:
 
 ```shell
 kubectl get pods --all-namespaces

@@ -22,7 +22,7 @@
         = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
   = render_if_exists 'shared/promotions/promote_advanced_search'
 
-  .results.prepend-top-10
+  .results.gl-mt-3
     - if @scope == 'commits'
       %ul.content-list.commit-list
         = render partial: "search/results/commit", collection: @search_objects

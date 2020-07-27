@@ -1,0 +1,5 @@
+---
+title: External auth adheres to local request setting
+merge_request: 37622
+author:
+type: changed

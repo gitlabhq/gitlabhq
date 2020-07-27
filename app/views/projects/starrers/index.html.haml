@@ -22,7 +22,7 @@
                   = link_to filter_starrer_path(sort: value), class: ("is-active" if @sort == value) do
                     = title
 - if @starrers.size > 0
-  .row.prepend-top-10
+  .row.gl-mt-3
     = render partial: 'starrer', collection: @starrers, as: :starrer
   = paginate @starrers, theme: 'gitlab'
 - else

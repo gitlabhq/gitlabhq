@@ -15,9 +15,9 @@
           #ci-editor.ci-editor= @content
         = text_area_tag(:content, @content, class: 'hidden form-control span1', rows: 7, require: true)
       .col-sm-12
-        .float-left.prepend-top-10
+        .float-left.gl-mt-3
           = submit_tag(_('Validate'), class: 'btn btn-success submit-yml')
-        .float-right.prepend-top-10
+        .float-right.gl-mt-3
           = button_tag(_('Clear'), type: 'button', class: 'btn btn-default clear-yml')
 
   .row.prepend-top-20

@@ -19,7 +19,7 @@ export default {
 };
 </script>
 <template>
-  <div class="top-area prepend-top-10 gl-mb-3">
+  <div class="top-area gl-mt-3 gl-mb-3">
     <ul class="nav-links issues-state-filters">
       <li :class="{ active: activeTab == 'all' }">
         <a href="#" role="button" @click.prevent="changeTab('all')">

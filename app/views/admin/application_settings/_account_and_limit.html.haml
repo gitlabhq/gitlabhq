@@ -52,7 +52,7 @@
         = f.check_box :user_default_external, class: 'form-check-input'
         = f.label :user_default_external, class: 'form-check-label' do
           = _('Newly registered users will by default be external')
-      .prepend-top-10
+      .gl-mt-3
         = _('Internal users')
       = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control gl-mt-2'
       .help-block

@@ -208,7 +208,7 @@ export default {
       <div v-if="canRenderPipelineButton" class="nav justify-content-end">
         <gl-button
           variant="success"
-          class="js-run-mr-pipeline prepend-top-10 btn-wide-on-xs"
+          class="js-run-mr-pipeline gl-mt-3 btn-wide-on-xs"
           :disabled="state.isRunningMergeRequestPipeline"
           @click="tryRunPipeline"
         >

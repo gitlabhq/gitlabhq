@@ -6,7 +6,7 @@
   %button.btn.btn-inverted.btn-secondary.inline.js-detect-host-keys.gl-mr-3{ type: 'button', data: { qa_selector: 'detect_host_keys' } }
     .js-spinner.d-none.spinner.mr-1
     = _('Detect host keys')
-  .fingerprint-ssh-info.js-fingerprint-ssh-info.prepend-top-10.gl-mb-3{ class: ('collapse' unless mirror.ssh_mirror_url?) }
+  .fingerprint-ssh-info.js-fingerprint-ssh-info.gl-mt-3.gl-mb-3{ class: ('collapse' unless mirror.ssh_mirror_url?) }
     %label.label-bold
       = _('Fingerprints')
     .fingerprints-list.js-fingerprints-list{ data: { qa_selector: 'fingerprints_list' } }

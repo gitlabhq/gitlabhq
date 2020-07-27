@@ -48,7 +48,7 @@ export default {
         )
       }}</span>
     </p>
-    <div class="btn-group d-flex prepend-top-10" role="group">
+    <div class="btn-group d-flex gl-mt-3" role="group">
       <gl-link
         v-if="artifact.keep_path"
         :href="artifact.keep_path"

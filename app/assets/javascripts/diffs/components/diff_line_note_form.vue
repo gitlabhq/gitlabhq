@@ -172,7 +172,7 @@ export default {
       :diff-file="diffFile"
       :show-suggest-popover="showSuggestPopover"
       save-button-title="Comment"
-      class="diff-comment-form prepend-top-10"
+      class="diff-comment-form gl-mt-3"
       @handleFormUpdateAddToReview="addToReview"
       @cancelForm="handleCancelCommentForm"
       @handleFormUpdate="handleSaveNote"

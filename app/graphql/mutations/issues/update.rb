@@ -25,6 +25,12 @@ module Mutations
                required: false,
                description: copy_field_description(Types::IssueType, :confidential)
 
+      argument :locked,
+               GraphQL::BOOLEAN_TYPE,
+               as: :discussion_locked,
+               required: false,
+               description: copy_field_description(Types::IssueType, :discussion_locked)
+
       def resolve(project_path:, iid:, **args)
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project

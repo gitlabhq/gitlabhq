@@ -34,7 +34,7 @@
     %p.validation-pending.gl-field-error-ignore.field-validation.hide= _('Checking group path availability...')
 
     - if @group.persisted?
-      .alert.alert-warning.prepend-top-10
+      .alert.alert-warning.gl-mt-3
         = _('Changing group path can have unintended side effects.')
         = succeed '.' do
           = link_to _('Learn more'), help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'

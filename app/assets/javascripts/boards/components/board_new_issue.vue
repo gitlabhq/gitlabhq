@@ -119,7 +119,7 @@ export default {
           autocomplete="off"
         />
         <project-select v-if="groupId" :group-id="groupId" :list="list" />
-        <div class="clearfix prepend-top-10">
+        <div class="clearfix gl-mt-3">
           <gl-button
             ref="submit-button"
             :disabled="disabled"

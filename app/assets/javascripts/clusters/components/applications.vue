@@ -181,7 +181,7 @@ export default {
       <gl-link :href="helpPath">{{ __('More information') }}</gl-link>
     </p>
 
-    <div class="cluster-application-list prepend-top-10">
+    <div class="cluster-application-list gl-mt-3">
       <application-row
         v-if="!managedAppsLocalTillerEnabled"
         id="helm"

@@ -34,7 +34,7 @@
                 - elsif !has_base_domain
                   %p.settings-message.text-center
                     = s_('CICD|You must add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} in order for your deployment strategy to work.').html_safe % { base_domain_link_start: base_domain_link_start, kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
-                %label.prepend-top-10
+                %label.gl-mt-3
                   %strong= s_('CICD|Deployment strategy')
                 .form-check
                   = form.radio_button :deploy_strategy, 'continuous', class: 'form-check-input'

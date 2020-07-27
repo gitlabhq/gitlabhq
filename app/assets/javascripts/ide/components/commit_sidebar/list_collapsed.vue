@@ -94,7 +94,7 @@ export default {
       :title="modifiedTooltip"
       data-container="body"
       data-placement="left"
-      class="prepend-top-10 gl-mb-3"
+      class="gl-mt-3 gl-mb-3"
     >
       <icon :name="modifiedIconName" :size="18" :class="modifiedFilesClass" />
     </div>

@@ -182,7 +182,7 @@ export default {
             :markdown-preview-path="markdownPreviewPath"
             :markdown-docs-path="markdownDocsPath"
             :add-spacing-classes="false"
-            class="prepend-top-10 gl-mb-3"
+            class="gl-mt-3 gl-mb-3"
           >
             <template #textarea>
               <textarea

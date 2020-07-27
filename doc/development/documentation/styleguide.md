@@ -431,6 +431,7 @@ tenses, words, and phrases:
 
 Check the general punctuation rules for the GitLab documentation on the table below.
 Check specific punctuation rules for [lists](#lists) below.
+Additional examples are available in the [Pajamas guide for punctuation](https://design.gitlab.com/content/punctuation/).
 
 | Rule | Example |
 | ---- | ------- |

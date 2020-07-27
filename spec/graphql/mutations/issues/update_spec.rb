@@ -3,14 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Issues::Update do
-  let(:issue) { create(:issue) }
-  let(:user) { create(:user) }
+  let_it_be(:issue) { create(:issue) }
+  let_it_be(:user) { create(:user) }
   let(:expected_attributes) do
     {
       title: 'new title',
       description: 'new description',
       confidential: true,
-      due_date: Date.tomorrow
+      due_date: Date.tomorrow,
+      discussion_locked: true
     }
   end
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
@@ -28,8 +29,10 @@ RSpec.describe Mutations::Issues::Update do
 
     subject { mutation.resolve(mutation_params) }
 
-    it 'raises an error if the resource is not accessible to the user' do
-      expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+    context 'when the user cannot access the issue' do
+      it 'raises an error' do
+        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      end
     end
 
     context 'when the user can update the issue' do

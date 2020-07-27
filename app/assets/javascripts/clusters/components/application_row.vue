@@ -335,7 +335,7 @@ export default {
         <div>
           <slot name="description"></slot>
         </div>
-        <div v-if="hasError" class="cluster-application-error text-danger prepend-top-10">
+        <div v-if="hasError" class="cluster-application-error text-danger gl-mt-3">
           <p class="js-cluster-application-general-error-message gl-mb-0">
             {{ generalErrorDescription }}
           </p>
