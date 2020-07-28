@@ -2054,6 +2054,18 @@ RSpec.describe NotificationService, :mailer do
     end
 
     describe '#project_was_moved' do
+      context 'when notifications are disabled' do
+        before do
+          @u_custom_global.global_notification_setting.update!(moved_project: false)
+        end
+
+        it 'does not send a notification' do
+          notification.project_was_moved(project, "gitlab/gitlab")
+
+          should_not_email(@u_custom_global)
+        end
+      end
+
       context 'with users at both project and group level' do
         let(:maintainer) { create(:user) }
         let(:developer) { create(:user) }

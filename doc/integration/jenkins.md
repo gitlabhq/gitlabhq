@@ -6,7 +6,7 @@ GitLab. Learn how to **migrate** from Jenkins to GitLab CI/CD in our
 [Migrating from Jenkins](../ci/migration/jenkins.md) documentation.
 
 From GitLab, you can trigger a Jenkins build when you push code to a repository, or when a merge
-request is created. In return, Jenkins shows the pipeline status on merge requests widgets and
+request is created. In return, the Jenkins pipeline status is shown on merge requests widgets and
 on the GitLab project's home page.
 
 To better understand GitLab's Jenkins integration, watch the following video:
@@ -62,7 +62,7 @@ Grant a GitLab user access to the select GitLab projects.
 Create a personal access token to authorize Jenkins' access to GitLab.
 
 1. Log in to GitLab as the user to be used with Jenkins.
-1. Click your avatar, then **Settings.
+1. Click your avatar, then **Settings**.
 1. Click **Access Tokens** in the sidebar.
 1. Create a personal access token with the **API** scope checkbox checked. For more details, see
    [Personal access tokens](../user/profile/personal_access_tokens.md).

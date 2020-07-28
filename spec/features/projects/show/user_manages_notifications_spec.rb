@@ -52,7 +52,8 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
         :merge_merge_request,
         :failed_pipeline,
         :fixed_pipeline,
-        :success_pipeline
+        :success_pipeline,
+        :moved_project
       ]
     end
 

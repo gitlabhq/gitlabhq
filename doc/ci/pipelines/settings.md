@@ -125,7 +125,8 @@ can use <https://rubular.com> to test your regex. The regex returns the **last**
 match found in the output.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
-in the jobs table.
+in the jobs table. If multiple jobs in the pipeline have coverage reports, they will
+be averaged.
 
 ![MR widget coverage](img/pipelines_test_coverage_mr_widget.png)
 

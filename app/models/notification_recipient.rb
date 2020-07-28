@@ -52,10 +52,9 @@ class NotificationRecipient
     when :mention
       @type == :mention
     when :participating
-      %i[failed_pipeline fixed_pipeline].include?(@custom_action) ||
-        %i[participating mention].include?(@type)
+      participating_custom_action? || participating_or_mention?
     when :custom
-      custom_enabled? || %i[participating mention].include?(@type)
+      custom_enabled? || participating_or_mention?
     when :watch
       !excluded_watcher_action?
     else
@@ -174,5 +173,13 @@ class NotificationRecipient
       .where(user: user)
       .where.not(level: NotificationSetting.levels[:global])
       .first
+  end
+
+  def participating_custom_action?
+    %i[failed_pipeline fixed_pipeline moved_project].include?(@custom_action)
+  end
+
+  def participating_or_mention?
+    %i[participating mention].include?(@type)
   end
 end

@@ -46,7 +46,8 @@ class NotificationSetting < ApplicationRecord
     :merge_merge_request,
     :failed_pipeline,
     :fixed_pipeline,
-    :success_pipeline
+    :success_pipeline,
+    :moved_project
   ].freeze
 
   # Update unfound_translations.rb when events are changed

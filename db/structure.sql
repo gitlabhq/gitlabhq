@@ -13426,7 +13426,8 @@ CREATE TABLE public.notification_settings (
     new_epic boolean,
     notification_email character varying,
     fixed_pipeline boolean,
-    new_release boolean
+    new_release boolean,
+    moved_project boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE public.notification_settings_id_seq
@@ -15278,7 +15279,6 @@ CREATE TABLE public.service_desk_settings (
 CREATE TABLE public.services (
     id integer NOT NULL,
     type character varying,
-    title character varying,
     project_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
@@ -15298,7 +15298,6 @@ CREATE TABLE public.services (
     job_events boolean DEFAULT false NOT NULL,
     confidential_note_events boolean DEFAULT true,
     deployment_events boolean DEFAULT false NOT NULL,
-    description character varying(500),
     comment_on_event_enabled boolean DEFAULT true NOT NULL,
     template boolean DEFAULT false,
     instance boolean DEFAULT false NOT NULL,
@@ -19022,8 +19021,6 @@ CREATE INDEX index_boards_on_milestone_id ON public.boards USING btree (mileston
 CREATE INDEX index_boards_on_project_id ON public.boards USING btree (project_id);
 
 CREATE INDEX index_broadcast_message_on_ends_at_and_broadcast_type_and_id ON public.broadcast_messages USING btree (ends_at, broadcast_type, id);
-
-CREATE INDEX index_chat_names_on_service_id ON public.chat_names USING btree (service_id);
 
 CREATE UNIQUE INDEX index_chat_names_on_service_id_and_team_id_and_chat_id ON public.chat_names USING btree (service_id, team_id, chat_id);
 

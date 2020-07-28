@@ -3734,8 +3734,7 @@ For more information, see [Deployments Safety](../environments/deployment_safety
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/19298) in GitLab 13.2.
 
-`release` indicates that the job creates a [Release](../../user/project/releases/index.md),
-and optionally includes URLs for Release assets.
+`release` indicates that the job creates a [Release](../../user/project/releases/index.md).
 
 These methods are supported:
 
@@ -3868,7 +3867,7 @@ tags. These options cannot be used together, so choose one:
                                             # or can use a variable.
   ```
 
-- To create a release automatically when changes are pushed to the default branch,
+- To create a release automatically when commits are pushed or merged to the default branch,
   using a new Git tag that is defined with variables:
 
   ```yaml
@@ -3878,7 +3877,7 @@ tags. These options cannot be used together, so choose one:
     rules:
       - if: $CI_COMMIT_TAG
         when: never                                 # Do not run this job when a tag is created manually
-      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Run this job when the default branch changes
+      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Run this job when commits are pushed or merged to the default branch
     script:
       - echo 'running release_job'
     release:

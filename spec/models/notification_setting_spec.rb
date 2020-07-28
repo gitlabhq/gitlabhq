@@ -138,7 +138,8 @@ RSpec.describe NotificationSetting do
         :merge_merge_request,
         :failed_pipeline,
         :success_pipeline,
-        :fixed_pipeline
+        :fixed_pipeline,
+        :moved_project
       )
     end
 

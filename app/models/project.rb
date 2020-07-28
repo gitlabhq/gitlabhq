@@ -109,7 +109,6 @@ class Project < ApplicationRecord
   after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
-  before_destroy :cleanup_chat_names
 
   use_fast_destroy :build_trace_chunks
 
@@ -1939,17 +1938,6 @@ class Project < ApplicationRecord
 
   def export_file
     import_export_upload&.export_file
-  end
-
-  # Before 12.9 we did not correctly clean up chat names and this causes issues.
-  # In 12.9, we add a foreign key relationship, but this code is used ensure the chat names are cleaned up while a post
-  # migration enables the foreign key relationship.
-  #
-  # This should be removed in 13.0.
-  #
-  # https://gitlab.com/gitlab-org/gitlab/issues/204787
-  def cleanup_chat_names
-    ChatName.where(service: services.select(:id)).delete_all
   end
 
   def full_path_slug

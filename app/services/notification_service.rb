@@ -425,7 +425,7 @@ class NotificationService
 
   def project_was_moved(project, old_path_with_namespace)
     recipients = project_moved_recipients(project)
-    recipients = notifiable_users(recipients, :mention, project: project)
+    recipients = notifiable_users(recipients, :custom, custom_action: :moved_project, project: project)
 
     recipients.each do |recipient|
       mailer.project_was_moved_email(
