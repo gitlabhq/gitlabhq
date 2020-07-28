@@ -83,7 +83,7 @@ The resulting `.yml` file can be customized and adapted to your project.
 You can decide to save the dashboard `.yml` file in the project's **default** branch or in a
 new branch.
 
-1. Click **Duplicate dashboard** in the dashboard dropdown or in the actions menu.
+1. Click **Duplicate dashboard** in the actions menu.
 
    NOTE: **Note:**
    You can duplicate only GitLab-defined dashboards.

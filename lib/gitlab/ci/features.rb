@@ -71,7 +71,7 @@ module Gitlab
       end
 
       def self.allow_to_create_merge_request_pipelines_in_target_project?(target_project)
-        ::Feature.enabled?(:ci_allow_to_create_merge_request_pipelines_in_target_project, target_project)
+        ::Feature.enabled?(:ci_allow_to_create_merge_request_pipelines_in_target_project, target_project, default_enabled: true)
       end
 
       def self.ci_plan_needs_size_limit?(project)

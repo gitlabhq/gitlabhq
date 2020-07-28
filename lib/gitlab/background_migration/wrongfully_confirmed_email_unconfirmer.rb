@@ -30,6 +30,7 @@ module Gitlab
             .where('emails.confirmed_at IS NOT NULL')
             .where('emails.confirmed_at = users.confirmed_at')
             .where('emails.email <> users.email')
+            .where('NOT EXISTS (SELECT 1 FROM user_synced_attributes_metadata WHERE user_id=users.id AND email_synced IS true)')
         end
       end
 

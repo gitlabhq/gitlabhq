@@ -1157,7 +1157,7 @@
     dom-accessibility-api "^0.4.5"
     pretty-format "^25.5.0"
 
-"@toast-ui/editor@^2.2.0", "@toast-ui/editor@^2.3.0":
+"@toast-ui/editor@^2.3.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.3.0.tgz#47a0bb4f7cec8248dda64cbbd2edf63294debcd8"
   integrity sha512-rCb35CMxYS6U2aiwWhdLZMzbgzoVHm2YxGrlmH4OdNQNfzAM03DHl4lTwq7EP7E4MG0FEMgMyn0Ovo5DI7G8+w==

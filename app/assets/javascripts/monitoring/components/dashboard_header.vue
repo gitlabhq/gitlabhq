@@ -232,7 +232,6 @@ export default {
         class="flex-grow-1"
         toggle-class="dropdown-menu-toggle"
         :default-branch="defaultBranch"
-        :modal-id="$options.modalIds.duplicateDashboard"
         @selectDashboard="selectDashboard"
       />
     </div>
@@ -429,6 +428,7 @@ export default {
 
           <template v-if="isOutOfTheBoxDashboard">
             <gl-new-dropdown-divider />
+
             <gl-new-dropdown-item
               ref="duplicateDashboardItem"
               v-gl-modal="$options.modalIds.duplicateDashboard"
@@ -436,6 +436,12 @@ export default {
             >
               {{ s__('Metrics|Duplicate current dashboard') }}
             </gl-new-dropdown-item>
+
+            <duplicate-dashboard-modal
+              :default-branch="defaultBranch"
+              :modal-id="$options.modalIds.duplicateDashboard"
+              @dashboardDuplicated="selectDashboard"
+            />
           </template>
         </gl-new-dropdown>
       </div>
@@ -450,10 +456,5 @@ export default {
         />
       </div>
     </div>
-    <duplicate-dashboard-modal
-      :default-branch="defaultBranch"
-      :modal-id="$options.modalIds.duplicateDashboard"
-      @dashboardDuplicated="selectDashboard"
-    />
   </div>
 </template>

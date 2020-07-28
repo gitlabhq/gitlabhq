@@ -8,6 +8,8 @@ module WikiActions
   extend ActiveSupport::Concern
 
   included do
+    before_action { respond_to :html }
+
     before_action :authorize_read_wiki!
     before_action :authorize_create_wiki!, only: [:edit, :create]
     before_action :authorize_admin_wiki!, only: :destroy

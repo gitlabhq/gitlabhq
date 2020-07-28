@@ -3,10 +3,9 @@ import { GlDeprecatedDropdownItem, GlIcon } from '@gitlab/ui';
 
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 
-import { dashboardGitResponse, selfMonitoringDashboardGitResponse } from '../mock_data';
+import { dashboardGitResponse } from '../mock_data';
 
 const defaultBranch = 'master';
-const modalId = 'duplicateDashboardModalId';
 const starredDashboards = dashboardGitResponse.filter(({ starred }) => starred);
 const notStarredDashboards = dashboardGitResponse.filter(({ starred }) => !starred);
 
@@ -17,9 +16,6 @@ describe('DashboardsDropdown', () => {
 
   function createComponent(props, opts = {}) {
     const storeOpts = {
-      methods: {
-        duplicateSystemDashboard: jest.fn(),
-      },
       computed: {
         allDashboards: () => mockDashboards,
         selectedDashboard: () => mockSelectedDashboard,
@@ -30,7 +26,6 @@ describe('DashboardsDropdown', () => {
       propsData: {
         ...props,
         defaultBranch,
-        modalId,
       },
       sync: false,
       ...storeOpts,
@@ -149,87 +144,6 @@ describe('DashboardsDropdown', () => {
       expect(findStarredListDivider().exists()).toBe(false);
     });
   });
-
-  const duplicableCases = [
-    dashboardGitResponse[0],
-    dashboardGitResponse[2],
-    selfMonitoringDashboardGitResponse[0],
-  ];
-
-  describe.each(duplicableCases)('when the selected dashboard can be duplicated', dashboard => {
-    let duplicateDashboardAction;
-    let modalDirective;
-
-    beforeEach(() => {
-      mockSelectedDashboard = dashboard;
-      modalDirective = jest.fn();
-      duplicateDashboardAction = jest.fn().mockResolvedValue();
-
-      wrapper = createComponent(
-        {},
-        {
-          directives: {
-            GlModal: modalDirective,
-          },
-          methods: {
-            // Mock vuex actions
-            duplicateSystemDashboard: duplicateDashboardAction,
-          },
-        },
-      );
-    });
-
-    it('displays a dropdown item for each dashboard', () => {
-      expect(findItems().length).toEqual(dashboardGitResponse.length + 1);
-    });
-
-    it('displays one "duplicate dashboard" dropdown item with a directive attached', () => {
-      const item = wrapper.findAll('[data-testid="duplicateDashboardItem"]');
-
-      expect(item.length).toBe(1);
-    });
-
-    it('"duplicate dashboard" dropdown item directive works', () => {
-      const item = wrapper.find('[data-testid="duplicateDashboardItem"]');
-
-      item.trigger('click');
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(modalDirective).toHaveBeenCalled();
-      });
-    });
-
-    it('id is correct, as the value of modal directive binding matches modal id', () => {
-      expect(modalDirective).toHaveBeenCalledTimes(1);
-
-      // Binding's second argument contains the modal id
-      expect(modalDirective.mock.calls[0][1]).toEqual(
-        expect.objectContaining({
-          value: modalId,
-        }),
-      );
-    });
-  });
-
-  const nonDuplicableCases = [dashboardGitResponse[1], selfMonitoringDashboardGitResponse[1]];
-
-  describe.each(nonDuplicableCases)(
-    'when the selected dashboard can not be duplicated',
-    dashboard => {
-      beforeEach(() => {
-        mockSelectedDashboard = dashboard;
-
-        wrapper = createComponent();
-      });
-
-      it('displays a dropdown list item for each dashboard, but no list item for "duplicate dashboard"', () => {
-        const item = wrapper.findAll('[data-testid="duplicateDashboardItem"]');
-
-        expect(findItems()).toHaveLength(dashboardGitResponse.length);
-        expect(item.length).toBe(0);
-      });
-    },
-  );
 
   describe('when a dashboard gets selected by the user', () => {
     beforeEach(() => {

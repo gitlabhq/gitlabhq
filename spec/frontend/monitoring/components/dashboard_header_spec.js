@@ -208,14 +208,10 @@ describe('Dashboard header', () => {
   describe('when a dashboard has been duplicated in the duplicate dashboard modal', () => {
     beforeEach(() => {
       store.state.monitoringDashboard.projectPath = 'root/sandbox';
+
+      setupAllDashboards(store, dashboardGitResponse[0].path);
     });
-    /**
-     * The duplicate dashboard modal gets called both by a menu item from the
-     * dashboards dropdown and by an item from the actions menu.
-     *
-     * This spec is context agnostic, so it addresses all cases where the
-     * duplicate dashboard modal gets called.
-     */
+
     it('redirects to the newly created dashboard', () => {
       delete window.location;
       window.location = new URL('https://localhost');
@@ -252,7 +248,7 @@ describe('Dashboard header', () => {
       expect(findActionsMenu().exists()).toBe(false);
     });
 
-    it('contains a modal', () => {
+    it('contains the create dashboard modal', () => {
       store.state.monitoringDashboard.projectPath = mockProjectPath;
 
       return wrapper.vm.$nextTick().then(() => {
@@ -270,13 +266,14 @@ describe('Dashboard header', () => {
     describe.each(duplicableCases)(
       'when the selected dashboard can be duplicated',
       dashboardPath => {
-        it('contains a "Create New" menu item and a "Duplicate Dashboard" menu item', () => {
+        it('contains menu items for "Create New", "Duplicate Dashboard" and a modal for duplicating dashboards', () => {
           store.state.monitoringDashboard.projectPath = mockProjectPath;
           setupAllDashboards(store, dashboardPath);
 
           return wrapper.vm.$nextTick().then(() => {
             expect(findCreateDashboardMenuItem().exists()).toBe(true);
             expect(findCreateDashboardDuplicateItem().exists()).toBe(true);
+            expect(findDuplicateDashboardModal().exists()).toBe(true);
           });
         });
       },
@@ -290,13 +287,14 @@ describe('Dashboard header', () => {
     describe.each(nonDuplicableCases)(
       'when the selected dashboard cannot be duplicated',
       dashboardPath => {
-        it('contains a "Create New" menu item and no "Duplicate Dashboard" menu item', () => {
+        it('contains a "Create New" menu item, but no "Duplicate Dashboard" menu item and modal', () => {
           store.state.monitoringDashboard.projectPath = mockProjectPath;
           setupAllDashboards(store, dashboardPath);
 
           return wrapper.vm.$nextTick().then(() => {
             expect(findCreateDashboardMenuItem().exists()).toBe(true);
             expect(findCreateDashboardDuplicateItem().exists()).toBe(false);
+            expect(findDuplicateDashboardModal().exists()).toBe(false);
           });
         });
       },

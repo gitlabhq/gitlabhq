@@ -46,8 +46,8 @@ The following table depicts the various user permission levels in a project.
 | Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner* |
 |---------------------------------------------------|---------|------------|-------------|----------|--------|
 | Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| Leave comments                                    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| Leave comments                                    | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View allowed and denied licenses **(ULTIMATE)** | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View Security reports **(ULTIMATE)**              | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | View Dependency list **(ULTIMATE)**               | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
@@ -61,9 +61,9 @@ The following table depicts the various user permission levels in a project.
 | See a list of jobs                                | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | See a job log                                     | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts                 | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
-| Create new issue                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |
 | See related issues                                | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Create confidential issue                         | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| Create confidential issue                         | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues                          | (*2*)   | ✓          | ✓           | ✓        | ✓      |
 | View [Releases](project/releases/index.md)        | ✓ (*6*) | ✓          | ✓           | ✓        | ✓      |
 | View requirements **(ULTIMATE)**                  | ✓       | ✓          | ✓           | ✓        | ✓      |

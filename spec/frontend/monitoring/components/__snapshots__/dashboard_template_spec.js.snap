@@ -20,7 +20,6 @@ exports[`Dashboard template matches the default snapshot 1`] = `
         data-qa-selector="dashboards_filter_dropdown"
         defaultbranch="master"
         id="monitor-dashboards-dropdown"
-        modalid="duplicateDashboard"
         toggle-class="dropdown-menu-toggle"
       />
     </div>
@@ -134,11 +133,6 @@ exports[`Dashboard template matches the default snapshot 1`] = `
        
       <!---->
     </div>
-     
-    <duplicate-dashboard-modal-stub
-      defaultbranch="master"
-      modalid="duplicateDashboard"
-    />
   </div>
    
   <empty-state-stub

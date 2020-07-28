@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import {
   GlIcon,
   GlDeprecatedDropdown,
@@ -31,10 +31,6 @@ export default {
       type: String,
       required: true,
     },
-    modalId: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
@@ -44,9 +40,6 @@ export default {
   computed: {
     ...mapState('monitoringDashboard', ['allDashboards']),
     ...mapGetters('monitoringDashboard', ['selectedDashboard']),
-    isOutOfTheBoxDashboard() {
-      return this.selectedDashboard?.out_of_the_box_dashboard;
-    },
     selectedDashboardText() {
       return this.selectedDashboard?.display_name;
     },
@@ -70,7 +63,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions('monitoringDashboard', ['duplicateSystemDashboard']),
     dashboardDisplayName(dashboard) {
       return dashboard.display_name || dashboard.path || '';
     },
@@ -134,18 +126,6 @@ export default {
       >
         {{ __('No matching results') }}
       </div>
-
-      <!-- 
-           This Duplicate Dashboard item will be removed from the dashboards dropdown 
-           in https://gitlab.com/gitlab-org/gitlab/-/issues/223223
-      -->
-      <template v-if="isOutOfTheBoxDashboard">
-        <gl-deprecated-dropdown-divider />
-
-        <gl-deprecated-dropdown-item v-gl-modal="modalId" data-testid="duplicateDashboardItem">
-          {{ s__('Metrics|Duplicate dashboard') }}
-        </gl-deprecated-dropdown-item>
-      </template>
     </div>
   </gl-deprecated-dropdown>
 </template>
