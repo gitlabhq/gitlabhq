@@ -214,16 +214,17 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
   end
 
   describe 'metrics' do
-    it 'defines :gitlab_redis_diff_caching_memory_usage_bytes histogram' do
-      expect(described_class).to respond_to(:gitlab_redis_diff_caching_memory_usage_bytes)
+    let(:transaction) { Gitlab::Metrics::WebTransaction.new({} ) }
+
+    before do
+      allow(cache).to receive(:current_transaction).and_return(transaction)
     end
 
-    it 'defines :gitlab_redis_diff_caching_hit' do
-      expect(described_class).to respond_to(:gitlab_redis_diff_caching_hit)
-    end
+    it 'observes :gitlab_redis_diff_caching_memory_usage_bytes' do
+      expect(transaction)
+        .to receive(:observe).with(:gitlab_redis_diff_caching_memory_usage_bytes, a_kind_of(Numeric))
 
-    it 'defines :gitlab_redis_diff_caching_miss' do
-      expect(described_class).to respond_to(:gitlab_redis_diff_caching_miss)
+      cache.write_if_empty
     end
   end
 end

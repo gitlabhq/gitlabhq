@@ -7,7 +7,19 @@ Notes are comments on:
 - Merge requests
 - Epics **(ULTIMATE)**
 
-This includes system notes, which are notes about changes to the object (for example, when a milestone changes, there will be a corresponding system note). Label notes are not part of this API, but recorded as separate events in [resource label events](resource_label_events.md).
+This includes system notes, which are notes about changes to the object (for example, when an
+assignee changes, there will be a corresponding system note).
+
+## Resource events
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38096) in GitLab 13.3 for state, milestone, and weight events.
+
+Some system notes are not part of this API, but are recorded as separate events:
+
+- [Resource label events](resource_label_events.md)
+- [Resource state events](resource_state_events.md)
+- [Resource milestone events](resource_milestone_events.md)
+- [Resource weight events](resource_weight_events.md) **(STARTER)**
 
 ## Notes pagination
 

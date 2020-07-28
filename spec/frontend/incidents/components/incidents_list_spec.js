@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import { GlAlert, GlLoadingIcon, GlTable, GlAvatar } from '@gitlab/ui';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
+import { GlAlert, GlLoadingIcon, GlTable, GlAvatar, GlSearchBoxByType } from '@gitlab/ui';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { I18N } from '~/incidents/constants';
@@ -24,6 +24,7 @@ describe('Incidents List', () => {
   const findTimeAgo = () => wrapper.findAll(TimeAgoTooltip);
   const findAssingees = () => wrapper.findAll('[data-testid="incident-assignees"]');
   const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
+  const findSearch = () => wrapper.find(GlSearchBoxByType);
 
   function mountComponent({ data = { incidents: [] }, loading = false }) {
     wrapper = mount(IncidentsList, {
@@ -146,6 +147,27 @@ describe('Incidents List', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(findCreateIncidentBtn().attributes('loading')).toBe('true');
       });
+    });
+  });
+
+  describe('Search', () => {
+    beforeEach(() => {
+      mountComponent({
+        data: { incidents: mockIncidents },
+        loading: false,
+      });
+    });
+
+    it('renders the search component for incidents', () => {
+      expect(findSearch().exists()).toBe(true);
+    });
+
+    it('sets the `searchTerm` graphql variable', () => {
+      const SEARCH_TERM = 'Simple Incident';
+
+      findSearch().vm.$emit('input', SEARCH_TERM);
+
+      expect(wrapper.vm.$data.searchTerm).toBe(SEARCH_TERM);
     });
   });
 });

@@ -26,6 +26,7 @@ export default {
       emptyListHelpUrl: state => state.config.emptyListHelpUrl,
       comingSoon: state => state.config.comingSoon,
       filterQuery: state => state.filterQuery,
+      selectedType: state => state.selectedType,
     }),
     tabsToRender() {
       return PACKAGE_REGISTRY_TABS;
@@ -42,11 +43,11 @@ export default {
     onPackageDeleteRequest(item) {
       return this.requestDeletePackage(item);
     },
-    tabChanged(e) {
-      const selectedType = PACKAGE_REGISTRY_TABS[e];
+    tabChanged(index) {
+      const selected = PACKAGE_REGISTRY_TABS[index];
 
-      if (selectedType) {
-        this.setSelectedType(selectedType);
+      if (selected !== this.selectedType) {
+        this.setSelectedType(selected);
         this.requestPackagesList();
       }
     },

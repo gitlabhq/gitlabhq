@@ -8,12 +8,14 @@ import {
   GlAvatar,
   GlTooltipDirective,
   GlButton,
+  GlSearchBoxByType,
 } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__ } from '~/locale';
 import { mergeUrlParams, joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
-import { I18N } from '../constants';
+import { I18N, INCIDENT_SEARCH_DELAY } from '../constants';
 
 const tdClass =
   'table-col gl-display-flex d-md-table-cell gl-align-items-center gl-white-space-nowrap';
@@ -52,6 +54,7 @@ export default {
     GlAvatar,
     GlButton,
     TimeAgoTooltip,
+    GlSearchBoxByType,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -62,6 +65,7 @@ export default {
       query: getIncidents,
       variables() {
         return {
+          searchTerm: this.searchTerm,
           projectPath: this.projectPath,
           labelNames: ['incident'],
         };
@@ -77,11 +81,12 @@ export default {
       errored: false,
       isErrorAlertDismissed: false,
       redirecting: false,
+      searchTerm: '',
     };
   },
   computed: {
     showErrorMsg() {
-      return this.errored && !this.isErrorAlertDismissed;
+      return this.errored && !this.isErrorAlertDismissed && !this.searchTerm;
     },
     loading() {
       return this.$apollo.queries.incidents.loading;
@@ -97,6 +102,13 @@ export default {
     newIncidentPath() {
       return mergeUrlParams({ issuable_template: this.incidentTemplateName }, this.newIssuePath);
     },
+  },
+  watch: {
+    searchTerm: debounce(function debounceSearch(input) {
+      if (input !== this.searchTerm) {
+        this.searchTerm = input;
+      }
+    }, INCIDENT_SEARCH_DELAY),
   },
   methods: {
     hasAssignees(assignees) {
@@ -116,7 +128,7 @@ export default {
 
     <div class="gl-display-flex gl-justify-content-end">
       <gl-button
-        class="gl-mt-3 create-incident-button"
+        class="gl-mt-3 gl-mb-3 create-incident-button"
         data-testid="createIncidentBtn"
         :loading="redirecting"
         :disabled="redirecting"
@@ -127,6 +139,14 @@ export default {
       >
         {{ $options.i18n.createIncidentBtnLabel }}
       </gl-button>
+    </div>
+
+    <div class="gl-bg-gray-10 gl-p-5 gl-border-b-solid gl-border-b-1 gl-border-gray-100">
+      <gl-search-box-by-type
+        v-model.trim="searchTerm"
+        class="gl-bg-white"
+        :placeholder="$options.i18n.searchPlaceholder"
+      />
     </div>
 
     <h4 class="gl-display-block d-md-none my-3">

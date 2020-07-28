@@ -5,7 +5,6 @@ module Gitlab
     class Blob
       include Gitlab::BlobHelper
       include Gitlab::EncodingHelper
-      include Gitlab::Metrics::Methods
       extend Gitlab::Git::WrapsGitalyErrors
 
       # This number is the maximum amount of data that we want to display to
@@ -28,17 +27,21 @@ module Gitlab
       attr_accessor :size, :mode, :id, :commit_id, :loaded_size, :binary
       attr_writer :name, :path, :data
 
-      define_counter :gitlab_blob_truncated_true do
-        docstring 'blob.truncated? == true'
+      def self.gitlab_blob_truncated_true
+        @gitlab_blob_truncated_true ||= ::Gitlab::Metrics.counter(:gitlab_blob_truncated_true, 'blob.truncated? == true')
       end
 
-      define_counter :gitlab_blob_truncated_false do
-        docstring 'blob.truncated? == false'
+      def self.gitlab_blob_truncated_false
+        @gitlab_blob_truncated_false ||= ::Gitlab::Metrics.counter(:gitlab_blob_truncated_false, 'blob.truncated? == false')
       end
 
-      define_histogram :gitlab_blob_size do
-        docstring 'Gitlab::Git::Blob size'
-        buckets [1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000]
+      def self.gitlab_blob_size
+        @gitlab_blob_size ||= ::Gitlab::Metrics.histogram(
+          :gitlab_blob_size,
+          'Gitlab::Git::Blob size',
+          {},
+          [1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000]
+        )
       end
 
       class << self

@@ -127,7 +127,7 @@ export default {
       params: { id: filename },
       query: $route.query,
     }"
-    class="card cursor-pointer text-plain js-design-list-item design-list-item"
+    class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   >
     <div class="card-body p-0 d-flex-center overflow-hidden position-relative">
       <div v-if="icon.name" class="design-event position-absolute">

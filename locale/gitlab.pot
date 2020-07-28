@@ -16753,6 +16753,9 @@ msgstr ""
 msgid "PackageRegistry|Add NuGet Source"
 msgstr ""
 
+msgid "PackageRegistry|Composer"
+msgstr ""
+
 msgid "PackageRegistry|Conan"
 msgstr ""
 
@@ -16928,6 +16931,9 @@ msgid "PackageRegistry|published by %{author}"
 msgstr ""
 
 msgid "PackageRegistry|yarn"
+msgstr ""
+
+msgid "PackageType|Composer"
 msgstr ""
 
 msgid "PackageType|Conan"

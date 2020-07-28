@@ -1,13 +1,13 @@
 <script>
-import { GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
+import { GlNewDropdown, GlNewDropdownItem } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import allVersionsMixin from '../../mixins/all_versions';
 import { findVersionId } from '../../utils/design_management_utils';
 
 export default {
   components: {
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownItem,
+    GlNewDropdown,
+    GlNewDropdownItem,
   },
   mixins: [allVersionsMixin],
   computed: {
@@ -50,8 +50,8 @@ export default {
 </script>
 
 <template>
-  <gl-deprecated-dropdown :text="dropdownText" variant="link" class="design-version-dropdown">
-    <gl-deprecated-dropdown-item v-for="(version, index) in allVersions" :key="version.node.id">
+  <gl-new-dropdown :text="dropdownText" size="small" class="design-version-dropdown">
+    <gl-new-dropdown-item v-for="(version, index) in allVersions" :key="version.node.id">
       <router-link
         class="d-flex js-version-link"
         :to="{ path: $route.path, query: { version: findVersionId(version.node.id) } }"
@@ -71,6 +71,6 @@ export default {
           class="fa fa-check pull-right"
         ></i>
       </router-link>
-    </gl-deprecated-dropdown-item>
-  </gl-deprecated-dropdown>
+    </gl-new-dropdown-item>
+  </gl-new-dropdown>
 </template>

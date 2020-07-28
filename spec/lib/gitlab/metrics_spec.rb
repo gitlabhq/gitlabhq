@@ -71,14 +71,9 @@ RSpec.describe Gitlab::Metrics do
       end
 
       it 'adds a metric to the current transaction' do
-        expect(transaction).to receive(:increment)
-                                 .with('foo_real_time', a_kind_of(Numeric), false)
+        expect(transaction).to receive(:observe).with(:gitlab_foo_real_duration_seconds, a_kind_of(Numeric))
 
-        expect(transaction).to receive(:increment)
-                                 .with('foo_cpu_time', a_kind_of(Numeric), false)
-
-        expect(transaction).to receive(:increment)
-                                 .with('foo_call_count', 1, false)
+        expect(transaction).to receive(:observe).with(:gitlab_foo_cpu_duration_seconds, a_kind_of(Numeric))
 
         described_class.measure(:foo) { 10 }
       end

@@ -3,7 +3,6 @@
 module Gitlab
   module Diff
     class StatsCache
-      include Gitlab::Metrics::Methods
       include Gitlab::Utils::StrongMemoize
 
       EXPIRATION = 1.week

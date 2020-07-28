@@ -4,14 +4,12 @@ module Gitlab
   module Metrics
     module Methods
       class MetricOptions
-        SMALL_NETWORK_BUCKETS = [0.005, 0.01, 0.1, 1, 10].freeze
-
         def initialize(options = {})
           @multiprocess_mode = options[:multiprocess_mode] || :all
-          @buckets = options[:buckets] || SMALL_NETWORK_BUCKETS
-          @base_labels = options[:base_labels] || {}
+          @buckets = options[:buckets] || ::Prometheus::Client::Histogram::DEFAULT_BUCKETS
           @docstring = options[:docstring]
           @with_feature = options[:with_feature]
+          @label_keys = options[:label_keys] || []
         end
 
         # Documentation describing metric in metrics endpoint '/-/metrics'
@@ -40,10 +38,19 @@ module Gitlab
         end
 
         # Base labels are merged with per metric labels
-        def base_labels(base_labels = nil)
-          @base_labels = base_labels unless base_labels.nil?
+        def base_labels
+          @base_labels ||= @label_keys.product([nil]).to_h
 
           @base_labels
+        end
+
+        def label_keys(label_keys = nil)
+          unless label_keys.nil?
+            @label_keys = label_keys
+            @base_labels = nil
+          end
+
+          @label_keys
         end
 
         # Use feature toggle to control whether certain metric is enabled/disabled
@@ -55,6 +62,7 @@ module Gitlab
 
         def evaluate(&block)
           instance_eval(&block) if block_given?
+
           self
         end
       end

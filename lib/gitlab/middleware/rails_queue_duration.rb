@@ -19,24 +19,18 @@ module Gitlab
         if trans && proxy_start
           # Time in milliseconds since gitlab-workhorse started the request
           duration = Time.now.to_f * 1_000 - proxy_start.to_f / 1_000_000
-          trans.set(:rails_queue_duration, duration)
+          trans.set(:gitlab_transaction_rails_queue_duration_total, duration) do
+            multiprocess_mode :livesum
+          end
 
           duration_s = Gitlab::Utils.ms_to_round_sec(duration)
-          metric_rails_queue_duration_seconds.observe(trans.labels, duration_s)
+          trans.observe(:gitlab_rails_queue_duration_seconds, duration_s) do
+            docstring 'Measures latency between GitLab Workhorse forwarding a request to Rails'
+          end
           env[GITLAB_RAILS_QUEUE_DURATION_KEY] = duration_s
         end
 
         @app.call(env)
-      end
-
-      private
-
-      def metric_rails_queue_duration_seconds
-        @metric_rails_queue_duration_seconds ||= Gitlab::Metrics.histogram(
-          :gitlab_rails_queue_duration_seconds,
-          'Measures latency between GitLab Workhorse forwarding a request to Rails',
-          Gitlab::Metrics::Transaction::BASE_LABELS
-        )
       end
     end
   end

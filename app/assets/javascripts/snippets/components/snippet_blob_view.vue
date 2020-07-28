@@ -25,8 +25,9 @@ export default {
           rich: this.activeViewerType === RICH_BLOB_VIEWER,
         };
       },
-      update: data =>
-        data.snippets.edges[0].node.blob.richData || data.snippets.edges[0].node.blob.plainData,
+      update(data) {
+        return this.onContentUpdate(data);
+      },
       result() {
         if (this.activeViewerType === RICH_BLOB_VIEWER) {
           this.blob.richViewer.renderError = null;
@@ -75,6 +76,12 @@ export default {
     forceQuery() {
       this.$apollo.queries.blobContent.skip = false;
       this.$apollo.queries.blobContent.refetch();
+    },
+    onContentUpdate(data) {
+      const { path: blobPath } = this.blob;
+      const { blobs } = data.snippets.edges[0].node;
+      const updatedBlobData = blobs.find(blob => blob.path === blobPath);
+      return updatedBlobData.richData || updatedBlobData.plainData;
     },
   },
   BLOB_RENDER_EVENT_LOAD,

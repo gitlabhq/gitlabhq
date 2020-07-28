@@ -71,7 +71,7 @@ export default {
   >
     <template #left-primary>
       <router-link
-        class="gl-text-black-normal gl-font-weight-bold"
+        class="gl-text-body gl-font-weight-bold"
         data-testid="detailsLink"
         :to="{ name: 'details', params: { id: encodedItem } }"
       >

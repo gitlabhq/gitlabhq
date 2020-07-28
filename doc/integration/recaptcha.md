@@ -36,5 +36,5 @@ proxy_set_header X-GitLab-Show-Login-Captcha 1;
 In Omnibus GitLab, this can be configured via `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-nginx['proxy_set_headers'] = { 'X-GitLab-Show-Login-Captcha' => 1 }
+nginx['proxy_set_headers'] = { 'X-GitLab-Show-Login-Captcha' => '1' }
 ```

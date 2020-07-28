@@ -3,6 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe AlertManagement::Alert do
+  let_it_be(:project) { create(:project) }
+  let_it_be(:project2) { create(:project) }
+  let_it_be(:triggered_alert, reload: true) { create(:alert_management_alert, :triggered, project: project) }
+  let_it_be(:acknowledged_alert, reload: true) { create(:alert_management_alert, :acknowledged, project: project) }
+  let_it_be(:resolved_alert, reload: true) { create(:alert_management_alert, :resolved, project: project2) }
+  let_it_be(:ignored_alert, reload: true) { create(:alert_management_alert, :ignored, project: project2) }
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:issue).optional }
@@ -27,63 +34,70 @@ RSpec.describe AlertManagement::Alert do
     it { is_expected.to validate_length_of(:monitoring_tool).is_at_most(100) }
 
     context 'when status is triggered' do
-      context 'when ended_at is blank' do
-        subject { build(:alert_management_alert) }
+      subject { triggered_alert }
 
+      context 'when ended_at is blank' do
         it { is_expected.to be_valid }
       end
 
       context 'when ended_at is present' do
-        subject { build(:alert_management_alert, ended_at: Time.current) }
+        before do
+          triggered_alert.ended_at = Time.current
+        end
 
         it { is_expected.to be_invalid }
       end
     end
 
     context 'when status is acknowledged' do
-      context 'when ended_at is blank' do
-        subject { build(:alert_management_alert, :acknowledged) }
+      subject { acknowledged_alert }
 
+      context 'when ended_at is blank' do
         it { is_expected.to be_valid }
       end
 
       context 'when ended_at is present' do
-        subject { build(:alert_management_alert, :acknowledged, ended_at: Time.current) }
+        before do
+          acknowledged_alert.ended_at = Time.current
+        end
 
         it { is_expected.to be_invalid }
       end
     end
 
     context 'when status is resolved' do
+      subject { resolved_alert }
+
       context 'when ended_at is blank' do
-        subject { build(:alert_management_alert, :resolved, ended_at: nil) }
+        before do
+          resolved_alert.ended_at = nil
+        end
 
         it { is_expected.to be_invalid }
       end
 
       context 'when ended_at is present' do
-        subject { build(:alert_management_alert, :resolved, ended_at: Time.current) }
-
         it { is_expected.to be_valid }
       end
     end
 
     context 'when status is ignored' do
-      context 'when ended_at is blank' do
-        subject { build(:alert_management_alert, :ignored) }
+      subject { ignored_alert }
 
+      context 'when ended_at is blank' do
         it { is_expected.to be_valid }
       end
 
       context 'when ended_at is present' do
-        subject { build(:alert_management_alert, :ignored, ended_at: Time.current) }
+        before do
+          ignored_alert.ended_at = Time.current
+        end
 
         it { is_expected.to be_invalid }
       end
     end
 
     describe 'fingerprint' do
-      let_it_be(:project) { create(:project) }
       let_it_be(:fingerprint) { 'fingerprint' }
       let(:new_alert) { build(:alert_management_alert, fingerprint: fingerprint, project: project) }
 
@@ -92,6 +106,8 @@ RSpec.describe AlertManagement::Alert do
       context 'adding an alert with the same fingerprint' do
         context 'same project, various states' do
           using RSpec::Parameterized::TableSyntax
+
+          let_it_be(:existing_alert) { create(:alert_management_alert, fingerprint: fingerprint, project: project) }
 
           # We are only validating uniqueness for non-resolved alerts
           where(:existing_status, :new_status, :valid) do
@@ -114,8 +130,11 @@ RSpec.describe AlertManagement::Alert do
           end
 
           with_them do
-            let!(:existing_alert) { create(:alert_management_alert, existing_status, fingerprint: fingerprint, project: project) }
             let(:new_alert) { build(:alert_management_alert, new_status, fingerprint: fingerprint, project: project) }
+
+            before do
+              existing_alert.public_send(described_class::STATUS_EVENTS[existing_status])
+            end
 
             if params[:valid]
               it { is_expected.to be_valid }
@@ -126,7 +145,7 @@ RSpec.describe AlertManagement::Alert do
         end
 
         context 'different project' do
-          let!(:existing_alert) { create(:alert_management_alert, fingerprint: fingerprint) }
+          let_it_be(:existing_alert) { create(:alert_management_alert, fingerprint: fingerprint, project: project2) }
 
           it { is_expected.to be_valid }
         end
@@ -134,7 +153,11 @@ RSpec.describe AlertManagement::Alert do
     end
 
     describe 'hosts' do
-      subject(:alert) { build(:alert_management_alert, hosts: hosts) }
+      subject(:alert) { triggered_alert }
+
+      before do
+        triggered_alert.hosts = hosts
+      end
 
       context 'over 255 total chars' do
         let(:hosts) { ['111.111.111.111'] * 18 }
@@ -159,13 +182,8 @@ RSpec.describe AlertManagement::Alert do
   end
 
   describe 'scopes' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:triggered_alert) { create(:alert_management_alert, project: project) }
-    let_it_be(:resolved_alert) { create(:alert_management_alert, :resolved, project: project) }
-    let_it_be(:ignored_alert) { create(:alert_management_alert, :ignored, project: project) }
-
     describe '.for_iid' do
-      subject { AlertManagement::Alert.for_iid(triggered_alert.iid) }
+      subject { project.alert_management_alerts.for_iid(triggered_alert.iid) }
 
       it { is_expected.to match_array(triggered_alert) }
     end
@@ -185,20 +203,29 @@ RSpec.describe AlertManagement::Alert do
     end
 
     describe '.for_fingerprint' do
-      let_it_be(:fingerprint) { SecureRandom.hex }
-      let_it_be(:alert_with_fingerprint) { create(:alert_management_alert, project: project, fingerprint: fingerprint) }
-      let_it_be(:unrelated_alert_with_finger_print) { create(:alert_management_alert, fingerprint: fingerprint) }
+      let(:fingerprint) { SecureRandom.hex }
+      let(:alert_with_fingerprint) { triggered_alert }
+      let(:unrelated_alert_with_finger_print) { resolved_alert }
 
       subject { described_class.for_fingerprint(project, fingerprint) }
+
+      before do
+        alert_with_fingerprint.update!(fingerprint: fingerprint)
+        unrelated_alert_with_finger_print.update!(fingerprint: fingerprint)
+      end
 
       it { is_expected.to contain_exactly(alert_with_fingerprint) }
     end
 
     describe '.for_environment' do
       let(:environment) { create(:environment, project: project) }
-      let!(:env_alert) { create(:alert_management_alert, project: project, environment: environment) }
+      let(:env_alert) { triggered_alert }
 
       subject { described_class.for_environment(environment) }
+
+      before do
+        triggered_alert.update!(environment: environment)
+      end
 
       it { is_expected.to match_array(env_alert) }
     end
@@ -209,6 +236,7 @@ RSpec.describe AlertManagement::Alert do
       it do
         is_expected.to eq(
           triggered_alert.status => 1,
+          acknowledged_alert.status => 1,
           resolved_alert.status => 1,
           ignored_alert.status => 1
         )
@@ -218,12 +246,10 @@ RSpec.describe AlertManagement::Alert do
     describe '.counts_by_project_id' do
       subject { described_class.counts_by_project_id }
 
-      let!(:alert_other_project) { create(:alert_management_alert) }
-
       it do
         is_expected.to eq(
-          project.id => 3,
-          alert_other_project.project.id => 1
+          project.id => 2,
+          project2.id => 2
         )
       end
     end
@@ -231,15 +257,11 @@ RSpec.describe AlertManagement::Alert do
     describe '.open' do
       subject { described_class.open }
 
-      let!(:acknowledged_alert) { create(:alert_management_alert, :acknowledged, project: project)}
-
       it { is_expected.to contain_exactly(acknowledged_alert, triggered_alert) }
     end
 
     describe '.not_resolved' do
       subject { described_class.not_resolved }
-
-      let!(:acknowledged_alert) { create(:alert_management_alert, :acknowledged, project: project) }
 
       it { is_expected.to contain_exactly(acknowledged_alert, triggered_alert, ignored_alert) }
     end
@@ -248,13 +270,11 @@ RSpec.describe AlertManagement::Alert do
   describe '.last_prometheus_alert_by_project_id' do
     subject { described_class.last_prometheus_alert_by_project_id }
 
-    let(:project_1) { create(:project) }
-    let!(:p1_alert_1) { create(:alert_management_alert, project: project_1) }
-    let!(:p1_alert_2) { create(:alert_management_alert, project: project_1) }
+    let!(:p1_alert_1) { triggered_alert }
+    let!(:p1_alert_2) { acknowledged_alert }
 
-    let(:project_2) { create(:project) }
-    let!(:p2_alert_1) { create(:alert_management_alert, project: project_2) }
-    let!(:p2_alert_2) { create(:alert_management_alert, project: project_2) }
+    let!(:p2_alert_1) { resolved_alert }
+    let!(:p2_alert_2) { ignored_alert }
 
     it 'returns the latest alert for each project' do
       expect(subject).to contain_exactly(p1_alert_2, p2_alert_2)
@@ -262,13 +282,10 @@ RSpec.describe AlertManagement::Alert do
   end
 
   describe '.search' do
-    let_it_be(:alert) do
-      create(:alert_management_alert,
-        title: 'Title',
-        description: 'Desc',
-        service: 'Service',
-        monitoring_tool: 'Monitor'
-      )
+    let(:alert) { triggered_alert }
+
+    before do
+      alert.update!(title: 'Title', description: 'Desc', service: 'Service', monitoring_tool: 'Monitor')
     end
 
     subject { AlertManagement::Alert.search(query) }
@@ -318,7 +335,7 @@ RSpec.describe AlertManagement::Alert do
         }
       }
     end
-    let(:alert) { build(:alert_management_alert, title: 'Details title', payload: payload) }
+    let(:alert) { build(:alert_management_alert, project: project, title: 'Details title', payload: payload) }
 
     subject { alert.details }
 
@@ -331,16 +348,14 @@ RSpec.describe AlertManagement::Alert do
   end
 
   describe '#to_reference' do
-    let(:alert) { build(:alert_management_alert) }
-
-    it { expect(alert.to_reference).to eq('') }
+    it { expect(triggered_alert.to_reference).to eq('') }
   end
 
   describe '#trigger' do
     subject { alert.trigger }
 
     context 'when alert is in triggered state' do
-      let(:alert) { create(:alert_management_alert) }
+      let(:alert) { triggered_alert }
 
       it 'does not change the alert status' do
         expect { subject }.not_to change { alert.reload.status }
@@ -348,7 +363,7 @@ RSpec.describe AlertManagement::Alert do
     end
 
     context 'when alert not in triggered state' do
-      let(:alert) { create(:alert_management_alert, :resolved) }
+      let(:alert) { resolved_alert }
 
       it 'changes the alert status to triggered' do
         expect { subject }.to change { alert.triggered? }.to(true)
@@ -363,7 +378,7 @@ RSpec.describe AlertManagement::Alert do
   describe '#acknowledge' do
     subject { alert.acknowledge }
 
-    let(:alert) { create(:alert_management_alert, :resolved) }
+    let(:alert) { resolved_alert }
 
     it 'changes the alert status to acknowledged' do
       expect { subject }.to change { alert.acknowledged? }.to(true)
@@ -383,15 +398,15 @@ RSpec.describe AlertManagement::Alert do
     end
 
     context 'when alert already resolved' do
-      let(:alert) { create(:alert_management_alert, :resolved) }
+      let(:alert) { resolved_alert }
 
       it 'does not change the alert status' do
-        expect { subject }.not_to change { alert.reload.status }
+        expect { subject }.not_to change { resolved_alert.reload.status }
       end
     end
 
     context 'when alert is not resolved' do
-      let(:alert) { create(:alert_management_alert) }
+      let(:alert) { triggered_alert }
 
       it 'changes alert status to "resolved"' do
         expect { subject }.to change { alert.resolved? }.to(true)
@@ -402,7 +417,7 @@ RSpec.describe AlertManagement::Alert do
   describe '#ignore' do
     subject { alert.ignore }
 
-    let(:alert) { create(:alert_management_alert, :resolved) }
+    let(:alert) { resolved_alert }
 
     it 'changes the alert status to ignored' do
       expect { subject }.to change { alert.ignored? }.to(true)
@@ -416,7 +431,7 @@ RSpec.describe AlertManagement::Alert do
   describe '#register_new_event!' do
     subject { alert.register_new_event! }
 
-    let(:alert) { create(:alert_management_alert) }
+    let(:alert) { triggered_alert }
 
     it 'increments the events count by 1' do
       expect { subject }.to change { alert.events }.by(1)
@@ -425,7 +440,7 @@ RSpec.describe AlertManagement::Alert do
 
   describe '#present' do
     context 'when alert is generic' do
-      let(:alert) { build(:alert_management_alert) }
+      let(:alert) { triggered_alert }
 
       it 'uses generic alert presenter' do
         expect(alert.present).to be_kind_of(AlertManagement::AlertPresenter)
@@ -433,7 +448,7 @@ RSpec.describe AlertManagement::Alert do
     end
 
     context 'when alert is Prometheus specific' do
-      let(:alert) { build(:alert_management_alert, :prometheus) }
+      let(:alert) { build(:alert_management_alert, :prometheus, project: project) }
 
       it 'uses Prometheus Alert presenter' do
         expect(alert.present).to be_kind_of(AlertManagement::PrometheusAlertPresenter)

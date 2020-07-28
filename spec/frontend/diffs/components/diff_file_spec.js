@@ -128,6 +128,26 @@ describe('DiffFile', () => {
         });
       });
 
+      it('should auto-expand collapsed files when viewDiffsFileByFile is true', done => {
+        vm.$destroy();
+        window.gon = {
+          features: { autoExpandCollapsedDiffs: true },
+        };
+        vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
+          file: JSON.parse(JSON.stringify(diffFileMockDataUnreadable)),
+          canCurrentUserFork: false,
+          viewDiffsFileByFile: true,
+        }).$mount();
+
+        vm.$nextTick(() => {
+          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
+
+          window.gon = {};
+
+          done();
+        });
+      });
+
       it('should be collapsed for renamed files', done => {
         vm.renderIt = true;
         vm.isCollapsed = false;

@@ -60,7 +60,7 @@ export default {
   },
   mounted() {
     if (this.isNoteLinked) {
-      this.$refs.anchor.$el.scrollIntoView({ behavior: 'smooth', inline: 'start' });
+      this.$el.scrollIntoView({ behavior: 'smooth', inline: 'start' });
     }
   },
   methods: {
@@ -80,7 +80,7 @@ export default {
 </script>
 
 <template>
-  <timeline-entry-item :id="`note_${noteAnchorId}`" ref="anchor" class="design-note note-form">
+  <timeline-entry-item :id="`note_${noteAnchorId}`" class="design-note note-form">
     <user-avatar-link
       :link-href="author.webUrl"
       :img-src="author.avatarUrl"

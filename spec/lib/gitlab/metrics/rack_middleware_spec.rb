@@ -25,12 +25,4 @@ RSpec.describe Gitlab::Metrics::RackMiddleware do
       expect { middleware.call(env) }.to raise_error(RuntimeError)
     end
   end
-
-  describe '#transaction_from_env' do
-    let(:transaction) { middleware.transaction_from_env(env) }
-
-    it 'returns a Transaction' do
-      expect(transaction).to be_an_instance_of(Gitlab::Metrics::WebTransaction)
-    end
-  end
 end

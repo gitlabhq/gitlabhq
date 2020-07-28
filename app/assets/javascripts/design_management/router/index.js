@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import routes from './routes';
@@ -16,9 +15,7 @@ export default function createRouter(base) {
   });
   const pageEl = getPageLayoutElement();
 
-  router.beforeEach(({ meta: { el }, name }, _, next) => {
-    $(`#${el}`).tab('show');
-
+  router.beforeEach(({ name }, _, next) => {
     // apply a fullscreen layout style in Design View (a.k.a design detail)
     if (pageEl) {
       if (name === DESIGN_ROUTE_NAME) {

@@ -3,6 +3,7 @@ import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import { GlDeprecatedDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
+import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 import DuplicateDashboardModal from '~/monitoring/components/duplicate_dashboard_modal.vue';
 import CreateDashboardModal from '~/monitoring/components/create_dashboard_modal.vue';
 import { setupAllDashboards, setupStoreWithDashboard, setupStoreWithData } from '../store_utils';
@@ -25,6 +26,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
 describe('Dashboard header', () => {
   let store;
   let wrapper;
+
+  const findDashboardDropdown = () => wrapper.find(DashboardsDropdown);
 
   const findEnvsDropdown = () => wrapper.find({ ref: 'monitorEnvironmentsDropdown' });
   const findEnvsDropdownItems = () => findEnvsDropdown().findAll(GlDeprecatedDropdownItem);
@@ -58,6 +61,41 @@ describe('Dashboard header', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('dashboards dropdown', () => {
+    beforeEach(() => {
+      store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+        projectPath: mockProjectPath,
+      });
+
+      createShallowWrapper();
+    });
+
+    it('shows the dashboard dropdown', () => {
+      expect(findDashboardDropdown().exists()).toBe(true);
+    });
+
+    it('when an out of the box dashboard is selected, encodes dashboard path', () => {
+      findDashboardDropdown().vm.$emit('selectDashboard', {
+        path: '.gitlab/dashboards/dashboard&copy.yml',
+        out_of_the_box_dashboard: true,
+        display_name: 'A display name',
+      });
+
+      expect(redirectTo).toHaveBeenCalledWith(
+        `${mockProjectPath}/-/metrics/.gitlab%2Fdashboards%2Fdashboard%26copy.yml`,
+      );
+    });
+
+    it('when a custom dashboard is selected, encodes dashboard display name', () => {
+      findDashboardDropdown().vm.$emit('selectDashboard', {
+        path: '.gitlab/dashboards/file&path.yml',
+        display_name: 'dashboard&copy.yml',
+      });
+
+      expect(redirectTo).toHaveBeenCalledWith(`${mockProjectPath}/-/metrics/dashboard%26copy.yml`);
+    });
   });
 
   describe('environments dropdown', () => {

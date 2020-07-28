@@ -12,7 +12,9 @@ module Gitlab
         begin
           # Old gitlad-shell messages don't provide enqueued_at/created_at attributes
           enqueued_at = payload['enqueued_at'] || payload['created_at'] || 0
-          trans.set(:sidekiq_queue_duration, Time.current.to_f - enqueued_at)
+          trans.set(:gitlab_transaction_sidekiq_queue_duration_total, Time.current.to_f - enqueued_at) do
+            multiprocess_mode :livesum
+          end
           trans.run { yield }
         rescue Exception => error # rubocop: disable Lint/RescueException
           trans.add_event(:sidekiq_exception)

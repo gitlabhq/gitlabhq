@@ -54,7 +54,6 @@ describe('packages_list_app', () => {
 
   beforeEach(() => {
     createStore();
-    mountComponent();
   });
 
   afterEach(() => {
@@ -68,6 +67,8 @@ describe('packages_list_app', () => {
 
   describe('empty state', () => {
     it('generate the correct empty list link', () => {
+      mountComponent();
+
       const link = findListComponent().find(GlLink);
 
       expect(link.attributes('href')).toBe(emptyListHelpUrl);
@@ -75,6 +76,8 @@ describe('packages_list_app', () => {
     });
 
     it('includes the right content on the default tab', () => {
+      mountComponent();
+
       const heading = findEmptyState().find('h1');
 
       expect(heading.text()).toBe('There are no packages yet');
@@ -82,31 +85,47 @@ describe('packages_list_app', () => {
   });
 
   it('call requestPackagesList on page:changed', () => {
+    mountComponent();
+
     const list = findListComponent();
     list.vm.$emit('page:changed', 1);
     expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList', { page: 1 });
   });
 
   it('call requestDeletePackage on package:delete', () => {
+    mountComponent();
+
     const list = findListComponent();
     list.vm.$emit('package:delete', 'foo');
     expect(store.dispatch).toHaveBeenCalledWith('requestDeletePackage', 'foo');
   });
 
   it('calls requestPackagesList on sort:changed', () => {
+    mountComponent();
+
     const list = findListComponent();
     list.vm.$emit('sort:changed');
     expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
   });
 
+  it('does not call requestPackagesList two times on render', () => {
+    mountComponent();
+
+    expect(store.dispatch).toHaveBeenCalledTimes(1);
+  });
+
   describe('tab change', () => {
     it('calls requestPackagesList when all tab is clicked', () => {
+      mountComponent();
+
       findTabComponent().trigger('click');
 
       expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
     });
 
     it('calls requestPackagesList when a package type tab is clicked', () => {
+      mountComponent();
+
       findTabComponent(1).trigger('click');
 
       expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');

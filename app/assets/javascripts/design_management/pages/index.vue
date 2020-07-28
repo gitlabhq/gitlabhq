@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlDeprecatedButton, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlAlert } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import UploadButton from '../components/upload/button.vue';
@@ -33,7 +33,7 @@ export default {
   components: {
     GlLoadingIcon,
     GlAlert,
-    GlDeprecatedButton,
+    GlButton,
     UploadButton,
     Design,
     DesignDestroyer,
@@ -96,9 +96,20 @@ export default {
         ? s__('DesignManagement|Deselect all')
         : s__('DesignManagement|Select all');
     },
+    isDesignListEmpty() {
+      return !this.isSaving && !this.hasDesigns;
+    },
+    designDropzoneWrapperClass() {
+      return this.isDesignListEmpty
+        ? 'col-12'
+        : 'gl-flex-direction-column col-md-6 col-lg-3 gl-mb-3';
+    },
   },
   mounted() {
     this.toggleOnPasteListener(this.$route.name);
+    if (this.$route.path === '/designs') {
+      this.$el.scrollIntoView();
+    }
   },
   methods: {
     resetFilesToBeSaved() {
@@ -238,51 +249,54 @@ export default {
         this.onUploadDesign([newFile]);
       }
     },
-    toggleOnPasteListener(route) {
-      if (route === DESIGNS_ROUTE_NAME) {
-        document.addEventListener('paste', this.onDesignPaste);
-      } else {
-        document.removeEventListener('paste', this.onDesignPaste);
-      }
+    toggleOnPasteListener() {
+      document.addEventListener('paste', this.onDesignPaste);
+    },
+    toggleOffPasteListener() {
+      document.removeEventListener('paste', this.onDesignPaste);
     },
   },
   beforeRouteUpdate(to, from, next) {
-    this.toggleOnPasteListener(to.name);
     this.selectedDesigns = [];
-    next();
-  },
-  beforeRouteLeave(to, from, next) {
-    this.toggleOnPasteListener(to.name);
     next();
   },
 };
 </script>
 
 <template>
-  <div>
+  <div
+    data-testid="designs-root"
+    class="gl-mt-5"
+    @mouseenter="toggleOnPasteListener"
+    @mouseleave="toggleOffPasteListener"
+  >
     <header v-if="showToolbar" class="row-content-block border-top-0 p-2 d-flex">
-      <div class="d-flex justify-content-between align-items-center w-100">
-        <design-version-dropdown />
-        <div :class="['qa-selector-toolbar', { 'd-flex': hasDesigns, 'd-none': !hasDesigns }]">
-          <gl-deprecated-button
+      <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full">
+        <div>
+          <span class="gl-font-weight-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
+          <design-version-dropdown />
+        </div>
+        <div v-show="hasDesigns" class="qa-selector-toolbar gl-display-flex gl-align-items-center">
+          <gl-button
             v-if="isLatestVersion"
             variant="link"
-            class="mr-2 js-select-all"
+            size="small"
+            class="gl-mr-2 js-select-all"
             @click="toggleDesignsSelection"
-            >{{ selectAllButtonText }}</gl-deprecated-button
-          >
+            >{{ selectAllButtonText }}
+          </gl-button>
           <design-destroyer
             #default="{ mutate, loading }"
             :filenames="selectedDesigns"
-            :project-path="projectPath"
-            :iid="issueIid"
             @done="onDesignDelete"
             @error="onDesignDeleteError"
           >
             <delete-button
               v-if="isLatestVersion"
               :is-deleting="loading"
-              button-class="btn-danger btn-inverted mr-2"
+              button-variant="danger"
+              button-class="gl-mr-4"
+              button-size="small"
               :has-selected-designs="hasSelectedDesigns"
               @deleteSelectedDesigns="mutate()"
             >
@@ -300,11 +314,17 @@ export default {
         {{ __('An error occurred while loading designs. Please try again.') }}
       </gl-alert>
       <ol v-else class="list-unstyled row">
-        <li class="col-md-6 col-lg-4 mb-3">
-          <design-dropzone class="design-list-item" @change="onUploadDesign" />
+        <li :class="designDropzoneWrapperClass" data-testid="design-dropzone-wrapper">
+          <design-dropzone
+            :class="{ 'design-list-item design-list-item-new': !isDesignListEmpty }"
+            :has-designs="hasDesigns"
+            @change="onUploadDesign"
+          />
         </li>
-        <li v-for="design in designs" :key="design.id" class="col-md-6 col-lg-4 mb-3">
-          <design-dropzone @change="onExistingDesignDropzoneChange($event, design.filename)"
+        <li v-for="design in designs" :key="design.id" class="col-md-6 col-lg-3 gl-mb-3">
+          <design-dropzone
+            :has-designs="hasDesigns"
+            @change="onExistingDesignDropzoneChange($event, design.filename)"
             ><design v-bind="design" :is-uploading="isDesignToBeSaved(design.filename)"
           /></design-dropzone>
 

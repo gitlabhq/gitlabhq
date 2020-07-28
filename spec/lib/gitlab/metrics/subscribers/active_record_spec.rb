@@ -37,10 +37,11 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
         it 'increments only db count value' do
           described_class::DB_COUNTERS.each do |counter|
+            prometheus_counter = "gitlab_transaction_#{counter}_total".to_sym
             if expected_counters[counter] > 0
-              expect(transaction).to receive(:increment).with(counter, 1)
+              expect(transaction).to receive(:increment).with(prometheus_counter, 1)
             else
-              expect(transaction).not_to receive(:increment).with(counter, 1)
+              expect(transaction).not_to receive(:increment).with(prometheus_counter, 1)
             end
           end
 
@@ -74,7 +75,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         expect(subscriber).to receive(:current_transaction)
                                 .at_least(:once)
                                 .and_return(transaction)
-        expect(described_class.send(:gitlab_sql_duration_seconds)).to receive(:observe).with({}, 0.002)
+        expect(transaction).to receive(:observe).with(:gitlab_sql_duration_seconds, 0.002)
+
         subscriber.sql(event)
       end
 

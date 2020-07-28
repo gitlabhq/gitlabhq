@@ -10,7 +10,7 @@ exports[`Design management list item component when item appears in view after i
 
 exports[`Design management list item component with no notes renders item with correct status icon for creation event 1`] = `
 <router-link-stub
-  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   to="[object Object]"
 >
   <div
@@ -76,7 +76,7 @@ exports[`Design management list item component with no notes renders item with c
 
 exports[`Design management list item component with no notes renders item with correct status icon for deletion event 1`] = `
 <router-link-stub
-  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   to="[object Object]"
 >
   <div
@@ -142,7 +142,7 @@ exports[`Design management list item component with no notes renders item with c
 
 exports[`Design management list item component with no notes renders item with correct status icon for modification event 1`] = `
 <router-link-stub
-  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   to="[object Object]"
 >
   <div
@@ -208,7 +208,7 @@ exports[`Design management list item component with no notes renders item with c
 
 exports[`Design management list item component with no notes renders item with no status icon for none event 1`] = `
 <router-link-stub
-  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   to="[object Object]"
 >
   <div
@@ -261,7 +261,7 @@ exports[`Design management list item component with no notes renders item with n
 
 exports[`Design management list item component with no notes renders loading spinner when isUploading is true 1`] = `
 <router-link-stub
-  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   to="[object Object]"
 >
   <div
@@ -319,7 +319,7 @@ exports[`Design management list item component with no notes renders loading spi
 
 exports[`Design management list item component with notes renders item with multiple comments 1`] = `
 <router-link-stub
-  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   to="[object Object]"
 >
   <div
@@ -389,7 +389,7 @@ exports[`Design management list item component with notes renders item with mult
 
 exports[`Design management list item component with notes renders item with single comment 1`] = `
 <router-link-stub
-  class="card cursor-pointer text-plain js-design-list-item design-list-item"
+  class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   to="[object Object]"
 >
   <div

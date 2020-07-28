@@ -50,9 +50,7 @@ export default {
           data-qa-selector="clone_button"
         />
       </div>
-      <div v-for="blob in blobs" :key="blob.path">
-        <snippet-blob :snippet="snippet" :blob="blob" />
-      </div>
+      <snippet-blob v-for="blob in blobs" :key="blob.path" :snippet="snippet" :blob="blob" />
     </template>
   </div>
 </template>

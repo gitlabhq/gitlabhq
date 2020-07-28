@@ -32,13 +32,14 @@ describe('Packages shared utils', () => {
 
   describe('getPackageTypeLabel', () => {
     describe.each`
-      packageType | expectedResult
-      ${'conan'}  | ${'Conan'}
-      ${'maven'}  | ${'Maven'}
-      ${'npm'}    | ${'NPM'}
-      ${'nuget'}  | ${'NuGet'}
-      ${'pypi'}   | ${'PyPi'}
-      ${'foo'}    | ${null}
+      packageType   | expectedResult
+      ${'conan'}    | ${'Conan'}
+      ${'maven'}    | ${'Maven'}
+      ${'npm'}      | ${'NPM'}
+      ${'nuget'}    | ${'NuGet'}
+      ${'pypi'}     | ${'PyPi'}
+      ${'composer'} | ${'Composer'}
+      ${'foo'}      | ${null}
     `(`package type`, ({ packageType, expectedResult }) => {
       it(`${packageType} should show as ${expectedResult}`, () => {
         expect(getPackageTypeLabel(packageType)).toBe(expectedResult);

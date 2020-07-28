@@ -5,7 +5,6 @@ module Gitlab
     module Subscribers
       # Class for tracking the total query duration of a transaction.
       class ActiveRecord < ActiveSupport::Subscriber
-        include Gitlab::Metrics::Methods
         attach_to :active_record
 
         IGNORABLE_SQL = %w{BEGIN COMMIT}.freeze
@@ -22,7 +21,9 @@ module Gitlab
           payload = event.payload
           return if payload[:name] == 'SCHEMA' || IGNORABLE_SQL.include?(payload[:sql])
 
-          self.class.gitlab_sql_duration_seconds.observe(current_transaction.labels, event.duration / 1000.0)
+          current_transaction.observe(:gitlab_sql_duration_seconds, event.duration / 1000.0) do
+            buckets [0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
+          end
 
           increment_db_counters(payload)
         end
@@ -36,12 +37,6 @@ module Gitlab
         end
 
         private
-
-        define_histogram :gitlab_sql_duration_seconds do
-          docstring 'SQL time'
-          base_labels Transaction::BASE_LABELS
-          buckets [0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
-        end
 
         def select_sql_command?(payload)
           payload[:sql].match(/\A((?!(.*[^\w'"](DELETE|UPDATE|INSERT INTO)[^\w'"])))(WITH.*)?(SELECT)((?!(FOR UPDATE|FOR SHARE)).)*$/i)
@@ -58,7 +53,7 @@ module Gitlab
         end
 
         def increment(counter)
-          current_transaction.increment(counter, 1)
+          current_transaction.increment("gitlab_transaction_#{counter}_total".to_sym, 1)
 
           if Gitlab::SafeRequestStore.active?
             Gitlab::SafeRequestStore[counter] = Gitlab::SafeRequestStore[counter].to_i + 1

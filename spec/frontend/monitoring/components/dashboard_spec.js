@@ -13,7 +13,6 @@ import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import RefreshButton from '~/monitoring/components/refresh_button.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
-import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 import EmptyState from '~/monitoring/components/empty_state.vue';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
@@ -393,37 +392,6 @@ describe('Dashboard', () => {
           expect.anything(), // state
           expect.any(String), // document title
           expect.not.stringMatching(/group|title|y_label/), // no panel params
-        );
-      });
-    });
-
-    describe('when custom dashboard is selected', () => {
-      const windowLocation = window.location;
-      const findDashboardDropdown = () => wrapper.find(DashboardHeader).find(DashboardsDropdown);
-
-      beforeEach(() => {
-        store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
-          projectPath: TEST_HOST,
-        });
-
-        delete window.location;
-        window.location = { ...windowLocation, assign: jest.fn() };
-        createMountedWrapper();
-
-        return wrapper.vm.$nextTick();
-      });
-
-      afterEach(() => {
-        window.location = windowLocation;
-      });
-
-      it('encodes dashboard param', () => {
-        findDashboardDropdown().vm.$emit('selectDashboard', {
-          path: '.gitlab/dashboards/dashboard&copy.yml',
-          display_name: 'dashboard&copy.yml',
-        });
-        expect(window.location.assign).toHaveBeenCalledWith(
-          `${TEST_HOST}/-/metrics/dashboard%26copy.yml`,
         );
       });
     });
@@ -988,20 +956,6 @@ describe('Dashboard', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(document.title).toBe(originalTitle);
       });
-    });
-  });
-
-  describe('Dashboard dropdown', () => {
-    beforeEach(() => {
-      createMountedWrapper({ hasMetrics: true });
-      setupAllDashboards(store);
-      return wrapper.vm.$nextTick();
-    });
-
-    it('shows the dashboard dropdown', () => {
-      const dashboardDropdown = wrapper.find(DashboardsDropdown);
-
-      expect(dashboardDropdown.exists()).toBe(true);
     });
   });
 

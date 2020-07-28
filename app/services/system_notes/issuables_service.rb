@@ -341,7 +341,7 @@ module SystemNotes
 
     def state_change_tracking_enabled?
       noteable.respond_to?(:resource_state_events) &&
-        ::Feature.enabled?(:track_resource_state_change_events, noteable.project)
+        ::Feature.enabled?(:track_resource_state_change_events, noteable.project, default_enabled: true)
     end
   end
 end

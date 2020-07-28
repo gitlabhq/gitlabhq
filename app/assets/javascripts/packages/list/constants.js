@@ -74,9 +74,14 @@ export const PACKAGE_REGISTRY_TABS = [
     type: null,
   },
   {
+    title: s__('PackageRegistry|Composer'),
+    type: PackageType.COMPOSER,
+  },
+  {
     title: s__('PackageRegistry|Conan'),
     type: PackageType.CONAN,
   },
+
   {
     title: s__('PackageRegistry|Maven'),
     type: PackageType.MAVEN,

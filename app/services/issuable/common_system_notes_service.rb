@@ -108,7 +108,7 @@ module Issuable
     end
 
     def milestone_changes_tracking_enabled?
-      ::Feature.enabled?(:track_resource_milestone_change_events, issuable.project)
+      ::Feature.enabled?(:track_resource_milestone_change_events, issuable.project, default_enabled: true)
     end
 
     def create_due_date_note

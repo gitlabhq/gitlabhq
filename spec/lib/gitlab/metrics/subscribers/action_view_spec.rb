@@ -22,15 +22,15 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionView do
   describe '#render_template' do
     it 'tracks rendering of a template' do
       expect(transaction).to receive(:increment)
-        .with(:view_duration, 2.1)
+        .with(:gitlab_transaction_view_duration_total, 2.1)
 
       subscriber.render_template(event)
     end
 
     it 'observes view rendering time' do
-      expect(described_class.gitlab_view_rendering_duration_seconds)
+      expect(transaction)
         .to receive(:observe)
-              .with({ view: 'app/views/x.html.haml' }, 2.1)
+        .with(:gitlab_view_rendering_duration_seconds, 2.1, { view: "app/views/x.html.haml" })
 
       subscriber.render_template(event)
     end

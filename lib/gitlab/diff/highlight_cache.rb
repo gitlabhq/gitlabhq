@@ -3,7 +3,6 @@
 module Gitlab
   module Diff
     class HighlightCache
-      include Gitlab::Metrics::Methods
       include Gitlab::Utils::StrongMemoize
 
       EXPIRATION = 1.week
@@ -11,19 +10,6 @@ module Gitlab
 
       delegate :diffable,     to: :@diff_collection
       delegate :diff_options, to: :@diff_collection
-
-      define_histogram :gitlab_redis_diff_caching_memory_usage_bytes do
-        docstring 'Redis diff caching memory usage by key'
-        buckets [100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000]
-      end
-
-      define_counter :gitlab_redis_diff_caching_hit do
-        docstring 'Redis diff caching hits'
-      end
-
-      define_counter :gitlab_redis_diff_caching_miss do
-        docstring 'Redis diff caching misses'
-      end
 
       def initialize(diff_collection)
         @diff_collection = diff_collection
@@ -117,7 +103,10 @@ module Gitlab
 
       def record_memory_usage(memory_usage)
         if memory_usage
-          self.class.gitlab_redis_diff_caching_memory_usage_bytes.observe({}, memory_usage)
+          current_transaction&.observe(:gitlab_redis_diff_caching_memory_usage_bytes, memory_usage) do
+            docstring 'Redis diff caching memory usage by key'
+            buckets [100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000]
+          end
         end
       end
 
@@ -205,6 +194,10 @@ module Gitlab
         #   reference.
         #
         @diff_collection.raw_diff_files
+      end
+
+      def current_transaction
+        ::Gitlab::Metrics::Transaction.current
       end
     end
   end
