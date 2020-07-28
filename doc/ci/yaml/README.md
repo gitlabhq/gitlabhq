@@ -3695,7 +3695,7 @@ Once an uninterruptible job is running, the pipeline will never be canceled, reg
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
 
-Sometimes running multiples jobs or pipelines at the same time in an environment
+Sometimes running multiple jobs or pipelines at the same time in an environment
 can lead to errors during the deployment.
 
 To avoid these errors, the `resource_group` attribute can be used to ensure that

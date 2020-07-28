@@ -20802,6 +20802,8 @@ CREATE INDEX index_vulnerability_feedback_on_merge_request_id ON public.vulnerab
 
 CREATE INDEX index_vulnerability_feedback_on_pipeline_id ON public.vulnerability_feedback USING btree (pipeline_id);
 
+CREATE INDEX index_vulnerability_historical_statistics_on_date_and_id ON public.vulnerability_historical_statistics USING btree (date, id);
+
 CREATE UNIQUE INDEX index_vulnerability_identifiers_on_project_id_and_fingerprint ON public.vulnerability_identifiers USING btree (project_id, fingerprint);
 
 CREATE INDEX index_vulnerability_issue_links_on_issue_id ON public.vulnerability_issue_links USING btree (issue_id);

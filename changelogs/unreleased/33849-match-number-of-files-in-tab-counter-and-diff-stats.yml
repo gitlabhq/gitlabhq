@@ -1,0 +1,5 @@
+---
+title: Display files in tab counter same as diff stats
+merge_request: 37390
+author:
+type: fixed

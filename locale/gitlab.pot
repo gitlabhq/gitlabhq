@@ -15615,10 +15615,28 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
+msgid "Network Policy|New rule"
+msgstr ""
+
+msgid "NetworkPolicies|.yaml mode"
+msgstr ""
+
+msgid "NetworkPolicies|Actions"
+msgstr ""
+
 msgid "NetworkPolicies|Choose whether to enforce this policy."
 msgstr ""
 
+msgid "NetworkPolicies|Create policy"
+msgstr ""
+
 msgid "NetworkPolicies|Define this policy's location, conditions and actions."
+msgstr ""
+
+msgid "NetworkPolicies|Description"
+msgstr ""
+
+msgid "NetworkPolicies|Editor mode"
 msgstr ""
 
 msgid "NetworkPolicies|Enforcement status"
@@ -15642,6 +15660,9 @@ msgstr ""
 msgid "NetworkPolicies|Name"
 msgstr ""
 
+msgid "NetworkPolicies|Network Policy"
+msgstr ""
+
 msgid "NetworkPolicies|New policy"
 msgstr ""
 
@@ -15663,6 +15684,21 @@ msgstr ""
 msgid "NetworkPolicies|Policy editor"
 msgstr ""
 
+msgid "NetworkPolicies|Policy preview"
+msgstr ""
+
+msgid "NetworkPolicies|Policy status"
+msgstr ""
+
+msgid "NetworkPolicies|Policy type"
+msgstr ""
+
+msgid "NetworkPolicies|Rule mode"
+msgstr ""
+
+msgid "NetworkPolicies|Rules"
+msgstr ""
+
 msgid "NetworkPolicies|Something went wrong, failed to update policy"
 msgstr ""
 
@@ -15670,6 +15706,9 @@ msgid "NetworkPolicies|Something went wrong, unable to fetch policies"
 msgstr ""
 
 msgid "NetworkPolicies|Status"
+msgstr ""
+
+msgid "NetworkPolicies|YAML editor"
 msgstr ""
 
 msgid "Never"

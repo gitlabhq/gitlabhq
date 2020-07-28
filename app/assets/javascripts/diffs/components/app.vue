@@ -405,7 +405,7 @@ export default {
       <compare-versions
         :merge-request-diffs="mergeRequestDiffs"
         :is-limited-container="isLimitedContainer"
-        :diff-files-length="diffFilesLength"
+        :diff-files-count-text="numTotalFiles"
       />
 
       <hidden-files-warning

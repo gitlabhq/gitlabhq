@@ -7,6 +7,10 @@ in production.
 
 Troubleshooting and debugging your GitLab instance often requires a
 [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console).
+See also:
+
+- [GitLab Rails Console Cheat Sheet](gitlab_rails_cheat_sheet.md).
+- [Navigating GitLab via Rails console](navigating_gitlab_via_rails_console.md).
 
 **For Omnibus installations**
 
