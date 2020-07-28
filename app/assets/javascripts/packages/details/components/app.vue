@@ -1,7 +1,7 @@
 <script>
 import {
   GlBadge,
-  GlDeprecatedButton,
+  GlButton,
   GlIcon,
   GlModal,
   GlModalDirective,
@@ -37,7 +37,7 @@ export default {
   name: 'PackagesApp',
   components: {
     GlBadge,
-    GlDeprecatedButton,
+    GlButton,
     GlEmptyState,
     GlLink,
     GlModal,
@@ -204,14 +204,16 @@ export default {
       <package-title />
 
       <div class="mt-sm-2">
-        <gl-deprecated-button
+        <gl-button
           v-if="canDeletePackage"
           v-gl-modal="'delete-modal'"
           class="js-delete-button"
           variant="danger"
+          category="primary"
           data-qa-selector="delete_button"
-          >{{ __('Delete') }}</gl-deprecated-button
         >
+          {{ __('Delete') }}
+        </gl-button>
       </div>
     </div>
 
@@ -326,16 +328,18 @@ export default {
 
       <div slot="modal-footer" class="w-100">
         <div class="float-right">
-          <gl-deprecated-button @click="cancelDelete()">{{ __('Cancel') }}</gl-deprecated-button>
-          <gl-deprecated-button
+          <gl-button @click="cancelDelete()">{{ __('Cancel') }}</gl-button>
+          <gl-button
             ref="modal-delete-button"
             data-method="delete"
             :to="destroyPath"
             variant="danger"
+            category="primary"
             data-qa-selector="delete_modal_button"
             @click="track($options.trackingActions.DELETE_PACKAGE)"
-            >{{ __('Delete') }}</gl-deprecated-button
           >
+            {{ __('Delete') }}
+          </gl-button>
         </div>
       </div>
     </gl-modal>

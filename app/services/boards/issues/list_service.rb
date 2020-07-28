@@ -55,9 +55,17 @@ module Boards
       end
 
       def list
-        return @list if defined?(@list)
+        return unless params.key?(:id)
 
-        @list = board.lists.find(params[:id]) if params.key?(:id)
+        strong_memoize(:list) do
+          id = params[:id]
+
+          if board.lists.loaded?
+            board.lists.find { |l| l.id == id }
+          else
+            board.lists.find(id)
+          end
+        end
       end
 
       def filter_params

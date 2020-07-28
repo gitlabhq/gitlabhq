@@ -44,6 +44,8 @@ For information on how to resolve common errors reported from the UI, see
 If the UI is not working, or you are unable to log in, you can run the Geo
 health check manually to get this information as well as a few more details.
 
+#### Health check Rake task
+
 This Rake task can be run on an app node in the **primary** or **secondary**
 Geo nodes:
 
@@ -76,6 +78,8 @@ All projects are in hashed storage? ... yes
 
 Checking Geo ... Finished
 ```
+
+#### Sync status Rake task
 
 Current sync information can be found manually by running this Rake task on any
 **secondary** app node:
@@ -205,7 +209,7 @@ sudo gitlab-rake gitlab:geo:check
 
    - Verify the correct password is set for `gitlab_rails['db_password']` that was used when creating the hash in  `postgresql['sql_user_password']` by running `gitlab-ctl pg-password-md5 gitlab` and entering the password.
 
-1. Check returns not a secondary node
+1. Check returns `not a secondary node`
 
    ```plaintext
    Checking Geo ...
@@ -257,7 +261,8 @@ sudo gitlab-rake gitlab:geo:check
 ## Fixing replication errors
 
 The following sections outline troubleshooting steps for fixing replication
-errors.
+errors (indicated by `Database replication working? ... no` in the
+[`geo:check` output](#health-check-rake-task).
 
 ### Message: `ERROR:  replication slots can only be used if max_replication_slots > 0`?
 

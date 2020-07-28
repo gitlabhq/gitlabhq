@@ -19,6 +19,15 @@ RSpec.shared_examples 'issues list service' do
     end
   end
 
+  it 'avoids N+1' do
+    params = { board_id: board.id }
+    control = ActiveRecord::QueryRecorder.new { described_class.new(parent, user, params).execute }
+
+    create(:list, board: board)
+
+    expect { described_class.new(parent, user, params).execute }.not_to exceed_query_limit(control)
+  end
+
   context 'issues are ordered by priority' do
     it 'returns opened issues when list_id is missing' do
       params = { board_id: board.id }

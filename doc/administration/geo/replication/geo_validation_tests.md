@@ -27,6 +27,13 @@ The following are GitLab upgrade validation tests we performed.
   - [Investigate why `reconfigure` and `hup` cause downtime on multi-node Geo deployments](https://gitlab.com/gitlab-org/gitlab/-/issues/228898)
   - [Geo multi-node deployment upgrade: investigate order when upgrading non-deploy nodes](https://gitlab.com/gitlab-org/gitlab/-/issues/228954)
 
+[Switch from repmgr to Patroni on a Geo primary site](https://gitlab.com/gitlab-org/gitlab/-/issues/224652):
+
+- Description: Tested switching from repmgr to Patroni on a multi-node Geo primary site. Used [the orchestrator tool](https://gitlab.com/gitlab-org/gitlab-orchestrator) to deploy a Geo installation with 3 database nodes managed by repmgr. With this approach, we were also able to address a related issue for [verifying a Geo installation with Patroni and PostgreSQL 11](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5113).
+- Outcome: Partial success. We enabled Patroni on the primary site and set up database replication on the secondary site. However, we found that Patroni would delete the secondary site's replication slot whenever Patroni was restarted. Another issue is that when Patroni elects a new leader in the cluster, the secondary site will fail to automatically follow the new leader. Until these issues are resolved, we cannot officially support and recommend Patroni for Geo installations.
+- Follow up issues/actions:
+  - [Investigate permanent replication slot for Patroni with Geo single node secondary](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5528)
+
 ### June 2020
 
 [Upgrade Geo multi-node installation](https://gitlab.com/gitlab-org/gitlab/-/issues/223284):
