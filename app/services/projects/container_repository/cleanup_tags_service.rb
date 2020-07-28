@@ -42,8 +42,8 @@ module Projects
         # Technical Debt: https://gitlab.com/gitlab-org/gitlab/issues/207267
         # name_regex to be removed when container_expiration_policies is updated
         # to have both regex columns
-        regex_delete = Gitlab::UntrustedRegexp.new("\\A#{params['name_regex_delete'] || params['name_regex']}\\z")
-        regex_retain = Gitlab::UntrustedRegexp.new("\\A#{params['name_regex_keep']}\\z")
+        regex_delete = ::Gitlab::UntrustedRegexp.new("\\A#{params['name_regex_delete'] || params['name_regex']}\\z")
+        regex_retain = ::Gitlab::UntrustedRegexp.new("\\A#{params['name_regex_keep']}\\z")
 
         tags.select do |tag|
           # regex_retain will override any overlapping matches by regex_delete
@@ -81,11 +81,11 @@ module Projects
       def valid_regex?
         %w(name_regex_delete name_regex name_regex_keep).each do |param_name|
           regex = params[param_name]
-          Gitlab::UntrustedRegexp.new(regex) unless regex.blank?
+          ::Gitlab::UntrustedRegexp.new(regex) unless regex.blank?
         end
         true
       rescue RegexpError => e
-        Gitlab::ErrorTracking.log_exception(e, project_id: project.id)
+        ::Gitlab::ErrorTracking.log_exception(e, project_id: project.id)
         false
       end
     end

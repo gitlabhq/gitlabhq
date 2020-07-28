@@ -27,7 +27,10 @@ module QA
         # The number of selectors should be able to be reduced after
         # migration to the new spinner is complete.
         # https://gitlab.com/groups/gitlab-org/-/epics/956
-        Capybara.page.has_no_css?('.gl-spinner, .fa-spinner, .spinner', wait: wait)
+        # retry_on_exception added here due to `StaleElementReferenceError`. See: https://gitlab.com/gitlab-org/gitlab/-/issues/232485
+        Support::Retrier.retry_on_exception do
+          Capybara.page.has_no_css?('.gl-spinner, .fa-spinner, .spinner', wait: wait)
+        end
       end
     end
   end

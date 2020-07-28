@@ -294,6 +294,14 @@ export default {
           data-qa-selector="alert_threshold_field"
         />
       </gl-form-group>
+      <gl-form-group
+        v-if="glFeatures.alertRunbooks"
+        :label="s__('PrometheusAlerts|Runbook')"
+        label-for="alert-runbook"
+        data-testid="alertRunbookField"
+      >
+        <gl-form-input id="alert-runbook" :disabled="formDisabled" type="text" />
+      </gl-form-group>
     </div>
     <template #modal-ok>
       <gl-link

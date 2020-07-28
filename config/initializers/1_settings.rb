@@ -283,6 +283,7 @@ Settings.sentry['clientside_dsn'] ||= nil
 # Pages
 #
 Settings['pages'] ||= Settingslogic.new({})
+Settings['pages'] = ::Gitlab::Pages::Settings.new(Settings.pages) # For path access detection https://gitlab.com/gitlab-org/gitlab/-/issues/230702
 Settings.pages['enabled']           = false if Settings.pages['enabled'].nil?
 Settings.pages['access_control']    = false if Settings.pages['access_control'].nil?
 Settings.pages['path']              = Settings.absolute(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"))

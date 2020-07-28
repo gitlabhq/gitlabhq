@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
         .to eq Gitlab::UntrustedRegexp.new('pattern')
     end
 
-    it 'is a eager scanner for regexp boundaries' do
+    it 'is an eager scanner for regexp boundaries' do
       scanner = StringScanner.new('/some .* / pattern/')
 
       token = described_class.scan(scanner)

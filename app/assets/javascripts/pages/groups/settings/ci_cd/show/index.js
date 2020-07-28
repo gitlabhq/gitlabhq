@@ -2,7 +2,7 @@ import initSettingsPanels from '~/settings_panels';
 import AjaxVariableList from '~/ci_variable_list/ajax_variable_list';
 import initVariableList from '~/ci_variable_list';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
-import AdminRunnersFilteredSearchTokenKeys from '~/filtered_search/admin_runners_filtered_search_token_keys';
+import GroupRunnersFilteredSearchTokenKeys from '~/filtered_search/group_runners_filtered_search_token_keys';
 import { FILTERED_SEARCH } from '~/pages/constants';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initFilteredSearch({
     page: FILTERED_SEARCH.ADMIN_RUNNERS,
-    filteredSearchTokenKeys: AdminRunnersFilteredSearchTokenKeys,
+    filteredSearchTokenKeys: GroupRunnersFilteredSearchTokenKeys,
     anchor: FILTERED_SEARCH.GROUP_RUNNERS_ANCHOR,
   });
 

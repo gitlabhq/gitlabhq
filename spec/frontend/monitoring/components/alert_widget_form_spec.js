@@ -29,7 +29,7 @@ describe('AlertWidgetForm', () => {
     configuredAlert: metricId,
   };
 
-  function createComponent(props = {}) {
+  function createComponent(props = {}, featureFlags = {}) {
     const propsData = {
       ...defaultProps,
       ...props,
@@ -37,6 +37,9 @@ describe('AlertWidgetForm', () => {
 
     wrapper = shallowMount(AlertWidgetForm, {
       propsData,
+      provide: {
+        glFeatures: featureFlags,
+      },
       stubs: {
         GlModal: ModalStub,
       },
@@ -46,6 +49,7 @@ describe('AlertWidgetForm', () => {
   const modal = () => wrapper.find(ModalStub);
   const modalTitle = () => modal().attributes('title');
   const submitButton = () => modal().find(GlLink);
+  const alertRunbookField = () => wrapper.find('[data-testid="alertRunbookField"]');
   const submitButtonTrackingOpts = () =>
     JSON.parse(submitButton().attributes('data-tracking-options'));
   const e = {
@@ -215,6 +219,20 @@ describe('AlertWidgetForm', () => {
       return wrapper.vm.$nextTick(() => {
         expect(submitButtonTrackingOpts()).toEqual(dataTrackingOptions.update);
       });
+    });
+  });
+
+  describe('alert runbooks feature flag', () => {
+    it('hides the runbook field when the flag is disabled', () => {
+      createComponent(undefined, { alertRunbooks: false });
+
+      expect(alertRunbookField().exists()).toBe(false);
+    });
+
+    it('shows the runbook field when the flag is enabled', () => {
+      createComponent(undefined, { alertRunbooks: true });
+
+      expect(alertRunbookField().exists()).toBe(true);
     });
   });
 });

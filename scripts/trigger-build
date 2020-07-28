@@ -274,6 +274,8 @@ module Trigger
     def create_remote_branch!
       Gitlab.create_branch(downstream_project_path, ref, 'master')
       puts "=> Remote branch '#{ref}' created"
+    rescue Gitlab::Error::BadRequest
+      puts "=> Remote branch '#{ref}' already exists!"
     end
 
     def cancel_latest_pipeline!
@@ -292,8 +294,6 @@ module Trigger
 
       # Cancel the pipeline
       Gitlab.cancel_pipeline(downstream_project_path, pipeline_id)
-    rescue Gitlab::Error::BadRequest
-      puts "=> Remote branch '#{ref}' already exists!"
     end
 
     def display_success_message

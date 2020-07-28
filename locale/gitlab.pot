@@ -19033,6 +19033,9 @@ msgstr ""
 msgid "PrometheusAlerts|Operator"
 msgstr ""
 
+msgid "PrometheusAlerts|Runbook"
+msgstr ""
+
 msgid "PrometheusAlerts|Select query"
 msgstr ""
 
@@ -21153,9 +21156,6 @@ msgstr ""
 msgid "SecurityReports|No vulnerabilities found"
 msgstr ""
 
-msgid "SecurityReports|No vulnerabilities found for this group"
-msgstr ""
-
 msgid "SecurityReports|No vulnerabilities found for this pipeline"
 msgstr ""
 
@@ -21256,9 +21256,6 @@ msgid "SecurityReports|Unable to add %{invalidProjects}"
 msgstr ""
 
 msgid "SecurityReports|Undo dismiss"
-msgstr ""
-
-msgid "SecurityReports|While it's rare to have no vulnerabilities for your group, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
 msgid "SecurityReports|While it's rare to have no vulnerabilities for your pipeline, it can happen. In any event, we ask that you double check your settings to make sure all security scanning jobs have passed successfully."

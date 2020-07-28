@@ -1,0 +1,5 @@
+---
+title: Fix bug in group runners filtered search
+merge_request: 37626
+author: Arthur de Lapertosa Lisboa
+type: fixed
