@@ -1,10 +1,11 @@
 config:
   build:
     stage: build
-    script: exit 1
+    script: exit 0
 
   test:
     stage: test
+    when: manual
     allow_failure: true
     script: exit 1
 
@@ -25,15 +26,15 @@ init:
       deploy: created
 
 transitions:
-  - event: drop
+  - event: success
     jobs: [build]
     expect:
-      pipeline: failed
+      pipeline: running
       stages:
-        build: failed
+        build: success
         test: skipped
-        deploy: skipped
+        deploy: pending
       jobs:
-        build: failed
-        test: skipped
-        deploy: skipped
+        build: success
+        test: manual
+        deploy: pending

@@ -110,6 +110,20 @@ RSpec.describe Banzai::Filter::ReferenceFilter do
 
         expect(filter.instance_variable_get(:@new_nodes)).to eq({ index => [filter.each_node.to_a[index]] })
       end
+
+      context "with update_nodes_for_banzai_reference_filter feature flag disabled" do
+        before do
+          stub_feature_flags(update_nodes_for_banzai_reference_filter: false)
+        end
+
+        it 'does not call replace_and_update_new_nodes' do
+          expect(filter).not_to receive(:replace_and_update_new_nodes).with(filter.nodes[index], index, html)
+
+          filter.send(method_name, *args) do
+            html
+          end
+        end
+      end
     end
   end
 
@@ -184,20 +198,49 @@ RSpec.describe Banzai::Filter::ReferenceFilter do
   end
 
   describe "#call_and_update_nodes" do
-    include_context 'new nodes'
-    let(:document) { Nokogiri::HTML.fragment('<a href="foo">foo</a>') }
-    let(:filter) { described_class.new(document, project: project) }
+    context "with update_nodes_for_banzai_reference_filter feature flag enabled" do
+      include_context 'new nodes'
+      let(:document) { Nokogiri::HTML.fragment('<a href="foo">foo</a>') }
+      let(:filter) { described_class.new(document, project: project) }
 
-    it "updates all new nodes", :aggregate_failures do
-      filter.instance_variable_set('@nodes', nodes)
+      before do
+        stub_feature_flags(update_nodes_for_banzai_reference_filter: true)
+      end
 
-      expect(filter).to receive(:call) { filter.instance_variable_set('@new_nodes', new_nodes) }
-      expect(filter).to receive(:with_update_nodes).and_call_original
-      expect(filter).to receive(:update_nodes!).and_call_original
+      it "updates all new nodes", :aggregate_failures do
+        filter.instance_variable_set('@nodes', nodes)
 
-      filter.call_and_update_nodes
+        expect(filter).to receive(:call) { filter.instance_variable_set('@new_nodes', new_nodes) }
+        expect(filter).to receive(:with_update_nodes).and_call_original
+        expect(filter).to receive(:update_nodes!).and_call_original
 
-      expect(filter.result[:reference_filter_nodes]).to eq(expected_nodes)
+        filter.call_and_update_nodes
+
+        expect(filter.result[:reference_filter_nodes]).to eq(expected_nodes)
+      end
+    end
+
+    context "with update_nodes_for_banzai_reference_filter feature flag disabled" do
+      include_context 'new nodes'
+
+      before do
+        stub_feature_flags(update_nodes_for_banzai_reference_filter: false)
+      end
+
+      it "does not change nodes", :aggregate_failures do
+        document = Nokogiri::HTML.fragment('<a href="foo">foo</a>')
+        filter = described_class.new(document, project: project)
+        filter.instance_variable_set('@nodes', nodes)
+
+        expect(filter).to receive(:call) { filter.instance_variable_set('@new_nodes', new_nodes) }
+        expect(filter).not_to receive(:with_update_nodes)
+        expect(filter).not_to receive(:update_nodes!)
+
+        filter.call_and_update_nodes
+
+        expect(filter.nodes).to eq(nodes)
+        expect(filter.result[:reference_filter_nodes]).to be nil
+      end
     end
   end
 
@@ -207,6 +250,10 @@ RSpec.describe Banzai::Filter::ReferenceFilter do
     let(:document) { Nokogiri::HTML.fragment('<a href="foo">foo</a>') }
 
     let(:result) { { reference_filter_nodes: nodes } }
+
+    before do
+      stub_feature_flags(update_nodes_for_banzai_reference_filter: true)
+    end
 
     it "updates all nodes", :aggregate_failures do
       expect_next_instance_of(described_class) do |filter|
@@ -219,6 +266,27 @@ RSpec.describe Banzai::Filter::ReferenceFilter do
       described_class.call(document, { project: project }, result)
 
       expect(result[:reference_filter_nodes]).to eq(expected_nodes)
+    end
+
+    context "with update_nodes_for_banzai_reference_filter feature flag disabled" do
+      let(:result) { {} }
+
+      before do
+        stub_feature_flags(update_nodes_for_banzai_reference_filter: false)
+      end
+
+      it "updates all nodes", :aggregate_failures do
+        expect_next_instance_of(described_class) do |filter|
+          expect(filter).to receive(:call_and_update_nodes).and_call_original
+          expect(filter).not_to receive(:with_update_nodes)
+          expect(filter).to receive(:call) { filter.instance_variable_set('@new_nodes', new_nodes) }
+          expect(filter).not_to receive(:update_nodes!)
+        end
+
+        described_class.call(document, { project: project }, result)
+
+        expect(result[:reference_filter_nodes]).to be nil
+      end
     end
   end
 end

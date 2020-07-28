@@ -1,0 +1,13 @@
+- @hide_top_links = true
+- breadcrumb_title _("Projects")
+- header_title _("Projects"), dashboard_projects_path
+
+= render_dashboard_gold_trial(current_user)
+
+= render "projects/last_push"
+= render 'dashboard/projects_head', project_tab_filter: :starred
+
+- if params[:filter_projects] || any_projects?(@projects)
+  = render 'projects'
+- else
+  = render empty_page

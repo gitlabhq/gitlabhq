@@ -35,8 +35,13 @@ class IssuePolicy < IssuablePolicy
     prevent :destroy_design
   end
 
+  rule { ~can?(:read_design) }.policy do
+    prevent :move_design
+  end
+
   rule { locked | moved }.policy do
     prevent :create_design
+    prevent :move_design
     prevent :destroy_design
   end
 end

@@ -64,6 +64,8 @@
           .description.d-none.d-sm-block.gl-mr-3
             = markdown_field(project, :description)
 
+        = render_if_exists 'shared/projects/removed', project: project
+
       .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0.text-secondary{ class: css_controls_class.join(" ") }
         .icon-container.d-flex.align-items-center
           - if show_pipeline_status_icon

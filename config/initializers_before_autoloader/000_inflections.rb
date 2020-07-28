@@ -26,6 +26,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     project_statistics
     system_note_metadata
     vulnerabilities_feedback
+    vulnerability_export_registry
     vulnerability_feedback
   )
   inflect.acronym 'EE'

@@ -13,7 +13,6 @@ export default class ProtectedBranchEditList {
     this.$wrap.find('.js-protected-branch-edit-form').each((i, el) => {
       new ProtectedBranchEdit({
         $wrap: $(el),
-        hasLicense: false,
       });
     });
   }

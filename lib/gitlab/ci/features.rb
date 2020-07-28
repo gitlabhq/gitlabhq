@@ -74,6 +74,10 @@ module Gitlab
         ::Feature.enabled?(:ci_allow_to_create_merge_request_pipelines_in_target_project, target_project)
       end
 
+      def self.ci_plan_needs_size_limit?(project)
+        ::Feature.enabled?(:ci_plan_needs_size_limit, project)
+      end
+
       def self.job_entry_matches_all_keys?
         ::Feature.enabled?(:ci_job_entry_matches_all_keys)
       end

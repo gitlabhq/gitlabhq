@@ -5,7 +5,7 @@ RSpec.describe DesignManagement::DesignPolicy do
   include DesignManagementTestHelpers
 
   let(:guest_design_abilities) { %i[read_design] }
-  let(:developer_design_abilities) { %i[create_design destroy_design] }
+  let(:developer_design_abilities) { %i[create_design destroy_design move_design] }
   let(:design_abilities) { guest_design_abilities + developer_design_abilities }
 
   let_it_be(:guest) { create(:user) }
@@ -130,6 +130,17 @@ RSpec.describe DesignManagement::DesignPolicy do
     end
 
     it_behaves_like "design abilities available for members"
+
+    context 'when reorder_designs is not enabled' do
+      before do
+        stub_feature_flags(reorder_designs: false)
+      end
+
+      let(:current_user) { developer }
+
+      it { is_expected.to be_allowed(*(developer_design_abilities - [:move_design])) }
+      it { is_expected.to be_disallowed(:move_design) }
+    end
 
     context "for guests in private projects" do
       let_it_be(:project) { create(:project, :private) }

@@ -69,8 +69,9 @@ Dangerfile @gl-quality/eng-prod
 /ee/app/models/project_alias.rb @patrickbajao
 /ee/lib/api/project_aliases.rb @patrickbajao
 
-# Secure & Defend ownership delineation
-# https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/55713#note_380129762
+# Secure & Threat Management ownership delineation
+# https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
+[Secure]
 /ee/app/models/vulnerability.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team

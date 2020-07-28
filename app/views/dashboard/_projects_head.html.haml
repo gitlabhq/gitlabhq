@@ -26,6 +26,7 @@
     = nav_link(page: [explore_root_path, trending_explore_projects_path, starred_explore_projects_path, explore_projects_path]) do
       = link_to explore_root_path, data: {placement: 'right'} do
         = _("Explore projects")
+    = render_if_exists "dashboard/removed_projects_tab", removed_projects_count: @removed_projects_count
   - unless feature_project_list_filter_bar
     .nav-controls
       = render 'shared/projects/search_form'

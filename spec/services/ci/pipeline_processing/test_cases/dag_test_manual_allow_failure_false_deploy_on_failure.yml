@@ -1,0 +1,45 @@
+config:
+  test:
+    stage: test
+    when: manual
+    allow_failure: false
+    script: exit 1
+
+  deploy:
+    stage: deploy
+    when: on_failure
+    script: exit 0
+    needs: [test]
+
+init:
+  expect:
+    pipeline: manual
+    stages:
+      test: manual
+      deploy: created
+    jobs:
+      test: manual
+      deploy: created
+
+transitions:
+  - event: enqueue
+    jobs: [test]
+    expect:
+      pipeline: pending
+      stages:
+        test: pending
+        deploy: created
+      jobs:
+        test: pending
+        deploy: created
+
+  - event: drop
+    jobs: [test]
+    expect:
+      pipeline: running
+      stages:
+        test: failed
+        deploy: pending
+      jobs:
+        test: failed
+        deploy: pending

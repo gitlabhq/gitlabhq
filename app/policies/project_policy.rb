@@ -124,6 +124,11 @@ class ProjectPolicy < BasePolicy
   end
 
   with_scope :subject
+  condition(:moving_designs_disabled) do
+    !::Feature.enabled?(:reorder_designs, @subject)
+  end
+
+  with_scope :subject
   condition(:service_desk_enabled) { @subject.service_desk_enabled? }
 
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
@@ -342,6 +347,7 @@ class ProjectPolicy < BasePolicy
     enable :read_alert_management_alert
     enable :update_alert_management_alert
     enable :create_design
+    enable :move_design
     enable :destroy_design
     enable :read_terraform_state
   end
@@ -573,6 +579,11 @@ class ProjectPolicy < BasePolicy
     prevent :read_design_activity
     prevent :create_design
     prevent :destroy_design
+    prevent :move_design
+  end
+
+  rule { moving_designs_disabled }.policy do
+    prevent :move_design
   end
 
   rule { read_package_registry_deploy_token }.policy do

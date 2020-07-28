@@ -1,0 +1,5 @@
+---
+title: Introduce `ci_needs_size_limit` to fine control needs
+merge_request: 37568
+author:
+type: changed

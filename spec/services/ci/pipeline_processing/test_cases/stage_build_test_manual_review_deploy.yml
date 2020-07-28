@@ -1,0 +1,79 @@
+config:
+  stages: [build, test, review, deploy]
+
+  build:
+    stage: build
+    script: exit 0
+
+  test:
+    stage: test
+    script: exit 0
+
+  release_test:
+    stage: test
+    when: manual
+    allow_failure: true
+    script: exit 0
+
+  review:
+    stage: review
+    script: exit 0
+
+  staging:
+    stage: deploy
+    script: exit 0
+
+  production:
+    stage: deploy
+    script: exit 0
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      build: pending
+      test: created
+      review: created
+      deploy: created
+    jobs:
+      build: pending
+      test: created
+      release_test: created
+      review: created
+      staging: created
+      production: created
+
+transitions:
+  - event: success
+    jobs: [build]
+    expect:
+      pipeline: running
+      stages:
+        build: success
+        test: pending
+        review: created
+        deploy: created
+      jobs:
+        build: success
+        test: pending
+        release_test: manual
+        review: created
+        staging: created
+        production: created
+
+  - event: success
+    jobs: [test]
+    expect:
+      pipeline: running
+      stages:
+        build: success
+        test: success
+        review: pending
+        deploy: created
+      jobs:
+        build: success
+        test: success
+        release_test: manual
+        review: pending
+        staging: created
+        production: created

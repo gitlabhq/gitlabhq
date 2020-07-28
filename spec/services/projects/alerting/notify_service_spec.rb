@@ -30,21 +30,6 @@ RSpec.describe Projects::Alerting::NotifyService do
     end
   end
 
-  shared_examples 'sends notification email' do
-    let(:notification_service) { spy }
-
-    it 'sends a notification for firing alerts only' do
-      expect(NotificationService)
-        .to receive(:new)
-        .and_return(notification_service)
-
-      expect(notification_service)
-        .to receive_message_chain(:async, :prometheus_alerts_fired)
-
-      expect(subject).to be_success
-    end
-  end
-
   shared_examples 'does not process incident issues' do
     it 'does not process issues' do
       expect(IncidentManagement::ProcessAlertWorker)
@@ -234,7 +219,7 @@ RSpec.describe Projects::Alerting::NotifyService do
         context 'with emails turned on' do
           let(:email_enabled) { true }
 
-          it_behaves_like 'sends notification email'
+          it_behaves_like 'Alert Notification Service sends notification email'
         end
       end
 
