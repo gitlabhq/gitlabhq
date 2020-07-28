@@ -322,7 +322,7 @@ repositories {
         name "GitLab"
         credentials(HttpHeaderCredentials) {
             name = 'Job-Token'
-            value = '${CI_JOB_TOKEN}'
+            value = System.getenv("CI_JOB_TOKEN")
         }
         authentication {
             header(HttpHeaderAuthentication)
@@ -690,7 +690,7 @@ downloaded from the GitLab Package Registry:
 Downloading from gitlab-maven: http://gitlab.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.pom
 ```
 
-#### Install with `mvn dependency:get`
+### Install using Maven with `mvn dependency:get`
 
 The second way to install packages is to use the Maven commands directly.
 Inside your project directory, run:
@@ -816,11 +816,6 @@ is updated:
    ```
 
 1. Push those files to your repository.
-
-The next time the `deploy` job runs, it will copy `ci_settings.xml` to the
-user's home location (in this case the user is `root` since it runs in a
-Docker container), and Maven will use the configured CI
-[environment variables](../../../ci/variables/README.md#predefined-environment-variables).
 
 ### Version validation
 

@@ -100,6 +100,7 @@ any option available in the underlying fuzzing engine.
 | Environment variable      | Description                                                        |
 |---------------------------|--------------------------------------------------------------------|
 | `COVERAGE_FUZZING_BRANCH` | The branch for long-running fuzzing jobs. The default is `master`. |
+| `CI_SEED_CORPUS`          | Path to a seed corpus directory. The default is empty.             |
 
 ### Additional Configuration
 

@@ -76,6 +76,14 @@ RSpec.describe Gitlab::Danger::Helper do
     end
   end
 
+  describe "changed_files" do
+    it 'returns list of changed files matching given regex' do
+      expect(helper).to receive(:all_changed_files).and_return(%w[migration.rb usage_data.rb])
+
+      expect(helper.changed_files(/usage_data/)).to contain_exactly('usage_data.rb')
+    end
+  end
+
   describe '#all_ee_changes' do
     subject { helper.all_ee_changes }
 

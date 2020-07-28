@@ -18,6 +18,7 @@ import {
   SHOW_WHITESPACE,
   NO_SHOW_WHITESPACE,
 } from '../constants';
+import { prepareRawDiffFile } from '../diff_file';
 
 export function findDiffFile(files, match, matchKey = 'file_hash') {
   return files.find(file => file[matchKey] === match);
@@ -294,9 +295,10 @@ function cleanRichText(text) {
   return text ? text.replace(/^[+ -]/, '') : undefined;
 }
 
-function prepareLine(line) {
+function prepareLine(line, file) {
   if (!line.alreadyPrepared) {
     Object.assign(line, {
+      commentsDisabled: file.brokenSymlink,
       rich_text: cleanRichText(line.rich_text),
       discussionsExpanded: true,
       discussions: [],
@@ -330,7 +332,7 @@ export function prepareLineForRenamedFile({ line, diffViewType, diffFile, index 
     old_line: lineNumber,
   };
 
-  prepareLine(cleanLine); // WARNING: In-Place Mutations!
+  prepareLine(cleanLine, diffFile); // WARNING: In-Place Mutations!
 
   if (diffViewType === PARALLEL_DIFF_VIEW_TYPE) {
     return {
@@ -348,19 +350,19 @@ function prepareDiffFileLines(file) {
   const parallelLines = file.parallel_diff_lines;
   let parallelLinesCount = 0;
 
-  inlineLines.forEach(prepareLine);
+  inlineLines.forEach(line => prepareLine(line, file)); // WARNING: In-Place Mutations!
 
   parallelLines.forEach((line, index) => {
     Object.assign(line, { line_code: getLineCode(line, index) });
 
     if (line.left) {
       parallelLinesCount += 1;
-      prepareLine(line.left);
+      prepareLine(line.left, file); // WARNING: In-Place Mutations!
     }
 
     if (line.right) {
       parallelLinesCount += 1;
-      prepareLine(line.right);
+      prepareLine(line.right, file); // WARNING: In-Place Mutations!
     }
   });
 
@@ -407,6 +409,7 @@ function deduplicateFilesList(files) {
 
 export function prepareDiffData(diff, priorFiles = []) {
   const cleanedFiles = (diff.diff_files || [])
+    .map((file, index, allFiles) => prepareRawDiffFile({ file, allFiles }))
     .map(ensureBasicDiffFileLines)
     .map(prepareDiffFileLines)
     .map(finalizeDiffFile);

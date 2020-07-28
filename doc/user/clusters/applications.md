@@ -951,21 +951,18 @@ For an overview, see the [Container Network Security Demo for GitLab 12.8](https
 Enable Cilium in the `.gitlab/managed-apps/config.yaml` file to install it:
 
 ```yaml
-# possible values are gke, eks or you can leave it blank
+# possible values are gke or eks
 clusterType: gke
 
 cilium:
   installed: true
 ```
 
-The `clusterType` variable enables the recommended Helm variables for
-a corresponding cluster type. The default value is blank. You can
-check the recommended variables for each cluster type in the official
-documentation:
+The `clusterType` variable enables the recommended Helm variables for a corresponding cluster type.
+You can check the recommended variables for each cluster type in the official documentation:
 
 - [Google GKE](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-gke/#deploy-cilium)
 - [AWS EKS](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-eks/#deploy-cilium)
-- [Azure AKS](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-aks/#deploy-cilium)
 
 You can customize Cilium's Helm variables by defining the
 `.gitlab/managed-apps/cilium/values.yaml` file in your cluster

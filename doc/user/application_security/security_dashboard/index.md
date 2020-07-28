@@ -56,7 +56,8 @@ A pipeline consists of multiple jobs, including SAST and DAST scanning. If any j
 
 At the project level, the Security Dashboard displays the vulnerabilities merged into your project's
 [default branch](../../project/repository/branches/index.md#default-branch). Access it by navigating
-to **Security & Compliance > Security Dashboard**.
+to **Security & Compliance > Security Dashboard**. By default, the Security Dashboard displays all
+detected and confirmed vulnerabilities.
 
 The Security Dashboard first displays the total number of vulnerabilities by severity (for example,
 Critical, High, Medium, Low). Below this, a table displays each vulnerability's status, severity,
@@ -68,8 +69,6 @@ You can filter the vulnerabilities by:
 - Status
 - Severity
 - Report type
-
-By default, detected and confirmed vulnerabilities will be displayed.
 
 You can also dismiss vulnerabilities in the table:
 
@@ -84,7 +83,8 @@ You can also dismiss vulnerabilities in the table:
 
 The group Security Dashboard gives an overview of the vulnerabilities in the default branches of the
 projects in a group and its subgroups. Access it by navigating to **Security > Security Dashboard**
-for your group.
+for your group. By default, the Security Dashboard displays all detected and confirmed
+vulnerabilities.
 
 NOTE: **Note:**
 The Security Dashboard only shows projects with [security reports](#supported-reports) enabled in a
@@ -98,8 +98,6 @@ You can filter which vulnerabilities the Security Dashboard displays by:
 - Severity
 - Report type
 - Project
-
-By default, detected and confirmed vulnerabilities will be displayed.
 
 A table lists the vulnerabilities, sorted by severity. The table shows each vulnerability's status,
 severity, and description. Clicking a vulnerability takes you to its [Vulnerability Details](../vulnerabilities)

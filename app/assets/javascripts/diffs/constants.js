@@ -36,6 +36,9 @@ export const LENGTH_OF_AVATAR_TOOLTIP = 17;
 export const LINES_TO_BE_RENDERED_DIRECTLY = 100;
 export const MAX_LINES_TO_BE_RENDERED = 2000;
 
+export const DIFF_FILE_SYMLINK_MODE = '120000';
+export const DIFF_FILE_DELETED_MODE = '0';
+
 export const MR_TREE_SHOW_KEY = 'mr_tree_show';
 
 export const TREE_TYPE = 'tree';

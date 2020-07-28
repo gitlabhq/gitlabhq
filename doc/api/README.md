@@ -545,7 +545,7 @@ https://gitlab.example.com/api/v4/projects/import
 
 ### Array of hashes
 
-`variables` is a parameter of type `array` containing hash key/value pairs `[{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }]`:
+`variables` is a parameter of type `array` containing hash key/value pairs `[{ 'key': 'UPLOAD_TO_S3', 'value': 'true' }]`:
 
 ```shell
 curl --globoff --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

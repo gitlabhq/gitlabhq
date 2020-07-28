@@ -20,6 +20,14 @@ import { noteableDataMock } from '../../notes/mock_data';
 const getDiffFileMock = () => JSON.parse(JSON.stringify(diffFileMockData));
 const getDiffMetadataMock = () => JSON.parse(JSON.stringify(diffMetadata));
 
+function extractLinesFromFile(file) {
+  const unpackedParallel = file.parallel_diff_lines
+    .flatMap(({ left, right }) => [left, right])
+    .filter(Boolean);
+
+  return [...file.highlighted_diff_lines, ...unpackedParallel];
+}
+
 describe('DiffsStoreUtils', () => {
   describe('findDiffFile', () => {
     const files = [{ file_hash: 1, name: 'one' }];
@@ -429,6 +437,28 @@ describe('DiffsStoreUtils', () => {
       expect(preppedLine.right).toEqual(correctLine);
       expect(preppedLine.line_code).toEqual(correctLine.line_code);
     });
+
+    it.each`
+      brokenSymlink
+      ${false}
+      ${{}}
+      ${'anything except `false`'}
+    `(
+      "properly assigns each line's `commentsDisabled` as the same value as the parent file's `brokenSymlink` value (`$brokenSymlink`)",
+      ({ brokenSymlink }) => {
+        preppedLine = utils.prepareLineForRenamedFile({
+          diffViewType: INLINE_DIFF_VIEW_TYPE,
+          line: sourceLine,
+          index: lineIndex,
+          diffFile: {
+            ...diffFile,
+            brokenSymlink,
+          },
+        });
+
+        expect(preppedLine.commentsDisabled).toStrictEqual(brokenSymlink);
+      },
+    );
   });
 
   describe('prepareDiffData', () => {
@@ -541,6 +571,25 @@ describe('DiffsStoreUtils', () => {
           }),
         ]);
       });
+
+      it('adds the `.brokenSymlink` property to each diff file', () => {
+        preparedDiff.diff_files.forEach(file => {
+          expect(file).toEqual(expect.objectContaining({ brokenSymlink: false }));
+        });
+      });
+
+      it("copies the diff file's `.brokenSymlink` value to each of that file's child lines", () => {
+        const lines = [
+          ...preparedDiff.diff_files,
+          ...splitInlineDiff.diff_files,
+          ...splitParallelDiff.diff_files,
+          ...completedDiff.diff_files,
+        ].flatMap(file => extractLinesFromFile(file));
+
+        lines.forEach(line => {
+          expect(line.commentsDisabled).toBe(false);
+        });
+      });
     });
 
     describe('for diff metadata', () => {
@@ -602,6 +651,12 @@ describe('DiffsStoreUtils', () => {
             parallel_diff_lines: [],
           },
         ]);
+      });
+
+      it('adds the `.brokenSymlink` property to each meta diff file', () => {
+        preparedDiffFiles.forEach(file => {
+          expect(file).toMatchObject({ brokenSymlink: false });
+        });
       });
     });
   });

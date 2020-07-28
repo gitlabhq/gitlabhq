@@ -250,6 +250,10 @@ module Gitlab
         "/label #{labels_list(labels, sep: ' ')}"
       end
 
+      def changed_files(regex)
+        all_changed_files.grep(regex)
+      end
+
       private
 
       def has_database_scoped_labels?(current_mr_labels)
