@@ -96,7 +96,7 @@ module Gitlab
             :gitlab_redis_client_requests_duration_seconds,
             'Client side Redis request latency, per Redis server, excluding blocking commands',
             {},
-            [0.005, 0.01, 0.1, 0.5]
+            [0.1, 0.5, 0.75, 1]
           )
 
           @request_latency_histogram.observe({ storage: storage_key }, duration)

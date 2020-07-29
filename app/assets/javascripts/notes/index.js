@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       noteableData.noteableType = notesDataset.noteableType;
       noteableData.targetType = notesDataset.targetType;
+      if (noteableData.discussion_locked === null) {
+        // discussion_locked has never been set for this issuable.
+        // set to `false` for safety.
+        noteableData.discussion_locked = false;
+      }
 
       if (parsedUserData) {
         currentUserData = {

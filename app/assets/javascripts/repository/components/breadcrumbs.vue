@@ -9,9 +9,9 @@ import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import { __ } from '../../locale';
 import Icon from '../../vue_shared/components/icon.vue';
 import getRefMixin from '../mixins/get_ref';
-import getProjectShortPath from '../queries/getProjectShortPath.query.graphql';
-import getProjectPath from '../queries/getProjectPath.query.graphql';
-import getPermissions from '../queries/getPermissions.query.graphql';
+import projectShortPathQuery from '../queries/project_short_path.query.graphql';
+import projectPathQuery from '../queries/project_path.query.graphql';
+import permissionsQuery from '../queries/permissions.query.graphql';
 
 const ROW_TYPES = {
   header: 'header',
@@ -28,13 +28,13 @@ export default {
   },
   apollo: {
     projectShortPath: {
-      query: getProjectShortPath,
+      query: projectShortPathQuery,
     },
     projectPath: {
-      query: getProjectPath,
+      query: projectPathQuery,
     },
     userPermissions: {
-      query: getPermissions,
+      query: permissionsQuery,
       variables() {
         return {
           projectPath: this.projectPath,

@@ -22,7 +22,7 @@ query getFiles(
           edges {
             node {
               ...TreeEntry
-              webUrl
+              webPath
             }
           }
           pageInfo {
@@ -46,7 +46,7 @@ query getFiles(
             node {
               ...TreeEntry
               mode
-              webUrl
+              webPath
               lfsOid
             }
           }

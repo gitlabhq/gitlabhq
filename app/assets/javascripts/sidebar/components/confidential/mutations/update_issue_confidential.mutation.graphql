@@ -3,5 +3,6 @@ mutation updateIssueConfidential($input: IssueSetConfidentialInput!) {
     issue {
       confidential
     }
+    errors
   }
 }

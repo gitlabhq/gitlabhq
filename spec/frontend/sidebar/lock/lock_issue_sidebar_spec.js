@@ -1,99 +1,145 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
-import lockIssueSidebar from '~/sidebar/components/lock/lock_issue_sidebar.vue';
+import LockIssueSidebar from '~/sidebar/components/lock/lock_issue_sidebar.vue';
+import EditForm from '~/sidebar/components/lock/edit_form.vue';
+import createStore from '~/notes/stores';
+import { createStore as createMrStore } from '~/mr_notes/stores';
+import { ISSUABLE_TYPE_ISSUE, ISSUABLE_TYPE_MR } from './constants';
 
 describe('LockIssueSidebar', () => {
-  let vm1;
-  let vm2;
+  let wrapper;
+  let store;
+  let mediator;
+  let issuableType; // Either ISSUABLE_TYPE_ISSUE or ISSUABLE_TYPE_MR
 
-  beforeEach(() => {
-    const Component = Vue.extend(lockIssueSidebar);
+  const setIssuableType = pageType => {
+    issuableType = pageType;
+  };
 
-    const mediator = {
+  const findSidebarCollapseIcon = () => wrapper.find('[data-testid="sidebar-collapse-icon"]');
+  const findLockStatus = () => wrapper.find('[data-testid="lock-status"]');
+  const findEditLink = () => wrapper.find('[data-testid="edit-link"]');
+  const findEditForm = () => wrapper.find(EditForm);
+
+  const initMediator = () => {
+    mediator = {
       service: {
         update: Promise.resolve(true),
       },
-
-      store: {
-        isLockDialogOpen: false,
-      },
+      store: {},
     };
+  };
 
-    vm1 = new Component({
+  const initStore = isLocked => {
+    if (issuableType === ISSUABLE_TYPE_ISSUE) {
+      store = createStore();
+      store.getters.getNoteableData.targetType = 'issue';
+    } else {
+      store = createMrStore();
+    }
+    store.getters.getNoteableData.discussion_locked = isLocked;
+  };
+
+  const createComponent = ({ props = {} }) => {
+    wrapper = shallowMount(LockIssueSidebar, {
+      store,
       propsData: {
-        isLocked: true,
         isEditable: true,
         mediator,
-        issuableType: 'issue',
+        ...props,
       },
-    }).$mount();
-
-    vm2 = new Component({
-      propsData: {
-        isLocked: false,
-        isEditable: false,
-        mediator,
-        issuableType: 'merge_request',
-      },
-    }).$mount();
-  });
-
-  it('shows if locked and/or editable', () => {
-    expect(vm1.$el.innerHTML.includes('Edit')).toBe(true);
-
-    expect(vm1.$el.innerHTML.includes('Locked')).toBe(true);
-
-    expect(vm2.$el.innerHTML.includes('Unlocked')).toBe(true);
-  });
-
-  it('displays the edit form when editable', done => {
-    expect(vm1.isLockDialogOpen).toBe(false);
-
-    vm1.$el.querySelector('.lock-edit').click();
-
-    expect(vm1.isLockDialogOpen).toBe(true);
-
-    vm1.$nextTick(() => {
-      expect(vm1.$el.innerHTML.includes('Unlock this issue?')).toBe(true);
-
-      done();
     });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  it('tracks an event when "Edit" is clicked', () => {
-    const spy = mockTracking('_category_', vm1.$el, jest.spyOn);
-    triggerEvent('.lock-edit');
-
-    expect(spy).toHaveBeenCalledWith('_category_', 'click_edit_button', {
-      label: 'right_sidebar',
-      property: 'lock_issue',
+  describe.each`
+    pageType
+    ${ISSUABLE_TYPE_ISSUE} | ${ISSUABLE_TYPE_MR}
+  `('In $pageType page', ({ pageType }) => {
+    beforeEach(() => {
+      setIssuableType(pageType);
+      initMediator();
     });
-  });
 
-  it('displays the edit form when opened from collapsed state', done => {
-    expect(vm1.isLockDialogOpen).toBe(false);
+    describe.each`
+      isLocked
+      ${false} | ${true}
+    `(`renders for isLocked = $isLocked`, ({ isLocked }) => {
+      beforeEach(() => {
+        initStore(isLocked);
+        createComponent({});
+      });
 
-    vm1.$el.querySelector('.sidebar-collapsed-icon').click();
+      it('shows the lock status', () => {
+        expect(findLockStatus().text()).toBe(isLocked ? 'Locked' : 'Unlocked');
+      });
 
-    expect(vm1.isLockDialogOpen).toBe(true);
+      describe('edit form', () => {
+        let isEditable;
+        beforeEach(() => {
+          isEditable = false;
+          createComponent({ props: { isEditable } });
+        });
 
-    setImmediate(() => {
-      expect(vm1.$el.innerHTML.includes('Unlock this issue?')).toBe(true);
+        describe('when not editable', () => {
+          it('does not display the edit form when opened if not editable', () => {
+            expect(findEditForm().exists()).toBe(false);
+            findSidebarCollapseIcon().trigger('click');
 
-      done();
+            return wrapper.vm.$nextTick().then(() => {
+              expect(findEditForm().exists()).toBe(false);
+            });
+          });
+        });
+
+        describe('when editable', () => {
+          beforeEach(() => {
+            isEditable = true;
+            createComponent({ props: { isEditable } });
+          });
+
+          it('shows the editable status', () => {
+            expect(findEditLink().exists()).toBe(isEditable);
+            expect(findEditLink().text()).toBe('Edit');
+          });
+
+          describe("when 'Edit' is clicked", () => {
+            it('displays the edit form when editable', () => {
+              expect(findEditForm().exists()).toBe(false);
+              findEditLink().trigger('click');
+
+              return wrapper.vm.$nextTick().then(() => {
+                expect(findEditForm().exists()).toBe(true);
+              });
+            });
+
+            it('tracks the event ', () => {
+              const spy = mockTracking('_category_', wrapper.element, jest.spyOn);
+              triggerEvent(findEditLink().element);
+
+              expect(spy).toHaveBeenCalledWith('_category_', 'click_edit_button', {
+                label: 'right_sidebar',
+                property: 'lock_issue',
+              });
+            });
+          });
+
+          describe('When sidebar is collapsed', () => {
+            it('displays the edit form when opened', () => {
+              expect(findEditForm().exists()).toBe(false);
+              findSidebarCollapseIcon().trigger('click');
+
+              return wrapper.vm.$nextTick().then(() => {
+                expect(findEditForm().exists()).toBe(true);
+              });
+            });
+          });
+        });
+      });
     });
-  });
-
-  it('does not display the edit form when opened from collapsed state if not editable', done => {
-    expect(vm2.isLockDialogOpen).toBe(false);
-
-    vm2.$el.querySelector('.sidebar-collapsed-icon').click();
-
-    Vue.nextTick()
-      .then(() => {
-        expect(vm2.isLockDialogOpen).toBe(false);
-      })
-      .then(done)
-      .catch(done.fail);
   });
 });

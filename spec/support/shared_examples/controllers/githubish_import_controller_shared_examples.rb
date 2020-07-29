@@ -111,8 +111,11 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
   end
 
   it "handles an invalid access token" do
-    allow_any_instance_of(Gitlab::LegacyGithubImport::Client)
-      .to receive(:repos).and_raise(Octokit::Unauthorized)
+    allow_any_instance_of(Gitlab::LegacyGithubImport::Client).to receive(:repos).and_raise(Octokit::Unauthorized)
+
+    allow_next_instance_of(Octokit::Client) do |client|
+      allow(client).to receive(:repos).and_raise(Octokit::Unauthorized)
+    end
 
     get :status
 
@@ -187,7 +190,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
   end
 
   before do
-    stub_client(user: provider_user, repo: provider_repo)
+    stub_client(user: provider_user, repo: provider_repo, repository: provider_repo)
     assign_session_token(provider)
   end
 

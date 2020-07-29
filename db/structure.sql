@@ -16471,7 +16471,8 @@ CREATE TABLE public.web_hooks (
     encrypted_token character varying,
     encrypted_token_iv character varying,
     encrypted_url character varying,
-    encrypted_url_iv character varying
+    encrypted_url_iv character varying,
+    deployment_events boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.web_hooks_id_seq

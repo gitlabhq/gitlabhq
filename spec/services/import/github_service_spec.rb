@@ -6,7 +6,7 @@ RSpec.describe Import::GithubService do
   let_it_be(:user) { create(:user) }
   let_it_be(:token) { 'complex-token' }
   let_it_be(:access_params) { { github_access_token: 'github-complex-token' } }
-  let_it_be(:client) { Gitlab::LegacyGithubImport::Client.new(token) }
+  let_it_be(:client) { Gitlab::GithubImport::Client.new(token) }
   let_it_be(:params) { { repo_id: 123, new_name: 'new_repo', target_namespace: 'root' } }
 
   let(:subject) { described_class.new(client, user, params) }
@@ -19,7 +19,7 @@ RSpec.describe Import::GithubService do
     let(:exception) { Octokit::ClientError.new(status: 404, body: 'Not Found') }
 
     before do
-      expect(client).to receive(:repo).and_raise(exception)
+      expect(client).to receive(:repository).and_raise(exception)
     end
 
     it 'logs the original error' do
@@ -46,7 +46,7 @@ RSpec.describe Import::GithubService do
   it 'raises an exception for unknown error causes' do
     exception = StandardError.new('Not Implemented')
 
-    expect(client).to receive(:repo).and_raise(exception)
+    expect(client).to receive(:repository).and_raise(exception)
 
     expect(Gitlab::Import::Logger).not_to receive(:error)
 

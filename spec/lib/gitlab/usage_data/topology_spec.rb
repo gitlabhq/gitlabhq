@@ -335,6 +335,40 @@ RSpec.describe Gitlab::UsageData::Topology do
         end
       end
 
+      context 'and unknown services are encountered' do
+        let(:unknown_service_process_count_response) do
+          [
+            {
+              'metric' => { 'instance' => 'instance2:9000', 'job' => 'unknown-service-A' },
+              'value' => [1000, '42']
+            },
+            {
+              'metric' => { 'instance' => 'instance2:9001', 'job' => 'unknown-service-B' },
+              'value' => [1000, '42']
+            }
+          ]
+        end
+
+        it 'filters out unknown service data and reports the unknown services as a failure' do
+          expect_prometheus_api_to(
+            receive_app_request_volume_query(result: []),
+            receive_node_memory_query(result: []),
+            receive_node_cpu_count_query(result: []),
+            receive_node_uname_info_query(result: []),
+            receive_node_service_memory_rss_query(result: []),
+            receive_node_service_memory_uss_query(result: []),
+            receive_node_service_memory_pss_query(result: []),
+            receive_node_service_process_count_query(result: unknown_service_process_count_response),
+            receive_node_service_app_server_workers_query(result: [])
+          )
+
+          expect(subject.dig(:topology, :failures)).to include(
+            { 'service_unknown' => 'unknown-service-A' },
+            { 'service_unknown' => 'unknown-service-B' }
+          )
+        end
+      end
+
       context 'and an error is raised when querying Prometheus' do
         it 'returns empty result with failures' do
           expect_prometheus_api_to receive(:query)
@@ -534,11 +568,6 @@ RSpec.describe Gitlab::UsageData::Topology do
         {
           'metric' => { 'instance' => 'instance2:8080', 'job' => 'registry' },
           'value' => [1000, '1']
-        },
-        # unknown service => should be stripped out
-        {
-          'metric' => { 'instance' => 'instance2:9000', 'job' => 'not-a-gitlab-service' },
-          'value' => [1000, '42']
         }
       ])
   end

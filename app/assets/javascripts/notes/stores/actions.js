@@ -13,7 +13,9 @@ import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import { mergeUrlParams } from '../../lib/utils/url_utility';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
-import updateIssueConfidentialMutation from '~/sidebar/components/confidential/queries/update_issue_confidential.mutation.graphql';
+import updateIssueConfidentialMutation from '~/sidebar/components/confidential/mutations/update_issue_confidential.mutation.graphql';
+import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
+import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
 import { __, sprintf } from '~/locale';
 import Api from '~/api';
 
@@ -39,6 +41,30 @@ export const updateConfidentialityOnIssue = ({ commit, getters }, { confidential
       } = data;
 
       commit(types.SET_ISSUE_CONFIDENTIAL, issue.confidential);
+    });
+};
+
+export const updateLockedAttribute = ({ commit, getters }, { locked, fullPath }) => {
+  const { iid, targetType } = getters.getNoteableData;
+
+  return utils.gqClient
+    .mutate({
+      mutation: targetType === 'issue' ? updateIssueLockMutation : updateMergeRequestLockMutation,
+      variables: {
+        input: {
+          projectPath: fullPath,
+          iid: String(iid),
+          locked,
+        },
+      },
+    })
+    .then(({ data }) => {
+      const discussionLocked =
+        targetType === 'issue'
+          ? data.issueSetLocked.issue.discussionLocked
+          : data.mergeRequestSetLocked.mergeRequest.discussionLocked;
+
+      commit(types.SET_ISSUABLE_LOCK, discussionLocked);
     });
 };
 

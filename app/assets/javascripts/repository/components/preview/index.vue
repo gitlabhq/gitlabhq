@@ -3,15 +3,15 @@ import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { handleLocationHash } from '~/lib/utils/common_utils';
-import getReadmeQuery from '../../queries/getReadme.query.graphql';
+import readmeQuery from '../../queries/readme.query.graphql';
 
 export default {
   apollo: {
     readme: {
-      query: getReadmeQuery,
+      query: readmeQuery,
       variables() {
         return {
-          url: this.blob.webUrl,
+          url: this.blob.webPath,
         };
       },
       loadingKey: 'loading',

@@ -99,6 +99,10 @@ export default {
     state.noteableData.confidential = data;
   },
 
+  [types.SET_ISSUABLE_LOCK](state, locked) {
+    state.noteableData.discussion_locked = locked;
+  },
+
   [types.SET_USER_DATA](state, data) {
     Object.assign(state, { userData: data });
   },

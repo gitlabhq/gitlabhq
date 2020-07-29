@@ -16397,6 +16397,9 @@ msgstr ""
 msgid "Number of files touched"
 msgstr ""
 
+msgid "OAuth configuration for GitHub missing."
+msgstr ""
+
 msgid "OK"
 msgstr ""
 

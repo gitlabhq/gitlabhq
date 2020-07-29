@@ -833,10 +833,24 @@ describe('Notes Store mutations', () => {
       state = { noteableData: { confidential: false } };
     });
 
-    it('sets sort order', () => {
+    it('should set issuable as confidential', () => {
       mutations.SET_ISSUE_CONFIDENTIAL(state, true);
 
       expect(state.noteableData.confidential).toBe(true);
+    });
+  });
+
+  describe('SET_ISSUABLE_LOCK', () => {
+    let state;
+
+    beforeEach(() => {
+      state = { noteableData: { discussion_locked: false } };
+    });
+
+    it('should set issuable as locked', () => {
+      mutations.SET_ISSUABLE_LOCK(state, true);
+
+      expect(state.noteableData.discussion_locked).toBe(true);
     });
   });
 

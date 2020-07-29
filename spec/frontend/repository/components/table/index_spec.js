@@ -13,7 +13,7 @@ const MOCK_BLOBS = [
     flatPath: 'blob',
     name: 'blob.md',
     type: 'blob',
-    webUrl: 'http://test.com',
+    webPath: '/blob',
   },
   {
     id: '124abc',

@@ -153,6 +153,20 @@ The availability of event types and their tracking tools varies by segment. For 
 
 ✅ Available, 🔄 In Progress, 📅 Planned, ✖️ Not Possible
 
+## Reporting time period by segment
+
+Our reporting time periods varies by segment. For example, on Self-Managed Users, we can report all time counts and 28 day counts in Usage Ping.
+
+| Reporting time period | SaaS Instance | SaaS Group | SaaS Session | SaaS User | Self-Managed Instance | Self-Managed Group | Self-Managed Session | Self-Managed User |
+|-----------------------|---------------|------------|--------------|-----------|-----------------------|--------------------|----------------------|-------------------|
+| All Time              | ✅             | 📅         | ✅            | ✅         | ✅                     | 📅                 | 🔄                   | ✅                 |
+| 28 Days               | ✅             | 📅         | ✅            | ✅         | ✅                     | 📅                 | 🔄                   | ✅                 |
+| Daily                 | ✅             | 📅         | ✅            | ✅         | ✖️                    | ✖️                 | ✖️                   | ✖️                |
+
+**Legend**
+
+✅ Available, 🔄 In Progress, 📅 Planned, ✖️ Not Possible
+
 ## Telemetry systems overview
 
 The systems overview is a simplified diagram showing the interactions between GitLab Inc and self-managed instances.

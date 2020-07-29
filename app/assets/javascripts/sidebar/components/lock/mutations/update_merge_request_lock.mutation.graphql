@@ -1,0 +1,8 @@
+mutation updateMergeRequestLocked($input: MergeRequestSetLockedInput!) {
+  mergeRequestSetLocked(input: $input) {
+    mergeRequest {
+      discussionLocked
+    }
+    errors
+  }
+}

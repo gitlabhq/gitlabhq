@@ -32,6 +32,8 @@ module Gitlab
         )
       end
 
+      alias_method :octokit, :api
+
       def client
         unless config
           raise Projects::ImportService::Error,

@@ -160,14 +160,17 @@ module Gitlab
             .deep_merge(topology_instance_service_memory(instance, all_process_memory))
             .deep_merge(topology_instance_service_server_types(instance, all_server_types))
 
-        # map to list of hashes where service names become values instead, and remove
+        # map to list of hashes where service names become values instead, and skip
         # unknown services, since they might not be ours
         instance_service_data.each_with_object([]) do |entry, list|
           service, service_metrics = entry
-          gitlab_service = JOB_TO_SERVICE_NAME[service.to_s]
-          next unless gitlab_service
+          service_name = service.to_s.strip
 
-          list << { name: gitlab_service }.merge(service_metrics)
+          if gitlab_service = JOB_TO_SERVICE_NAME[service_name]
+            list << { name: gitlab_service }.merge(service_metrics)
+          else
+            @failures << CollectionFailure.new('service_unknown', service_name)
+          end
         end
       end
 

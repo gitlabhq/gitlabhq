@@ -1,12 +1,12 @@
-import getFiles from '../queries/getFiles.query.graphql';
+import filesQuery from '../queries/files.query.graphql';
 import getRefMixin from './get_ref';
-import getProjectPath from '../queries/getProjectPath.query.graphql';
+import projectPathQuery from '../queries/project_path.query.graphql';
 
 export default {
   mixins: [getRefMixin],
   apollo: {
     projectPath: {
-      query: getProjectPath,
+      query: projectPathQuery,
     },
   },
   data() {
@@ -21,7 +21,7 @@ export default {
 
       return this.$apollo
         .query({
-          query: getFiles,
+          query: filesQuery,
           variables: {
             projectPath: this.projectPath,
             ref: this.ref,

@@ -1,13 +1,25 @@
 <script>
-import { __, sprintf } from '~/locale';
-import Flash from '~/flash';
+import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
-import issuableMixin from '~/vue_shared/mixins/issuable';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
+import { mapGetters } from 'vuex';
 
 export default {
+  issue: 'issue',
+  locked: {
+    icon: 'lock',
+    class: 'value',
+    iconClass: 'is-active',
+    displayText: __('Locked'),
+  },
+  unlocked: {
+    class: ['no-value hide-collapsed'],
+    icon: 'lock-open',
+    iconClass: '',
+    displayText: __('Unlocked'),
+  },
   components: {
     editForm,
     Icon,
@@ -17,35 +29,28 @@ export default {
     tooltip,
   },
 
-  mixins: [issuableMixin],
-
   props: {
-    isLocked: {
-      required: true,
-      type: Boolean,
-    },
-
     isEditable: {
       required: true,
       type: Boolean,
     },
-
-    mediator: {
-      required: true,
-      type: Object,
-      validator(mediatorObject) {
-        return mediatorObject.service && mediatorObject.service.update && mediatorObject.store;
-      },
-    },
   },
-
+  data() {
+    return {
+      isLockDialogOpen: false,
+    };
+  },
   computed: {
-    lockIcon() {
-      return this.isLocked ? 'lock' : 'lock-open';
+    ...mapGetters(['getNoteableData']),
+    issuableDisplayName() {
+      const isInIssuePage = this.getNoteableData.targetType === this.$options.issue;
+      return isInIssuePage ? __('issue') : __('merge request');
     },
-
-    isLockDialogOpen() {
-      return this.mediator.store.isLockDialogOpen;
+    isLocked() {
+      return this.getNoteableData.discussion_locked;
+    },
+    lockStatus() {
+      return this.isLocked ? this.$options.locked : this.$options.unlocked;
     },
 
     tooltipLabel() {
@@ -64,27 +69,8 @@ export default {
   methods: {
     toggleForm() {
       if (this.isEditable) {
-        this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
+        this.isLockDialogOpen = !this.isLockDialogOpen;
       }
-    },
-    updateLockedAttribute(locked) {
-      this.mediator.service
-        .update(this.issuableType, {
-          discussion_locked: locked,
-        })
-        .then(() => window.location.reload())
-        .catch(() =>
-          Flash(
-            sprintf(
-              __(
-                'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
-              ),
-              {
-                issuableDisplayName: this.issuableDisplayName,
-              },
-            ),
-          ),
-        );
     },
   },
 };
@@ -96,12 +82,13 @@ export default {
       v-tooltip
       :title="tooltipLabel"
       class="sidebar-collapsed-icon"
+      data-testid="sidebar-collapse-icon"
       data-container="body"
       data-placement="left"
       data-boundary="viewport"
       @click="toggleForm"
     >
-      <icon :name="lockIcon" class="sidebar-item-icon is-active" />
+      <icon :name="lockStatus.icon" class="sidebar-item-icon is-active" />
     </div>
 
     <div class="title hide-collapsed">
@@ -110,6 +97,7 @@ export default {
         v-if="isEditable"
         class="float-right lock-edit"
         href="#"
+        data-testid="edit-link"
         data-track-event="click_edit_button"
         data-track-label="right_sidebar"
         data-track-property="lock_issue"
@@ -122,18 +110,19 @@ export default {
     <div class="value sidebar-item-value hide-collapsed">
       <edit-form
         v-if="isLockDialogOpen"
+        data-testid="edit-form"
         :is-locked="isLocked"
-        :update-locked-attribute="updateLockedAttribute"
-        :issuable-type="issuableType"
+        :issuable-display-name="issuableDisplayName"
       />
 
-      <div v-if="isLocked" class="value sidebar-item-value">
-        <icon :size="16" name="lock" class="sidebar-item-icon inline is-active" />
-        {{ __('Locked') }}
-      </div>
-
-      <div v-else class="no-value sidebar-item-value hide-collapsed">
-        <icon :size="16" name="lock-open" class="sidebar-item-icon inline" /> {{ __('Unlocked') }}
+      <div data-testid="lock-status" class="sidebar-item-value" :class="lockStatus.class">
+        <icon
+          :size="16"
+          :name="lockStatus.icon"
+          class="sidebar-item-icon"
+          :class="lockStatus.iconClass"
+        />
+        {{ lockStatus.displayText }}
       </div>
     </div>
   </div>

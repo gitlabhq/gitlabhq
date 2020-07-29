@@ -1,0 +1,5 @@
+---
+title: Allow an issue or MR to be locked and unlocked without page refresh
+merge_request: 36773
+author:
+type: changed

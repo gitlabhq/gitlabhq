@@ -1,0 +1,5 @@
+---
+title: Fix HTML not rendering in last commit widget
+merge_request: 38047
+author:
+type: fixed
