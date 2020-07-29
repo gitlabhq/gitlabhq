@@ -1,5 +1,0 @@
----
-title: Skip mass unconfirming users when send_user_confirmation_email setting is off
-merge_request: 38024
-author:
-type: changed

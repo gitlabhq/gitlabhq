@@ -1,5 +1,0 @@
----
-title: Provide better git error message when the user is unconfirmed
-merge_request: 37944
-author:
-type: fixed
