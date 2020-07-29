@@ -95,7 +95,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 
 | Option | Description |
 | ------ | ----------- |
-| Geo    | Geo allows you to replicate your GitLab instance to other geographical locations. Redirects to **Admin Area >** **{location-dot}** **Geo >** **{settings}** **Settings**, and will no longer be available at **Admin Area >** **{settings}** **Settings >** **{location-dot}** **Geo** in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/36896). |
+| Geo    | Geo allows you to replicate your GitLab instance to other geographical locations. Redirects to **Admin Area >** **{location-dot}** **Geo > Settings**, and will no longer be available at **Admin Area > Settings >** **{location-dot}** **Geo** in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/36896). |
 
 ## Preferences
 

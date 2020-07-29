@@ -88,7 +88,7 @@ service account can be found at Google's documentation for
 [Authenticating from a service account](https://cloud.google.com/iap/docs/authentication-howto#authenticating_from_a_service_account).
 
 1. Navigate to the [Integrations page](overview.md#accessing-integrations) at
-   **{settings}** **Settings > Integrations**.
+   **Settings > Integrations**.
 1. Click the **Prometheus** service.
 1. For **API URL**, provide the domain name or IP address of your server, such as
    `http://prometheus.example.com/` or `http://192.0.2.1/`.

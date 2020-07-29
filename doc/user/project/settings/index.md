@@ -141,7 +141,7 @@ in project listings.
 
 To archive a project:
 
-1. Navigate to your project's **{settings}** **Settings > General**.
+1. Navigate to your project's **Settings > General**.
 1. Under **Advanced**, click **Expand**.
 1. In the **Archive project** section, click the **Archive project** button.
 1. Confirm the action when asked to.
@@ -165,7 +165,7 @@ To find an archived project:
 
 Next, to unarchive the project:
 
-1. Navigate to your project's **{settings}** **Settings > General**.
+1. Navigate to your project's **Settings > General**.
 1. Under **Advanced**, click **Expand**.
 1. In the **Unarchive project** section, click the **Unarchive project** button.
 1. Confirm the action when asked to.
@@ -182,7 +182,7 @@ project via a browser) and its place on the file disk where GitLab is installed.
 
 To rename a repository:
 
-1. Navigate to your project's **{settings}** **Settings > General**.
+1. Navigate to your project's **Settings > General**.
 1. Under **Advanced**, click **Expand**.
 1. Under "Rename repository", change the "Path" to your liking.
 1. Hit **Rename project**.
@@ -205,7 +205,7 @@ You can transfer an existing project into a [group](../../group/index.md) if:
 
 To transfer a project:
 
-1. Navigate to your project's **{settings}** **Settings > General**.
+1. Navigate to your project's **Settings > General**.
 1. Under **Advanced**, click **Expand**.
 1. Under "Transfer project", choose the namespace you want to transfer the
    project to.
@@ -226,7 +226,7 @@ Only project owners and admins have [permissions](../../permissions.md#project-m
 
 To remove a project:
 
-1. Navigate to your project, and select **{settings}** **Settings > General > Advanced**.
+1. Navigate to your project, and select **Settings > General > Advanced**.
 1. In the Remove project section, click the **Remove project** button.
 1. Confirm the action when asked to.
 
@@ -249,7 +249,7 @@ The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org
 
 To restore a project marked for deletion:
 
-1. Navigate to your project, and select **{settings}** **Settings > General > Advanced**.
+1. Navigate to your project, and select **Settings > General > Advanced**.
 1. In the Restore project section, click the **Restore project** button.
 
 #### Removing a fork relationship

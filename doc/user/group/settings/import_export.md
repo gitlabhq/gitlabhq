@@ -21,7 +21,7 @@ See also:
 
 To enable GitLab import/export:
 
-1. Navigate to **Admin Area >** **{settings}** **Settings > Visibility and access controls**.
+1. Navigate to **Admin Area > Settings > Visibility and access controls**.
 1. Scroll to **Import sources**
 1. Enable desired **Import sources**
 
@@ -63,7 +63,7 @@ For more details on the specific data persisted in a group export, see the
 
 1. Navigate to your group's homepage.
 
-1. Click **{settings}** **Settings** in the sidebar.
+1. Click **Settings** in the sidebar.
 
 1. In the **Advanced** section, click the **Export Group** button.
 

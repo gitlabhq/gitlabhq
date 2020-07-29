@@ -50,7 +50,7 @@ If you plan to only run `terraform plan` and `terraform apply` commands from you
 local machine, this is a simple way to get started:
 
 1. Create your project on your GitLab instance.
-1. Navigate to **{settings}** **Settings > General** and note your **Project name**
+1. Navigate to **Settings > General** and note your **Project name**
    and **Project ID**.
 1. Define the Terraform backend in your Terraform project to be:
 

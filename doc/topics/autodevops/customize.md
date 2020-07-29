@@ -381,7 +381,7 @@ these prefixed variables available to the deployed application as environment va
 
 To configure your application variables:
 
-1. Go to your project's **{settings}** **Settings > CI/CD**, then expand the
+1. Go to your project's **Settings > CI/CD**, then expand the
    **Variables** section.
 
 1. Create a CI/CD variable, ensuring the key is prefixed with

@@ -338,7 +338,7 @@ Examples:
 To set a WIP limit for a list:
 
 1. Navigate to a Project or Group board of which you're a member.
-1. Click the Settings icon (**{settings}**) in a list's header.
+1. Click the settings icon in a list's header.
 1. Next to **Work In Progress Limit**, click **Edit**.
 1. Enter the maximum number of issues.
 1. Press <kbd>Enter</kbd> to save.

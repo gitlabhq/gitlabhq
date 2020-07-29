@@ -57,7 +57,7 @@ To deploy the Status Page to AWS S3 you need to add the Status Page project & co
 
 Once the CI/CD variables are set, you'll need to set up the Project you want to use for Incident issues:
 
-1. To view the [Operations Settings](../../user/project/settings/#operations-settings) page, navigate to **{settings}** **Settings > Operations > Status Page**.
+1. To view the [Operations Settings](../../user/project/settings/#operations-settings) page, navigate to **Settings > Operations > Status Page**.
 1. Fill in your cloud provider's credentials and make sure the **Active** checkbox is checked.
 1. Click **Save changes**.
 

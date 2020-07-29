@@ -46,7 +46,7 @@ navigation bar contains:
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34779) in GitLab 12.5.)
 - **Create dashboard** **{file-addition-solid}** - Create a
   [new custom dashboard for your project](dashboards/index.md#add-a-new-dashboard-to-your-project).
-- **Metrics settings** **{settings}** - Configure the
+- **Metrics settings** - Configure the
   [settings for this dashboard](dashboards/index.md#manage-the-metrics-dashboard-settings).
 
 ## Populate your metrics dashboard
@@ -60,7 +60,7 @@ helps quickly create a deployment:
 1. Ensure that, in addition to Prometheus, you also have Runner and Ingress
    installed.
 1. After installing Ingress, copy its endpoint.
-1. Navigate to your project's **{settings}** **Settings > CI/CD** page. In the
+1. Navigate to your project's **Settings > CI/CD** page. In the
    **Auto DevOps** section, select a deployment strategy and save your changes.
 1. On the same page, in the **Variables** section, add a variable named
    `KUBE_INGRESS_BASE_DOMAIN` with the value of the Ingress endpoint you

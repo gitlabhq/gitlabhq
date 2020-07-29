@@ -127,7 +127,7 @@ While Auto DevOps is enabled by default, Auto DevOps can be disabled at both
 the instance level (for self-managed instances) and the group level. Complete
 these steps to enable Auto DevOps if it's disabled:
 
-1. Navigate to **{settings}** **Settings > CI/CD > Auto DevOps**, and click **Expand**.
+1. Navigate to **Settings > CI/CD > Auto DevOps**, and click **Expand**.
 1. Select **Default to Auto DevOps pipeline** to display more options.
 1. In **Deployment strategy**, select your desired [continuous deployment strategy](index.md#deployment-strategy)
    to deploy the application to production after the pipeline successfully runs on the `master` branch.
@@ -221,7 +221,7 @@ takes you to the pod's logs page.
 TIP: **Tip:**
 The example shows only one pod hosting the application at the moment, but you can add
 more pods by defining the [`REPLICAS` variable](customize.md#environment-variables)
-in **{settings}** **Settings > CI/CD > Environment variables**.
+in **Settings > CI/CD > Environment variables**.
 
 ### Work with branches
 

@@ -51,7 +51,7 @@ from a Grafana instance, the data source must:
 ## Setting up the Grafana integration
 
 1. In Grafana, [generate an Admin-level API Token](https://grafana.com/docs/grafana/latest/http_api/auth/#create-api-token).
-1. In your GitLab project, navigate to **{settings}** **Settings > Operations > Grafana Authentication**.
+1. In your GitLab project, navigate to **Settings > Operations > Grafana Authentication**.
 1. To enable the integration, check the **Active** checkbox.
 1. For **Grafana URL**, enter the base URL of the Grafana instance.
 1. For **API Token**, enter the Admin API Token you just generated.

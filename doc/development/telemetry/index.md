@@ -81,27 +81,19 @@ Our different tracking tools allows us to track different types of events. The e
 
 | Event Type          | Snowplow JS (Frontend) | Snowplow Ruby (Backend) | Usage Ping          | Database import     | Log system          |
 |---------------------|------------------------|-------------------------|---------------------|---------------------|---------------------|
-| Database counts     | **{dotted-circle}**    | **{dotted-circle}**     | **{check-circle}**  | **{check-circle}**  | **{dotted-circle}** |
 | Pageview events     | **{check-circle}**     | **{check-circle}**      | **{dotted-circle}** | **{dotted-circle}** | **{dotted-circle}** |
 | UI events           | **{check-circle}**     | **{dotted-circle}**     | **{dotted-circle}** | **{dotted-circle}** | **{dotted-circle}** |
 | CRUD and API events | **{dotted-circle}**    | **{check-circle}**      | **{dotted-circle}** | **{dotted-circle}** | **{dotted-circle}** |
-| Event funnels       | **{check-circle}**     | **{check-circle}**      | **{dotted-circle}** | **{dotted-circle}** | **{dotted-circle}** |
-| PostgreSQL Data     | **{dotted-circle}**    | **{dotted-circle}**     | **{dotted-circle}** | **{check-circle}**  | **{dotted-circle}** |
-| Logs                | **{dotted-circle}**    | **{dotted-circle}**     | **{dotted-circle}** | **{dotted-circle}** | **{check-circle}**  |
-| External services   | **{dotted-circle}**    | **{dotted-circle}**     | **{dotted-circle}** | **{dotted-circle}** | **{dotted-circle}** |
-
-### Database counts
-
-- Number of Projects created by unique users
-- Number of users logged in the past 28 day
-
-Database counts are row counts for different tables in an instance’s database. These are SQL count queries which have been filtered, grouped, or aggregated which provide high level usage data. The full list of available tables can be found in [structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql).
+| Database records    | **{dotted-circle}**    | **{dotted-circle}**     | **{check-circle}**  | **{check-circle}**  | **{dotted-circle}** |
+| Instance logs         | **{dotted-circle}**    | **{dotted-circle}**     | **{dotted-circle}** | **{dotted-circle}** | **{check-circle}**  |
+| Instance settings   | **{dotted-circle}**    | **{dotted-circle}**     | **{check-circle}**  | **{dotted-circle}** | **{dotted-circle}** |
+| Instance integrations | **{dotted-circle}**  | **{dotted-circle}**     | **{check-circle}**  | **{dotted-circle}** | **{dotted-circle}** |
 
 ### Pageview events
 
 - Number of sessions that visited the /dashboard/groups page
 
-### UI Events
+### UI events
 
 - Number of sessions that clicked on a button or link
 - Number of sessions that closed a modal
@@ -116,22 +108,21 @@ UI events are any interface-driven actions from the browser including click data
 
 These are backend events that include the creation, read, update, deletion of records, and other events that might be triggered from layers other than those available in the interface.
 
-### Event funnels
-
-- Number of sessions that performed action A, B, then C
-- Conversion rate from step A to B
-
-### PostgreSQL data
+### Database records
 
 These are raw database records which can be explored using business intelligence tools like Sisense. The full list of available tables can be found in [structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql).
 
-### Logs
+### Instance logs
 
 These are raw logs such as the [Production logs](../../administration/logs.md#production_jsonlog), [API logs](../../administration/logs.md#api_jsonlog), or [Sidekiq logs](../../administration/logs.md#sidekiqlog). See the [overview of Logging Infrastructure](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#logging-infrastructure-overview) for more details.
 
-### External services
+### Instance settings
 
-These are external services a GitLab instance interacts with such as an [external storage provider](../../administration/static_objects_external_storage.md) or an [external container registry](../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint). These services must be able to send data back into a GitLab instance for data to be tracked.
+These are settings of your instance such as the instance's Git version and if certain features are enabled such as `container_registry_enabled`.
+
+### Instance integrations
+
+These are integrations your GitLab instance interacts with such as an [external storage provider](../../administration/static_objects_external_storage.md) or an [external container registry](../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint). These services must be able to send data back into a GitLab instance for data to be tracked.
 
 ## Telemetry systems overview
 

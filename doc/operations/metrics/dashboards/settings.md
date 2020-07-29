@@ -21,7 +21,7 @@ time zone, but you can display dates and times in UTC format. To change the
 time zone:
 
 1. Sign in as a user with Manage Project Operations [permissions](../../../user/permissions.md).
-1. Navigate to **{settings}** **Settings > Operations**, and scroll to
+1. Navigate to **Settings > Operations**, and scroll to
    **Metrics Dashboard**.
 1. In the **Dashboard timezone** select box, select *User's local timezone*
    or *UTC*:
@@ -37,7 +37,7 @@ You can add a button on your monitoring dashboard that links directly to your
 existing external dashboards:
 
 1. Sign in as a user with Manage Project Operations [permissions](../../../user/permissions.md).
-1. Navigate to **{settings}** **Settings > Operations**, and scroll to
+1. Navigate to **Settings > Operations**, and scroll to
    **Metrics Dashboard**.
 1. In **External dashboard URL**, provide the URL to your external dashboard:
 

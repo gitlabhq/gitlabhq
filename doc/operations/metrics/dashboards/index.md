@@ -104,7 +104,7 @@ To manage the settings for your metrics dashboard:
 1. Sign in as a user with project Maintainer or Admin
    [permissions](../../../user/permissions.md#project-members-permissions).
 1. Navigate to your dashboard at **{cloud-gear}** **Operations > Metrics**.
-1. In the top-right corner of your dashboard, click **{settings}** **Metrics Settings**:
+1. In the top-right corner of your dashboard, click **Metrics Settings**:
 
    ![Monitoring Dashboard actions menu with create new item](img/metrics_settings_button_v13_2.png)
 

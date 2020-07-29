@@ -197,7 +197,7 @@ To set a deploy freeze window in the UI, complete these steps:
 
 1. Sign in to GitLab as a user with project Maintainer [permissions](../../permissions.md).
 1. Navigate to **Project overview**.
-1. In the left navigation menu, navigate to **{settings}** **Settings > CI / CD**.
+1. In the left navigation menu, navigate to **Settings > CI / CD**.
 1. Scroll to **Deploy freezes**.
 1. Click **Expand** to see the deploy freeze table.
 1. Click **Add deploy freeze** to open the deploy freeze modal.

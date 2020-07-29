@@ -208,7 +208,7 @@ If you want all pending non-HEAD pipelines on branches to auto-cancel each time
 a new pipeline is created, such as after a Git push or manually from the UI,
 you can enable this in the project settings:
 
-1. Go to **{settings}** **Settings > CI / CD**.
+1. Go to **Settings > CI / CD**.
 1. Expand **General Pipelines**.
 1. Check the **Auto-cancel redundant, pending pipelines** checkbox.
 1. Click **Save changes**.
@@ -227,7 +227,7 @@ newer one, which may not be what you want.
 
 To avoid this scenario:
 
-1. Go to **{settings}** **Settings > CI / CD**.
+1. Go to **Settings > CI / CD**.
 1. Expand **General pipelines**.
 1. Check the **Skip outdated deployment jobs** checkbox.
 1. Click **Save changes**.

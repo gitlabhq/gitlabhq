@@ -29,8 +29,8 @@ To obtain credentials for setting up a generic alerts integration:
 
 - Sign in to GitLab as a user with maintainer [permissions](../../permissions.md) for a project.
 - Navigate to the **Operations** page for your project, depending on your installed version of GitLab:
-  - *In GitLab versions 13.1 and greater,* navigate to **{settings}** **Settings > Operations** in your project.
-  - *In GitLab versions prior to 13.1,* navigate to **{settings}** **Settings > Integrations** in your project. GitLab will display a banner encouraging you to enable the Alerts endpoint in **{settings}** **Settings > Operations** instead.
+  - *In GitLab versions 13.1 and greater,* navigate to **Settings > Operations** in your project.
+  - *In GitLab versions prior to 13.1,* navigate to **Settings > Integrations** in your project. GitLab will display a banner encouraging you to enable the Alerts endpoint in **Settings > Operations** instead.
 - Click **Alerts endpoint**.
 - Toggle the **Active** alert setting to display the **URL** and **Authorization Key** for the webhook configuration.
 
@@ -101,7 +101,7 @@ After a [project maintainer or owner](#setting-up-generic-alerts)
 test alert to confirm your integration works properly.
 
 1. Sign in as a user with Developer or greater [permissions](../../../user/permissions.md).
-1. Navigate to **{settings}** **Settings > Operations** in your project.
+1. Navigate to **Settings > Operations** in your project.
 1. Click **Alerts endpoint** to expand the section.
 1. Enter a sample payload in **Alert test payload** (valid JSON is required).
 1. Click **Test alert payload**.

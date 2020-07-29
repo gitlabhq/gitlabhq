@@ -118,7 +118,7 @@ You can also enable shared Runners for individual projects.
 
 To enable shared Runners:
 
-1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Click **Allow shared Runners**.
 
 #### Disable shared Runners
@@ -128,12 +128,12 @@ You must have Owner permissions for the project<!-- or group-->.
 
 To disable shared Runners for a project:
 
-1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. In the **Shared Runners** area, click **Disable shared Runners**.
 
 <!--To disable shared Runners for a group:
 
-1. Go to the group's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the group's **Settings > CI/CD** and expand the **Runners** section.
 1. In the **Shared Runners** area, click **Disable shared Runners globally**.
 1. Optionally, to allow shared Runners to be enabled for individual projects or subgroups,
    click **Allow projects/subgroups to override the global setting**.
@@ -155,7 +155,7 @@ To create a group Runner:
 
 1. [Install Runner](https://docs.gitlab.com/runner/install/).
 1. Go to the group you want to make the Runner work for.
-1. Go to **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to **Settings > CI/CD** and expand the **Runners** section.
 1. Note the URL and token.
 1. [Register the Runner](https://docs.gitlab.com/runner/register/).
 
@@ -168,7 +168,7 @@ You can do this for your self-managed GitLab instance or for GitLab.com.
 You must have [Owner permissions](../../user/permissions.md#group-members-permissions) for the group.
 
 1. Go to the group where you want to view the Runners.
-1. Go to **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to **Settings > CI/CD** and expand the **Runners** section.
 1. The following fields are displayed.
 
    | Attribute    | Description |
@@ -191,7 +191,7 @@ You can pause or remove a group Runner for your self-managed GitLab instance or 
 You must have [Owner permissions](../../user/permissions.md#group-members-permissions) for the group.
 
 1. Go to the group you want to remove or pause the Runner for.
-1. Go to **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to **Settings > CI/CD** and expand the **Runners** section.
 1. Click **Pause** or **Remove Runner**.
    - If you pause a group Runner that is used by multiple projects, the Runner pauses for all projects.
    - From the group view, you cannot remove a Runner that is assigned to more than one project.
@@ -223,7 +223,7 @@ You must have [Owner permissions](../../user/permissions.md#project-members-perm
 To create a specific Runner:
 
 1. [Install Runner](https://docs.gitlab.com/runner/install/).
-1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Note the URL and token.
 1. [Register the Runner](https://docs.gitlab.com/runner/register/).
 
@@ -237,7 +237,7 @@ enable a specific Runner to apply to additional projects.
 
 To enable or disable a specific Runner for a project:
 
-1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Click **Enable for this project** or **Disable for this project**.
 
 #### Prevent a specific Runner from being enabled for other projects
@@ -248,7 +248,7 @@ but can also be changed later.
 
 To lock or unlock a Runner:
 
-1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Find the Runner you want to lock or unlock. Make sure it's enabled.
 1. Click the pencil button.
 1. Check the **Lock to current projects** option.
@@ -317,7 +317,7 @@ and ignores other jobs.
 
 To protect or unprotect a Runner:
 
-1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Find the Runner you want to protect or unprotect. Make sure it's enabled.
 1. Click the pencil button.
 1. Check the **Protected** option.
@@ -346,7 +346,7 @@ may then be used to obtain the values of secret variables or to clone project co
 
 To reset the token:
 
-1. Go to the project's **{settings}** **Settings > CI/CD**.
+1. Go to the project's **Settings > CI/CD**.
 1. Expand the **General pipelines settings** section.
 1. Find the **Runner token** form field and click the **Reveal value** button.
 1. Delete the value and save the form.
@@ -386,7 +386,7 @@ the GitLab instance. To determine this:
 To can find the IP address of a Runner for a specific project,
 you must have Owner [permissions](../../user/permissions.md#project-members-permissions) for the project.
 
-1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. On the details page you should see a row for **IP Address**.
 
 ![specific Runner IP address](img/specific_runner_ip_address.png)
@@ -409,7 +409,7 @@ To change this, you must have Owner [permissions](../../user/permissions.md#proj
 
 To make a Runner pick untagged jobs:
 
-1. Go to the project's **{settings}** **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Find the Runner you want to pick untagged jobs and make sure it's enabled.
 1. Click the pencil button.
 1. Check the **Run untagged jobs** option.

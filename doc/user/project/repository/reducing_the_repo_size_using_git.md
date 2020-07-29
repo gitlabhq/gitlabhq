@@ -214,7 +214,7 @@ references to these objects. You can use
 To clean up a repository:
 
 1. Go to the project for the repository.
-1. Navigate to **{settings}** **Settings > Repository**.
+1. Navigate to **Settings > Repository**.
 1. Upload a list of objects. For example, a `commit-map` file created by `git filter-repo` which is located in the
    `filter-repo` directory.
 

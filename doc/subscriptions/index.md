@@ -518,8 +518,8 @@ CI pipeline minutes are the execution time for your [pipelines](../ci/pipelines/
 
 Quotas apply to:
 
-- Groups, where the minutes are shared across all members of the group, its subgroups, and nested projects. To view the group's usage, navigate to the group, then **{settings}** **Settings** > **Usage Quotas**.
-- Your personal account, where the minutes are available for your personal projects. To view and buy personal minutes, click your avatar, then **{settings}** **Settings** > **[Usage Quotas](https://gitlab.com/profile/usage_quotas#pipelines-quota-tab)**.
+- Groups, where the minutes are shared across all members of the group, its subgroups, and nested projects. To view the group's usage, navigate to the group, then **Settings > Usage Quotas**.
+- Your personal account, where the minutes are available for your personal projects. To view and buy personal minutes, click your avatar, then **Settings > [Usage Quotas](https://gitlab.com/profile/usage_quotas#pipelines-quota-tab)**.
 
 Only pipeline minutes for GitLab shared runners are restricted. If you have a specific runner set up for your projects, there is no limit to your build time on GitLab.com.
 
@@ -539,11 +539,11 @@ main quota. You can find pricing for additional CI/CD minutes in the [GitLab Cus
 
 To purchase additional minutes for your group on GitLab.com:
 
-1. From your group, go to **{settings}** **Settings > Usage Quotas**.
+1. From your group, go to **Settings > Usage Quotas**.
 1. Select **Buy additional minutes** and you will be directed to the Customers Portal.
 1. Locate the subscription card that's linked to your group on GitLab.com, click **Buy more CI minutes**, and complete the details about the transaction.
 1. Once we have processed your payment, the extra CI minutes will be synced to your group namespace.
-1. To confirm the available CI minutes, go to your group, then **{settings}** **Settings > Usage Quotas**.
+1. To confirm the available CI minutes, go to your group, then **Settings > Usage Quotas**.
 
    The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any minutes rolled over from last month.
 

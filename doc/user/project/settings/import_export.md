@@ -24,7 +24,7 @@ See also:
 
 To set up a project import/export:
 
-  1. Navigate to **Admin Area >** **{settings}** **Settings > Visibility and access controls**.
+  1. Navigate to **Admin Area > Settings > Visibility and access controls**.
   1. Scroll to **Import sources**
   1. Enable desired **Import sources**
 
@@ -131,7 +131,7 @@ For more details on the specific data persisted in a project export, see the
 
 1. Go to your project's homepage.
 
-1. Click **{settings}** **Settings** in the sidebar.
+1. Click **Settings** in the sidebar.
 
 1. Scroll down to find the **Export project** button:
 

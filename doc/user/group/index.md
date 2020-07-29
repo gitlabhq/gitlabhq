@@ -219,7 +219,7 @@ By default, every group inherits the branch protection set at the global level.
 
 To change this setting for a specific group:
 
-1. Go to the group's **{settings}** **Settings > General** page.
+1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
 1. Select the desired option in the **Default branch protection** dropdown list.
 1. Click **Save changes**.
@@ -472,7 +472,7 @@ username, you can create a new group and transfer projects to it.
 
 To remove a group and its contents:
 
-1. Navigate to your group's **{settings}** **Settings > General** page.
+1. Navigate to your group's **Settings > General** page.
 1. Expand the **Path, transfer, remove** section.
 1. In the Remove group section, click the **Remove group** button.
 1. Confirm the action when asked to.
@@ -488,7 +488,7 @@ This action either:
 
 To restore a group that is marked for deletion:
 
-1. Navigate to your group's **{settings}** **Settings > General** page.
+1. Navigate to your group's **Settings > General** page.
 1. Expand the **Path, transfer, remove** section.
 1. In the Restore group section, click the **Restore group** button.
 

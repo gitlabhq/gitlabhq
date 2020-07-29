@@ -185,7 +185,7 @@ instance level.
 
 If enabling, check that your project does not have a `.gitlab-ci.yml`, or if one exists, remove it.
 
-1. Go to your project's **{settings}** **Settings > CI/CD > Auto DevOps**.
+1. Go to your project's **Settings > CI/CD > Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox to enable it.
 1. (Optional, but recommended) When enabling, you can add in the
    [base domain](#auto-devops-base-domain) Auto DevOps uses to
@@ -207,7 +207,7 @@ is specifically enabled or disabled on the subgroup or project.
 
 To enable or disable Auto DevOps at the group level:
 
-1. Go to your group's **{settings}** **Settings > CI/CD > Auto DevOps** page.
+1. Go to your group's **Settings > CI/CD > Auto DevOps** page.
 1. Select the **Default to Auto DevOps pipeline** checkbox to enable it.
 1. Click **Save changes** for the changes to take effect.
 
@@ -227,7 +227,7 @@ Auto DevOps at the group and project level, respectively.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
 
 You can change the deployment strategy used by Auto DevOps by going to your
-project's **{settings}** **Settings > CI/CD > Auto DevOps**. The following options
+project's **Settings > CI/CD > Auto DevOps**. The following options
 are available:
 
 - **Continuous deployment to production**: Enables [Auto Deploy](stages.md#auto-deploy)

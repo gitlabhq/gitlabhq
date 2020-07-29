@@ -25,7 +25,7 @@ You can create as many deploy tokens as you like from the settings of your proje
 
 1. Log in to your GitLab account.
 1. Go to the project (or group) you want to create Deploy Tokens for.
-1. Go to **{settings}** **Settings** > **Repository**.
+1. Go to **Settings > Repository**.
 1. Click on "Expand" on **Deploy Tokens** section.
 1. Choose a name, expiry date (optional), and username (optional) for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-deploy-token).

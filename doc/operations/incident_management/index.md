@@ -16,7 +16,7 @@ such as setting up Prometheus alerts, displaying metrics, and sending notificati
 You can enable or disable Incident Management features in the GitLab user interface
 to create issues when alerts are triggered:
 
-1. Navigate to **{settings}** **Settings > Operations > Incidents** and expand
+1. Navigate to **Settings > Operations > Incidents** and expand
    **Incidents**:
 
    ![Incident Management Settings](img/incident_management_settings.png)
@@ -58,7 +58,7 @@ for each PagerDuty incident. This configuration requires you to make changes
 in both PagerDuty and GitLab:
 
 1. Sign in as a user with Maintainer [permissions](../../user/permissions.md).
-1. Navigate to **{settings}** **Settings > Operations > Incidents** and expand **Incidents**.
+1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**.
 1. Select the **PagerDuty integration** tab:
 
    ![PagerDuty incidents integration](img/pagerduty_incidents_integration_13_3.png)

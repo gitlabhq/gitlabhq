@@ -119,7 +119,7 @@ Alternatively, you can **require**
 
 To add or edit the default merge request approval rule:
 
-1. Navigate to your project's **{settings}** **Settings > General** and expand **Merge request approvals**.
+1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
 
 1. Click **Add approval rule**, or **Edit**.
    - Add or change the **Rule name**.
@@ -233,7 +233,7 @@ or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
 ### Merge request approvals project settings
 
 The project settings for Merge request approvals are found by going to
-**{settings}** **Settings > General** and expanding **Merge request approvals**.
+**Settings > General** and expanding **Merge request approvals**.
 
 #### Prevent overriding default approvals
 

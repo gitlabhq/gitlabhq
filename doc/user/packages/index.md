@@ -93,7 +93,7 @@ see the [administration documentation](../../administration/packages/index.md).
 
 You can also remove the Package Registry for your project specifically:
 
-1. In your project, go to **{settings}** **Settings > General**.
+1. In your project, go to **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section and disable the
    **Packages** feature.
 1. Click **Save changes**.

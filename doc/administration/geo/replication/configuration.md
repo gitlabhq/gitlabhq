@@ -238,7 +238,7 @@ You can login to the **secondary** node with the same credentials as used for th
 Using Hashed Storage significantly improves Geo replication. Project and group
 renames no longer require synchronization between nodes.
 
-1. Visit the **primary** node's **Admin Area >** **{settings}** **Settings > Repository**
+1. Visit the **primary** node's **Admin Area > Settings > Repository**
    (`/admin/application_settings/repository`) in your browser.
 1. In the **Repository storage** section, check **Use hashed storage paths for newly created and renamed projects**.
 
@@ -255,7 +255,7 @@ on the **secondary** node.
 ### Step 6. Enable Git access over HTTP/HTTPS
 
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
-method to be enabled. Navigate to **Admin Area >** **{settings}** **Settings**
+method to be enabled. Navigate to **Admin Area > Settings**
 (`/admin/application_settings/general`) on the **primary** node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
 

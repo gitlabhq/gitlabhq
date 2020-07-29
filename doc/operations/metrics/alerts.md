@@ -37,7 +37,7 @@ To remove the alert, click back on the alert icon for the desired metric, and cl
 
 For manually configured Prometheus servers, GitLab provides a notify endpoint for
 use with Prometheus webhooks. If you have manual configuration enabled, an
-**Alerts** section is added to **{settings}** **Settings > Integrations > Prometheus**.
+**Alerts** section is added to **Settings > Integrations > Prometheus**.
 This section contains the **URL** and **Authorization Key** you will need. The
 **Reset Key** button will invalidate the key and generate a new one.
 
@@ -75,7 +75,7 @@ Prometheus server to use the
 Alerts can be used to trigger actions, like opening an issue automatically
 (disabled by default since `13.1`). To configure the actions:
 
-1. Navigate to your project's **{settings}** **Settings > Operations > Incidents**.
+1. Navigate to your project's **Settings > Operations > Incidents**.
 1. Enable the option to create issues.
 1. Choose the [issue template](../../user/project/description_templates.md) to create the issue from.
 1. Optionally, select whether to send an email notification to the developers of the project.
