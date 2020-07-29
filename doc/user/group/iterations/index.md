@@ -57,6 +57,13 @@ You need Developer [permissions](../../permissions.md) or higher to edit an iter
 
 To edit an iteration, click the three-dot menu (**{ellipsis_v}**) > **Edit iteration**.
 
+## Add an issue to an iteration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216158) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
+
+To learn how to add an issue to an iteration, see the steps in
+[Managing issues](../../project/issues/managing_issues.md#add-an-issue-to-an-iteration-starter).
+
 ## Disable Iterations **(CORE ONLY)**
 
 GitLab Iterations feature is deployed with a feature flag that is **enabled by default**.

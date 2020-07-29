@@ -17,6 +17,10 @@ module Gitlab
         when :deactivated
           "Your account has been deactivated by your administrator. "\
           "Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}"
+        when :unconfirmed
+          "Your primary email address is not confirmed. "\
+          "Please check your inbox for the confirmation instructions. "\
+          "In case the link is expired, you can request a new confirmation email at #{Rails.application.routes.url_helpers.new_user_confirmation_url}"
         else
           "Your account has been blocked."
         end
@@ -31,6 +35,8 @@ module Gitlab
           :terms_not_accepted
         elsif @user.deactivated?
           :deactivated
+        elsif !@user.confirmed?
+          :unconfirmed
         else
           :blocked
         end

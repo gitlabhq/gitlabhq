@@ -114,8 +114,7 @@ module API
         requires :recaptcha_private_key, type: String, desc: 'Generate private key at http://www.google.com/recaptcha'
       end
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
-      optional :repository_storages, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Storage paths for new projects'
-      optional :repository_storages_weighted, type: Hash, desc: 'Storage paths for new projects with a weighted value between 0 and 100'
+      optional :repository_storages_weighted, type: Hash, coerce_with: Validations::Types::HashOfIntegerValues.coerce, desc: 'Storage paths for new projects with a weighted value ranging from 0 to 100'
       optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to set up Two-factor authentication'
       given require_two_factor_authentication: ->(val) { val } do
         requires :two_factor_grace_period, type: Integer, desc: 'Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication'

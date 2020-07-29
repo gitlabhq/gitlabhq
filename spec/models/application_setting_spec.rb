@@ -106,6 +106,7 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value(false).for(:hashed_storage_enabled) }
 
     it { is_expected.not_to allow_value(101).for(:repository_storages_weighted_default) }
+    it { is_expected.to allow_value('90').for(:repository_storages_weighted_default) }
     it { is_expected.not_to allow_value(-1).for(:repository_storages_weighted_default) }
     it { is_expected.to allow_value(100).for(:repository_storages_weighted_default) }
     it { is_expected.to allow_value(0).for(:repository_storages_weighted_default) }

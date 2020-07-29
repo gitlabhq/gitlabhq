@@ -283,10 +283,6 @@ class ApplicationSetting < ApplicationRecord
 
   validates :allowed_key_types, presence: true
 
-  repository_storages_weighted_attributes.each do |attribute|
-    validates attribute, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
-  end
-
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
       unless Gitlab::VisibilityLevel.options.value?(level)

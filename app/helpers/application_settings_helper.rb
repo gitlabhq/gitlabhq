@@ -262,7 +262,7 @@ module ApplicationSettingsHelper
       :login_recaptcha_protection_enabled,
       :receive_max_input_size,
       :repository_checks_enabled,
-      :repository_storages,
+      :repository_storages_weighted,
       :require_two_factor_authentication,
       :restricted_visibility_levels,
       :rsa_key_restriction,

@@ -451,6 +451,13 @@ module ApplicationSettingImplementation
     invalid = repository_storages_weighted.keys - Gitlab.config.repositories.storages.keys
     errors.add(:repository_storages_weighted, "can't include: %{invalid_storages}" % { invalid_storages: invalid.join(", ") }) unless
       invalid.empty?
+
+    repository_storages_weighted.each do |key, val|
+      next unless val.present?
+
+      errors.add(:"repository_storages_weighted_#{key}", "value must be an integer") unless val.is_a?(Integer)
+      errors.add(:"repository_storages_weighted_#{key}", "value must be between 0 and 100") unless val.between?(0, 100)
+    end
   end
 
   def terms_exist

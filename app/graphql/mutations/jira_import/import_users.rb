@@ -19,10 +19,10 @@ module Mutations
                required: false,
                description: 'The index of the record the import should started at, default 0 (50 records returned)'
 
-      def resolve(project_path:, start_at:)
+      def resolve(project_path:, start_at: 0)
         project = authorized_find!(full_path: project_path)
 
-        service_response = ::JiraImport::UsersImporter.new(context[:current_user], project, start_at).execute
+        service_response = ::JiraImport::UsersImporter.new(context[:current_user], project, start_at.to_i).execute
 
         {
           jira_users: service_response.payload,
