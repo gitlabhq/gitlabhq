@@ -829,10 +829,25 @@ You can play around with the regex and try your version strings on [this regular
 
 ## Troubleshooting
 
-### Useful Maven command line options
+### Review network trace logs
 
-There's some [maven command line options](https://maven.apache.org/ref/current/maven-embedder/cli.html)
-which maybe useful when doing tasks with GitLab CI/CD.
+If you are having issues with the Maven Repository, you may want to review network trace logs.
+
+For example, try to run `mvn deploy` locally with a PAT token and use these options:
+
+```shell
+mvn deploy \
+-Dorg.slf4j.simpleLogger.log.org.apache.maven.wagon.providers.http.httpclient=trace \
+-Dorg.slf4j.simpleLogger.log.org.apache.maven.wagon.providers.http.httpclient.wire=trace
+```
+
+CAUTION: **Caution:**
+When you set these options, all network requests are logged and a large amount of output is generated.
+
+### Useful Maven command-line options
+
+There are some [Maven command-line options](https://maven.apache.org/ref/current/maven-embedder/cli.html)
+that may be useful when performing tasks with GitLab CI/CD.
 
 - File transfer progress can make the CI logs hard to read.
   Option `-ntp,--no-transfer-progress` was added in

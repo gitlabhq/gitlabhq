@@ -34,25 +34,4 @@ RSpec.describe InvitesController do
       expect(flash[:notice]).to be_nil
     end
   end
-
-  describe 'POST #accept' do
-    it 'accepts user' do
-      expect do
-        post :accept, params: { id: token }
-      end.to change { project_members.include?(user) }.from(false).to(true)
-
-      expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:notice]).to include 'You have been granted'
-    end
-  end
-
-  describe 'GET #decline' do
-    it 'declines user' do
-      get :decline, params: { id: token }
-
-      expect { member.reload }.to raise_error ActiveRecord::RecordNotFound
-      expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:notice]).to include 'You have declined the invitation to join'
-    end
-  end
 end

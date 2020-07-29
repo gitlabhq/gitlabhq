@@ -72,7 +72,7 @@ Requests with warnings display `(!)` after their path in the **Request selector*
 The GitLab Performance Bar is disabled by default. To enable it for a given group:
 
 1. Sign in as a user with Administrator [permissions](../../../user/permissions.md).
-1. In the menu bar, click the **{admin}** **Admin Area** icon.
+1. In the menu bar, click **Admin Area**.
 1. Navigate to **{settings}** **Settings > Metrics and profiling**
    (`admin/application_settings/metrics_and_profiling`), and expand the section
    **Profiling - Performance bar**.

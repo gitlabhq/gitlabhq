@@ -103,7 +103,7 @@ describe('JiraImportForm', () => {
 
     it('shows information to the user', () => {
       expect(wrapper.find('p').text()).toBe(
-        'Jira users have been matched with similar GitLab users. This can be overwritten by selecting a GitLab user from the dropdown in the "GitLab username" column. If it wasn\'t possible to match a Jira user with a GitLab user, the dropdown defaults to the user conducting the import.',
+        'Jira users have been imported from the configured Jira instance. They can be mapped by selecting a GitLab user from the dropdown in the "GitLab username" column. When the form appears, the dropdown defaults to the user conducting the import.',
       );
     });
   });

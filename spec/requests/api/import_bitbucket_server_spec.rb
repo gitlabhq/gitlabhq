@@ -96,7 +96,7 @@ RSpec.describe API::ImportBitbucketServer do
         Grape::Endpoint.before_each nil
       end
 
-      it 'returns 400 response due to a blcoked URL' do
+      it 'returns 400 response due to a blocked URL' do
         allow(Gitlab::BitbucketServerImport::ProjectCreator)
         .to receive(:new).with(project_key, repo_slug, anything, project.name, user.namespace, user, anything)
         .and_return(double(execute: project))

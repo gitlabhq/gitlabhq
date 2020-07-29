@@ -4,7 +4,7 @@ type: index
 
 # Admin Area settings **(CORE ONLY)**
 
-As an administrator of a GitLab self-managed instance, you can manage the behavior of your deployment. To do so, select **{admin}** **Admin Area > Settings**.
+As an administrator of a GitLab self-managed instance, you can manage the behavior of your deployment. To do so, select **Admin Area > Settings**.
 
 The admin area is not accessible on GitLab.com, and settings can only be changed by the
 GitLab.com administrators. See the [GitLab.com settings](../../gitlab_com/index.md)
@@ -12,8 +12,7 @@ documentation for all current settings and limits on the GitLab.com instance.
 
 ## General
 
-Access the default page for admin area settings by navigating to
-**{admin}** **Admin Area > Settings > General**:
+Access the default page for admin area settings by navigating to **Admin Area > Settings > General**:
 
 | Option | Description |
 | ------ | ----------- |
@@ -96,7 +95,7 @@ Access the default page for admin area settings by navigating to
 
 | Option | Description |
 | ------ | ----------- |
-| Geo    | Geo allows you to replicate your GitLab instance to other geographical locations. Redirects to **{admin}** **Admin Area >** **{location-dot}** **Geo >** **{settings}** **Settings**, and will no longer be available at **{admin}** **Admin Area >** **{settings}** **Settings >** **{location-dot}** **Geo** in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/36896). |
+| Geo    | Geo allows you to replicate your GitLab instance to other geographical locations. Redirects to **Admin Area >** **{location-dot}** **Geo >** **{settings}** **Settings**, and will no longer be available at **Admin Area >** **{settings}** **Settings >** **{location-dot}** **Geo** in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/36896). |
 
 ## Preferences
 

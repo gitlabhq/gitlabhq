@@ -13333,7 +13333,7 @@ msgstr ""
 msgid "Jira service not configured."
 msgstr ""
 
-msgid "Jira users have been matched with similar GitLab users. This can be overwritten by selecting a GitLab user from the dropdown in the \"GitLab username\" column. If it wasn't possible to match a Jira user with a GitLab user, the dropdown defaults to the user conducting the import."
+msgid "Jira users have been imported from the configured Jira instance. They can be mapped by selecting a GitLab user from the dropdown in the \"GitLab username\" column. When the form appears, the dropdown defaults to the user conducting the import."
 msgstr ""
 
 msgid "Jira-GitLab user mapping template"
@@ -27477,13 +27477,16 @@ msgstr ""
 msgid "You have been granted %{access_level} access to the %{source_name} %{source_type}."
 msgstr ""
 
-msgid "You have been granted %{member_human_access} access to %{label}."
+msgid "You have been granted %{member_human_access} access to %{title} %{name}."
+msgstr ""
+
+msgid "You have been invited"
 msgstr ""
 
 msgid "You have been unsubscribed from this thread."
 msgstr ""
 
-msgid "You have declined the invitation to join %{label}."
+msgid "You have declined the invitation to join %{title} %{name}."
 msgstr ""
 
 msgid "You have imported from this project %{numberOfPreviousImports} times before. Each new import will create duplicate issues."
@@ -27951,6 +27954,9 @@ msgid "archived"
 msgstr ""
 
 msgid "archived:"
+msgstr ""
+
+msgid "as %{role}."
 msgstr ""
 
 msgid "assign yourself"
@@ -28874,10 +28880,10 @@ msgstr ""
 msgid "mrWidget|You can delete the source branch now"
 msgstr ""
 
-msgid "mrWidget|You can merge this merge request manually using the"
+msgid "mrWidget|You can merge after removing denied licenses"
 msgstr ""
 
-msgid "mrWidget|You can only merge once the denied license is removed"
+msgid "mrWidget|You can merge this merge request manually using the"
 msgstr ""
 
 msgid "mrWidget|Your password"
@@ -29230,6 +29236,9 @@ msgid "this document"
 msgstr ""
 
 msgid "to help your contributors communicate effectively!"
+msgstr ""
+
+msgid "to join %{source_name}"
 msgstr ""
 
 msgid "to list"

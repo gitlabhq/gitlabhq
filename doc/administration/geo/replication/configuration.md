@@ -191,7 +191,7 @@ keys must be manually replicated to the **secondary** node.
    gitlab-ctl reconfigure
    ```
 
-1. Visit the **primary** node's **{admin}** **Admin Area >** **{location-dot}** **Geo**
+1. Visit the **primary** node's **Admin Area >** **{location-dot}** **Geo**
    (`/admin/geo/nodes`) in your browser.
 1. Click the **New node** button.
    ![Add secondary node](img/adding_a_secondary_node.png)
@@ -238,7 +238,7 @@ You can login to the **secondary** node with the same credentials as used for th
 Using Hashed Storage significantly improves Geo replication. Project and group
 renames no longer require synchronization between nodes.
 
-1. Visit the **primary** node's **{admin}** **Admin Area >** **{settings}** **Settings > Repository**
+1. Visit the **primary** node's **Admin Area >** **{settings}** **Settings > Repository**
    (`/admin/application_settings/repository`) in your browser.
 1. In the **Repository storage** section, check **Use hashed storage paths for newly created and renamed projects**.
 
@@ -255,7 +255,7 @@ on the **secondary** node.
 ### Step 6. Enable Git access over HTTP/HTTPS
 
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
-method to be enabled. Navigate to **{admin}** **Admin Area >** **{settings}** **Settings**
+method to be enabled. Navigate to **Admin Area >** **{settings}** **Settings**
 (`/admin/application_settings/general`) on the **primary** node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
 
@@ -264,7 +264,7 @@ method to be enabled. Navigate to **{admin}** **Admin Area >** **{settings}** **
 Your **secondary** node is now configured!
 
 You can login to the **secondary** node with the same credentials you used for the
-**primary** node. Visit the **secondary** node's **{admin}** **Admin Area >** **{location-dot}** **Geo**
+**primary** node. Visit the **secondary** node's **Admin Area >** **{location-dot}** **Geo**
 (`/admin/geo/nodes`) in your browser to check if it's correctly identified as a
 **secondary** Geo node and if Geo is enabled.
 

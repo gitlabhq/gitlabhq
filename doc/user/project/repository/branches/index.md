@@ -66,7 +66,7 @@ By default, when you create a new project in GitLab, the initial branch is calle
 For self-managed instances, a GitLab administrator can customize the initial branch name to something
 else. This way, every new project created from then on will start from the custom branch name rather than `master`. To do so:
 
-1. Go to the **{admin}** **Admin Area > Settings > Repository** and expand **Default initial
+1. Go to the **Admin Area > Settings > Repository** and expand **Default initial
    branch name**.
 1. Change the default initial branch to a custom name of your choice.
 1. **Save Changes**.

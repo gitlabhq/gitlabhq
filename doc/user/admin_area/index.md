@@ -65,7 +65,7 @@ The following topics document the **{overview}** **Overview** section of the Adm
 
 You can administer all projects in the GitLab instance from the Admin Area's Projects page.
 
-To access the Projects page, go to **{admin}** **Admin Area >** **{overview}** **Overview > Projects**.
+To access the Projects page, go to **Admin Area >** **{overview}** **Overview > Projects**.
 
 Click the **All**, **Private**, **Internal**, or **Public** tab to list only projects of that
 criteria.
@@ -105,7 +105,7 @@ You can combine the filter options. For example, to list only public projects wi
 
 You can administer all users in the GitLab instance from the Admin Area's Users page.
 
-To access the Users page, go to **{admin}** **Admin Area >** **{overview}** **Overview > Users**.
+To access the Users page, go to **Admin Area >** **{overview}** **Overview > Users**.
 
 To list users matching a specific criteria, click on one of the following tabs on the **Users** page:
 
@@ -157,7 +157,7 @@ reflected in the statistics.
 
 You can administer all groups in the GitLab instance from the Admin Area's Groups page.
 
-To access the Groups page, go to **{admin}** **Admin Area >** **{overview}** **Overview > Groups**.
+To access the Groups page, go to **Admin Area >** **{overview}** **Overview > Groups**.
 
 For each group, the page displays their name, description, size, number of projects in the group,
 number of members, and whether the group is private, internal, or public. To edit a group, click
@@ -176,7 +176,7 @@ To [Create a new group](../group/index.md#create-a-new-group) click **New group*
 
 You can administer all jobs in the GitLab instance from the Admin Area's Jobs page.
 
-To access the Jobs page, go to **{admin}** **Admin Area >** **{overview}** **Overview > Jobs**.
+To access the Jobs page, go to **Admin Area >** **{overview}** **Overview > Jobs**.
 
 All jobs are listed, in descending order of job ID.
 
@@ -201,7 +201,7 @@ For each job, the following details are listed:
 You can administer all Runners in the GitLab instance from the Admin Area's **Runners** page. See
 [GitLab Runner](https://docs.gitlab.com/runner/) for more information on Runner itself.
 
-To access the **Runners** page, go to **{admin}** **Admin Area >** **{overview}** **Overview > Runners**.
+To access the **Runners** page, go to **Admin Area >** **{overview}** **Overview > Runners**.
 
 The **Runners** page features:
 
@@ -247,7 +247,7 @@ You can also edit, pause, or remove each Runner.
 You can list all Gitaly servers in the GitLab instance from the Admin Area's **Gitaly Servers**
 page. For more details, see [Gitaly](../../administration/gitaly/index.md).
 
-To access the **Gitaly Servers** page, go to **{admin}** **Admin Area >** **{overview}** **Overview > Gitaly Servers**.
+To access the **Gitaly Servers** page, go to **Admin Area >** **{overview}** **Overview > Gitaly Servers**.
 
 For each Gitaly server, the following details are listed:
 

@@ -189,11 +189,10 @@ export default {
       <p>
         {{
           __(
-            `Jira users have been matched with similar GitLab users.
-            This can be overwritten by selecting a GitLab user from the dropdown in the "GitLab
+            `Jira users have been imported from the configured Jira instance.
+            They can be mapped by selecting a GitLab user from the dropdown in the "GitLab
             username" column.
-            If it wasn't possible to match a Jira user with a GitLab user, the dropdown defaults to
-            the user conducting the import.`,
+            When the form appears, the dropdown defaults to the user conducting the import.`,
           )
         }}
       </p>

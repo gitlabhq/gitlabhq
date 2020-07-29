@@ -63,6 +63,8 @@ RSpec.describe 'Invites', :aggregate_failures do
 
     it 'shows message user already a member' do
       visit invite_path(group_invite.raw_invite_token)
+
+      expect(page).to have_link(owner.name, href: user_url(owner))
       expect(page).to have_content('However, you are already a member of this group.')
     end
   end
@@ -197,8 +199,10 @@ RSpec.describe 'Invites', :aggregate_failures do
 
         it 'declines application and redirects to dashboard' do
           page.click_link 'Decline'
+
           expect(current_path).to eq(dashboard_projects_path)
           expect(page).to have_content('You have declined the invitation to join group Owned.')
+          expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
         end
       end
 
@@ -209,7 +213,9 @@ RSpec.describe 'Invites', :aggregate_failures do
 
         it 'declines application and redirects to sign in page' do
           expect(current_path).to eq(new_user_session_path)
+
           expect(page).to have_content('You have declined the invitation to join group Owned.')
+          expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
         end
       end
     end
@@ -223,9 +229,13 @@ RSpec.describe 'Invites', :aggregate_failures do
       end
 
       it 'grants access and redirects to group page' do
+        expect(group.users.include?(user)).to be false
+
         page.click_link 'Accept invitation'
+
         expect(current_path).to eq(group_path(group))
         expect(page).to have_content('You have been granted Owner access to group Owned.')
+        expect(group.users.include?(user)).to be true
       end
     end
   end

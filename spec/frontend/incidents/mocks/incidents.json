@@ -3,7 +3,8 @@
     "iid": "15",
     "title": "New: Incident",
     "createdAt": "2020-06-03T15:46:08Z",
-    "assignees": {}
+    "assignees": {},
+    "state": "opened"
   },
   {
     "iid": "14",
@@ -18,18 +19,21 @@
           "webUrl": "https://invalid"
         }
       ]
-    }
+    },
+    "state": "opened"
   },
   {
     "iid": "13",
     "title": "Create issue3",
     "createdAt": "2020-05-19T08:53:55Z",
-    "assignees": {}
+    "assignees": {},
+    "state": "closed"
   },
   {
     "iid": "12",
     "title": "Create issue2",
     "createdAt": "2020-05-18T17:13:35Z",
-    "assignees": {}
+    "assignees": {},
+    "state": "closed"
   }
 ]

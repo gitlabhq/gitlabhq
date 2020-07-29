@@ -4,6 +4,7 @@ class InvitesController < ApplicationController
   include Gitlab::Utils::StrongMemoize
 
   before_action :member
+  before_action :invite_details
   skip_before_action :authenticate_user!, only: :decline
 
   helper_method :member?, :current_user_matches_invite?
@@ -16,9 +17,8 @@ class InvitesController < ApplicationController
 
   def accept
     if member.accept_invite!(current_user)
-      label, path = source_info(member.source)
-
-      redirect_to path, notice: _("You have been granted %{member_human_access} access to %{label}.") % { member_human_access: member.human_access, label: label }
+      redirect_to invite_details[:path], notice: _("You have been granted %{member_human_access} access to %{title} %{name}.") %
+        { member_human_access: member.human_access, title: invite_details[:title], name: invite_details[:name] }
     else
       redirect_back_or_default(options: { alert: _("The invitation could not be accepted.") })
     end
@@ -26,8 +26,6 @@ class InvitesController < ApplicationController
 
   def decline
     if member.decline_invite!
-      label, _ = source_info(member.source)
-
       path =
         if current_user
           dashboard_projects_path
@@ -35,7 +33,8 @@ class InvitesController < ApplicationController
           new_user_session_path
         end
 
-      redirect_to path, notice: _("You have declined the invitation to join %{label}.") % { label: label }
+      redirect_to path, notice: _("You have declined the invitation to join %{title} %{name}.") %
+        { title: invite_details[:title], name: invite_details[:name] }
     else
       redirect_back_or_default(options: { alert: _("The invitation could not be declined.") })
     end
@@ -79,21 +78,22 @@ class InvitesController < ApplicationController
     redirect_to new_user_session_path, notice: notice
   end
 
-  def source_info(source)
-    case source
-    when Project
-      project = member.source
-      label = "project #{project.full_name}"
-      path = project_path(project)
-    when Group
-      group = member.source
-      label = "group #{group.name}"
-      path = group_path(group)
-    else
-      label = "who knows what"
-      path = dashboard_projects_path
-    end
-
-    [label, path]
+  def invite_details
+    @invite_details ||= case @member.source
+                        when Project
+                          {
+                            name: @member.source.full_name,
+                            url: project_url(@member.source),
+                            title: _("project"),
+                            path: project_path(@member.source)
+                          }
+                        when Group
+                          {
+                            name: @member.source.name,
+                            url: group_url(@member.source),
+                            title: _("group"),
+                            path: group_path(@member.source)
+                          }
+                        end
   end
 end

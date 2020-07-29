@@ -254,7 +254,7 @@ The following table describes details of your subscription for groups:
 
 To view the status of your self-managed subscription, log in to the self-managed instance and go to the **License** page.
 
-  1. Go to **{admin}** **Admin Area**.
+  1. Go to **Admin Area**.
   1. From the left-hand menu, select **License**.
 
 ## Renew your subscription
@@ -386,8 +386,7 @@ You can view the exact JSON payload in the administration panel. To view the pay
 
 Seat Link is enabled by default.
 
-To disable this feature, go to
-**{admin}** **Admin Area > Settings > Metrics and profiling**, uncheck the **Enable Seat Link** checkbox > **Save changes**.
+To disable this feature, go to **Admin Area > Settings > Metrics and profiling**, uncheck the **Enable Seat Link** checkbox > **Save changes**.
 
 To disable Seat Link in an Omnibus GitLab installation, and prevent it from
 being configured in the future through the administration panel, set the following in
@@ -442,7 +441,7 @@ We recommend following these steps during renewal:
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
 
    TIP: **Tip:**
-   You can find the _users over license_ in your instance's **Admin** dashboard by clicking on **{admin}** (**Admin Area**) in the top bar, or going to `/admin`.
+   You can find the _users over license_ in your instance's **Admin** dashboard by clicking on the **Admin Area** in the top bar, or going to `/admin`.
 
    The following table describes details of your admin dashboard and renewal terms:
 

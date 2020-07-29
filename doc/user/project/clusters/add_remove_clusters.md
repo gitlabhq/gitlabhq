@@ -142,7 +142,7 @@ Amazon Elastic Kubernetes Service (EKS) at the project, group, or instance level
 1. Navigate to your:
    - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
-   - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
+   - **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
 1. Click the **Create new cluster** tab.
 1. Click either **Amazon EKS** or **Google GKE**, and follow the instructions for your desired service:
@@ -164,7 +164,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 1. Navigate to your:
    1. Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
    1. Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
-   1. **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
+   1. **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
 1. Click the **Add existing cluster** tab and fill in the details:
    1. **Kubernetes cluster name** (required) - The name you wish to give the cluster.
@@ -331,7 +331,7 @@ a new cluster or added an existing one. To disable Kubernetes cluster integratio
 1. Navigate to your:
    - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
-   - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
+   - **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
 1. Click on the name of the cluster.
 1. Click the **GitLab Integration** toggle.
 1. Click **Save changes**.

@@ -100,7 +100,7 @@ to project IDs 50 to 100 in an Omnibus GitLab installation:
 sudo gitlab-rake gitlab:storage:migrate_to_hashed ID_FROM=50 ID_TO=100
 ```
 
-You can monitor the progress in the **{admin}** **Admin Area > Monitoring > Background Jobs** page.
+You can monitor the progress in the **Admin Area > Monitoring > Background Jobs** page.
 There is a specific queue you can watch to see how long it will take to finish:
 `hashed_storage:hashed_storage_project_migrate`.
 
@@ -150,7 +150,7 @@ to project IDs 50 to 100 in an Omnibus GitLab installation:
 sudo gitlab-rake gitlab:storage:rollback_to_legacy ID_FROM=50 ID_TO=100
 ```
 
-You can monitor the progress in the **{admin}** **Admin Area > Monitoring > Background Jobs** page.
+You can monitor the progress in the **Admin Area > Monitoring > Background Jobs** page.
 On the **Queues** tab, you can watch the `hashed_storage:hashed_storage_project_rollback` queue to see how long the process will take to finish.
 
 After it reaches zero, you can confirm every project has been rolled back by running the commands bellow.

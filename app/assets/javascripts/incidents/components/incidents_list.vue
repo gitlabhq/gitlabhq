@@ -9,6 +9,7 @@ import {
   GlTooltipDirective,
   GlButton,
   GlSearchBoxByType,
+  GlIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -55,6 +56,7 @@ export default {
     GlButton,
     TimeAgoTooltip,
     GlSearchBoxByType,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -164,7 +166,15 @@ export default {
       @row-clicked="navigateToIncidentDetails"
     >
       <template #cell(title)="{ item }">
-        <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
+        <div class="gl-display-flex gl-justify-content-center">
+          <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
+          <gl-icon
+            v-if="item.state === 'closed'"
+            name="issue-close"
+            class="gl-fill-blue-500"
+            data-testid="incident-closed"
+          />
+        </div>
       </template>
 
       <template #cell(createdAt)="{ item }">

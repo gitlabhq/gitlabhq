@@ -10,6 +10,7 @@ query getIncidents(
         iid
         title
         createdAt
+        state
         labels {
           nodes {
             title
