@@ -225,6 +225,26 @@ describe('Filtered Search Manager', () => {
       manager.search();
     });
 
+    it('should use replacement URL for condition', done => {
+      tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '=', '13', true),
+      );
+
+      visitUrl.mockImplementation(url => {
+        expect(url).toEqual(`${defaultParams}&milestone_title=replaced`);
+        done();
+      });
+
+      manager.filteredSearchTokenKeys.conditions.push({
+        url: 'milestone_title=13',
+        replacementUrl: 'milestone_title=replaced',
+        tokenKey: 'milestone',
+        value: '13',
+        operator: '=',
+      });
+      manager.search();
+    });
+
     it('removes duplicated tokens', done => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
         ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug')}

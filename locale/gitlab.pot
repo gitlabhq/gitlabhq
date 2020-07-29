@@ -1091,7 +1091,7 @@ msgstr ""
 msgid "A file with '%{file_name}' already exists in %{branch} branch"
 msgstr ""
 
-msgid "A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project."
+msgid "A fork is a copy of a project."
 msgstr ""
 
 msgid "A group is a collection of several projects"
@@ -4386,7 +4386,7 @@ msgstr ""
 msgid "Changes affect new repositories only. If not specified, Git's default name %{branch_name_default} will be used."
 msgstr ""
 
-msgid "Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision."
+msgid "Changes are shown as if the %{b_open}source%{b_close} revision was being merged into the %{b_open}target%{b_close} revision."
 msgstr ""
 
 msgid "Changes are still tracked. Useful for cluster/index migrations."
@@ -4683,7 +4683,7 @@ msgstr ""
 msgid "Choose any color."
 msgstr ""
 
-msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
+msgid "Choose between %{code_open}clone%{code_close} or %{code_open}fetch%{code_close} to get the recent application code"
 msgstr ""
 
 msgid "Choose file…"
@@ -7651,7 +7651,7 @@ msgstr ""
 msgid "Define custom rules for what constitutes spam, independent of Akismet"
 msgstr ""
 
-msgid "Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here."
+msgid "Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here."
 msgstr ""
 
 msgid "Definition"
@@ -10669,6 +10669,9 @@ msgstr ""
 msgid "ForkedFromProjectPath|Forked from an inaccessible project"
 msgstr ""
 
+msgid "Forking a repository allows you to make changes without affecting the original project."
+msgstr ""
+
 msgid "Forking in progress"
 msgstr ""
 
@@ -10708,10 +10711,10 @@ msgstr ""
 msgid "From"
 msgstr ""
 
-msgid "From %{providerTitle}"
+msgid "From %{code_open}%{source_title}%{code_close} into"
 msgstr ""
 
-msgid "From <code>%{source_title}</code> into"
+msgid "From %{providerTitle}"
 msgstr ""
 
 msgid "From Google Code"
@@ -11188,7 +11191,7 @@ msgstr ""
 msgid "Git LFS is not enabled on this GitLab server, contact your admin."
 msgstr ""
 
-msgid "Git LFS objects will be synced in pull mirrors if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. They will <strong>not</strong> be synced in push mirrors."
+msgid "Git LFS objects will be synced in pull mirrors if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. They will %{strong_open}not%{strong_close} be synced in push mirrors."
 msgstr ""
 
 msgid "Git LFS status:"
@@ -12070,10 +12073,10 @@ msgstr ""
 msgid "Groups to synchronize"
 msgstr ""
 
-msgid "Groups with access to %{strong_start}%{group_name}%{strong_end}"
+msgid "Groups with access to %{strong_open}%{project_name}%{strong_close}"
 msgstr ""
 
-msgid "Groups with access to <strong>%{project_name}</strong>"
+msgid "Groups with access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
 msgid "GroupsDropdown|Frequently visited"
@@ -12767,7 +12770,7 @@ msgstr ""
 msgid "Include merge request description"
 msgstr ""
 
-msgid "Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>."
+msgid "Include the username in the URL if required: %{code_open}https://username@gitlab.company.com/group/project.git%{code_close}."
 msgstr ""
 
 msgid "Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited."
@@ -14651,10 +14654,10 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
-msgid "Members can be added by project <i>Maintainers</i> or <i>Owners</i>"
+msgid "Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}"
 msgstr ""
 
-msgid "Members of <strong>%{project_name}</strong>"
+msgid "Members of %{strong_open}%{project_name}%{strong_close}"
 msgstr ""
 
 msgid "Members of a group may only view projects they have permission to access"
@@ -22108,25 +22111,25 @@ msgstr ""
 msgid "Slack integration allows you to interact with GitLab via slash commands in a chat window."
 msgstr ""
 
+msgid "SlackIntegration|%{strong_open}Note:%{strong_close} Usernames and private channels are not supported."
+msgstr ""
+
 msgid "SlackIntegration|%{webhooks_link_start}Add an incoming webhook%{webhooks_link_end} in your Slack team. The default channel can be overridden for each event."
 msgstr ""
 
-msgid "SlackIntegration|<strong>Note:</strong> Usernames and private channels are not supported."
+msgid "SlackIntegration|Paste the %{strong_open}Webhook URL%{strong_close} into the field below."
 msgstr ""
 
-msgid "SlackIntegration|Paste the <strong>Webhook URL</strong> into the field below."
-msgstr ""
-
-msgid "SlackIntegration|Select events below to enable notifications. The <strong>Slack channel names</strong> and <strong>Slack username</strong> fields are optional."
+msgid "SlackIntegration|Select events below to enable notifications. The %{strong_open}Slack channel names%{strong_close} and %{strong_open}Slack username%{strong_close} fields are optional."
 msgstr ""
 
 msgid "SlackIntegration|This service send notifications about projects' events to Slack channels. To set up this service:"
 msgstr ""
 
-msgid "SlackService|2. Paste the <strong>Token</strong> into the field below"
+msgid "SlackService|2. Paste the %{strong_open}Token%{strong_close} into the field below"
 msgstr ""
 
-msgid "SlackService|3. Select the <strong>Active</strong> checkbox, press <strong>Save changes</strong> and start using GitLab inside Slack!"
+msgid "SlackService|3. Select the %{strong_open}Active%{strong_close} checkbox, press %{strong_open}Save changes%{strong_close} and start using GitLab inside Slack!"
 msgstr ""
 
 msgid "SlackService|Fill in the word that works best for your team."
@@ -23843,7 +23846,7 @@ msgstr ""
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
 msgstr ""
 
-msgid "The path to the CI configuration file. Defaults to <code>.gitlab-ci.yml</code>"
+msgid "The path to the CI configuration file. Defaults to %{code_open}.gitlab-ci.yml%{code_close}"
 msgstr ""
 
 msgid "The phase of the development lifecycle."
@@ -23912,7 +23915,7 @@ msgstr ""
 msgid "The repository must be accessible over %{code_open}http://%{code_close}, %{code_open}https://%{code_close} or %{code_open}git://%{code_close}."
 msgstr ""
 
-msgid "The repository must be accessible over <code>http://</code>, <code>https://</code>, <code>ssh://</code> or <code>git://</code>."
+msgid "The repository must be accessible over %{code_open}http://%{code_close}, %{code_open}https://%{code_close}, %{code_open}ssh://%{code_close} or %{code_open}git://%{code_close}."
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
@@ -24326,13 +24329,19 @@ msgstr ""
 msgid "This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request."
 msgstr ""
 
+msgid "This commit was signed with a %{strong_open}verified%{strong_close} signature and the committer email is verified to belong to the same user."
+msgstr ""
+
 msgid "This commit was signed with a <strong>verified</strong> signature and the committer email is verified to belong to the same user."
 msgstr ""
 
 msgid "This commit was signed with a different user's verified signature."
 msgstr ""
 
-msgid "This commit was signed with a verified signature, but the committer email is <strong>not verified</strong> to belong to the same user."
+msgid "This commit was signed with a verified signature, but the committer email is %{strong_open}not verified%{strong_close} to belong to the same user."
+msgstr ""
+
+msgid "This commit was signed with an %{strong_open}unverified%{strong_close} signature."
 msgstr ""
 
 msgid "This commit was signed with an <strong>unverified</strong> signature."
@@ -24605,10 +24614,10 @@ msgstr ""
 msgid "This pipeline does not use the %{codeStart}needs%{codeEnd} keyword and can't be represented as a directed acyclic graph."
 msgstr ""
 
-msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
+msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{b_open}Auto DevOps.%{b_close}"
 msgstr ""
 
-msgid "This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>"
+msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
 msgstr ""
 
 msgid "This pipeline was triggered by a schedule."
@@ -24644,7 +24653,7 @@ msgstr ""
 msgid "This project will be removed on %{date} since its parent group '%{parent_group_name}' has been scheduled for removal."
 msgstr ""
 
-msgid "This project will live in your group <strong>%{namespace}</strong>. A project is where you house your files (repository), plan your work (issues), publish your documentation (wiki), and so much more."
+msgid "This project will live in your group %{strong_open}%{namespace}%{strong_close}. A project is where you house your files (repository), plan your work (issues), publish your documentation (wiki), and so much more."
 msgstr ""
 
 msgid "This repository"
@@ -25104,13 +25113,13 @@ msgstr ""
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
 msgstr ""
 
-msgid "To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>."
+msgid "To only use CI/CD features for an external repository, choose %{strong_open}CI/CD for external repo%{strong_close}."
 msgstr ""
 
 msgid "To open Jaeger and easily view tracing from GitLab, link the %{link} page to your server"
 msgstr ""
 
-msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
+msgid "To preserve performance only %{strong_open}%{display_size} of %{real_size}%{strong_close} files are displayed."
 msgstr ""
 
 msgid "To protect this issue's confidentiality, %{forkLink} and set the fork's visibility to private."
@@ -26956,9 +26965,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "When using the %{code_open}http://%{code_close} or %{code_open}https://%{code_close} protocols, please provide the exact URL to the repository. HTTP redirects will not be followed."
-msgstr ""
-
-msgid "When using the <code>http://</code> or <code>https://</code> protocols, please provide the exact URL to the repository. HTTP redirects will not be followed."
 msgstr ""
 
 msgid "When:"

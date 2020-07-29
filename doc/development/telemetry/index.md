@@ -133,6 +133,22 @@ Our reporting levels of aggregate or individual reporting varies by segment. For
 | Aggregate       | ✅             | 📅         | ✅            | ✅         | ✅                     | 📅                 | ✅                    | ✅                 |
 | Individual      | ✅             | 📅         | ✅            | 🔄        | ✅                     | ✖️                 | ✖️                   | ✖️                |
 
+## Event types by segment
+
+The availability of event types and their tracking tools varies by segment. For example, on Self-Managed Users, we only have reporting using Database records via Usage Ping.
+
+| Event Types                         | SaaS Instance | SaaS Group | SaaS Session | SaaS User | Self-Managed Instance | Self-Managed Group | Self-Managed Session | Self-Managed User |
+|-------------------------------------|---------------|------------|--------------|-----------|-----------------------|--------------------|----------------------|-------------------|
+| Pageview events (Snowplow JS)       | ✅             | 📅         | ✅            | 🔄        | 🔄                    | 📅                 | 🔄                   | 🔄                |
+| Pageview events (Snowplow Ruby)     | ✅             | 📅         | ✅            | 🔄        | 🔄                    | 📅                 | 🔄                   | 🔄                |
+| UI events (Snowplow JS)             | ✅             | 📅         | ✅            | 🔄        | 🔄                    | 📅                 | 🔄                   | 🔄                |
+| CRUD and API events (Snowplow Ruby) | ✅             | 📅         | ✅            | 🔄        | 🔄                    | 📅                 | 🔄                   | 🔄                |
+| Database records (Usage Ping)       | ✅             | 📅         | ✖️           | ✅         | ✅                     | 📅                 | ✖️                   | ✅                 |
+| Database records (Database import)  | ✅             | ✅          | ✖️           | ✅         | ✖️                    | ✖️                 | ✖️                   | ✖️                |
+| Instance logs (Log system)          | ✖️            | ✖️         | ✖️           | ✖️        | ✖️                    | ✖️                 | ✖️                   | ✖️                |
+| Instance settings (Usage Ping)      | ✅             | 📅         | ✖️           | ✅         | ✅                     | 📅                 | ✖️                   | ✅                 |
+| Instance integrations (Usage Ping)  | ✅             | 📅         | ✖️           | ✅         | ✅                     | 📅                 | ✖️                   | ✅                 |
+
 **Legend**
 
 ✅ Available, 🔄 In Progress, 📅 Planned, ✖️ Not Possible

@@ -105,7 +105,7 @@ RSpec.describe ProjectPolicy do
     subject { described_class.new(owner, project) }
 
     before do
-      project.project_feature.destroy
+      project.project_feature.destroy!
       project.reload
     end
 
@@ -953,7 +953,12 @@ RSpec.describe ProjectPolicy do
 
       context 'when repository is disabled' do
         before do
-          project.project_feature.update(repository_access_level: ProjectFeature::DISABLED)
+          project.project_feature.update!(
+            # Disable merge_requests and builds as well, since merge_requests and
+            # builds cannot have higher visibility than repository.
+            merge_requests_access_level: ProjectFeature::DISABLED,
+            builds_access_level: ProjectFeature::DISABLED,
+            repository_access_level: ProjectFeature::DISABLED)
         end
 
         it { is_expected.to be_disallowed(:read_package) }

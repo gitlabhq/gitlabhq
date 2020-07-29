@@ -1,0 +1,5 @@
+---
+title: Fix console errors due to monaco-yaml's outdated use of monaco.Promise
+merge_request: 38135
+author:
+type: fixed

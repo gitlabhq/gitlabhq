@@ -743,7 +743,7 @@ export default class FilteredSearchManager {
       let tokenPath = '';
 
       if (condition) {
-        tokenPath = condition.url;
+        tokenPath = condition.replacementUrl || condition.url;
       } else {
         let tokenValue = token.value;
 

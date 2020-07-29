@@ -1,0 +1,5 @@
+---
+title: Fix error when blob has no auxiliary viewer
+merge_request: 38018
+author:
+type: fixed

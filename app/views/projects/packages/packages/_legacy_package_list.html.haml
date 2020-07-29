@@ -50,7 +50,7 @@
           .table-mobile-header{ role: "rowheader" }
           .table-mobile-content
             - if can_destroy_package
-              .pull-right
+              .float-right
                 = link_to project_package_path(@project, package), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-remove", title: _('Delete Package') do
                   = icon('trash')
     = paginate @packages, theme: "gitlab"

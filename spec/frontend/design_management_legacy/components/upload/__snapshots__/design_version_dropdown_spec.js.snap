@@ -28,7 +28,7 @@ exports[`Design management design version dropdown component renders design vers
       </div>
        
       <i
-        class="fa fa-check pull-right"
+        class="fa fa-check float-right gl-mr-2"
       />
     </router-link-stub>
   </gl-dropdown-item-stub>
@@ -83,7 +83,7 @@ exports[`Design management design version dropdown component renders design vers
       </div>
        
       <i
-        class="fa fa-check pull-right"
+        class="fa fa-check float-right gl-mr-2"
       />
     </router-link-stub>
   </gl-dropdown-item-stub>

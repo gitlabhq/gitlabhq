@@ -26,12 +26,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
     let(:process_params) { [project, dashboard_yml, sequence, { environment: environment }] }
     let(:dashboard) { described_class.new(*process_params).process }
 
-    it 'includes a path for the prometheus endpoint with each metric' do
-      expect(all_metrics).to satisfy_all do |metric|
-        metric[:prometheus_endpoint_path] == prometheus_path(metric[:query_range])
-      end
-    end
-
     it 'includes an id for each dashboard panel' do
       expect(all_panels).to satisfy_all do |panel|
         panel[:id].present?

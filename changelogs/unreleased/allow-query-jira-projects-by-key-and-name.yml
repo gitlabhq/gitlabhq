@@ -1,0 +1,5 @@
+---
+title: Query Jira projects by key or name and return all Jira projects in one query
+merge_request: 37799
+author:
+type: fixed

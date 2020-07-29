@@ -34,6 +34,6 @@ export default {
     <span class="dropdown-toggle-text flex-fill">
       {{ dropdownButtonText }}
     </span>
-    <gl-icon name="chevron-down" class="pull-right" />
+    <gl-icon name="chevron-down" class="float-right" />
   </gl-button>
 </template>

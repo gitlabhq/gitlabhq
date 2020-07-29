@@ -68,7 +68,7 @@ export default {
         </div>
         <i
           v-if="findVersionId(version.node.id) === currentVersionId"
-          class="fa fa-check pull-right"
+          class="fa fa-check float-right gl-mr-2"
         ></i>
       </router-link>
     </gl-dropdown-item>

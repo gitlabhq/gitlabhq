@@ -107,7 +107,7 @@ RSpec.describe GroupPolicy do
 
     context 'with subgroup_creation level set to maintainer' do
       before_all do
-        group.update(subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+        group.update!(subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
       end
 
       it 'allows every maintainer permission plus creating subgroups' do
@@ -363,7 +363,7 @@ RSpec.describe GroupPolicy do
   context 'transfer_projects' do
     shared_examples_for 'allowed to transfer projects' do
       before do
-        group.update(project_creation_level: project_creation_level)
+        group.update!(project_creation_level: project_creation_level)
       end
 
       it { is_expected.to be_allowed(:transfer_projects) }
@@ -371,7 +371,7 @@ RSpec.describe GroupPolicy do
 
     shared_examples_for 'not allowed to transfer projects' do
       before do
-        group.update(project_creation_level: project_creation_level)
+        group.update!(project_creation_level: project_creation_level)
       end
 
       it { is_expected.to be_disallowed(:transfer_projects) }
@@ -445,7 +445,7 @@ RSpec.describe GroupPolicy do
   context 'create_projects' do
     context 'when group has no project creation level set' do
       before_all do
-        group.update(project_creation_level: nil)
+        group.update!(project_creation_level: nil)
       end
 
       context 'reporter' do
@@ -475,7 +475,7 @@ RSpec.describe GroupPolicy do
 
     context 'when group has project creation level set to no one' do
       before_all do
-        group.update(project_creation_level: ::Gitlab::Access::NO_ONE_PROJECT_ACCESS)
+        group.update!(project_creation_level: ::Gitlab::Access::NO_ONE_PROJECT_ACCESS)
       end
 
       context 'reporter' do
@@ -505,7 +505,7 @@ RSpec.describe GroupPolicy do
 
     context 'when group has project creation level set to maintainer only' do
       before_all do
-        group.update(project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
+        group.update!(project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
       end
 
       context 'reporter' do
@@ -535,7 +535,7 @@ RSpec.describe GroupPolicy do
 
     context 'when group has project creation level set to developers + maintainer' do
       before_all do
-        group.update(project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
+        group.update!(project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
       end
 
       context 'reporter' do
@@ -567,7 +567,7 @@ RSpec.describe GroupPolicy do
   context 'create_subgroup' do
     context 'when group has subgroup creation level set to owner' do
       before_all do
-        group.update(subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
+        group.update!(subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
       end
 
       context 'reporter' do
@@ -597,7 +597,7 @@ RSpec.describe GroupPolicy do
 
     context 'when group has subgroup creation level set to maintainer' do
       before_all do
-        group.update(subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+        group.update!(subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
       end
 
       context 'reporter' do
@@ -706,7 +706,7 @@ RSpec.describe GroupPolicy do
 
         context 'which does not have design management enabled' do
           before do
-            project.update(lfs_enabled: false)
+            project.update!(lfs_enabled: false)
           end
 
           it { is_expected.not_to be_allowed(:read_design_activity) }

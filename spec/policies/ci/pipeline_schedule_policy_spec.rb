@@ -43,7 +43,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models do
         let(:tag) { 'v1.0.0' }
 
         before do
-          pipeline_schedule.update(ref: tag)
+          pipeline_schedule.update!(ref: tag)
 
           create(:protected_tag, :no_one_can_create,
                  name: pipeline_schedule.ref, project: project)
@@ -69,7 +69,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models do
     describe 'rules for owner of schedule' do
       before do
         project.add_developer(user)
-        pipeline_schedule.update(owner: user)
+        pipeline_schedule.update!(owner: user)
       end
 
       it 'includes abilities to do all operations on pipeline schedule' do
@@ -97,7 +97,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models do
       before do
         project.add_maintainer(owner)
         project.add_maintainer(user)
-        pipeline_schedule.update(owner: owner)
+        pipeline_schedule.update!(owner: owner)
       end
 
       it 'includes abilities to take ownership' do

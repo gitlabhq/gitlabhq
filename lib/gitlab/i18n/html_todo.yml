@@ -93,19 +93,6 @@
     - "<strong>Supprime</strong> la branche source"
     - "<strong>elimina</strong> la rama origen"
     - "Kaynak dalı <strong>siler</strong>"
-"A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project.":
-  plural_id:
-  translations:
-    - "Um fork é uma cópia de um projeto.<br />Fork de um repositório permite que você faça alterações sem afetar o projeto original."
-    - "フォークはプロジェクトのコピーです。<br />リポジトリをフォークすると、元のプロジェクトに影響を与えずに変更することができます。"
-    - "分叉是專案的複本。<br />分叉版本庫讓您在不影響原始專案的情況下，進行變更。"
-    - "Um fork é uma cópia de um projeto.<br />Bifurcação de um repositório permite que faças alterações sem afetar o projeto original."
-    - "Ответвление - это копия проекта.<br />Ответвление репозитория позволяет вносить изменения, не влияя на исходный проект."
-    - "派生是项目的副本。<br />仓库的派生允许您在不影响原始项目的情况下进行更改。"
-    - "Форк - це копія проєкту.<br />Форк репозиторію дозволяє вносити зміни без впливу на оригінальний проєкт."
-    - "Ein Fork ist eine Kopie eines Projekts.<br />Wenn du ein Repository forkst, kannst du, ohne Auswirkungen auf das ursprüngliche Projekt, Änderungen vornehmen."
-    - "포크는 프로젝트의 사본입니다.<br />저장소를 포크하면 원래 프로젝트에 영향을주지 않고 변경할 수 있습니다."
-    - "Un fork es una copia de un proyecto.<br />Realizar un fork de un repositorio le permite realizar cambios sin afectar al proyecto original."
 "Badges|You are going to delete this badge. Deleted badges <strong>cannot</strong> be restored.":
   plural_id:
   translations:
@@ -144,32 +131,6 @@
     - "La branĉo <strong>%{branch_name}</strong> estis kreita. Por agordi aŭtomatan disponigadon, bonvolu elekti Yaml-ŝablonon por GitLab CI kaj enmeti viajn ŝanĝojn. %{link_to_autodeploy_doc}"
     - "La branche <strong>%{branch_name}</strong> a été créée. Pour mettre en place le déploiement automatisé, sélectionnez un modèle de fichier YAML pour l’intégration continue (CI) de GitLab, et validez les modifications. %{link_to_autodeploy_doc}"
     - "La rama <strong>%{branch_name}</strong> fue creada. Para configurar el auto despliegue, escoge una plantilla Yaml para GitLab CI y envía tus cambios. %{link_to_autodeploy_doc}"
-"Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision.":
-  plural_id:
-  translations:
-    - "Mudanças serão mostradas se revisão de <b>origem</b> tiver sofrido merge na revisão <b>alvo</b>."
-    - "<b>source</b>リビジョンが<b>target</b>リビジョン内に取り込まれているような変更として表示されます"
-    - "As alterações são mostradas como se a revisão de <b>origem</b> estivesse a ser mesclada na revisão de <b>destino</b>."
-    - "Показаны изменения как будто произошло слияние ревизии кода <b>источника</b> с <b>целевой</b> ревизией кода."
-    - "差异显示方式依<b>源</b>版本合并到<b>目标</b>版本的形式。"
-    - "Зміни відображаються так, ніби <b>редакція-джерело</b> була злита в <b>цільову редакцію</b>."
-    - "Änderungen werden angezeigt, als ob die <b>Quell</b>-Revision in die <b>Ziel</b>-Revision gemerged wurde."
-    - "변경 사항은 <b>source</b> 리비전이 <b>target</b> 리비전에 머지된 것처럼 표시됩니다."
-    - "Les modifications sont affichées comme si la révision <b>source</b> était fusionnée dans la révision<b>cible</b>."
-    - "Los cambios se muestran como si la revisión del <b>origen</b> se ha fusionado con la revisión del <b>objetivo</b>."
-"Choose between <code>clone</code> or <code>fetch</code> to get the recent application code":
-  plural_id:
-  translations:
-    - "Escolha entre <code>clone</code> ou <code>fetch</code> para obter o código do aplicativo recente"
-    - "<code>clone</code> または <code>fetch</code> を選択して最新のアプリケーションコードを取得してください"
-    - "Escolhe entre <code>clone</code> ou <code>fetch</code> para obter o código da aplicação recente"
-    - "选择 <code>克隆</code> 或 <code>拉取</code> 以获取最近的应用程序代码"
-    - "Оберіть між <code>clone</code> та<code>fetch</code> щоб отримати найновіший код програми"
-    - "Wähle zwischen <code>clone</code> oder <code>fetch</code>, um den aktuellen Anwendungscode zu erhalten"
-    - "최근 응용 프로그램 코드를 얻으려면 <code>클론</code> 또는 <code>fetch</code>를 선택하십시오."
-    - "Choisissez entre <code>clone</code> ou <code>fetch</code> pour obtenir les dernières modifications du code de l’application"
-    - "Elija entre <code>clone</code> o <code>fetch</code> para obtener el código de la aplicación más reciente"
-    - "Wybierz pomiędzy <code>klonem</code> lub <code>pobierz</code> aby uzyskać najnowszy kod aplikacji"
 "ClusterIntegration| This will permanently delete the following resources: <ul> <li>All installed applications and related resources</li> <li>The <code>gitlab-managed-apps</code> namespace</li> <li>Any project namespaces</li> <li><code>clusterroles</code></li> <li><code>clusterrolebindings</code></li> </ul>":
   plural_id:
   translations:
@@ -222,14 +183,6 @@
     - "Contributions du <strong>%{calendar_date}</strong>"
     - "Contribuciones para <strong>%{calendar_date}</strong>"
     - "<strong>%{calendar_date}</strong> için katkılar"
-"Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here.":
-  plural_id:
-  translations:
-    - "デプロイステージの環境を <code>.gitlab-ci.yml</code> で定義して、デプロイを追跡します。"
-    - "Обозначьте окружения на этапе(ах) развёртывания в <code>.gitlab-ci.yml</code> для отслеживания развёртывания здесь."
-    - "在<code>.githab-ci.yml</code>的 deploy 阶段中定义 environment 来跟踪部署。"
-    - "Визначте середовища на стадії розгортання у <code>.gitlab-ci.yml</code> щоб відстежувати розгортання тут."
-    - "Defina entornos en las distintas etapas de despliegue en el fichero <code>.gitlab-ci.yml</code> para llevar un registro de las implementaciones desde aquí."
 "Depends on <strong>%d closed</strong> merge request.":
   plural_id: "Depends on <strong>%d closed</strong> merge requests."
   translations:
@@ -274,11 +227,6 @@
     - "完成您的<strong>%{group_name}</strong>专用帐户设置。"
     - "Завершіть налаштування вашого виділеного облікового запису для <strong>%{group_name}</strong>."
     - "Finalizar la configuración de su cuenta dedicada para <strong>%{group_name}</strong>."
-"From <code>%{source_title}</code> into":
-  plural_id:
-  translations:
-    - "<code>%{source_title}</code> から"
-    - "Від <code>%{source_title}</code> до"
 "Geo|You are on a secondary, <b>read-only</b> Geo node. If you want to make changes, you must visit this page on the %{primary_node}.":
   plural_id:
   translations:
@@ -326,14 +274,6 @@
 "Go to <strong>Issues</strong> > <strong>Boards</strong> to access your personalized learning issue board.":
   plural_id:
   translations:
-"Groups with access to <strong>%{project_name}</strong>":
-  plural_id:
-  translations:
-    - "Grupos com acesso a <strong>%{project_name}</strong>"
-    - "<strong>%{project_name}</strong>へのアクセス権を持つグループ"
-    - "可以访问 <strong>%{project_name}</strong>"
-    - "Групи з доступом до <strong>%{project_name}</strong>"
-    - "Los grupos con acceso a <strong>%{project_name}</strong>"
 "In order to personalize your experience with GitLab<br>we would like to know a bit more about you.":
   plural_id:
   translations:
@@ -439,32 +379,6 @@
     - "회원과 <strong>%{sso_label}</strong> 항목을 공유해 신원 제공 업체를 통해 그룹에 로그인할 수 있도록 합니다."
     - "Partager le <strong>%{sso_label}</strong> avec les membres afin qu’ils puissent se connecter à votre groupe via votre fournisseur d’identité"
     - "Comparta <strong>%{sso_label}</strong> con los diferentes miembros para que puedan iniciar sesión en su grupo a través de su proveedor de identidad"
-"SlackIntegration|<strong>Note:</strong> Usernames and private channels are not supported.":
-  plural_id:
-  translations:
-    - "<strong> 注: </strong> ユーザー名とプライベートチャネルはサポートしていません。"
-    - "<strong>Примечание:</strong> Имена пользователей и частные каналы не поддерживаются."
-"SlackIntegration|Paste the <strong>Webhook URL</strong> into the field below.":
-  plural_id:
-  translations:
-    - "Вставьте <strong>URL веб-обработчика</strong> в поле ниже."
-"SlackIntegration|Select events below to enable notifications. The <strong>Slack channel names</strong> and <strong>Slack username</strong> fields are optional.":
-  plural_id:
-  translations:
-"SlackService|2. Paste the <strong>Token</strong> into the field below":
-  plural_id:
-  translations:
-    - "2. <strong>トークン</strong> を下のフィールドに貼り付けます"
-    - "2. 将<strong>Token</strong>粘贴到下面的字段中"
-    - "2. Вставте <strong>Токен</strong> у поле нижче"
-    - "2. Pegue el <strong>Token</strong> en el campo que se muestra a continuación"
-"SlackService|3. Select the <strong>Active</strong> checkbox, press <strong>Save changes</strong> and start using GitLab inside Slack!":
-  plural_id:
-  translations:
-    - "3. <strong>アクティブな</strong> チェックボックスを選択し、 <strong>変更を保存</strong> を押して、Slack内でGitLabの使用を開始します！"
-    - "Выберите флажок <strong>Активный</strong>, нажмите на <strong>Сохранить изменения</strong> и начните использовать GitLab внутри Slack!"
-    - "3. 选择<strong>Active</strong>复选框，点击<strong>Save change</strong>后开始在Slack中使用GitLab！"
-    - "3. Встановіть прапорець в пункті <strong>Активний</strong>, натисніть <strong>Зберегти зміни</strong> та починайте використовувати GitLab в Slack!"
 "Speed up your DevOps<br>with GitLab":
   plural_id:
   translations:
@@ -480,14 +394,6 @@
     - "Les objets Git LFS <strong>ne sont pas</strong> synchronisés."
     - "Los objetos Git LFS <strong>no</strong> serán sincronizados."
     - "Obiekty Git LFS <strong>nie będą</strong> zsynchronizowane."
-"The path to the CI configuration file. Defaults to <code>.gitlab-ci.yml</code>":
-  plural_id:
-  translations:
-    - "CI 設定ファイルへのパス。デフォルトは <code>.gitlab-ci.yml</code>"
-    - "Путь к файлу конфигурации CI. По умолчанию это <code>.gitlab-ci.yml</code>"
-    - "CI配置文件的路径。默认为<code>.gitlab-ci.yml</code>"
-    - "Шлях до кофігураційного файлу CI. За замовчуванням <code>.gitlab-ci.yml</code>"
-    - "La ruta al archivo de configuración CI. Por defecto <code>.gitlab-ci.yml</code>"
 "The repository must be accessible over <code>http://</code>, <code>https://</code>, <code>ssh://</code> or <code>git://</code>.":
   plural_id:
   translations:
@@ -504,30 +410,6 @@
     - "此%{issuable}已被锁定。只有<strong>项目成员</strong>可以发表评论。"
     - "Ця %{issuable} заблокована. Лише <strong>учасники проекту</strong> можуть коментувати."
     - "Este %{issuable} está bloqueado. Solo los <strong>miembros del proyecto</strong> pueden comentar."
-"This commit was signed with a <strong>verified</strong> signature and the committer email is verified to belong to the same user.":
-  plural_id:
-  translations:
-    - "このコミットは <strong>検証済み</strong> の署名でサインされており、このコミッターのメールは同じユーザーのものであることが検証されています。"
-    - "Это коммит был подписан <strong>верифицированной</strong> подписью и коммитер подтвердил, что адрес почты принадлежит ему."
-    - "此提交使用 <strong>已验证</strong> 的签名进行签名，并且已验证提交者的电子邮件属于同一用户。"
-    - "Цей коміт підписано <strong>перевіреним</strong> підписом і адреса електронної пошти комітера гарантовано належить тому самому користувачу."
-    - "Este commit fue firmado con una firma verificada, y <strong>se ha verificado</strong> que la dirección de correo electrónico del committer y la firma pertenecen al mismo usuario."
-"This commit was signed with a verified signature, but the committer email is <strong>not verified</strong> to belong to the same user.":
-  plural_id:
-  translations:
-    - "このコミットは検証済みの署名でサインされています。しかしコミッターのメールは、 同じユーザーのものと<strong>検証されていません</strong>。"
-    - "Этот коммит был подписан верифицированной подписью, но <strong>не подтверждена</strong> принадлежность электронной почты коммитеру."
-    - "此提交已使用经过验证的签名进行签名，但<strong>未验证</strong>的提交者电子邮件属于同一用户。"
-    - "Цей коміт підписано перевіреним підписом але адреса електронної пошти комітера <strong>не гарантовано</strong> належить тому самому користувачу."
-    - "Este commit fue firmado con una firma verificada, pero <strong>no se ha verificado</strong> si la dirección de correo electrónico del commiter y la firma pertenecen al mismo usuario."
-"This commit was signed with an <strong>unverified</strong> signature.":
-  plural_id:
-  translations:
-    - "このコミットは<strong>検証されていない</strong> 署名でサインされています。"
-    - "Этот коммит был подписан <strong>непроверенной</strong> подписью."
-    - "此提交使用 <strong>未经验证的</strong> 签名进行签名。"
-    - "Цей коміт підписано <strong>неперевіреним</strong> підписом."
-    - "Esta commit fue firmado con una firma <strong>no verificada</strong>."
 "This group, including all subgroups, projects and git repositories, will only be reachable from the specified IP address range. Multiple addresses are supported with comma delimiters.<br>Example: <code>192.168.0.0/24,192.168.1.0/24</code>. %{read_more_link}.":
   plural_id:
   translations:
@@ -536,13 +418,6 @@
     - "此群组，包括所有子群组、项目和git仓库，只能从指定的IP地址范围中访问。支持用逗号分隔符分隔的多个地址列表。例如： <code>192.168.0.0/24,168.1.0/24</code>. %{read_more_link}。"
     - "Ця група разом із усіма її підгрупами, проектами та репозиторями Git буде доступна тільки із вказаного діапазону IP-адрес. Підтримується декілька адрес, розділених комами. <br>Наприклад: <code>192.168.0.0/24</code>.%{read_more_link}."
     - "Este grupo, incluyendo todos los subgrupos, proyectos y repositorios git, sólo será accesible desde el rango de direcciones IP especificado. Se admiten múltiples direcciones delimitadas con comas. <br>Ejemplo: <code>192.168.0.0/24,192.168.1.0/24</code>. %{read_more_link}."
-"This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>":
-  plural_id:
-  translations:
-    - "このパイプラインは、<b>Auto DevOps</b>によって有効化された定義済みのCI/CD構成を利用します。"
-    - "此流水线使用了 <b>Auto DevOps 预先定义的并已启用的 CI/CD 配置。</b>"
-    - "Цей конвеєр використовує попередньо визначену конфігурацію CI / CD, увімкнену за допомогою <b>Auto DevOps</b>"
-    - "Este pipeline utiliza una configuración de CI/CD predefinida habilitada por <b>Auto DevOps.</b>"
 "This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">enable billing <i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> and try again.":
   plural_id:
   translations:
@@ -553,28 +428,6 @@
     - "Für dieses Projekt ist keine Abrechnung aktiviert. Um ein Cluster zu erstellen, <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">aktiviere die Abrechnung<i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> und versuche es erneut."
     - "Ce projet n’a pas de facturation activée. Afin de créer une grappe de serveurs, veuillez <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">activer la facturation<i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> et réessayer."
     - "Este proyecto no tiene la facturación habilitada. Para crear un clúster, <a href=%{linkToBilling} target=\\\"_blank\\\" rel=\\\"noopener noreferrer\\\">habilite la facturación <i class=\\\"fa fa-external-link\\\" aria-hidden=\\\"true\\\"></i></a> e inténtelo de nuevo."
-"This project will live in your group <strong>%{namespace}</strong>. A project is where you house your files (repository), plan your work (issues), publish your documentation (wiki), and so much more.":
-  plural_id:
-  translations:
-"To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>.":
-  plural_id:
-  translations:
-    - "Para usar apenas recursos CI/CD para um repositório externo, escolha <strong>CI/CD para repo externo</strong>."
-    - "外部リポジトリにのみ CI/CD の機能を使用するには、<strong>外部リポジトリ用 CI/CD</strong>を選択してください。"
-    - "要仅为外部仓库使用CI / CD功能时，请选择</strong>使用外部仓库运行CI/CD<strong>。"
-    - "Щоб використовувати лише функції CI/CD для зовнішнього репозиторію, виберіть <strong>CI/CD для зовнішнього репозиторію</strong>."
-    - "Um die CI/CD-Funktionen nur für ein externes Repository zu verwenden, wähle <strong>CI/CD für externes Repo</strong> aus."
-    - "CI/CD 기능만 외부 저장소를 위해 사용할 수 있습니다, <strong>외부 저장소용 CI/CD 저장소</strong>를 선택하십시오."
-    - "Pour n’utiliser uniquement que les fonctionnalités d’intégration et livraison continues (CI / CD) pour un dépôt externe, choisissez <strong>Intégration et livraison continues (CI / CD) pour dépôt externe</strong>."
-    - "Para utilizar únicamente las funciones de CI/CD en un repositorio externo, seleccione <strong>CI/CD para un repositorio externo</strong>."
-    - "Harici bir depoda yalnızca CI/CD özelliklerini kullanmak için <strong>Harici depo için CI/CD</strong>'yi seçin."
-"To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed.":
-  plural_id:
-  translations:
-    - "パフォーマンス維持のため、 <strong>%{real_size} 個中 %{display_size} 個</strong> のファイルのみが表示されています。"
-    - "为了保持性能，仅显示文件中的 <strong>%{display_size}/%{real_size}</strong>。"
-    - "Для збереження швидкодії відображаються лише <strong>%{display_size} із %{real_size}</strong> файлів."
-    - "Para mantener el rendimiento, solo se muestran <strong>%{display_size} de %{real_size}</strong> archivos."
 "Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment.":
   plural_id:
   translations:
@@ -1053,3 +906,150 @@
     - "CSV导出将在后台创建。完成后，它将以附件形式发送到<strong>%{email}</strong>。"
     - "Експорт CSV буде створено у фоновому режимі. Після завершення його буде надіслано на <strong>%{email}</strong> у вкладенні."
     - "La exportación CSV se creará en segundo plano. Una vez finalizada, será enviada a <strong>%{email}</strong> como un fichero adjunto al correo electrónico."
+"A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project.":
+  plural_id:
+  translations:
+    - "Um fork é uma cópia de um projeto.<br />Fork de um repositório permite que você faça alterações sem afetar o projeto original."
+    - "フォークはプロジェクトのコピーです。<br />リポジトリをフォークすると、元のプロジェクトに影響を与えずに変更することができます。"
+    - "分叉是專案的複本。<br />分叉版本庫讓您在不影響原始專案的情況下，進行變更。"
+    - "Um fork é uma cópia de um projeto.<br />Bifurcação de um repositório permite que faças alterações sem afetar o projeto original."
+    - "Ответвление - это копия проекта.<br />Ответвление репозитория позволяет вносить изменения, не влияя на исходный проект."
+    - "派生是项目的副本。<br />仓库的派生允许您在不影响原始项目的情况下进行更改。"
+    - "Форк - це копія проєкту.<br />Форк репозиторію дозволяє вносити зміни без впливу на оригінальний проєкт."
+    - "Ein Fork ist eine Kopie eines Projekts.<br />Wenn du ein Repository forkst, kannst du, ohne Auswirkungen auf das ursprüngliche Projekt, Änderungen vornehmen."
+    - "포크는 프로젝트의 사본입니다.<br />저장소를 포크하면 원래 프로젝트에 영향을주지 않고 변경할 수 있습니다."
+    - "Un fork es una copia de un proyecto.<br />Realizar un fork de un repositorio le permite realizar cambios sin afectar al proyecto original."
+"Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision.":
+  plural_id:
+  translations:
+    - "Mudanças serão mostradas se revisão de <b>origem</b> tiver sofrido merge na revisão <b>alvo</b>."
+    - "<b>source</b>リビジョンが<b>target</b>リビジョン内に取り込まれているような変更として表示されます"
+    - "As alterações são mostradas como se a revisão de <b>origem</b> estivesse a ser mesclada na revisão de <b>destino</b>."
+    - "Показаны изменения как будто произошло слияние ревизии кода <b>источника</b> с <b>целевой</b> ревизией кода."
+    - "差异显示方式依<b>源</b>版本合并到<b>目标</b>版本的形式。"
+    - "Зміни відображаються так, ніби <b>редакція-джерело</b> була злита в <b>цільову редакцію</b>."
+    - "Änderungen werden angezeigt, als ob die <b>Quell</b>-Revision in die <b>Ziel</b>-Revision gemerged wurde."
+    - "변경 사항은 <b>source</b> 리비전이 <b>target</b> 리비전에 머지된 것처럼 표시됩니다."
+    - "Les modifications sont affichées comme si la révision <b>source</b> était fusionnée dans la révision<b>cible</b>."
+    - "Los cambios se muestran como si la revisión del <b>origen</b> se ha fusionado con la revisión del <b>objetivo</b>."
+"From <code>%{source_title}</code> into":
+  plural_id:
+  translations:
+    - "<code>%{source_title}</code> から"
+    - "Від <code>%{source_title}</code> до"
+"Choose between <code>clone</code> or <code>fetch</code> to get the recent application code":
+  plural_id:
+  translations:
+    - "Escolha entre <code>clone</code> ou <code>fetch</code> para obter o código do aplicativo recente"
+    - "<code>clone</code> または <code>fetch</code> を選択して最新のアプリケーションコードを取得してください"
+    - "Escolhe entre <code>clone</code> ou <code>fetch</code> para obter o código da aplicação recente"
+    - "选择 <code>克隆</code> 或 <code>拉取</code> 以获取最近的应用程序代码"
+    - "Оберіть між <code>clone</code> та<code>fetch</code> щоб отримати найновіший код програми"
+    - "Wähle zwischen <code>clone</code> oder <code>fetch</code>, um den aktuellen Anwendungscode zu erhalten"
+    - "최근 응용 프로그램 코드를 얻으려면 <code>클론</code> 또는 <code>fetch</code>를 선택하십시오."
+    - "Choisissez entre <code>clone</code> ou <code>fetch</code> pour obtenir les dernières modifications du code de l’application"
+    - "Elija entre <code>clone</code> o <code>fetch</code> para obtener el código de la aplicación más reciente"
+    - "Wybierz pomiędzy <code>klonem</code> lub <code>pobierz</code> aby uzyskać najnowszy kod aplikacji"
+"The path to the CI configuration file. Defaults to <code>.gitlab-ci.yml</code>":
+  plural_id:
+  translations:
+    - "CI 設定ファイルへのパス。デフォルトは <code>.gitlab-ci.yml</code>"
+    - "Путь к файлу конфигурации CI. По умолчанию это <code>.gitlab-ci.yml</code>"
+    - "CI配置文件的路径。默认为<code>.gitlab-ci.yml</code>"
+    - "Шлях до кофігураційного файлу CI. За замовчуванням <code>.gitlab-ci.yml</code>"
+    - "La ruta al archivo de configuración CI. Por defecto <code>.gitlab-ci.yml</code>"
+"Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here.":
+  plural_id:
+  translations:
+    - "デプロイステージの環境を <code>.gitlab-ci.yml</code> で定義して、デプロイを追跡します。"
+    - "Обозначьте окружения на этапе(ах) развёртывания в <code>.gitlab-ci.yml</code> для отслеживания развёртывания здесь."
+    - "在<code>.githab-ci.yml</code>的 deploy 阶段中定义 environment 来跟踪部署。"
+    - "Визначте середовища на стадії розгортання у <code>.gitlab-ci.yml</code> щоб відстежувати розгортання тут."
+    - "Defina entornos en las distintas etapas de despliegue en el fichero <code>.gitlab-ci.yml</code> para llevar un registro de las implementaciones desde aquí."
+"Groups with access to <strong>%{project_name}</strong>":
+  plural_id:
+  translations:
+    - "Grupos com acesso a <strong>%{project_name}</strong>"
+    - "<strong>%{project_name}</strong>へのアクセス権を持つグループ"
+    - "可以访问 <strong>%{project_name}</strong>"
+    - "Групи з доступом до <strong>%{project_name}</strong>"
+    - "Los grupos con acceso a <strong>%{project_name}</strong>"
+"This commit was signed with a verified signature, but the committer email is <strong>not verified</strong> to belong to the same user.":
+  plural_id:
+  translations:
+    - "このコミットは検証済みの署名でサインされています。しかしコミッターのメールは、 同じユーザーのものと<strong>検証されていません</strong>。"
+    - "Этот коммит был подписан верифицированной подписью, но <strong>не подтверждена</strong> принадлежность электронной почты коммитеру."
+    - "此提交已使用经过验证的签名进行签名，但<strong>未验证</strong>的提交者电子邮件属于同一用户。"
+    - "Цей коміт підписано перевіреним підписом але адреса електронної пошти комітера <strong>не гарантовано</strong> належить тому самому користувачу."
+    - "Este commit fue firmado con una firma verificada, pero <strong>no se ha verificado</strong> si la dirección de correo electrónico del commiter y la firma pertenecen al mismo usuario."
+"This commit was signed with an <strong>unverified</strong> signature.":
+  plural_id:
+  translations:
+    - "このコミットは<strong>検証されていない</strong> 署名でサインされています。"
+    - "Этот коммит был подписан <strong>непроверенной</strong> подписью."
+    - "此提交使用 <strong>未经验证的</strong> 签名进行签名。"
+    - "Цей коміт підписано <strong>неперевіреним</strong> підписом."
+    - "Esta commit fue firmado con una firma <strong>no verificada</strong>."
+"This commit was signed with a <strong>verified</strong> signature and the committer email is verified to belong to the same user.":
+  plural_id:
+  translations:
+    - "このコミットは <strong>検証済み</strong> の署名でサインされており、このコミッターのメールは同じユーザーのものであることが検証されています。"
+    - "Это коммит был подписан <strong>верифицированной</strong> подписью и коммитер подтвердил, что адрес почты принадлежит ему."
+    - "此提交使用 <strong>已验证</strong> 的签名进行签名，并且已验证提交者的电子邮件属于同一用户。"
+    - "Цей коміт підписано <strong>перевіреним</strong> підписом і адреса електронної пошти комітера гарантовано належить тому самому користувачу."
+    - "Este commit fue firmado con una firma verificada, y <strong>se ha verificado</strong> que la dirección de correo electrónico del committer y la firma pertenecen al mismo usuario."
+"To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed.":
+  plural_id:
+  translations:
+    - "パフォーマンス維持のため、 <strong>%{real_size} 個中 %{display_size} 個</strong> のファイルのみが表示されています。"
+    - "为了保持性能，仅显示文件中的 <strong>%{display_size}/%{real_size}</strong>。"
+    - "Для збереження швидкодії відображаються лише <strong>%{display_size} із %{real_size}</strong> файлів."
+    - "Para mantener el rendimiento, solo se muestran <strong>%{display_size} de %{real_size}</strong> archivos."
+"This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>":
+  plural_id:
+  translations:
+    - "このパイプラインは、<b>Auto DevOps</b>によって有効化された定義済みのCI/CD構成を利用します。"
+    - "此流水线使用了 <b>Auto DevOps 预先定义的并已启用的 CI/CD 配置。</b>"
+    - "Цей конвеєр використовує попередньо визначену конфігурацію CI / CD, увімкнену за допомогою <b>Auto DevOps</b>"
+    - "Este pipeline utiliza una configuración de CI/CD predefinida habilitada por <b>Auto DevOps.</b>"
+"This project will live in your group <strong>%{namespace}</strong>. A project is where you house your files (repository), plan your work (issues), publish your documentation (wiki), and so much more.":
+  plural_id:
+  translations:
+"To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>.":
+  plural_id:
+  translations:
+    - "Para usar apenas recursos CI/CD para um repositório externo, escolha <strong>CI/CD para repo externo</strong>."
+    - "外部リポジトリにのみ CI/CD の機能を使用するには、<strong>外部リポジトリ用 CI/CD</strong>を選択してください。"
+    - "要仅为外部仓库使用CI / CD功能时，请选择</strong>使用外部仓库运行CI/CD<strong>。"
+    - "Щоб використовувати лише функції CI/CD для зовнішнього репозиторію, виберіть <strong>CI/CD для зовнішнього репозиторію</strong>."
+    - "Um die CI/CD-Funktionen nur für ein externes Repository zu verwenden, wähle <strong>CI/CD für externes Repo</strong> aus."
+    - "CI/CD 기능만 외부 저장소를 위해 사용할 수 있습니다, <strong>외부 저장소용 CI/CD 저장소</strong>를 선택하십시오."
+    - "Pour n’utiliser uniquement que les fonctionnalités d’intégration et livraison continues (CI / CD) pour un dépôt externe, choisissez <strong>Intégration et livraison continues (CI / CD) pour dépôt externe</strong>."
+    - "Para utilizar únicamente las funciones de CI/CD en un repositorio externo, seleccione <strong>CI/CD para un repositorio externo</strong>."
+    - "Harici bir depoda yalnızca CI/CD özelliklerini kullanmak için <strong>Harici depo için CI/CD</strong>'yi seçin."
+"SlackIntegration|Paste the <strong>Webhook URL</strong> into the field below.":
+  plural_id:
+  translations:
+    - "Вставьте <strong>URL веб-обработчика</strong> в поле ниже."
+"SlackIntegration|Select events below to enable notifications. The <strong>Slack channel names</strong> and <strong>Slack username</strong> fields are optional.":
+  plural_id:
+  translations:
+"SlackIntegration|<strong>Note:</strong> Usernames and private channels are not supported.":
+  plural_id:
+  translations:
+    - "<strong> 注: </strong> ユーザー名とプライベートチャネルはサポートしていません。"
+    - "<strong>Примечание:</strong> Имена пользователей и частные каналы не поддерживаются."
+"SlackService|2. Paste the <strong>Token</strong> into the field below":
+  plural_id:
+  translations:
+    - "2. <strong>トークン</strong> を下のフィールドに貼り付けます"
+    - "2. 将<strong>Token</strong>粘贴到下面的字段中"
+    - "2. Вставте <strong>Токен</strong> у поле нижче"
+    - "2. Pegue el <strong>Token</strong> en el campo que se muestra a continuación"
+"SlackService|3. Select the <strong>Active</strong> checkbox, press <strong>Save changes</strong> and start using GitLab inside Slack!":
+  plural_id:
+  translations:
+    - "3. <strong>アクティブな</strong> チェックボックスを選択し、 <strong>変更を保存</strong> を押して、Slack内でGitLabの使用を開始します！"
+    - "Выберите флажок <strong>Активный</strong>, нажмите на <strong>Сохранить изменения</strong> и начните использовать GitLab внутри Slack!"
+    - "3. 选择<strong>Active</strong>复选框，点击<strong>Save change</strong>后开始在Slack中使用GitLab！"
+    - "3. Встановіть прапорець в пункті <strong>Активний</strong>, натисніть <strong>Зберегти зміни</strong> та починайте використовувати GitLab в Slack!"

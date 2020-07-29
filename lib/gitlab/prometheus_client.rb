@@ -132,7 +132,7 @@ module Gitlab
 
     def http_options
       strong_memoize(:http_options) do
-        { follow_redirects: false }.merge(mapped_options)
+        { follow_redirects: false, open_timeout: 5, read_timeout: 10 }.merge(mapped_options)
       end
     end
 

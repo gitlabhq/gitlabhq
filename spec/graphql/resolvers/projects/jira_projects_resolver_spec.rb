@@ -17,7 +17,7 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver do
       end
     end
 
-    context 'when project has no jira service' do
+    context 'when project has no Jira service' do
       let_it_be(:jira_service) { nil }
 
       context 'when user is a maintainer' do
@@ -29,7 +29,7 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver do
       end
     end
 
-    context 'when project has jira service' do
+    context 'when project has Jira service' do
       let(:jira_service) { create(:jira_service, project: project) }
 
       context 'when user is a developer' do
@@ -46,10 +46,11 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver do
         end
 
         context 'when Jira connection is valid' do
-          include_context 'jira projects request context'
+          include_context 'Jira projects request context'
 
-          it 'returns jira projects' do
-            jira_projects = resolve_jira_projects
+          it 'returns Jira projects', :aggregate_failures do
+            resolver = resolve_jira_projects
+            jira_projects = resolver.items
             project_keys = jira_projects.map(&:key)
             project_names = jira_projects.map(&:name)
             project_ids = jira_projects.map(&:id)
@@ -58,6 +59,23 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver do
             expect(project_keys).to eq(%w(EX ABC))
             expect(project_names).to eq(%w(Example Alphabetical))
             expect(project_ids).to eq(%w(10000 10001))
+            expect(resolver.max_page_size).to eq(2)
+          end
+
+          context 'when filtering projects by name' do
+            it 'returns Jira projects', :aggregate_failures do
+              resolver = resolve_jira_projects({ name: 'ABC' })
+              jira_projects = resolver.items
+              project_keys = jira_projects.map(&:key)
+              project_names = jira_projects.map(&:name)
+              project_ids = jira_projects.map(&:id)
+
+              expect(jira_projects.size).to eq 1
+              expect(project_keys).to eq(%w(ABC))
+              expect(project_names).to eq(%w(Alphabetical))
+              expect(project_ids).to eq(%w(10001))
+              expect(resolver.max_page_size).to eq(1)
+            end
           end
         end
 

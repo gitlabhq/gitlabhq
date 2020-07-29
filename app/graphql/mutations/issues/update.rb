@@ -31,6 +31,16 @@ module Mutations
                required: false,
                description: copy_field_description(Types::IssueType, :discussion_locked)
 
+      argument :add_label_ids,
+               [GraphQL::ID_TYPE],
+               required: false,
+               description: 'The IDs of labels to be added to the issue.'
+
+      argument :remove_label_ids,
+               [GraphQL::ID_TYPE],
+               required: false,
+               description: 'The IDs of labels to be removed from the issue.'
+
       def resolve(project_path:, iid:, **args)
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project

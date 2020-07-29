@@ -9,13 +9,28 @@ RSpec.shared_examples 'snippet visibility' do
   let_it_be(:non_member) { create(:user) }
 
   let_it_be(:project, reload: true) do
-    create(:project).tap do |project|
+    create(:project, :public).tap do |project|
       project.add_developer(author)
       project.add_developer(member)
     end
   end
 
+  let(:snippets) do
+    {
+      private: private_snippet,
+      public: public_snippet,
+      internal: internal_snippet
+    }
+  end
+
+  let(:user) { users[user_type] }
+  let(:snippet) { snippets[snippet_visibility] }
+
   context "For project snippets" do
+    let_it_be(:private_snippet) { create(:project_snippet, :private, project: project, author: author) }
+    let_it_be(:public_snippet) { create(:project_snippet, :public, project: project, author: author) }
+    let_it_be(:internal_snippet) { create(:project_snippet, :internal, project: project, author: author) }
+
     let!(:users) do
       {
         unauthenticated: nil,
@@ -26,214 +41,212 @@ RSpec.shared_examples 'snippet visibility' do
       }
     end
 
-    where(:project_type, :feature_visibility, :user_type, :snippet_type, :outcome) do
+    where(:project_visibility, :feature_visibility, :user_type, :snippet_visibility, :outcome) do
       [
         # Public projects
-        [:public, ProjectFeature::ENABLED, :unauthenticated,    Snippet::PUBLIC,   true],
-        [:public, ProjectFeature::ENABLED, :unauthenticated,    Snippet::INTERNAL, false],
-        [:public, ProjectFeature::ENABLED, :unauthenticated,    Snippet::PRIVATE,  false],
+        [:public, :enabled, :unauthenticated,    :public,   true],
+        [:public, :enabled, :unauthenticated,    :internal, false],
+        [:public, :enabled, :unauthenticated,    :private,  false],
 
-        [:public, ProjectFeature::ENABLED, :external,           Snippet::PUBLIC,   true],
-        [:public, ProjectFeature::ENABLED, :external,           Snippet::INTERNAL, false],
-        [:public, ProjectFeature::ENABLED, :external,           Snippet::PRIVATE,  false],
+        [:public, :enabled, :external,           :public,   true],
+        [:public, :enabled, :external,           :internal, false],
+        [:public, :enabled, :external,           :private,  false],
 
-        [:public, ProjectFeature::ENABLED, :non_member,         Snippet::PUBLIC,   true],
-        [:public, ProjectFeature::ENABLED, :non_member,         Snippet::INTERNAL, true],
-        [:public, ProjectFeature::ENABLED, :non_member,         Snippet::PRIVATE,  false],
+        [:public, :enabled, :non_member,         :public,   true],
+        [:public, :enabled, :non_member,         :internal, true],
+        [:public, :enabled, :non_member,         :private,  false],
 
-        [:public, ProjectFeature::ENABLED, :member,             Snippet::PUBLIC,   true],
-        [:public, ProjectFeature::ENABLED, :member,             Snippet::INTERNAL, true],
-        [:public, ProjectFeature::ENABLED, :member,             Snippet::PRIVATE,  true],
+        [:public, :enabled, :member,             :public,   true],
+        [:public, :enabled, :member,             :internal, true],
+        [:public, :enabled, :member,             :private,  true],
 
-        [:public, ProjectFeature::ENABLED, :author,             Snippet::PUBLIC,   true],
-        [:public, ProjectFeature::ENABLED, :author,             Snippet::INTERNAL, true],
-        [:public, ProjectFeature::ENABLED, :author,             Snippet::PRIVATE,  true],
+        [:public, :enabled, :author,             :public,   true],
+        [:public, :enabled, :author,             :internal, true],
+        [:public, :enabled, :author,             :private,  true],
 
-        [:public, ProjectFeature::PRIVATE, :unauthenticated,    Snippet::PUBLIC,   false],
-        [:public, ProjectFeature::PRIVATE, :unauthenticated,    Snippet::INTERNAL, false],
-        [:public, ProjectFeature::PRIVATE, :unauthenticated,    Snippet::PRIVATE,  false],
+        [:public, :private, :unauthenticated,    :public,   false],
+        [:public, :private, :unauthenticated,    :internal, false],
+        [:public, :private, :unauthenticated,    :private,  false],
 
-        [:public, ProjectFeature::PRIVATE, :external,           Snippet::PUBLIC,   false],
-        [:public, ProjectFeature::PRIVATE, :external,           Snippet::INTERNAL, false],
-        [:public, ProjectFeature::PRIVATE, :external,           Snippet::PRIVATE,  false],
+        [:public, :private, :external,           :public,   false],
+        [:public, :private, :external,           :internal, false],
+        [:public, :private, :external,           :private,  false],
 
-        [:public, ProjectFeature::PRIVATE, :non_member,         Snippet::PUBLIC,   false],
-        [:public, ProjectFeature::PRIVATE, :non_member,         Snippet::INTERNAL, false],
-        [:public, ProjectFeature::PRIVATE, :non_member,         Snippet::PRIVATE,  false],
+        [:public, :private, :non_member,         :public,   false],
+        [:public, :private, :non_member,         :internal, false],
+        [:public, :private, :non_member,         :private,  false],
 
-        [:public, ProjectFeature::PRIVATE, :member,             Snippet::PUBLIC,   true],
-        [:public, ProjectFeature::PRIVATE, :member,             Snippet::INTERNAL, true],
-        [:public, ProjectFeature::PRIVATE, :member,             Snippet::PRIVATE,  true],
+        [:public, :private, :member,             :public,   true],
+        [:public, :private, :member,             :internal, true],
+        [:public, :private, :member,             :private,  true],
 
-        [:public, ProjectFeature::PRIVATE, :author,             Snippet::PUBLIC,   true],
-        [:public, ProjectFeature::PRIVATE, :author,             Snippet::INTERNAL, true],
-        [:public, ProjectFeature::PRIVATE, :author,             Snippet::PRIVATE,  true],
+        [:public, :private, :author,             :public,   true],
+        [:public, :private, :author,             :internal, true],
+        [:public, :private, :author,             :private,  true],
 
-        [:public, ProjectFeature::DISABLED, :unauthenticated,   Snippet::PUBLIC,   false],
-        [:public, ProjectFeature::DISABLED, :unauthenticated,   Snippet::INTERNAL, false],
-        [:public, ProjectFeature::DISABLED, :unauthenticated,   Snippet::PRIVATE,  false],
+        [:public, :disabled, :unauthenticated,   :public,   false],
+        [:public, :disabled, :unauthenticated,   :internal, false],
+        [:public, :disabled, :unauthenticated,   :private,  false],
 
-        [:public, ProjectFeature::DISABLED, :external,          Snippet::PUBLIC,   false],
-        [:public, ProjectFeature::DISABLED, :external,          Snippet::INTERNAL, false],
-        [:public, ProjectFeature::DISABLED, :external,          Snippet::PRIVATE,  false],
+        [:public, :disabled, :external,          :public,   false],
+        [:public, :disabled, :external,          :internal, false],
+        [:public, :disabled, :external,          :private,  false],
 
-        [:public, ProjectFeature::DISABLED, :non_member,        Snippet::PUBLIC,   false],
-        [:public, ProjectFeature::DISABLED, :non_member,        Snippet::INTERNAL, false],
-        [:public, ProjectFeature::DISABLED, :non_member,        Snippet::PRIVATE,  false],
+        [:public, :disabled, :non_member,        :public,   false],
+        [:public, :disabled, :non_member,        :internal, false],
+        [:public, :disabled, :non_member,        :private,  false],
 
-        [:public, ProjectFeature::DISABLED, :member,            Snippet::PUBLIC,   false],
-        [:public, ProjectFeature::DISABLED, :member,            Snippet::INTERNAL, false],
-        [:public, ProjectFeature::DISABLED, :member,            Snippet::PRIVATE,  false],
+        [:public, :disabled, :member,            :public,   false],
+        [:public, :disabled, :member,            :internal, false],
+        [:public, :disabled, :member,            :private,  false],
 
-        [:public, ProjectFeature::DISABLED, :author,            Snippet::PUBLIC,   false],
-        [:public, ProjectFeature::DISABLED, :author,            Snippet::INTERNAL, false],
-        [:public, ProjectFeature::DISABLED, :author,            Snippet::PRIVATE,  false],
+        [:public, :disabled, :author,            :public,   false],
+        [:public, :disabled, :author,            :internal, false],
+        [:public, :disabled, :author,            :private,  false],
 
         # Internal projects
-        [:internal, ProjectFeature::ENABLED, :unauthenticated,  Snippet::PUBLIC,   false],
-        [:internal, ProjectFeature::ENABLED, :unauthenticated,  Snippet::INTERNAL, false],
-        [:internal, ProjectFeature::ENABLED, :unauthenticated,  Snippet::PRIVATE,  false],
+        [:internal, :enabled, :unauthenticated,  :public,   false],
+        [:internal, :enabled, :unauthenticated,  :internal, false],
+        [:internal, :enabled, :unauthenticated,  :private,  false],
 
-        [:internal, ProjectFeature::ENABLED, :external,         Snippet::PUBLIC,   false],
-        [:internal, ProjectFeature::ENABLED, :external,         Snippet::INTERNAL, false],
-        [:internal, ProjectFeature::ENABLED, :external,         Snippet::PRIVATE,  false],
+        [:internal, :enabled, :external,         :public,   false],
+        [:internal, :enabled, :external,         :internal, false],
+        [:internal, :enabled, :external,         :private,  false],
 
-        [:internal, ProjectFeature::ENABLED, :non_member,       Snippet::PUBLIC,   true],
-        [:internal, ProjectFeature::ENABLED, :non_member,       Snippet::INTERNAL, true],
-        [:internal, ProjectFeature::ENABLED, :non_member,       Snippet::PRIVATE,  false],
+        [:internal, :enabled, :non_member,       :public,   true],
+        [:internal, :enabled, :non_member,       :internal, true],
+        [:internal, :enabled, :non_member,       :private,  false],
 
-        [:internal, ProjectFeature::ENABLED, :member,           Snippet::PUBLIC,   true],
-        [:internal, ProjectFeature::ENABLED, :member,           Snippet::INTERNAL, true],
-        [:internal, ProjectFeature::ENABLED, :member,           Snippet::PRIVATE,  true],
+        [:internal, :enabled, :member,           :public,   true],
+        [:internal, :enabled, :member,           :internal, true],
+        [:internal, :enabled, :member,           :private,  true],
 
-        [:internal, ProjectFeature::ENABLED, :author,           Snippet::PUBLIC,   true],
-        [:internal, ProjectFeature::ENABLED, :author,           Snippet::INTERNAL, true],
-        [:internal, ProjectFeature::ENABLED, :author,           Snippet::PRIVATE,  true],
+        [:internal, :enabled, :author,           :public,   true],
+        [:internal, :enabled, :author,           :internal, true],
+        [:internal, :enabled, :author,           :private,  true],
 
-        [:internal, ProjectFeature::PRIVATE, :unauthenticated,  Snippet::PUBLIC,   false],
-        [:internal, ProjectFeature::PRIVATE, :unauthenticated,  Snippet::INTERNAL, false],
-        [:internal, ProjectFeature::PRIVATE, :unauthenticated,  Snippet::PRIVATE,  false],
+        [:internal, :private, :unauthenticated,  :public,   false],
+        [:internal, :private, :unauthenticated,  :internal, false],
+        [:internal, :private, :unauthenticated,  :private,  false],
 
-        [:internal, ProjectFeature::PRIVATE, :external,         Snippet::PUBLIC,   false],
-        [:internal, ProjectFeature::PRIVATE, :external,         Snippet::INTERNAL, false],
-        [:internal, ProjectFeature::PRIVATE, :external,         Snippet::PRIVATE,  false],
+        [:internal, :private, :external,         :public,   false],
+        [:internal, :private, :external,         :internal, false],
+        [:internal, :private, :external,         :private,  false],
 
-        [:internal, ProjectFeature::PRIVATE, :non_member,       Snippet::PUBLIC,   false],
-        [:internal, ProjectFeature::PRIVATE, :non_member,       Snippet::INTERNAL, false],
-        [:internal, ProjectFeature::PRIVATE, :non_member,       Snippet::PRIVATE,  false],
+        [:internal, :private, :non_member,       :public,   false],
+        [:internal, :private, :non_member,       :internal, false],
+        [:internal, :private, :non_member,       :private,  false],
 
-        [:internal, ProjectFeature::PRIVATE, :member,           Snippet::PUBLIC,   true],
-        [:internal, ProjectFeature::PRIVATE, :member,           Snippet::INTERNAL, true],
-        [:internal, ProjectFeature::PRIVATE, :member,           Snippet::PRIVATE,  true],
+        [:internal, :private, :member,           :public,   true],
+        [:internal, :private, :member,           :internal, true],
+        [:internal, :private, :member,           :private,  true],
 
-        [:internal, ProjectFeature::PRIVATE, :author,           Snippet::PUBLIC,   true],
-        [:internal, ProjectFeature::PRIVATE, :author,           Snippet::INTERNAL, true],
-        [:internal, ProjectFeature::PRIVATE, :author,           Snippet::PRIVATE,  true],
+        [:internal, :private, :author,           :public,   true],
+        [:internal, :private, :author,           :internal, true],
+        [:internal, :private, :author,           :private,  true],
 
-        [:internal, ProjectFeature::DISABLED, :unauthenticated, Snippet::PUBLIC,   false],
-        [:internal, ProjectFeature::DISABLED, :unauthenticated, Snippet::INTERNAL, false],
-        [:internal, ProjectFeature::DISABLED, :unauthenticated, Snippet::PRIVATE,  false],
+        [:internal, :disabled, :unauthenticated, :public,   false],
+        [:internal, :disabled, :unauthenticated, :internal, false],
+        [:internal, :disabled, :unauthenticated, :private,  false],
 
-        [:internal, ProjectFeature::DISABLED, :external,        Snippet::PUBLIC,   false],
-        [:internal, ProjectFeature::DISABLED, :external,        Snippet::INTERNAL, false],
-        [:internal, ProjectFeature::DISABLED, :external,        Snippet::PRIVATE,  false],
+        [:internal, :disabled, :external,        :public,   false],
+        [:internal, :disabled, :external,        :internal, false],
+        [:internal, :disabled, :external,        :private,  false],
 
-        [:internal, ProjectFeature::DISABLED, :non_member,      Snippet::PUBLIC,   false],
-        [:internal, ProjectFeature::DISABLED, :non_member,      Snippet::INTERNAL, false],
-        [:internal, ProjectFeature::DISABLED, :non_member,      Snippet::PRIVATE,  false],
+        [:internal, :disabled, :non_member,      :public,   false],
+        [:internal, :disabled, :non_member,      :internal, false],
+        [:internal, :disabled, :non_member,      :private,  false],
 
-        [:internal, ProjectFeature::DISABLED, :member,          Snippet::PUBLIC,   false],
-        [:internal, ProjectFeature::DISABLED, :member,          Snippet::INTERNAL, false],
-        [:internal, ProjectFeature::DISABLED, :member,          Snippet::PRIVATE,  false],
+        [:internal, :disabled, :member,          :public,   false],
+        [:internal, :disabled, :member,          :internal, false],
+        [:internal, :disabled, :member,          :private,  false],
 
-        [:internal, ProjectFeature::DISABLED, :author,          Snippet::PUBLIC,   false],
-        [:internal, ProjectFeature::DISABLED, :author,          Snippet::INTERNAL, false],
-        [:internal, ProjectFeature::DISABLED, :author,          Snippet::PRIVATE,  false],
+        [:internal, :disabled, :author,          :public,   false],
+        [:internal, :disabled, :author,          :internal, false],
+        [:internal, :disabled, :author,          :private,  false],
 
         # Private projects
-        [:private, ProjectFeature::ENABLED, :unauthenticated,   Snippet::PUBLIC,   false],
-        [:private, ProjectFeature::ENABLED, :unauthenticated,   Snippet::INTERNAL, false],
-        [:private, ProjectFeature::ENABLED, :unauthenticated,   Snippet::PRIVATE,  false],
+        [:private, :enabled, :unauthenticated,   :public,   false],
+        [:private, :enabled, :unauthenticated,   :internal, false],
+        [:private, :enabled, :unauthenticated,   :private,  false],
 
-        [:private, ProjectFeature::ENABLED, :external,          Snippet::PUBLIC,   true],
-        [:private, ProjectFeature::ENABLED, :external,          Snippet::INTERNAL, true],
-        [:private, ProjectFeature::ENABLED, :external,          Snippet::PRIVATE,  true],
+        [:private, :enabled, :external,          :public,   true],
+        [:private, :enabled, :external,          :internal, true],
+        [:private, :enabled, :external,          :private,  true],
 
-        [:private, ProjectFeature::ENABLED, :non_member,        Snippet::PUBLIC,   false],
-        [:private, ProjectFeature::ENABLED, :non_member,        Snippet::INTERNAL, false],
-        [:private, ProjectFeature::ENABLED, :non_member,        Snippet::PRIVATE,  false],
+        [:private, :enabled, :non_member,        :public,   false],
+        [:private, :enabled, :non_member,        :internal, false],
+        [:private, :enabled, :non_member,        :private,  false],
 
-        [:private, ProjectFeature::ENABLED, :member,            Snippet::PUBLIC,   true],
-        [:private, ProjectFeature::ENABLED, :member,            Snippet::INTERNAL, true],
-        [:private, ProjectFeature::ENABLED, :member,            Snippet::PRIVATE,  true],
+        [:private, :enabled, :member,            :public,   true],
+        [:private, :enabled, :member,            :internal, true],
+        [:private, :enabled, :member,            :private,  true],
 
-        [:private, ProjectFeature::ENABLED, :author,            Snippet::PUBLIC,   true],
-        [:private, ProjectFeature::ENABLED, :author,            Snippet::INTERNAL, true],
-        [:private, ProjectFeature::ENABLED, :author,            Snippet::PRIVATE,  true],
+        [:private, :enabled, :author,            :public,   true],
+        [:private, :enabled, :author,            :internal, true],
+        [:private, :enabled, :author,            :private,  true],
 
-        [:private, ProjectFeature::PRIVATE, :unauthenticated,   Snippet::PUBLIC,   false],
-        [:private, ProjectFeature::PRIVATE, :unauthenticated,   Snippet::INTERNAL, false],
-        [:private, ProjectFeature::PRIVATE, :unauthenticated,   Snippet::PRIVATE,  false],
+        [:private, :private, :unauthenticated,   :public,   false],
+        [:private, :private, :unauthenticated,   :internal, false],
+        [:private, :private, :unauthenticated,   :private,  false],
 
-        [:private, ProjectFeature::PRIVATE, :external,          Snippet::PUBLIC,   true],
-        [:private, ProjectFeature::PRIVATE, :external,          Snippet::INTERNAL, true],
-        [:private, ProjectFeature::PRIVATE, :external,          Snippet::PRIVATE,  true],
+        [:private, :private, :external,          :public,   true],
+        [:private, :private, :external,          :internal, true],
+        [:private, :private, :external,          :private,  true],
 
-        [:private, ProjectFeature::PRIVATE, :non_member,        Snippet::PUBLIC,   false],
-        [:private, ProjectFeature::PRIVATE, :non_member,        Snippet::INTERNAL, false],
-        [:private, ProjectFeature::PRIVATE, :non_member,        Snippet::PRIVATE,  false],
+        [:private, :private, :non_member,        :public,   false],
+        [:private, :private, :non_member,        :internal, false],
+        [:private, :private, :non_member,        :private,  false],
 
-        [:private, ProjectFeature::PRIVATE, :member,            Snippet::PUBLIC,   true],
-        [:private, ProjectFeature::PRIVATE, :member,            Snippet::INTERNAL, true],
-        [:private, ProjectFeature::PRIVATE, :member,            Snippet::PRIVATE,  true],
+        [:private, :private, :member,            :public,   true],
+        [:private, :private, :member,            :internal, true],
+        [:private, :private, :member,            :private,  true],
 
-        [:private, ProjectFeature::PRIVATE, :author,            Snippet::PUBLIC,   true],
-        [:private, ProjectFeature::PRIVATE, :author,            Snippet::INTERNAL, true],
-        [:private, ProjectFeature::PRIVATE, :author,            Snippet::PRIVATE,  true],
+        [:private, :private, :author,            :public,   true],
+        [:private, :private, :author,            :internal, true],
+        [:private, :private, :author,            :private,  true],
 
-        [:private, ProjectFeature::DISABLED, :unauthenticated,  Snippet::PUBLIC,   false],
-        [:private, ProjectFeature::DISABLED, :unauthenticated,  Snippet::INTERNAL, false],
-        [:private, ProjectFeature::DISABLED, :unauthenticated,  Snippet::PRIVATE,  false],
+        [:private, :disabled, :unauthenticated,  :public,   false],
+        [:private, :disabled, :unauthenticated,  :internal, false],
+        [:private, :disabled, :unauthenticated,  :private,  false],
 
-        [:private, ProjectFeature::DISABLED, :external,         Snippet::PUBLIC,   false],
-        [:private, ProjectFeature::DISABLED, :external,         Snippet::INTERNAL, false],
-        [:private, ProjectFeature::DISABLED, :external,         Snippet::PRIVATE,  false],
+        [:private, :disabled, :external,         :public,   false],
+        [:private, :disabled, :external,         :internal, false],
+        [:private, :disabled, :external,         :private,  false],
 
-        [:private, ProjectFeature::DISABLED, :non_member,       Snippet::PUBLIC,   false],
-        [:private, ProjectFeature::DISABLED, :non_member,       Snippet::INTERNAL, false],
-        [:private, ProjectFeature::DISABLED, :non_member,       Snippet::PRIVATE,  false],
+        [:private, :disabled, :non_member,       :public,   false],
+        [:private, :disabled, :non_member,       :internal, false],
+        [:private, :disabled, :non_member,       :private,  false],
 
-        [:private, ProjectFeature::DISABLED, :member,           Snippet::PUBLIC,   false],
-        [:private, ProjectFeature::DISABLED, :member,           Snippet::INTERNAL, false],
-        [:private, ProjectFeature::DISABLED, :member,           Snippet::PRIVATE,  false],
+        [:private, :disabled, :member,           :public,   false],
+        [:private, :disabled, :member,           :internal, false],
+        [:private, :disabled, :member,           :private,  false],
 
-        [:private, ProjectFeature::DISABLED, :author,           Snippet::PUBLIC,   false],
-        [:private, ProjectFeature::DISABLED, :author,           Snippet::INTERNAL, false],
-        [:private, ProjectFeature::DISABLED, :author,           Snippet::PRIVATE,  false]
+        [:private, :disabled, :author,           :public,   false],
+        [:private, :disabled, :author,           :internal, false],
+        [:private, :disabled, :author,           :private,  false]
       ]
     end
 
     with_them do
-      let!(:project_visibility) { project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(project_type.to_s)) }
-      let!(:project_feature) { project.project_feature.update_column(:snippets_access_level, feature_visibility) }
-      let!(:user) { users[user_type] }
-      let!(:snippet) { create(:project_snippet, visibility_level: snippet_type, project: project, author: author) }
-      let!(:external_member) do
-        member = project.project_member(external)
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel.level_value(project_visibility.to_s), snippets_access_level: feature_visibility)
 
-        if project.private?
-          project.add_developer(external) unless member
-        else
-          member.delete if member
+        if user_type == :external
+          member = project.project_member(external)
+
+          if project.private?
+            project.add_developer(external) unless member
+          else
+            member.delete if member
+          end
         end
       end
 
       context "For #{params[:project_type]} project and #{params[:user_type]} users" do
-        it 'agrees with the read_snippet policy' do
-          expect(can?(user, :read_snippet, snippet)).to eq(outcome)
-        end
-
         it 'returns proper outcome' do
+          expect(can?(user, :read_snippet, snippet)).to eq(outcome)
+
           results = described_class.new(user, project: project).execute
 
           expect(results.include?(snippet)).to eq(outcome)
@@ -243,16 +256,8 @@ RSpec.shared_examples 'snippet visibility' do
       context "Without a given project and #{params[:user_type]} users" do
         it 'returns proper outcome' do
           results = described_class.new(user).execute
+
           expect(results.include?(snippet)).to eq(outcome)
-        end
-
-        it 'returns no snippets when the user cannot read cross project' do
-          allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
-
-          snippets = described_class.new(user).execute
-
-          expect(snippets).to be_empty
         end
       end
     end
@@ -270,46 +275,55 @@ RSpec.shared_examples 'snippet visibility' do
 
     where(:snippet_visibility, :user_type, :outcome) do
       [
-        [Snippet::PUBLIC,   :unauthenticated, true],
-        [Snippet::PUBLIC,   :external,        true],
-        [Snippet::PUBLIC,   :non_member,      true],
-        [Snippet::PUBLIC,   :author,          true],
+        [:public,   :unauthenticated, true],
+        [:public,   :external,        true],
+        [:public,   :non_member,      true],
+        [:public,   :author,          true],
 
-        [Snippet::INTERNAL, :unauthenticated, false],
-        [Snippet::INTERNAL, :external,        false],
-        [Snippet::INTERNAL, :non_member,      true],
-        [Snippet::INTERNAL, :author,          true],
+        [:internal, :unauthenticated, false],
+        [:internal, :external,        false],
+        [:internal, :non_member,      true],
+        [:internal, :author,          true],
 
-        [Snippet::PRIVATE,  :unauthenticated, false],
-        [Snippet::PRIVATE,  :external,        false],
-        [Snippet::PRIVATE,  :non_member,      false],
-        [Snippet::PRIVATE,  :author,          true]
+        [:private,  :unauthenticated, false],
+        [:private,  :external,        false],
+        [:private,  :non_member,      false],
+        [:private,  :author,          true]
       ]
     end
 
     with_them do
-      let!(:user) { users[user_type] }
-      let!(:snippet) { create(:personal_snippet, visibility_level: snippet_visibility, author: author) }
+      let_it_be(:private_snippet) { create(:personal_snippet, :private, author: author) }
+      let_it_be(:public_snippet) { create(:personal_snippet, :public, author: author) }
+      let_it_be(:internal_snippet) { create(:personal_snippet, :internal, author: author) }
 
       context "For personal and #{params[:snippet_visibility]} snippets with #{params[:user_type]} user" do
-        it 'agrees with read_snippet policy' do
-          expect(can?(user, :read_snippet, snippet)).to eq(outcome)
-        end
-
         it 'returns proper outcome' do
-          results = described_class.new(user).execute
-          expect(results.include?(snippet)).to eq(outcome)
-        end
-
-        it 'returns personal snippets when the user cannot read cross project' do
-          allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+          expect(can?(user, :read_snippet, snippet)).to eq(outcome)
 
           results = described_class.new(user).execute
 
           expect(results.include?(snippet)).to eq(outcome)
         end
       end
+    end
+  end
+
+  context 'when the user cannot read cross project' do
+    it 'returns only personal snippets' do
+      personal_snippet = create(:personal_snippet, :public, author: author)
+      create(:project_snippet, :public, project: project, author: author)
+
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?).with(author, :read_cross_project) { false }
+
+      service = described_class.new(author)
+
+      expect(service).to receive(:personal_snippets).and_call_original
+      expect(service).not_to receive(:snippets_of_visible_projects)
+      expect(service).not_to receive(:snippets_of_authorized_projects)
+
+      expect(service.execute).to match_array([personal_snippet])
     end
   end
 end

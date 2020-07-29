@@ -61,6 +61,37 @@
 /doc/user/project/static_site_editor/index.md @marcia
 /doc/user/project/web_ide/index.md @marcia
 /doc/user/project/wiki/index.md @marcia
+/doc/gitlab-basics/README.md @marcia
+/doc/gitlab-basics/add-file.md @marcia
+/doc/gitlab-basics/command-line-commands.md @marcia
+/doc/gitlab-basics/create-branch.md @marcia
+/doc/gitlab-basics/create-project.md @marcia
+/doc/gitlab-basics/create-your-ssh-keys.md @marcia
+/doc/gitlab-basics/feature_branch_workflow.md @marcia
+/doc/gitlab-basics/fork-project.md @marcia
+/doc/gitlab-basics/start-using-git.md @marcia
+/doc/integration/sourcegraph.md @marcia
+/doc/intro/README.md @marcia
+/doc/push_rules/push_rules.md @marcia
+/doc/ssh/README.md @marcia
+/doc/topics/git/feature_branch_development.md @marcia
+/doc/topics/git/how_to_install_git/index.md @marcia
+/doc/topics/git/index.md @marcia
+/doc/topics/git/lfs/index.md @marcia
+/doc/topics/git/lfs/migrate_from_git_annex_to_git_lfs.md @marcia
+/doc/topics/git/numerous_undo_possibilities_in_git/index.md @marcia
+/doc/topics/git/partial_clone.md @marcia
+/doc/topics/git/troubleshooting_git.md @marcia
+/doc/topics/git/useful_git_commands.md @marcia
+/doc/topics/gitlab_flow.md @marcia
+/doc/user/index.md @marcia
+/doc/user/snippets.md @marcia
+/doc/administration/issue_closing_pattern.md @marcia
+/doc/user/asciidoc.md @marcia
+/doc/user/markdown.md @marcia
+/doc/user/search/advanced_global_search.md @marcia
+/doc/user/search/advanced_search_syntax.md @marcia
+/doc/user/search/index.md @marcia
 
 [Frontend]
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend

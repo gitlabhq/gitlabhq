@@ -146,7 +146,7 @@ RSpec.describe Ci::BuildPolicy do
           create(:protected_tag, :no_one_can_create,
                  name: build.ref, project: project)
 
-          build.update(tag: true)
+          build.update!(tag: true)
         end
 
         it 'does not include ability to update build' do

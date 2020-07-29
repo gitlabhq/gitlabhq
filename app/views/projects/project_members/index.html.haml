@@ -11,7 +11,7 @@
         %p= share_project_description(@project)
       - else
         %p
-          = _("Members can be added by project <i>Maintainers</i> or <i>Owners</i>").html_safe
+          = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
 
     .light
       - if can_admin_project_members && project_can_be_shared?

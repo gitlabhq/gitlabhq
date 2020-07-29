@@ -41,7 +41,17 @@ panel_groups:
     max_value: 1
     metrics:
     - id: metric_a1
-      query_range: 'query'
+      query_range: |+
+        avg(
+          sum(
+            container_memory_usage_bytes{
+              container_name!="POD",
+              pod_name=~"^{{ci_environment_slug}}-(.*)",
+              namespace="{{kube_namespace}}"
+            }
+          ) by (job)
+        ) without (job)
+        /1024/1024/1024
       unit: unit
       label: Legend Label
   - title: "Super Chart A2"

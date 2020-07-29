@@ -282,6 +282,16 @@ RSpec.describe BlobHelper do
               expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
             end
           end
+
+          context 'blob does not have auxiliary view' do
+            before do
+              allow(blob).to receive(:auxiliary_viewer).and_return(nil)
+            end
+
+            it 'is false' do
+              expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
+            end
+          end
         end
 
         context 'experiment disabled' do

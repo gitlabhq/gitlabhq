@@ -111,7 +111,7 @@
     "minimatch": "^3.0.4",
     "monaco-editor": "^0.20.0",
     "monaco-editor-webpack-plugin": "^1.9.0",
-    "monaco-yaml": "^2.4.0",
+    "monaco-yaml": "^2.4.1",
     "mousetrap": "^1.4.6",
     "pdfjs-dist": "^2.0.943",
     "pikaday": "^1.8.0",

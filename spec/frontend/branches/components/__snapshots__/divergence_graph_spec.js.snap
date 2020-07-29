@@ -12,7 +12,7 @@ exports[`Branch divergence graph component renders ahead and behind count 1`] = 
   />
    
   <div
-    class="graph-separator pull-left mt-1"
+    class="graph-separator float-left mt-1"
   />
    
   <graph-bar-stub

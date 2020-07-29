@@ -9,3 +9,4 @@ export const I18N = {
 };
 
 export const INCIDENT_SEARCH_DELAY = 300;
+export const DEFAULT_PAGE_SIZE = 10;

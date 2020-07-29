@@ -1,5 +1,12 @@
 import { mount } from '@vue/test-utils';
-import { GlAlert, GlLoadingIcon, GlTable, GlAvatar, GlSearchBoxByType } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlLoadingIcon,
+  GlTable,
+  GlAvatar,
+  GlPagination,
+  GlSearchBoxByType,
+} from '@gitlab/ui';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -26,6 +33,7 @@ describe('Incidents List', () => {
   const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
   const findSearch = () => wrapper.find(GlSearchBoxByType);
   const findClosedIcon = () => wrapper.findAll("[data-testid='incident-closed']");
+  const findPagination = () => wrapper.find(GlPagination);
 
   function mountComponent({ data = { incidents: [] }, loading = false }) {
     wrapper = mount(IncidentsList, {
@@ -70,7 +78,7 @@ describe('Incidents List', () => {
 
   it('shows empty state', () => {
     mountComponent({
-      data: { incidents: [] },
+      data: { incidents: { list: [] } },
       loading: false,
     });
     expect(findTable().text()).toContain(I18N.noIncidents);
@@ -78,7 +86,7 @@ describe('Incidents List', () => {
 
   it('shows error state', () => {
     mountComponent({
-      data: { incidents: [], errored: true },
+      data: { incidents: { list: [] }, errored: true },
       loading: false,
     });
     expect(findTable().text()).toContain(I18N.noIncidents);
@@ -88,7 +96,7 @@ describe('Incidents List', () => {
   describe('Incident Management list', () => {
     beforeEach(() => {
       mountComponent({
-        data: { incidents: mockIncidents },
+        data: { incidents: { list: mockIncidents } },
         loading: false,
       });
     });
@@ -140,7 +148,7 @@ describe('Incidents List', () => {
   describe('Create Incident', () => {
     beforeEach(() => {
       mountComponent({
-        data: { incidents: [] },
+        data: { incidents: { list: [] } },
         loading: false,
       });
     });
@@ -157,24 +165,120 @@ describe('Incidents List', () => {
     });
   });
 
-  describe('Search', () => {
+  describe('Pagination', () => {
     beforeEach(() => {
       mountComponent({
-        data: { incidents: mockIncidents },
+        data: {
+          incidents: {
+            list: mockIncidents,
+            pageInfo: { hasNextPage: true, hasPreviousPage: true },
+          },
+          errored: false,
+        },
         loading: false,
       });
     });
 
-    it('renders the search component for incidents', () => {
-      expect(findSearch().exists()).toBe(true);
+    it('should render pagination', () => {
+      expect(wrapper.find(GlPagination).exists()).toBe(true);
     });
 
-    it('sets the `searchTerm` graphql variable', () => {
-      const SEARCH_TERM = 'Simple Incident';
+    describe('prevPage', () => {
+      it('returns prevPage button', () => {
+        findPagination().vm.$emit('input', 3);
 
-      findSearch().vm.$emit('input', SEARCH_TERM);
+        return wrapper.vm.$nextTick(() => {
+          expect(
+            findPagination()
+              .findAll('.page-item')
+              .at(0)
+              .text(),
+          ).toBe('Prev');
+        });
+      });
 
-      expect(wrapper.vm.$data.searchTerm).toBe(SEARCH_TERM);
+      it('returns prevPage number', () => {
+        findPagination().vm.$emit('input', 3);
+
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.prevPage).toBe(2);
+        });
+      });
+
+      it('returns 0 when it is the first page', () => {
+        findPagination().vm.$emit('input', 1);
+
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.prevPage).toBe(0);
+        });
+      });
+    });
+
+    describe('nextPage', () => {
+      it('returns nextPage button', () => {
+        findPagination().vm.$emit('input', 3);
+
+        return wrapper.vm.$nextTick(() => {
+          expect(
+            findPagination()
+              .findAll('.page-item')
+              .at(1)
+              .text(),
+          ).toBe('Next');
+        });
+      });
+
+      it('returns nextPage number', () => {
+        mountComponent({
+          data: {
+            incidents: {
+              list: [...mockIncidents, ...mockIncidents, ...mockIncidents],
+              pageInfo: { hasNextPage: true, hasPreviousPage: true },
+            },
+            errored: false,
+          },
+          loading: false,
+        });
+        findPagination().vm.$emit('input', 1);
+
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.nextPage).toBe(2);
+        });
+      });
+
+      it('returns `null` when currentPage is already last page', () => {
+        findPagination().vm.$emit('input', 1);
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.nextPage).toBeNull();
+        });
+      });
+    });
+
+    describe('Search', () => {
+      beforeEach(() => {
+        mountComponent({
+          data: {
+            incidents: {
+              list: mockIncidents,
+              pageInfo: { hasNextPage: true, hasPreviousPage: true },
+            },
+            errored: false,
+          },
+          loading: false,
+        });
+      });
+
+      it('renders the search component for incidents', () => {
+        expect(findSearch().exists()).toBe(true);
+      });
+
+      it('sets the `searchTerm` graphql variable', () => {
+        const SEARCH_TERM = 'Simple Incident';
+
+        findSearch().vm.$emit('input', SEARCH_TERM);
+
+        expect(wrapper.vm.$data.searchTerm).toBe(SEARCH_TERM);
+      });
     });
   });
 });

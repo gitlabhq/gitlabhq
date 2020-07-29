@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Editor
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference
+---
+
 # Advanced Syntax Search **(STARTER)**
 
 > - Introduced in [GitLab Enterprise Starter](https://about.gitlab.com/pricing/) 9.2

@@ -40,7 +40,7 @@ export default {
     <ul class="content-list">
       <li v-for="(item, index) in information" :key="index">
         <span class="text-secondary">{{ item.label }}</span>
-        <div class="pull-right w-75 gl-text-right">
+        <div class="float-right w-75 gl-text-right">
           <gl-link
             v-if="item.type === $options.informationType.LINK"
             :href="item.value"

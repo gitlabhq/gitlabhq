@@ -4,7 +4,7 @@
 .card
   .card-header.flex-project-members-panel
     %span.flex-project-title
-      = _("Members of <strong>%{project_name}</strong>").html_safe % { project_name: sanitize(project.name, tags: []) }
+      = html_escape(_("Members of %{strong_open}%{project_name}%{strong_close}")) % { project_name: sanitize(project.name, tags: []), strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
     %span.badge.badge-pill= members.total_count
     = form_tag project_project_members_path(project), method: :get, class: 'form-inline user-search-form flex-users-form' do
       .form-group

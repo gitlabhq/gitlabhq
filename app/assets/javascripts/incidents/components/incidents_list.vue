@@ -10,19 +10,28 @@ import {
   GlButton,
   GlSearchBoxByType,
   GlIcon,
+  GlPagination,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__ } from '~/locale';
 import { mergeUrlParams, joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
-import { I18N, INCIDENT_SEARCH_DELAY } from '../constants';
+import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_SEARCH_DELAY } from '../constants';
 
 const tdClass =
   'table-col gl-display-flex d-md-table-cell gl-align-items-center gl-white-space-nowrap';
 const thClass = 'gl-hover-bg-blue-50';
 const bodyTrClass =
   'gl-border-1 gl-border-t-solid gl-border-gray-100 gl-hover-cursor-pointer gl-hover-bg-blue-50 gl-hover-border-b-solid gl-hover-border-blue-200';
+
+const initialPaginationState = {
+  currentPage: 1,
+  prevPageCursor: '',
+  nextPageCursor: '',
+  firstPageSize: DEFAULT_PAGE_SIZE,
+  lastPageSize: null,
+};
 
 export default {
   i18n: I18N,
@@ -57,6 +66,7 @@ export default {
     TimeAgoTooltip,
     GlSearchBoxByType,
     GlIcon,
+    GlPagination,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -70,9 +80,18 @@ export default {
           searchTerm: this.searchTerm,
           projectPath: this.projectPath,
           labelNames: ['incident'],
+          firstPageSize: this.pagination.firstPageSize,
+          lastPageSize: this.pagination.lastPageSize,
+          prevPageCursor: this.pagination.prevPageCursor,
+          nextPageCursor: this.pagination.nextPageCursor,
         };
       },
-      update: ({ project: { issues: { nodes = [] } = {} } = {} }) => nodes,
+      update({ project: { issues: { nodes = [], pageInfo = {} } = {} } = {} }) {
+        return {
+          list: nodes,
+          pageInfo,
+        };
+      },
       error() {
         this.errored = true;
       },
@@ -84,6 +103,8 @@ export default {
       isErrorAlertDismissed: false,
       redirecting: false,
       searchTerm: '',
+      pagination: initialPaginationState,
+      incidents: {},
     };
   },
   computed: {
@@ -94,7 +115,19 @@ export default {
       return this.$apollo.queries.incidents.loading;
     },
     hasIncidents() {
-      return this.incidents?.length;
+      return this.incidents?.list?.length;
+    },
+    showPaginationControls() {
+      return Boolean(
+        this.incidents?.pageInfo?.hasNextPage || this.incidents?.pageInfo?.hasPreviousPage,
+      );
+    },
+    prevPage() {
+      return Math.max(this.pagination.currentPage - 1, 0);
+    },
+    nextPage() {
+      const nextPage = this.pagination.currentPage + 1;
+      return this.incidents?.list?.length < DEFAULT_PAGE_SIZE ? null : nextPage;
     },
     tbodyTrClass() {
       return {
@@ -118,6 +151,28 @@ export default {
     },
     navigateToIncidentDetails({ iid }) {
       return visitUrl(joinPaths(this.issuePath, iid));
+    },
+    handlePageChange(page) {
+      const { startCursor, endCursor } = this.incidents.pageInfo;
+
+      if (page > this.pagination.currentPage) {
+        this.pagination = {
+          ...initialPaginationState,
+          nextPageCursor: endCursor,
+          currentPage: page,
+        };
+      } else {
+        this.pagination = {
+          lastPageSize: DEFAULT_PAGE_SIZE,
+          firstPageSize: null,
+          prevPageCursor: startCursor,
+          nextPageCursor: '',
+          currentPage: page,
+        };
+      }
+    },
+    resetPagination() {
+      this.pagination = initialPaginationState;
     },
   },
 };
@@ -155,7 +210,7 @@ export default {
       {{ s__('IncidentManagement|Incidents') }}
     </h4>
     <gl-table
-      :items="incidents"
+      :items="incidents.list || []"
       :fields="$options.fields"
       :show-empty="true"
       :busy="loading"
@@ -219,5 +274,15 @@ export default {
         {{ $options.i18n.noIncidents }}
       </template>
     </gl-table>
+
+    <gl-pagination
+      v-if="showPaginationControls"
+      :value="pagination.currentPage"
+      :prev-page="prevPage"
+      :next-page="nextPage"
+      align="center"
+      class="gl-pagination gl-mt-3"
+      @input="handlePageChange"
+    />
   </div>
 </template>

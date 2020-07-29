@@ -9,7 +9,7 @@
 .form-group.row.d-flex.gl-pl-3-deprecated-no-really-do-not-use-me.gl-pr-3-deprecated-no-really-do-not-use-me.branch-selector
   .align-self-center
     %span
-      = _('From <code>%{source_title}</code> into').html_safe % { source_title: source_title }
+      = html_escape(_('From %{code_open}%{source_title}%{code_close} into')) % { source_title: source_title, code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
 
     - if issuable.new_record?
       %code#js-target-branch-title= target_title

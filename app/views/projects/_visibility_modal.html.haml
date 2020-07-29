@@ -24,7 +24,7 @@
         .form-group
           = text_field_tag 'confirm_path_input', '', class: 'form-control js-confirm-danger-input qa-confirm-input'
         .form-actions.clearfix
-          .pull-right
+          .float-right
             %button.btn.btn-default{ type: "button", "data-dismiss": "modal" }
               = _('Cancel')
             = submit_tag _('Reduce project visibility'), class: "btn btn-danger js-confirm-danger-submit qa-confirm-button", disabled: true

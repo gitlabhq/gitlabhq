@@ -5,7 +5,9 @@
     %h4.gl-mt-0
       = _("Fork project")
     %p
-      = _("A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project.").html_safe
+      = _("A fork is a copy of a project.")
+      %br
+      = _('Forking a repository allows you to make changes without affecting the original project.')
   .col-lg-9
     - if @own_namespace.present?
       .fork-thumbnail-container.js-fork-content
