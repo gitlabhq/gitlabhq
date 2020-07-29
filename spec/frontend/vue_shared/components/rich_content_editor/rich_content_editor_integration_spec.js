@@ -1,5 +1,6 @@
 import Editor from '@toast-ui/editor';
 import { registerHTMLToMarkdownRenderer } from '~/vue_shared/components/rich_content_editor/services/editor_service';
+import buildMarkdownToHTMLRenderer from '~/vue_shared/components/rich_content_editor/services/build_custom_renderer';
 
 describe('vue_shared/components/rich_content_editor', () => {
   let editor;
@@ -7,6 +8,7 @@ describe('vue_shared/components/rich_content_editor', () => {
   const buildEditor = () => {
     editor = new Editor({
       el: document.body,
+      customHTMLRenderer: buildMarkdownToHTMLRenderer(),
     });
 
     registerHTMLToMarkdownRenderer(editor);
@@ -48,5 +50,20 @@ describe('vue_shared/components/rich_content_editor', () => {
 
       expect(markdown).toBe('**strong text**_emphasis text_');
     });
+  });
+
+  describe('Markdown to HTML', () => {
+    it.each`
+      input                                 | output
+      ${'markdown with _emphasized\ntext_'} | ${'<p>markdown with <em>emphasized text</em></p>\n'}
+      ${'markdown with **strong\ntext**'}   | ${'<p>markdown with <strong>strong text</strong></p>\n'}
+    `(
+      'does not transform softbreaks inside (_) and strong (**) nodes into <br/> tags',
+      ({ input, output }) => {
+        editor.setMarkdown(input);
+
+        expect(editor.getHtml()).toBe(output);
+      },
+    );
   });
 });

@@ -5664,6 +5664,11 @@ type Group {
   ): VulnerabilitiesCountByDayAndSeverityConnection
 
   """
+  Represents vulnerable project counts for each grade
+  """
+  vulnerabilityGrades: [VulnerableProjectsByGrade!]!
+
+  """
   Vulnerability scanners reported on the project vulnerabilties of the group and its subgroups
   """
   vulnerabilityScanners(
@@ -5815,6 +5820,11 @@ type InstanceSecurityDashboard {
     """
     last: Int
   ): ProjectConnection!
+
+  """
+  Represents vulnerable project counts for each grade
+  """
+  vulnerabilityGrades: [VulnerableProjectsByGrade!]!
 
   """
   Vulnerability scanners reported on the vulnerabilties from projects selected in Instance Security Dashboard
@@ -14312,12 +14322,17 @@ input UpdateNoteInput {
   """
   Content of the note
   """
-  body: String!
+  body: String
 
   """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  """
+  The confidentiality flag of a note. Default is false.
+  """
+  confidential: Boolean
 
   """
   The global id of the note to update
@@ -15041,6 +15056,17 @@ type VulnerabilityEdge {
 }
 
 """
+The grade of the vulnerable project
+"""
+enum VulnerabilityGrade {
+  A
+  B
+  C
+  D
+  F
+}
+
+"""
 Represents a vulnerability identifier.
 """
 type VulnerabilityIdentifier {
@@ -15480,4 +15506,44 @@ type VulnerablePackage {
   The name of the vulnerable package
   """
   name: String
+}
+
+"""
+Represents vulnerability letter grades with associated projects
+"""
+type VulnerableProjectsByGrade {
+  """
+  Number of projects within this grade
+  """
+  count: Int!
+
+  """
+  Grade based on the highest severity vulnerability present
+  """
+  grade: VulnerabilityGrade!
+
+  """
+  Projects within this grade
+  """
+  projects(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ProjectConnection!
 }

@@ -2,10 +2,10 @@
 import 'mousetrap';
 import Vue from 'vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import DiscussionKeyboardNavigator from '~/notes/components/discussion_keyboard_navigator.vue';
+import DiscussionNavigator from '~/notes/components/discussion_navigator.vue';
 import eventHub from '~/notes/event_hub';
 
-describe('notes/components/discussion_keyboard_navigator', () => {
+describe('notes/components/discussion_navigator', () => {
   const localVue = createLocalVue();
 
   let wrapper;
@@ -13,7 +13,7 @@ describe('notes/components/discussion_keyboard_navigator', () => {
   let jumpToPreviousDiscussion;
 
   const createComponent = () => {
-    wrapper = shallowMount(DiscussionKeyboardNavigator, {
+    wrapper = shallowMount(DiscussionNavigator, {
       mixins: [
         localVue.extend({
           methods: {
@@ -43,7 +43,7 @@ describe('notes/components/discussion_keyboard_navigator', () => {
 
     beforeEach(() => {
       onSpy = jest.spyOn(eventHub, '$on');
-      vm = new (Vue.extend(DiscussionKeyboardNavigator))();
+      vm = new (Vue.extend(DiscussionNavigator))();
     });
 
     it('listens for jumpToFirstUnresolvedDiscussion events', () => {

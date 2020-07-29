@@ -145,10 +145,11 @@ PUT /projects/:id/issues/:issue_iid/notes/:note_id
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
-- `issue_iid` (required) - The IID of an issue
-- `note_id` (required) - The ID of a note
-- `body` (required) - The content of a note. Limited to 1,000,000 characters.
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).
+- `issue_iid` (required) - The IID of an issue.
+- `note_id` (required) - The ID of a note.
+- `body` (optional) - The content of a note. Limited to 1,000,000 characters.
+- `confidential` (optional) - The confidential flag of a note.
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=note"

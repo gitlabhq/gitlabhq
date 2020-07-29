@@ -36,6 +36,16 @@ RSpec.describe Notes::UpdateService do
       end
     end
 
+    context 'with system note' do
+      before do
+        note.update_column(:system, true)
+      end
+
+      it 'does not update the note' do
+        expect { update_note(note: 'new text') }.not_to change { note.reload.note }
+      end
+    end
+
     context 'suggestions' do
       it 'refreshes note suggestions' do
         markdown = <<-MARKDOWN.strip_heredoc

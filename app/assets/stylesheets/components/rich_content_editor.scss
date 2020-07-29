@@ -20,11 +20,11 @@
   .tui-popup-wrapper {
     @include gl-overflow-hidden;
     @include gl-rounded-base;
-    @include gl-border-gray-400;
+    @include gl-border-gray-200;
 
     hr {
       @include gl-m-0;
-      @include gl-bg-gray-400;
+      @include gl-bg-gray-200;
     }
 
     button {

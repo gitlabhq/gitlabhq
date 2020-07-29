@@ -231,7 +231,7 @@ export default {
 
         <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
 
-        <small v-else class="gl-font-sm gl-font-style-italic gl-text-gray-400">{{
+        <small v-else class="gl-font-sm gl-font-style-italic gl-text-gray-200">{{
           __('Unknown')
         }}</small>
       </template>

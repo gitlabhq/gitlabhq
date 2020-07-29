@@ -35,7 +35,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       />
        
       <div
-        class="gl-text-gray-400 gl-pt-2"
+        class="gl-text-gray-200 gl-pt-2"
       >
         <gl-sprintf-stub
           message="Create a GitLab issue for each PagerDuty incident by %{docsLink}"

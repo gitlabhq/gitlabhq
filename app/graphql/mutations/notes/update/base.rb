@@ -40,7 +40,7 @@ module Mutations
         end
 
         def note_params(_note, args)
-          { note: args[:body] }.compact
+          { note: args[:body], confidential: args[:confidential] }.compact
         end
       end
     end

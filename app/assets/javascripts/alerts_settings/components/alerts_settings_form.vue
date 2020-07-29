@@ -435,7 +435,7 @@ export default {
           data-testid="alert-settings-select"
           @change="resetFormValues"
         />
-        <span class="gl-text-gray-400">
+        <span class="gl-text-gray-200">
           <gl-sprintf :message="$options.i18n.integrationsInfo">
             <template #link="{ content }">
               <gl-link
@@ -474,7 +474,7 @@ export default {
           :placeholder="baseUrlPlaceholder"
           :disabled="!selectedService.active"
         />
-        <span class="gl-text-gray-400">
+        <span class="gl-text-gray-200">
           {{ $options.i18n.apiBaseUrlHelpText }}
         </span>
       </gl-form-group>
@@ -489,7 +489,7 @@ export default {
               />
             </template>
           </gl-form-input-group>
-          <span class="gl-text-gray-400">
+          <span class="gl-text-gray-200">
             {{ prometheusInfo }}
           </span>
         </gl-form-group>

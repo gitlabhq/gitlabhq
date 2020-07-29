@@ -69,7 +69,7 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
     [orderedListItemNode](node, subContent) {
       const baseResult = baseRenderer.convert(node, subContent);
 
-      return incrementListMarker ? baseResult : baseResult.replace(/^(\s*)\d\./, '$11.');
+      return incrementListMarker ? baseResult : baseResult.replace(/^(\s*)\d+?\./, '$11.');
     },
     [emphasisNode](node, subContent) {
       const result = baseRenderer.convert(node, subContent);

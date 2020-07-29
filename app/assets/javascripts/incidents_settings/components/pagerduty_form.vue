@@ -135,7 +135,7 @@ export default {
           </template>
         </gl-form-input-group>
 
-        <div class="gl-text-gray-400 gl-pt-2">
+        <div class="gl-text-gray-200 gl-pt-2">
           <gl-sprintf :message="$options.i18n.webhookUrl.helpText">
             <template #docsLink>
               <gl-link

@@ -13,14 +13,14 @@ exports[`AlertsSettingsForm with default values renders the initial template 1`]
   </div>
   <gl-form-stub>
     <gl-form-group-stub label=\\"Integrations\\" label-for=\\"integrations\\" label-class=\\"label-bold\\">
-      <gl-form-select-stub options=\\"[object Object],[object Object],[object Object]\\" data-testid=\\"alert-settings-select\\" value=\\"generic\\"></gl-form-select-stub> <span class=\\"gl-text-gray-400\\"><gl-sprintf-stub message=\\"Learn more about our %{linkStart}upcoming integrations%{linkEnd}\\"></gl-sprintf-stub></span>
+      <gl-form-select-stub options=\\"[object Object],[object Object],[object Object]\\" data-testid=\\"alert-settings-select\\" value=\\"generic\\"></gl-form-select-stub> <span class=\\"gl-text-gray-200\\"><gl-sprintf-stub message=\\"Learn more about our %{linkStart}upcoming integrations%{linkEnd}\\"></gl-sprintf-stub></span>
     </gl-form-group-stub>
     <gl-form-group-stub label=\\"Active\\" label-for=\\"activated\\" label-class=\\"label-bold\\">
       <toggle-button-stub id=\\"activated\\"></toggle-button-stub>
     </gl-form-group-stub>
     <!---->
     <gl-form-group-stub label=\\"Webhook URL\\" label-for=\\"url\\" label-class=\\"label-bold\\">
-      <gl-form-input-group-stub value=\\"/alerts/notify.json\\" predefinedoptions=\\"[object Object]\\" id=\\"url\\" readonly=\\"\\"></gl-form-input-group-stub> <span class=\\"gl-text-gray-400\\">
+      <gl-form-input-group-stub value=\\"/alerts/notify.json\\" predefinedoptions=\\"[object Object]\\" id=\\"url\\" readonly=\\"\\"></gl-form-input-group-stub> <span class=\\"gl-text-gray-200\\">
 
         </span>
     </gl-form-group-stub>

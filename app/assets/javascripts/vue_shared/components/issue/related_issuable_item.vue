@@ -38,13 +38,6 @@ export default {
         },
       );
     },
-    heightStyle() {
-      return {
-        minHeight: '32px',
-        width: '0px',
-        visibility: 'hidden',
-      };
-    },
     iconClasses() {
       return `${this.iconClass} ic-${this.iconName}`;
     },
@@ -60,7 +53,9 @@ export default {
     }"
     class="item-body d-flex align-items-center py-2 px-3"
   >
-    <div class="item-contents d-flex align-items-center flex-wrap flex-grow-1 flex-xl-nowrap">
+    <div
+      class="item-contents gl-display-flex gl-align-items-center gl-flex-wrap gl-flex-grow-1 flex-xl-nowrap gl-min-h-7"
+    >
       <!-- Title area: Status icon (XL) and title -->
       <div class="item-title d-flex align-items-xl-center mb-xl-0">
         <div ref="iconElementXL">
@@ -159,9 +154,5 @@ export default {
     >
       <icon :size="16" class="btn-item-remove-icon" name="close" />
     </button>
-
-    <!-- This element serves to set the issue card's height at a minimum of 32 px. -->
-    <!-- It fixes #59594: when the remove button is missing, issues have inconsistent heights. -->
-    <span :style="heightStyle"></span>
   </div>
 </template>

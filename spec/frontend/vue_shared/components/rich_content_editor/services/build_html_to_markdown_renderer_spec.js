@@ -70,10 +70,11 @@ describe('HTMLToMarkdownRenderer', () => {
 
   describe('OL LI visitor', () => {
     it.each`
-      listItem            | result              | incrementListMarker | action
-      ${'2. list item'}   | ${'1. list item'}   | ${false}            | ${'increments'}
-      ${'  3. list item'} | ${'  1. list item'} | ${false}            | ${'increments'}
-      ${'3. list item'}   | ${'3. list item'}   | ${true}             | ${'does not increment'}
+      listItem              | result              | incrementListMarker | action
+      ${'2. list item'}     | ${'1. list item'}   | ${false}            | ${'increments'}
+      ${'  3. list item'}   | ${'  1. list item'} | ${false}            | ${'increments'}
+      ${'  123. list item'} | ${'  1. list item'} | ${false}            | ${'increments'}
+      ${'3. list item'}     | ${'3. list item'}   | ${true}             | ${'does not increment'}
     `(
       '$action a list item counter when incrementListMaker is $incrementListMarker',
       ({ listItem, result, incrementListMarker }) => {
