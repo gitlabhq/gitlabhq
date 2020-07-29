@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.2.2 (2020-07-29)
+
+### Fixed (3 changes)
+
+- Coerce repository_storages_weighted, removes repository_storages. !36376
+- Fix JiraImportUsersInput startAt field. !37492
+- Provide better git error message when the user is unconfirmed. !37944
+
+### Changed (1 change)
+
+- Skip mass unconfirming users when send_user_confirmation_email setting is off. !38024
+
+
 ## 13.2.1 (2020-07-23)
 
 ### Fixed (4 changes)
