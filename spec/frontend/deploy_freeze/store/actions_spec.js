@@ -95,11 +95,11 @@ describe('deploy freeze store actions', () => {
         actions.fetchFreezePeriods,
         {},
         state,
-        [],
         [
-          { type: 'requestFreezePeriods' },
-          { type: 'receiveFreezePeriodsSuccess', payload: mockFreezePeriods },
+          { type: types.REQUEST_FREEZE_PERIODS },
+          { type: types.RECEIVE_FREEZE_PERIODS_SUCCESS, payload: mockFreezePeriods },
         ],
+        [],
       );
     });
 
@@ -110,8 +110,8 @@ describe('deploy freeze store actions', () => {
         actions.fetchFreezePeriods,
         {},
         state,
+        [{ type: types.REQUEST_FREEZE_PERIODS }],
         [],
-        [{ type: 'requestFreezePeriods' }],
         () =>
           expect(createFlash).toHaveBeenCalledWith(
             'There was an error fetching the deploy freezes.',

@@ -192,6 +192,11 @@ module Gitlab
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
 
+    # Import Fontawesome fonts
+    config.assets.paths << "#{config.root}/node_modules/font-awesome/fonts"
+    config.assets.precompile << "fontawesome-webfont.woff2"
+    config.assets.precompile << "fontawesome-webfont.woff"
+
     # Import css for xterm
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"
     config.assets.precompile << "xterm.css"

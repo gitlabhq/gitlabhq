@@ -2,24 +2,13 @@
 
 RSpec.shared_examples 'archived project policies' do
   let(:feature_write_abilities) do
-    described_class::READONLY_FEATURES_WHEN_ARCHIVED.flat_map do |feature|
+    described_class.readonly_features.flat_map do |feature|
       described_class.create_update_admin_destroy(feature)
     end + additional_maintainer_permissions
   end
 
   let(:other_write_abilities) do
-    %i[
-      create_merge_request_in
-      create_merge_request_from
-      push_to_delete_protected_branch
-      push_code
-      request_access
-      upload_file
-      resolve_note
-      award_emoji
-      admin_tag
-      admin_issue_link
-    ]
+    described_class.readonly_abilities
   end
 
   context 'when the project is archived' do

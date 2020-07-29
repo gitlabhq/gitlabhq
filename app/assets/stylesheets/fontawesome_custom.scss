@@ -1,0 +1,408 @@
+/*!
+ *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
+
+// stylelint-disable property-no-vendor-prefix
+// stylelint-disable at-rule-no-vendor-prefix
+// stylelint-disable stylelint-gitlab/duplicate-selectors
+// scss-lint:disable MergeableSelector
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('fontawesome-webfont.woff2?v=4.7.0') format('woff2'), url('fontawesome-webfont.woff?v=4.7.0') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* makes the font 33% larger relative to the icon container */
+.fa-lg {
+  font-size: 1.33333333em;
+  line-height: 0.75em;
+  vertical-align: -15%;
+}
+
+.fa-2x {
+  font-size: 2em;
+}
+
+.fa-3x {
+  font-size: 3em;
+}
+
+.fa-4x {
+  font-size: 4em;
+}
+
+.fa-5x {
+  font-size: 5em;
+}
+
+.fa-fw {
+  width: 1.28571429em;
+  text-align: center;
+}
+
+.fa.fa-pull-left {
+  margin-right: 0.3em;
+}
+
+.fa.fa-pull-right {
+  margin-left: 0.3em;
+}
+
+.fa-pull-right,
+.pull-right {
+  float: right;
+}
+
+.fa-pull-left,
+.pull-left {
+  float: left;
+}
+
+.fa-spin {
+  -webkit-animation: fa-spin 2s infinite linear;
+  animation: fa-spin 2s infinite linear;
+}
+
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.fa-stack {
+  position: relative;
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  line-height: 2em;
+  vertical-align: middle;
+}
+
+.fa-stack-1x,
+.fa-stack-2x {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.fa-stack-1x {
+  line-height: inherit;
+}
+
+.fa-stack-2x {
+  font-size: 2em;
+}
+
+.fa-inverse {
+  color: $white;
+}
+
+.fa-question-circle::before {
+  content: '\f059';
+}
+
+.fa-chevron-down::before {
+  content: '\f078';
+}
+
+.fa-remove::before,
+.fa-close::before,
+.fa-times::before {
+  content: '\f00d';
+}
+
+.fa-caret-down::before {
+  content: '\f0d7';
+}
+
+.fa-check::before {
+  content: '\f00c';
+}
+
+.fa-search::before {
+  content: '\f002';
+}
+
+.fa-warning::before,
+.fa-exclamation-triangle::before {
+  content: '\f071';
+}
+
+.fa-external-link::before {
+  content: '\f08e';
+}
+
+.fa-spinner::before {
+  content: '\f110';
+}
+
+.fa-calendar::before {
+  content: '\f073';
+}
+
+.fa-angle-double-right::before {
+  content: '\f101';
+}
+
+.fa-trash::before {
+  content: '\f1f8';
+}
+
+.fa-angle-double-left::before {
+  content: '\f100';
+}
+
+.fa-arrow-left::before {
+  content: '\f060';
+}
+
+.fa-trash-o::before {
+  content: '\f014';
+}
+
+.fa-caret-right::before {
+  content: '\f0da';
+}
+
+.fa-info-circle::before {
+  content: '\f05a';
+}
+
+.fa-refresh::before {
+  content: '\f021';
+}
+
+.fa-chevron-up::before {
+  content: '\f077';
+}
+
+.fa-file-text-o::before {
+  content: '\f0f6';
+}
+
+.fa-github::before {
+  content: '\f09b';
+}
+
+.fa-paperclip::before {
+  content: '\f0c6';
+}
+
+.fa-tag::before {
+  content: '\f02b';
+}
+
+.fa-arrow-up::before {
+  content: '\f062';
+}
+
+.fa-bug::before {
+  content: '\f188';
+}
+
+.fa-google::before {
+  content: '\f1a0';
+}
+
+.fa-user::before {
+  content: '\f007';
+}
+
+.fa-exclamation-circle::before {
+  content: '\f06a';
+}
+
+.fa-bell::before {
+  content: '\f0f3';
+}
+
+.fa-arrow-down::before {
+  content: '\f063';
+}
+
+.fa-bitbucket-square::before {
+  content: '\f172';
+}
+
+.fa-file-o::before {
+  content: '\f016';
+}
+
+.fa-users::before {
+  content: '\f0c0';
+}
+
+.fa-tags::before {
+  content: '\f02c';
+}
+
+.fa-lightbulb-o::before {
+  content: '\f0eb';
+}
+
+.fa-circle::before {
+  content: '\f111';
+}
+
+.fa-certificate::before {
+  content: '\f0a3';
+}
+
+.fa-minus-circle::before {
+  content: '\f056';
+}
+
+.fa-bitbucket::before {
+  content: '\f171';
+}
+
+.fa-git::before {
+  content: '\f1d3';
+}
+
+.fa-folder::before {
+  content: '\f07b';
+}
+
+.fa-archive::before {
+  content: '\f187';
+}
+
+.fa-lock::before {
+  content: '\f023';
+}
+
+.fa-sign-out::before {
+  content: '\f08b';
+}
+
+.fa-thumb-tack::before {
+  content: '\f08d';
+}
+
+.fa-fire::before {
+  content: '\f06d';
+}
+
+.fa-power-off::before {
+  content: '\f011';
+}
+
+.fa-download::before {
+  content: '\f019';
+}
+
+.fa-globe::before {
+  content: '\f0ac';
+}
+
+.fa-pencil::before {
+  content: '\f040';
+}
+
+.fa-pause::before {
+  content: '\f04c';
+}
+
+.fa-play::before {
+  content: '\f04b';
+}
+
+.fa-arrow-right::before {
+  content: '\f061';
+}
+
+.fa-user-secret::before {
+  content: '\f21b';
+}
+
+.fa-search-plus::before {
+  content: '\f00e';
+}
+
+.fa-search-minus::before {
+  content: '\f010';
+}
+
+.fa-book::before {
+  content: '\f02d';
+}
+
+.fa-cubes::before {
+  content: '\f1b3';
+}
+
+.fa-edit::before {
+  content: '\f044';
+}
+
+.fa-times-circle::before {
+  content: '\f057';
+}
+
+.fa-skype::before {
+  content: '\f17e';
+}
+
+.fa-linkedin-square::before {
+  content: '\f08c';
+}
+
+.fa-twitter-square::before {
+  content: '\f081';
+}
+
+.fa-unlink::before {
+  content: '\f127';
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+}

@@ -14,12 +14,7 @@ describe('Edit Form Buttons', () => {
   let store;
   const findConfidentialToggle = () => wrapper.find('[data-testid="confidential-toggle"]');
 
-  const createComponent = ({
-    props = {},
-    data = {},
-    confidentialApolloSidebar = false,
-    resolved = true,
-  }) => {
+  const createComponent = ({ props = {}, data = {}, resolved = true }) => {
     store = createStore();
     if (resolved) {
       jest.spyOn(store, 'dispatch').mockResolvedValue();
@@ -37,11 +32,6 @@ describe('Edit Form Buttons', () => {
           isLoading: true,
           ...data,
         };
-      },
-      provide: {
-        glFeatures: {
-          confidentialApolloSidebar,
-        },
       },
       store,
     });
@@ -98,62 +88,49 @@ describe('Edit Form Buttons', () => {
     it('renders on or off text based on confidentiality', () => {
       expect(findConfidentialToggle().text()).toBe('Turn Off');
     });
+  });
 
-    describe('when clicking on the confidential toggle', () => {
-      it('emits updateConfidentialAttribute', () => {
-        findConfidentialToggle().trigger('click');
+  describe('when succeeds', () => {
+    beforeEach(() => {
+      createComponent({ data: { isLoading: false } });
+      wrapper.vm.$store.state.noteableData.confidential = true;
+      findConfidentialToggle().trigger('click');
+    });
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('updateConfidentialAttribute');
+    it('dispatches the correct action', () => {
+      expect(store.dispatch).toHaveBeenCalledWith('updateConfidentialityOnIssue', {
+        confidential: false,
+        fullPath: '',
+      });
+    });
+
+    it('resets loading', () => {
+      return waitForPromises().then(() => {
+        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+      });
+    });
+
+    it('emits close form', () => {
+      return waitForPromises().then(() => {
+        expect(eventHub.$emit).toHaveBeenCalledWith('closeConfidentialityForm');
       });
     });
   });
 
-  describe('when confidentialApolloSidebar is turned on', () => {
-    const isConfidential = true;
-
-    describe('when succeeds', () => {
-      beforeEach(() => {
-        createComponent({ data: { isLoading: false }, confidentialApolloSidebar: true });
-        wrapper.vm.$store.state.noteableData.confidential = isConfidential;
-        findConfidentialToggle().trigger('click');
+  describe('when fails', () => {
+    beforeEach(() => {
+      createComponent({
+        data: { isLoading: false },
+        resolved: false,
       });
-
-      it('dispatches the correct action', () => {
-        expect(store.dispatch).toHaveBeenCalledWith('updateConfidentialityOnIssue', {
-          confidential: !isConfidential,
-          fullPath: '',
-        });
-      });
-
-      it('resets loading', () => {
-        return waitForPromises().then(() => {
-          expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-        });
-      });
-
-      it('emits close form', () => {
-        return waitForPromises().then(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('closeConfidentialityForm');
-        });
-      });
+      wrapper.vm.$store.state.noteableData.confidential = true;
+      findConfidentialToggle().trigger('click');
     });
 
-    describe('when fails', () => {
-      beforeEach(() => {
-        createComponent({
-          data: { isLoading: false },
-          confidentialApolloSidebar: true,
-          resolved: false,
-        });
-        wrapper.vm.$store.state.noteableData.confidential = isConfidential;
-        findConfidentialToggle().trigger('click');
-      });
-
-      it('calls flash with the correct message', () => {
-        expect(flash).toHaveBeenCalledWith(
-          'Something went wrong trying to change the confidentiality of this issue',
-        );
-      });
+    it('calls flash with the correct message', () => {
+      expect(flash).toHaveBeenCalledWith(
+        'Something went wrong trying to change the confidentiality of this issue',
+      );
     });
   });
 });

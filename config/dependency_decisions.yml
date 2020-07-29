@@ -616,8 +616,8 @@
     :when: 2019-09-11 13:08:28.431132000 Z
 - - :whitelist
   - "(MIT OR CC0-1.0)"
-  - :who:
-    :why:
+  - :who: 
+    :why: 
     :versions: []
     :when: 2019-11-08 10:03:31.787226000 Z
 - - :whitelist
@@ -632,3 +632,10 @@
     :why: This license is public domain
     :versions: []
     :when: 2020-07-17 10:50:44.632875345 Z
+- - :license
+  - font-awesome
+  - MIT
+  - :who: Mike Greiling
+    :why: MIT license
+    :versions: []
+    :when: 2020-07-28 20:35:27.574875000 Z

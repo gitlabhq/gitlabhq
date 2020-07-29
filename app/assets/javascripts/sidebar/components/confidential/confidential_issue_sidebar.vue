@@ -1,12 +1,10 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { __ } from '~/locale';
-import Flash from '~/flash';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '~/sidebar/event_hub';
 import EditForm from './edit_form.vue';
-import recaptchaModalImplementor from '~/vue_shared/mixins/recaptcha_modal_implementor';
 
 export default {
   components: {
@@ -16,7 +14,6 @@ export default {
   directives: {
     tooltip,
   },
-  mixins: [recaptchaModalImplementor],
   props: {
     fullPath: {
       required: true,
@@ -46,35 +43,15 @@ export default {
     },
   },
   created() {
-    eventHub.$on('updateConfidentialAttribute', this.updateConfidentialAttribute);
     eventHub.$on('closeConfidentialityForm', this.toggleForm);
   },
   beforeDestroy() {
-    eventHub.$off('updateConfidentialAttribute', this.updateConfidentialAttribute);
     eventHub.$off('closeConfidentialityForm', this.toggleForm);
   },
   methods: {
     ...mapActions(['setConfidentiality']),
     toggleForm() {
       this.edit = !this.edit;
-    },
-    closeForm() {
-      this.edit = false;
-    },
-    updateConfidentialAttribute() {
-      // TODO: rm when FF is defaulted to on.
-      const confidential = !this.confidential;
-      this.service
-        .update('issue', { confidential })
-        .then(({ data }) => this.checkForSpam(data))
-        .then(() => window.location.reload())
-        .catch(error => {
-          if (error.name === 'SpamError') {
-            this.openRecaptcha();
-          } else {
-            Flash(__('Something went wrong trying to change the confidentiality of this issue'));
-          }
-        });
     },
   },
 };
@@ -124,7 +101,5 @@ export default {
         {{ __('This issue is confidential') }}
       </div>
     </div>
-
-    <recaptcha-modal v-if="showRecaptcha" :html="recaptchaHTML" @close="closeRecaptcha" />
   </div>
 </template>

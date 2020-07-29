@@ -2,7 +2,7 @@
 import { GlTable, GlButton, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { mapState, mapActions } from 'vuex';
-import { MODAL_ID } from '../constants';
+import { MODAL_ID } from '../utils/constants';
 
 export default {
   modalId: MODAL_ID,

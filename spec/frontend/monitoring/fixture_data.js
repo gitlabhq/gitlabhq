@@ -36,29 +36,6 @@ export const dashboardProps = {
 export const metricsDashboardViewModel = mapToDashboardViewModel(metricsDashboardPayload);
 
 export const metricsDashboardPanelCount = 22;
-export const metricResultStatus = {
-  // First metric in fixture `metrics_dashboard/environment_metrics_dashboard.json`
-  metricId: 'NO_DB_response_metrics_nginx_ingress_throughput_status_code',
-  data: {
-    resultType: 'matrix',
-    result: metricsResult,
-  },
-};
-export const metricResultPods = {
-  // Second metric in fixture `metrics_dashboard/environment_metrics_dashboard.json`
-  metricId: 'NO_DB_response_metrics_nginx_ingress_latency_pod_average',
-  data: {
-    resultType: 'matrix',
-    result: metricsResult,
-  },
-};
-export const metricResultEmpty = {
-  metricId: 'NO_DB_response_metrics_nginx_ingress_16_throughput_status_code',
-  data: {
-    resultType: 'matrix',
-    result: [],
-  },
-};
 
 // Graph data
 

@@ -2,8 +2,9 @@ import state from '~/deploy_freeze/store/state';
 import mutations from '~/deploy_freeze/store/mutations';
 import * as types from '~/deploy_freeze/store/mutation_types';
 import { mockFreezePeriods, mockTimezoneData } from '../mock_data';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
-describe('CI variable list mutations', () => {
+describe('Deploy freeze mutations', () => {
   let stateCopy;
   beforeEach(() => {
     stateCopy = state({
@@ -24,10 +25,17 @@ describe('CI variable list mutations', () => {
   });
 
   describe('RECEIVE_FREEZE_PERIODS_SUCCESS', () => {
-    it('should set environments', () => {
+    it('should set freeze periods and format timezones from identifiers to names', () => {
+      const timezoneNames = ['Eastern Time (US & Canada)', 'UTC', 'Berlin'];
+
       mutations[types.RECEIVE_FREEZE_PERIODS_SUCCESS](stateCopy, mockFreezePeriods);
 
-      expect(stateCopy.freezePeriods).toEqual(mockFreezePeriods);
+      const expectedFreezePeriods = mockFreezePeriods.map((freezePeriod, index) => ({
+        ...convertObjectPropsToCamelCase(freezePeriod),
+        cronTimezone: timezoneNames[index],
+      }));
+
+      expect(stateCopy.freezePeriods).toMatchObject(expectedFreezePeriods);
     });
   });
 

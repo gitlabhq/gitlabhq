@@ -124,6 +124,19 @@ These are settings of your instance such as the instance's Git version and if ce
 
 These are integrations your GitLab instance interacts with such as an [external storage provider](../../administration/static_objects_external_storage.md) or an [external container registry](../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint). These services must be able to send data back into a GitLab instance for data to be tracked.
 
+## Reporting level by segment
+
+Our reporting levels of aggregate or individual reporting varies by segment. For example, on Self-Managed Users, we can report at an aggregate user level using Usage Ping but not on an Individual user level.
+
+| Reporting level | SaaS Instance | SaaS Group | SaaS Session | SaaS User | Self-Managed Instance | Self-Managed Group | Self-Managed Session | Self-Managed User |
+|-----------------|---------------|------------|--------------|-----------|-----------------------|--------------------|----------------------|-------------------|
+| Aggregate       | ✅             | 📅         | ✅            | ✅         | ✅                     | 📅                 | ✅                    | ✅                 |
+| Individual      | ✅             | 📅         | ✅            | 🔄        | ✅                     | ✖️                 | ✖️                   | ✖️                |
+
+**Legend**
+
+✅ Available, 🔄 In Progress, 📅 Planned, ✖️ Not Possible
+
 ## Telemetry systems overview
 
 The systems overview is a simplified diagram showing the interactions between GitLab Inc and self-managed instances.

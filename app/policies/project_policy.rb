@@ -2,29 +2,7 @@
 
 class ProjectPolicy < BasePolicy
   include CrudPolicyHelpers
-
-  READONLY_FEATURES_WHEN_ARCHIVED = %i[
-    issue
-    list
-    merge_request
-    label
-    milestone
-    snippet
-    wiki
-    design
-    note
-    pipeline
-    pipeline_schedule
-    build
-    trigger
-    environment
-    deployment
-    commit_status
-    container_image
-    pages
-    cluster
-    release
-  ].freeze
+  include ReadonlyAbilities
 
   desc "User is a project owner"
   condition :owner do
@@ -411,16 +389,9 @@ class ProjectPolicy < BasePolicy
   rule { can?(:push_code) }.enable :admin_tag
 
   rule { archived }.policy do
-    prevent :push_code
-    prevent :push_to_delete_protected_branch
-    prevent :request_access
-    prevent :upload_file
-    prevent :resolve_note
-    prevent :create_merge_request_from
-    prevent :create_merge_request_in
-    prevent :award_emoji
+    prevent(*readonly_abilities)
 
-    READONLY_FEATURES_WHEN_ARCHIVED.each do |feature|
+    readonly_features.each do |feature|
       prevent(*create_update_admin_destroy(feature))
     end
   end

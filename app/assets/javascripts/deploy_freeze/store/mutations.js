@@ -1,4 +1,11 @@
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import * as types from './mutation_types';
+
+const formatTimezoneName = (freezePeriod, timezoneList) =>
+  convertObjectPropsToCamelCase({
+    ...freezePeriod,
+    cron_timezone: timezoneList.find(tz => tz.identifier === freezePeriod.cron_timezone)?.name,
+  });
 
 export default {
   [types.REQUEST_FREEZE_PERIODS](state) {
@@ -7,7 +14,9 @@ export default {
 
   [types.RECEIVE_FREEZE_PERIODS_SUCCESS](state, freezePeriods) {
     state.isLoading = false;
-    state.freezePeriods = freezePeriods;
+    state.freezePeriods = freezePeriods.map(freezePeriod =>
+      formatTimezoneName(freezePeriod, state.timezoneData),
+    );
   },
 
   [types.REQUEST_ADD_FREEZE_PERIOD](state) {

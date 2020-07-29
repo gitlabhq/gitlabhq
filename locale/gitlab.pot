@@ -26908,6 +26908,9 @@ msgstr ""
 msgid "Welcome to your Issue Board!"
 msgstr ""
 
+msgid "We’ve been making changes to %{featureName} and we’d love your feedback %{linkStart}in this issue%{linkEnd} to help us improve the experience."
+msgstr ""
+
 msgid "What are you searching for?"
 msgstr ""
 
