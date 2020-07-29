@@ -114,7 +114,7 @@ since that is needed in all configurations.
 
 ---
 
-URL scheme: `http://page.example.io`
+URL scheme: `http://<namespace>.example.io/<project_slug>`
 
 This is the minimum setup that you can use Pages with. It is the base for all
 other setups as described below. NGINX will proxy all requests to the daemon.
@@ -139,7 +139,7 @@ Watch the [video tutorial](https://youtu.be/dD8c7WNcc6s) for this configuration.
 
 ---
 
-URL scheme: `https://page.example.io`
+URL scheme: `https://<namespace>.example.io/<project_slug>`
 
 NGINX will proxy all requests to the daemon. Pages daemon doesn't listen to the
 outside world.
@@ -254,7 +254,7 @@ you have IPv6 as well as IPv4 addresses, you can use them both.
 
 ---
 
-URL scheme: `http://page.example.io` and `http://domain.com`
+URL scheme: `http://<namespace>.example.io/<project_slug>` and `http://custom-domain.com`
 
 In that case, the Pages daemon is running, NGINX still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
@@ -285,7 +285,7 @@ world. Custom domains are supported, but no TLS.
 
 ---
 
-URL scheme: `https://page.example.io` and `https://domain.com`
+URL scheme: `https://<namespace>.example.io/<project_slug>` and `https://custom-domain.com`
 
 In that case, the Pages daemon is running, NGINX still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside

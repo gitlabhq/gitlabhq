@@ -353,7 +353,6 @@ project:
 - youtrack_service
 - custom_issue_tracker_service
 - bugzilla_service
-- gitlab_issue_tracker_service
 - external_wiki_service
 - mock_ci_service
 - mock_deployment_service

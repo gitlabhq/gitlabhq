@@ -1,0 +1,5 @@
+---
+title: Fix 500 error when unconfirmed OAuth2 user with 2FA logs in
+merge_request: 38104
+author:
+type: fixed

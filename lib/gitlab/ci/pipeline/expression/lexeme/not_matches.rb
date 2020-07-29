@@ -5,7 +5,7 @@ module Gitlab
     module Pipeline
       module Expression
         module Lexeme
-          class NotMatches < Lexeme::Operator
+          class NotMatches < Lexeme::LogicalOperator
             PATTERN = /\!~/.freeze
 
             def evaluate(variables = {})

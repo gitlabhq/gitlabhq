@@ -10,6 +10,10 @@ module Gitlab
               raise NotImplementedError
             end
 
+            def name
+              self.class.name.demodulize.underscore
+            end
+
             def self.build(token)
               raise NotImplementedError
             end
@@ -22,6 +26,10 @@ module Gitlab
 
             def self.pattern
               self::PATTERN
+            end
+
+            def self.consume?(lexeme)
+              lexeme && precedence >= lexeme.precedence
             end
           end
         end

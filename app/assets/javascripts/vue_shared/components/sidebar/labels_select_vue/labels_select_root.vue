@@ -2,6 +2,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import Vuex, { mapState, mapActions, mapGetters } from 'vuex';
+import { isInViewport } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
 import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select/dropdown_value_collapsed.vue';
@@ -100,6 +101,11 @@ export default {
       default: __('Manage group labels'),
     },
   },
+  data() {
+    return {
+      contentIsOnViewport: true,
+    };
+  },
   computed: {
     ...mapState(['showDropdownButton', 'showDropdownContents']),
     ...mapGetters([
@@ -116,6 +122,9 @@ export default {
       this.setInitialState({
         selectedLabels,
       });
+    },
+    showDropdownContents(showDropdownContents) {
+      this.setContentIsOnViewport(showDropdownContents);
     },
   },
   mounted() {
@@ -203,6 +212,20 @@ export default {
     handleCollapsedValueClick() {
       this.$emit('toggleCollapse');
     },
+    setContentIsOnViewport(showDropdownContents) {
+      if (!this.isDropdownVariantEmbedded || !showDropdownContents) {
+        this.contentIsOnViewport = true;
+
+        return;
+      }
+
+      this.$nextTick(() => {
+        if (this.$refs.dropdownContents) {
+          const offset = { top: 100 };
+          this.contentIsOnViewport = isInViewport(this.$refs.dropdownContents.$el, offset);
+        }
+      });
+    },
   },
 };
 </script>
@@ -239,6 +262,7 @@ export default {
       <dropdown-contents
         v-if="dropdownButtonVisible && showDropdownContents"
         ref="dropdownContents"
+        :render-on-top="!contentIsOnViewport"
       />
     </template>
   </div>

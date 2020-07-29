@@ -34,6 +34,14 @@ module Gitlab
           super || subject.is_a?(type)
         end
 
+        def web_url
+          url_builder.build(subject)
+        end
+
+        def web_path
+          url_builder.build(subject, only_path: true)
+        end
+
         class_methods do
           def presenter?
             true

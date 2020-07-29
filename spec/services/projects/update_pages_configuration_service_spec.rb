@@ -24,7 +24,7 @@ RSpec.describe Projects::UpdatePagesConfigurationService do
       it 'updates the .update file' do
         expect(service).to receive(:reload_daemon).and_call_original
 
-        expect(subject).to include(status: :success, reload: true)
+        expect(subject).to include(status: :success)
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe Projects::UpdatePagesConfigurationService do
       it 'does not update the .update file' do
         expect(service).not_to receive(:reload_daemon)
 
-        expect(subject).to include(status: :success, reload: false)
+        expect(subject).to include(status: :success)
       end
     end
   end

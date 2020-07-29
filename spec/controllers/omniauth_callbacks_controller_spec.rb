@@ -181,6 +181,23 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
           end
         end
 
+        context 'when user with 2FA is unconfirmed' do
+          render_views
+
+          let(:user) { create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: provider) }
+
+          before do
+            user.update_column(:confirmed_at, nil)
+          end
+
+          it 'redirects to login page' do
+            post provider
+
+            expect(response).to redirect_to(new_user_session_path)
+            expect(flash[:alert]).to match(/You have to confirm your email address before continuing./)
+          end
+        end
+
         context 'sign up' do
           include_context 'sign_up'
 

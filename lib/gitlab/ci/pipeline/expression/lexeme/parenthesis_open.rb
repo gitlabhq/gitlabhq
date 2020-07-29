@@ -5,15 +5,16 @@ module Gitlab
     module Pipeline
       module Expression
         module Lexeme
-          class Operator < Lexeme::Base
-            OperatorError = Class.new(Expression::ExpressionError)
+          class ParenthesisOpen < Lexeme::Operator
+            PATTERN = /\(/.freeze
 
             def self.type
-              raise NotImplementedError
+              :parenthesis_open
             end
 
             def self.precedence
-              raise NotImplementedError
+              # Needs to be higher than `ParenthesisClose` and all other Lexemes
+              901
             end
           end
         end

@@ -19,6 +19,9 @@ export default {
     handleButtonClick(e) {
       if (this.isDropdownVariantStandalone || this.isDropdownVariantEmbedded) {
         this.toggleDropdownContents();
+      }
+
+      if (this.isDropdownVariantStandalone) {
         e.stopPropagation();
       }
     },
@@ -31,9 +34,9 @@ export default {
     class="labels-select-dropdown-button js-dropdown-button w-100 text-left"
     @click="handleButtonClick"
   >
-    <span class="dropdown-toggle-text flex-fill">
+    <span class="dropdown-toggle-text gl-pointer-events-none flex-fill">
       {{ dropdownButtonText }}
     </span>
-    <gl-icon name="chevron-down" class="float-right" />
+    <gl-icon name="chevron-down" class="gl-pointer-events-none float-right" />
   </gl-button>
 </template>

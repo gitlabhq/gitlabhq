@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::NotEquals do
 
   describe '.type' do
     it 'is an operator' do
-      expect(described_class.type).to eq :operator
+      expect(described_class.type).to eq :logical_operator
     end
   end
 

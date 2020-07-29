@@ -5,13 +5,15 @@ module Gitlab
     module Pipeline
       module Expression
         module Lexeme
-          class Value < Lexeme::Base
+          class ParenthesisClose < Lexeme::Operator
+            PATTERN = /\)/.freeze
+
             def self.type
-              :value
+              :parenthesis_close
             end
 
-            def initialize(value)
-              @value = value
+            def self.precedence
+              900
             end
           end
         end

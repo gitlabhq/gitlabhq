@@ -14,12 +14,10 @@ class PagesWorker # rubocop:disable Scalability/IdempotentWorker
   # rubocop: disable CodeReuse/ActiveRecord
   def deploy(build_id)
     build = Ci::Build.find_by(id: build_id)
-    result = Projects::UpdatePagesService.new(build.project, build).execute
-    if result[:status] == :success
-      result = Projects::UpdatePagesConfigurationService.new(build.project).execute
+    update_contents = Projects::UpdatePagesService.new(build.project, build).execute
+    if update_contents[:status] == :success
+      Projects::UpdatePagesConfigurationService.new(build.project).execute
     end
-
-    result
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -9,7 +9,7 @@
 // scss-lint:disable MergeableSelector
 @font-face {
   font-family: 'FontAwesome';
-  src: url('fontawesome-webfont.woff2?v=4.7.0') format('woff2'), url('fontawesome-webfont.woff?v=4.7.0') format('woff');
+  src: asset-url('fontawesome-webfont.woff2?v=4.7.0') format('woff2'), asset-url('fontawesome-webfont.woff?v=4.7.0') format('woff');
   font-weight: normal;
   font-style: normal;
 }

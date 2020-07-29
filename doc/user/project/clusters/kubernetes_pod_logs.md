@@ -20,7 +20,7 @@ above the log file data, depending on your configuration:
 - **Namespace** - Select the environment to display. Users with Maintainer or
   greater [permissions](../../permissions.md) can also select Managed Apps.
 - **Search** - Only available if the Elastic Stack managed application is installed.
-- **Time picker** - Select the range of time to display. Only available if the
+- **Select time range** - Select the range of time to display. Only available if the
   Elastic Stack managed application is installed.
 - **Scroll to bottom** **{scroll_down}** - Scroll to the end of the displayed logs.
 - **Refresh** **{retry}** - Reload the displayed logs.

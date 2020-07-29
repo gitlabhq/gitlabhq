@@ -10219,10 +10219,7 @@ msgstr ""
 msgid "FeatureFlags|Edit Feature Flag"
 msgstr ""
 
-msgid "FeatureFlags|Edit Feature Flag User List"
-msgstr ""
-
-msgid "FeatureFlags|Edit list"
+msgid "FeatureFlags|Edit User List"
 msgstr ""
 
 msgid "FeatureFlags|Enable features for specific users and specific environments by defining feature flag strategies."
@@ -10303,13 +10300,10 @@ msgstr ""
 msgid "FeatureFlags|New Feature Flag"
 msgstr ""
 
-msgid "FeatureFlags|New Feature Flag User List"
+msgid "FeatureFlags|New User List"
 msgstr ""
 
 msgid "FeatureFlags|New feature flag"
-msgstr ""
-
-msgid "FeatureFlags|New list"
 msgstr ""
 
 msgid "FeatureFlags|Percent rollout (logged in users)"
@@ -13193,9 +13187,6 @@ msgid "IssueTracker|Bugzilla issue tracker"
 msgstr ""
 
 msgid "IssueTracker|Custom issue tracker"
-msgstr ""
-
-msgid "IssueTracker|GitLab issue tracker"
 msgstr ""
 
 msgid "IssueTracker|Redmine issue tracker"

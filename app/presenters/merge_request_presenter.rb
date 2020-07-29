@@ -202,10 +202,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-  def web_url
-    Gitlab::UrlBuilder.build(merge_request)
-  end
-
   def subscribed?
     merge_request.subscribed?(current_user, merge_request.target_project)
   end

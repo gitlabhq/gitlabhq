@@ -136,9 +136,46 @@ target users. See the [Ruby example](#ruby-application-example) below.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
 
-Enables the feature for lists of users created with the [Feature Flag User List API](../api/feature_flag_user_lists.md).
+Enables the feature for lists of users created [in the Feature Flags UI](#create-a-user-list), or with the [Feature Flag User List API](../api/feature_flag_user_lists.md).
 Similar to [User IDs](#user-ids), it uses the Unleash [`userWithId`](https://unleash.github.io/docs/activation_strategy#userwithid)
 activation strategy.
+
+#### Create a user list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+
+To create a user list:
+
+1. In your project, navigate to **Operations > Feature Flags**.
+1. Click on **New list**.
+1. Enter a name for the list.
+1. Click **Create**.
+
+You can view a list's User IDs by clicking the **{pencil}** (edit) button next to it.
+When viewing a list, you can rename it by clicking the **Edit** button.
+
+#### Add users to a user list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+
+To add users to a user list:
+
+1. In your project, navigate to **Operations > Feature Flags**.
+1. Click on the **{pencil}** (edit) button next to the list you want to add users to.
+1. Click on **Add Users**.
+1. Enter the user IDs as a comma-separated list of values. For example,
+   `user@example.com, user2@example.com`, or `username1,username2,username3`, and so on.
+1. Click on **Add**.
+
+#### Remove users from a user list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+
+To remove users from a user list:
+
+1. In your project, navigate to **Operations > Feature Flags**.
+1. Click on the **{pencil}** (edit) button next to the list you want to change.
+1. Click on the **{remove}** (remove) button next to the ID you want to remove.
 
 ### Enable or disable feature flag strategies
 

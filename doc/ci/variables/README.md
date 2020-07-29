@@ -742,6 +742,40 @@ Precedence of operators follows the
 [Ruby 2.5 standard](https://ruby-doc.org/core-2.5.0/doc/syntax/precedence_rdoc.html),
 so `&&` is evaluated before `||`.
 
+#### Parentheses
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3
+
+It is possible to use parentheses to group conditions. Parentheses have the highest
+precedence of all operators. Expressions enclosed in parentheses are evaluated first,
+and the result is used for the rest of the expression.
+
+Many nested parentheses can be used to create complex conditions, and the inner-most
+expressions in parentheses are evaluated first. For an expression to be valid an equal
+number of `(` and `)` need to be used.
+
+Examples:
+
+- `($VARIABLE1 =~ /^content.*/ || $VARIABLE2) && ($VARIABLE3 =~ /thing$/ || $VARIABLE4)`
+- `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
+- `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
+
+The feature is currently deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to enable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_if_parenthesis_enabled)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_if_parenthesis_enabled)
+```
+
 ### Storing regular expressions in variables
 
 It is possible to store a regular expression in a variable, to be used for pattern matching:
