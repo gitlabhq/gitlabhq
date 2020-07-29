@@ -5307,6 +5307,9 @@ msgstr ""
 msgid "ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. It requires at least one of the following logs to be successfully installed."
 msgstr ""
 
+msgid "ClusterIntegration|GitLab Container Network Policies"
+msgstr ""
+
 msgid "ClusterIntegration|GitLab Integration"
 msgstr ""
 
@@ -5563,6 +5566,9 @@ msgid "ClusterIntegration|Prometheus"
 msgstr ""
 
 msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{linkStart}GitLab Integration%{linkEnd} to monitor deployed applications."
+msgstr ""
+
+msgid "ClusterIntegration|Protect your clusters with GitLab Container Network Policies by enforcing how pods communicate with each other and other network endpoints. %{linkStart}Learn more about configuring Network Policies here.%{linkEnd}"
 msgstr ""
 
 msgid "ClusterIntegration|Provider details"
@@ -26371,6 +26377,12 @@ msgid "Value Stream Name"
 msgstr ""
 
 msgid "ValueStreamAnalytics|%{days}d"
+msgstr ""
+
+msgid "ValueStreamAnalytics|Median time from first commit to issue closed."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
 msgstr ""
 
 msgid "Variable"

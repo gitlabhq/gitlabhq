@@ -124,11 +124,13 @@ describe('Dashboard header', () => {
 
     describe('when environments data is loaded', () => {
       const currentDashboard = dashboardGitResponse[0].path;
+      const currentEnvironmentName = environmentData[0].name;
 
       beforeEach(() => {
         setupStoreWithData(store);
         store.state.monitoringDashboard.projectPath = mockProjectPath;
         store.state.monitoringDashboard.currentDashboard = currentDashboard;
+        store.state.monitoringDashboard.currentEnvironmentName = currentEnvironmentName;
 
         return wrapper.vm.$nextTick();
       });
@@ -145,15 +147,13 @@ describe('Dashboard header', () => {
         });
       });
 
-      // Note: This test is not working, .active does not show the active environment
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/230615
-      // eslint-disable-next-line jest/no-disabled-tests
-      it.skip('renders the environments dropdown with a single active element', () => {
-        const activeItem = findEnvsDropdownItems().wrappers.filter(itemWrapper =>
-          itemWrapper.find('.active').exists(),
+      it('renders the environments dropdown with an active element', () => {
+        const selectedItems = findEnvsDropdownItems().filter(
+          item => item.attributes('active') === 'true',
         );
 
-        expect(activeItem.length).toBe(1);
+        expect(selectedItems.length).toBe(1);
+        expect(selectedItems.at(0).text()).toBe(currentEnvironmentName);
       });
 
       it('filters rendered dropdown items', () => {

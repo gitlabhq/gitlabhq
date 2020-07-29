@@ -67,6 +67,7 @@ export default class Clusters {
       deployBoardsHelpPath,
       cloudRunHelpPath,
       clusterId,
+      ciliumHelpPath,
     } = document.querySelector('.js-edit-cluster-form').dataset;
 
     this.clusterId = clusterId;
@@ -83,6 +84,7 @@ export default class Clusters {
       clustersHelpPath,
       deployBoardsHelpPath,
       cloudRunHelpPath,
+      ciliumHelpPath,
     );
     this.store.setManagePrometheusPath(managePrometheusPath);
     this.store.updateStatus(clusterStatus);
@@ -179,6 +181,7 @@ export default class Clusters {
             providerType: this.state.providerType,
             preInstalledKnative: this.state.preInstalledKnative,
             rbac: this.state.rbac,
+            ciliumHelpPath: this.state.ciliumHelpPath,
           },
         });
       },

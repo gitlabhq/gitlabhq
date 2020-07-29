@@ -7,6 +7,7 @@ import parseSourceFile from '~/static_site_editor/services/parse_source_file';
 import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/constants';
 import { DEFAULT_IMAGE_UPLOAD_PATH } from '../constants';
 import imageRepository from '../image_repository';
+import formatter from '../services/formatter';
 
 export default {
   components: {
@@ -64,14 +65,16 @@ export default {
     },
     onModeChange(mode) {
       this.editorMode = mode;
-      this.$refs.editor.resetInitialValue(this.editableContent);
+      const formattedContent = formatter(this.editableContent);
+      this.$refs.editor.resetInitialValue(formattedContent);
     },
     onUploadImage({ file, imageUrl }) {
       this.$options.imageRepository.add(file, imageUrl);
     },
     onSubmit() {
+      const formattedContent = formatter(this.parsedSource.content());
       this.$emit('submit', {
-        content: this.parsedSource.content(),
+        content: formattedContent,
         images: this.$options.imageRepository.getAll(),
       });
     },

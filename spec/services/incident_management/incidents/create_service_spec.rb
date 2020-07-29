@@ -25,11 +25,13 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
 
       it 'created issue has correct attributes' do
         create_incident
-
-        expect(new_issue.title).to eq(title)
-        expect(new_issue.description).to eq(description)
-        expect(new_issue.author).to eq(user)
-        expect(new_issue.labels.map(&:title)).to eq([label_title])
+        aggregate_failures do
+          expect(new_issue.title).to eq(title)
+          expect(new_issue.description).to eq(description)
+          expect(new_issue.author).to eq(user)
+          expect(new_issue.issue_type).to eq('incident')
+          expect(new_issue.labels.map(&:title)).to eq([label_title])
+        end
       end
 
       context 'when incident label does not exists' do

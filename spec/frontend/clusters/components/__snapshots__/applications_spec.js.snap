@@ -17,6 +17,22 @@ exports[`Applications Cert-Manager application shows the correct description 1`]
 </p>
 `;
 
+exports[`Applications Cilium application shows the correct description 1`] = `
+<p
+  data-testid="ciliumDescription"
+>
+  Protect your clusters with GitLab Container Network Policies by enforcing how pods communicate with each other and other network endpoints. 
+  <a
+    class="gl-link"
+    href="cilium-help-path"
+    rel="noopener"
+    target="_blank"
+  >
+    Learn more about configuring Network Policies here.
+  </a>
+</p>
+`;
+
 exports[`Applications Crossplane application shows the correct description 1`] = `
 <p
   data-testid="crossplaneDescription"

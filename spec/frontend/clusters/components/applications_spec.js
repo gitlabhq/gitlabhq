@@ -17,7 +17,7 @@ describe('Applications', () => {
     gon.features.managedAppsLocalTiller = false;
   });
 
-  const createApp = ({ applications, type } = {}, isShallow) => {
+  const createApp = ({ applications, type, props } = {}, isShallow) => {
     const mountMethod = isShallow ? shallowMount : mount;
 
     wrapper = mountMethod(Applications, {
@@ -25,6 +25,7 @@ describe('Applications', () => {
       propsData: {
         type,
         applications: { ...APPLICATIONS_MOCK_STATE, ...applications },
+        ...props,
       },
     });
   };
@@ -79,6 +80,9 @@ describe('Applications', () => {
     it('renders a row for Fluentd', () => {
       expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
     });
+    it('renders a row for Cilium', () => {
+      expect(wrapper.find('.js-cluster-application-row-cilium').exists()).toBe(true);
+    });
   });
 
   describe('Group cluster applications', () => {
@@ -125,6 +129,10 @@ describe('Applications', () => {
     it('renders a row for Fluentd', () => {
       expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
     });
+
+    it('renders a row for Cilium', () => {
+      expect(wrapper.find('.js-cluster-application-row-cilium').exists()).toBe(true);
+    });
   });
 
   describe('Instance cluster applications', () => {
@@ -170,6 +178,10 @@ describe('Applications', () => {
 
     it('renders a row for Fluentd', () => {
       expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
+    });
+
+    it('renders a row for Cilium', () => {
+      expect(wrapper.find('.js-cluster-application-row-cilium').exists()).toBe(true);
     });
   });
 
@@ -249,6 +261,7 @@ describe('Applications', () => {
               knative: { title: 'Knative', hostname: '' },
               elastic_stack: { title: 'Elastic Stack' },
               fluentd: { title: 'Fluentd' },
+              cilium: { title: 'GitLab Container Network Policies' },
             },
           });
 
@@ -365,7 +378,11 @@ describe('Applications', () => {
       it('renders readonly input', () => {
         createApp({
           applications: {
-            ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+            ingress: {
+              title: 'Ingress',
+              status: 'installed',
+              externalIp: '1.1.1.1',
+            },
             jupyter: { title: 'JupyterHub', status: 'installed', hostname: '' },
           },
         });
@@ -550,6 +567,13 @@ describe('Applications', () => {
 
     it('renders the correct Component', () => {
       expect(wrapper.find(FluentdOutputSettings).exists()).toBe(true);
+    });
+  });
+
+  describe('Cilium application', () => {
+    it('shows the correct description', () => {
+      createApp({ props: { ciliumHelpPath: 'cilium-help-path' } });
+      expect(findByTestId('ciliumDescription').element).toMatchSnapshot();
     });
   });
 });

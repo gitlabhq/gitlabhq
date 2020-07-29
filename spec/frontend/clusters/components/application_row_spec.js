@@ -83,6 +83,12 @@ describe('Application Row', () => {
       checkButtonState('Installing', true, true);
     });
 
+    it('has disabled "Install" when APPLICATION_STATUS.UNINSTALLED', () => {
+      mountComponent({ status: APPLICATION_STATUS.UNINSTALLED });
+
+      checkButtonState('Install', false, true);
+    });
+
     it('has disabled "Installed" when application is installed and not uninstallable', () => {
       mountComponent({
         status: APPLICATION_STATUS.INSTALLED,
@@ -110,6 +116,15 @@ describe('Application Row', () => {
       });
 
       checkButtonState('Install', false, false);
+    });
+
+    it('has disabled "Install" when installation disabled', () => {
+      mountComponent({
+        status: APPLICATION_STATUS.INSTALLABLE,
+        installable: false,
+      });
+
+      checkButtonState('Install', false, true);
     });
 
     it('has enabled "Install" when REQUEST_FAILURE (so you can try installing again)', () => {

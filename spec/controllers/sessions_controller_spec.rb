@@ -216,7 +216,7 @@ RSpec.describe SessionsController do
 
           before do
             stub_application_setting(recaptcha_enabled: true)
-            request.headers[described_class::CAPTCHA_HEADER] = 1
+            request.headers[described_class::CAPTCHA_HEADER] = '1'
           end
 
           it 'displays an error when the reCAPTCHA is not solved' do

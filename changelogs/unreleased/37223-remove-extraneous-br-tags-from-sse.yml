@@ -1,0 +1,5 @@
+---
+title: Remove extraneous `<br>` tags from the source file when using the Static Site Editor
+merge_request: 37223
+author:
+type: changed

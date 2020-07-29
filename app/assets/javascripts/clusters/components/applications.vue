@@ -88,6 +88,11 @@ export default {
       required: false,
       default: false,
     },
+    ciliumHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     managedAppsLocalTillerEnabled() {
@@ -685,6 +690,39 @@ export default {
             :status="applications.fluentd.status"
             :update-failed="applications.fluentd.updateFailed"
           />
+        </template>
+      </application-row>
+
+      <div class="gl-mt-7 gl-border-1 gl-border-t-solid gl-border-gray-100">
+        <!-- This empty div serves as a separator between applications that have a dependency on Helm and those that can be enabled without Helm. -->
+      </div>
+
+      <application-row
+        id="cilium"
+        :title="applications.cilium.title"
+        :logo-url="$options.logos.gitlabLogo"
+        :status="applications.cilium.status"
+        :status-reason="applications.cilium.statusReason"
+        :installable="applications.cilium.installable"
+        :uninstallable="applications.cilium.uninstallable"
+        :installed="applications.cilium.installed"
+        :install-failed="applications.cilium.installFailed"
+        :title-link="ciliumHelpPath"
+      >
+        <template #description>
+          <p data-testid="ciliumDescription">
+            <gl-sprintf
+              :message="
+                s__(
+                  'ClusterIntegration|Protect your clusters with GitLab Container Network Policies by enforcing how pods communicate with each other and other network endpoints. %{linkStart}Learn more about configuring Network Policies here.%{linkEnd}',
+                )
+              "
+            >
+              <template #link="{ content }">
+                <gl-link :href="ciliumHelpPath" target="_blank">{{ content }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </p>
         </template>
       </application-row>
     </div>

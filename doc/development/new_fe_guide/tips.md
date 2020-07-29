@@ -10,12 +10,12 @@ yarn clean
 
 ## Creating feature flags in development
 
-The process for creating a feature flag is the same as [enabling a feature flag in development](../feature_flags/development.md#enabling-a-feature-flag-in-development).
+The process for creating a feature flag is the same as [enabling a feature flag in development](../feature_flags/development.md#enabling-a-feature-flag-locally-in-development).
 
 Your feature flag can now be:
 
 - [Made available to the frontend](../feature_flags/development.md#frontend) via the `gon`
-- Queried in [tests](../feature_flags/development.md#specs)
+- Queried in [tests](../feature_flags/development.md#feature-flags-in-tests)
 - Queried in HAML templates and Ruby files via the `Feature.enabled?(:my_shiny_new_feature_flag)` method
 
 ### More on feature flags

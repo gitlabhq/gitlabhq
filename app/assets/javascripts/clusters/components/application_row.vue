@@ -52,6 +52,11 @@ export default {
       required: false,
       default: false,
     },
+    installable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     uninstallable: {
       type: Boolean,
       required: false,
@@ -141,6 +146,7 @@ export default {
       return (
         this.status === APPLICATION_STATUS.NOT_INSTALLABLE ||
         this.status === APPLICATION_STATUS.INSTALLABLE ||
+        this.status === APPLICATION_STATUS.UNINSTALLED ||
         this.isUnknownStatus
       );
     },
@@ -164,14 +170,20 @@ export default {
       return !this.status || this.isInstalling;
     },
     installButtonDisabled() {
+      // Applications installed through the management project can
+      // only be installed through the CI pipeline. Installation should
+      // be disable in all states.
+      if (!this.installable) return true;
+
       // Avoid the potential for the real-time data to say APPLICATION_STATUS.INSTALLABLE but
       // we already made a request to install and are just waiting for the real-time
       // to sync up.
+      if (this.isInstalling) return true;
+
+      if (!this.isKnownStatus) return false;
+
       return (
-        ((this.status !== APPLICATION_STATUS.INSTALLABLE &&
-          this.status !== APPLICATION_STATUS.ERROR) ||
-          this.isInstalling) &&
-        this.isKnownStatus
+        this.status !== APPLICATION_STATUS.INSTALLABLE && this.status !== APPLICATION_STATUS.ERROR
       );
     },
     installButtonLabel() {

@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'rubocop'
-require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/avoid_return_from_blocks'
 
-RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do
+RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks, type: :rubocop do
   include CopHelper
 
   subject(:cop) { described_class.new }
@@ -29,7 +28,7 @@ RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do
         end
       end
     RUBY
-    expect_next_instance_of(described_class) do |instance|
+    expect_any_instance_of(described_class) do |instance|
       expect(instance).to receive(:add_offense).once
     end
 

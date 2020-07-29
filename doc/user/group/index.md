@@ -278,7 +278,7 @@ The group details view also shows the number of the following items created in t
 - Issues.
 - Members.
 
-These Group Activity Analytics can be enabled with the `group_activity_analytics` [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development).
+These Group Activity Analytics can be enabled with the `group_activity_analytics` [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development).
 
 ![Recent Group Activity](img/group_activity_analytics_v12_10.png)
 

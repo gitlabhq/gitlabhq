@@ -71,7 +71,7 @@ In order to actually use it, you need to enable measuring for the desired servic
 ### Enabling measurement using feature flags
 
 In the following example, the `:gitlab_service_measuring_projects_import_service`
-[feature flag](feature_flags/development.md#enabling-a-feature-flag-in-development) is used to enable the measuring feature
+[feature flag](feature_flags/development.md#enabling-a-feature-flag-locally-in-development) is used to enable the measuring feature
 for `Projects::ImportService`.
 
 From ChatOps:

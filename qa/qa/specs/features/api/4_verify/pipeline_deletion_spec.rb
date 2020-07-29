@@ -48,6 +48,12 @@ module QA
 
       let(:pipeline_data_request) { Runtime::API::Request.new(api_client, "/projects/#{project.id}/pipelines/#{pipeline_id}") }
 
+      before do
+        Support::Waiter.wait_until(max_duration: 30, sleep_interval: 3) do
+          JSON.parse(get(pipeline_data_request.url))['status'] != 'pending'
+        end
+      end
+
       after do
         runner.remove_via_api!
       end

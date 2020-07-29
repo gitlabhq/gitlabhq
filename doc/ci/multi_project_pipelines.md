@@ -254,5 +254,5 @@ tag in a different project:
 
 Any pipelines that complete successfully for new tags in the subscribed project
 will now trigger a pipeline on the current project's default branch. The maximum
-number of upstream pipeline subscriptions is 2, for both the upstream and
-downstream projects.
+number of upstream pipeline subscriptions is 2 by default, for both the upstream and
+downstream projects. This [application limit](../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) can be changed on self-managed instances by a GitLab administrator.

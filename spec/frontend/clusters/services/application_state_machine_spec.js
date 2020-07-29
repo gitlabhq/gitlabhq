@@ -19,6 +19,7 @@ const {
   UPDATE_ERRORED,
   UNINSTALLING,
   UNINSTALL_ERRORED,
+  UNINSTALLED,
 } = APPLICATION_STATUS;
 
 const NO_EFFECTS = 'no effects';
@@ -40,6 +41,7 @@ describe('applicationStateMachine', () => {
       ${INSTALLED}       | ${UPDATE_ERRORED}    | ${{ updateFailed: true }}
       ${UNINSTALLING}    | ${UNINSTALLING}      | ${NO_EFFECTS}
       ${INSTALLED}       | ${UNINSTALL_ERRORED} | ${{ uninstallFailed: true }}
+      ${UNINSTALLED}     | ${UNINSTALLED}       | ${NO_EFFECTS}
     `(`transitions to $expectedState on $event event and applies $effects`, data => {
       const { expectedState, event, effects } = data;
       const currentAppState = {
@@ -74,8 +76,9 @@ describe('applicationStateMachine', () => {
     it.each`
       expectedState      | event              | effects
       ${INSTALLING}      | ${INSTALL_EVENT}   | ${{ installFailed: false }}
-      ${INSTALLED}       | ${INSTALLED}       | ${NO_EFFECTS}
+      ${INSTALLED}       | ${INSTALLED}       | ${{ installFailed: false }}
       ${NOT_INSTALLABLE} | ${NOT_INSTALLABLE} | ${NO_EFFECTS}
+      ${UNINSTALLED}     | ${UNINSTALLED}     | ${{ installFailed: false }}
     `(`transitions to $expectedState on $event event and applies $effects`, data => {
       const { expectedState, event, effects } = data;
       const currentAppState = {
@@ -113,6 +116,8 @@ describe('applicationStateMachine', () => {
       ${UPDATING}        | ${UPDATE_EVENT}    | ${{ updateFailed: false, updateSuccessful: false }}
       ${UNINSTALLING}    | ${UNINSTALL_EVENT} | ${{ uninstallFailed: false, uninstallSuccessful: false }}
       ${NOT_INSTALLABLE} | ${NOT_INSTALLABLE} | ${NO_EFFECTS}
+      ${UNINSTALLED}     | ${UNINSTALLED}     | ${NO_EFFECTS}
+      ${INSTALLABLE}     | ${ERROR}           | ${{ installFailed: true }}
     `(`transitions to $expectedState on $event event and applies $effects`, data => {
       const { expectedState, event, effects } = data;
       const currentAppState = {
@@ -162,6 +167,23 @@ describe('applicationStateMachine', () => {
     });
   });
 
+  describe(`current state is ${UNINSTALLED}`, () => {
+    it.each`
+      expectedState  | event        | effects
+      ${INSTALLED}   | ${INSTALLED} | ${NO_EFFECTS}
+      ${INSTALLABLE} | ${ERROR}     | ${{ installFailed: true }}
+    `(`transitions to $expectedState on $event event and applies $effects`, data => {
+      const { expectedState, event, effects } = data;
+      const currentAppState = {
+        status: UNINSTALLED,
+      };
+
+      expect(transitionApplicationState(currentAppState, event)).toEqual({
+        status: expectedState,
+        ...noEffectsToEmptyObject(effects),
+      });
+    });
+  });
   describe('current state is undefined', () => {
     it('returns the current state without having any effects', () => {
       const currentAppState = {};

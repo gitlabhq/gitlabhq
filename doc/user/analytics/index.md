@@ -26,9 +26,9 @@ The following analytics features are available at the group level:
 - [Insights](../group/insights/index.md). **(ULTIMATE)**
 - [Issues](../group/issues_analytics/index.md). **(PREMIUM)**
 - [Productivity](productivity_analytics.md), enabled with the `productivity_analytics`
-  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development). **(PREMIUM)**
+  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development). **(PREMIUM)**
 - [Value Stream](value_stream_analytics.md), enabled with the `cycle_analytics`
-  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development). **(PREMIUM)**
+  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development). **(PREMIUM)**
 
 ## Project-level analytics
 
@@ -40,4 +40,4 @@ The following analytics features are available at the project level:
 - [Issues](../group/issues_analytics/index.md). **(PREMIUM)**
 - [Repository](repository_analytics.md).
 - [Value Stream](value_stream_analytics.md), enabled with the `cycle_analytics`
-  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development). **(STARTER)**
+  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development). **(STARTER)**

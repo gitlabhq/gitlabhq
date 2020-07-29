@@ -151,7 +151,11 @@ const DEFAULT_APPLICATION_STATE = {
 
 const APPLICATIONS_MOCK_STATE = {
   helm: { title: 'Helm Tiller', status: 'installable' },
-  ingress: { title: 'Ingress', status: 'installable', modsecurity_enabled: false },
+  ingress: {
+    title: 'Ingress',
+    status: 'installable',
+    modsecurity_enabled: false,
+  },
   crossplane: { title: 'Crossplane', status: 'installable', stack: '' },
   cert_manager: { title: 'Cert-Manager', status: 'installable' },
   runner: { title: 'GitLab Runner' },
@@ -160,6 +164,10 @@ const APPLICATIONS_MOCK_STATE = {
   knative: { title: 'Knative ', status: 'installable', hostname: '' },
   elastic_stack: { title: 'Elastic Stack', status: 'installable' },
   fluentd: { title: 'Fluentd', status: 'installable' },
+  cilium: {
+    title: 'GitLab Container Network Policies',
+    status: 'not_installable',
+  },
 };
 
 export { CLUSTERS_MOCK_DATA, DEFAULT_APPLICATION_STATE, APPLICATIONS_MOCK_STATE };

@@ -23,6 +23,7 @@ const applicationInitialState = {
   status: null,
   statusReason: null,
   requestReason: null,
+  installable: true,
   installed: false,
   installFailed: false,
   uninstallable: false,
@@ -114,6 +115,11 @@ export default class ClusterStore {
           ciliumLogEnabled: null,
           isEditingSettings: false,
         },
+        cilium: {
+          ...applicationInitialState,
+          title: s__('ClusterIntegration|GitLab Container Network Policies'),
+          installable: false,
+        },
       },
       environments: [],
       fetchingEnvironments: false,
@@ -129,6 +135,7 @@ export default class ClusterStore {
     clustersHelpPath,
     deployBoardsHelpPath,
     cloudRunHelpPath,
+    ciliumHelpPath,
   ) {
     this.state.helpPath = helpPath;
     this.state.ingressHelpPath = ingressHelpPath;
@@ -138,6 +145,7 @@ export default class ClusterStore {
     this.state.clustersHelpPath = clustersHelpPath;
     this.state.deployBoardsHelpPath = deployBoardsHelpPath;
     this.state.cloudRunHelpPath = cloudRunHelpPath;
+    this.state.ciliumHelpPath = ciliumHelpPath;
   }
 
   setManagePrometheusPath(managePrometheusPath) {
