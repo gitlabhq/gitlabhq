@@ -217,6 +217,10 @@ As a workaround, try an alternate mapping:
 
 #### How do I diagnose why a user is unable to sign in
 
+Ensure that the user has been added to the SCIM app.
+
+If you receive "User is not linked to a SAML account", then most likely the user already exists in GitLab. Have the user follow the [User access and linking setup](#user-access-and-linking-setup) instructions.
+
 The **Identity** (`extern_uid`) value stored by GitLab is updated by SCIM whenever `id` or `externalId` changes. Users won't be able to sign in unless the GitLab Identity (`extern_uid`) value matches the `NameId` sent by SAML.
 
 This value is also used by SCIM to match users on the `id`, and is updated by SCIM whenever the `id` or `externalId` values change.

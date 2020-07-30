@@ -14,6 +14,11 @@ Find more about them [in Audit Events documentation](audit_events.md).
 System log files are typically plain text in a standard log file format.
 This guide talks about how to read and use these system log files.
 
+[Read more about how to customise logging on Omnibus GitLab
+installations](https://docs.gitlab.com/omnibus/settings/logs.html)
+including adjusting log retention, log forwarding,
+switching logs from JSON to plain text logging, and more.
+
 ## `production_json.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/production_json.log` for

@@ -106,7 +106,6 @@ export default {
     },
   },
   mounted() {
-    this.toggleOnPasteListener(this.$route.name);
     if (this.$route.path === '/designs') {
       this.$el.scrollIntoView();
     }

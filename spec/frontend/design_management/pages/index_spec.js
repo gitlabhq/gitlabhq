@@ -72,6 +72,7 @@ describe('Design management index page', () => {
   const dropzoneClasses = () => findDropzone().classes();
   const findDropzoneWrapper = () => wrapper.find('[data-testid="design-dropzone-wrapper"]');
   const findFirstDropzoneWithDesign = () => wrapper.findAll(DesignDropzone).at(1);
+  const findDesignsWrapper = () => wrapper.find('[data-testid="designs-root"]');
 
   function createComponent({
     loading = false,
@@ -508,6 +509,10 @@ describe('Design management index page', () => {
       });
 
       event = new Event('paste');
+      event.clipboardData = {
+        files: [{ name: 'image.png', type: 'image/png' }],
+        getData: () => 'test.png',
+      };
 
       router.replace({
         name: DESIGNS_ROUTE_NAME,
@@ -517,43 +522,52 @@ describe('Design management index page', () => {
       });
     });
 
-    it('calls onUploadDesign with valid paste', () => {
-      event.clipboardData = {
-        files: [{ name: 'image.png', type: 'image/png' }],
-        getData: () => 'test.png',
-      };
-
-      document.dispatchEvent(event);
-
-      expect(wrapper.vm.onUploadDesign).toHaveBeenCalledTimes(1);
-      expect(wrapper.vm.onUploadDesign).toHaveBeenCalledWith([
-        new File([{ name: 'image.png' }], 'test.png'),
-      ]);
-    });
-
-    it('renames a design if it has an image.png filename', () => {
-      event.clipboardData = {
-        files: [{ name: 'image.png', type: 'image/png' }],
-        getData: () => 'image.png',
-      };
-
-      document.dispatchEvent(event);
-
-      expect(wrapper.vm.onUploadDesign).toHaveBeenCalledTimes(1);
-      expect(wrapper.vm.onUploadDesign).toHaveBeenCalledWith([
-        new File([{ name: 'image.png' }], `design_${Date.now()}.png`),
-      ]);
-    });
-
-    it('does not call onUploadDesign with invalid paste', () => {
-      event.clipboardData = {
-        items: [{ type: 'text/plain' }, { type: 'text' }],
-        files: [],
-      };
-
+    it('does not call paste event if designs wrapper is not hovered', () => {
       document.dispatchEvent(event);
 
       expect(wrapper.vm.onUploadDesign).not.toHaveBeenCalled();
+    });
+
+    describe('when designs wrapper is hovered', () => {
+      beforeEach(() => {
+        findDesignsWrapper().trigger('mouseenter');
+      });
+
+      it('calls onUploadDesign with valid paste', () => {
+        document.dispatchEvent(event);
+
+        expect(wrapper.vm.onUploadDesign).toHaveBeenCalledTimes(1);
+        expect(wrapper.vm.onUploadDesign).toHaveBeenCalledWith([
+          new File([{ name: 'image.png' }], 'test.png'),
+        ]);
+      });
+
+      it('renames a design if it has an image.png filename', () => {
+        document.dispatchEvent(event);
+
+        expect(wrapper.vm.onUploadDesign).toHaveBeenCalledTimes(1);
+        expect(wrapper.vm.onUploadDesign).toHaveBeenCalledWith([
+          new File([{ name: 'image.png' }], `design_${Date.now()}.png`),
+        ]);
+      });
+
+      it('does not call onUploadDesign with invalid paste', () => {
+        event.clipboardData = {
+          items: [{ type: 'text/plain' }, { type: 'text' }],
+          files: [],
+        };
+
+        document.dispatchEvent(event);
+
+        expect(wrapper.vm.onUploadDesign).not.toHaveBeenCalled();
+      });
+
+      it('removes onPaste listener after mouseleave event', async () => {
+        findDesignsWrapper().trigger('mouseleave');
+        document.dispatchEvent(event);
+
+        expect(wrapper.vm.onUploadDesign).not.toHaveBeenCalled();
+      });
     });
   });
 

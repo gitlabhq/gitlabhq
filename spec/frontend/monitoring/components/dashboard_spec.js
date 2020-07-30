@@ -886,7 +886,7 @@ describe('Dashboard', () => {
       return wrapper.vm.$nextTick();
     });
 
-    it('is not present for the default dashboard', () => {
+    it('is not present for the overview dashboard', () => {
       expect(findEditLink().exists()).toBe(false);
     });
 
@@ -905,7 +905,7 @@ describe('Dashboard', () => {
 
   describe('document title', () => {
     const originalTitle = 'Original Title';
-    const defaultDashboardName = dashboardGitResponse[0].display_name;
+    const overviewDashboardName = dashboardGitResponse[0].display_name;
 
     beforeEach(() => {
       document.title = originalTitle;
@@ -916,11 +916,11 @@ describe('Dashboard', () => {
       document.title = '';
     });
 
-    it('is prepended with default dashboard name by default', () => {
+    it('is prepended with the overview dashboard name by default', () => {
       setupAllDashboards(store);
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(document.title.startsWith(`${defaultDashboardName} · `)).toBe(true);
+        expect(document.title.startsWith(`${overviewDashboardName} · `)).toBe(true);
       });
     });
 
@@ -935,11 +935,11 @@ describe('Dashboard', () => {
       });
     });
 
-    it('is prepended with default dashboard name is path is not known', () => {
+    it('is prepended with the overview dashboard name if path is not known', () => {
       setupAllDashboards(store, 'unknown/path');
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(document.title.startsWith(`${defaultDashboardName} · `)).toBe(true);
+        expect(document.title.startsWith(`${overviewDashboardName} · `)).toBe(true);
       });
     });
 

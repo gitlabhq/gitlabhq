@@ -108,6 +108,8 @@
   - 1
 - - file_hook
   - 1
+- - flush_counter_increments
+  - 1
 - - gcp_cluster
   - 1
 - - geo

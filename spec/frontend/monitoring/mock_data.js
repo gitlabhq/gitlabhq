@@ -170,7 +170,7 @@ export const environmentData = [
 export const dashboardGitResponse = [
   {
     default: true,
-    display_name: 'Default',
+    display_name: 'Overview',
     can_edit: false,
     system_dashboard: true,
     out_of_the_box_dashboard: true,

@@ -465,9 +465,9 @@ export const addPrefixToCustomVariableParams = name => `variables[${name}]`;
  * metrics dashboard to work with custom dashboard file names instead
  * of the entire path.
  *
- * If dashboard is empty, it is the default dashboard.
+ * If dashboard is empty, it is the overview dashboard.
  * If dashboard is set, it usually is a custom dashboard unless
- * explicitly it is set to default dashboard path.
+ * explicitly it is set to overview dashboard path.
  *
  * @param {String} dashboard dashboard path
  * @param {String} dashboardPrefix custom dashboard directory prefix

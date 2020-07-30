@@ -380,7 +380,7 @@ describe('Monitoring store Getters', () => {
       );
     });
 
-    it('returns a non-default dashboard', () => {
+    it('returns a dashboard different from the overview dashboard', () => {
       const localState = {
         allDashboards: dashboardGitResponse,
         currentDashboard: dashboardGitResponse[1].path,
@@ -391,7 +391,7 @@ describe('Monitoring store Getters', () => {
       );
     });
 
-    it('returns a default dashboard when no dashboard is selected', () => {
+    it('returns the overview dashboard when no dashboard is selected', () => {
       const localState = {
         allDashboards: dashboardGitResponse,
         currentDashboard: null,
@@ -402,7 +402,7 @@ describe('Monitoring store Getters', () => {
       );
     });
 
-    it('returns a default dashboard when dashboard cannot be found', () => {
+    it('returns the overview dashboard when dashboard cannot be found', () => {
       const localState = {
         allDashboards: dashboardGitResponse,
         currentDashboard: 'wrong_path',

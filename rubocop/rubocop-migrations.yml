@@ -28,7 +28,6 @@ Migration/UpdateLargeTable:
     - :resource_label_events
     - :routes
     - :sent_notifications
-    - :services
     - :system_note_metadata
     - :taggings
     - :todos

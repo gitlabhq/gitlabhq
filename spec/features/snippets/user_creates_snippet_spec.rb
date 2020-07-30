@@ -2,7 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples_for 'snippet editor' do
+RSpec.describe 'User creates snippet', :js do
+  include DropzoneHelper
+
+  let_it_be(:user) { create(:user) }
+
+  let(:title) { 'My Snippet Title' }
+  let(:file_content) { 'Hello World!' }
+  let(:md_description) { 'My Snippet **Description**' }
+  let(:description) { 'My Snippet Description' }
+  let(:created_snippet) { Snippet.last }
+
   before do
     stub_feature_flags(snippets_vue: false)
     stub_feature_flags(snippets_edit_vue: false)
@@ -14,15 +24,15 @@ RSpec.shared_examples_for 'snippet editor' do
   end
 
   def fill_form
-    fill_in 'personal_snippet_title', with: 'My Snippet Title'
+    fill_in 'personal_snippet_title', with: title
 
     # Click placeholder first to expand full description field
     description_field.click
-    fill_in 'personal_snippet_description', with: 'My Snippet **Description**'
+    fill_in 'personal_snippet_description', with: md_description
 
     page.within('.file-editor') do
       el = find('.inputarea')
-      el.send_keys 'Hello World!'
+      el.send_keys file_content
     end
   end
 
@@ -34,12 +44,12 @@ RSpec.shared_examples_for 'snippet editor' do
     click_button('Create snippet')
     wait_for_requests
 
-    expect(page).to have_content('My Snippet Title')
+    expect(page).to have_content(title)
     page.within('.snippet-header .description') do
-      expect(page).to have_content('My Snippet Description')
+      expect(page).to have_content(description)
       expect(page).to have_selector('strong')
     end
-    expect(page).to have_content('Hello World!')
+    expect(page).to have_content(file_content)
   end
 
   it 'previews a snippet with file' do
@@ -57,7 +67,7 @@ RSpec.shared_examples_for 'snippet editor' do
       link = find('a.no-attachment-icon img.js-lazy-loaded[alt="banana_sample"]')['src']
       expect(link).to match(%r{/uploads/-/system/user/#{user.id}/\h{32}/banana_sample\.gif\z})
 
-      # Adds a cache buster for checking if the image exists as Selenium is now handling the cached regquests
+      # Adds a cache buster for checking if the image exists as Selenium is now handling the cached requests
       # not anymore as requests when they come straight from memory cache.
       reqs = inspect_requests { visit("#{link}?ran=#{SecureRandom.base64(20)}") }
       expect(reqs.first.status_code).to eq(200)
@@ -99,15 +109,10 @@ RSpec.shared_examples_for 'snippet editor' do
       wait_for_requests
     end
 
-    it 'displays the error' do
+    it 'renders the new page and displays the error' do
       expect(page).to have_content(error)
-    end
-
-    it 'renders new page' do
       expect(page).to have_content('New Snippet')
-    end
 
-    it 'has the correct action path' do
       action = find('form.snippet-form')['action']
       expect(action).to match(%r{/snippets\z})
     end
@@ -116,46 +121,10 @@ RSpec.shared_examples_for 'snippet editor' do
   it 'validation fails for the first time' do
     visit new_snippet_path
 
-    fill_in 'personal_snippet_title', with: 'My Snippet Title'
+    fill_in 'personal_snippet_title', with: title
     click_button('Create snippet')
 
     expect(page).to have_selector('#error_explanation')
-
-    fill_form
-    dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
-
-    click_button('Create snippet')
-    wait_for_requests
-
-    expect(page).to have_content('My Snippet Title')
-    page.within('.snippet-header .description') do
-      expect(page).to have_content('My Snippet Description')
-      expect(page).to have_selector('strong')
-    end
-    expect(page).to have_content('Hello World!')
-    link = find('a.no-attachment-icon img.js-lazy-loaded[alt="banana_sample"]')['src']
-    expect(link).to match(%r{/uploads/-/system/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
-
-    reqs = inspect_requests { visit("#{link}?ran=#{SecureRandom.base64(20)}") }
-    expect(reqs.first.status_code).to eq(200)
-  end
-
-  it 'Authenticated user creates a snippet with + in filename' do
-    visit new_snippet_path
-
-    fill_in 'personal_snippet_title', with: 'My Snippet Title'
-    page.within('.file-editor') do
-      find(:xpath, "//input[@id='personal_snippet_file_name']").set 'snippet+file+name'
-      el = find('.inputarea')
-      el.send_keys 'Hello World!'
-    end
-
-    click_button 'Create snippet'
-    wait_for_requests
-
-    expect(page).to have_content('My Snippet Title')
-    expect(page).to have_content('snippet+file+name')
-    expect(page).to have_content('Hello World!')
   end
 
   context 'when snippets default visibility level is restricted' do
@@ -172,20 +141,7 @@ RSpec.shared_examples_for 'snippet editor' do
       click_button('Create snippet')
       wait_for_requests
 
-      visit snippets_path
-      click_link('Internal')
-
-      expect(page).to have_content('My Snippet Title')
-      created_snippet = Snippet.last
       expect(created_snippet.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
   end
-end
-
-RSpec.describe 'User creates snippet', :js do
-  include DropzoneHelper
-
-  let_it_be(:user) { create(:user) }
-
-  it_behaves_like "snippet editor"
 end

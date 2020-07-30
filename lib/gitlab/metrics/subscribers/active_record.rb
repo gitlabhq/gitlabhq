@@ -22,7 +22,7 @@ module Gitlab
           return if payload[:name] == 'SCHEMA' || IGNORABLE_SQL.include?(payload[:sql])
 
           current_transaction.observe(:gitlab_sql_duration_seconds, event.duration / 1000.0) do
-            buckets [0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
+            buckets [0.05, 0.1]
           end
 
           increment_db_counters(payload)

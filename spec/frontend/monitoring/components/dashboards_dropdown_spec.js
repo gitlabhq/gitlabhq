@@ -73,7 +73,7 @@ describe('DashboardsDropdown', () => {
     });
 
     it('filters dropdown items when searched for item exists in the list', () => {
-      const searchTerm = 'Default';
+      const searchTerm = 'Overview';
       setSearchTerm(searchTerm);
 
       return wrapper.vm.$nextTick().then(() => {

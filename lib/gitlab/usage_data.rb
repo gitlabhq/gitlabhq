@@ -12,8 +12,6 @@
 #   redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
 module Gitlab
   class UsageData
-    BATCH_SIZE = 100
-
     class << self
       include Gitlab::Utils::UsageData
       include Gitlab::Utils::StrongMemoize
@@ -353,29 +351,25 @@ module Gitlab
 
         results
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def services_usage
         # rubocop: disable UsageData/LargeTable:
-        Service.available_services_names.without('jira').each_with_object({}) do |service_name, response|
+        Service.available_services_names.each_with_object({}) do |service_name, response|
           response["projects_#{service_name}_active".to_sym] = count(Service.active.where(template: false, type: "#{service_name}_service".camelize))
-        end.merge(jira_usage).merge(jira_import_usage)
+        end.merge(jira_usage, jira_import_usage)
         # rubocop: enable UsageData/LargeTable:
       end
 
       def jira_usage
         # Jira Cloud does not support custom domains as per https://jira.atlassian.com/browse/CLOUD-6999
         # so we can just check for subdomains of atlassian.net
-
         results = {
           projects_jira_server_active: 0,
-          projects_jira_cloud_active: 0,
-          projects_jira_active: 0
+          projects_jira_cloud_active: 0
         }
 
         # rubocop: disable UsageData/LargeTable:
-        JiraService.active.includes(:jira_tracker_data).find_in_batches(batch_size: BATCH_SIZE) do |services|
+        JiraService.active.includes(:jira_tracker_data).find_in_batches(batch_size: 100) do |services|
           counts = services.group_by do |service|
             # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
             service_url = service.data_fields&.url || (service.properties && service.properties['url'])
@@ -384,22 +378,12 @@ module Gitlab
 
           results[:projects_jira_server_active] += counts[:server].size if counts[:server]
           results[:projects_jira_cloud_active] += counts[:cloud].size if counts[:cloud]
-          results[:projects_jira_active] += services.size
         end
         # rubocop: enable UsageData/LargeTable:
         results
       rescue ActiveRecord::StatementInvalid
-        { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK, projects_jira_active: FALLBACK }
+        { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK }
       end
-
-      # rubocop: disable UsageData/LargeTable
-      def successful_deployments_with_cluster(scope)
-        scope
-          .joins(cluster: :deployments)
-          .merge(Clusters::Cluster.enabled)
-          .merge(Deployment.success)
-      end
-      # rubocop: enable UsageData/LargeTable
       # rubocop: enable CodeReuse/ActiveRecord
 
       def jira_import_usage
@@ -413,6 +397,17 @@ module Gitlab
         }
         # rubocop: enable UsageData/LargeTable
       end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      # rubocop: disable UsageData/LargeTable
+      def successful_deployments_with_cluster(scope)
+        scope
+          .joins(cluster: :deployments)
+          .merge(Clusters::Cluster.enabled)
+          .merge(Deployment.success)
+      end
+      # rubocop: enable UsageData/LargeTable
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def user_preferences_usage
         {} # augmented in EE

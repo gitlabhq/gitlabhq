@@ -6,10 +6,10 @@ module Metrics
   module Dashboard
     class SelfMonitoringDashboardService < ::Metrics::Dashboard::PredefinedDashboardService
       DASHBOARD_PATH = 'config/prometheus/self_monitoring_default.yml'
-      DASHBOARD_NAME = N_('Default dashboard')
+      DASHBOARD_NAME = N_('Overview')
 
       # SHA256 hash of dashboard content
-      DASHBOARD_VERSION = '1dff3e3cb76e73c8e368823c98b34c61aec0d141978450dea195a3b3dc2415d6'
+      DASHBOARD_VERSION = '0f7ade2022e09f1a1da8e883cc95d84b9557e1e0e9b015c51eb964296aa73098'
 
       SEQUENCE = [
         STAGES::CustomMetricsInserter,

@@ -1,6 +1,20 @@
 import * as getters from '~/releases/stores/modules/detail/getters';
 
 describe('Release detail getters', () => {
+  describe('isExistingRelease', () => {
+    it('returns true if the release is an existing release that already exists in the database', () => {
+      const state = { originalRelease: { name: 'The first release' } };
+
+      expect(getters.isExistingRelease(state)).toBe(true);
+    });
+
+    it('returns false if the release is a new release that has not yet been saved to the database', () => {
+      const state = { originalRelease: null };
+
+      expect(getters.isExistingRelease(state)).toBe(false);
+    });
+  });
+
   describe('releaseLinksToCreate', () => {
     it("returns an empty array if state.release doesn't exist", () => {
       const state = {};

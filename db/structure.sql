@@ -9248,6 +9248,7 @@ CREATE TABLE public.application_settings (
     maintenance_mode_message text,
     wiki_page_max_content_bytes bigint DEFAULT 52428800 NOT NULL,
     elasticsearch_indexed_file_size_limit_kb integer DEFAULT 1024 NOT NULL,
+    enforce_namespace_storage_limit boolean DEFAULT false NOT NULL,
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),

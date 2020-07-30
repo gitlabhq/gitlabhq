@@ -1,7 +1,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
-import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
@@ -10,6 +9,7 @@ import { getParameterByName } from '~/lib/utils/common_utils';
 import AssetLinksForm from './asset_links_form.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MilestoneCombobox from '~/milestones/project_milestone_combobox.vue';
+import TagField from './tag_field.vue';
 
 export default {
   name: 'ReleaseEditNewApp',
@@ -20,6 +20,7 @@ export default {
     MarkdownField,
     AssetLinksForm,
     MilestoneCombobox,
+    TagField,
   },
   directives: {
     autofocusonshow,
@@ -51,23 +52,6 @@ export default {
         {
           codeStart: '<code>',
           codeEnd: '</code>',
-        },
-        false,
-      );
-    },
-    tagName() {
-      return this.$store.state.detail.release.tagName;
-    },
-    tagNameHintText() {
-      return sprintf(
-        __(
-          'Changing a Release tag is only supported via Releases API. %{linkStart}More information%{linkEnd}',
-        ),
-        {
-          linkStart: `<a href="${escape(
-            this.updateReleaseApiDocsPath,
-          )}" target="_blank" rel="noopener noreferrer">`,
-          linkEnd: '</a>',
         },
         false,
       );
@@ -136,22 +120,7 @@ export default {
   <div class="d-flex flex-column">
     <p class="pt-3 js-subtitle-text" v-html="subtitleText"></p>
     <form v-if="showForm" @submit.prevent="updateRelease()">
-      <gl-form-group>
-        <div class="row">
-          <div class="col-md-6 col-lg-5 col-xl-4">
-            <label for="git-ref">{{ __('Tag name') }}</label>
-            <gl-form-input
-              id="git-ref"
-              v-model="tagName"
-              type="text"
-              class="form-control"
-              aria-describedby="tag-name-help"
-              disabled
-            />
-          </div>
-        </div>
-        <div id="tag-name-help" class="form-text text-muted" v-html="tagNameHintText"></div>
-      </gl-form-group>
+      <tag-field />
       <gl-form-group>
         <label for="release-title">{{ __('Release title') }}</label>
         <gl-form-input

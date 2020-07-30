@@ -17,7 +17,7 @@ import { convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
 import { getDashboard, getPrometheusQueryData, getPanelJson } from '../requests';
 
-import { ENVIRONMENT_AVAILABLE_STATE, DEFAULT_DASHBOARD_PATH, VARIABLE_TYPES } from '../constants';
+import { ENVIRONMENT_AVAILABLE_STATE, OVERVIEW_DASHBOARD_PATH, VARIABLE_TYPES } from '../constants';
 
 function prometheusMetricQueryParams(timeRange) {
   const { start, end } = convertToFixedRange(timeRange);
@@ -298,7 +298,7 @@ export const receiveEnvironmentsDataFailure = ({ commit }) => {
 
 export const fetchAnnotations = ({ state, dispatch, getters }) => {
   const { start } = convertToFixedRange(state.timeRange);
-  const dashboardPath = getters.fullDashboardPath || DEFAULT_DASHBOARD_PATH;
+  const dashboardPath = getters.fullDashboardPath || OVERVIEW_DASHBOARD_PATH;
   return gqClient
     .mutate({
       mutation: getAnnotations,
@@ -331,12 +331,12 @@ export const receiveAnnotationsFailure = ({ commit }) => commit(types.RECEIVE_AN
 
 export const fetchDashboardValidationWarnings = ({ state, dispatch, getters }) => {
   /**
-   * Normally, the default dashboard won't throw any validation warnings.
+   * Normally, the overview dashboard won't throw any validation warnings.
    *
-   * However, if a bug sneaks into the default dashboard making it invalid,
+   * However, if a bug sneaks into the overview dashboard making it invalid,
    * this might come handy for our clients
    */
-  const dashboardPath = getters.fullDashboardPath || DEFAULT_DASHBOARD_PATH;
+  const dashboardPath = getters.fullDashboardPath || OVERVIEW_DASHBOARD_PATH;
   return gqClient
     .mutate({
       mutation: getDashboardValidationWarnings,

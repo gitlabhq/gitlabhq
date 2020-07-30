@@ -257,7 +257,7 @@ describe('Dashboard header', () => {
     });
 
     const duplicableCases = [
-      null, // When no path is specified, it uses the default dashboard path.
+      null, // When no path is specified, it uses the overview dashboard path.
       dashboardGitResponse[0].path,
       dashboardGitResponse[2].path,
       selfMonitoringDashboardGitResponse[0].path,

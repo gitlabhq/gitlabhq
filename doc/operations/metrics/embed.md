@@ -57,7 +57,7 @@ You can open the link directly into your browser for a
 
 ## Embedding metrics in issue templates
 
-You can also embed either the default dashboard metrics or individual metrics in
+You can also embed either the overview dashboard metrics or individual metrics in
 issue templates. For charts to render side-by-side, separate links to the entire metrics
 dashboard or individual metrics by either a comma or a space.
 

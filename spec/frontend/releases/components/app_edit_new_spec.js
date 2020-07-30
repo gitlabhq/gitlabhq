@@ -34,6 +34,7 @@ describe('Release edit/new component', () => {
 
     getters = {
       isValid: () => true,
+      isExistingRelease: () => true,
       validationErrors: () => ({
         assets: {
           links: [],
@@ -93,28 +94,6 @@ describe('Release edit/new component', () => {
     it('renders the description text at the top of the page', () => {
       expect(wrapper.find('.js-subtitle-text').text()).toBe(
         'Releases are based on Git tags. We recommend tags that use semantic versioning, for example v1.0, v2.0-pre.',
-      );
-    });
-
-    it('renders the correct tag name in the "Tag name" field', () => {
-      expect(wrapper.find('#git-ref').element.value).toBe(release.tagName);
-    });
-
-    it('renders the correct help text under the "Tag name" field', () => {
-      const helperText = wrapper.find('#tag-name-help');
-      const helperTextLink = helperText.find('a');
-      const helperTextLinkAttrs = helperTextLink.attributes();
-
-      expect(helperText.text()).toBe(
-        'Changing a Release tag is only supported via Releases API. More information',
-      );
-      expect(helperTextLink.text()).toBe('More information');
-      expect(helperTextLinkAttrs).toEqual(
-        expect.objectContaining({
-          href: state.updateReleaseApiDocsPath,
-          rel: 'noopener noreferrer',
-          target: '_blank',
-        }),
       );
     });
 

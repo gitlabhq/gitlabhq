@@ -328,8 +328,8 @@ RSpec.describe ProjectStatistics do
 
       it 'increases also storage size by that amount' do
         expect { described_class.increment_statistic(project.id, stat, 20) }
-         .to change { statistics.reload.storage_size }
-         .by(20)
+          .to change { statistics.reload.storage_size }
+          .by(20)
       end
     end
 

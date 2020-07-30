@@ -213,7 +213,7 @@ export const annotationsSymbolIcon = 'path://m5 229 5 8h-10z';
  * This technical debt is being tracked here
  * https://gitlab.com/gitlab-org/gitlab/-/issues/214671
  */
-export const DEFAULT_DASHBOARD_PATH = 'config/prometheus/common_metrics.yml';
+export const OVERVIEW_DASHBOARD_PATH = 'config/prometheus/common_metrics.yml';
 
 /**
  * GitLab provide metrics dashboards that are available to a user once

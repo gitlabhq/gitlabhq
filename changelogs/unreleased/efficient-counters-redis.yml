@@ -1,0 +1,5 @@
+---
+title: Add mechanism that efficiently increments ActiveRecord counters using Redis
+merge_request: 35878
+author:
+type: performance

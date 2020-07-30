@@ -7603,9 +7603,6 @@ msgstr ""
 msgid "Default classification label"
 msgstr ""
 
-msgid "Default dashboard"
-msgstr ""
-
 msgid "Default deletion adjourned period"
 msgstr ""
 

@@ -6,7 +6,7 @@ module Metrics
   module Dashboard
     class SystemDashboardService < ::Metrics::Dashboard::PredefinedDashboardService
       DASHBOARD_PATH = 'config/prometheus/common_metrics.yml'
-      DASHBOARD_NAME = N_('Default dashboard')
+      DASHBOARD_NAME = N_('Overview')
 
       # SHA256 hash of dashboard content
       DASHBOARD_VERSION = '4685fe386c25b1a786b3be18f79bb2ee9828019003e003816284cdb634fa3e13'
