@@ -1,18 +1,28 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import VueRouter from 'vue-router';
 import DashboardPage from '~/monitoring/pages/dashboard_page.vue';
+import PanelNewPage from '~/monitoring/pages/panel_new_page.vue';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import { createStore } from '~/monitoring/stores';
 import createRouter from '~/monitoring/router';
 import { dashboardProps } from './fixture_data';
 import { dashboardHeaderProps } from './mock_data';
 
+const LEGACY_BASE_PATH = '/project/my-group/test-project/-/environments/71146/metrics';
+const BASE_PATH = '/project/my-group/test-project/-/metrics';
+
+const MockApp = {
+  data() {
+    return {
+      dashboardProps: { ...dashboardProps, ...dashboardHeaderProps },
+    };
+  },
+  template: `<router-view  :dashboard-props="dashboardProps"/>`,
+};
+
 describe('Monitoring router', () => {
   let router;
   let store;
-  const propsData = { dashboardProps: { ...dashboardProps, ...dashboardHeaderProps } };
-  const NEW_BASE_PATH = '/project/my-group/test-project/-/metrics';
-  const OLD_BASE_PATH = '/project/my-group/test-project/-/environments/71146/metrics';
 
   const createWrapper = (basePath, routeArg) => {
     const localVue = createLocalVue();
@@ -23,11 +33,10 @@ describe('Monitoring router', () => {
       router.push(routeArg);
     }
 
-    return mount(DashboardPage, {
+    return mount(MockApp, {
       localVue,
       store,
       router,
-      propsData,
     });
   };
 
@@ -40,26 +49,32 @@ describe('Monitoring router', () => {
     window.location.hash = '';
   });
 
-  describe('support old URL with full dashboard path', () => {
+  describe('support legacy URLs with full dashboard path to visit dashboard page', () => {
     it.each`
-      route                          | currentDashboard
+      path                           | currentDashboard
       ${'/dashboard.yml'}            | ${'dashboard.yml'}
       ${'/folder1/dashboard.yml'}    | ${'folder1/dashboard.yml'}
       ${'/?dashboard=dashboard.yml'} | ${'dashboard.yml'}
-    `('sets component as $componentName for path "$route"', ({ route, currentDashboard }) => {
-      const wrapper = createWrapper(OLD_BASE_PATH, route);
+    `('"$path" renders page with dashboard "$currentDashboard"', ({ path, currentDashboard }) => {
+      const wrapper = createWrapper(LEGACY_BASE_PATH, path);
 
       expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/setCurrentDashboard', {
         currentDashboard,
       });
 
-      expect(wrapper.find(Dashboard)).toExist();
+      expect(wrapper.find(DashboardPage).exists()).toBe(true);
+      expect(
+        wrapper
+          .find(DashboardPage)
+          .find(Dashboard)
+          .exists(),
+      ).toBe(true);
     });
   });
 
-  describe('supports new URL with short dashboard path', () => {
+  describe('supports URLs to visit dashboard page', () => {
     it.each`
-      route                                       | currentDashboard
+      path                                        | currentDashboard
       ${'/'}                                      | ${null}
       ${'/dashboard.yml'}                         | ${'dashboard.yml'}
       ${'/folder1/dashboard.yml'}                 | ${'folder1/dashboard.yml'}
@@ -68,14 +83,35 @@ describe('Monitoring router', () => {
       ${'/config/prometheus/common_metrics.yml'}  | ${'config/prometheus/common_metrics.yml'}
       ${'/config/prometheus/pod_metrics.yml'}     | ${'config/prometheus/pod_metrics.yml'}
       ${'/config%2Fprometheus%2Fpod_metrics.yml'} | ${'config/prometheus/pod_metrics.yml'}
-    `('sets component as $componentName for path "$route"', ({ route, currentDashboard }) => {
-      const wrapper = createWrapper(NEW_BASE_PATH, route);
+    `('"$path" renders page with dashboard "$currentDashboard"', ({ path, currentDashboard }) => {
+      const wrapper = createWrapper(BASE_PATH, path);
 
       expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/setCurrentDashboard', {
         currentDashboard,
       });
 
-      expect(wrapper.find(Dashboard)).toExist();
+      expect(wrapper.find(DashboardPage).exists()).toBe(true);
+      expect(
+        wrapper
+          .find(DashboardPage)
+          .find(Dashboard)
+          .exists(),
+      ).toBe(true);
+    });
+  });
+
+  describe('supports URLs to visit new panel page', () => {
+    it.each`
+      path                                                     | currentDashboard
+      ${'/panel/new'}                                          | ${undefined}
+      ${'/dashboard.yml/panel/new'}                            | ${'dashboard.yml'}
+      ${'/config/prometheus/common_metrics.yml/panel/new'}     | ${'config/prometheus/common_metrics.yml'}
+      ${'/config%2Fprometheus%2Fcommon_metrics.yml/panel/new'} | ${'config/prometheus/common_metrics.yml'}
+    `('"$path" renders page with dashboard "$currentDashboard"', ({ path, currentDashboard }) => {
+      const wrapper = createWrapper(BASE_PATH, path);
+
+      expect(wrapper.vm.$route.params.dashboard).toBe(currentDashboard);
+      expect(wrapper.find(PanelNewPage).exists()).toBe(true);
     });
   });
 });

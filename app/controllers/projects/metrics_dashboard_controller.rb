@@ -14,6 +14,10 @@ module Projects
     end
 
     def show
+      if params[:page].present? && !Feature.enabled?(:metrics_dashboard_new_panel_page, project)
+        return render_404
+      end
+
       if environment
         render 'projects/environments/metrics'
       else

@@ -823,4 +823,66 @@ RSpec.describe 'project routing' do
                      project_id: 'gitlabhq', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
     end
   end
+
+  describe Projects::MetricsDashboardController, 'routing' do
+    it 'routes to #show with no dashboard_path and no page' do
+      expect(get: "/gitlab/gitlabhq/-/metrics").to route_to(
+        "projects/metrics_dashboard#show",
+        **base_params
+      )
+    end
+
+    it 'routes to #show with only dashboard_path' do
+      expect(get: "/gitlab/gitlabhq/-/metrics/dashboard1.yml").to route_to(
+        "projects/metrics_dashboard#show",
+        dashboard_path: 'dashboard1.yml',
+        **base_params
+      )
+    end
+
+    it 'routes to #show with only page' do
+      expect(get: "/gitlab/gitlabhq/-/metrics/panel/new").to route_to(
+        "projects/metrics_dashboard#show",
+        page: 'panel/new',
+        **base_params
+      )
+    end
+
+    it 'routes to #show with dashboard_path and page' do
+      expect(get: "/gitlab/gitlabhq/-/metrics/config%2Fprometheus%2Fcommon_metrics.yml/panel/new").to route_to(
+        "projects/metrics_dashboard#show",
+        dashboard_path: 'config/prometheus/common_metrics.yml',
+        page: 'panel/new',
+        **base_params
+      )
+    end
+
+    it 'routes to 404 with invalid page' do
+      expect(get: "/gitlab/gitlabhq/-/metrics/invalid_page").to route_to(
+        'application#route_not_found',
+        unmatched_route: 'gitlab/gitlabhq/-/metrics/invalid_page'
+      )
+    end
+
+    it 'routes to 404 with invalid dashboard_path' do
+      expect(get: "/gitlab/gitlabhq/-/metrics/invalid_dashboard").to route_to(
+        'application#route_not_found',
+        unmatched_route: 'gitlab/gitlabhq/-/metrics/invalid_dashboard'
+      )
+    end
+
+    it 'routes to 404 with invalid dashboard_path and valid page' do
+      expect(get: "/gitlab/gitlabhq/-/metrics/dashboard1/panel/new").to route_to(
+        'application#route_not_found',
+        unmatched_route: 'gitlab/gitlabhq/-/metrics/dashboard1/panel/new'
+      )
+    end
+
+    it 'routes to 404 with valid dashboard_path and invalid page' do
+      expect(get: "/gitlab/gitlabhq/-/metrics/dashboard1.yml/invalid_page").to route_to(
+        'application#route_not_found',
+        unmatched_route: 'gitlab/gitlabhq/-/metrics/dashboard1.yml/invalid_page'
+      )
+    end
+  end
 end

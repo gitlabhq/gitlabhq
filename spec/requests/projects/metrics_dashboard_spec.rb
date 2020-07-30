@@ -79,6 +79,26 @@ RSpec.describe 'metrics dashboard page' do
     end
   end
 
+  describe 'GET :/namespace/:project/-/metrics/:page' do
+    it 'returns 200 with path param page and feature flag enabled' do
+      stub_feature_flags(metrics_dashboard_new_panel_page: true)
+
+      # send_request(page: 'panel/new') cannot be used because it encodes '/'
+      get "/#{project.namespace.to_param}/#{project.to_param}/-/metrics/panel/new"
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'returns 404 with path param page and feature flag disabled' do
+      stub_feature_flags(metrics_dashboard_new_panel_page: false)
+
+      # send_request(page: 'panel/new') cannot be used because it encodes '/'
+      get "/#{project.namespace.to_param}/#{project.to_param}/-/metrics/panel/new"
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
   def send_request(params = {})
     get namespace_project_metrics_dashboard_path(namespace_id: project.namespace, project_id: project, **params)
   end

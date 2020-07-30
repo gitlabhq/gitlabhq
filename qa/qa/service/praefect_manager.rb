@@ -5,6 +5,8 @@ module QA
     class PraefectManager
       include Service::Shellout
 
+      attr_accessor :gitlab
+
       def initialize
         @gitlab = 'gitlab-gitaly-ha'
         @praefect = 'praefect'
@@ -100,6 +102,14 @@ module QA
         enable_writes
       end
 
+      def verify_storage_move(source_storage, destination_storage)
+        return if QA::Runtime::Env.dot_com?
+
+        repo_path = verify_storage_move_from_gitaly(source_storage[:name])
+
+        destination_storage[:type] == :praefect ? verify_storage_move_to_praefect(repo_path, destination_storage[:name]) : verify_storage_move_to_gitaly(repo_path, destination_storage[:name])
+      end
+
       def wait_for_praefect
         wait_until_shell_command_matches(
           "docker exec #{@praefect} bash -c 'cat /var/log/gitlab/praefect/current'",
@@ -163,16 +173,48 @@ module QA
 
       private
 
-      def wait_until_shell_command(cmd)
-        Support::Waiter.wait_until do
+      def verify_storage_move_from_gitaly(storage)
+        wait_until_shell_command("docker exec #{@gitlab} bash -c 'tail -n 50 /var/log/gitlab/gitaly/current'") do |line|
+          log = JSON.parse(line)
+
+          break log['grpc.request.repoPath'] if log['grpc.method'] == 'RenameRepository' && log['grpc.request.repoStorage'] == storage && !log['grpc.request.repoPath'].include?('wiki')
+        rescue JSON::ParserError
+          # Ignore lines that can't be parsed as JSON
+        end
+      end
+
+      def verify_storage_move_to_praefect(repo_path, virtual_storage)
+        wait_until_shell_command("docker exec #{@gitlab} bash -c 'tail -n 50 /var/log/gitlab/praefect/current'") do |line|
+          log = JSON.parse(line)
+
+          log['grpc.method'] == 'ReplicateRepository' && log['virtual_storage'] == virtual_storage && log['relative_path'] == repo_path
+        rescue JSON::ParserError
+          # Ignore lines that can't be parsed as JSON
+        end
+      end
+
+      def verify_storage_move_to_gitaly(repo_path, storage)
+        wait_until_shell_command("docker exec #{@gitlab} bash -c 'tail -n 50 /var/log/gitlab/gitaly/current'") do |line|
+          log = JSON.parse(line)
+
+          log['grpc.method'] == 'ReplicateRepository' && log['grpc.request.repoStorage'] == storage && log['grpc.request.repoPath'] == repo_path
+        rescue JSON::ParserError
+          # Ignore lines that can't be parsed as JSON
+        end
+      end
+
+      def wait_until_shell_command(cmd, **kwargs)
+        sleep_interval = kwargs.delete(:sleep_interval) || 1
+
+        Support::Waiter.wait_until(sleep_interval: sleep_interval, **kwargs) do
           shell cmd do |line|
             break true if yield line
           end
         end
       end
 
-      def wait_until_shell_command_matches(cmd, regex)
-        wait_until_shell_command(cmd) do |line|
+      def wait_until_shell_command_matches(cmd, regex, **kwargs)
+        wait_until_shell_command(cmd, kwargs) do |line|
           QA::Runtime::Logger.info(line.chomp)
 
           line =~ regex

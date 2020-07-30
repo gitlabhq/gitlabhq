@@ -5,7 +5,7 @@ import SidebarTimeTracking from './components/time_tracking/sidebar_time_trackin
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import ConfidentialIssueSidebar from './components/confidential/confidential_issue_sidebar.vue';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
-import LockIssueSidebar from './components/lock/lock_issue_sidebar.vue';
+import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import sidebarParticipants from './components/participants/sidebar_participants.vue';
 import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptions.vue';
 import Translate from '../vue_shared/translate';
@@ -95,7 +95,7 @@ function mountLockComponent() {
           fullPath,
         },
         render: createElement =>
-          createElement(LockIssueSidebar, {
+          createElement(IssuableLockForm, {
             props: {
               isEditable: initialData.is_editable,
             },

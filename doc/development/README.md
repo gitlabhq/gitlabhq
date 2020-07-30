@@ -56,6 +56,7 @@ Complementary reads:
 - [Danger bot](dangerbot.md)
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
 - [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLab team members)
+- [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/patch/process.md#process-for-developers)
 
 ## UX and Frontend guides
 

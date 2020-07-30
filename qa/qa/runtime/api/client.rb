@@ -6,6 +6,8 @@ module QA
       class Client
         attr_reader :address, :user
 
+        AuthorizationError = Class.new(RuntimeError)
+
         def initialize(address = :gitlab, personal_access_token: nil, is_new_session: true, user: nil, ip_limits: false)
           @address = address
           @personal_access_token = personal_access_token

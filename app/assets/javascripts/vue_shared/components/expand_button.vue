@@ -1,7 +1,6 @@
 <script>
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 
 /**
  * Port of detail_behavior expand button.
@@ -16,8 +15,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 export default {
   name: 'ExpandButton',
   components: {
-    GlDeprecatedButton,
-    Icon,
+    GlButton,
   },
   data() {
     return {
@@ -41,25 +39,23 @@ export default {
 </script>
 <template>
   <span>
-    <gl-deprecated-button
+    <gl-button
       v-show="isCollapsed"
       :aria-label="ariaLabel"
       type="button"
       class="js-text-expander-prepend text-expander btn-blank"
+      icon="ellipsis_h"
       @click="onClick"
-    >
-      <icon :size="12" name="ellipsis_h" />
-    </gl-deprecated-button>
+    />
     <span v-if="isCollapsed"> <slot name="short"></slot> </span>
     <span v-if="!isCollapsed"> <slot name="expanded"></slot> </span>
-    <gl-deprecated-button
+    <gl-button
       v-show="!isCollapsed"
       :aria-label="ariaLabel"
       type="button"
       class="js-text-expander-append text-expander btn-blank"
+      icon="ellipsis_h"
       @click="onClick"
-    >
-      <icon :size="12" name="ellipsis_h" />
-    </gl-deprecated-button>
+    />
   </span>
 </template>

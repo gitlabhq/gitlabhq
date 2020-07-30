@@ -344,11 +344,11 @@ have [duplicate pipelines](#differences-between-rules-and-onlyexcept).
 
 Useful workflow rules clauses:
 
-| Clause                                                                    | Details                                                                                       |
-|---------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'`                      | Allow or block merge request pipelines.                                                        |
-| `if: '$CI_PIPELINE_SOURCE == "push"'`                                     | Allow or block both branch pipelines and tag pipelines.                                        |
-| `if: $CI_COMMIT_BEFORE_SHA == '0000000000000000000000000000000000000000'` | Allow or block pipeline creation when new branches are created or pushed with no commits. |
+| Clause                                                                     | Details                                                 |
+|----------------------------------------------------------------------------|---------------------------------------------------------|
+| `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'`                       | Allow or block merge request pipelines.                 |
+| `if: '$CI_PIPELINE_SOURCE == "push"'`                                      | Allow or block both branch pipelines and tag pipelines. |
+| `if: '$CI_COMMIT_BEFORE_SHA == '0000000000000000000000000000000000000000'` | Allow or block pipeline creation when new branches are created or pushed with no commits. This will also skip tag and scheduled pipelines. See [common `rules:if` clauses](#common-if-clauses-for-rules) for examples on how to define these rules more strictly. |
 
 #### `workflow:rules` templates
 
@@ -1297,8 +1297,10 @@ Some details regarding the logic that determines the `when` for the job:
 - You can define `when` once per rule, or once at the job-level, which applies to
   all rules. You can't mix `when` at the job-level with `when` in rules.
 
+##### Common `if` clauses for `rules`
+
 For behavior similar to the [`only`/`except` keywords](#onlyexcept-basic), you can
-check the value of the `$CI_PIPELINE_SOURCE` variable.
+check the value of the `$CI_PIPELINE_SOURCE` variable:
 
 | Value                         | Description                                                                                                                                                                                                                                                                                                                                           |
 |-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1308,7 +1310,7 @@ check the value of the `$CI_PIPELINE_SOURCE` variable.
 | `schedule`                    | For [scheduled pipelines](../pipelines/schedules.md).                                                                                                                                                                                                                                                                                                 |
 | `api`                         | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline).                                                                                                                                                                                                                                                         |
 | `external`                    | When using CI services other than GitLab.                                                                                                                                                                                                                                                                                                             |
-| `pipeline`                   | For multi-project pipelines created by [using the API with `CI_JOB_TOKEN`](../triggers/README.md#when-used-with-multi-project-pipelines).                                                                                                                                                                                                             |
+| `pipeline`                    | For multi-project pipelines created by [using the API with `CI_JOB_TOKEN`](../triggers/README.md#when-used-with-multi-project-pipelines).                                                                                                                                                                                                             |
 | `chat`                        | For pipelines created by using a [GitLab ChatOps](../chatops/README.md) command.                                                                                                                                                                                                                                                                      |
 | `webide`                      | For pipelines created by using the [WebIDE](../../user/project/web_ide/index.md).                                                                                                                                                                                                                                                                     |
 | `merge_request_event`         | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md). |
@@ -1357,6 +1359,29 @@ Other commonly used variables for `if` clauses:
   `CUSTOM_VARIABLE` does **not** match a regular expression.
 - `if: '$CUSTOM_VARIABLE == "value1"'`: If the custom variable `CUSTOM_VARIABLE` is
   exactly `value1`.
+
+To avoid running pipelines when a branch is created without any changes,
+check the value of `$CI_COMMIT_BEFORE_SHA`. It has a value of
+`0000000000000000000000000000000000000000`:
+
+- In branches with no commits.
+- Tag pipelines and scheduled pipelines. You should define rules very
+  narrowly if you don't want to skip these.
+
+To skip pipelines on all empty branches, but also tags and schedules:
+
+```yaml
+rules:
+  - if: $CI_COMMIT_BEFORE_SHA == '0000000000000000000000000000000000000000'
+    when: never
+```
+
+To skip branch pipelines when the branch is empty:
+
+```yaml
+rules:
+  - if: $CI_COMMIT_BRANCH && $CI_COMMIT_BEFORE_SHA != '0000000000000000000000000000000000000000'
+```
 
 ##### `rules:changes`
 

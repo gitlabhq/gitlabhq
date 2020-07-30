@@ -16,16 +16,62 @@ RSpec.describe IncidentManagement::ProcessAlertWorker do
     subject { described_class.new.perform(nil, nil, alert.id) }
 
     before do
+      allow(Gitlab::AppLogger).to receive(:warn).and_call_original
+
       allow(IncidentManagement::CreateIssueService)
         .to receive(:new).with(alert.project, parsed_payload)
         .and_call_original
     end
 
-    it 'creates an issue' do
-      expect(IncidentManagement::CreateIssueService)
-        .to receive(:new).with(alert.project, parsed_payload)
+    shared_examples 'creates issue successfully' do
+      it 'creates an issue' do
+        expect(IncidentManagement::CreateIssueService)
+          .to receive(:new).with(alert.project, parsed_payload)
 
-      expect { subject }.to change { Issue.count }.by(1)
+        expect { subject }.to change { Issue.count }.by(1)
+      end
+
+      it 'updates AlertManagement::Alert#issue_id' do
+        subject
+
+        expect(alert.reload.issue_id).to eq(created_issue.id)
+      end
+
+      it 'does not write a warning to log' do
+        subject
+
+        expect(Gitlab::AppLogger).not_to have_received(:warn)
+      end
+    end
+
+    context 'with valid alert' do
+      it_behaves_like 'creates issue successfully'
+
+      context 'when alert cannot be updated' do
+        let_it_be(:alert) { create(:alert_management_alert, :with_validation_errors, project: project, payload: payload) }
+
+        it 'updates AlertManagement::Alert#issue_id' do
+          expect { subject }.not_to change { alert.reload.issue_id }
+        end
+
+        it 'logs a warning' do
+          subject
+
+          expect(Gitlab::AppLogger).to have_received(:warn).with(
+            message: 'Cannot link an Issue with Alert',
+            issue_id: created_issue.id,
+            alert_id: alert.id,
+            alert_errors: { hosts: ['hosts array is over 255 chars'] }
+          )
+        end
+      end
+
+      context 'prometheus alert' do
+        let_it_be(:alert) { create(:alert_management_alert, :prometheus, project: project, started_at: started_at) }
+        let_it_be(:parsed_payload) { alert.payload }
+
+        it_behaves_like 'creates issue successfully'
+      end
     end
 
     context 'with invalid alert' do
@@ -37,45 +83,6 @@ RSpec.describe IncidentManagement::ProcessAlertWorker do
         expect(IncidentManagement::CreateIssueService).not_to receive(:new)
 
         expect { subject }.not_to change { Issue.count }
-      end
-    end
-
-    context 'with valid alert' do
-      before do
-        allow(Gitlab::AppLogger).to receive(:warn).and_call_original
-      end
-
-      context 'when alert can be updated' do
-        it 'updates AlertManagement::Alert#issue_id' do
-          subject
-
-          expect(alert.reload.issue_id).to eq(created_issue.id)
-        end
-
-        it 'does not write a warning to log' do
-          subject
-
-          expect(Gitlab::AppLogger).not_to have_received(:warn)
-        end
-
-        context 'when alert cannot be updated' do
-          let_it_be(:alert) { create(:alert_management_alert, :with_validation_errors, project: project, payload: payload) }
-
-          it 'updates AlertManagement::Alert#issue_id' do
-            expect { subject }.not_to change { alert.reload.issue_id }
-          end
-
-          it 'logs a warning' do
-            subject
-
-            expect(Gitlab::AppLogger).to have_received(:warn).with(
-              message: 'Cannot link an Issue with Alert',
-              issue_id: created_issue.id,
-              alert_id: alert.id,
-              alert_errors: { hosts: ['hosts array is over 255 chars'] }
-            )
-          end
-        end
       end
     end
   end

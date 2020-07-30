@@ -34,6 +34,8 @@ module AlertManagement
       else
         create_alert_management_alert
       end
+
+      process_incident_alert
     end
 
     def reset_alert_management_alert_status
@@ -47,16 +49,17 @@ module AlertManagement
     end
 
     def create_alert_management_alert
-      am_alert = AlertManagement::Alert.new(am_alert_params.merge(ended_at: nil))
-      if am_alert.save
-        am_alert.execute_services
+      new_alert = AlertManagement::Alert.new(am_alert_params.merge(ended_at: nil))
+      if new_alert.save
+        new_alert.execute_services
+        @am_alert = new_alert
         return
       end
 
       logger.warn(
         message: 'Unable to create AlertManagement::Alert',
         project_id: project.id,
-        alert_errors: am_alert.errors.messages
+        alert_errors: new_alert.errors.messages
       )
     end
 
@@ -89,12 +92,21 @@ module AlertManagement
       SystemNoteService.auto_resolve_prometheus_alert(issue, project, User.alert_bot) if issue.reset.closed?
     end
 
+    def process_incident_alert
+      return unless am_alert
+      return if am_alert.issue
+
+      IncidentManagement::ProcessAlertWorker.perform_async(nil, nil, am_alert.id)
+    end
+
     def logger
       @logger ||= Gitlab::AppLogger
     end
 
     def am_alert
-      @am_alert ||= AlertManagement::Alert.not_resolved.for_fingerprint(project, gitlab_fingerprint).first
+      strong_memoize(:am_alert) do
+        AlertManagement::Alert.not_resolved.for_fingerprint(project, gitlab_fingerprint).first
+      end
     end
 
     def bad_request

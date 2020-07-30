@@ -1,15 +1,14 @@
 import { shallowMount } from '@vue/test-utils';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
-import LockIssueSidebar from '~/sidebar/components/lock/lock_issue_sidebar.vue';
+import IssuableLockForm from '~/sidebar/components/lock/issuable_lock_form.vue';
 import EditForm from '~/sidebar/components/lock/edit_form.vue';
 import createStore from '~/notes/stores';
 import { createStore as createMrStore } from '~/mr_notes/stores';
 import { ISSUABLE_TYPE_ISSUE, ISSUABLE_TYPE_MR } from './constants';
 
-describe('LockIssueSidebar', () => {
+describe('IssuableLockForm', () => {
   let wrapper;
   let store;
-  let mediator;
   let issuableType; // Either ISSUABLE_TYPE_ISSUE or ISSUABLE_TYPE_MR
 
   const setIssuableType = pageType => {
@@ -20,15 +19,6 @@ describe('LockIssueSidebar', () => {
   const findLockStatus = () => wrapper.find('[data-testid="lock-status"]');
   const findEditLink = () => wrapper.find('[data-testid="edit-link"]');
   const findEditForm = () => wrapper.find(EditForm);
-
-  const initMediator = () => {
-    mediator = {
-      service: {
-        update: Promise.resolve(true),
-      },
-      store: {},
-    };
-  };
 
   const initStore = isLocked => {
     if (issuableType === ISSUABLE_TYPE_ISSUE) {
@@ -41,11 +31,10 @@ describe('LockIssueSidebar', () => {
   };
 
   const createComponent = ({ props = {} }) => {
-    wrapper = shallowMount(LockIssueSidebar, {
+    wrapper = shallowMount(IssuableLockForm, {
       store,
       propsData: {
         isEditable: true,
-        mediator,
         ...props,
       },
     });
@@ -62,7 +51,6 @@ describe('LockIssueSidebar', () => {
   `('In $pageType page', ({ pageType }) => {
     beforeEach(() => {
       setIssuableType(pageType);
-      initMediator();
     });
 
     describe.each`

@@ -83,6 +83,15 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
         context 'when alert does not exist' do
           context 'when alert can be created' do
             it_behaves_like 'creates an alert management alert'
+
+            it 'processes the incident alert' do
+              expect(IncidentManagement::ProcessAlertWorker)
+                .to receive(:perform_async)
+                .with(nil, nil, kind_of(Integer))
+                .once
+
+              expect(subject).to be_success
+            end
           end
 
           context 'when alert cannot be created' do
@@ -101,6 +110,13 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
               )
 
               execute
+            end
+
+            it 'does not create incident issue' do
+              expect(IncidentManagement::ProcessAlertWorker)
+                .not_to receive(:perform_async)
+
+              expect(subject).to be_success
             end
           end
 

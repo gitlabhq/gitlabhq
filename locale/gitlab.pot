@@ -604,25 +604,25 @@ msgstr[1] ""
 msgid "%{remaining_approvals} left"
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{criticalStart}%{critical} new critical%{criticalEnd} and %{highStart}%{high} new high%{highEnd} severity vulnerabilities out of %{total}."
+msgid "%{reportType} %{status} detected %{criticalStart}%{critical} critical%{criticalEnd} and %{highStart}%{high} high%{highEnd} severity vulnerabilities out of %{total}."
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{criticalStart}%{critical} new critical%{criticalEnd} and %{highStart}%{high} new high%{highEnd} severity vulnerabilities."
+msgid "%{reportType} %{status} detected %{criticalStart}%{critical} critical%{criticalEnd} and %{highStart}%{high} high%{highEnd} severity vulnerabilities."
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{criticalStart}%{critical} new critical%{criticalEnd} severity vulnerabilities out of %{total}."
+msgid "%{reportType} %{status} detected %{criticalStart}%{critical} critical%{criticalEnd} severity vulnerabilities out of %{total}."
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{criticalStart}%{critical} new critical%{criticalEnd} severity vulnerability."
-msgid_plural "%{reportType} %{status} detected %{criticalStart}%{critical} new critical%{criticalEnd} severity vulnerabilities."
+msgid "%{reportType} %{status} detected %{criticalStart}%{critical} critical%{criticalEnd} severity vulnerability."
+msgid_plural "%{reportType} %{status} detected %{criticalStart}%{critical} critical%{criticalEnd} severity vulnerabilities."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{reportType} %{status} detected %{highStart}%{high} new high%{highEnd} severity vulnerabilities out of %{total}."
+msgid "%{reportType} %{status} detected %{highStart}%{high} high%{highEnd} severity vulnerabilities out of %{total}."
 msgstr ""
 
-msgid "%{reportType} %{status} detected %{highStart}%{high} new high%{highEnd} severity vulnerability."
-msgid_plural "%{reportType} %{status} detected %{highStart}%{high} new high%{highEnd} severity vulnerabilities."
+msgid "%{reportType} %{status} detected %{highStart}%{high} high%{highEnd} severity vulnerability."
+msgid_plural "%{reportType} %{status} detected %{highStart}%{high} high%{highEnd} severity vulnerabilities."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -631,7 +631,7 @@ msgid_plural "%{reportType} %{status} detected %{other} vulnerabilities."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{reportType} %{status} detected no new vulnerabilities."
+msgid "%{reportType} %{status} detected no vulnerabilities."
 msgstr ""
 
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}"
@@ -14984,7 +14984,13 @@ msgstr ""
 msgid "Metrics|Add metric"
 msgstr ""
 
+msgid "Metrics|Add panel"
+msgstr ""
+
 msgid "Metrics|Avg"
+msgstr ""
+
+msgid "Metrics|Back to dashboard"
 msgstr ""
 
 msgid "Metrics|Cancel"

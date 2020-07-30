@@ -429,6 +429,52 @@ module Types
 end
 ```
 
+## JSON
+
+When data to be returned by GraphQL is stored as
+[JSON](migration_style_guide.md#storing-json-in-database), we should continue to use
+GraphQL types whenever possible. Avoid using the `GraphQL::Types::JSON` type unless
+the JSON data returned is _truly_ unstructured.
+
+If the structure of the JSON data varies, but will be one of a set of known possible
+structures, use a
+[union](https://graphql-ruby.org/type_definitions/unions.html).
+An example of the use of a union for this purpose is
+[!30129](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30129).
+
+Field names can be mapped to hash data keys using the `hash_key:` keyword if needed.
+
+For example, given the following simple JSON data:
+
+```json
+{
+  "title": "My chart",
+  "data": [
+    { "x": 0, "y": 1 },
+    { "x": 1, "y": 1 },
+    { "x": 2, "y": 2 }
+  ]
+}
+```
+
+We can use GraphQL types like this:
+
+```ruby
+module Types
+  class ChartType < BaseObject
+    field :title, GraphQL::STRING_TYPE, null: true, description: 'Title of the chart'
+    field :data, [Types::ChartDatumType], null: true, description: 'Data of the chart'
+  end
+end
+
+module Types
+  class ChartDatumType < BaseObject
+    field :x, GraphQL::INT_TYPE, null: true, description: 'X-axis value of the chart datum'
+    field :y, GraphQL::INT_TYPE, null: true, description: 'Y-axis value of the chart datum'
+  end
+end
+```
+
 ## Descriptions
 
 All fields and arguments
