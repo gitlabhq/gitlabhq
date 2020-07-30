@@ -26,9 +26,5 @@ module Git
     def removing_tag?
       Gitlab::Git.blank_ref?(newrev)
     end
-
-    def tag_name
-      Gitlab::Git.ref_name(ref)
-    end
   end
 end

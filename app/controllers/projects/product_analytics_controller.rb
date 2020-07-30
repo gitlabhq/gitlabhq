@@ -16,6 +16,19 @@ class Projects::ProductAnalyticsController < Projects::ApplicationController
     @event = product_analytics_events.try(:first)
   end
 
+  def graphs
+    @graphs = []
+    @timerange = 30
+
+    requested_graphs = %w(platform os_timezone br_lang doc_charset)
+
+    requested_graphs.each do |graph|
+      @graphs << ProductAnalytics::BuildGraphService
+        .new(project, { graph: graph, timerange: @timerange })
+        .execute
+    end
+  end
+
   private
 
   def product_analytics_events

@@ -3,6 +3,7 @@
 module Ci
   class Ref < ApplicationRecord
     extend Gitlab::Ci::Model
+    include AfterCommitQueue
     include Gitlab::OptimisticLocking
 
     FAILING_STATUSES = %w[failed broken still_failing].freeze
@@ -15,6 +16,7 @@ module Ci
         transition unknown: :success
         transition fixed: :success
         transition %i[failed broken still_failing] => :fixed
+        transition success: same
       end
 
       event :do_fail do
@@ -29,6 +31,14 @@ module Ci
       state :fixed, value: 3
       state :broken, value: 4
       state :still_failing, value: 5
+
+      after_transition any => [:fixed, :success] do |ci_ref|
+        next unless ::Gitlab::Ci::Features.keep_latest_artifacts_for_ref_enabled?(ci_ref.project)
+
+        ci_ref.run_after_commit do
+          Ci::PipelineSuccessUnlockArtifactsWorker.perform_async(ci_ref.last_finished_pipeline_id)
+        end
+      end
     end
 
     class << self

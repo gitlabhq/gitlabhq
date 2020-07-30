@@ -38,7 +38,6 @@ module QA
           Resource::KubernetesCluster::ProjectCluster.fabricate! do |k8s_cluster|
             k8s_cluster.project = project
             k8s_cluster.cluster = cluster
-            k8s_cluster.install_helm_tiller = true
             k8s_cluster.install_ingress = true
             k8s_cluster.install_prometheus = true
             k8s_cluster.install_runner = true

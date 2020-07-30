@@ -169,6 +169,14 @@ RSpec.describe API::GroupVariables do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+
+      it 'responds with 400 if the update fails' do
+        put api("/groups/#{group.id}/variables/#{variable.key}", user), params: { value: 'shrt', masked: true }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(variable.reload.masked).to eq(false)
+        expect(json_response['message']).to eq('value' => ['is invalid'])
+      end
     end
 
     context 'authorized user with invalid permissions' do

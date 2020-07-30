@@ -249,14 +249,6 @@ module Ci
 
         pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
       end
-
-      after_transition any => [:success] do |pipeline|
-        next unless Gitlab::Ci::Features.keep_latest_artifacts_for_ref_enabled?(pipeline.project)
-
-        pipeline.run_after_commit do
-          Ci::PipelineSuccessUnlockArtifactsWorker.perform_async(pipeline.id)
-        end
-      end
     end
 
     scope :internal, -> { where(source: internal_sources) }

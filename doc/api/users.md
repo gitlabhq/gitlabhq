@@ -314,7 +314,8 @@ Example Responses:
   "current_sign_in_ip": "196.165.1.102",
   "last_sign_in_ip": "172.127.2.22",
   "plan": "gold",
-  "trial": true
+  "trial": true,
+  "sign_in_count": 1337
 }
 ```
 

@@ -830,6 +830,7 @@ describe('DiffsStoreMutations', () => {
       const state = {
         treeEntries: {},
         tree: [],
+        isTreeLoaded: false,
       };
 
       mutations[types.SET_TREE_DATA](state, {
@@ -844,6 +845,7 @@ describe('DiffsStoreMutations', () => {
       });
 
       expect(state.tree).toEqual(['tree']);
+      expect(state.isTreeLoaded).toEqual(true);
     });
   });
 

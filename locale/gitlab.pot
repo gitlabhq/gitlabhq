@@ -16406,6 +16406,9 @@ msgstr ""
 msgid "Number of employees"
 msgstr ""
 
+msgid "Number of events"
+msgstr ""
+
 msgid "Number of events for this project: %{total_count}."
 msgstr ""
 
@@ -17939,6 +17942,9 @@ msgid "Proceed"
 msgstr ""
 
 msgid "Product Analytics"
+msgstr ""
+
+msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
 msgstr ""
 
 msgid "Productivity"
@@ -22016,6 +22022,9 @@ msgid "Showing Version #%{versionNumber}"
 msgstr ""
 
 msgid "Showing all issues"
+msgstr ""
+
+msgid "Showing graphs based on events of the last %{timerange} days."
 msgstr ""
 
 msgid "Showing last %{size} of log -"

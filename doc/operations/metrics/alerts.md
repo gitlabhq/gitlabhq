@@ -82,15 +82,15 @@ Alerts can be used to trigger actions, like opening an issue automatically
 1. Click **Save changes**.
 
 After enabling, GitLab automatically opens an issue when an alert is triggered containing
-values extracted from [alert's payload](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config):
+values extracted from the [`alerts` field in webhook payload](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config):
 
 - Issue author: `GitLab Alert Bot`
-- Issue title: Extract from `annotations/title`, `annotations/summary` or `labels/alertname`
-- Alert `Summary`: A list of properties
-  - `starts_at`: Alert start time via `startsAt`
-  - `full_query`: Alert query extracted from `generatorURL`
+- Issue title: Extracted from the alert payload fields `annotations/title`, `annotations/summary`, or `labels/alertname`.
+- Alert `Summary`: A list of properties from the alert's payload.
+  - `starts_at`: Alert start time from the payload's `startsAt` field
+  - `full_query`: Alert query extracted from the payload's `generatorURL` field
   - Optional list of attached annotations extracted from `annotations/*`
-- Alert [GFM](../../user/markdown.md): GitLab Flavored Markdown from `annotations/gitlab_incident_markdown`
+- Alert [GFM](../../user/markdown.md): GitLab Flavored Markdown from the payload's `annotations/gitlab_incident_markdown` field.
 
 When GitLab receives a **Recovery Alert**, it closes the associated issue.
 This action is recorded as a system message on the issue indicating that it

@@ -64,6 +64,7 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
 
             expect(json_response).to have_key('note')
             expect(json_response['note']).to eq(user.note)
+            expect(json_response).to have_key('sign_in_count')
           end
         end
 
@@ -72,6 +73,7 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
             get api("/users/#{user.id}", user)
 
             expect(json_response).not_to have_key('note')
+            expect(json_response).not_to have_key('sign_in_count')
           end
         end
       end

@@ -813,6 +813,8 @@ RSpec.describe Ci::Pipeline, :mailer do
         expect(subject.to_hash)
           .to include(
             'CI_EXTERNAL_PULL_REQUEST_IID' => pull_request.pull_request_iid.to_s,
+            'CI_EXTERNAL_PULL_REQUEST_SOURCE_REPOSITORY' => pull_request.source_repository,
+            'CI_EXTERNAL_PULL_REQUEST_TARGET_REPOSITORY' => pull_request.target_repository,
             'CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_SHA' => pull_request.source_sha,
             'CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_SHA' => pull_request.target_sha,
             'CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_NAME' => pull_request.source_branch,
@@ -3261,32 +3263,6 @@ RSpec.describe Ci::Pipeline, :mailer do
           expect(AutoDevops::DisableWorker).not_to receive(:perform_async)
 
           pipeline.drop
-        end
-      end
-    end
-
-    context 'when transitioning to success' do
-      context 'when feature is enabled' do
-        before do
-          stub_feature_flags(keep_latest_artifacts_for_ref: true)
-        end
-
-        it 'calls the PipelineSuccessUnlockArtifactsWorker' do
-          expect(Ci::PipelineSuccessUnlockArtifactsWorker).to receive(:perform_async).with(pipeline.id)
-
-          pipeline.succeed!
-        end
-      end
-
-      context 'when feature is disabled' do
-        before do
-          stub_feature_flags(keep_latest_artifacts_for_ref: false)
-        end
-
-        it 'does not call the PipelineSuccessUnlockArtifactsWorker' do
-          expect(Ci::PipelineSuccessUnlockArtifactsWorker).not_to receive(:perform_async)
-
-          pipeline.succeed!
         end
       end
     end

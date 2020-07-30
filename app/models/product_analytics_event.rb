@@ -20,6 +20,10 @@ class ProductAnalyticsEvent < ApplicationRecord
     where('collector_tstamp BETWEEN ? AND ? ', today - duration + 1, today + 1)
   }
 
+  def self.count_by_graph(graph, days)
+    group(graph).timerange(days).count
+  end
+
   def as_json_wo_empty
     as_json.compact
   end

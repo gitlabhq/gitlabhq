@@ -1,0 +1,5 @@
+---
+title: "Add ENV vars that expose source and target repository for CI Pipelines that run on an External Pull Requests."
+merge_request: 37616
+author: Rafael Dohms @rdohms
+type: added

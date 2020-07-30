@@ -310,6 +310,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           collection do
             get :setup
             get :test
+            get :graphs
           end
         end
 

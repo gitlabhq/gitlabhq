@@ -41,6 +41,7 @@ describe('diffs/components/app', () => {
 
     store = createDiffsStore();
     store.state.diffs.isLoading = false;
+    store.state.diffs.isTreeLoaded = true;
 
     extendStore(store);
 

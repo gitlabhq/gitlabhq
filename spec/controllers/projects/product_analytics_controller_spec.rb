@@ -66,6 +66,27 @@ RSpec.describe Projects::ProductAnalyticsController do
     end
   end
 
+  describe 'GET #graphs' do
+    it 'renders graphs with 200 status code' do
+      get :graphs, params: project_params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:graphs)
+    end
+
+    context 'feature flag disabled' do
+      before do
+        stub_feature_flags(product_analytics: false)
+      end
+
+      it 'returns not found' do
+        get :graphs, params: project_params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   private
 
   def project_params(opts = {})

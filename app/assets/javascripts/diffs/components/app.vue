@@ -127,7 +127,13 @@ export default {
       emailPatchPath: state => state.diffs.emailPatchPath,
       retrievingBatches: state => state.diffs.retrievingBatches,
     }),
-    ...mapState('diffs', ['showTreeList', 'isLoading', 'startVersion', 'currentDiffFileId']),
+    ...mapState('diffs', [
+      'showTreeList',
+      'isLoading',
+      'startVersion',
+      'currentDiffFileId',
+      'isTreeLoaded',
+    ]),
     ...mapGetters('diffs', ['isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     diffs() {
@@ -400,7 +406,7 @@ export default {
 
 <template>
   <div v-show="shouldShow">
-    <div v-if="isLoading" class="loading"><gl-loading-icon size="lg" /></div>
+    <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions
         :merge-request-diffs="mergeRequestDiffs"
