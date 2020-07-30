@@ -1365,7 +1365,7 @@ check the value of `$CI_COMMIT_BEFORE_SHA`. It has a value of
 `0000000000000000000000000000000000000000`:
 
 - In branches with no commits.
-- Tag pipelines and scheduled pipelines. You should define rules very
+- In tag pipelines and scheduled pipelines. You should define rules very
   narrowly if you don't want to skip these.
 
 To skip pipelines on all empty branches, but also tags and schedules:

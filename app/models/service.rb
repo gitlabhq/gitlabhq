@@ -10,6 +10,7 @@ class Service < ApplicationRecord
   include IgnorableColumns
 
   ignore_columns %i[title description], remove_with: '13.4', remove_after: '2020-09-22'
+  ignore_columns %i[default], remove_with: '13.5', remove_after: '2020-10-22'
 
   SERVICE_NAMES = %w[
     alerts asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord

@@ -14999,6 +14999,9 @@ msgstr ""
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr ""
 
+msgid "Metrics|Copy YAML"
+msgstr ""
+
 msgid "Metrics|Create custom dashboard %{fileName}"
 msgstr ""
 
@@ -15015,6 +15018,12 @@ msgid "Metrics|Create your dashboard configuration file"
 msgstr ""
 
 msgid "Metrics|Current"
+msgstr ""
+
+msgid "Metrics|Define and preview panel"
+msgstr ""
+
+msgid "Metrics|Define panel YAML to preview panel."
 msgstr ""
 
 msgid "Metrics|Delete metric"
@@ -15083,6 +15092,15 @@ msgid "Metrics|New metric"
 msgstr ""
 
 msgid "Metrics|Open repository"
+msgstr ""
+
+msgid "Metrics|Panel YAML"
+msgstr ""
+
+msgid "Metrics|Panel YAML copied"
+msgstr ""
+
+msgid "Metrics|Preview panel"
 msgstr ""
 
 msgid "Metrics|PromQL query is valid"

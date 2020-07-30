@@ -41,3 +41,12 @@ export const getPrometheusQueryData = (prometheusEndpoint, params) =>
       }
       throw error;
     });
+
+// eslint-disable-next-line no-unused-vars
+export function getPanelJson(panelPreviewEndpoint, panelPreviewYml) {
+  // TODO Use a real backend when it's available
+  // https://gitlab.com/gitlab-org/gitlab/-/issues/228758
+
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  return Promise.reject(new Error('API Not implemented.'));
+}

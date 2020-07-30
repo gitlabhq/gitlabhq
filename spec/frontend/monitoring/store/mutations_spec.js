@@ -488,4 +488,42 @@ describe('Monitoring mutations', () => {
       });
     });
   });
+
+  describe('REQUEST_PANEL_PREVIEW', () => {
+    it('saves yml content and resets other preview data', () => {
+      const mockYmlContent = 'mock yml content';
+      mutations[types.REQUEST_PANEL_PREVIEW](stateCopy, mockYmlContent);
+
+      expect(stateCopy.panelPreviewIsLoading).toBe(true);
+      expect(stateCopy.panelPreviewYml).toBe(mockYmlContent);
+      expect(stateCopy.panelPreviewGraphData).toBe(null);
+      expect(stateCopy.panelPreviewError).toBe(null);
+    });
+  });
+
+  describe('RECEIVE_PANEL_PREVIEW_SUCCESS', () => {
+    it('saves graph data', () => {
+      mutations[types.RECEIVE_PANEL_PREVIEW_SUCCESS](stateCopy, {
+        title: 'My Title',
+        type: 'area-chart',
+      });
+
+      expect(stateCopy.panelPreviewIsLoading).toBe(false);
+      expect(stateCopy.panelPreviewGraphData).toMatchObject({
+        title: 'My Title',
+        type: 'area-chart',
+      });
+      expect(stateCopy.panelPreviewError).toBe(null);
+    });
+  });
+
+  describe('RECEIVE_PANEL_PREVIEW_FAILURE', () => {
+    it('saves graph data', () => {
+      mutations[types.RECEIVE_PANEL_PREVIEW_FAILURE](stateCopy, 'Error!');
+
+      expect(stateCopy.panelPreviewIsLoading).toBe(false);
+      expect(stateCopy.panelPreviewGraphData).toBe(null);
+      expect(stateCopy.panelPreviewError).toBe('Error!');
+    });
+  });
 });

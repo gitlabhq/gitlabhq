@@ -138,7 +138,7 @@ export default {
           @input="updateCommitMessage"
           @submit="commit"
         />
-        <div class="clearfix prepend-top-15">
+        <div class="clearfix gl-mt-5">
           <actions />
           <loading-button
             :loading="submitCommitLoading"

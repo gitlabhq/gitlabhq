@@ -15,7 +15,7 @@ import getAnnotations from '../queries/getAnnotations.query.graphql';
 import getDashboardValidationWarnings from '../queries/getDashboardValidationWarnings.query.graphql';
 import { convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
-import { getDashboard, getPrometheusQueryData } from '../requests';
+import { getDashboard, getPrometheusQueryData, getPanelJson } from '../requests';
 
 import { ENVIRONMENT_AVAILABLE_STATE, DEFAULT_DASHBOARD_PATH, VARIABLE_TYPES } from '../constants';
 
@@ -472,4 +472,31 @@ export const fetchVariableMetricLabelValues = ({ state, commit }, { defaultQuery
   });
 
   return Promise.all(optionsRequests);
+};
+
+// Panel Builder
+
+export const fetchPanelPreview = ({ state, commit, dispatch }, panelPreviewYml) => {
+  if (!panelPreviewYml) {
+    return null;
+  }
+
+  commit(types.REQUEST_PANEL_PREVIEW, panelPreviewYml);
+  return getPanelJson(state.panelPreviewEndpoint, panelPreviewYml)
+    .then(data => {
+      commit(types.RECEIVE_PANEL_PREVIEW_SUCCESS, data);
+
+      dispatch('fetchPanelPreviewMetrics');
+    })
+    .catch(error => {
+      commit(types.RECEIVE_PANEL_PREVIEW_FAILURE, error);
+    });
+};
+
+export const fetchPanelPreviewMetrics = () => {
+  // TODO Use a axios mock instead of spy when backend is implemented
+  // https://gitlab.com/gitlab-org/gitlab/-/issues/228758
+
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  throw new Error('Not implemented');
 };

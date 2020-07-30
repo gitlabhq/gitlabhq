@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import { pick } from 'lodash';
 import * as types from './mutation_types';
-import { mapToDashboardViewModel, normalizeQueryResponseData } from './utils';
+import { mapToDashboardViewModel, mapPanelToViewModel, normalizeQueryResponseData } from './utils';
 import httpStatusCodes from '~/lib/utils/http_status';
-import { BACKOFF_TIMEOUT } from '../../lib/utils/common_utils';
+import { BACKOFF_TIMEOUT } from '~/lib/utils/common_utils';
 import { dashboardEmptyStates, endpointKeys, initialStateKeys, metricStates } from '../constants';
 import { optionsFromSeriesData } from './variable_mapping';
 
@@ -217,5 +217,25 @@ export default {
 
     // Add new options with assign to ensure Vue reactivity
     Object.assign(variable.options, { values });
+  },
+
+  [types.REQUEST_PANEL_PREVIEW](state, panelPreviewYml) {
+    state.panelPreviewIsLoading = true;
+
+    state.panelPreviewYml = panelPreviewYml;
+    state.panelPreviewGraphData = null;
+    state.panelPreviewError = null;
+  },
+  [types.RECEIVE_PANEL_PREVIEW_SUCCESS](state, payload) {
+    state.panelPreviewIsLoading = false;
+
+    state.panelPreviewGraphData = mapPanelToViewModel(payload);
+    state.panelPreviewError = null;
+  },
+  [types.RECEIVE_PANEL_PREVIEW_FAILURE](state, error) {
+    state.panelPreviewIsLoading = false;
+
+    state.panelPreviewGraphData = null;
+    state.panelPreviewError = error;
   },
 };

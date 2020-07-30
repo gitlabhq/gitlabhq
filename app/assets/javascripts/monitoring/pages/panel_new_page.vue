@@ -1,33 +1,45 @@
 <script>
+import { mapState } from 'vuex';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import routes from '../router/constants';
+import { DASHBOARD_PAGE } from '../router/constants';
+import DashboardPanelBuilder from '../components/dashboard_panel_builder.vue';
 
 export default {
   components: {
     GlButton,
+    DashboardPanelBuilder,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  computed: {
+    ...mapState('monitoringDashboard', ['panelPreviewYml']),
+    dashboardPageLocation() {
+      return {
+        ...this.$route,
+        name: DASHBOARD_PAGE,
+      };
+    },
+  },
   i18n: {
     backToDashboard: s__('Metrics|Back to dashboard'),
   },
-  routes,
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-align-items-baseline">
-    <gl-button
-      v-gl-tooltip
-      icon="go-back"
-      :to="{ name: $options.routes.DASHBOARD_PAGE, params: { dashboard: $route.params.dashboard } }"
-      :aria-label="$options.i18n.backToDashboard"
-      :title="$options.i18n.backToDashboard"
-      class="gl-mr-5"
-    />
-    <h1 class="gl-mt-5 gl-font-size-h1">{{ s__('Metrics|Add panel') }}</h1>
-
-    <!-- TODO: Add components. See https://gitlab.com/groups/gitlab-org/-/epics/2882  -->
+  <div class="gl-mt-5">
+    <div class="gl-display-flex gl-align-items-baseline gl-mb-5">
+      <gl-button
+        v-gl-tooltip
+        icon="go-back"
+        :to="dashboardPageLocation"
+        :aria-label="$options.i18n.backToDashboard"
+        :title="$options.i18n.backToDashboard"
+        class="gl-mr-5"
+      />
+      <h1 class="gl-font-size-h1 gl-my-0">{{ s__('Metrics|Add panel') }}</h1>
+    </div>
+    <dashboard-panel-builder />
   </div>
 </template>

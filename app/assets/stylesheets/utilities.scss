@@ -82,6 +82,10 @@
 .gl-h-32 { height: px-to-rem($grid-size * 4); }
 .gl-h-64 { height: px-to-rem($grid-size * 8); }
 
+// Migrate this to Gitlab UI when FF is removed
+// https://gitlab.com/groups/gitlab-org/-/epics/2882
+.gl-h-200\! { height: px-to-rem($grid-size * 25) !important; }
+
 .d-sm-table-column {
   @include media-breakpoint-up(sm) {
     display: table-column !important;

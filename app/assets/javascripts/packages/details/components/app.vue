@@ -2,7 +2,6 @@
 import {
   GlBadge,
   GlButton,
-  GlIcon,
   GlModal,
   GlModalDirective,
   GlTooltipDirective,
@@ -27,6 +26,7 @@ import PackageListRow from '../../shared/components/package_list_row.vue';
 import DependencyRow from './dependency_row.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { generatePackageInfo } from '../utils';
 import { __, s__ } from '~/locale';
 import { PackageType, TrackingActions } from '../../shared/constants';
@@ -44,7 +44,7 @@ export default {
     GlTab,
     GlTabs,
     GlTable,
-    GlIcon,
+    FileIcon,
     GlSprintf,
     PackageActivity,
     PackageInformation,
@@ -243,19 +243,24 @@ export default {
 
         <package-activity />
 
+        <h3 class="gl-font-lg">{{ __('Files') }}</h3>
         <gl-table
           :fields="$options.filesTableHeaderFields"
           :items="filesTableRows"
           tbody-tr-class="js-file-row"
         >
           <template #cell(name)="items">
-            <gl-icon name="doc-code" class="space-right" />
             <gl-link
               :href="items.item.downloadPath"
-              class="js-file-download"
+              class="js-file-download gl-relative"
               @click="track($options.trackingActions.PULL_PACKAGE)"
             >
-              {{ items.item.name }}
+              <file-icon
+                :file-name="items.item.name"
+                css-classes="gl-relative file-icon"
+                class="gl-mr-1 gl-relative"
+              />
+              <span class="gl-relative">{{ items.item.name }}</span>
             </gl-link>
           </template>
 

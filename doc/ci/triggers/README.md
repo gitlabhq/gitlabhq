@@ -97,7 +97,7 @@ This allows you to use that for multi-project pipelines and download artifacts
 from any project to which you have access as this follows the same principles
 with the [permission model](../../user/permissions.md#job-permissions).
 
-Read more about the [jobs API](../../api/jobs.md#download-the-artifacts-archive).
+Read more about the [jobs API](../../api/job_artifacts.md#download-the-artifacts-archive).
 
 ## Adding a new trigger
 

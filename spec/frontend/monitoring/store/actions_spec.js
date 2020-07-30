@@ -9,6 +9,7 @@ import { defaultTimeRange } from '~/vue_shared/constants';
 import * as getters from '~/monitoring/stores/getters';
 import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
 import { backoffMockImplementation } from 'jest/helpers/backoff_helper';
+import * as requests from '~/monitoring/requests';
 
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
@@ -31,6 +32,7 @@ import {
   duplicateSystemDashboard,
   updateVariablesAndFetchData,
   fetchVariableMetricLabelValues,
+  fetchPanelPreview,
 } from '~/monitoring/stores/actions';
 import {
   gqClient,
@@ -1151,6 +1153,58 @@ describe('Monitoring store actions', () => {
             expect.stringContaining('error getting options for variable "label1"'),
           );
         },
+      );
+    });
+  });
+
+  describe('fetchPanelPreview', () => {
+    const mockYmlContent = 'mock yml content';
+
+    it('should not commit or dispatch if payload is empty', () => {
+      testAction(fetchPanelPreview, '', state, [], []);
+    });
+
+    it('should store the yml content and panel in the store and fetch corresponding metrics', () => {
+      const mockPanel = {
+        title: 'title',
+        type: 'area-chart',
+      };
+
+      // TODO Use a axios mock instead of spy when backend is implemented
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/228758
+      jest.spyOn(requests, 'getPanelJson').mockResolvedValue(mockPanel);
+
+      testAction(
+        fetchPanelPreview,
+        'mock yml content',
+        state,
+        [
+          { type: types.REQUEST_PANEL_PREVIEW, payload: mockYmlContent },
+          { type: types.RECEIVE_PANEL_PREVIEW_SUCCESS, payload: mockPanel },
+        ],
+        [
+          {
+            type: 'fetchPanelPreviewMetrics',
+          },
+        ],
+      );
+    });
+
+    it('should commit a failure when backend fails', () => {
+      const mockError = 'error';
+      // TODO Use a axios mock instead of spy when backend is implemented
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/228758
+      jest.spyOn(requests, 'getPanelJson').mockRejectedValue(mockError);
+
+      testAction(
+        fetchPanelPreview,
+        mockYmlContent,
+        state,
+        [
+          { type: types.REQUEST_PANEL_PREVIEW, payload: mockYmlContent },
+          { type: types.RECEIVE_PANEL_PREVIEW_FAILURE, payload: mockError },
+        ],
+        [],
       );
     });
   });

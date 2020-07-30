@@ -59,6 +59,13 @@ export default () => ({
    * via the dashboard yml file.
    */
   links: [],
+
+  // Panel editor / builder
+  panelPreviewYml: '',
+  panelPreviewIsLoading: false,
+  panelPreviewGraphData: null,
+  panelPreviewError: null,
+
   // Other project data
   dashboardTimezone: timezones.LOCAL,
   annotations: [],

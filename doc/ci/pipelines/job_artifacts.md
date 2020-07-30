@@ -17,7 +17,7 @@ Job artifacts are a list of files and directories created by a job
 once it finishes. This feature is [enabled by default](../../administration/job_artifacts.md) in all
 GitLab installations.
 
-Job artifacts created by GitLab Runner are uploaded to GitLab and are downloadable as a single archive using the GitLab UI or the [GitLab API](../../api/jobs.md#get-job-artifacts).
+Job artifacts created by GitLab Runner are uploaded to GitLab and are downloadable as a single archive using the GitLab UI or the [GitLab API](../../api/job_artifacts.md#get-job-artifacts).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, watch the video [GitLab CI Pipeline, Artifacts, and Environments](https://www.youtube.com/watch?v=PCKDICEe10s).
@@ -439,7 +439,7 @@ To erase a job:
 
 ## Retrieve artifacts of private projects when using GitLab CI
 
-In order to retrieve a job artifact of a different project, you might need to use a private token in order to [authenticate and download](../../api/jobs.md#get-job-artifacts) the artifacts.
+In order to retrieve a job artifact of a different project, you might need to use a private token in order to [authenticate and download](../../api/job_artifacts.md#get-job-artifacts) the artifacts.
 
 <!-- ## Troubleshooting
 

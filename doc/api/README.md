@@ -156,7 +156,7 @@ for example, without needing to explicitly pass an access token.
 With a few API endpoints you can use a [GitLab CI/CD job token](../user/project/new_ci_build_permissions_model.md#job-token)
 to authenticate with the API:
 
-- [Get job artifacts](jobs.md#get-job-artifacts)
+- [Get job artifacts](job_artifacts.md#get-job-artifacts)
 - [Pipeline triggers](pipeline_triggers.md)
 - [Release creation](releases/index.md#create-a-release)
 

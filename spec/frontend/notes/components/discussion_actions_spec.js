@@ -21,7 +21,7 @@ const createUnallowedNote = () =>
 
 describe('DiscussionActions', () => {
   let wrapper;
-  const createComponentFactory = (shallow = true) => props => {
+  const createComponentFactory = (shallow = true) => (props, options) => {
     const store = createStore();
     const mountFn = shallow ? shallowMount : mount;
 
@@ -34,6 +34,11 @@ describe('DiscussionActions', () => {
         resolveWithIssuePath: '/some/issue/path',
         shouldShowJumpToNextDiscussion: true,
         ...props,
+      },
+      provide: {
+        glFeatures: {
+          hideJumpToNextUnresolvedInThreads: options?.hideJumpToNextUnresolvedInThreads,
+        },
       },
     });
   };
@@ -94,6 +99,13 @@ describe('DiscussionActions', () => {
         expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(shouldRender);
       });
     });
+  });
+
+  it('does not render jump to next discussion button if feature flag is enabled', () => {
+    const createComponent = createComponentFactory();
+    createComponent({}, { hideJumpToNextUnresolvedInThreads: true });
+
+    expect(wrapper.find(JumpToNextDiscussionButton).exists()).toBe(false);
   });
 
   describe('events handling', () => {
