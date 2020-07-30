@@ -285,7 +285,14 @@ class WikiPage
   end
 
   def content_changed?
-    attributes[:content] != page&.text_data
+    if persisted?
+      # gollum-lib always converts CRLFs to LFs in Gollum::Wiki#normalize,
+      # so we need to do the same here.
+      # Also see https://gitlab.com/gitlab-org/gitlab/-/issues/21431
+      raw_content.delete("\r") != page&.text_data
+    else
+      raw_content.present?
+    end
   end
 
   # Updates the current @attributes hash by merging a hash of params

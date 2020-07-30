@@ -56,6 +56,14 @@ RSpec.describe MilestonesFinder do
       milestone_3.close
     end
 
+    it 'filters by id' do
+      params[:ids] = [milestone_1.id, milestone_2.id]
+
+      result = described_class.new(params).execute
+
+      expect(result).to contain_exactly(milestone_1, milestone_2)
+    end
+
     it 'filters by active state' do
       params[:state] = 'active'
       result = described_class.new(params).execute

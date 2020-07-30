@@ -88,7 +88,7 @@ export default {
           </div>
         </div>
         <div
-          class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-font-sm gl-text-gray-500"
+          class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-font-sm gl-text-gray-300"
         >
           <div>
             <slot name="left-secondary"></slot>

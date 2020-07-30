@@ -209,7 +209,7 @@ export const selfMonitoringDashboardGitResponse = [
     default: true,
     display_name: 'Default',
     can_edit: false,
-    system_dashboard: false,
+    system_dashboard: true,
     out_of_the_box_dashboard: true,
     project_blob_path: null,
     path: 'config/prometheus/self_monitoring_default.yml',

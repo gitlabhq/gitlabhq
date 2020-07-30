@@ -59,6 +59,10 @@ be merged, and optionally which users should do the approving. Approvals can be 
 If no approval rules are defined, any user can approve a merge request, though the default
 minimum number of required approvers can still be set in the [project settings for merge request approvals](#merge-request-approvals-project-settings).
 
+NOTE: **Note:**
+On GitLab.com, you can add a group as an approver if you're a member of that group or the
+group is public.
+
 #### Eligible Approvers
 
 The following users can approve merge requests:

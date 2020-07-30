@@ -443,7 +443,7 @@ access further configurations for your group.
 
 #### Changing a group's path
 
-Changing a group's path can have unintended side effects. Read
+Changing a group's path (group URL) can have unintended side effects. Read
 [how redirects will behave](../project/index.md#redirects-when-changing-repository-paths)
 before proceeding.
 
@@ -451,12 +451,12 @@ If you are vacating the path so it can be claimed by another group or user,
 you may need to rename the group too, since both names and paths must
 be unique.
 
-To change your group path:
+To change your group path (group URL):
 
 1. Navigate to your group's **Settings > General** page.
 1. Expand the **Path, transfer, remove** section.
-1. Enter a new name under **Change group path**.
-1. Click **Change group path**.
+1. Enter a new name under **Change group URL**.
+1. Click **Change group URL**.
 
 CAUTION: **Caution:**
 It is currently not possible to rename a namespace if it contains a

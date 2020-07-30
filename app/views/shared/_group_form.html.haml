@@ -31,11 +31,11 @@
       = _('Group path is already taken. Suggestions: ')
       %span.gl-path-suggestions
     %p.validation-success.gl-field-success.field-validation.hide= _('Group path is available.')
-    %p.validation-pending.gl-field-error-ignore.field-validation.hide= _('Checking group path availability...')
+    %p.validation-pending.gl-field-error-ignore.field-validation.hide= _('Checking group URL availability...')
 
     - if @group.persisted?
       .alert.alert-warning.gl-mt-3
-        = _('Changing group path can have unintended side effects.')
+        = _('Changing group URL can have unintended side effects.')
         = succeed '.' do
           = link_to _('Learn more'), help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
 

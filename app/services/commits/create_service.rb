@@ -21,6 +21,7 @@ module Commits
       @start_sha = params[:start_sha]
       @branch_name = params[:branch_name]
       @force = params[:force] || false
+      @dry_run = params[:dry_run] || false
     end
 
     def execute

@@ -38,7 +38,7 @@
   }
 
   &.ci-preparing {
-    @include status-color($gray-100, $gray-500, $gray-600);
+    @include status-color($gray-100, $gray-300, $gray-600);
   }
 
   &.ci-pending,

@@ -11,12 +11,54 @@ Check this document if it includes instructions for the version you are updating
 These steps go together with the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 13.0
+
+Upgrading to GitLab 13.0 requires GitLab 12.10 to already be using PostgreSQL
+version 11. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for the recommended procedure.
+
+## Updating to GitLab 12.10
+
+GitLab 12.10 does not attempt to automatically update the embedded PostgreSQL
+server when using Geo, because the PostgreSQL upgrade requires downtime on
+secondaries while reinitializing streaming replication. It must be upgraded
+manually. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for the recommended procedure.
+
 ## Updating to GitLab 12.9
 
 CAUTION: **Warning:**
 GitLab 12.9.0 through GitLab 12.9.3 are affected by [a bug that stops
 repository verification](https://gitlab.com/gitlab-org/gitlab/-/issues/213523).
 The issue is fixed in GitLab 12.9.4. Please upgrade to GitLab 12.9.4 or later.
+
+By default, GitLab 12.9 will attempt to automatically update the embedded
+PostgreSQL server to 10.12 from 9.6, which requires downtime on secondaries
+while reinitializing streaming replication. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for the recommended procedure.
+
+This can be temporarily disabled by running the following before updating:
+
+```shell
+sudo touch /etc/gitlab/disable-postgresql-upgrade
+```
+
+## Updating to GitLab 12.8
+
+By default, GitLab 12.8 will attempt to automatically update the embedded
+PostgreSQL server to 10.12 from 9.6, which requires downtime on secondaries
+while reinitializing streaming replication. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for the recommended procedure.
+
+This can be temporarily disabled by running the following before updating:
+
+```shell
+sudo touch /etc/gitlab/disable-postgresql-upgrade
+```
 
 ## Updating to GitLab 12.7
 
@@ -28,7 +70,91 @@ bug](https://gitlab.com/gitlab-org/gitlab/-/issues/199672) that causes Geo
 fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24021) was
 shipped in 12.7.5.
 
+By default, GitLab 12.7 will attempt to automatically update the embedded
+PostgreSQL server to 10.9 from 9.6, which requires downtime on secondaries while
+reinitializing streaming replication. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for the recommended procedure.
+
+This can be temporarily disabled by running the following before updating:
+
+```shell
+sudo touch /etc/gitlab/disable-postgresql-upgrade
+```
+
+## Updating to GitLab 12.6
+
+By default, GitLab 12.6 will attempt to automatically update the embedded
+PostgreSQL server to 10.9 from 9.6, which requires downtime on secondaries while
+reinitializing streaming replication. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for the recommended procedure.
+
+This can be temporarily disabled by running the following before updating:
+
+```shell
+sudo touch /etc/gitlab/disable-postgresql-upgrade
+```
+
+## Updating to GitLab 12.5
+
+By default, GitLab 12.5 will attempt to automatically update the embedded
+PostgreSQL server to 10.9 from 9.6, which requires downtime on secondaries while
+reinitializing streaming replication. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for the recommended procedure.
+
+This can be temporarily disabled by running the following before updating:
+
+```shell
+sudo touch /etc/gitlab/disable-postgresql-upgrade
+```
+
+## Updating to GitLab 12.4
+
+By default, GitLab 12.4 will attempt to automatically update the embedded
+PostgreSQL server to 10.9 from 9.6, which requires downtime on secondaries while
+reinitializing streaming replication. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for the recommended procedure.
+
+This can be temporarily disabled by running the following before updating:
+
+```shell
+sudo touch /etc/gitlab/disable-postgresql-upgrade
+```
+
+## Updating to GitLab 12.3
+
+DANGER: **Danger:**
+If the existing PostgreSQL server version is 9.6.x, it is recommended to
+upgrade to GitLab 12.4 or newer. By default, GitLab 12.3 will attempt to
+automatically update the embedded PostgreSQL server to 10.9 from 9.6. In
+certain circumstances, it will fail. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for more information.
+
+Additionally, if the PostgreSQL upgrade does not fail, a successful upgrade
+requires downtime on secondaries while reinitializing streaming replication.
+Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for the recommended procedure.
+
 ## Updating to GitLab 12.2
+
+DANGER: **Danger:**
+If the existing PostgreSQL server version is 9.6.x, it is recommended to
+upgrade to GitLab 12.4 or newer. By default, GitLab 12.2 will attempt to
+automatically update the embedded PostgreSQL server to 10.9 from 9.6. In
+certain circumstances, it will fail. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for more information.
+
+Additionally, if the PostgreSQL upgrade does not fail, a successful upgrade
+requires downtime on secondaries while reinitializing streaming replication.
+Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for the recommended procedure.
 
 GitLab 12.2 includes the following minor PostgreSQL updates:
 
@@ -48,16 +174,19 @@ The restart avoids a version mismatch when PostgreSQL tries to load the FDW exte
 
 ## Updating to GitLab 12.1
 
-By default, GitLab 12.1 will attempt to automatically update the
-embedded PostgreSQL server to 10.7 from 9.6. Please see
-[the omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+DANGER: **Danger:**
+If the existing PostgreSQL server version is 9.6.x, it is recommended to
+upgrade to GitLab 12.4 or newer. By default, GitLab 12.1 will attempt to
+automatically update the embedded PostgreSQL server to 10.9 from 9.6. In
+certain circumstances, it will fail. Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
+for more information.
+
+Additionally, if the PostgreSQL upgrade does not fail, a successful upgrade
+requires downtime on secondaries while reinitializing streaming replication.
+Please see
+[the Omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
 for the recommended procedure.
-
-This can be temporarily disabled by running the following before updating:
-
-```shell
-sudo touch /etc/gitlab/disable-postgresql-upgrade
-```
 
 ## Updating to GitLab 12.0
 

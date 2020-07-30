@@ -64,11 +64,11 @@ which will make the tests easier. See the following example:
 
 ```javascript
 // haml
-.js-vue-app{ data: { endpoint: 'foo' }}
+#js-vue-app{ data: { endpoint: 'foo' }}
 
 // index.js
 document.addEventListener('DOMContentLoaded', () => new Vue({
-  el: '.js-vue-app',
+  el: '#js-vue-app',
   data() {
     const dataset = this.$options.el.dataset;
     return {
@@ -84,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   },
 }));
 ```
+
+> When adding an `id` attribute to mount a Vue application, please make sure this `id` is unique across the codebase
 
 #### Accessing the `gl` object
 

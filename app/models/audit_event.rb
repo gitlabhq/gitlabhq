@@ -58,6 +58,12 @@ class AuditEvent < ApplicationRecord
     end
   end
 
+  def as_json(options = {})
+    super(options).tap do |json|
+      json['ip_address'] = self.ip_address.to_s
+    end
+  end
+
   private
 
   def default_author_value

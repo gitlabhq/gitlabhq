@@ -5382,7 +5382,7 @@ type Group {
   mentionsDisabled: Boolean
 
   """
-  Find milestones
+  Milestones of the group
   """
   milestones(
     """
@@ -5407,7 +5407,12 @@ type Group {
     first: Int
 
     """
-    Return also milestones in all subgroups and subprojects
+    Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1"
+    """
+    ids: [ID!]
+
+    """
+    Also return milestones in all subgroups and subprojects
     """
     includeDescendants: Boolean
 
@@ -9760,6 +9765,58 @@ type Project {
   could be fast-forwarded.
   """
   mergeRequestsFfOnlyEnabled: Boolean
+
+  """
+  Milestones of the project
+  """
+  milestones(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
+    """
+    endDate: Time
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1"
+    """
+    ids: [ID!]
+
+    """
+    Also return milestones in the project's parent group and its ancestors
+    """
+    includeAncestors: Boolean
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
+    """
+    startDate: Time
+
+    """
+    Filter milestones by state
+    """
+    state: MilestoneStateEnum
+  ): MilestoneConnection
 
   """
   Name of the project (without namespace)

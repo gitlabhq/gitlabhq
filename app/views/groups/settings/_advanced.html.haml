@@ -1,12 +1,12 @@
 = render 'groups/settings/export', group: @group
 
 .sub-section
-  %h4.warning-title= s_('GroupSettings|Change group path')
+  %h4.warning-title= s_('GroupSettings|Change group URL')
   = form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|
     = form_errors(@group)
     .form-group
       %p
-        = s_('GroupSettings|Changing group path can have unintended side effects.')
+        = s_('GroupSettings|Changing group URL can have unintended side effects.')
         = succeed '.' do
           = link_to _('Learn more'), help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
 
@@ -20,10 +20,10 @@
         = f.text_field :path, placeholder: 'open-source', class: 'form-control',
           autofocus: local_assigns[:autofocus] || false, required: true,
           pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
-          title: s_('GroupSettings|Please choose a group path with no special characters.'),
+          title: s_('GroupSettings|Please choose a group URL with no special characters.'),
           "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
 
-    = f.submit s_('GroupSettings|Change group path'), class: 'btn btn-warning'
+    = f.submit s_('GroupSettings|Change group URL'), class: 'btn btn-warning'
 
 .sub-section
   %h4.warning-title= s_('GroupSettings|Transfer group')

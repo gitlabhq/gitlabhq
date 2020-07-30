@@ -4404,7 +4404,7 @@ msgstr ""
 msgid "Changing a Release tag is only supported via Releases API. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
-msgid "Changing group path can have unintended side effects."
+msgid "Changing group URL can have unintended side effects."
 msgstr ""
 
 msgid "Channel handle (e.g. town-square)"
@@ -4486,6 +4486,9 @@ msgid "Checking approval status"
 msgstr ""
 
 msgid "Checking branch availability..."
+msgstr ""
+
+msgid "Checking group URL availability..."
 msgstr ""
 
 msgid "Checking group path availability..."
@@ -9886,6 +9889,9 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
+msgid "Export"
+msgstr ""
+
 msgid "Export as CSV"
 msgstr ""
 
@@ -11941,10 +11947,10 @@ msgstr ""
 msgid "GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again."
 msgstr ""
 
-msgid "GroupSettings|Change group path"
+msgid "GroupSettings|Change group URL"
 msgstr ""
 
-msgid "GroupSettings|Changing group path can have unintended side effects."
+msgid "GroupSettings|Changing group URL can have unintended side effects."
 msgstr ""
 
 msgid "GroupSettings|Custom project templates"
@@ -11986,7 +11992,7 @@ msgstr ""
 msgid "GroupSettings|Pipeline settings was updated for the group"
 msgstr ""
 
-msgid "GroupSettings|Please choose a group path with no special characters."
+msgid "GroupSettings|Please choose a group URL with no special characters."
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
@@ -14685,6 +14691,9 @@ msgid "Merge Request Commits"
 msgstr ""
 
 msgid "Merge Requests"
+msgstr ""
+
+msgid "Merge Requests closed"
 msgstr ""
 
 msgid "Merge Requests created"
@@ -23879,6 +23888,9 @@ msgstr ""
 msgid "The number of changes to be fetched from GitLab when cloning a repository. This can speed up Pipelines execution. Keep empty or set to 0 to disable shallow clone by default and make GitLab CI fetch all branches and tags each time."
 msgstr ""
 
+msgid "The number of merge requests merged to the master branch by month."
+msgstr ""
+
 msgid "The number of times an upload record could not find its file"
 msgstr ""
 
@@ -24108,6 +24120,9 @@ msgid "There is a limit of %{ci_project_subscriptions_limit} subscriptions from 
 msgstr ""
 
 msgid "There is already a repository with that name on disk"
+msgstr ""
+
+msgid "There is no data available."
 msgstr ""
 
 msgid "There is no data available. Please change your selection."
@@ -24846,6 +24861,9 @@ msgid "ThreatMonitoring|Web Application Firewall"
 msgstr ""
 
 msgid "ThreatMonitoring|While it's rare to have no traffic coming to your application, it can happen. In any event, we ask that you double check your settings to make sure you've set up the WAF correctly."
+msgstr ""
+
+msgid "Throughput"
 msgstr ""
 
 msgid "Thursday"

@@ -15,7 +15,7 @@
       = _('Enable shared Runners')
   &nbsp; for this project
 
-- if @shared_runners_count.zero?
+- if @shared_runners_count == 0
   = _('This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area.')
 - else
   %h4.underlined-title #{_('Available shared Runners:')} #{@shared_runners_count}

@@ -148,6 +148,10 @@ module Types
           description: 'Issues of the project',
           resolver: Resolvers::IssuesResolver
 
+    field :milestones, Types::MilestoneType.connection_type, null: true,
+          description: 'Milestones of the project',
+          resolver: Resolvers::ProjectMilestoneResolver
+
     field :project_members,
           Types::ProjectMemberType.connection_type,
           description: 'Members of the project',

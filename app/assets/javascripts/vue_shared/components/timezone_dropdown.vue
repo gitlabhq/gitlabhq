@@ -76,7 +76,7 @@ export default {
 <template>
   <gl-new-dropdown :text="value" block lazy menu-class="gl-w-full!">
     <template #button-content>
-      <span class="gl-flex-grow-1" :class="{ 'gl-text-gray-500': !value }">
+      <span class="gl-flex-grow-1" :class="{ 'gl-text-gray-300': !value }">
         {{ selectedTimezoneLabel }}
       </span>
       <gl-icon name="chevron-down" />

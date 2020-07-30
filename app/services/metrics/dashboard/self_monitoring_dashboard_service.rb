@@ -29,7 +29,7 @@ module Metrics
             path: DASHBOARD_PATH,
             display_name: _(DASHBOARD_NAME),
             default: true,
-            system_dashboard: false,
+            system_dashboard: true,
             out_of_the_box_dashboard: out_of_the_box_dashboard?
           }]
         end

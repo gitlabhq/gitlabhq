@@ -196,9 +196,27 @@ the **primary** database. Use the following as a guide.
    geo_postgresql['enable'] = false
 
    ##
-   ## Disable `geo_logcursor` service so Rails doesn't get configured here
+   ## Disable all other services that aren't needed. Note that we had to enable
+   ## geo_secondary_role to cause some configuration changes to postgresql, but
+   ## the role enables single-node services by default.
    ##
+   alertmanager['enable'] = false
+   consul['enable'] = false
    geo_logcursor['enable'] = false
+   gitaly['enable'] = false
+   gitlab_exporter['enable'] = false
+   gitlab_workhorse['enable'] = false
+   nginx['enable'] = false
+   node_exporter['enable'] = false
+   pgbouncer_exporter['enable'] = false
+   prometheus['enable'] = false
+   redis['enable'] = false
+   redis_exporter['enable'] = false
+   repmgr['enable'] = false
+   sidekiq['enable'] = false
+   sidekiq_cluster['enable'] = false
+   puma['enable'] = false
+   unicorn['enable'] = false
    ```
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
@@ -253,11 +271,11 @@ Configure the tracking database.
    gitlab_rails['auto_migrate'] = false
 
    ##
-   ## Disable all other services that aren't needed, since we don't have a role
-   ## that does this.
+   ## Ensure unnecessary services are disabled
    ##
    alertmanager['enable'] = false
    consul['enable'] = false
+   geo_logcursor['enable'] = false
    gitaly['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_workhorse['enable'] = false
@@ -270,7 +288,9 @@ Configure the tracking database.
    redis_exporter['enable'] = false
    repmgr['enable'] = false
    sidekiq['enable'] = false
+   sidekiq_cluster['enable'] = false
    puma['enable'] = false
+   unicorn['enable'] = false
    ```
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
@@ -417,6 +437,7 @@ application servers above, with some changes to run only the `sidekiq` service:
    redis_exporter['enable'] = false
    repmgr['enable'] = false
    puma['enable'] = false
+   unicorn['enable'] = false
 
    ##
    ## The unique identifier for the Geo node.

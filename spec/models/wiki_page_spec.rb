@@ -7,7 +7,11 @@ RSpec.describe WikiPage do
   let(:container) { create(:project, :wiki_repo) }
   let(:wiki) { Wiki.for_container(container, user) }
   let(:new_page) { build(:wiki_page, wiki: wiki, title: 'test page', content: 'test content') }
-  let(:existing_page) { create(:wiki_page, wiki: wiki, title: 'test page', content: 'test content', message: 'test commit') }
+
+  let(:existing_page) do
+    create(:wiki_page, wiki: wiki, title: 'test page', content: 'test content', message: 'test commit')
+    wiki.find_page('test page')
+  end
 
   subject { new_page }
 
@@ -257,59 +261,66 @@ RSpec.describe WikiPage do
       subject.attributes.delete(:title)
 
       expect(subject).not_to be_valid
-      expect(subject.errors.keys).to contain_exactly(:title)
+      expect(subject.errors.messages).to eq(title: ["can't be blank"])
     end
 
     it "validates presence of content" do
       subject.attributes.delete(:content)
 
       expect(subject).not_to be_valid
-      expect(subject.errors.keys).to contain_exactly(:content)
+      expect(subject.errors.messages).to eq(content: ["can't be blank"])
     end
 
-    describe 'content size validation' do
-      let(:limit) { 10 }
+    describe '#validate_content_size_limit' do
+      context 'with a new page' do
+        before do
+          stub_application_setting(wiki_page_max_content_bytes: 10)
+        end
 
-      before do
-        stub_application_setting(wiki_page_max_content_bytes: limit)
-      end
+        it 'accepts content below the limit' do
+          subject.attributes[:content] = 'a' * 10
 
-      it 'accepts content below the limit' do
-        subject.attributes[:content] = 'a' * 10
+          expect(subject).to be_valid
+        end
 
-        expect(subject).to be_valid
-      end
+        it 'rejects content exceeding the limit' do
+          subject.attributes[:content] = 'a' * 11
 
-      it 'rejects content exceeding the limit' do
-        subject.attributes[:content] = 'a' * 11
+          expect(subject).not_to be_valid
+          expect(subject.errors.messages).to eq(
+            content: ['is too long (11 Bytes). The maximum size is 10 Bytes.']
+          )
+        end
 
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages).to eq(
-          content: ['is too long (11 Bytes). The maximum size is 10 Bytes.']
-        )
-      end
+        it 'counts content size in bytes rather than characters' do
+          subject.attributes[:content] = '💩💩💩'
 
-      it 'counts content size in bytes rather than characters' do
-        subject.attributes[:content] = '💩💩💩'
-
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages).to eq(
-          content: ['is too long (12 Bytes). The maximum size is 10 Bytes.']
-        )
+          expect(subject).not_to be_valid
+          expect(subject.errors.messages).to eq(
+            content: ['is too long (12 Bytes). The maximum size is 10 Bytes.']
+          )
+        end
       end
 
       context 'with an existing page exceeding the limit' do
-        let(:limit) { existing_page.content.bytesize - 1 }
+        subject { existing_page }
+
+        before do
+          subject
+          stub_application_setting(wiki_page_max_content_bytes: 11)
+        end
 
         it 'accepts content when it has not changed' do
-          expect(existing_page).to be_valid
+          expect(subject).to be_valid
         end
 
         it 'rejects content when it has changed' do
-          existing_page.attributes[:content] = 'a' * (limit + 1)
+          subject.attributes[:content] = 'a' * 12
 
-          expect(existing_page).not_to be_valid
-          expect(existing_page.errors.keys).to contain_exactly(:content)
+          expect(subject).not_to be_valid
+          expect(subject.errors.messages).to eq(
+            content: ['is too long (12 Bytes). The maximum size is 11 Bytes.']
+          )
         end
       end
     end
@@ -753,22 +764,16 @@ RSpec.describe WikiPage do
     context 'with a new page' do
       subject { new_page }
 
-      it 'returns false if content is nil' do
-        subject.attributes[:content] = nil
-
-        expect(subject.content_changed?).to be(false)
-      end
-
       it 'returns true if content is set' do
         subject.attributes[:content] = 'new'
 
         expect(subject.content_changed?).to be(true)
       end
 
-      it 'returns true if content is blank' do
-        subject.attributes[:content] = ''
+      it 'returns false if content is blank' do
+        subject.attributes[:content] = ' '
 
-        expect(subject.content_changed?).to be(true)
+        expect(subject.content_changed?).to be(false)
       end
     end
 
@@ -789,6 +794,20 @@ RSpec.describe WikiPage do
         subject.attributes[:content] = 'new'
 
         expect(subject.content_changed?).to be(true)
+      end
+
+      it 'returns true if content is changed to a blank string' do
+        subject.attributes[:content] = ' '
+
+        expect(subject.content_changed?).to be(true)
+      end
+
+      it 'returns false if only the newline format has changed' do
+        expect(subject.page).to receive(:text_data).and_return("foo\nbar")
+
+        subject.attributes[:content] = "foo\r\nbar"
+
+        expect(subject.content_changed?).to be(false)
       end
     end
   end

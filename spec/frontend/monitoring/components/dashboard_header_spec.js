@@ -385,4 +385,72 @@ describe('Dashboard header', () => {
       });
     });
   });
+
+  describe('Add metric button', () => {
+    const findAddMetricButton = () => wrapper.find('[data-qa-selector="add_metric_button"]');
+
+    it('is not rendered when custom metrics are not available', () => {
+      store.state.monitoringDashboard.emptyState = false;
+
+      createShallowWrapper({
+        customMetricsAvailable: false,
+      });
+
+      setupAllDashboards(store, dashboardGitResponse[0].path);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findAddMetricButton().exists()).toBe(false);
+      });
+    });
+
+    it('is not rendered when displaying empty state', () => {
+      store.state.monitoringDashboard.emptyState = true;
+
+      createShallowWrapper({
+        customMetricsAvailable: true,
+      });
+
+      setupAllDashboards(store, dashboardGitResponse[0].path);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findAddMetricButton().exists()).toBe(false);
+      });
+    });
+
+    describe('system dashboards', () => {
+      const systemDashboards = [
+        dashboardGitResponse[0].path,
+        selfMonitoringDashboardGitResponse[0].path,
+      ];
+      const nonSystemDashboards = [
+        dashboardGitResponse[1].path,
+        dashboardGitResponse[2].path,
+        selfMonitoringDashboardGitResponse[1].path,
+      ];
+
+      beforeEach(() => {
+        store.state.monitoringDashboard.emptyState = false;
+
+        createShallowWrapper({
+          customMetricsAvailable: true,
+        });
+      });
+
+      test.each(systemDashboards)('is rendered for system dashboards', dashboardPath => {
+        setupAllDashboards(store, dashboardPath);
+
+        return wrapper.vm.$nextTick(() => {
+          expect(findAddMetricButton().exists()).toBe(true);
+        });
+      });
+
+      test.each(nonSystemDashboards)('is not rendered for non-system dashboards', dashboardPath => {
+        setupAllDashboards(store, dashboardPath);
+
+        return wrapper.vm.$nextTick(() => {
+          expect(findAddMetricButton().exists()).toBe(false);
+        });
+      });
+    });
+  });
 });

@@ -1,0 +1,5 @@
+---
+title: Support dry-run cherry-picks and reverts via API
+merge_request: 37240
+author:
+type: added

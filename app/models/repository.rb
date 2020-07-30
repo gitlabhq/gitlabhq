@@ -852,7 +852,7 @@ class Repository
 
   def revert(
     user, commit, branch_name, message,
-    start_branch_name: nil, start_project: project)
+    start_branch_name: nil, start_project: project, dry_run: false)
 
     with_cache_hooks do
       raw_repository.revert(
@@ -861,14 +861,15 @@ class Repository
         branch_name: branch_name,
         message: message,
         start_branch_name: start_branch_name,
-        start_repository: start_project.repository.raw_repository
+        start_repository: start_project.repository.raw_repository,
+        dry_run: dry_run
       )
     end
   end
 
   def cherry_pick(
     user, commit, branch_name, message,
-    start_branch_name: nil, start_project: project)
+    start_branch_name: nil, start_project: project, dry_run: false)
 
     with_cache_hooks do
       raw_repository.cherry_pick(
@@ -877,7 +878,8 @@ class Repository
         branch_name: branch_name,
         message: message,
         start_branch_name: start_branch_name,
-        start_repository: start_project.repository.raw_repository
+        start_repository: start_project.repository.raw_repository,
+        dry_run: dry_run
       )
     end
   end

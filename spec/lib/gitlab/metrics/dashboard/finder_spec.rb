@@ -165,7 +165,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
           path: self_monitoring_dashboard_path,
           display_name: 'Default dashboard',
           default: true,
-          system_dashboard: false,
+          system_dashboard: true,
           out_of_the_box_dashboard: true
         }
       end

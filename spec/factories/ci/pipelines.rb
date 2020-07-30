@@ -130,6 +130,14 @@ FactoryBot.define do
         end
       end
 
+      trait :with_sast_build do
+        status { :success }
+
+        after(:build) do |pipeline, evaluator|
+          pipeline.builds << build(:ci_build, :sast, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
       trait :with_exposed_artifacts do
         status { :success }
 

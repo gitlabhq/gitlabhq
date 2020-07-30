@@ -53,6 +53,7 @@ export default {
       :items="freezePeriods"
       :fields="$options.fields"
       show-empty
+      stacked="lg"
     >
       <template #empty>
         <p data-testid="empty-freeze-periods" class="gl-text-center text-plain">

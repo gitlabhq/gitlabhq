@@ -22,7 +22,9 @@ module Commits
         @branch_name,
         message,
         start_project: @start_project,
-        start_branch_name: @start_branch)
+        start_branch_name: @start_branch,
+        dry_run: @dry_run
+      )
     rescue Gitlab::Git::Repository::CreateTreeError => ex
       act = action.to_s.dasherize
       type = @commit.change_type_title(current_user)

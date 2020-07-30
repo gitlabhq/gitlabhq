@@ -598,14 +598,15 @@ module Gitlab
         end
       end
 
-      def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+      def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
         args = {
           user: user,
           commit: commit,
           branch_name: branch_name,
           message: message,
           start_branch_name: start_branch_name,
-          start_repository: start_repository
+          start_repository: start_repository,
+          dry_run: dry_run
         }
 
         wrapped_gitaly_errors do
@@ -613,14 +614,15 @@ module Gitlab
         end
       end
 
-      def cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+      def cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
         args = {
           user: user,
           commit: commit,
           branch_name: branch_name,
           message: message,
           start_branch_name: start_branch_name,
-          start_repository: start_repository
+          start_repository: start_repository,
+          dry_run: dry_run
         }
 
         wrapped_gitaly_errors do

@@ -3895,22 +3895,43 @@ tags. These options cannot be used together, so choose one:
 - To create a release automatically when commits are pushed or merged to the default branch,
   using a new Git tag that is defined with variables:
 
+NOTE: **Note:**
+Environment variables set in `before_script` or `script` are not available for expanding
+in the same job. Read more about
+[potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
+
   ```yaml
+  prepare_job:
+    stage: prepare                                              # This stage must run before the release stage
+    rules:
+      - if: $CI_COMMIT_TAG
+        when: never                                             # Do not run this job when a tag is created manually
+      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH             # Run this job when commits are pushed or merged to the default branch
+    script:
+      - echo "EXTRA_DESCRIPTION=some message" >> variables.env  # Generate the EXTRA_DESCRIPTION and TAG environment variables
+      - echo "TAG=v$(cat VERSION)" >> variables.env             # and append to the variables.env file
+    artifacts:
+      reports:
+        dotenv: variables.env                                   # Use artifacts:reports:dotenv to expose the variables to other jobs
+
   release_job:
     stage: release
     image: registry.gitlab.com/gitlab-org/release-cli:latest
+    needs:
+    - job: prepare_job
+      artifacts: true
     rules:
       - if: $CI_COMMIT_TAG
         when: never                                 # Do not run this job when a tag is created manually
       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Run this job when commits are pushed or merged to the default branch
     script:
-      - echo 'running release_job'
+      - echo 'running release_job for $TAG'
     release:
-       name: 'Release $CI_COMMIT_SHA'
-       description: 'Created using the release-cli $EXTRA_DESCRIPTION' # $EXTRA_DESCRIPTION and the tag_name
-       tag_name: 'v${MAJOR}.${MINOR}.${REVISION}'                      # variables must be defined elsewhere
-       ref: '$CI_COMMIT_SHA'                                           # in the pipeline.
-       milestones:
+       name: 'Release $TAG'
+       description: 'Created using the release-cli $EXTRA_DESCRIPTION' # $EXTRA_DESCRIPTION and the $TAG
+       tag_name: '$TAG'                                                # variables must be defined elsewhere
+       ref: '$CI_COMMIT_SHA'                                           # in the pipeline. For example, in the
+       milestones:                                                     # prepare_job
          - 'm1'
          - 'm2'
          - 'm3'

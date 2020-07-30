@@ -144,7 +144,7 @@
           %span= total_count
         .title.hide-collapsed= n_('Release', 'Releases', total_count)
         .hide-collapsed
-          - if total_count.zero?
+          - if total_count == 0
             .no-value= s_('MilestoneSidebar|None')
           - else
             .font-weight-bold

@@ -261,29 +261,49 @@ because it’s friendly and easy to understand.
 
 ### Capitalization
 
-- Capitalize "G" and "L" in GitLab.
-- Use sentence case for:
-  - Titles.
-  - Labels.
-  - Menu items.
-  - Buttons.
-  - Headings. Don't capitalize other words in the title, unless
-    it refers to a product feature. For example:
-    - Capitalizing "issues" is acceptable in
-    `## What you can do with GitLab Issues`, but not in `## Closing multiple issues`.
-- Use title case when referring to:
-  - [GitLab Features](https://about.gitlab.com/features/). For example, Issue Board,
-    Geo, and Runner.
-  - GitLab [product tiers](https://about.gitlab.com/pricing/). For example, GitLab Core
-    and GitLab Ultimate. (Tested in [`BadgeCapitalization.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/BadgeCapitalization.yml).)
-  - Third-party products. For example, Prometheus, Kubernetes, and Git.
-  - Methods or methodologies. For example, Continuous Integration, Continuous
-    Deployment, Scrum, and Agile.
-    (Tested in [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json).)
+#### Headings
 
-    NOTE: **Note:**
-    Some features are also objects. For example, "GitLab's Merge Requests support X" and
-    "Create a new merge request for Z."
+Use sentence case. For example:
+
+- `## Use variables to configure pipelines`
+- `You can use the To-Do List.`
+
+#### UI text
+
+When including user interface text, like button labels or menu items, use the same capitalization that's in the UI.
+Standards for this content are listed in the [Pajamas Design System Content section](https://design.gitlab.com/content/punctuation).
+
+#### Feature names
+
+- **Feature names are typically lowercase**, like those describing actions and types of objects in GitLab. For example:
+  - epics
+  - issues
+  - issue weights
+  - merge requests
+  - milestones
+  - reorder issues
+- **Some features are capitalized**, typically nouns naming GitLab-specific capabilities or tools. For example:
+  - GitLab CI/CD
+  - Repository Mirroring
+  - Value Stream Analytics
+  - the To-Do List
+  - the Web IDE
+  - Geo
+
+Document any exceptions in this style guide. If you're not sure, ask a GitLab Technical Writer so that they can help decide and document the result.
+
+Do not match the capitalization of terms or phrases on the [Features page](https://about.gitlab.com/features/) or [features.yml](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml) by default.
+
+#### Other terms
+
+Capitalize names of:
+
+- GitLab [product tiers](https://about.gitlab.com/pricing/). For example, GitLab Core
+  and GitLab Ultimate. (Tested in [`BadgeCapitalization.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/BadgeCapitalization.yml).)
+- Third-party organizations, software, and products. For example, Prometheus, Kubernetes, Git, and The Linux Foundation.
+- Methods or methodologies. For example, Continuous Integration, Continuous Deployment, Scrum, and Agile. (Tested in [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json).)
+
+Follow the capitalization style listed at the [authoritative source](#links-to-external-documentation) for the entity, which may use non-standard case styles. For example: GitLab and npm.
 
 ### Language to avoid
 
@@ -1286,21 +1306,20 @@ Which renders to:
 To maintain consistency through GitLab documentation, the following guides documentation authors
 on agreed styles and usage of terms.
 
-### Merge Requests (MRs)
+### Merge requests (MRs)
 
 Merge requests allow you to exchange changes you made to source code and collaborate
 with other people on the same project. You'll see this term used in the following ways:
 
-- If you're referring to the feature, use **Merge Request**.
-- In any other context, use **merge request**.
+- Use lowercase **merge requests** regardless of whether referring to the feature or individual merge requests.
 
-As noted in our corporate [Writing Style Guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines),
+As noted in the GitLab [Writing Style Guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines),
 if you use the **MR** acronym, expand it at least once per document page.
-For example, the first time you specify a MR, specify either _Merge Request (MR)_ or _merge request (MR)_.
+Typically, the first use would be phrased as _merge request (MR)_ with subsequent instances being _MR_.
 
 Examples:
 
-- "We prefer GitLab Merge Requests".
+- "We prefer GitLab merge requests".
 - "Open a merge request to fix a broken link".
 - "After you open a merge request (MR), submit your MR for review and approval".
 
