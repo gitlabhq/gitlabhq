@@ -51,7 +51,7 @@ export default {
     <div class="js-file-title file-title-flex-parent">
       <div class="file-header-content">
         <i aria-hidden="true" class="fa fa-file-text-o fa-fw"></i>
-        <gl-link :href="blob.webUrl">
+        <gl-link :href="blob.webPath">
           <strong>{{ blob.name }}</strong>
         </gl-link>
       </div>

@@ -423,6 +423,140 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 
 For repository and snippet files, GitLab will only index up to 1 MiB of content, in order to avoid indexing timeouts.
 
+## Zero downtime reindexing
+
+The idea behind this reindexing method is to leverage Elasticsearch index alias feature to atomically swap between two indices.
+We will refer to each index as `primary` (online and used by GitLab for read/writes) and `secondary` (offline, for reindexing purpose).
+
+Instead of connecting directly to the `primary` index, we'll setup an index alias such as we can change the underlying index at will.
+
+NOTE: **Note:**
+Any index attached to the production alias is deemed a `primary` and will end up being used by the GitLab Elasticsearch integration.
+
+### Pause the indexing
+
+Under **Admin Area > Integration > Elasticsearch**, check the **Pause Elasticsearch Indexing** setting and save.
+
+With this, all updates that should happen on your Elasticsearch index will be buffered and caught up once unpaused.
+
+### Setup
+
+TIP: **Tip:**
+If your index has been created with GitLab v13.0+ you can skip directly to [trigger the reindex](#trigger-the-reindex-via-the-elasticsearch-administration).
+
+This process involves multiple shell commands and curl invocations, so a good initial setup will help down the road:
+
+```shell
+# You can find this value under Admin Area > Integration > Elasticsearch > URL
+export CLUSTER_URL="http://localhost:9200"
+export PRIMARY_INDEX="gitlab-production"
+export SECONDARY_INDEX="gitlab-production-$(date +%s)"
+```
+
+### Reclaiming the `gitlab-production` index name
+
+CAUTION: **Caution:**
+It is highly recommended that you take a snapshot of your cluster to make sure there is a recovery path if anything goes wrong.
+
+NOTE: **Note:**
+Due to a technical limitation, there will be a slight downtime because of the fact that we need to reclaim the current `primary` index to be used as the alias.
+
+To reclaim the `gitlab-production` index name, you need to first create a `secondary` index and then trigger the re-index from `primary`.
+
+#### Creating a secondary index
+
+To create a secondary index, run the following Rake task. The `SKIP_ALIAS`
+environment variable will disable the automatic creation of the Elasticsearch
+alias, which would conflict with the existing index under `$PRIMARY_INDEX`:
+
+```shell
+# Omnibus installation
+sudo SKIP_ALIAS=1 gitlab-rake "gitlab:elastic:create_empty_index[$SECONDARY_INDEX]"
+
+# Source installation
+SKIP_ALIAS=1 bundle exec rake "gitlab:elastic:create_empty_index[$SECONDARY_INDEX]"
+```
+
+The index should be created successfully, with the latest index options and mappings.
+
+#### Trigger the re-index from `primary`
+
+To trigger the re-index from `primary` index:
+
+1. Use the Elasticsearch [Reindex API](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/docs-reindex.html):
+
+    ```shell
+    curl --request POST \
+          --header 'Content-Type: application/json' \
+          --data "{ \"source\": { \"index\": \"$PRIMARY_INDEX\" }, \"dest\": { \"index\": \"$SECONDARY_INDEX\" } }" \
+          "$CLUSTER_URL/_reindex?slices=auto&wait_for_completion=false"
+    ```
+
+    There will be an output like:
+
+    ```plaintext
+    {"task":"3qw_Tr0YQLq7PF16Xek8YA:1012"}
+    ```
+
+    Note the `task` value here as it will be useful to follow the reindex progress.
+
+1. Wait for the reindex process to complete, by checking the `completed` value.
+   Using the `task` value form the previous step:
+
+    ```shell
+    export TASK_ID=3qw_Tr0YQLq7PF16Xek8YA:1012
+    curl "$CLUSTER_URL/_tasks/$TASK_ID?pretty"
+    ```
+
+    The output will be like:
+
+    ```plaintext
+    {"completed":false, …}
+    ```
+
+    Once the returned value is `true`, you may continue to the next step.
+
+1. Make sure that the secondary index has data in it. You can use the Elasticsearch
+   API to look for the index size and compare our two indices:
+
+    ```shell
+    curl $CLUSTER_URL/$PRIMARY_INDEX/_count => 123123
+    curl $CLUSTER_URL/$SECONDARY_INDEX/_count => 123123
+    ```
+
+    TIP: **Tip:**
+    Comparing the document count is more accurate than using the index size, as improvements to the storage might cause the new index to be smaller than the original one.
+
+1. Once you are confident your `secondary` index is valid, you can process to the creation of the alias.
+
+    ```shell
+    # Delete the original index
+    curl --request DELETE $CLUSTER_URL/$PRIMARY_INDEX
+
+    # Create the alias and add the `secondary` index to it
+    curl --request POST \
+          --header 'Content-Type: application/json' \
+          --data "{\"actions\":[{\"add\":{\"index\":\"$SECONDARY_INDEX\",\"alias\":\"$PRIMARY_INDEX\"}}]}}" \
+          $CLUSTER_URL/_aliases
+    ```
+
+    The reindexing is now completed. Your GitLab instance is now ready to use the [automated in-cluster reindexing](#trigger-the-reindex-via-the-elasticsearch-administration) feature for future reindexing.
+
+1. Unpause the indexing
+
+    Under **Admin Area > Integration > Elasticsearch**, uncheck the **Pause Elasticsearch Indexing** setting and save.
+
+### Trigger the reindex via the Elasticsearch administration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
+
+Under **Admin Area > Integration > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
+
+NOTE: **Note:**
+Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.
+
+While the reindexing is running, you will be able to follow its progress under that same section.
+
 ## GitLab Elasticsearch Rake tasks
 
 Rake tasks are available to:
@@ -586,7 +720,7 @@ Here are some common pitfalls and how to overcome them:
 
 - **I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything**
 
-  You will need to re-run all the Rake tasks to re-index the database, repositories, and wikis.
+  You will need to re-run all the Rake tasks to reindex the database, repositories, and wikis.
 
 - **The indexing process is taking a very long time**
 

@@ -12,14 +12,12 @@ export default {
     webPath: 'full-issue-path',
     webUrl: 'full-issue-url',
     participants: {
-      edges: [
+      nodes: [
         {
-          node: {
-            name: 'Administrator',
-            username: 'root',
-            webUrl: 'link-to-author',
-            avatarUrl: 'link-to-avatar',
-          },
+          name: 'Administrator',
+          username: 'root',
+          webUrl: 'link-to-author',
+          avatarUrl: 'link-to-avatar',
         },
       ],
     },

@@ -48,7 +48,7 @@ export default {
       };
     },
     discussionParticipants() {
-      return extractParticipants(this.issue.participants);
+      return extractParticipants(this.issue.participants.nodes);
     },
     resolvedDiscussions() {
       return this.discussions.filter(discussion => discussion.resolved);

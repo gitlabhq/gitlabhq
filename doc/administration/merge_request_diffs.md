@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Editor
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference
+---
+
 # Merge request diffs storage **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52568) in GitLab 11.8.

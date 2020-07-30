@@ -7,17 +7,13 @@ query getDesignList($fullPath: ID!, $iid: String!, $atVersion: ID) {
     issue(iid: $iid) {
       designCollection {
         designs(atVersion: $atVersion) {
-          edges {
-            node {
-              ...DesignListItem
-            }
+          nodes {
+            ...DesignListItem
           }
         }
         versions {
-          edges {
-            node {
-              ...VersionListItem
-            }
+          nodes {
+            ...VersionListItem
           }
         }
       }

@@ -16,6 +16,8 @@ import ConanInstallation from '~/packages/details/components/conan_installation.
 import NugetInstallation from '~/packages/details/components/nuget_installation.vue';
 import PypiInstallation from '~/packages/details/components/pypi_installation.vue';
 import DependencyRow from '~/packages/details/components/dependency_row.vue';
+import PackageHistory from '~/packages/details/components/package_history.vue';
+import PackageActivity from '~/packages/details/components/activity.vue';
 import {
   conanPackage,
   mavenPackage,
@@ -39,6 +41,7 @@ describe('PackagesApp', () => {
     packageEntity = mavenPackage,
     packageFiles = mavenFiles,
     isLoading = false,
+    oneColumnView = false,
   } = {}) {
     store = new Vuex.Store({
       state: {
@@ -50,6 +53,8 @@ describe('PackagesApp', () => {
         emptySvgPath: 'empty-illustration',
         npmPath: 'foo',
         npmHelpPath: 'foo',
+        projectName: 'bar',
+        oneColumnView,
       },
       actions: {
         fetchPackageVersions,
@@ -93,6 +98,9 @@ describe('PackagesApp', () => {
   const dependenciesCountBadge = () => wrapper.find('[data-testid="dependencies-badge"]');
   const noDependenciesMessage = () => wrapper.find('[data-testid="no-dependencies-message"]');
   const dependencyRows = () => wrapper.findAll(DependencyRow);
+  const findPackageHistory = () => wrapper.find(PackageHistory);
+  const findPackageActivity = () => wrapper.find(PackageActivity);
+  const findOldPackageInfo = () => wrapper.find('[data-testid="old-package-info"]');
 
   afterEach(() => {
     wrapper.destroy();
@@ -285,5 +293,32 @@ describe('PackagesApp', () => {
         expect.any(Object),
       );
     });
+  });
+
+  describe('one column layout feature flag', () => {
+    describe.each`
+      oneColumnView | history  | oldInfo  | activity
+      ${true}       | ${true}  | ${false} | ${false}
+      ${false}      | ${false} | ${true}  | ${true}
+    `(
+      'with oneColumnView set to $oneColumnView',
+      ({ oneColumnView, history, oldInfo, activity }) => {
+        beforeEach(() => {
+          createComponent({ oneColumnView });
+        });
+
+        it('package history', () => {
+          expect(findPackageHistory().exists()).toBe(history);
+        });
+
+        it('old info block', () => {
+          expect(findOldPackageInfo().exists()).toBe(oldInfo);
+        });
+
+        it('package activity', () => {
+          expect(findPackageActivity().exists()).toBe(activity);
+        });
+      },
+    );
   });
 });

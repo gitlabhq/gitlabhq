@@ -121,6 +121,9 @@ Patterns:
 
 ## Zero downtime reindexing with multiple indices
 
+NOTE: **Note:**
+This is not applicable yet as multiple indices functionality is not fully implemented.
+
 Currently GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
 
 To avoid downtime, GitLab is working to support multiple indices that

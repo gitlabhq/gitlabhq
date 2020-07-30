@@ -10,6 +10,10 @@ export default {
     state.endpoints = endpoints;
   },
 
+  [mutationTypes.SET_ACTIVE_ID](state, id) {
+    state.activeId = id;
+  },
+
   [mutationTypes.REQUEST_ADD_LIST]: () => {
     notImplemented();
   },

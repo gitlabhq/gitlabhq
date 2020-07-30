@@ -5,11 +5,9 @@ mutation uploadDesign($files: [Upload!]!, $projectPath: ID!, $iid: ID!) {
     designs {
       ...DesignItem
       versions {
-        edges {
-          node {
-            id
-            sha
-          }
+        nodes {
+          id
+          sha
         }
       }
     }

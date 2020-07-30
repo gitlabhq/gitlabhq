@@ -8,10 +8,8 @@ mutation createImageDiffNote($input: CreateImageDiffNoteInput!) {
         id
         replyId
         notes {
-          edges {
-            node {
-              ...DesignNote
-            }
+          nodes {
+            ...DesignNote
           }
         }
       }

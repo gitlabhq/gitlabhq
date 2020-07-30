@@ -21,6 +21,10 @@ end
 RSpec.shared_examples 'package details link' do |property|
   let(:package) { packages.first }
 
+  before do
+    stub_feature_flags(packages_details_one_column: false)
+  end
+
   it 'navigates to the correct url' do
     page.within(packages_table_selector) do
       click_link package.name

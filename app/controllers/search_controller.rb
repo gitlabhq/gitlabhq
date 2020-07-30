@@ -114,4 +114,15 @@ class SearchController < ApplicationController
 
     Gitlab::UsageDataCounters::SearchCounter.count(:navbar_searches)
   end
+
+  def append_info_to_payload(payload)
+    super
+
+    # Merging to :metadata will ensure these are logged as top level keys
+    payload[:metadata] || {}
+    payload[:metadata]['meta.search.group_id'] = params[:group_id]
+    payload[:metadata]['meta.search.project_id'] = params[:project_id]
+    payload[:metadata]['meta.search.search'] = params[:search]
+    payload[:metadata]['meta.search.scope'] = params[:scope]
+  end
 end

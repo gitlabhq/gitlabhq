@@ -6,7 +6,7 @@ const _links = {
 export const mockPipelineInfo = {
   id: 1,
   ref: 'branch-name',
-  sha: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+  sha: 'sha-baz',
   user: {
     name: 'foo',
   },
@@ -14,6 +14,7 @@ export const mockPipelineInfo = {
     name: 'foo-project',
     web_url: 'foo-project-link',
   },
+  created_at: '2015-12-10',
 };
 
 export const mavenPackage = {

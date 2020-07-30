@@ -524,8 +524,6 @@ module Ci
       end
     end
 
-    CI_REGISTRY_USER = 'gitlab-ci-token'
-
     def persisted_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless persisted?
@@ -537,7 +535,7 @@ module Ci
           .append(key: 'CI_JOB_TOKEN', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_BUILD_ID', value: id.to_s)
           .append(key: 'CI_BUILD_TOKEN', value: token.to_s, public: false, masked: true)
-          .append(key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER)
+          .append(key: 'CI_REGISTRY_USER', value: ::Gitlab::Auth::CI_REGISTRY_USER)
           .append(key: 'CI_REGISTRY_PASSWORD', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
           .concat(deploy_token_variables)
@@ -596,7 +594,7 @@ module Ci
     def repo_url
       return unless token
 
-      auth = "gitlab-ci-token:#{token}@"
+      auth = "#{::Gitlab::Auth::CI_JOB_USER}:#{token}@"
       project.http_url_to_repo.sub(%r{^https?://}) do |prefix|
         prefix + auth
       end

@@ -3,7 +3,7 @@ export default {
     issue: {
       designCollection: {
         designs: {
-          edges: [],
+          nodes: [],
         },
       },
     },

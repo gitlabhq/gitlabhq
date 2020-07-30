@@ -57,9 +57,7 @@ const mockDesigns = [
 ];
 
 const mockVersion = {
-  node: {
-    id: 'gid://gitlab/DesignManagement::Version/1',
-  },
+  id: 'gid://gitlab/DesignManagement::Version/1',
 };
 
 describe('Design management index page', () => {
@@ -240,13 +238,10 @@ describe('Design management index page', () => {
                 },
                 versions: {
                   __typename: 'DesignVersionConnection',
-                  edges: {
-                    __typename: 'DesignVersionEdge',
-                    node: {
-                      __typename: 'DesignVersion',
-                      id: expect.anything(),
-                      sha: expect.anything(),
-                    },
+                  nodes: {
+                    __typename: 'DesignVersion',
+                    id: expect.anything(),
+                    sha: expect.anything(),
                   },
                 },
               },

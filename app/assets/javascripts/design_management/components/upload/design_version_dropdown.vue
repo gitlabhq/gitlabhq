@@ -18,7 +18,7 @@ export default {
       if (!this.queryVersion) return 0;
 
       const idx = this.allVersions.findIndex(
-        version => this.findVersionId(version.node.id) === this.queryVersion,
+        version => this.findVersionId(version.id) === this.queryVersion,
       );
 
       // if the currentVersionId isn't a valid version (i.e. not in allVersions)
@@ -29,7 +29,7 @@ export default {
       if (this.queryVersion) return this.queryVersion;
 
       const currentVersion = this.allVersions[this.currentVersionIdx];
-      return this.findVersionId(currentVersion.node.id);
+      return this.findVersionId(currentVersion.id);
     },
     dropdownText() {
       if (this.isLatestVersion) {
@@ -51,23 +51,21 @@ export default {
 
 <template>
   <gl-new-dropdown :text="dropdownText" size="small" class="design-version-dropdown">
-    <gl-new-dropdown-item v-for="(version, index) in allVersions" :key="version.node.id">
+    <gl-new-dropdown-item v-for="(version, index) in allVersions" :key="version.id">
       <router-link
         class="d-flex js-version-link"
-        :to="{ path: $route.path, query: { version: findVersionId(version.node.id) } }"
+        :to="{ path: $route.path, query: { version: findVersionId(version.id) } }"
       >
         <div class="flex-grow-1 ml-2">
           <div>
             <strong
               >{{ __('Version') }} {{ allVersions.length - index }}
-              <span v-if="findVersionId(version.node.id) === latestVersionId"
-                >({{ __('latest') }})</span
-              >
+              <span v-if="findVersionId(version.id) === latestVersionId">({{ __('latest') }})</span>
             </strong>
           </div>
         </div>
         <i
-          v-if="findVersionId(version.node.id) === currentVersionId"
+          v-if="findVersionId(version.id) === currentVersionId"
           class="fa fa-check float-right gl-mr-2"
         ></i>
       </router-link>

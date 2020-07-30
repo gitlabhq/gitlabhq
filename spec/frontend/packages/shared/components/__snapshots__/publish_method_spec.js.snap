@@ -24,14 +24,14 @@ exports[`publish_method renders 1`] = `
    
   <gl-link-stub
     class="mr-1"
-    href="../commit/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    href="../commit/sha-baz"
   >
-    xxxxxxxx
+    sha-baz
   </gl-link-stub>
    
   <clipboard-button-stub
     cssclass="border-0 text-secondary py-0 px-1"
-    text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    text="sha-baz"
     title="Copy commit SHA"
     tooltipplacement="top"
   />

@@ -30,7 +30,7 @@ describe('Repository file preview component', () => {
 
   it('renders file HTML', () => {
     factory({
-      webUrl: 'http://test.com',
+      webPath: 'http://test.com',
       name: 'README.md',
     });
 
@@ -43,7 +43,7 @@ describe('Repository file preview component', () => {
 
   it('handles hash after render', () => {
     factory({
-      webUrl: 'http://test.com',
+      webPath: 'http://test.com',
       name: 'README.md',
     });
 
@@ -59,7 +59,7 @@ describe('Repository file preview component', () => {
 
   it('renders loading icon', () => {
     factory({
-      webUrl: 'http://test.com',
+      webPath: 'http://test.com',
       name: 'README.md',
     });
 

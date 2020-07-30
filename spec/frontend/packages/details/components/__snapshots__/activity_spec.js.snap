@@ -62,14 +62,14 @@ exports[`PackageActivity render to match the default snapshot when there is a pi
         <!---->
          
         <gl-link-stub
-          href="../../commit/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          href="../../commit/sha-baz"
         >
-          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+          sha-baz
         </gl-link-stub>
          
         <clipboard-button-stub
           cssclass="border-0 text-secondary py-0"
-          text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          text="sha-baz"
           title="Copy commit SHA"
           tooltipplacement="top"
         />

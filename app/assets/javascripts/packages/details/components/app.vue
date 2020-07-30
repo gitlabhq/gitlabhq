@@ -14,6 +14,7 @@ import {
 } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import PackageActivity from './activity.vue';
+import PackageHistory from './package_history.vue';
 import PackageInformation from './information.vue';
 import PackageTitle from './package_title.vue';
 import ConanInstallation from './conan_installation.vue';
@@ -57,6 +58,7 @@ export default {
     PackagesListLoader,
     PackageListRow,
     DependencyRow,
+    PackageHistory,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -66,6 +68,7 @@ export default {
   trackingActions: { ...TrackingActions },
   computed: {
     ...mapState([
+      'projectName',
       'packageEntity',
       'packageFiles',
       'isLoading',
@@ -74,6 +77,7 @@ export default {
       'svgPath',
       'npmPath',
       'npmHelpPath',
+      'oneColumnView',
     ]),
     installationComponent() {
       switch (this.packageEntity.package_type) {
@@ -219,29 +223,37 @@ export default {
 
     <gl-tabs>
       <gl-tab :title="__('Detail')">
-        <div class="row" data-qa-selector="package_information_content">
-          <div class="col-sm-6">
-            <package-information :information="packageInformation" />
-            <package-information
-              v-if="packageMetadata"
-              :heading="packageMetadataTitle"
-              :information="packageMetadata"
-              :show-copy="true"
-            />
+        <template v-if="!oneColumnView">
+          <div
+            class="row"
+            data-qa-selector="package_information_content"
+            data-testid="old-package-info"
+          >
+            <div class="col-sm-6">
+              <package-information :information="packageInformation" />
+              <package-information
+                v-if="packageMetadata"
+                :heading="packageMetadataTitle"
+                :information="packageMetadata"
+                :show-copy="true"
+              />
+            </div>
+
+            <div class="col-sm-6">
+              <component
+                :is="installationComponent"
+                v-if="installationComponent"
+                :name="packageEntity.name"
+                :registry-url="npmPath"
+                :help-url="npmHelpPath"
+              />
+            </div>
           </div>
 
-          <div class="col-sm-6">
-            <component
-              :is="installationComponent"
-              v-if="installationComponent"
-              :name="packageEntity.name"
-              :registry-url="npmPath"
-              :help-url="npmHelpPath"
-            />
-          </div>
-        </div>
+          <package-activity />
+        </template>
 
-        <package-activity />
+        <package-history v-else :package-entity="packageEntity" :project-name="projectName" />
 
         <h3 class="gl-font-lg">{{ __('Files') }}</h3>
         <gl-table

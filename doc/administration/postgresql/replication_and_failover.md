@@ -97,7 +97,7 @@ This is why you will need:
 
 When using default setup, minimum configuration requires:
 
-- `CONSUL_USERNAME`. Defaults to `gitlab-consul`
+- `CONSUL_USERNAME`. The default user for Omnibus GitLab is `gitlab-consul`
 - `CONSUL_DATABASE_PASSWORD`. Password for the database user.
 - `CONSUL_PASSWORD_HASH`. This is a hash generated out of Consul username/password pair.
    Can be generated with:
@@ -140,7 +140,7 @@ server nodes.
 
 We will need the following password information for the application's database user:
 
-- `POSTGRESQL_USERNAME`. Defaults to `gitlab`
+- `POSTGRESQL_USERNAME`. The default user for Omnibus GitLab is `gitlab`
 - `POSTGRESQL_USER_PASSWORD`. The password for the database user
 - `POSTGRESQL_PASSWORD_HASH`. This is a hash generated out of the username/password pair.
   Can be generated with:
@@ -153,7 +153,7 @@ We will need the following password information for the application's database u
 
 When using default setup, minimum configuration requires:
 
-- `PGBOUNCER_USERNAME`. Defaults to `pgbouncer`
+- `PGBOUNCER_USERNAME`. The default user for Omnibus GitLab is `pgbouncer`
 - `PGBOUNCER_PASSWORD`. This is a password for PgBouncer service.
 - `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of PgBouncer username/password pair.
   Can be generated with:

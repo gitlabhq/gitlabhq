@@ -12,10 +12,10 @@ import {
 const deleteDesignsFromStore = (store, query, selectedDesigns) => {
   const data = store.readQuery(query);
 
-  const changedDesigns = data.project.issue.designCollection.designs.edges.filter(
-    ({ node }) => !selectedDesigns.includes(node.filename),
+  const changedDesigns = data.project.issue.designCollection.designs.nodes.filter(
+    node => !selectedDesigns.includes(node.filename),
   );
-  data.project.issue.designCollection.designs.edges = [...changedDesigns];
+  data.project.issue.designCollection.designs.nodes = [...changedDesigns];
 
   store.writeQuery({
     ...query,
@@ -34,11 +34,10 @@ const addNewVersionToStore = (store, query, version) => {
   if (!version) return;
 
   const data = store.readQuery(query);
-  const newEdge = { node: version, __typename: 'DesignVersionEdge' };
 
-  data.project.issue.designCollection.versions.edges = [
-    newEdge,
-    ...data.project.issue.designCollection.versions.edges,
+  data.project.issue.designCollection.versions.nodes = [
+    version,
+    ...data.project.issue.designCollection.versions.nodes,
   ];
 
   store.writeQuery({
@@ -59,18 +58,15 @@ const addDiscussionCommentToStore = (store, createNote, query, queryVariables, d
 
   design.notesCount += 1;
   if (
-    !design.issue.participants.edges.some(
-      participant => participant.node.username === createNote.note.author.username,
+    !design.issue.participants.nodes.some(
+      participant => participant.username === createNote.note.author.username,
     )
   ) {
-    design.issue.participants.edges = [
-      ...design.issue.participants.edges,
+    design.issue.participants.nodes = [
+      ...design.issue.participants.nodes,
       {
-        __typename: 'UserEdge',
-        node: {
-          __typename: 'User',
-          ...createNote.note.author,
-        },
+        __typename: 'User',
+        ...createNote.note.author,
       },
     ];
   }
@@ -108,18 +104,15 @@ const addImageDiffNoteToStore = (store, createImageDiffNote, query, variables) =
   const notesCount = design.notesCount + 1;
   design.discussions.nodes = [...design.discussions.nodes, newDiscussion];
   if (
-    !design.issue.participants.edges.some(
-      participant => participant.node.username === createImageDiffNote.note.author.username,
+    !design.issue.participants.nodes.some(
+      participant => participant.username === createImageDiffNote.note.author.username,
     )
   ) {
-    design.issue.participants.edges = [
-      ...design.issue.participants.edges,
+    design.issue.participants.nodes = [
+      ...design.issue.participants.nodes,
       {
-        __typename: 'UserEdge',
-        node: {
-          __typename: 'User',
-          ...createImageDiffNote.note.author,
-        },
+        __typename: 'User',
+        ...createImageDiffNote.note.author,
       },
     ];
   }
@@ -166,9 +159,9 @@ const updateImageDiffNoteInStore = (store, updateImageDiffNote, query, variables
 const addNewDesignToStore = (store, designManagementUpload, query) => {
   const data = store.readQuery(query);
 
-  const newDesigns = data.project.issue.designCollection.designs.edges.reduce((acc, design) => {
-    if (!acc.find(d => d.filename === design.node.filename)) {
-      acc.push(design.node);
+  const newDesigns = data.project.issue.designCollection.designs.nodes.reduce((acc, design) => {
+    if (!acc.find(d => d.filename === design.filename)) {
+      acc.push(design);
     }
 
     return acc;
@@ -178,30 +171,27 @@ const addNewDesignToStore = (store, designManagementUpload, query) => {
   const findNewVersions = designManagementUpload.designs.find(design => design.versions);
 
   if (findNewVersions) {
-    const findNewVersionsEdges = findNewVersions.versions.edges;
+    const findNewVersionsNodes = findNewVersions.versions.nodes;
 
-    if (findNewVersionsEdges && findNewVersionsEdges.length) {
-      newVersionNode = [findNewVersionsEdges[0]];
+    if (findNewVersionsNodes && findNewVersionsNodes.length) {
+      newVersionNode = [findNewVersionsNodes[0]];
     }
   }
 
   const newVersions = [
     ...(newVersionNode || []),
-    ...data.project.issue.designCollection.versions.edges,
+    ...data.project.issue.designCollection.versions.nodes,
   ];
 
   const updatedDesigns = {
     __typename: 'DesignCollection',
     designs: {
       __typename: 'DesignConnection',
-      edges: newDesigns.map(design => ({
-        __typename: 'DesignEdge',
-        node: design,
-      })),
+      nodes: newDesigns,
     },
     versions: {
       __typename: 'DesignVersionConnection',
-      edges: newVersions,
+      nodes: newVersions,
     },
   };
 

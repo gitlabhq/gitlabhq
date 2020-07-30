@@ -5,17 +5,7 @@ export const isValidDesignFile = ({ type }) =>
   (type.match(VALID_DESIGN_FILE_MIMETYPE.regex) || []).length > 0;
 
 /**
- * Returns formatted array that doesn't contain
- * `edges`->`node` nesting
- *
- * @param {Array} elements
- */
-
-export const extractNodes = elements => elements.edges.map(({ node }) => node);
-
-/**
- * Returns formatted array of discussions that doesn't contain
- * `edges`->`node` nesting for child notes
+ * Returns formatted array of discussions
  *
  * @param {Array} discussions
  */
@@ -40,9 +30,9 @@ export const findVersionId = id => (id.match('::Version/(.+$)') || [])[1];
 
 export const findNoteId = id => (id.match('DiffNote/(.+$)') || [])[1];
 
-export const extractDesigns = data => data.project.issue.designCollection.designs.edges;
+export const extractDesigns = data => data.project.issue.designCollection.designs.nodes;
 
-export const extractDesign = data => (extractDesigns(data) || [])[0]?.node;
+export const extractDesign = data => (extractDesigns(data) || [])[0];
 
 /**
  * Generates optimistic response for a design upload mutation
@@ -72,13 +62,10 @@ export const designUploadOptimisticResponse = files => {
     },
     versions: {
       __typename: 'DesignVersionConnection',
-      edges: {
-        __typename: 'DesignVersionEdge',
-        node: {
-          __typename: 'DesignVersion',
-          id: -uniqueId(),
-          sha: -uniqueId(),
-        },
+      nodes: {
+        __typename: 'DesignVersion',
+        id: -uniqueId(),
+        sha: -uniqueId(),
       },
     },
   }));
@@ -123,6 +110,6 @@ const normalizeAuthor = author => ({
   avatar_url: author.avatarUrl,
 });
 
-export const extractParticipants = users => users.edges.map(({ node }) => normalizeAuthor(node));
+export const extractParticipants = users => users.map(node => normalizeAuthor(node));
 
 export const getPageLayoutElement = () => document.querySelector('.layout-page');

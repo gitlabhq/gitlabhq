@@ -8,7 +8,7 @@ module HttpBasicAuthHelpers
   end
 
   def job_basic_auth_header(job)
-    basic_auth_header(Ci::Build::CI_REGISTRY_USER, job.token)
+    basic_auth_header(::Gitlab::Auth::CI_REGISTRY_USER, job.token)
   end
 
   def client_basic_auth_header(client)

@@ -10,6 +10,10 @@ export default {
     commit(types.SET_ENDPOINTS, endpoints);
   },
 
+  setActiveId({ commit }, id) {
+    commit(types.SET_ACTIVE_ID, id);
+  },
+
   fetchLists: () => {
     notImplemented();
   },

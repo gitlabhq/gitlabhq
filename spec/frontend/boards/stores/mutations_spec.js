@@ -32,6 +32,16 @@ describe('Board Store Mutations', () => {
     });
   });
 
+  describe('SET_ACTIVE_ID', () => {
+    it('updates aciveListId to be the value that is passed', () => {
+      const expectedId = 1;
+
+      mutations.SET_ACTIVE_ID(state, expectedId);
+
+      expect(state.activeId).toBe(expectedId);
+    });
+  });
+
   describe('REQUEST_ADD_LIST', () => {
     expectNotImplemented(mutations.REQUEST_ADD_LIST);
   });

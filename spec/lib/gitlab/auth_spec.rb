@@ -149,7 +149,9 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     end
 
     context 'build token' do
-      subject { gl_auth.find_for_git_client('gitlab-ci-token', build.token, project: project, ip: 'ip') }
+      subject { gl_auth.find_for_git_client(username, build.token, project: project, ip: 'ip') }
+
+      let(:username) { 'gitlab-ci-token' }
 
       context 'for running build' do
         let!(:build) { create(:ci_build, :running) }
@@ -169,6 +171,14 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
           build.update(user: create(:user, :blocked))
 
           expect(subject).to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+        end
+
+        context 'username is not gitlab-ci-token' do
+          let(:username) { 'another_username' }
+
+          it 'fails to authenticate' do
+            expect(subject).to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+          end
         end
       end
 
