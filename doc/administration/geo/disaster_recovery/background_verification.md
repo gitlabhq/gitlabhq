@@ -58,14 +58,14 @@ Feature.enable('geo_repository_verification')
 
 ## Repository verification
 
-Navigate to the **Admin Area >** **{location-dot}** **Geo** dashboard on the **primary** node and expand
+Navigate to the **Admin Area > Geo** dashboard on the **primary** node and expand
 the **Verification information** tab for that node to view automatic checksumming
 status for repositories and wikis. Successes are shown in green, pending work
 in gray, and failures in red.
 
 ![Verification status](img/verification-status-primary.png)
 
-Navigate to the **Admin Area >** **{location-dot}** **Geo** dashboard on the **secondary** node and expand
+Navigate to the **Admin Area > Geo** dashboard on the **secondary** node and expand
 the **Verification information** tab for that node to view automatic verification
 status for repositories and wikis. As with checksumming, successes are shown in
 green, pending work in gray, and failures in red.
@@ -92,7 +92,7 @@ data. The default and recommended re-verification interval is 7 days, though
 an interval as short as 1 day can be set. Shorter intervals reduce risk but
 increase load and vice versa.
 
-Navigate to the **Admin Area >** **{location-dot}** **Geo** dashboard on the **primary** node, and
+Navigate to the **Admin Area > Geo** dashboard on the **primary** node, and
 click the **Edit** button for the **primary** node to customize the minimum
 re-verification interval:
 

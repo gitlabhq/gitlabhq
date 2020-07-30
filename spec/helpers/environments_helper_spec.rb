@@ -23,7 +23,7 @@ RSpec.describe EnvironmentsHelper do
         'metrics-dashboard-base-path' => environment_metrics_path(environment),
         'current-environment-name' => environment.name,
         'documentation-path' => help_page_path('administration/monitoring/prometheus/index.md'),
-        'add-dashboard-documentation-path' => help_page_path('user/project/integrations/prometheus.md', anchor: 'adding-a-new-dashboard-to-your-project'),
+        'add-dashboard-documentation-path' => help_page_path('operations/metrics/dashboards/index.md', anchor: 'add-a-new-dashboard-to-your-project'),
         'empty-getting-started-svg-path' => match_asset_path('/assets/illustrations/monitoring/getting_started.svg'),
         'empty-loading-svg-path' => match_asset_path('/assets/illustrations/monitoring/loading.svg'),
         'empty-no-data-svg-path' => match_asset_path('/assets/illustrations/monitoring/no_data.svg'),

@@ -122,7 +122,7 @@ generate a short-lived JWT that is pull-only-capable to access the
 
 ### Verify replication
 
-To verify Container Registry replication is working, go to **Admin Area >** **{location-dot}** **Geo**
+To verify Container Registry replication is working, go to **Admin Area > Geo**
 (`/admin/geo/nodes`) on the **secondary** node.
 The initial replication, or "backfill", will probably still be in progress.
 You can monitor the synchronization process on each Geo node from the **primary** node's **Geo Nodes** dashboard in your browser.

@@ -110,6 +110,12 @@ any option available in the underlying fuzzing engine.
 | `COVERAGE_FUZZING_BRANCH` | The branch for long-running fuzzing jobs. The default is `master`. |
 | `CI_SEED_CORPUS`          | Path to a seed corpus directory. The default is empty.             |
 
+The files in the seed corpus (`CI_SEED_CORPUS`), if provided, aren't updated unless you commit new
+files to your Git repository. There's usually no need to frequently update the seed corpus. As part
+of the GitLab artifacts system, GitLab saves in a corpus directory the new test cases that every run
+generates. In any subsequent runs, GitLab also reuses the generated corpus together with the seed
+corpus.
+
 ### Additional Configuration
 
 The `gitlab-cov-fuzz` command passes all arguments it receives to the underlying fuzzing engine. You

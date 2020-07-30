@@ -170,7 +170,7 @@ export default {
             v-for="(stage, index) in graph"
             :key="stage.name"
             :class="{
-              'has-upstream prepend-left-64': hasUpstream(index),
+              'has-upstream gl-ml-11': hasUpstream(index),
               'has-only-one-job': hasOnlyOneJob(stage),
               'gl-mr-26': shouldAddRightMargin(index),
             }"

@@ -46,7 +46,7 @@ export const I18N_ALERT_SETTINGS_FORM = {
 
 export const NO_ISSUE_TEMPLATE_SELECTED = { key: '', name: __('No template selected') };
 export const TAKING_INCIDENT_ACTION_DOCS_LINK =
-  '/help/user/project/integrations/prometheus#taking-action-on-incidents-ultimate';
+  '/help/operations/metrics/alerts#trigger-actions-from-alerts';
 export const ISSUE_TEMPLATES_DOCS_LINK =
   '/help/user/project/description_templates#creating-issue-templates';
 

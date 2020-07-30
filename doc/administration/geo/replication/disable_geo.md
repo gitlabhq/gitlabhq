@@ -33,7 +33,7 @@ in order to do that.
 
 ## Remove the primary node from the UI
 
-1. Go to **Admin Area >** **{location-dot}** **Geo** (`/admin/geo/nodes`).
+1. Go to **Admin Area > Geo** (`/admin/geo/nodes`).
 1. Click the **Remove** button for the **primary** node.
 1. Confirm by clicking **Remove** when the prompt appears.
 

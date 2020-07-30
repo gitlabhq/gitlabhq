@@ -110,7 +110,7 @@ The maintenance window won't end until Geo replication and verification is
 completely finished. To keep the window as short as possible, you should
 ensure these processes are close to 100% as possible during active use.
 
-Navigate to the **Admin Area >** **{location-dot}** **Geo** dashboard on the **secondary** node to
+Navigate to the **Admin Area > Geo** dashboard on the **secondary** node to
 review status. Replicated objects (shown in green) should be close to 100%,
 and there should be no failures (shown in red). If a large proportion of
 objects aren't yet replicated (shown in gray), consider giving the node more
@@ -136,7 +136,7 @@ This [content was moved to another location](background_verification.md).
 ### Notify users of scheduled maintenance
 
 On the **primary** node, navigate to **Admin Area >** **{bullhorn}** **Messages**, add a broadcast
-message. You can check under **Admin Area >** **{location-dot}** **Geo** to estimate how long it
+message. You can check under **Admin Area > Geo** to estimate how long it
 will take to finish syncing. An example message would be:
 
 > A scheduled maintenance will take place at XX:XX UTC. We expect it to take
@@ -194,7 +194,7 @@ access to the **primary** node during the maintenance window.
    and wait for all queues except those with `geo` in the name to drop to 0.
    These queues contain work that has been submitted by your users; failing over
    before it is completed will cause the work to be lost.
-1. On the **primary** node, navigate to **Admin Area >** **{location-dot}** **Geo** and wait for the
+1. On the **primary** node, navigate to **Admin Area > Geo** and wait for the
    following conditions to be true of the **secondary** node you are failing over to:
 
    - All replication meters to each 100% replicated, 0% failures.

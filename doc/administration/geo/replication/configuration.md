@@ -191,7 +191,7 @@ keys must be manually replicated to the **secondary** node.
    gitlab-ctl reconfigure
    ```
 
-1. Visit the **primary** node's **Admin Area >** **{location-dot}** **Geo**
+1. Visit the **primary** node's **Admin Area > Geo**
    (`/admin/geo/nodes`) in your browser.
 1. Click the **New node** button.
    ![Add secondary node](img/adding_a_secondary_node.png)
@@ -264,7 +264,7 @@ method to be enabled. Navigate to **Admin Area > Settings**
 Your **secondary** node is now configured!
 
 You can login to the **secondary** node with the same credentials you used for the
-**primary** node. Visit the **secondary** node's **Admin Area >** **{location-dot}** **Geo**
+**primary** node. Visit the **secondary** node's **Admin Area > Geo**
 (`/admin/geo/nodes`) in your browser to check if it's correctly identified as a
 **secondary** Geo node and if Geo is enabled.
 

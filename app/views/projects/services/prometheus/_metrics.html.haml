@@ -5,7 +5,7 @@
 .col-lg-3
   %p
     = s_('PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters.')
-    = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus_library/index'), target: '_blank', rel: "noopener noreferrer"
+    = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus'), target: '_blank', rel: "noopener noreferrer"
 
 .col-lg-9
   .card.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/index') } }
