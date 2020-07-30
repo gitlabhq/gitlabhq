@@ -5,7 +5,6 @@ production:
   adapter: postgresql
   encoding: unicode
   database: gitlabhq_geo_production
-  pool: 10
   username: git
   password: "secure password"
   host: localhost
@@ -18,7 +17,6 @@ development:
   adapter: postgresql
   encoding: unicode
   database: gitlabhq_geo_development
-  pool: 5
   username: postgres
   password: "secure password"
   host: localhost
@@ -31,7 +29,6 @@ staging:
   adapter: postgresql
   encoding: unicode
   database: gitlabhq_geo_staging
-  pool: 10
   username: git
   password: "secure password"
   host: localhost
@@ -44,7 +41,6 @@ test: &test
   adapter: postgresql
   encoding: unicode
   database: gitlabhq_geo_test
-  pool: 5
   username: postgres
   password:
   host: localhost

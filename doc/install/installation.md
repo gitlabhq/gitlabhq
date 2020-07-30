@@ -567,7 +567,6 @@ sudo -u git cp config/database.yml.postgresql config/database.yml
 #     adapter: postgresql
 #     encoding: unicode
 #     database: gitlabhq_production
-#     pool: 10
 #
 sudo -u git -H editor config/database.yml
 

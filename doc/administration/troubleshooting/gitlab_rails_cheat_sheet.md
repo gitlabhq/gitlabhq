@@ -836,19 +836,19 @@ Geo::JobArtifactRegistry.synced.missing_on_primary.pluck(:artifact_id)
 #### Get the number of verification failed repositories
 
 ```ruby
-Geo::ProjectRegistryFinder.new.count_verification_failed_repositories
+Geo::ProjectRegistry.verification_failed('repository').count
 ```
 
 #### Find the verification failed repositories
 
 ```ruby
-Geo::ProjectRegistry.verification_failed_repos
+Geo::ProjectRegistry.verification_failed('repository')
 ```
 
 ### Find repositories that failed to sync
 
 ```ruby
-Geo::ProjectRegistryFinder.new.find_failed_project_registries('repository')
+Geo::ProjectRegistry.sync_failed('repository')
 ```
 
 ### Resync repositories

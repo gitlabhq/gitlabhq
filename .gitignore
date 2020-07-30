@@ -96,6 +96,12 @@ apollo.config.js
 /tmp/matching_foss_tests.txt
 ee/changelogs/unreleased-ee
 
+# Likely anything 2017 was removed in bac4d96dcfc, 381b706559b, or cfae6ec2647
+db/schema_migrations/2014*
+db/schema_migrations/2015*
+db/schema_migrations/2016*
+db/schema_migrations/2017*
+
 # Removed in 02ea9bc792b9236ea8854154ea5caef1a03b07b4
 db/schema_migrations/20171230123729
 db/schema_migrations/20180101160629

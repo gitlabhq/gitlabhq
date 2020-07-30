@@ -1,0 +1,5 @@
+---
+title: Automatically calculate the database connection pool size
+merge_request: 38049
+author:
+type: other
