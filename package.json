@@ -129,6 +129,7 @@
     "stickyfilljs": "^2.1.0",
     "string-hash": "1.1.3",
     "style-loader": "^1.1.3",
+    "svg4everybody": "^2.1.9",
     "swagger-ui-dist": "^3.26.2",
     "three": "^0.84.0",
     "three-orbit-controls": "^82.1.0",

@@ -957,6 +957,11 @@ type Board {
     first: Int
 
     """
+    Find a list by its global ID
+    """
+    id: ID
+
+    """
     Returns the last _n_ elements from the list.
     """
     last: Int
@@ -10179,6 +10184,11 @@ type Project {
   sastCiConfiguration: SastCiConfiguration
 
   """
+  Path to project's security dashboard
+  """
+  securityDashboardPath: String
+
+  """
   Information about security analyzers used in the project
   """
   securityScanners: SecurityScanners
@@ -15099,6 +15109,11 @@ type Vulnerability {
   COVERAGE_FUZZING)
   """
   reportType: VulnerabilityReportType
+
+  """
+  Indicates whether the vulnerability is fixed on the default branch or not
+  """
+  resolvedOnDefaultBranch: Boolean!
 
   """
   Scanner metadata for the vulnerability.

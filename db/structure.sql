@@ -20523,11 +20523,11 @@ CREATE INDEX index_services_on_template ON public.services USING btree (template
 
 CREATE INDEX index_services_on_type ON public.services USING btree (type);
 
-CREATE INDEX index_services_on_type_and_id_and_template_when_active ON public.services USING btree (type, id, template) WHERE (active = true);
-
 CREATE UNIQUE INDEX index_services_on_type_and_instance_partial ON public.services USING btree (type, instance) WHERE (instance = true);
 
 CREATE UNIQUE INDEX index_services_on_type_and_template_partial ON public.services USING btree (type, template) WHERE (template = true);
+
+CREATE INDEX index_services_on_type_id_when_active_not_instance_not_template ON public.services USING btree (type, id) WHERE ((active = true) AND (instance = false) AND (template = false));
 
 CREATE UNIQUE INDEX index_shards_on_name ON public.shards USING btree (name);
 

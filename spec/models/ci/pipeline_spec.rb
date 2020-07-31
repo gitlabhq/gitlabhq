@@ -2020,7 +2020,7 @@ RSpec.describe Ci::Pipeline, :mailer do
     let(:project) { create(:project, :repository) }
     let(:branch) { project.default_branch }
     let(:ref) { project.ci_refs.take }
-    let(:config_source) { Ci::PipelineEnums.config_sources[:parameter_source] }
+    let(:config_source) { Enums::Ci::Pipeline.config_sources[:parameter_source] }
     let!(:pipeline1) { create(:ci_pipeline, :success, project: project, ref: branch) }
     let!(:pipeline2) { create(:ci_pipeline, :success, project: project, ref: branch) }
     let!(:pipeline3) { create(:ci_pipeline, :failed, project: project, ref: branch) }

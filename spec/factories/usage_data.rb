@@ -24,6 +24,7 @@ FactoryBot.define do
       create(:service, project: projects[2], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'MattermostService', active: false)
       create(:service, :template, type: 'MattermostService', active: true)
+      create(:service, :instance, type: 'MattermostService', active: true)
       create(:service, project: projects[2], type: 'CustomIssueTrackerService', active: true)
       create(:project_error_tracking_setting, project: projects[0])
       create(:project_error_tracking_setting, project: projects[1], enabled: false)

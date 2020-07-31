@@ -4,7 +4,7 @@ class PrometheusMetric < ApplicationRecord
   belongs_to :project, validate: true, inverse_of: :prometheus_metrics
   has_many :prometheus_alerts, inverse_of: :prometheus_metric
 
-  enum group: PrometheusMetricEnums.groups
+  enum group: Enums::PrometheusMetric.groups
 
   validates :title, presence: true
   validates :query, presence: true
@@ -72,6 +72,6 @@ class PrometheusMetric < ApplicationRecord
   private
 
   def group_details(group)
-    PrometheusMetricEnums.group_details.fetch(group.to_sym)
+    Enums::PrometheusMetric.group_details.fetch(group.to_sym)
   end
 end

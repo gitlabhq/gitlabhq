@@ -105,6 +105,20 @@ RSpec.describe 'get board lists' do
         end
       end
     end
+
+    context 'when querying for a single list' do
+      before do
+        board_parent.add_reporter(user)
+      end
+
+      it 'finds the correct list' do
+        label_list = create(:list, board: board, label: label, position: 10)
+
+        post_graphql(query("id: \"#{global_id_of(label_list)}\""), current_user: user)
+
+        expect(lists_data[0]['node']['title']).to eq label_list.title
+      end
+    end
   end
 
   describe 'for a project' do

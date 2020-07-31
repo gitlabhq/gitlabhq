@@ -70,6 +70,7 @@
     = yield :page_specific_javascripts
 
   = webpack_controller_bundle_tags
+  = webpack_bundle_tag "chrome_84_icon_fix" if browser.chrome?([">=84", "<85"]) || browser.edge?([">=84", "<85"])
 
   = yield :project_javascripts
 

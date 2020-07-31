@@ -1489,6 +1489,7 @@ Information about pagination in a connection.
 | `requirement` | Requirement | Find a single requirement. Available only when feature flag `requirements_management` is enabled. |
 | `requirementStatesCount` | RequirementStatesCount | Number of requirements for the project by their state |
 | `sastCiConfiguration` | SastCiConfiguration | SAST CI configuration for the project |
+| `securityDashboardPath` | String | Path to project's security dashboard |
 | `securityScanners` | SecurityScanners | Information about security analyzers used in the project |
 | `sentryDetailedError` | SentryDetailedError | Detailed version of a Sentry error on the project |
 | `sentryErrors` | SentryErrorCollection | Paginated collection of Sentry errors on the project |
@@ -2264,6 +2265,7 @@ Represents a vulnerability.
 | `primaryIdentifier` | VulnerabilityIdentifier | Primary identifier of the vulnerability. |
 | `project` | Project | The project on which the vulnerability was found |
 | `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING) |
+| `resolvedOnDefaultBranch` | Boolean! | Indicates whether the vulnerability is fixed on the default branch or not |
 | `scanner` | VulnerabilityScanner | Scanner metadata for the vulnerability. |
 | `severity` | VulnerabilitySeverity | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL) |
 | `state` | VulnerabilityState | State of the vulnerability (DETECTED, DISMISSED, RESOLVED, CONFIRMED) |

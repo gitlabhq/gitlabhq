@@ -79,6 +79,7 @@ function generateEntries() {
   const manualEntries = {
     default: defaultEntries,
     sentry: './sentry/index.js',
+    chrome_84_icon_fix: './lib/chrome_84_icon_fix.js',
   };
 
   return Object.assign(manualEntries, autoEntries);

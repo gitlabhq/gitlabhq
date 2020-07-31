@@ -31,7 +31,7 @@ module Metrics
         # A group title is valid if it is one of the limited
         # options the user can select in the UI.
         def valid_group_title?(group)
-          PrometheusMetricEnums
+          Enums::PrometheusMetric
             .custom_group_details
             .map { |_, details| details[:group_title] }
             .include?(group)
@@ -100,12 +100,12 @@ module Metrics
       # Returns a symbol representing the group that
       # the dashboard's group title belongs to.
       # It will be one of the keys found under
-      # PrometheusMetricEnums.custom_groups.
+      # Enums::PrometheusMetric.custom_groups.
       #
       # @return [String]
       def group_key
         strong_memoize(:group_key) do
-          PrometheusMetricEnums
+          Enums::PrometheusMetric
             .group_details
             .find { |_, details| details[:group_title] == group }
             .first

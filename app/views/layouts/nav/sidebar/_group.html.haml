@@ -85,7 +85,7 @@
                   %span
                     = _('Milestones')
 
-            = render_if_exists 'layouts/nav/sidebar/iterations_link'
+            = render_if_exists 'layouts/nav/sidebar/group_iterations_link'
 
       - if group_sidebar_link?(:merge_requests)
         = nav_link(path: 'groups#merge_requests') do

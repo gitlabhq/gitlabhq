@@ -33,28 +33,32 @@ tempted to organize the `enum` as the following:
 ```ruby
 # Define `failure_reason` enum in `Pipeline` model:
 class Pipeline < ApplicationRecord
-  enum failure_reason: ::PipelineEnums.failure_reasons
+  enum failure_reason: Enums::Pipeline.failure_reasons
 end
 ```
 
 ```ruby
 # Define key/value pairs that used in FOSS and EE:
-module PipelineEnums
-  def self.failure_reasons
-    { unknown_failure: 0, config_error: 1 }
+module Enums
+  module Pipeline
+    def self.failure_reasons
+      { unknown_failure: 0, config_error: 1 }
+    end
   end
 end
 
-PipelineEnums.prepend_if_ee('EE::PipelineEnums')
+Enums::Pipeline.prepend_if_ee('EE::Enums::Pipeline')
 ```
 
 ```ruby
 # Define key/value pairs that used in EE only:
 module EE
-  module PipelineEnums
-    override :failure_reasons
-    def failure_reasons
-      super.merge(activity_limit_exceeded: 2)
+  module Enums
+    module Pipeline
+      override :failure_reasons
+      def failure_reasons
+        super.merge(activity_limit_exceeded: 2)
+      end
     end
   end
 end
@@ -63,7 +67,7 @@ end
 This works as-is, however, it has a couple of downside that:
 
 - Someone could define a key/value pair in EE that is **conflicted** with a value defined in FOSS.
-  e.g. Define `activity_limit_exceeded: 1` in `EE::PipelineEnums`.
+  e.g. Define `activity_limit_exceeded: 1` in `EE::Enums::Pipeline`.
 - When it happens, the feature works totally different.
   e.g. We cannot figure out `failure_reason` is either `config_error` or `activity_limit_exceeded`.
 - When it happens, we have to ship a database migration to fix the data integrity,
@@ -74,10 +78,12 @@ For example, this example sets `1000` as the offset:
 
 ```ruby
 module EE
-  module PipelineEnums
-    override :failure_reasons
-    def failure_reasons
-      super.merge(activity_limit_exceeded: 1_000, size_limit_exceeded: 1_001)
+  module Enums
+    module Pipeline
+      override :failure_reasons
+      def failure_reasons
+        super.merge(activity_limit_exceeded: 1_000, size_limit_exceeded: 1_001)
+      end
     end
   end
 end

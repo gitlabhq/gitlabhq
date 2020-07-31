@@ -2509,6 +2509,16 @@
               "description": "Lists of the board",
               "args": [
                 {
+                  "name": "id",
+                  "description": "Find a list by its global ID",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -30036,6 +30046,20 @@
               "deprecationReason": null
             },
             {
+              "name": "securityDashboardPath",
+              "description": "Path to project's security dashboard",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "securityScanners",
               "description": "Information about security analyzers used in the project",
               "args": [
@@ -44508,6 +44532,24 @@
                 "kind": "ENUM",
                 "name": "VulnerabilityReportType",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "resolvedOnDefaultBranch",
+              "description": "Indicates whether the vulnerability is fixed on the default branch or not",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null

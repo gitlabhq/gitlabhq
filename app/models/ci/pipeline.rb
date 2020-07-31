@@ -103,15 +103,15 @@ module Ci
 
     after_create :keep_around_commits, unless: :importing?
 
-    # We use `Ci::PipelineEnums.sources` here so that EE can more easily extend
+    # We use `Enums::Ci::Pipeline.sources` here so that EE can more easily extend
     # this `Hash` with new values.
-    enum_with_nil source: ::Ci::PipelineEnums.sources
+    enum_with_nil source: Enums::Ci::Pipeline.sources
 
-    enum_with_nil config_source: ::Ci::PipelineEnums.config_sources
+    enum_with_nil config_source: Enums::Ci::Pipeline.config_sources
 
-    # We use `Ci::PipelineEnums.failure_reasons` here so that EE can more easily
+    # We use `Enums::Ci::Pipeline.failure_reasons` here so that EE can more easily
     # extend this `Hash` with new values.
-    enum failure_reason: ::Ci::PipelineEnums.failure_reasons
+    enum failure_reason: Enums::Ci::Pipeline.failure_reasons
 
     enum locked: { unlocked: 0, artifacts_locked: 1 }
 
@@ -253,7 +253,7 @@ module Ci
 
     scope :internal, -> { where(source: internal_sources) }
     scope :no_child, -> { where.not(source: :parent_pipeline) }
-    scope :ci_sources, -> { where(config_source: ::Ci::PipelineEnums.ci_config_sources_values) }
+    scope :ci_sources, -> { where(config_source: Enums::Ci::Pipeline.ci_config_sources_values) }
     scope :for_user, -> (user) { where(user: user) }
     scope :for_sha, -> (sha) { where(sha: sha) }
     scope :for_source_sha, -> (source_sha) { where(source_sha: source_sha) }
@@ -1058,7 +1058,7 @@ module Ci
     end
 
     def cacheable?
-      Ci::PipelineEnums.ci_config_sources.key?(config_source.to_sym)
+      Enums::Ci::Pipeline.ci_config_sources.key?(config_source.to_sym)
     end
 
     def source_ref_path

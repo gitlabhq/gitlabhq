@@ -1044,6 +1044,7 @@ strip-json-comments,2.0.1,MIT
 style-loader,0.23.0,MIT
 supports-color,2.0.0,MIT
 supports-color,5.5.0,MIT
+svg4everybody,2.1.9,CC0-1.0
 symbol-observable,1.2.0,MIT
 sys-filesystem,1.1.6,Artistic 2.0
 tapable,1.1.0,MIT

@@ -119,6 +119,8 @@ information with several options:
 
 ### View details of a DAST vulnerability
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+
 Vulnerabilities detected by DAST occur in the live web application. Rectification of these types of
 vulnerabilities requires specific information. DAST provides the information required to
 investigate and rectify the underlying cause.
