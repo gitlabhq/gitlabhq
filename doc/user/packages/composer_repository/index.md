@@ -69,7 +69,8 @@ git init
 git add composer.json
 git commit -m 'Composer package test'
 git tag v1.0.0
-git add origin git@gitlab.com:<namespace>/<project-name>.git
+git remote add origin git@gitlab.com:<namespace>/<project-name>.git
+git push --set-upstream origin master
 git push origin v1.0.0
 ```
 

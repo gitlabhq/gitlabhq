@@ -265,8 +265,8 @@ because it’s friendly and easy to understand.
 
 Use sentence case. For example:
 
-- `## Use variables to configure pipelines`
-- `You can use the To-Do List.`
+- `# Use variables to configure pipelines`
+- `## Use the To-Do List`
 
 #### UI text
 

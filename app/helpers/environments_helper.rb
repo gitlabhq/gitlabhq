@@ -111,7 +111,7 @@ module EnvironmentsHelper
       'empty-no-data-svg-path'           => image_path('illustrations/monitoring/no_data.svg'),
       'empty-no-data-small-svg-path'     => image_path('illustrations/chart-empty-state-small.svg'),
       'empty-unable-to-connect-svg-path' => image_path('illustrations/monitoring/unable_to_connect.svg'),
-      'custom-dashboard-base-path'       => Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
+      'custom-dashboard-base-path'       => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT
     }
   end
 end

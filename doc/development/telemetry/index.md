@@ -6,60 +6,36 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Telemetry Guide
 
-At GitLab, we collect telemetry for the purpose of helping us build a better GitLab. Data about how GitLab is used is collected to better understand what parts of GitLab needs improvement and what features to build next. Telemetry also helps our team better understand the reasons why people use GitLab and with this knowledge we are able to make better product decisions.
+At GitLab, we collect telemetry for the purpose of helping us build a better product. Data helps GitLab understand which parts of the product need improvement and which features we should build next. Telemetry also helps our team better understand the reasons why people use GitLab. With this knowledge we are able to make better product decisions.
 
-We also encourage users to enable tracking, and we embrace full transparency with our tracking approach so it can be easily understood and trusted. By enabling tracking, users can:
+We encourage users to enable tracking, and we embrace full transparency with our tracking approach so it can be easily understood and trusted.
+
+By enabling tracking, users can:
 
 - Contribute back to the wider community.
 - Help GitLab improve on the product.
 
-This documentation consists of three guides providing an overview of Telemetry at GitLab.
-
-Telemetry Guide:
-
-  1. [Our tracking tools](#our-tracking-tools)
-  1. [What data can be tracked](#what-data-can-be-tracked)
-  1. [Telemetry systems overview](#telemetry-systems-overview)
-  1. [Snowflake data warehouse](#snowflake-data-warehouse)
-
-[Usage Ping Guide](usage_ping.md)
-
-  1. [What is Usage Ping](usage_ping.md#what-is-usage-ping)
-  1. [Usage Ping payload](usage_ping.md#usage-ping-payload)
-  1. [Disable Usage Ping](usage_ping.md#disable-usage-ping)
-  1. [Usage Ping request flow](usage_ping.md#usage-ping-request-flow)
-  1. [How Usage Ping works](usage_ping.md#how-usage-ping-works)
-  1. [Implementing Usage Ping](usage_ping.md#implementing-usage-ping)
-  1. [Developing and testing Usage Ping](usage_ping.md#developing-and-testing-usage-ping)
-
-[Snowplow Guide](snowplow.md)
-
-1. [What is Snowplow](snowplow.md#what-is-snowplow)
-1. [Snowplow schema](snowplow.md#snowplow-schema)
-1. [Enabling Snowplow](snowplow.md#enabling-snowplow)
-1. [Snowplow request flow](snowplow.md#snowplow-request-flow)
-1. [Implementing Snowplow JS (Frontend) tracking](snowplow.md#implementing-snowplow-js-frontend-tracking)
-1. [Implementing Snowplow Ruby (Backend) tracking](snowplow.md#implementing-snowplow-ruby-backend-tracking)
-1. [Developing and testing Snowplow](snowplow.md#developing-and-testing-snowplow)
-
-More useful links:
-
-- [Telemetry Direction](https://about.gitlab.com/direction/telemetry/)
-- [Data Analysis Process](https://about.gitlab.com/handbook/business-ops/data-team/#data-analysis-process/)
-- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/)
-- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/platform/infrastructure/)
-
 ## Our tracking tools
 
-We use several different technologies to gather product usage data.
+We use several different technologies to gather product usage data:
 
-### Snowplow JS (Frontend)
+- [Snowplow](#snowplow)
+- [Usage Ping](#usage-ping)
+- [Database import](#database-import)
+- [Log system](#log-system)
 
-Snowplow is an enterprise-grade marketing and product analytics platform which helps track the way users engage with our website and application. [Snowplow JS](https://github.com/snowplow/snowplow/wiki/javascript-tracker) is a frontend tracker for client-side events.
+### Snowplow
 
-### Snowplow Ruby (Backend)
+Snowplow is an enterprise-grade marketing and product analytics platform which helps track the way
+users engage with our website and application.
 
-Snowplow is an enterprise-grade marketing and product analytics platform which helps track the way users engage with our website and application. [Snowplow Ruby](https://github.com/snowplow/snowplow/wiki/ruby-tracker) is a backend tracker for server-side events.
+Snowplow consists of two components:
+
+- [Snowplow JS](https://github.com/snowplow/snowplow/wiki/javascript-tracker) tracks client-side
+  events.
+- [Snowplow Ruby](https://github.com/snowplow/snowplow/wiki/ruby-tracker) tracks server-side events.
+
+For more details, read the [Snowplow](snowplow.md) guide.
 
 ### Usage Ping
 
@@ -220,3 +196,12 @@ There are several data sources available in Snowflake and Sisense each represent
 | analytics | These tables have typically undergone more data transformation. They will typically end in `_xf` to represent the fact that they are transformed | Access via Snowflake or Sisense  |
 
 If you are a Product Manager interested in the raw data, you will likely focus on the `analytics` and `analytics_staging` sources. The raw source is limited to the data and infrastructure teams. For more information, please see [Data For Product Managers: What's the difference between analytics_staging and analytics?](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/#whats-the-difference-between-analytics_staging-and-analytics)
+
+## Additional information
+
+More useful links:
+
+- [Telemetry Direction](https://about.gitlab.com/direction/telemetry/)
+- [Data Analysis Process](https://about.gitlab.com/handbook/business-ops/data-team/#data-analysis-process/)
+- [Data for Product Managers](https://about.gitlab.com/handbook/business-ops/data-team/programs/data-for-product-managers/)
+- [Data Infrastructure](https://about.gitlab.com/handbook/business-ops/data-team/platform/infrastructure/)

@@ -9,7 +9,7 @@ module Metrics
       include Gitlab::Utils::StrongMemoize
 
       ALLOWED_FILE_TYPE = '.yml'
-      USER_DASHBOARDS_DIR = ::Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
+      USER_DASHBOARDS_DIR = ::Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT
       SEQUENCES = {
         ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH => [
           ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,

@@ -7,7 +7,38 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Incident management
 
 GitLab offers solutions for handling incidents in your applications and services,
-such as setting up Prometheus alerts, displaying metrics, and sending notifications.
+such as [setting up Prometheus alerts](#configure-prometheus-alerts),
+[displaying metrics](#embed-metrics-in-incidents-and-issues), and sending notifications.
+While no configuration is required to use the [manual features](#create-an-incident-manually)
+of incident management, both automation and [configuration](#configure-incidents-ultimate)
+of incident management are only available in
+[GitLab Ultimate and GitLab.com Gold](https://about.gitlab.com/pricing/).
+
+For users with at least Developer [permissions](../../user/permissions.md), the
+Incident Management list is available at **{cloud-gear}** **Operations > Incidents**
+in your project's sidebar. The list contains the following metrics:
+
+![Incident Management List](img/incident_list_13_3.png)
+
+- **Incident** - The description of the incident, which attempts to capture the
+  most meaningful data.
+- **Date created** - How long ago the incident was created. This field uses the
+  standard GitLab pattern of `X time ago`, but is supported by a granular date/time
+  tooltip depending on the user's locale.
+- **Assignees** - The user assigned to the incident.
+
+NOTE: **Note:**
+Incidents share the [Issues API](../../user/project/issues/index.md).
+
+## Create an incident manually
+
+> [Moved](https://gitlab.com/gitlab-org/monitor/health/-/issues/24) to GitLab core in 13.3.
+
+To create a Incident you can take any of the following actions:
+
+- Navigate to **{cloud-gear}** **Operations > Incidents** and click **Create Incident**.
+- Create a new issue using the `incident` template available when creating it.
+- Create a new issue and assign the `incident` label to it.
 
 ## Configure incidents **(ULTIMATE)**
 
