@@ -957,28 +957,38 @@ If you prefer write availability over consistency, this behavior can be turned o
 
 ### Checking for data loss
 
-The Praefect `dataloss` sub-command helps identify lost writes by checking for uncompleted replication jobs. This is useful for identifying possible data loss cases after a failover. This command must be executed on a Praefect node.
+The Praefect `dataloss` sub-command identifies replicas that are likely to be outdated. This is useful for identifying potential data loss after a failover.
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>]
 ```
 
-If the virtual storage is not specified, every configured virtual storage is checked for data loss.
+If the virtual storage is not specified, every configured virtual storage is checked for outdated repositories.
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss
 ```
 
+The number of potentially unapplied changes to repositories are listed for each replica. Listed repositories might have the latest changes but it is not guaranteed. Up to date replicas are not listed.
+
 ```shell
 Virtual storage: default
-  Current read-only primary: gitaly-2
-  Previous write-enabled primary: gitaly-1
-    Nodes with data loss from failing over from gitaly-1:
-      @hashed/2c/62/2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3.git: gitaly-0
-      @hashed/4b/22/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a.git: gitaly-0, gitaly-2
+  Primary: gitaly-3
+  Outdated repositories:
+    @hashed/2c/62/2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3.git:
+      gitaly-2 is behind by 1 change or less
+      gitaly-3 is behind by 2 changes or less
+    @hashed/4b/22/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a.git:
+      gitaly-2 is behind by 1 change or less
 ```
 
-Currently `dataloss` only considers a repository up to date if it has been directly replicated to from the previous write-enabled primary. While reconciling from an up to date secondary can recover the data, this is not visible in the data loss report. This is due for improvement via [Gitaly#2866](https://gitlab.com/gitlab-org/gitaly/-/issues/2866).
+A confirmation is printed out if all changes have been successfully applied to every replica.
+
+```shell
+Virtual storage: default
+  Primary: gitaly-1
+  All repositories are up to date!
+```
 
 NOTE: **Note:**
 `dataloss` is still in beta and the output format is subject to change.
