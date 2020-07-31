@@ -14,7 +14,6 @@ module Gitlab
       THREAD_KEY = :_gitlab_metrics_transaction
 
       SMALL_BUCKETS = [0.1, 0.25, 0.5, 1.0, 2.5, 5.0].freeze
-      BIG_BUCKETS = [100, 1000, 10000, 100000, 1000000, 10000000].freeze
 
       # The series to store events (e.g. Git pushes) in.
       EVENT_SERIES = 'events'
@@ -43,9 +42,6 @@ module Gitlab
 
         @started_at = nil
         @finished_at = nil
-
-        @memory_before = 0
-        @memory_after = 0
       end
 
       def duration
@@ -56,20 +52,14 @@ module Gitlab
         System.thread_cpu_duration(@thread_cputime_start)
       end
 
-      def allocated_memory
-        @memory_after - @memory_before
-      end
-
       def run
         Thread.current[THREAD_KEY] = self
 
-        @memory_before = System.memory_usage_rss
         @started_at = System.monotonic_time
         @thread_cputime_start = System.thread_cpu_time
 
         yield
       ensure
-        @memory_after = System.memory_usage_rss
         @finished_at = System.monotonic_time
 
         observe(:gitlab_transaction_cputime_seconds, thread_cpu_duration) do
@@ -77,9 +67,6 @@ module Gitlab
         end
         observe(:gitlab_transaction_duration_seconds, duration) do
           buckets SMALL_BUCKETS
-        end
-        observe(:gitlab_transaction_allocated_memory_bytes, allocated_memory * 1024.0) do
-          buckets BIG_BUCKETS
         end
 
         Thread.current[THREAD_KEY] = nil

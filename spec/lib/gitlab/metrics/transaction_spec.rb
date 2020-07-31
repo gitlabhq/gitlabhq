@@ -28,14 +28,6 @@ RSpec.describe Gitlab::Metrics::Transaction do
     end
   end
 
-  describe '#allocated_memory' do
-    it 'returns the allocated memory in bytes' do
-      transaction.run { 'a' * 32 }
-
-      expect(transaction.allocated_memory).to be_a_kind_of(Numeric)
-    end
-  end
-
   describe '#run' do
     it 'yields the supplied block' do
       expect { |b| transaction.run(&b) }.to yield_control

@@ -37,6 +37,7 @@ query getIncidents(
             webUrl
           }
         }
+        statusPagePublishedIncident
       }
       pageInfo {
         hasNextPage

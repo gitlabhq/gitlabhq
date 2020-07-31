@@ -39,9 +39,11 @@ RSpec.describe API::Branches do
       end
 
       context 'with branch_list_keyset_pagination feature off' do
-        context 'with legacy pagination params' do
+        let(:base_params) { {} }
+
+        context 'with offset pagination params' do
           it 'returns the repository branches' do
-            get api(route, current_user), params: { per_page: 100 }
+            get api(route, current_user), params: base_params.merge(per_page: 100)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('public_api/v4/branches')
@@ -53,7 +55,7 @@ RSpec.describe API::Branches do
           it 'determines only a limited number of merged branch names' do
             expect(API::Entities::Branch).to receive(:represent).with(anything, has_up_to_merged_branch_names_count(2)).and_call_original
 
-            get api(route, current_user), params: { per_page: 2 }
+            get api(route, current_user), params: base_params.merge(per_page: 2)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.count).to eq 2
@@ -64,7 +66,7 @@ RSpec.describe API::Branches do
           it 'merge status matches reality on paginated input' do
             expected_first_branch_name = project.repository.branches_sorted_by('name')[20].name
 
-            get api(route, current_user), params: { per_page: 20, page: 2 }
+            get api(route, current_user), params: base_params.merge(per_page: 20, page: 2)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.count).to eq 20
@@ -74,11 +76,11 @@ RSpec.describe API::Branches do
           end
         end
 
-        context 'with gitaly pagination params ' do
+        context 'with gitaly pagination params' do
           it 'merge status matches reality on paginated input' do
             expected_first_branch_name = project.repository.branches_sorted_by('name').first.name
 
-            get api(route, current_user), params: { per_page: 20, page_token: 'feature' }
+            get api(route, current_user), params: base_params.merge(per_page: 20, page_token: 'feature')
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.count).to eq 20
@@ -91,52 +93,58 @@ RSpec.describe API::Branches do
 
       context 'with branch_list_keyset_pagination feature on' do
         before do
-          stub_feature_flags(branch_list_keyset_pagination: true)
+          stub_feature_flags(branch_list_keyset_pagination: project)
         end
 
-        context 'with gitaly pagination params ' do
-          it 'returns the repository branches' do
-            get api(route, current_user), params: { per_page: 100 }
+        context 'with keyset pagination option' do
+          let(:base_params) { { pagination: 'keyset' } }
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to match_response_schema('public_api/v4/branches')
-            branch_names = json_response.map { |x| x['name'] }
-            expect(branch_names).to match_array(project.repository.branch_names)
+          context 'with gitaly pagination params ' do
+            it 'returns the repository branches' do
+              get api(route, current_user), params: base_params.merge(per_page: 100)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to match_response_schema('public_api/v4/branches')
+              expect(response.headers).not_to include('Link', 'Links')
+              branch_names = json_response.map { |x| x['name'] }
+              expect(branch_names).to match_array(project.repository.branch_names)
+            end
+
+            it 'determines only a limited number of merged branch names' do
+              expect(API::Entities::Branch).to receive(:represent).with(anything, has_up_to_merged_branch_names_count(2)).and_call_original
+
+              get api(route, current_user), params: base_params.merge(per_page: 2)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response.headers).to include('Link', 'Links')
+              expect(json_response.count).to eq 2
+
+              check_merge_status(json_response)
+            end
+
+            it 'merge status matches reality on paginated input' do
+              expected_first_branch_name = project.repository.branches_sorted_by('name').drop_while { |b| b.name <= 'feature' }.first.name
+
+              get api(route, current_user), params: base_params.merge(per_page: 20, page_token: 'feature')
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response.count).to eq 20
+              expect(json_response.first['name']).to eq(expected_first_branch_name)
+
+              check_merge_status(json_response)
+            end
           end
 
-          it 'determines only a limited number of merged branch names' do
-            expect(API::Entities::Branch).to receive(:represent).with(anything, has_up_to_merged_branch_names_count(2)).and_call_original
+          context 'with offset pagination params' do
+            it 'ignores legacy pagination params' do
+              expected_first_branch_name = project.repository.branches_sorted_by('name').first.name
+              get api(route, current_user), params: base_params.merge(per_page: 20, page: 2)
 
-            get api(route, current_user), params: { per_page: 2 }
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response.first['name']).to eq(expected_first_branch_name)
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response.count).to eq 2
-
-            check_merge_status(json_response)
-          end
-
-          it 'merge status matches reality on paginated input' do
-            expected_first_branch_name = project.repository.branches_sorted_by('name').drop_while { |b| b.name <= 'feature' }.first.name
-
-            get api(route, current_user), params: { per_page: 20, page_token: 'feature' }
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response.count).to eq 20
-            expect(json_response.first['name']).to eq(expected_first_branch_name)
-
-            check_merge_status(json_response)
-          end
-        end
-
-        context 'with legacy pagination params' do
-          it 'ignores legacy pagination params' do
-            expected_first_branch_name = project.repository.branches_sorted_by('name').first.name
-            get api(route, current_user), params: { per_page: 20, page: 2 }
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response.first['name']).to eq(expected_first_branch_name)
-
-            check_merge_status(json_response)
+              check_merge_status(json_response)
+            end
           end
         end
       end

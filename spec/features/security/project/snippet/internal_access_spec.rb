@@ -5,10 +5,9 @@ require 'spec_helper'
 RSpec.describe "Internal Project Snippets Access" do
   include AccessMatchers
 
-  let(:project) { create(:project, :internal) }
-
-  let(:internal_snippet) { create(:project_snippet, :internal, project: project, author: project.owner) }
-  let(:private_snippet)  { create(:project_snippet, :private,  project: project, author: project.owner) }
+  let_it_be(:project) { create(:project, :internal) }
+  let_it_be(:internal_snippet) { create(:project_snippet, :internal, project: project, author: project.owner) }
+  let_it_be(:private_snippet)  { create(:project_snippet, :private,  project: project, author: project.owner) }
 
   describe "GET /:project_path/snippets" do
     subject { project_snippets_path(project) }

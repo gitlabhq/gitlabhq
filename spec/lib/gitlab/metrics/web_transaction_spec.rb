@@ -48,16 +48,6 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
     end
   end
 
-  describe '#allocated_memory' do
-    include_context 'transaction observe metrics'
-
-    it 'returns the allocated memory in bytes' do
-      transaction.run { 'a' * 32 }
-
-      expect(transaction.allocated_memory).to be_a_kind_of(Numeric)
-    end
-  end
-
   describe '#run' do
     include_context 'transaction observe metrics'
 

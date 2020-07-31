@@ -4471,6 +4471,11 @@ type EpicIssue implements Noteable {
   state: IssueState!
 
   """
+  Indicates whether an issue is published to the status page
+  """
+  statusPagePublishedIncident: Boolean
+
+  """
   Indicates the currently logged in user is subscribed to the issue
   """
   subscribed: Boolean!
@@ -6102,6 +6107,11 @@ type Issue implements Noteable {
   State of the issue
   """
   state: IssueState!
+
+  """
+  Indicates whether an issue is published to the status page
+  """
+  statusPagePublishedIncident: Boolean
 
   """
   Indicates the currently logged in user is subscribed to the issue

@@ -487,7 +487,7 @@ RSpec.describe 'GFM autocomplete', :js do
 
       wait_for_requests
 
-      find('.tribute-container .highlight').click
+      find('.tribute-container .highlight', visible: true).click
 
       click_button 'Save changes'
 
@@ -501,7 +501,7 @@ RSpec.describe 'GFM autocomplete', :js do
         find('#note-body').native.send_keys('@')
       end
 
-      expect(page).to have_selector('.tribute-container')
+      expect(page).to have_selector('.tribute-container', visible: true)
     end
 
     it 'opens autocomplete menu for Username when field starts with text with item escaping HTML characters' do
@@ -511,20 +511,9 @@ RSpec.describe 'GFM autocomplete', :js do
 
       wait_for_requests
 
-      expect(page).to have_selector('.tribute-container')
+      expect(page).to have_selector('.tribute-container', visible: true)
 
-      page.within '.tribute-container ul' do
-        expect(find('li').text).to have_content(user_xss.username)
-      end
-    end
-
-    it 'doesnt open autocomplete menu character is prefixed with text' do
-      page.within '.timeline-content-form' do
-        find('#note-body').native.send_keys('testing')
-        find('#note-body').native.send_keys('@')
-      end
-
-      expect(page).not_to have_selector('.tribute-container')
+      expect(find('.tribute-container ul', visible: true).text).to have_content(user_xss.username)
     end
 
     it 'selects the first item for assignee dropdowns' do
@@ -532,11 +521,11 @@ RSpec.describe 'GFM autocomplete', :js do
         find('#note-body').native.send_keys('@')
       end
 
-      expect(page).to have_selector('.tribute-container')
+      expect(page).to have_selector('.tribute-container', visible: true)
 
       wait_for_requests
 
-      expect(find('.tribute-container ul')).to have_selector('.highlight:first-of-type')
+      expect(find('.tribute-container ul', visible: true)).to have_selector('.highlight:first-of-type')
     end
 
     it 'includes items for assignee dropdowns with non-ASCII characters in name' do
@@ -545,14 +534,26 @@ RSpec.describe 'GFM autocomplete', :js do
         simulate_input('#note-body', "@#{user.name[0...8]}")
       end
 
-      expect(page).to have_selector('.tribute-container')
+      expect(page).to have_selector('.tribute-container', visible: true)
 
       wait_for_requests
 
-      expect(find('.tribute-container')).to have_content(user.name)
+      expect(find('.tribute-container ul', visible: true)).to have_content(user.name)
     end
 
     context 'if a selected value has special characters' do
+      it 'wraps the result in double quotes' do
+        note = find('#note-body')
+        page.within '.timeline-content-form' do
+          find('#note-body').native.send_keys('')
+          simulate_input('#note-body', "~#{label.title[0]}")
+        end
+
+        label_item = find('.tribute-container ul', text: label.title, visible: true)
+
+        expect_to_wrap(true, label_item, note, label.title)
+      end
+
       it "shows dropdown after a new line" do
         note = find('#note-body')
         page.within '.timeline-content-form' do
@@ -562,7 +563,7 @@ RSpec.describe 'GFM autocomplete', :js do
           note.native.send_keys('@')
         end
 
-        expect(page).to have_selector('.tribute-container')
+        expect(page).to have_selector('.tribute-container', visible: true)
       end
 
       it "does not show dropdown when preceded with a special character" do
@@ -571,10 +572,19 @@ RSpec.describe 'GFM autocomplete', :js do
           note.native.send_keys("@")
         end
 
-        expect(page).to have_selector('.tribute-container')
+        expect(page).to have_selector('.tribute-container', visible: true)
 
         page.within '.timeline-content-form' do
           note.native.send_keys("@")
+        end
+
+        expect(page).not_to have_selector('.tribute-container')
+      end
+
+      it "does not throw an error if no labels exist" do
+        note = find('#note-body')
+        page.within '.timeline-content-form' do
+          note.native.send_keys('~')
         end
 
         expect(page).to have_selector('.tribute-container', visible: false)
@@ -586,7 +596,7 @@ RSpec.describe 'GFM autocomplete', :js do
           note.native.send_keys("@#{user.username[0]}")
         end
 
-        user_item = find('.tribute-container li', text: user.username)
+        user_item = find('.tribute-container ul', text: user.username, visible: true)
 
         expect_to_wrap(false, user_item, note, user.username)
       end
@@ -611,7 +621,7 @@ RSpec.describe 'GFM autocomplete', :js do
 
         wait_for_requests
 
-        user_item = find('.tribute-container li', text: user.username)
+        user_item = find('.tribute-container ul', text: user.username, visible: true)
         expect(user_item).to have_content(user.username)
       end
     end
@@ -640,8 +650,99 @@ RSpec.describe 'GFM autocomplete', :js do
 
         wait_for_requests
 
-        expect(find('.tribute-container ul')).not_to have_content(user.username)
-        expect(find('.tribute-container ul')).to have_content(unassigned_user.username)
+        expect(find('.tribute-container ul', visible: true)).not_to have_content(user.username)
+        expect(find('.tribute-container ul', visible: true)).to have_content(unassigned_user.username)
+      end
+
+      it 'lists users who are currently not assigned to the issue when using /assign on the second line' do
+        visit project_issue_path(project, issue_assignee)
+
+        note = find('#note-body')
+        page.within '.timeline-content-form' do
+          note.native.send_keys('/assign @user2')
+          note.native.send_keys(:enter)
+          note.native.send_keys('/assign @')
+          note.native.send_keys(:right)
+        end
+
+        wait_for_requests
+
+        expect(find('.tribute-container ul', visible: true)).not_to have_content(user.username)
+        expect(find('.tribute-container ul', visible: true)).to have_content(unassigned_user.username)
+      end
+    end
+
+    context 'labels' do
+      it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
+        label_xss_title = 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a'
+        create(:label, project: project, title: label_xss_title)
+
+        note = find('#note-body')
+
+        # It should show all the labels on "~".
+        type(note, '~')
+
+        wait_for_requests
+
+        expect(find('.tribute-container ul', visible: true).text).to have_content('alert label')
+      end
+
+      it 'allows colons when autocompleting scoped labels' do
+        create(:label, project: project, title: 'scoped:label')
+
+        note = find('#note-body')
+        type(note, '~scoped:')
+
+        wait_for_requests
+
+        expect(find('.tribute-container ul', visible: true).text).to have_content('scoped:label')
+      end
+
+      it 'allows colons when autocompleting scoped labels with double colons' do
+        create(:label, project: project, title: 'scoped::label')
+
+        note = find('#note-body')
+        type(note, '~scoped::')
+
+        wait_for_requests
+
+        expect(find('.tribute-container ul', visible: true).text).to have_content('scoped::label')
+      end
+
+      it 'autocompletes multi-word labels' do
+        create(:label, project: project, title: 'Accepting merge requests')
+
+        note = find('#note-body')
+        type(note, '~Acceptingmerge')
+
+        wait_for_requests
+
+        expect(find('.tribute-container ul', visible: true).text).to have_content('Accepting merge requests')
+      end
+
+      it 'only autocompletes the latest label' do
+        create(:label, project: project, title: 'documentation')
+        create(:label, project: project, title: 'feature')
+
+        note = find('#note-body')
+        type(note, '~documentation foo bar ~feat')
+        note.native.send_keys(:right)
+
+        wait_for_requests
+
+        expect(find('.tribute-container ul', visible: true).text).to have_content('feature')
+        expect(find('.tribute-container ul', visible: true).text).not_to have_content('documentation')
+      end
+
+      it 'does not autocomplete labels if no tilde is typed' do
+        create(:label, project: project, title: 'documentation')
+
+        note = find('#note-body')
+        type(note, 'document')
+
+        wait_for_requests
+
+        expect(page).not_to have_selector('.tribute-container')
       end
     end
 

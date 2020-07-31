@@ -57,7 +57,7 @@ bundle exec guard
 
 When using spring and guard together, use `SPRING=1 bundle exec guard` instead to make use of spring.
 
-Use [Factory Doctor](https://test-prof.evilmartians.io/#/factory_doctor.md) to find cases on un-necessary database manipulation, which can cause slow tests.
+Use [Factory Doctor](https://test-prof.evilmartians.io/#/profilers/factory_doctor) to find cases on un-necessary database manipulation, which can cause slow tests.
 
 ```shell
 # run test for path
@@ -261,8 +261,8 @@ As much as possible, do not implement this using `before(:all)` or `before(:cont
 you would need to manually clean up the data as those hooks run outside a database transaction.
 
 Instead, this can be achieved by using
-[`let_it_be`](https://test-prof.evilmartians.io/#/let_it_be) variables and the
-[`before_all`](https://test-prof.evilmartians.io/#/before_all) hook
+[`let_it_be`](https://test-prof.evilmartians.io/#/recipes/let_it_be) variables and the
+[`before_all`](https://test-prof.evilmartians.io/#/recipes/before_all) hook
 from the [`test-prof` gem](https://rubygems.org/gems/test-prof).
 
 ```ruby

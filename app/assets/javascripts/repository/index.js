@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { escapeFileUrl } from '../lib/utils/url_utility';
 import createRouter from './router';
 import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
@@ -109,7 +110,7 @@ export default function setupVueRepositoryList() {
       return h(TreeActionLink, {
         props: {
           path: `${historyLink}/${
-            this.$route.params.path ? encodeURIComponent(this.$route.params.path) : ''
+            this.$route.params.path ? escapeFileUrl(this.$route.params.path) : ''
           }`,
           text: __('History'),
         },

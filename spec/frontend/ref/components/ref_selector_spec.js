@@ -26,13 +26,14 @@ describe('Ref selector component', () => {
   let tagsApiCallSpy;
   let commitApiCallSpy;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, attrs = {}) => {
     wrapper = mount(RefSelector, {
       propsData: {
         projectId,
         value: '',
         ...props,
       },
+      attrs,
       listeners: {
         // simulate a parent component v-model binding
         input: selectedRef => {
@@ -164,6 +165,20 @@ describe('Ref selector component', () => {
   });
 
   describe('post-initialization behavior', () => {
+    describe('when the parent component provides an `id` binding', () => {
+      const id = 'git-ref';
+
+      beforeEach(() => {
+        createComponent({}, { id });
+
+        return waitForRequests();
+      });
+
+      it('adds the provided ID to the GlNewDropdown instance', () => {
+        expect(wrapper.attributes().id).toBe(id);
+      });
+    });
+
     describe('when a ref is pre-selected', () => {
       const preselectedRef = fixtures.branches[0].name;
 

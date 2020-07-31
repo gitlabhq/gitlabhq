@@ -1,36 +1,46 @@
 ---
 type: reference, concepts
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 # Reference architectures
 
-<!-- TBD to be reviewed by Eric -->
-
 You can set up GitLab on a single server or scale it up to serve many users.
-This page details the recommended Reference Architectures that were built and verified by GitLab's Quality and Support teams.
+This page details the recommended Reference Architectures that were built and
+verified by GitLab's Quality and Support teams.
 
-Below is a chart representing each architecture tier and the number of users they can handle. As your number of users grow with time, it’s recommended that you scale GitLab accordingly.
+Below is a chart representing each architecture tier and the number of users
+they can handle. As your number of users grow with time, it’s recommended that
+you scale GitLab accordingly.
 
 ![Reference Architectures](img/reference-architectures.png)
 <!-- Internal link: https://docs.google.com/spreadsheets/d/1obYP4fLKkVVDOljaI3-ozhmCiPtEeMblbBKkf2OADKs/edit#gid=1403207183 -->
 
-Testing on these reference architectures were performed with [GitLab's Performance Tool](https://gitlab.com/gitlab-org/quality/performance)
-at specific coded workloads, and the throughputs used for testing were calculated based on sample customer data.
-After selecting the reference architecture that matches your scale, refer to
+Testing on these reference architectures were performed with
+[GitLab's Performance Tool](https://gitlab.com/gitlab-org/quality/performance)
+at specific coded workloads, and the throughputs used for testing were
+calculated based on sample customer data. After selecting the reference
+architecture that matches your scale, refer to
 [Configure GitLab to Scale](#configure-gitlab-to-scale) to see the components
 involved, and how to configure them.
 
-Each endpoint type is tested with the following number of requests per second (RPS) per 1000 users:
+Each endpoint type is tested with the following number of requests per second (RPS)
+per 1,000 users:
 
 - API: 20 RPS
 - Web: 2 RPS
 - Git: 2 RPS
 
-For GitLab instances with less than 2,000 users, it's recommended that you use the [default setup](#automated-backups-core-only)
-by [installing GitLab](../../install/README.md) on a single machine to minimize maintenance and resource costs.
+For GitLab instances with less than 2,000 users, it's recommended that you use
+the [default setup](#automated-backups-core-only) by
+[installing GitLab](../../install/README.md) on a single machine to minimize
+maintenance and resource costs.
 
-If your organization has more than 2,000 users, the recommendation is to scale GitLab's components to multiple
-machine nodes. The machine nodes are grouped by component(s). The addition of these
-nodes increases the performance and scalability of to your GitLab instance.
+If your organization has more than 2,000 users, the recommendation is to scale
+GitLab's components to multiple machine nodes. The machine nodes are grouped by
+components. The addition of these nodes increases the performance and
+scalability of to your GitLab instance.
 
 When scaling GitLab, there are several factors to consider:
 
@@ -39,12 +49,13 @@ When scaling GitLab, there are several factors to consider:
 - The application nodes connects to a shared file server and PostgreSQL and Redis services on the backend.
 
 NOTE: **Note:**
-Depending on your workflow, the following recommended
-reference architectures may need to be adapted accordingly. Your workload
-is influenced by factors including how active your users are,
-how much automation you use, mirroring, and repository/change size. Additionally the
-displayed memory values are provided by [GCP machine types](https://cloud.google.com/compute/docs/machine-types).
-For different cloud vendors, attempt to select options that best match the provided architecture.
+Depending on your workflow, the following recommended reference architectures
+may need to be adapted accordingly. Your workload is influenced by factors
+including how active your users are, how much automation you use, mirroring,
+and repository/change size. Additionally the displayed memory values are
+provided by [GCP machine types](https://cloud.google.com/compute/docs/machine-types).
+For different cloud vendors, attempt to select options that best match the
+provided architecture.
 
 ## Available reference architectures
 
@@ -60,14 +71,14 @@ The following reference architectures are available:
 
 ## Availability Components
 
-GitLab comes with the following components for your use, listed from
-least to most complex:
+GitLab comes with the following components for your use, listed from least to
+most complex:
 
-1. [Automated backups](#automated-backups-core-only)
-1. [Traffic load balancer](#traffic-load-balancer-starter-only)
-1. [Zero downtime updates](#zero-downtime-updates-starter-only)
-1. [Automated database failover](#automated-database-failover-premium-only)
-1. [Instance level replication with GitLab Geo](#instance-level-replication-with-gitlab-geo-premium-only)
+- [Automated backups](#automated-backups-core-only)
+- [Traffic load balancer](#traffic-load-balancer-starter-only)
+- [Zero downtime updates](#zero-downtime-updates-starter-only)
+- [Automated database failover](#automated-database-failover-premium-only)
+- [Instance level replication with GitLab Geo](#instance-level-replication-with-gitlab-geo-premium-only)
 
 As you implement these components, begin with a single server and then do
 backups. Only after completing the first server should you proceed to the next.
@@ -144,7 +155,9 @@ that can also be promoted in case of disaster.
 ## Configure GitLab to scale
 
 NOTE: **Note:**
-From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0, support for NFS for Git repositories is scheduled to be removed. Upgrade to [Gitaly Cluster](../gitaly/praefect.md) as soon as possible.
+From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
+support for NFS for Git repositories is scheduled to be removed. Upgrade to
+[Gitaly Cluster](../gitaly/praefect.md) as soon as possible.
 
 The following components are the ones you need to configure in order to scale
 GitLab. They are listed in the order you'll typically configure them if they are
@@ -233,9 +246,3 @@ cluster with the Rails nodes broken down into a number of smaller Pods across th
    as with time they may be adjusted higher or lower depending on the scale of your
    environment's workload. If you're running the environment on a Cloud provider
    you may need to refer to their documentation on how configure IOPS correctly.
-
-1. The architectures were built and tested with the [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
-   CPU platform on GCP. On different hardware you may find that adjustments, either lower
-   or higher, are required for your CPU or Node counts accordingly. For more information, a
-   [Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
-   [here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).

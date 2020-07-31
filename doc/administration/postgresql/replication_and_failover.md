@@ -29,6 +29,11 @@ You also need to take into consideration the underlying network topology, making
 sure you have redundant connectivity between all Database and GitLab instances
 to avoid the network becoming a single point of failure.
 
+NOTE: **Note:**
+As of GitLab 13.3, PostgreSQL 12 is shipped with Omnibus GitLab. Clustering for PostgreSQL 12 is only supported with
+Patroni. See the [Patroni](#patroni) section for further details. The support for repmgr will not be extended beyond
+PostgreSQL 11.
+
 ### Database node
 
 Each database node runs three services:

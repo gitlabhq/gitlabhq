@@ -1,0 +1,5 @@
+---
+title: Fixes the history button link URL being encoded incorrectly
+merge_request: 38392
+author:
+type: fixed
