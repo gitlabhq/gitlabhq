@@ -24,6 +24,20 @@ RSpec.shared_examples 'PyPi package creation' do |user_type, status, add_member 
 
     it_behaves_like 'creating pypi package files'
 
+    context 'with a pre-existing file' do
+      it 'rejects the duplicated file' do
+        existing_package = create(:pypi_package, name: base_params[:name], version: base_params[:version], project: project)
+        create(:package_file, :pypi, package: existing_package, file_name: params[:content].original_filename)
+
+        expect { subject }
+            .to change { project.packages.pypi.count }.by(0)
+            .and change { Packages::PackageFile.count }.by(0)
+            .and change { Packages::Pypi::Metadatum.count }.by(0)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     context 'with object storage disabled' do
       before do
         stub_package_file_object_storage(enabled: false)

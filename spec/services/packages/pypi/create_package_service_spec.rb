@@ -49,18 +49,11 @@ RSpec.describe Packages::Pypi::CreatePackageService do
           params[:md5_digest] = 'def'
         end
 
-        it 'replaces the file' do
+        it 'throws an error' do
           expect { subject }
             .to change { Packages::Package.pypi.count }.by(0)
-            .and change { Packages::PackageFile.count }.by(1)
-
-          expect(created_package.package_files.size).to eq 2
-          expect(created_package.package_files.first.file_name).to eq 'foo.tgz'
-          expect(created_package.package_files.first.file_sha256).to eq '123'
-          expect(created_package.package_files.first.file_md5).to eq '567'
-          expect(created_package.package_files.last.file_name).to eq 'foo.tgz'
-          expect(created_package.package_files.last.file_sha256).to eq 'abc'
-          expect(created_package.package_files.last.file_md5).to eq 'def'
+            .and change { Packages::PackageFile.count }.by(0)
+            .and raise_error(/File name has already been taken/)
         end
       end
 

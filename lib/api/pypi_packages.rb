@@ -22,10 +22,6 @@ module API
       render_api_error!(e.message, 400)
     end
 
-    rescue_from ActiveRecord::RecordInvalid do |e|
-      render_api_error!(e.message, 400)
-    end
-
     helpers do
       def packages_finder(project = authorized_user_project)
         project
