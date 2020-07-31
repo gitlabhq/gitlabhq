@@ -76,7 +76,7 @@ module TestEnv
     'png-lfs'                            => 'fe42f41',
     'sha-starting-with-large-number'     => '8426165',
     'invalid-utf8-diff-paths'            => '99e4853',
-    'compare-with-merge-head-source'     => 'b5f4399',
+    'compare-with-merge-head-source'     => 'f20a03d',
     'compare-with-merge-head-target'     => '2f1e176'
   }.freeze
 

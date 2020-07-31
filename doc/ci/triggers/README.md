@@ -7,12 +7,6 @@ type: tutorial
 
 # Triggering pipelines through the API
 
-> **Notes**:
->
-> - [Introduced](https://about.gitlab.com/releases/2015/08/22/gitlab-7-14-released/) in GitLab 7.14.
-> - GitLab 8.12 has a completely redesigned job permissions system. Read all
->   about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#pipeline-triggers).
-
 Triggers can be used to force a pipeline rerun of a specific `ref` (branch or
 tag) with an API call.
 
@@ -120,11 +114,6 @@ The action is irreversible.
 
 ## Triggering a pipeline
 
-> **Notes**:
->
-> - Valid refs are only the branches and tags. If you pass a commit SHA as a ref,
->   it will not trigger a job.
-
 To trigger a job you need to send a `POST` request to GitLab's API endpoint:
 
 ```plaintext
@@ -132,8 +121,8 @@ POST /projects/:id/trigger/pipeline
 ```
 
 The required parameters are the [trigger's `token`](#authentication-tokens)
-and the Git `ref` on which the trigger will be performed. Valid refs are the
-branch and the tag. The `:id` of a project can be found by
+and the Git `ref` on which the trigger will be performed. Valid refs are
+branches or tags. The `:id` of a project can be found by
 [querying the API](../../api/projects.md) or by visiting the **CI/CD**
 settings page which provides self-explanatory examples.
 
@@ -142,15 +131,11 @@ UI under the **Jobs** page and the jobs are marked as triggered 'by API'.
 
 ![Marked rebuilds as on jobs page](img/builds_page.png)
 
----
-
 You can see which trigger caused the rebuild by visiting the single job page.
 A part of the trigger's token is exposed in the UI as you can see from the image
 below.
 
 ![Marked rebuilds as triggered on a single job page](img/trigger_single_build.png)
-
----
 
 By using cURL you can trigger a pipeline rerun with minimal effort, for example:
 
@@ -191,20 +176,16 @@ This means that whenever a new tag is pushed on project A, the job will run and 
 
 ## Triggering a pipeline from a webhook
 
-> **Notes**:
->
-> - Introduced in GitLab 8.14.
-> - `ref` should be passed as part of the URL in order to take precedence over
->   `ref` from the webhook body that designates the branch ref that fired the
->   trigger in the source repository.
-> - `ref` should be URL-encoded if it contains slashes.
-
 To trigger a job from a webhook of another project you need to add the following
 webhook URL for Push and Tag events (change the project ID, ref and token):
 
 ```plaintext
 https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN
 ```
+
+`ref` should be passed as part of the URL in order to take precedence over
+`ref` from the webhook body that designates the branch ref that fired the
+trigger in the source repository. `ref` should be URL-encoded if it contains slashes.
 
 ## Making use of trigger variables
 

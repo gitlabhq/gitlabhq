@@ -1,0 +1,5 @@
+---
+title: Fix merge ref head comments for removed lines
+merge_request: 37755
+author:
+type: fixed

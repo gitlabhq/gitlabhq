@@ -1,8 +1,8 @@
-<!-- The first four sections: "Problem to solve", "Intended users", "User experience goal", and "Proposal", are strongly recommended, while the rest of the sections can be filled out during the problem validation or breakdown phase. However, keep in mind that providing complete and relevant information early helps our product team validate the problem and start working on a solution. -->
+<!-- The first four sections: "Problem to solve", "Intended users", "User experience goal", and "Proposal", are strongly recommended, while the rest of the sections can be filled out during the problem validation or breakdown phase. However, keep in mind that providing complete and relevant information early helps our product team validate the problem and start working on a solution. -->
 
 ### Problem to solve
 
-<!-- What problem do we solve? Try to define the who/what/why of the opportunity as a user story. For example, "As a (who), I want (what), so I can (why/value)." -->
+<!-- What problem do we solve? Try to define the who/what/why of the opportunity as a user story. For example, "As a (who), I want (what), so I can (why/value)." -->
 
 ### Intended users
 
@@ -78,7 +78,7 @@ See the test engineering planning process and reach out to your counterpart Soft
 
 ### What is the type of buyer?
 
-<!-- What is the buyer persona for this feature? See https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/buyer-persona/
+<!-- What is the buyer persona for this feature? See https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/buyer-persona/
 In which enterprise tier should this feature go? See https://about.gitlab.com/handbook/product/pricing/#four-tiers -->
 
 ### Is this a cross-stage feature?

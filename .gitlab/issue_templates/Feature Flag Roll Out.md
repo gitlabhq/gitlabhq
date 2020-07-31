@@ -12,7 +12,7 @@ Remove the `:feature_name` feature flag ...
 
 ## Expectations
 
-### What are we expecting to happen?
+### What are we expecting to happen?
 
 ### What might happen if this goes wrong?
 

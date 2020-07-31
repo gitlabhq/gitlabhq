@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     context 'Gitaly' do
-      describe 'High Availability', :orchestrated, :gitaly_ha do
+      describe 'High Availability', :orchestrated, :gitaly_ha, quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues/39#note_388590227', type: :stale } do
         let(:project) do
           Resource::Project.fabricate! do |project|
             project.name = 'gitaly_high_availability'
