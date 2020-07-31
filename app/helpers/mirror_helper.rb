@@ -9,7 +9,7 @@ module MirrorHelper
   end
 
   def mirror_lfs_sync_message
-    _('The Git LFS objects will <strong>not</strong> be synced.').html_safe
+    html_escape(_('The Git LFS objects will %{strong_open}not%{strong_close} be synced.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
   end
 end
 

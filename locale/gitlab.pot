@@ -486,6 +486,9 @@ msgstr ""
 msgid "%{label_for_message} unavailable"
 msgstr ""
 
+msgid "%{label_name} %{span_open}will be permanently deleted from %{subject_name}. This cannot be undone.%{span_close}"
+msgstr ""
+
 msgid "%{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end} is a free, automated, and open certificate authority (CA), that give digital certificates in order to enable HTTPS (SSL/TLS) for websites."
 msgstr ""
 
@@ -1035,9 +1038,6 @@ msgid "< 1 hour"
 msgstr ""
 
 msgid "<project name>"
-msgstr ""
-
-msgid "<strong>%{label_name}</strong> <span>will be permanently deleted from %{subject_name}. This cannot be undone.</span>"
 msgstr ""
 
 msgid "<strong>Deletes</strong> source branch"
@@ -3780,7 +3780,7 @@ msgstr ""
 msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
 msgstr ""
 
-msgid "BillingPlans|Your GitLab.com %{plan} trial will <strong>expire after %{expiration_date}</strong>. You can retain access to the %{plan} features by upgrading below."
+msgid "BillingPlans|Your GitLab.com %{plan} trial will %{strong_open}expire after %{expiration_date}%{strong_close}. You can retain access to the %{plan} features by upgrading below."
 msgstr ""
 
 msgid "BillingPlans|Your GitLab.com trial expired on %{expiration_date}. You can restore access to the features at any time by upgrading below."
@@ -5037,7 +5037,7 @@ msgstr ""
 msgid "ClusterIntegration|%{title} updated successfully."
 msgstr ""
 
-msgid "ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes <code>cluster-admin</code> privileges."
+msgid "ClusterIntegration|A cluster management project can be used to run deployment jobs with Kubernetes %{code_open}cluster-admin%{code_close} privileges."
 msgstr ""
 
 msgid "ClusterIntegration|A service token scoped to %{code}kube-system%{end_code} with %{code}cluster-admin%{end_code} privileges."
@@ -6653,13 +6653,13 @@ msgstr ""
 msgid "Contribution Analytics"
 msgstr ""
 
-msgid "ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
+msgid "ContributionAnalytics|%{created_count} created, %{closed_count} closed."
 msgstr ""
 
-msgid "ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{merged_count}</strong> merged."
+msgid "ContributionAnalytics|%{created_count} created, %{merged_count} merged."
 msgstr ""
 
-msgid "ContributionAnalytics|<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
+msgid "ContributionAnalytics|%{pushes} pushes, more than %{commits} commits by %{people} contributors."
 msgstr ""
 
 msgid "ContributionAnalytics|Contribution analytics for issues, merge requests and push events since %{start_date}"
@@ -6689,7 +6689,7 @@ msgstr ""
 msgid "ContributionAnalytics|No pushes for the selected time period."
 msgstr ""
 
-msgid "Contributions for <strong>%{calendar_date}</strong>"
+msgid "Contributions for %{calendar_date}"
 msgstr ""
 
 msgid "Contributions per group member"
@@ -8887,9 +8887,6 @@ msgstr ""
 msgid "Enable Pseudonymizer data collection"
 msgstr ""
 
-msgid "Enable SAML authentication for this group"
-msgstr ""
-
 msgid "Enable Seat Link"
 msgstr ""
 
@@ -10456,7 +10453,7 @@ msgstr ""
 msgid "Files, directories, and submodules in the path %{path} for commit reference %{ref}"
 msgstr ""
 
-msgid "Fill in the fields below, turn on <strong>%{enable_label}</strong>, and press <strong>%{save_changes}</strong>"
+msgid "Fill in the fields below, turn on %{strong_open}Enable SAML authentication for this group%{strong_close}, and press %{strong_open}Save changes%{strong_close}"
 msgstr ""
 
 msgid "Filter"
@@ -10561,7 +10558,7 @@ msgstr ""
 msgid "Finish review"
 msgstr ""
 
-msgid "Finish setting up your dedicated account for <strong>%{group_name}</strong>."
+msgid "Finish setting up your dedicated account for %{group_name}."
 msgstr ""
 
 msgid "Finished"
@@ -11164,10 +11161,10 @@ msgstr ""
 msgid "Geo|Waiting for scheduler"
 msgstr ""
 
-msgid "Geo|You are on a secondary, <b>read-only</b> Geo node. If you want to make changes, you must visit this page on the %{primary_node}."
+msgid "Geo|You are on a secondary, %{b_open}read-only%{b_close} Geo node. If you want to make changes, you must visit this page on the %{node_link_open}primary node%{node_link_close}."
 msgstr ""
 
-msgid "Geo|You are on a secondary, <b>read-only</b> Geo node. You may be able to make a limited amount of changes or perform a limited amount of actions on this page."
+msgid "Geo|You are on a secondary, %{b_open}read-only%{b_close} Geo node. You may be able to make a limited amount of changes or perform a limited amount of actions on this page."
 msgstr ""
 
 msgid "Geo|misconfigured"
@@ -12710,10 +12707,10 @@ msgstr ""
 msgid "In order to gather accurate feature usage data, it can take 1 to 2 weeks to see your index."
 msgstr ""
 
-msgid "In order to personalize your experience with GitLab<br>we would like to know a bit more about you."
+msgid "In order to personalize your experience with GitLab%{br_tag}we would like to know a bit more about you."
 msgstr ""
 
-msgid "In order to tailor your experience with GitLab we<br>would like to know a bit more about you."
+msgid "In order to tailor your experience with GitLab we%{br_tag}would like to know a bit more about you."
 msgstr ""
 
 msgid "In progress"
@@ -17734,7 +17731,7 @@ msgstr ""
 msgid "Please provide attributes to update"
 msgstr ""
 
-msgid "Please refer to <a href=\"%{docs_url}\">%{docs_url}</a>"
+msgid "Please refer to %{docs_url}"
 msgstr ""
 
 msgid "Please retype the email address."
@@ -20755,7 +20752,7 @@ msgstr ""
 msgid "SSH host keys"
 msgstr ""
 
-msgid "SSH host keys are not available on this system. Please use <code>ssh-keyscan</code> command or contact your GitLab administrator for more information."
+msgid "SSH host keys are not available on this system. Please use %{ssh_keyscan} command or contact your GitLab administrator for more information."
 msgstr ""
 
 msgid "SSH keys allow you to establish a secure connection between your computer and GitLab."
@@ -21945,7 +21942,7 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
-msgid "Share the <strong>%{sso_label}</strong> with members so they can sign in to your group through your identity provider"
+msgid "Share the %{strong_open}GitLab single sign-on URL%{strong_close} with members so they can sign in to your group through your identity provider"
 msgstr ""
 
 msgid "Shared Runners"
@@ -22723,7 +22720,7 @@ msgstr ""
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
-msgid "Speed up your DevOps<br>with GitLab"
+msgid "Speed up your DevOps%{br_tag}with GitLab"
 msgstr ""
 
 msgid "Squash commit message"
@@ -23715,7 +23712,7 @@ msgstr ""
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{strong_open}%{email}%{strong_close} in an attachment."
 msgstr ""
 
-msgid "The Git LFS objects will <strong>not</strong> be synced."
+msgid "The Git LFS objects will %{strong_open}not%{strong_close} be synced."
 msgstr ""
 
 msgid "The GitLab user to which the Jira user %{jiraDisplayName} will be mapped"
@@ -24356,7 +24353,7 @@ msgstr ""
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."
 msgstr ""
 
-msgid "This %{issuable} is locked. Only <strong>project members</strong> can comment."
+msgid "This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment."
 msgstr ""
 
 msgid "This %{noteableTypeText} is %{confidentialLinkStart}confidential%{linkEnd} and %{lockedLinkStart}locked%{linkEnd}."
@@ -25590,9 +25587,6 @@ msgstr ""
 msgid "U2F only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
-msgid "UI Development Kit"
-msgstr ""
-
 msgid "URL"
 msgstr ""
 
@@ -26010,7 +26004,7 @@ msgstr ""
 msgid "Uploads"
 msgstr ""
 
-msgid "Upon performing this action, the contents of this group, its subgroup and projects will be permanently removed after %{deletion_adjourned_period} days on <strong>%{date}</strong>. Until that time:"
+msgid "Upon performing this action, the contents of this group, its subgroup and projects will be permanently removed after %{deletion_adjourned_period} days on %{date}. Until that time:"
 msgstr ""
 
 msgid "Upstream"
@@ -26115,7 +26109,7 @@ msgstr ""
 msgid "Use %{code_start}::%{code_end} to create a %{link_start}scoped label set%{link_end} (eg. %{code_start}priority::1%{code_end})"
 msgstr ""
 
-msgid "Use <code>%{native_redirect_uri}</code> for local tests"
+msgid "Use %{native_redirect_uri} for local tests"
 msgstr ""
 
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
@@ -27013,7 +27007,7 @@ msgstr ""
 msgid "Welcome to GitLab, %{first_name}!"
 msgstr ""
 
-msgid "Welcome to GitLab.com<br>@%{name}!"
+msgid "Welcome to GitLab.com%{br_tag}@%{name}!"
 msgstr ""
 
 msgid "Welcome to the guided GitLab tour"
@@ -27183,7 +27177,7 @@ msgstr ""
 msgid "WikiMarkdownDocs|documentation"
 msgstr ""
 
-msgid "WikiMarkdownTip|To link to a (new) page, simply type <code class=\"js-markup-link-example\">%{link_example}</code>"
+msgid "WikiMarkdownTip|To link to a (new) page, simply type %{link_example}"
 msgstr ""
 
 msgid "WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories."
@@ -27330,7 +27324,7 @@ msgstr ""
 msgid "You are about to transfer the control of your account to %{group_name} group. This action is NOT reversible, you won't be able to access any of your groups and projects outside of %{group_name} once this transfer is complete."
 msgstr ""
 
-msgid "You are an admin, which means granting access to <strong>%{client_name}</strong> will allow them to interact with GitLab as an admin as well. Proceed with caution."
+msgid "You are an admin, which means granting access to %{client_name} will allow them to interact with GitLab as an admin as well. Proceed with caution."
 msgstr ""
 
 msgid "You are attempting to delete a file that has been previously updated."
@@ -27630,7 +27624,7 @@ msgstr ""
 msgid "You left the \"%{membershipable_human_name}\" %{source_type}."
 msgstr ""
 
-msgid "You may also add variables that are made available to the running application by prepending the variable key with <code>K8S_SECRET_</code>."
+msgid "You may also add variables that are made available to the running application by prepending the variable key with %{k8s_secret}."
 msgstr ""
 
 msgid "You may close the milestone now."

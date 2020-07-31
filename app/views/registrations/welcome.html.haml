@@ -1,6 +1,6 @@
 - content_for(:page_title, _('Welcome to GitLab %{name}!') % { name: current_user.name })
 .text-center.mb-3
-  = _('In order to tailor your experience with GitLab we<br>would like to know a bit more about you.').html_safe
+  = html_escape(_('In order to tailor your experience with GitLab we%{br_tag}would like to know a bit more about you.')) % { br_tag: '<br/>'.html_safe }
 .signup-box.p-3.mb-2
   .signup-body
     = form_for(current_user, url: users_sign_up_update_registration_path, html: { class: 'new_new_user gl-show-field-errors', 'aria-live' => 'assertive' }) do |f|

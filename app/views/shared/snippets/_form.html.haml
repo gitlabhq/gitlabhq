@@ -29,7 +29,8 @@
           .js-file-title.file-title-flex-parent
             = f.text_field :file_name, placeholder: s_("Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby"), class: 'form-control js-snippet-file-name', data: { qa_selector: 'file_name_field' }
           .file-content.code
-            %pre#editor{ data: { 'editor-loading': true } }= @snippet.content
+            #editor{ data: { 'editor-loading': true } }<
+              %pre.editor-loading-content= @snippet.content
             = f.hidden_field :content, class: 'snippet-file-content'
 
       .form-group

@@ -1,5 +1,5 @@
 %h4.prepend-top-20
-  = _("Contributions for <strong>%{calendar_date}</strong>").html_safe % { calendar_date: @calendar_date.to_s(:medium) }
+  = html_escape(_("Contributions for %{calendar_date}")) % { calendar_date: tag.strong(@calendar_date.to_s(:medium)) }
 
 - if @events.any?
   %ul.bordered-list

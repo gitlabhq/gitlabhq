@@ -113,7 +113,6 @@ linters:
       - "app/views/help/instance_configuration.html.haml"
       - "app/views/help/instance_configuration/_gitlab_ci.html.haml"
       - "app/views/help/instance_configuration/_gitlab_pages.html.haml"
-      - "app/views/help/ui.html.haml"
       - "app/views/import/bitbucket/status.html.haml"
       - "app/views/import/bitbucket_server/status.html.haml"
       - "app/views/invites/show.html.haml"

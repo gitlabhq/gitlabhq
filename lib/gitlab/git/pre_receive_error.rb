@@ -16,8 +16,16 @@ module Gitlab
 
       SAFE_MESSAGE_REGEX = /^(#{SAFE_MESSAGE_PREFIXES.join('|')})\s*(?<safe_message>.+)/.freeze
 
-      def initialize(message = '')
-        super(sanitize(message))
+      attr_reader :raw_message
+
+      def initialize(message = '', user_message = '')
+        @raw_message = message
+
+        if user_message.present?
+          super(sanitize(user_message))
+        else
+          super(sanitize(message))
+        end
       end
 
       private

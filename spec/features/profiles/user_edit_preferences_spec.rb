@@ -64,7 +64,7 @@ RSpec.describe 'User edit preferences profile' do
       expect(page).to have_select(
         'user[preferred_language]',
         selected: 'Spanish - español',
-        options: Gitlab::I18n::AVAILABLE_LANGUAGES.values,
+        options: Gitlab::I18n.selectable_locales.values,
         visible: :all
       )
     end

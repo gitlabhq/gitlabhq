@@ -1,0 +1,5 @@
+---
+title: Log raw pre-receive message in fast-forward merge
+merge_request: 38354
+author:
+type: other

@@ -1,0 +1,5 @@
+---
+title: Fix overflow issues with monaco file editor
+merge_request: 37984
+author:
+type: fixed

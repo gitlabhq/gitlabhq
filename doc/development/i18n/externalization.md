@@ -650,6 +650,10 @@ aren't in the message with ID `1 pipeline`.
 
 ## Adding a new language
 
+NOTE: **Note:**
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221012) in GitLab 13.3:
+Languages with less than 2% of translations won't be available in the UI.
+
 Let's suppose you want to add translations for a new language, let's say French.
 
 1. The first step is to register the new language in `lib/gitlab/i18n.rb`:

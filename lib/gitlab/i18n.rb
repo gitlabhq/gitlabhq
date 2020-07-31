@@ -4,6 +4,20 @@ module Gitlab
   module I18n
     extend self
 
+    # Languages with less then 2% of available translations will not
+    # be available in the UI.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/221012
+    NOT_AVAILABLE_IN_UI = %w[
+      fil_PH
+      pl_PL
+      nl_NL
+      id_ID
+      cs_CZ
+      bg
+      eo
+      gl_ES
+    ].freeze
+
     AVAILABLE_LANGUAGES = {
       'bg' => 'Bulgarian - български',
       'cs_CZ' => 'Czech - čeština',
@@ -28,6 +42,10 @@ module Gitlab
       'zh_HK' => 'Chinese, Traditional (Hong Kong) - 繁體中文 (香港)',
       'zh_TW' => 'Chinese, Traditional (Taiwan) - 繁體中文 (台灣)'
     }.freeze
+
+    def selectable_locales
+      AVAILABLE_LANGUAGES.reject { |key, _value| NOT_AVAILABLE_IN_UI.include? key }
+    end
 
     def available_locales
       AVAILABLE_LANGUAGES.keys

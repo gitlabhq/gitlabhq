@@ -22,6 +22,7 @@ module MergeRequests
 
       ff_merge
     rescue Gitlab::Git::PreReceiveError => e
+      Gitlab::ErrorTracking.track_exception(e, pre_receive_message: e.raw_message, merge_request_id: merge_request&.id)
       raise MergeError, e.message
     rescue StandardError => e
       raise MergeError, "Something went wrong during merge: #{e.message}"

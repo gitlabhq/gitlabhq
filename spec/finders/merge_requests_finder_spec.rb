@@ -192,43 +192,59 @@ RSpec.describe MergeRequestsFinder do
         expect(merge_requests).to contain_exactly(merge_request3)
       end
 
-      describe 'WIP state' do
+      describe 'draft state' do
         let!(:wip_merge_request1) { create(:merge_request, :simple, author: user, source_project: project5, target_project: project5, title: 'WIP: thing') }
         let!(:wip_merge_request2) { create(:merge_request, :simple, author: user, source_project: project6, target_project: project6, title: 'wip thing') }
         let!(:wip_merge_request3) { create(:merge_request, :simple, author: user, source_project: project1, target_project: project1, title: '[wip] thing') }
         let!(:wip_merge_request4) { create(:merge_request, :simple, author: user, source_project: project1, target_project: project2, title: 'wip: thing') }
+        let!(:draft_merge_request1) { create(:merge_request, :simple, author: user, source_branch: 'draft1', source_project: project5, target_project: project5, title: 'Draft: thing') }
+        let!(:draft_merge_request2) { create(:merge_request, :simple, author: user, source_branch: 'draft2', source_project: project6, target_project: project6, title: '[draft] thing') }
+        let!(:draft_merge_request3) { create(:merge_request, :simple, author: user, source_branch: 'draft3', source_project: project1, target_project: project1, title: '(draft) thing') }
+        let!(:draft_merge_request4) { create(:merge_request, :simple, author: user, source_branch: 'draft4', source_project: project1, target_project: project2, title: 'Draft - thing') }
 
-        it 'filters by wip' do
-          params = { wip: 'yes' }
+        [:wip, :draft].each do |draft_param_key|
+          it "filters by #{draft_param_key}" do
+            params = { draft_param_key => 'yes' }
 
-          merge_requests = described_class.new(user, params).execute
+            merge_requests = described_class.new(user, params).execute
 
-          expect(merge_requests).to contain_exactly(merge_request4, merge_request5, wip_merge_request1, wip_merge_request2, wip_merge_request3, wip_merge_request4)
-        end
+            expect(merge_requests).to contain_exactly(
+              merge_request4, merge_request5, wip_merge_request1, wip_merge_request2, wip_merge_request3, wip_merge_request4,
+              draft_merge_request1, draft_merge_request2, draft_merge_request3, draft_merge_request4
+            )
+          end
 
-        it 'filters by not wip' do
-          params = { wip: 'no' }
+          context 'when merge_request_draft_filter is disabled' do
+            it 'does not include draft merge requests' do
+              stub_feature_flags(merge_request_draft_filter: false)
 
-          merge_requests = described_class.new(user, params).execute
+              merge_requests = described_class.new(user, { draft_param_key => 'yes' }).execute
 
-          expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3)
-        end
+              expect(merge_requests).to contain_exactly(
+                merge_request4, merge_request5, wip_merge_request1, wip_merge_request2, wip_merge_request3, wip_merge_request4
+              )
+            end
+          end
 
-        it 'returns all items if no valid wip param exists' do
-          params = { wip: '' }
+          it "filters by not #{draft_param_key}" do
+            params = { draft_param_key => 'no' }
 
-          merge_requests = described_class.new(user, params).execute
+            merge_requests = described_class.new(user, params).execute
 
-          expect(merge_requests).to contain_exactly(
-            merge_request1, merge_request2, merge_request3, merge_request4,
-            merge_request5, wip_merge_request1, wip_merge_request2, wip_merge_request3,
-            wip_merge_request4)
-        end
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3)
+          end
 
-        it 'adds wip to scalar params' do
-          scalar_params = described_class.scalar_params
+          it "returns all items if no valid #{draft_param_key} param exists" do
+            params = { draft_param_key => '' }
 
-          expect(scalar_params).to include(:wip, :assignee_id)
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to contain_exactly(
+              merge_request1, merge_request2, merge_request3, merge_request4,
+              merge_request5, wip_merge_request1, wip_merge_request2, wip_merge_request3, wip_merge_request4,
+              draft_merge_request1, draft_merge_request2, draft_merge_request3, draft_merge_request4
+            )
+          end
         end
 
         context 'filter by deployment' do
@@ -262,6 +278,14 @@ RSpec.describe MergeRequestsFinder do
               expect(merge_requests).to be_empty
             end
           end
+        end
+      end
+
+      describe '.scalar_params' do
+        it 'contains scalar params related to merge requests' do
+          scalar_params = described_class.scalar_params
+
+          expect(scalar_params).to include(:wip, :draft, :assignee_id)
         end
       end
 

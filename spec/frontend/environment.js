@@ -52,6 +52,12 @@ class CustomEnvironment extends JSDOMEnvironment {
 
     // Expose the jsdom (created in super class) to the global so that we can call reconfigure({ url: '' }) to properly set `window.location`
     this.global.dom = this.dom;
+
+    Object.assign(this.global.performance, {
+      mark: () => null,
+      measure: () => null,
+      getEntriesByName: () => [],
+    });
   }
 
   async teardown() {

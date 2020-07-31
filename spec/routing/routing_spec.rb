@@ -115,7 +115,6 @@ end
 #            help GET /help(.:format)                 help#index
 #       help_page GET /help/*path(.:format)           help#show
 #  help_shortcuts GET /help/shortcuts(.:format)       help#shortcuts
-#         help_ui GET /help/ui(.:format)              help#ui
 RSpec.describe HelpController, "routing" do
   it "to #index" do
     expect(get("/help")).to route_to('help#index')
@@ -131,9 +130,6 @@ RSpec.describe HelpController, "routing" do
     expect(get(path)).to route_to('help#show',
                                   path: 'workflow/protected_branches/protected_branches1',
                                   format: 'png')
-
-    path = '/help/ui'
-    expect(get(path)).to route_to('help#ui')
   end
 end
 

@@ -13,7 +13,7 @@
       = _('Use one line per URI')
     - if Doorkeeper.configuration.native_redirect_uri
       %span.form-text.text-muted
-        = _('Use <code>%{native_redirect_uri}</code> for local tests').html_safe % { native_redirect_uri: Doorkeeper.configuration.native_redirect_uri }
+        = html_escape(_('Use %{native_redirect_uri} for local tests')) % { native_redirect_uri: tag.code(Doorkeeper.configuration.native_redirect_uri) }
 
   .form-group.form-check
     = f.check_box :confidential, class: 'form-check-input'

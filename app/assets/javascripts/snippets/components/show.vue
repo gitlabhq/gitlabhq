@@ -9,6 +9,8 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { getSnippetMixin } from '../mixins/snippets';
 import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
 
+import { SNIPPET_MARK_VIEW_APP_START } from '~/performance_constants';
+
 export default {
   components: {
     BlobEmbeddable,
@@ -26,6 +28,9 @@ export default {
     canBeCloned() {
       return Boolean(this.snippet.sshUrlToRepo || this.snippet.httpUrlToRepo);
     },
+  },
+  beforeCreate() {
+    performance.mark(SNIPPET_MARK_VIEW_APP_START);
   },
 };
 </script>

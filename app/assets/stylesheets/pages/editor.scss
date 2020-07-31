@@ -16,6 +16,11 @@
     padding: 0;
     position: relative;
     width: 100%;
+
+    .editor-loading-content {
+      height: 100%;
+      border: 0;
+    }
   }
 
   .ace_gutter-cell {

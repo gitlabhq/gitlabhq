@@ -1,0 +1,5 @@
+---
+title: Fix review app links are not shown in MR widgets in public projects
+merge_request: 37923
+author:
+type: fixed

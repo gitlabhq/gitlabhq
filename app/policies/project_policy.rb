@@ -478,6 +478,8 @@ class ProjectPolicy < BasePolicy
     enable :read_note
     enable :read_pipeline
     enable :read_pipeline_schedule
+    enable :read_environment
+    enable :read_deployment
     enable :read_commit_status
     enable :read_container_image
     enable :download_code

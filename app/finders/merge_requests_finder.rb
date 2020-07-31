@@ -31,7 +31,7 @@
 #
 class MergeRequestsFinder < IssuableFinder
   def self.scalar_params
-    @scalar_params ||= super + [:wip, :target_branch]
+    @scalar_params ||= super + [:wip, :draft, :target_branch]
   end
 
   def klass
@@ -42,7 +42,7 @@ class MergeRequestsFinder < IssuableFinder
     items = by_commit(super)
     items = by_deployment(items)
     items = by_source_branch(items)
-    items = by_wip(items)
+    items = by_draft(items)
     items = by_target_branch(items)
     by_source_project_id(items)
   end
@@ -88,20 +88,32 @@ class MergeRequestsFinder < IssuableFinder
     items.where(source_project_id: source_project_id)
   end
 
-  def by_wip(items)
-    if params[:wip] == 'yes'
+  def by_draft(items)
+    draft_param = params[:draft] || params[:wip]
+
+    if draft_param == 'yes'
       items.where(wip_match(items.arel_table))
-    elsif params[:wip] == 'no'
+    elsif draft_param == 'no'
       items.where.not(wip_match(items.arel_table))
     else
       items
     end
   end
 
+  # WIP is deprecated in favor of Draft. Currently both options are supported
   def wip_match(table)
-    table[:title].matches('WIP:%')
+    items =
+      table[:title].matches('WIP:%')
         .or(table[:title].matches('WIP %'))
         .or(table[:title].matches('[WIP]%'))
+
+    return items unless Feature.enabled?(:merge_request_draft_filter)
+
+    items
+      .or(table[:title].matches('Draft - %'))
+      .or(table[:title].matches('Draft:%'))
+      .or(table[:title].matches('[Draft]%'))
+      .or(table[:title].matches('(Draft)%'))
   end
 
   def by_deployment(items)

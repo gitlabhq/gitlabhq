@@ -4,11 +4,15 @@ exports[`Blob Header Editing rendering matches the snapshot 1`] = `
 <div
   class="file-content code"
 >
-  <pre
+  <div
     data-editor-loading=""
     id="editor"
   >
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  </pre>
+    <pre
+      class="editor-loading-content"
+    >
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    </pre>
+  </div>
 </div>
 `;

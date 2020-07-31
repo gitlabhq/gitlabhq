@@ -21,6 +21,7 @@ import {
 import SnippetBlobEdit from './snippet_blob_edit.vue';
 import SnippetVisibilityEdit from './snippet_visibility_edit.vue';
 import SnippetDescriptionEdit from './snippet_description_edit.vue';
+import { SNIPPET_MARK_EDIT_APP_START } from '~/performance_constants';
 
 export default {
   components: {
@@ -105,6 +106,9 @@ export default {
     descriptionFieldId() {
       return `${this.isProjectSnippet ? 'project' : 'personal'}_snippet_description`;
     },
+  },
+  beforeCreate() {
+    performance.mark(SNIPPET_MARK_EDIT_APP_START);
   },
   created() {
     window.addEventListener('beforeunload', this.onBeforeUnload);
