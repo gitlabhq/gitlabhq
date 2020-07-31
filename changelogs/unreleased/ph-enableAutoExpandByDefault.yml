@@ -1,0 +1,5 @@
+---
+title: Auto expand collapsed diffs when viewing diffs file-by-file
+merge_request: 38296
+author:
+type: added

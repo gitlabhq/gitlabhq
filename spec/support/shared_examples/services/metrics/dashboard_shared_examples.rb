@@ -78,6 +78,12 @@ RSpec.shared_examples 'raises error for users with insufficient permissions' do
 
     it_behaves_like 'misconfigured dashboard service response', :unauthorized
   end
+
+  context 'when the user is anonymous' do
+    let(:user) { nil }
+
+    it_behaves_like 'misconfigured dashboard service response', :unauthorized
+  end
 end
 
 RSpec.shared_examples 'valid dashboard cloning process' do |dashboard_template, sequence|

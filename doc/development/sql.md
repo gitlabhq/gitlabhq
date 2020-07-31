@@ -218,9 +218,9 @@ Project.select(:id, :user_id).joins(:merge_requests)
 
 ## Plucking IDs
 
-This can't be stressed enough: **never** use ActiveRecord's `pluck` to pluck a
-set of values into memory only to use them as an argument for another query. For
-example, this will make the database **very** sad:
+Never use ActiveRecord's `pluck` to pluck a set of values into memory only to
+use them as an argument for another query. For example, this will execute an
+extra unecessary database query and load a lot of unecessary data into memory:
 
 ```ruby
 projects = Project.all.pluck(:id)

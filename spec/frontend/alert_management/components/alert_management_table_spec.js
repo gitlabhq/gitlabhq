@@ -13,6 +13,7 @@ import {
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
+import waitForPromises from 'helpers/wait_for_promises';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import AlertManagementTable from '~/alert_management/components/alert_management_table.vue';
 import { ALERTS_STATUS_TABS, trackAlertStatusUpdateOptions } from '~/alert_management/constants';
@@ -44,12 +45,18 @@ describe('AlertManagementTable', () => {
   const findPagination = () => wrapper.find(GlPagination);
   const findSearch = () => wrapper.find(GlSearchBoxByType);
   const findIssueFields = () => wrapper.findAll('[data-testid="issueField"]');
+  const findAlertError = () => wrapper.find('[data-testid="alert-error"]');
   const alertsCount = {
     open: 14,
     triggered: 10,
     acknowledged: 6,
     resolved: 1,
     all: 16,
+  };
+  const selectFirstStatusOption = () => {
+    findFirstStatusOption().vm.$emit('click');
+
+    return waitForPromises();
   };
 
   function mountComponent({
@@ -138,7 +145,7 @@ describe('AlertManagementTable', () => {
     it('error state', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { errors: ['error'] }, alertsCount: null, errored: true },
+        data: { alerts: { errors: ['error'] }, alertsCount: null, hasError: true },
         loading: false,
       });
       expect(findAlertsTable().exists()).toBe(true);
@@ -155,7 +162,7 @@ describe('AlertManagementTable', () => {
     it('empty state', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: [], pageInfo: {} }, alertsCount: { all: 0 }, errored: false },
+        data: { alerts: { list: [], pageInfo: {} }, alertsCount: { all: 0 }, hasError: false },
         loading: false,
       });
       expect(findAlertsTable().exists()).toBe(true);
@@ -172,7 +179,7 @@ describe('AlertManagementTable', () => {
     it('has data state', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
       expect(findLoader().exists()).toBe(false);
@@ -188,7 +195,7 @@ describe('AlertManagementTable', () => {
     it('displays status dropdown', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
       expect(findStatusDropdown().exists()).toBe(true);
@@ -197,7 +204,7 @@ describe('AlertManagementTable', () => {
     it('does not display a dropdown status header', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
       expect(findStatusDropdown().contains('.dropdown-title')).toBe(false);
@@ -206,7 +213,7 @@ describe('AlertManagementTable', () => {
     it('shows correct severity icons', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
 
@@ -223,7 +230,7 @@ describe('AlertManagementTable', () => {
     it('renders severity text', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
 
@@ -237,7 +244,7 @@ describe('AlertManagementTable', () => {
     it('renders Unassigned when no assignee(s) present', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
 
@@ -251,7 +258,7 @@ describe('AlertManagementTable', () => {
     it('renders username(s) when assignee(s) present', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
 
@@ -265,7 +272,7 @@ describe('AlertManagementTable', () => {
     it('navigates to the detail page when alert row is clicked', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
 
@@ -279,7 +286,7 @@ describe('AlertManagementTable', () => {
       beforeEach(() => {
         mountComponent({
           props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-          data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+          data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
           loading: false,
         });
       });
@@ -323,7 +330,7 @@ describe('AlertManagementTable', () => {
               ],
             },
             alertsCount,
-            errored: false,
+            hasError: false,
           },
           loading: false,
         });
@@ -343,7 +350,7 @@ describe('AlertManagementTable', () => {
               },
             ],
             alertsCount,
-            errored: false,
+            hasError: false,
           },
           loading: false,
         });
@@ -358,7 +365,7 @@ describe('AlertManagementTable', () => {
         it('should highlight the row when alert is new', () => {
           mountComponent({
             props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-            data: { alerts: { list: [newAlert] }, alertsCount, errored: false },
+            data: { alerts: { list: [newAlert] }, alertsCount, hasError: false },
             loading: false,
           });
 
@@ -372,7 +379,7 @@ describe('AlertManagementTable', () => {
         it('should not highlight the row when alert is not new', () => {
           mountComponent({
             props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-            data: { alerts: { list: [oldAlert] }, alertsCount, errored: false },
+            data: { alerts: { list: [oldAlert] }, alertsCount, hasError: false },
             loading: false,
           });
 
@@ -392,7 +399,7 @@ describe('AlertManagementTable', () => {
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
         data: {
           alerts: { list: mockAlerts },
-          errored: false,
+          hasError: false,
           sort: 'STARTED_AT_DESC',
           alertsCount,
         },
@@ -429,7 +436,7 @@ describe('AlertManagementTable', () => {
     beforeEach(() => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
     });
@@ -448,19 +455,36 @@ describe('AlertManagementTable', () => {
       });
     });
 
-    it('shows an error when request fails', () => {
-      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockReturnValue(Promise.reject(new Error()));
-      findFirstStatusOption().vm.$emit('click');
-      wrapper.setData({
-        errored: true,
+    describe('when a request fails', () => {
+      beforeEach(() => {
+        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockReturnValue(Promise.reject(new Error()));
       });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('[data-testid="alert-error"]').exists()).toBe(true);
+      it('shows an error', async () => {
+        await selectFirstStatusOption();
+
+        expect(findAlertError().text()).toContain(
+          'There was an error while updating the status of the alert.',
+        );
+      });
+
+      it('shows an error when triggered a second time', async () => {
+        await selectFirstStatusOption();
+
+        wrapper.find(GlAlert).vm.$emit('dismiss');
+
+        await wrapper.vm.$nextTick();
+
+        // Assert that the error has been dismissed in the setup
+        expect(findAlertError().exists()).toBe(false);
+
+        await selectFirstStatusOption();
+
+        expect(findAlertError().exists()).toBe(true);
       });
     });
 
-    it('shows an error when response includes HTML errors', () => {
+    it('shows an error when response includes HTML errors', async () => {
       const mockUpdatedMutationErrorResult = {
         data: {
           updateAlertStatus: {
@@ -474,13 +498,11 @@ describe('AlertManagementTable', () => {
       };
 
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationErrorResult);
-      findFirstStatusOption().vm.$emit('click');
-      wrapper.setData({ errored: true });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.contains('[data-testid="alert-error"]')).toBe(true);
-        expect(wrapper.contains('[data-testid="htmlError"]')).toBe(true);
-      });
+      await selectFirstStatusOption();
+
+      expect(findAlertError().exists()).toBe(true);
+      expect(findAlertError().contains('[data-testid="htmlError"]')).toBe(true);
     });
   });
 
@@ -510,7 +532,7 @@ describe('AlertManagementTable', () => {
     beforeEach(() => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts, pageInfo: {} }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts, pageInfo: {} }, alertsCount, hasError: false },
         loading: false,
       });
     });
@@ -570,7 +592,7 @@ describe('AlertManagementTable', () => {
     beforeEach(() => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
     });

@@ -8653,6 +8653,9 @@ msgstr ""
 msgid "Edit Release"
 msgstr ""
 
+msgid "Edit Requirement"
+msgstr ""
+
 msgid "Edit Slack integration"
 msgstr ""
 
@@ -12713,7 +12716,13 @@ msgstr ""
 msgid "Incident Management Limits"
 msgstr ""
 
+msgid "IncidentManagement|All incidents"
+msgstr ""
+
 msgid "IncidentManagement|Assignees"
+msgstr ""
+
+msgid "IncidentManagement|Closed"
 msgstr ""
 
 msgid "IncidentManagement|Create incident"
@@ -12729,6 +12738,9 @@ msgid "IncidentManagement|Incidents"
 msgstr ""
 
 msgid "IncidentManagement|No incidents to display."
+msgstr ""
+
+msgid "IncidentManagement|Open"
 msgstr ""
 
 msgid "IncidentManagement|There was an error displaying the incidents."
@@ -15801,6 +15813,9 @@ msgid "New Pipeline Schedule"
 msgstr ""
 
 msgid "New Project"
+msgstr ""
+
+msgid "New Requirement"
 msgstr ""
 
 msgid "New Snippet"
@@ -20333,9 +20348,6 @@ msgid "Required approvals (%{approvals_given} given, you've approved)"
 msgstr ""
 
 msgid "Required in this project."
-msgstr ""
-
-msgid "Requirement"
 msgstr ""
 
 msgid "Requirement %{reference} has been added"

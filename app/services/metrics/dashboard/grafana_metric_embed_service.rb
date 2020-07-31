@@ -33,7 +33,7 @@ module Metrics
 
         def from_cache(project_id, user_id, grafana_url)
           project = Project.find(project_id)
-          user = User.find(user_id)
+          user = User.find(user_id) if user_id.present?
 
           new(project, user, grafana_url: grafana_url)
         end
@@ -56,7 +56,7 @@ module Metrics
       end
 
       def cache_key(*args)
-        [project.id, current_user.id, grafana_url]
+        [project.id, current_user&.id, grafana_url]
       end
 
       # Required for ReactiveCaching; Usage overridden by

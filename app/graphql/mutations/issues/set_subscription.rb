@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Mutations
-  module MergeRequests
+  module Issues
     class SetSubscription < Base
-      graphql_name 'MergeRequestSetSubscription'
+      graphql_name 'IssueSetSubscription'
 
       include ResolvesSubscription
     end

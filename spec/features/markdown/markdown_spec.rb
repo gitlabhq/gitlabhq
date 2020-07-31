@@ -217,7 +217,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures do
 
     it_behaves_like 'all pipelines'
 
-    it 'includes custom filters' do
+    it 'includes custom filters', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/233077' do
       aggregate_failures 'UploadLinkFilter' do
         expect(doc).to parse_upload_links
       end
@@ -282,7 +282,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures do
 
     it_behaves_like 'all pipelines'
 
-    it 'includes custom filters' do
+    it 'includes custom filters', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/233077' do
       aggregate_failures 'UploadLinkFilter' do
         expect(doc).to parse_upload_links
       end

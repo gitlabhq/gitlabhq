@@ -7,7 +7,7 @@ RSpec.describe Metrics::Dashboard::GrafanaMetricEmbedService do
   include ReactiveCachingHelpers
   include GrafanaApiHelpers
 
-  let_it_be(:project) { build(:project) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:grafana_integration) { create(:grafana_integration, project: project) }
 
@@ -15,7 +15,7 @@ RSpec.describe Metrics::Dashboard::GrafanaMetricEmbedService do
     valid_grafana_dashboard_link(grafana_integration.grafana_url)
   end
 
-  before do
+  before_all do
     project.add_maintainer(user)
   end
 
@@ -57,6 +57,31 @@ RSpec.describe Metrics::Dashboard::GrafanaMetricEmbedService do
       expect(subject.project).to eq(project)
       expect(subject.current_user).to eq(user)
       expect(subject.params[:grafana_url]).to eq(grafana_url)
+    end
+
+    context 'with unknown users' do
+      let(:params) { [project.id, current_user_id, grafana_url] }
+
+      context 'when anonymous' do
+        where(:current_user_id) do
+          [nil, '']
+        end
+
+        with_them do
+          it 'sets current_user as nil' do
+            expect(subject.current_user).to be_nil
+          end
+        end
+      end
+
+      context 'when invalid' do
+        let(:current_user_id) { non_existing_record_id }
+
+        it 'raise record not found error' do
+          expect { subject }
+            .to raise_error(ActiveRecord::RecordNotFound, /Couldn't find User/)
+        end
+      end
     end
   end
 
@@ -145,7 +170,17 @@ RSpec.describe Metrics::Dashboard::GrafanaMetricEmbedService do
           stub_datasource_request(grafana_integration.grafana_url)
         end
 
-        it_behaves_like 'valid embedded dashboard service response'
+        context 'when project is private and user is member' do
+          it_behaves_like 'valid embedded dashboard service response'
+        end
+
+        context 'when project is public and user is anonymous' do
+          let(:project) { create(:project, :public) }
+          let(:user) { nil }
+          let(:grafana_integration) { create(:grafana_integration, project: project) }
+
+          it_behaves_like 'valid embedded dashboard service response'
+        end
       end
     end
 

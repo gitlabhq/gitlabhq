@@ -8,5 +8,23 @@ export const I18N = {
   searchPlaceholder: __('Search or filter results...'),
 };
 
+export const INCIDENT_STATE_TABS = [
+  {
+    title: s__('IncidentManagement|Open'),
+    state: 'OPENED',
+    filters: 'opened',
+  },
+  {
+    title: s__('IncidentManagement|Closed'),
+    state: 'CLOSED',
+    filters: 'closed',
+  },
+  {
+    title: s__('IncidentManagement|All incidents'),
+    state: 'ALL',
+    filters: 'all',
+  },
+];
+
 export const INCIDENT_SEARCH_DELAY = 300;
 export const DEFAULT_PAGE_SIZE = 10;

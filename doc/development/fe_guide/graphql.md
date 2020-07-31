@@ -85,6 +85,7 @@ Default client accepts two parameters: `resolvers` and `config`.
   - `cacheConfig` field accepts an optional object of settings to [customize Apollo cache](https://www.apollographql.com/docs/react/caching/cache-configuration/#configuring-the-cache)
   - `baseUrl` allows us to pass a URL for GraphQL endpoint different from our main endpoint (i.e.`${gon.relative_url_root}/api/graphql`)
   - `assumeImmutableResults` (set to `false` by default) - this setting, when set to `true`, will assume that every single operation on updating Apollo Cache is immutable. It also sets `freezeResults` to `true`, so any attempt on mutating Apollo Cache will throw a console warning in development environment. Please ensure you're following the immutability pattern on cache update operations before setting this option to `true`.
+  - `fetchPolicy` determines how you want your component to interact with the Apollo cache. Defaults to "cache-first".
 
 ## GraphQL Queries
 
@@ -167,9 +168,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 Vue.use(VueApollo);
 
-const defaultClient = createDefaultClient({
-  resolvers: {}
-});
+const defaultClient = createDefaultClient();
 
 defaultClient.cache.writeData({
   data: {
@@ -257,10 +256,7 @@ We need to pass resolvers object to our existing Apollo Client:
 import createDefaultClient from '~/lib/graphql';
 import resolvers from './graphql/resolvers';
 
-const defaultClient = createDefaultClient(
-  {},
-  resolvers,
-);
+const defaultClient = createDefaultClient(resolvers);
 ```
 
 Now every single time on attempt to fetch a version, our client will fetch `id` and `sha` from the remote API endpoint and will assign our hardcoded values to `author` and `createdAt` version properties. With this data, frontend developers are able to work on UI part without being blocked by backend. When actual response is added to the API, a custom local resolver can be removed fast and the only change to query/fragment is `@client` directive removal.

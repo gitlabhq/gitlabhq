@@ -11,13 +11,15 @@ import {
   GlSearchBoxByType,
   GlIcon,
   GlPagination,
+  GlTabs,
+  GlTab,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, trim } from 'lodash';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__ } from '~/locale';
 import { mergeUrlParams, joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
-import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_SEARCH_DELAY } from '../constants';
+import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_SEARCH_DELAY, INCIDENT_STATE_TABS } from '../constants';
 
 const tdClass =
   'table-col gl-display-flex d-md-table-cell gl-align-items-center gl-white-space-nowrap';
@@ -35,6 +37,7 @@ const initialPaginationState = {
 
 export default {
   i18n: I18N,
+  stateTabs: INCIDENT_STATE_TABS,
   fields: [
     {
       key: 'title',
@@ -67,6 +70,8 @@ export default {
     GlSearchBoxByType,
     GlIcon,
     GlPagination,
+    GlTabs,
+    GlTab,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -78,6 +83,7 @@ export default {
       variables() {
         return {
           searchTerm: this.searchTerm,
+          state: this.stateFilter,
           projectPath: this.projectPath,
           labelNames: ['incident'],
           firstPageSize: this.pagination.firstPageSize,
@@ -105,6 +111,7 @@ export default {
       searchTerm: '',
       pagination: initialPaginationState,
       incidents: {},
+      stateFilter: '',
     };
   },
   computed: {
@@ -138,14 +145,17 @@ export default {
       return mergeUrlParams({ issuable_template: this.incidentTemplateName }, this.newIssuePath);
     },
   },
-  watch: {
-    searchTerm: debounce(function debounceSearch(input) {
-      if (input !== this.searchTerm) {
-        this.searchTerm = input;
+  methods: {
+    onInputChange: debounce(function debounceSearch(input) {
+      const trimmedInput = trim(input);
+      if (trimmedInput !== this.searchTerm) {
+        this.searchTerm = trimmedInput;
       }
     }, INCIDENT_SEARCH_DELAY),
-  },
-  methods: {
+    filterIncidentsByState(tabIndex) {
+      const { filters } = this.$options.stateTabs[tabIndex];
+      this.stateFilter = filters;
+    },
     hasAssignees(assignees) {
       return Boolean(assignees.nodes?.length);
     },
@@ -183,9 +193,17 @@ export default {
       {{ $options.i18n.errorMsg }}
     </gl-alert>
 
-    <div class="gl-display-flex gl-justify-content-end">
+    <div class="incident-management-list-header gl-display-flex gl-justify-content-space-between">
+      <gl-tabs content-class="gl-p-0" @input="filterIncidentsByState">
+        <gl-tab v-for="tab in $options.stateTabs" :key="tab.state" :data-testid="tab.state">
+          <template #title>
+            <span>{{ tab.title }}</span>
+          </template>
+        </gl-tab>
+      </gl-tabs>
+
       <gl-button
-        class="gl-mt-3 gl-mb-3 create-incident-button"
+        class="gl-my-3 create-incident-button"
         data-testid="createIncidentBtn"
         :loading="redirecting"
         :disabled="redirecting"
@@ -200,9 +218,10 @@ export default {
 
     <div class="gl-bg-gray-10 gl-p-5 gl-border-b-solid gl-border-b-1 gl-border-gray-100">
       <gl-search-box-by-type
-        v-model.trim="searchTerm"
+        :value="searchTerm"
         class="gl-bg-white"
         :placeholder="$options.i18n.searchPlaceholder"
+        @input="onInputChange"
       />
     </div>
 
@@ -221,7 +240,7 @@ export default {
       @row-clicked="navigateToIncidentDetails"
     >
       <template #cell(title)="{ item }">
-        <div class="gl-display-flex gl-justify-content-center">
+        <div class="gl-display-sm-flex gl-align-items-center">
           <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
           <gl-icon
             v-if="item.state === 'closed'"

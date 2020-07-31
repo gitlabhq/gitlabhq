@@ -205,7 +205,7 @@ module IssuablesHelper
       author_output
     end
 
-    output << content_tag(:span, (issuable_first_contribution_icon if issuable.first_contribution?), class: 'has-tooltip gl-ml-2', title: _('1st contribution!'))
+    output << content_tag(:span, (sprite_icon('first-contribution', size: 16, css_class: 'gl-icon gl-vertical-align-middle') if issuable.first_contribution?), class: 'has-tooltip gl-ml-2', title: _('1st contribution!'))
 
     output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block gl-ml-3")
     output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "d-md-none")
@@ -245,13 +245,6 @@ module IssuablesHelper
     end
 
     html.html_safe
-  end
-
-  def issuable_first_contribution_icon
-    content_tag(:span, class: 'fa-stack') do
-      concat(icon('certificate', class: "fa-stack-2x"))
-      concat(content_tag(:strong, '1', class: 'fa-inverse fa-stack-1x'))
-    end
   end
 
   def assigned_issuables_count(issuable_type)

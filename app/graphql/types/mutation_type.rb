@@ -20,6 +20,7 @@ module Types
     mount_mutation Mutations::Issues::SetConfidential
     mount_mutation Mutations::Issues::SetLocked
     mount_mutation Mutations::Issues::SetDueDate
+    mount_mutation Mutations::Issues::SetSubscription
     mount_mutation Mutations::Issues::Update
     mount_mutation Mutations::MergeRequests::Create
     mount_mutation Mutations::MergeRequests::Update

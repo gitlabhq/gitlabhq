@@ -8,5 +8,6 @@ module Types
     value 'opened'
     value 'closed'
     value 'locked'
+    value 'all'
   end
 end

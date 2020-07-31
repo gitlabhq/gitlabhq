@@ -80,31 +80,6 @@
   }
 }
 
-.fa-stack {
-  position: relative;
-  display: inline-block;
-  width: 2em;
-  height: 2em;
-  line-height: 2em;
-  vertical-align: middle;
-}
-
-.fa-stack-1x,
-.fa-stack-2x {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  text-align: center;
-}
-
-.fa-stack-1x {
-  line-height: inherit;
-}
-
-.fa-stack-2x {
-  font-size: 2em;
-}
-
 .fa-inverse {
   color: $white;
 }
@@ -254,10 +229,6 @@
 
 .fa-circle::before {
   content: '\f111';
-}
-
-.fa-certificate::before {
-  content: '\f0a3';
 }
 
 .fa-bitbucket::before {

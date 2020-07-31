@@ -18880,8 +18880,6 @@ CREATE INDEX index_analytics_ca_group_stages_on_end_event_label_id ON public.ana
 
 CREATE INDEX index_analytics_ca_group_stages_on_group_id ON public.analytics_cycle_analytics_group_stages USING btree (group_id);
 
-CREATE UNIQUE INDEX index_analytics_ca_group_stages_on_group_id_and_name ON public.analytics_cycle_analytics_group_stages USING btree (group_id, name);
-
 CREATE INDEX index_analytics_ca_group_stages_on_relative_position ON public.analytics_cycle_analytics_group_stages USING btree (relative_position);
 
 CREATE INDEX index_analytics_ca_group_stages_on_start_event_label_id ON public.analytics_cycle_analytics_group_stages USING btree (start_event_label_id);
@@ -19149,6 +19147,8 @@ CREATE INDEX index_ci_pipelines_on_external_pull_request_id ON public.ci_pipelin
 CREATE INDEX index_ci_pipelines_on_merge_request_id ON public.ci_pipelines USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
 
 CREATE INDEX index_ci_pipelines_on_pipeline_schedule_id ON public.ci_pipelines USING btree (pipeline_schedule_id);
+
+CREATE INDEX index_ci_pipelines_on_project_id_and_created_at ON public.ci_pipelines USING btree (project_id, created_at);
 
 CREATE INDEX index_ci_pipelines_on_project_id_and_id_desc ON public.ci_pipelines USING btree (project_id, id DESC);
 
@@ -19653,6 +19653,8 @@ CREATE UNIQUE INDEX index_group_group_links_on_shared_group_and_shared_with_grou
 CREATE INDEX index_group_group_links_on_shared_with_group_id ON public.group_group_links USING btree (shared_with_group_id);
 
 CREATE INDEX index_group_import_states_on_group_id ON public.group_import_states USING btree (group_id);
+
+CREATE UNIQUE INDEX index_group_stages_on_group_id_group_value_stream_id_and_name ON public.analytics_cycle_analytics_group_stages USING btree (group_id, group_value_stream_id, name);
 
 CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON public.group_wiki_repositories USING btree (disk_path);
 

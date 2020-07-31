@@ -230,7 +230,7 @@ Instead these should be sent to the [Release Manager](https://about.gitlab.com/c
 - Ask for clarification. ("I didn't understand. Can you clarify?")
 - Avoid selective ownership of code. ("mine", "not mine", "yours")
 - Avoid using terms that could be seen as referring to personal traits. ("dumb",
-  "stupid"). Assume everyone is attractive, intelligent, and well-meaning.
+  "stupid"). Assume everyone is intelligent and well-meaning.
 - Be explicit. Remember people don't always understand your intentions online.
 - Be humble. ("I'm not sure - let's look it up.")
 - Don't use hyperbole. ("always", "never", "endlessly", "nothing")

@@ -481,7 +481,7 @@ We treat documentation as code, and so use tests in our CI pipeline to maintain 
 standards and quality of the docs. The current tests, which run in CI jobs when a
 merge request with new or changed docs is submitted, are:
 
-- [`docs lint`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L48):
+- [`docs lint`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L41):
   Runs several tests on the content of the docs themselves:
   - [`lint-doc.sh` script](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/lint-doc.sh)
     runs the following checks and linters:
@@ -492,32 +492,19 @@ merge request with new or changed docs is submitted, are:
     - [markdownlint](#markdownlint).
     - [Vale](#vale).
   - Nanoc tests:
-    - [`internal_links`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L67)
+    - [`internal_links`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L58)
       checks that all internal links (ex: `[link](../index.md)`) are valid.
-    - [`internal_anchors`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L69)
+    - [`internal_anchors`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L60)
       checks that all internal anchors (ex: `[link](../index.md#internal_anchor)`)
       are valid.
+  - [`ui-docs-links lint`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L62)
+    checks that all links to docs from UI elements (`app/views` files, for example)
+    are linking to valid docs and anchors.
 
-### Running tests
+### Run tests locally
 
 Apart from [previewing your changes locally](#previewing-the-changes-live), you can also run all lint checks
 and Nanoc tests locally.
-
-#### Nanoc tests
-
-To execute Nanoc tests locally:
-
-1. Navigate to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
-1. Run:
-
-   ```shell
-   # Check for broken internal links
-   bundle exec nanoc check internal_links
-
-   # Check for broken external links (might take a lot of time to complete).
-   # This test is set to be allowed to fail and is run only in the gitlab-docs project CI
-   bundle exec nanoc check internal_anchors
-   ```
 
 #### Lint checks
 
@@ -549,6 +536,57 @@ The output should be similar to:
 
 Note that this requires you to either have the required lint tools installed on your machine,
 or a working Docker installation, in which case an image with these tools pre-installed will be used.
+
+#### Nanoc tests
+
+To execute Nanoc tests locally:
+
+1. Navigate to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
+1. Run:
+
+   ```shell
+   # Check for broken internal links
+   bundle exec nanoc check internal_links
+
+   # Check for broken external links (might take a lot of time to complete).
+   # This test is set to be allowed to fail and is run only in the gitlab-docs project CI
+   bundle exec nanoc check internal_anchors
+   ```
+
+#### `ui-docs-links` test
+
+The `ui-docs-links lint` job uses `haml-lint` to test that all links to docs from
+UI elements (`app/views` files, for example) are linking to valid docs and anchors.
+
+To run the `ui-docs-links` test locally:
+
+1. Open the `gitlab` directory in a terminal window.
+1. Run:
+
+   ```shell
+   bundle exec haml-lint -i DocumentationLinks
+   ```
+
+If you receive an error the first time you run this test, run `bundle install`, which
+installs GitLab's dependencies, and try again.
+
+If you don't want to install all of GitLab's dependencies to test the links, you can:
+
+1. Open the `gitlab` directory in a terminal window.
+1. Install `haml-lint`:
+
+   ```shell
+   gem install haml_lint
+   ```
+
+1. Run:
+
+   ```shell
+   haml-lint -i DocumentationLinks
+   ```
+
+If you manually install `haml-lint` with this process, it will not update automatically
+and you should make sure your version matches the version used by GitLab.
 
 ### Local linters
 

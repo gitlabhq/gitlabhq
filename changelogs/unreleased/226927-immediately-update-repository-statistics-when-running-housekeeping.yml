@@ -1,0 +1,6 @@
+---
+title: Immediately update project statistics when running housekeeping or repository
+  cleanup
+merge_request: 37579
+author:
+type: other

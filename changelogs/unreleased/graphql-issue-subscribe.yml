@@ -1,0 +1,5 @@
+---
+title: Allows setting of issue subscribe status in GraphQL API.
+merge_request: 38051
+author:
+type: added
