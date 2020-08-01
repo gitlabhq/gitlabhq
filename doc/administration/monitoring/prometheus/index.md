@@ -109,6 +109,81 @@ prometheus['scrape_configs'] = [
 ]
 ```
 
+### Standalone Prometheus using Omnibus GitLab
+
+The Omnibus GitLab package can be used to configure a standalone Monitoring node running Prometheus and [Grafana](../performance/grafana_configuration.md).
+
+The steps below are the minimum necessary to configure a Monitoring node running Prometheus and Grafana with Omnibus GitLab:
+
+1. SSH into the Monitoring node.
+1. [Install](https://about.gitlab.com/install/) the Omnibus GitLab
+   package you want using **steps 1 and 2** from the GitLab downloads page, but
+   do not follow the remaining steps.
+1. Make sure to collect the IP addresses or DNS records of the Consul server nodes, for the next step.
+1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
+
+   ```ruby
+   external_url 'http://gitlab.example.com'
+
+   # Enable Prometheus
+   prometheus['enable'] = true
+   prometheus['listen_address'] = '0.0.0.0:9090'
+   prometheus['monitor_kubernetes'] = false
+
+   # Enable Login form
+   grafana['disable_login_form'] = false
+
+   # Enable Grafana
+   grafana['enable'] = true
+   grafana['admin_password'] = 'toomanysecrets'
+
+   # Enable service discovery for Prometheus
+   consul['enable'] = true
+   consul['monitoring_service_discovery'] =  true
+
+   # The addresses can be IPs or FQDNs
+   consul['configuration'] = {
+      retry_join: %w(10.0.0.1 10.0.0.2 10.0.0.3),
+   }
+
+   # Disable all other services
+   gitlab_rails['auto_migrate'] = false
+   alertmanager['enable'] = false
+   gitaly['enable'] = false
+   gitlab_exporter['enable'] = false
+   gitlab_workhorse['enable'] = false
+   nginx['enable'] = true
+   postgres_exporter['enable'] = false
+   postgresql['enable'] = false
+   redis['enable'] = false
+   redis_exporter['enable'] = false
+   sidekiq['enable'] = false
+   puma['enable'] = false
+   node_exporter['enable'] = false
+   gitlab_exporter['enable'] = false
+   ```
+
+1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
+
+The next step is to tell all the other nodes where the monitoring node is:
+
+1. Edit `/etc/gitlab/gitlab.rb`, and add, or find and uncomment the following line:
+
+   ```ruby
+   gitlab_rails['prometheus_address'] = '10.0.0.1:9090'
+   ```
+
+   Where `10.0.0.1:9090` is the IP address and port of the Prometheus node.
+
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
+   take effect.
+
+NOTE: **Note:**
+Once monitoring using Service Discovery is enabled with `consul['monitoring_service_discovery'] =  true`,
+ensure that `prometheus['scrape_configs']` is not set in `/etc/gitlab/gitlab.rb`. Setting both
+`consul['monitoring_service_discovery'] = true` and `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb`
+will result in errors.
+
 ### Using an external Prometheus server
 
 NOTE: **Note:**
@@ -128,14 +203,24 @@ To use an external Prometheus server:
 1. Set each bundled service's [exporter](#bundled-software-metrics) to listen on a network address, for example:
 
    ```ruby
-   gitlab_exporter['listen_address'] = '0.0.0.0'
-   sidekiq['listen_address'] = '0.0.0.0'
-   gitlab_exporter['listen_port'] = '9168'
    node_exporter['listen_address'] = '0.0.0.0:9100'
-   redis_exporter['listen_address'] = '0.0.0.0:9121'
-   postgres_exporter['listen_address'] = '0.0.0.0:9187'
-   gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
    gitlab_workhorse['prometheus_listen_addr'] = "0.0.0.0:9229"
+
+   # Rails nodes
+   gitlab_exporter['listen_address'] = '0.0.0.0'
+   gitlab_exporter['listen_port'] = '9168'
+
+   # Sidekiq nodes
+   sidekiq['listen_address'] = '0.0.0.0'
+
+   # Redis nodes
+   redis_exporter['listen_address'] = '0.0.0.0:9121'
+
+   # PostgreSQL nodes
+   postgres_exporter['listen_address'] = '0.0.0.0:9187'
+
+   # Gitaly nodes
+   gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
    ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).

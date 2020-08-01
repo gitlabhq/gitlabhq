@@ -137,7 +137,7 @@ documentation:
   synchronized from the **primary** node.
 
 NOTE: **Note:**
-[NFS](../../high_availability/nfs.md) can be used in place of Gitaly but is not
+[NFS](../../nfs.md) can be used in place of Gitaly but is not
 recommended.
 
 ### Step 2: Configure the main read-only replica PostgreSQL database on the **secondary** node
@@ -304,9 +304,9 @@ In the architecture overview, there are two machines running the GitLab
 application services. These services are enabled selectively in the
 configuration.
 
-Configure the application servers following
-[Configuring GitLab for multiple nodes](../../high_availability/gitlab.md), then make the
-following modifications:
+Configure the GitLab Rails application servers following the relevant steps
+outlined in the [reference architectures](../../reference_architectures/index.md),
+then make the following modifications:
 
 1. Edit `/etc/gitlab/gitlab.rb` on each application server in the **secondary**
    cluster, and add the following:
@@ -393,7 +393,7 @@ application servers.
 In this topology, a load balancer is required at each geographic location to
 route traffic to the application servers.
 
-See [Load Balancer for GitLab with multiple nodes](../../high_availability/load_balancer.md) for
+See [Load Balancer for GitLab with multiple nodes](../../load_balancer.md) for
 more information.
 
 ### Step 6: Configure the backend application servers on the **secondary** node

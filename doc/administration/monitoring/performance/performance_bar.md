@@ -23,7 +23,7 @@ From left to right, it displays:
   details:
   ![Gitaly profiling using the Performance Bar](img/performance_bar_gitaly_calls.png)
 - **Rugged calls**: the time taken (in milliseconds) and the total number of
-  [Rugged](../../high_availability/nfs.md#improving-nfs-performance-with-gitlab) calls.
+  [Rugged](../../nfs.md#improving-nfs-performance-with-gitlab) calls.
   Click to display a modal window with more details:
   ![Rugged profiling using the Performance Bar](img/performance_bar_rugged_calls.png)
 - **Redis calls**: the time taken (in milliseconds) and the total number of

@@ -1,5 +1,5 @@
 <script>
-import { GlDrawer, GlLabel, GlAvatarLink, GlAvatarLabeled, GlLink } from '@gitlab/ui';
+import { GlDrawer, GlLabel } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
 import boardsStore from '~/boards/stores/boards_store';
@@ -15,16 +15,13 @@ export default {
   milestone: 'milestone',
   label: 'label',
   labelListText: __('Label'),
-  labelMilestoneText: __('Milestone'),
-  labelAssigneeText: __('Assignee'),
   components: {
     GlDrawer,
     GlLabel,
-    GlAvatarLink,
-    GlAvatarLabeled,
-    GlLink,
     BoardSettingsSidebarWipLimit: () =>
       import('ee_component/boards/components/board_settings_wip_limit.vue'),
+    BoardSettingsListTypes: () =>
+      import('ee_component/boards/components/board_settings_list_types.vue'),
   },
   computed: {
     ...mapState(['activeId']),
@@ -41,30 +38,11 @@ export default {
     activeListLabel() {
       return this.activeList.label;
     },
-    activeListMilestone() {
-      return this.activeList.milestone;
-    },
-    activeListAssignee() {
-      return this.activeList.assignee;
-    },
     boardListType() {
       return this.activeList.type || null;
     },
     listTypeTitle() {
-      switch (this.boardListType) {
-        case this.$options.milestone: {
-          return this.$options.labelMilestoneText;
-        }
-        case this.$options.label: {
-          return this.$options.labelListText;
-        }
-        case this.$options.assignee: {
-          return this.$options.labelAssigneeText;
-        }
-        default: {
-          return '';
-        }
-      }
+      return this.$options.labelListText;
     },
   },
   created() {
@@ -94,32 +72,20 @@ export default {
   >
     <template #header>{{ $options.listSettingsText }}</template>
     <template v-if="isSidebarOpen">
-      <div class="d-flex flex-column align-items-start">
-        <label class="js-list-label">{{ listTypeTitle }}</label>
-        <template v-if="boardListType === $options.label">
-          <gl-label
-            :title="activeListLabel.title"
-            :background-color="activeListLabel.color"
-            :scoped="showScopedLabels(activeListLabel)"
-          />
-        </template>
-        <template v-else-if="boardListType === $options.assignee">
-          <gl-avatar-link class="js-assignee" :href="activeListAssignee.webUrl">
-            <gl-avatar-labeled
-              :size="32"
-              :label="activeListAssignee.name"
-              :sub-label="`@${activeListAssignee.username}`"
-              :src="activeListAssignee.avatar"
-            />
-          </gl-avatar-link>
-        </template>
-        <template v-else-if="boardListType === $options.milestone">
-          <gl-link class="js-milestone" :href="activeListMilestone.webUrl">
-            {{ activeListMilestone.title }}
-          </gl-link>
-        </template>
+      <div v-if="boardListType === $options.label">
+        <label class="js-list-label gl-display-block">{{ listTypeTitle }}</label>
+        <gl-label
+          :title="activeListLabel.title"
+          :background-color="activeListLabel.color"
+          :scoped="showScopedLabels(activeListLabel)"
+        />
       </div>
 
+      <board-settings-list-types
+        v-else
+        :active-list="activeList"
+        :board-list-type="boardListType"
+      />
       <board-settings-sidebar-wip-limit :max-issue-count="activeList.maxIssueCount" />
     </template>
   </gl-drawer>

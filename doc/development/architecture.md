@@ -247,7 +247,7 @@ GitLab can be considered to have two layers from a process perspective:
 
 - [Project page](https://github.com/hashicorp/consul/blob/master/README.md)
 - Configuration:
-  - [Omnibus](../administration/high_availability/consul.md)
+  - [Omnibus](../administration/consul.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
 - Layer: Core Service (Data)
 - GitLab.com: [Consul](../user/gitlab_com/index.md#consul)
@@ -467,7 +467,7 @@ NGINX has an Ingress port for all HTTP requests and routes them to the appropria
 
 - [Project page](https://github.com/pgbouncer/pgbouncer/blob/master/README.md)
 - Configuration:
-  - [Omnibus](../administration/high_availability/pgbouncer.md)
+  - [Omnibus](../administration/postgresql/pgbouncer.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
 - Layer: Core Service (Data)
 - GitLab.com: [Database Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#database-architecture)

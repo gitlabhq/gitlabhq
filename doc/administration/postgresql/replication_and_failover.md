@@ -203,7 +203,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
 ### Configuring the Database nodes
 
-1. Make sure to [configure the Consul nodes](../high_availability/consul.md).
+1. Make sure to [configure the Consul nodes](../consul.md).
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information), [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer-information), [`POSTGRESQL_PASSWORD_HASH`](#postgresql-information), the [number of db nodes](#postgresql-information), and the [network address](#network-information) before executing the next step.
 
 1. On the master database node, edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
@@ -466,7 +466,7 @@ Check the [Troubleshooting section](#troubleshooting) before proceeding.
    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
    ```
 
-1. [Enable monitoring](../high_availability/pgbouncer.md#enable-monitoring)
+1. [Enable monitoring](../postgresql/pgbouncer.md#enable-monitoring)
 
 #### PgBouncer Checkpoint
 
@@ -795,7 +795,7 @@ After deploying the configuration follow these steps:
 This example uses 3 PostgreSQL servers, and 1 application node (with PgBouncer setup alongside).
 
 It differs from the [recommended setup](#example-recommended-setup) by moving the Consul servers into the same servers we use for PostgreSQL.
-The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with PostgreSQL [failover](#failover-procedure) and [restore](#restore-procedure) procedures in addition to [Consul outage recovery](../high_availability/consul.md#outage-recovery) on the same set of machines.
+The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with PostgreSQL [failover](#failover-procedure) and [restore](#restore-procedure) procedures in addition to [Consul outage recovery](../consul.md#outage-recovery) on the same set of machines.
 
 In this example we start with all servers on the same 10.6.0.0/16 private network range, they can connect to each freely other on those addresses.
 
@@ -1087,7 +1087,7 @@ To restart either service, run `gitlab-ctl restart SERVICE`
 
 For PostgreSQL, it is usually safe to restart the master node by default. Automatic failover defaults to a 1 minute timeout. Provided the database returns before then, nothing else needs to be done. To be safe, you can stop `repmgrd` on the standby nodes first with `gitlab-ctl stop repmgrd`, then start afterwards with `gitlab-ctl start repmgrd`.
 
-On the Consul server nodes, it is important to restart the Consul service in a controlled fashion. Read our [Consul documentation](../high_availability/consul.md#restarting-the-server-cluster) for instructions on how to restart the service.
+On the Consul server nodes, it is important to [restart the Consul service](../consul.md#restart-consul) in a controlled manner.
 
 ### `gitlab-ctl repmgr-check-master` command produces errors
 
@@ -1134,11 +1134,10 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 ### Issues with other components
 
-If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page.
+If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page:
 
-- [Consul](../high_availability/consul.md#troubleshooting)
+- [Consul](../consul.md#troubleshooting-consul)
 - [PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#troubleshooting)
-- [GitLab application](../high_availability/gitlab.md#troubleshooting)
 
 ## Patroni
 

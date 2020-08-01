@@ -68,7 +68,7 @@ the example below, we add two more mount points that are named `nfs_1` and `nfs_
 respectively.
 
 NOTE: **Note:**
-This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab's performance. See the [relevant documentation](high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab's performance. See the [relevant documentation](nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 **For installations from source**
 

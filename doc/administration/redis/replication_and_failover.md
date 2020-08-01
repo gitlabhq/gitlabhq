@@ -466,7 +466,7 @@ While it doesn't require a list of all Sentinel nodes, in case of a failure,
 it needs to access at least one of the listed.
 
 NOTE: **Note:**
-The following steps should be performed in the [GitLab application server](../high_availability/gitlab.md)
+The following steps should be performed in the GitLab application server
 which ideally should not have Redis or Sentinels on it for a HA setup.
 
 1. SSH into the server where the GitLab application is installed.
@@ -736,6 +736,5 @@ Read more:
 
 1. [Reference architectures](../reference_architectures/index.md)
 1. [Configure the database](../postgresql/replication_and_failover.md)
-1. [Configure NFS](../high_availability/nfs.md)
-1. [Configure the GitLab application servers](../high_availability/gitlab.md)
-1. [Configure the load balancers](../high_availability/load_balancer.md)
+1. [Configure NFS](../nfs.md)
+1. [Configure the load balancers](../load_balancer.md)

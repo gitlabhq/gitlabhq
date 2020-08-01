@@ -557,7 +557,7 @@ On each node perform the following:
 
    1. Specify the necessary NFS mounts in `/etc/fstab`.
       The exact contents of `/etc/fstab` will depend on how you chose
-      to configure your NFS server. See the [NFS documentation](../high_availability/nfs.md)
+      to configure your NFS server. See the [NFS documentation](../nfs.md)
       for examples and the various options.
 
    1. Create the shared directories. These may be different depending on your NFS
@@ -855,7 +855,7 @@ along with [Gitaly](#configure-gitaly), are recommended over using NFS whenever
 possible. However, if you intend to use GitLab Pages,
 [you must use NFS](troubleshooting.md#gitlab-pages-requires-nfs).
 
-For information about configuring NFS, see the [NFS documentation page](../high_availability/nfs.md).
+For information about configuring NFS, see the [NFS documentation page](../nfs.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

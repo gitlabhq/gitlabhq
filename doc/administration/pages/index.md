@@ -536,7 +536,7 @@ database encryption. Proceed with caution.
 
 1. Set up a new server. This will become the **Pages server**.
 
-1. Create an [NFS share](../high_availability/nfs_host_client_setup.md)
+1. Create an [NFS share](../nfs.md)
    on the **Pages server** and configure this share to
    allow access from your main **GitLab server**.
    Note that the example there is more general and

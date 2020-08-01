@@ -221,7 +221,7 @@ the correct credentials for the Sentinel nodes.
 While it doesn't require a list of all Sentinel nodes, in case of a failure,
 it needs to access at least one of listed ones.
 
-The following steps should be performed in the [GitLab application server](../high_availability/gitlab.md)
+The following steps should be performed in the GitLab application server
 which ideally should not have Redis or Sentinels in the same machine:
 
 1. Edit `/home/git/gitlab/config/resque.yml` following the example in

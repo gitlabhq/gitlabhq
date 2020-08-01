@@ -91,7 +91,7 @@ Apart from a local hard drive you can also mount a volume that supports the netw
 If you have enough RAM and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
 NOTE: **Note:**
-Since file system performance may affect GitLab's overall performance, [we don't recommend using AWS EFS for storage](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs).
+Since file system performance may affect GitLab's overall performance, [we don't recommend using AWS EFS for storage](../administration/nfs.md#avoid-using-awss-elastic-file-system-efs).
 
 ### CPU
 

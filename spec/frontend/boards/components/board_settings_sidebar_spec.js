@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlDrawer, GlLabel, GlAvatarLink, GlAvatarLabeled } from '@gitlab/ui';
+import { GlDrawer, GlLabel } from '@gitlab/ui';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import boardsStore from '~/boards/stores/boards_store';
 import sidebarEventHub from '~/sidebar/event_hub';
@@ -154,84 +154,6 @@ describe('BoardSettingsSidebar', () => {
 
     it('does not render GlLabel', () => {
       expect(findLabel().exists()).toBe(false);
-    });
-  });
-
-  describe('when activeList is present', () => {
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-      boardsStore.removeList(listId);
-    });
-
-    describe('when list type is "milestone"', () => {
-      beforeEach(() => {
-        boardsStore.addList({
-          id: 1,
-          milestone: {
-            webUrl: 'https://gitlab.com/h5bp/html5-boilerplate/-/milestones/1',
-            title: 'Backlog',
-          },
-          max_issue_count: 1,
-          list_type: 'milestone',
-        });
-      });
-
-      afterEach(() => {
-        boardsStore.removeList(1, 'milestone');
-        wrapper.destroy();
-      });
-
-      it('renders the correct milestone text', () => {
-        createComponent({ activeId: 1 });
-
-        expect(wrapper.find('.js-milestone').text()).toBe('Backlog');
-      });
-
-      it('renders the correct list type text', () => {
-        createComponent({ activeId: 1 });
-
-        expect(wrapper.find('.js-list-label').text()).toBe('Milestone');
-      });
-    });
-
-    describe('when list type is "assignee"', () => {
-      beforeEach(() => {
-        boardsStore.addList({
-          id: 1,
-          user: { username: 'root', avatar: '', name: 'Test', webUrl: 'https://gitlab.com/root' },
-          max_issue_count: 1,
-          list_type: 'assignee',
-        });
-      });
-
-      afterEach(() => {
-        boardsStore.removeList(1, 'assignee');
-        wrapper.destroy();
-      });
-
-      it('renders gl-avatar-link with correct href', () => {
-        createComponent({ activeId: 1 });
-
-        expect(wrapper.find(GlAvatarLink).exists()).toBe(true);
-        expect(wrapper.find(GlAvatarLink).attributes('href')).toBe('https://gitlab.com/root');
-      });
-
-      it('renders gl-avatar-labeled with "root" as username and name as "Test"', () => {
-        createComponent({ activeId: 1 });
-
-        expect(wrapper.find(GlAvatarLabeled).exists()).toBe(true);
-        expect(wrapper.find(GlAvatarLabeled).attributes('label')).toBe('Test');
-        expect(wrapper.find(GlAvatarLabeled).attributes('sublabel')).toBe('@root');
-      });
-
-      it('renders the correct list type text', () => {
-        createComponent({ activeId: 1 });
-
-        expect(wrapper.find('.js-list-label').text()).toBe('Assignee');
-      });
     });
   });
 });

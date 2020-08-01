@@ -177,7 +177,7 @@ column.
 | NFS ([5](#footnotes)) ([7](#footnotes)) | Shared disk storage service. Can be used as an alternative Object Storage. Required for GitLab Pages | [NFS configuration](../high_availability/nfs.md) | No |
 | [Consul](../../development/architecture.md#consul) ([3](#footnotes)) | Service discovery and health checks/failover | [Consul configuration](../high_availability/consul.md) **(PREMIUM ONLY)** | Yes |
 | [PostgreSQL](../../development/architecture.md#postgresql) | Database | [PostgreSQL configuration](https://docs.gitlab.com/omnibus/settings/database.html) | Yes |
-| [PgBouncer](../../development/architecture.md#pgbouncer) | Database connection pooler | [PgBouncer configuration](../high_availability/pgbouncer.md#running-pgbouncer-as-part-of-a-non-ha-gitlab-installation) **(PREMIUM ONLY)** | Yes |
+| [PgBouncer](../../development/architecture.md#pgbouncer) | Database connection pooler | [PgBouncer configuration](../postgresql/pgbouncer.md) **(PREMIUM ONLY)** | Yes |
 | Repmgr | PostgreSQL cluster management and failover | [PostgreSQL and Repmgr configuration](../postgresql/replication_and_failover.md) | Yes |
 | Patroni | An alternative PostgreSQL cluster management and failover | [PostgreSQL and Patroni configuration](../postgresql/replication_and_failover.md#patroni) | Yes |
 | [Redis](../../development/architecture.md#redis) ([3](#footnotes))  | Key/value store for fast data lookup and caching | [Redis configuration](../high_availability/redis.md) | Yes |
