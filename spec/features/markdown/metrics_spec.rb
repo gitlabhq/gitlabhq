@@ -18,10 +18,7 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
 
   before do
     clear_host_from_memoized_variables
-
-    allow(::Gitlab.config.gitlab)
-      .to receive(:url)
-      .and_return(urls.root_url.chomp('/'))
+    stub_gitlab_domain
 
     project.add_developer(user)
     sign_in(user)

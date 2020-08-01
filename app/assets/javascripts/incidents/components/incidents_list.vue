@@ -72,18 +72,11 @@ export default {
     GlPagination,
     GlTabs,
     GlTab,
-    PublishedCell: () => import('ee_component/incidents/components/published_cell.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: [
-    'projectPath',
-    'newIssuePath',
-    'incidentTemplateName',
-    'issuePath',
-    'publishedAvailable',
-  ],
+  inject: ['projectPath', 'newIssuePath', 'incidentTemplateName', 'issuePath'],
   apollo: {
     incidents: {
       query: getIncidents,
@@ -150,20 +143,6 @@ export default {
     },
     newIncidentPath() {
       return mergeUrlParams({ issuable_template: this.incidentTemplateName }, this.newIssuePath);
-    },
-    availableFields() {
-      return this.publishedAvailable
-        ? [
-            ...this.$options.fields,
-            ...[
-              {
-                key: 'published',
-                label: s__('IncidentManagement|Published'),
-                thClass: 'gl-pointer-events-none',
-              },
-            ],
-          ]
-        : this.$options.fields;
     },
   },
   methods: {
@@ -251,7 +230,7 @@ export default {
     </h4>
     <gl-table
       :items="incidents.list || []"
-      :fields="availableFields"
+      :fields="$options.fields"
       :show-empty="true"
       :busy="loading"
       stacked="md"
@@ -266,7 +245,7 @@ export default {
           <gl-icon
             v-if="item.state === 'closed'"
             name="issue-close"
-            class="gl-ml-1 gl-fill-blue-500"
+            class="gl-fill-blue-500"
             data-testid="incident-closed"
           />
         </div>
@@ -304,13 +283,6 @@ export default {
             {{ $options.i18n.unassigned }}
           </template>
         </div>
-      </template>
-
-      <template v-if="publishedAvailable" #cell(published)="{ item }">
-        <published-cell
-          :status-page-published-incident="item.statusPagePublishedIncident"
-          :un-published="$options.i18n.unPublished"
-        />
       </template>
 
       <template #table-busy>

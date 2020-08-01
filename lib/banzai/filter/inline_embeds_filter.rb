@@ -82,6 +82,10 @@ module Banzai
       def metrics_dashboard_url
         raise NotImplementedError
       end
+
+      def gitlab_domain
+        ::Gitlab.config.gitlab.url
+      end
     end
   end
 end

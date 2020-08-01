@@ -13,7 +13,7 @@ class DeleteUserCalloutAlertsMoved < ActiveRecord::Migration[6.0]
 
   BATCH_SIZE = 1_000
 
-  # Inlined from Enums::UserCallout.feature_names
+  # Inlined from UserCalloutEnums.feature_names
   FEATURE_NAME_ALERTS_MOVED = 20
 
   def up

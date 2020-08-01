@@ -240,7 +240,7 @@ RSpec.describe API::Jobs do
       end
 
       context 'when config source not ci' do
-        let(:non_ci_config_source) { Enums::Ci::Pipeline.non_ci_config_source_values.first }
+        let(:non_ci_config_source) { ::Ci::PipelineEnums.non_ci_config_source_values.first }
         let(:pipeline) do
           create(:ci_pipeline, config_source: non_ci_config_source, project: project)
         end

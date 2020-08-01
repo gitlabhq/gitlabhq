@@ -750,7 +750,6 @@ Relationship between an epic and an issue
 | `relationPath` | String | URI path of the epic-issue relation |
 | `relativePosition` | Int | Relative position of the issue (used for positioning in epic tree and issue boards) |
 | `state` | IssueState! | State of the issue |
-| `statusPagePublishedIncident` | Boolean | Indicates whether an issue is published to the status page |
 | `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the issue |
 | `taskCompletionStatus` | TaskCompletionStatus! | Task completion status of the issue |
 | `timeEstimate` | Int! | Time estimate of the issue |
@@ -917,7 +916,6 @@ Represents a Group Member
 | `reference` | String! | Internal reference of the issue. Returned in shortened format by default |
 | `relativePosition` | Int | Relative position of the issue (used for positioning in epic tree and issue boards) |
 | `state` | IssueState! | State of the issue |
-| `statusPagePublishedIncident` | Boolean | Indicates whether an issue is published to the status page |
 | `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the issue |
 | `taskCompletionStatus` | TaskCompletionStatus! | Task completion status of the issue |
 | `timeEstimate` | Int! | Time estimate of the issue |

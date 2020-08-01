@@ -374,6 +374,8 @@ You can supply a custom root certificate to complete TLS verification by using t
 specifying a `ca` setting in a [`.bowerrc`](https://bower.io/docs/config/#bowerrc-specification)
 file.
 
+### Configuring Bundler projects
+
 #### Using private Bundler registries
 
 If you have a private Bundler registry you can use the
@@ -391,6 +393,39 @@ source "https://gems.example.com"
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
 specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.html)
+[environment variable](../../../ci/variables/README.md#custom-environment-variables)
+in the job definition.
+
+### Configuring Composer projects
+
+#### Using private Composer registries
+
+If you have a private Composer registry you can use the
+[`repositories`](https://getcomposer.org/doc/05-repositories.md)
+setting to specify its location.
+
+For example:
+
+```json
+{
+  "repositories": [
+    { "packagist.org": false },
+    {
+      "type": "composer",
+      "url": "https://composer.example.com"
+    }
+  ],
+  "require": {
+    "monolog/monolog": "1.0.*"
+  }
+}
+```
+
+#### Custom root certificates for Composer
+
+You can supply a custom root certificate to complete TLS verification by using the
+`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
+specifying a [`COMPOSER_CAFILE`](https://getcomposer.org/doc/03-cli.md#composer-cafile)
 [environment variable](../../../ci/variables/README.md#custom-environment-variables)
 in the job definition.
 

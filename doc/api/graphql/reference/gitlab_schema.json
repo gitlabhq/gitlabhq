@@ -12472,20 +12472,6 @@
               "deprecationReason": null
             },
             {
-              "name": "statusPagePublishedIncident",
-              "description": "Indicates whether an issue is published to the status page",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "subscribed",
               "description": "Indicates the currently logged in user is subscribed to the issue",
               "args": [
@@ -16837,20 +16823,6 @@
                   "name": "IssueState",
                   "ofType": null
                 }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "statusPagePublishedIncident",
-              "description": "Indicates whether an issue is published to the status page",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

@@ -3,9 +3,9 @@
 class UserCallout < ApplicationRecord
   belongs_to :user
 
-  # We use `Enums::UserCallout.feature_names` here so that EE can more easily
+  # We use `UserCalloutEnums.feature_names` here so that EE can more easily
   # extend this `Hash` with new values.
-  enum feature_name: Enums::UserCallout.feature_names
+  enum feature_name: ::UserCalloutEnums.feature_names
 
   validates :user, presence: true
   validates :feature_name,

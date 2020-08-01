@@ -125,7 +125,7 @@ RSpec.describe Ci::Ref do
 
   describe '#last_finished_pipeline_id' do
     let(:pipeline_status) { :running }
-    let(:config_source) { Enums::Ci::Pipeline.config_sources[:repository_source] }
+    let(:config_source) { Ci::PipelineEnums.config_sources[:repository_source] }
     let(:pipeline) { create(:ci_pipeline, pipeline_status, config_source: config_source) }
     let(:ci_ref) { pipeline.ci_ref }
 
@@ -143,7 +143,7 @@ RSpec.describe Ci::Ref do
       end
 
       context 'when the pipeline is not a ci_source' do
-        let(:config_source) { Enums::Ci::Pipeline.config_sources[:parameter_source] }
+        let(:config_source) { Ci::PipelineEnums.config_sources[:parameter_source] }
 
         it 'returns nil' do
           expect(ci_ref.last_finished_pipeline_id).to be_nil

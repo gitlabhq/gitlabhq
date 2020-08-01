@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-module Enums
-  module InternalId
-    def self.usage_resources
-      # when adding new resource, make sure it doesn't conflict with EE usage_resources
-      {
+module InternalIdEnums
+  def self.usage_resources
+    # when adding new resource, make sure it doesn't conflict with EE usage_resources
+    {
         issues: 0,
         merge_requests: 1,
         deployments: 2,
@@ -15,9 +14,8 @@ module Enums
         operations_user_lists: 7,
         alert_management_alerts: 8,
         sprints: 9 # iterations
-      }
-    end
+    }
   end
 end
 
-Enums::InternalId.prepend_if_ee('EE::Enums::InternalId')
+InternalIdEnums.prepend_if_ee('EE::InternalIdEnums')

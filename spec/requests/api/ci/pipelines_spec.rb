@@ -477,7 +477,7 @@ RSpec.describe API::Ci::Pipelines do
     end
 
     context 'when config source is not ci' do
-      let(:non_ci_config_source) { Enums::Ci::Pipeline.non_ci_config_source_values.first }
+      let(:non_ci_config_source) { ::Ci::PipelineEnums.non_ci_config_source_values.first }
       let(:pipeline_not_ci) do
         create(:ci_pipeline, config_source: non_ci_config_source, project: project)
       end

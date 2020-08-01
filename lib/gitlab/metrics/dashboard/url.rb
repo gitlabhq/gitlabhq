@@ -92,11 +92,15 @@ module Gitlab
           end
 
           def gitlab_host_pattern
-            Regexp.escape(Gitlab.config.gitlab.url)
+            Regexp.escape(gitlab_domain)
           end
 
           def project_path_pattern
             "\/#{Project.reference_pattern}"
+          end
+
+          def gitlab_domain
+            Gitlab.config.gitlab.url
           end
         end
       end

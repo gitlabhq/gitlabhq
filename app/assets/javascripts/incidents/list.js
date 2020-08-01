@@ -8,13 +8,7 @@ export default () => {
   const selector = '#js-incidents';
 
   const domEl = document.querySelector(selector);
-  const {
-    projectPath,
-    newIssuePath,
-    incidentTemplateName,
-    issuePath,
-    publishedAvailable,
-  } = domEl.dataset;
+  const { projectPath, newIssuePath, incidentTemplateName, issuePath } = domEl.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -27,7 +21,6 @@ export default () => {
       incidentTemplateName,
       newIssuePath,
       issuePath,
-      publishedAvailable,
     },
     apolloProvider,
     components: {
