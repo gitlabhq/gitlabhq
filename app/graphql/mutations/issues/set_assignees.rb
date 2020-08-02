@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 module Mutations
-  module MergeRequests
+  module Issues
     class SetAssignees < Base
-      graphql_name 'MergeRequestSetAssignees'
+      graphql_name 'IssueSetAssignees'
 
       include Assignable
 
       def update_service_class
-        ::MergeRequests::UpdateService
+        ::Issues::UpdateService
       end
     end
   end

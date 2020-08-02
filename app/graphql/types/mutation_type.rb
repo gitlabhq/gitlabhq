@@ -17,6 +17,7 @@ module Types
     mount_mutation Mutations::Branches::Create, calls_gitaly: true
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
     mount_mutation Mutations::Discussions::ToggleResolve
+    mount_mutation Mutations::Issues::SetAssignees
     mount_mutation Mutations::Issues::SetConfidential
     mount_mutation Mutations::Issues::SetLocked
     mount_mutation Mutations::Issues::SetDueDate
