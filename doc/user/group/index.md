@@ -334,7 +334,7 @@ To share a given group, for example, 'Frontend' with another group, for example,
 
 All the members of the 'Engineering' group will have been added to 'Frontend'.
 
-## Manage group memberships via LDAP
+## Manage group memberships via LDAP **(STARTER ONLY)**
 
 Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that will be associated with GitLab groups.
 

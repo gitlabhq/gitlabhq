@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import {
   GlFilteredSearch,
   GlButtonGroup,
@@ -16,13 +16,16 @@ import RecentSearchesService from '~/filtered_search/services/recent_searches_se
 import { mockAvailableTokens, mockSortOptions, mockHistoryItems } from './mock_data';
 
 const createComponent = ({
+  shallow = true,
   namespace = 'gitlab-org/gitlab-test',
   recentSearchesStorageKey = 'requirements',
   tokens = mockAvailableTokens,
   sortOptions = mockSortOptions,
   searchInputPlaceholder = 'Filter requirements',
-} = {}) =>
-  shallowMount(FilteredSearchBarRoot, {
+} = {}) => {
+  const mountMethod = shallow ? shallowMount : mount;
+
+  return mountMethod(FilteredSearchBarRoot, {
     propsData: {
       namespace,
       recentSearchesStorageKey,
@@ -31,6 +34,7 @@ const createComponent = ({
       searchInputPlaceholder,
     },
   });
+};
 
 describe('FilteredSearchBarRoot', () => {
   let wrapper;
@@ -54,13 +58,13 @@ describe('FilteredSearchBarRoot', () => {
   describe('computed', () => {
     describe('tokenSymbols', () => {
       it('returns a map containing type and symbols from `tokens` prop', () => {
-        expect(wrapper.vm.tokenSymbols).toEqual({ author_username: '@' });
+        expect(wrapper.vm.tokenSymbols).toEqual({ author_username: '@', label_name: '~' });
       });
     });
 
     describe('tokenTitles', () => {
       it('returns a map containing type and title from `tokens` prop', () => {
-        expect(wrapper.vm.tokenTitles).toEqual({ author_username: 'Author' });
+        expect(wrapper.vm.tokenTitles).toEqual({ author_username: 'Author', label_name: 'Label' });
       });
     });
 
@@ -233,6 +237,14 @@ describe('FilteredSearchBarRoot', () => {
         });
       });
 
+      it('calls `blurSearchInput` method to remove focus from filter input field', () => {
+        jest.spyOn(wrapper.vm, 'blurSearchInput');
+
+        wrapper.find(GlFilteredSearch).vm.$emit('submit', mockFilters);
+
+        expect(wrapper.vm.blurSearchInput).toHaveBeenCalled();
+      });
+
       it('emits component event `onFilter` with provided filters param', () => {
         wrapper.vm.handleFilterSubmit(mockFilters);
 
@@ -260,13 +272,28 @@ describe('FilteredSearchBarRoot', () => {
       expect(glFilteredSearchEl.props('historyItems')).toEqual(mockHistoryItems);
     });
 
+    it('renders search history items dropdown with formatting done using token symbols', async () => {
+      const wrapperFullMount = createComponent({ shallow: false });
+      wrapperFullMount.vm.recentSearchesStore.addRecentSearch(mockHistoryItems[0]);
+
+      await wrapperFullMount.vm.$nextTick();
+
+      const searchHistoryItemsEl = wrapperFullMount.findAll(
+        '.gl-search-box-by-click-menu .gl-search-box-by-click-history-item',
+      );
+
+      expect(searchHistoryItemsEl.at(0).text()).toBe('Author := @tobyLabel := ~Bug"duo"');
+
+      wrapperFullMount.destroy();
+    });
+
     it('renders sort dropdown component', () => {
       expect(wrapper.find(GlButtonGroup).exists()).toBe(true);
       expect(wrapper.find(GlDropdown).exists()).toBe(true);
       expect(wrapper.find(GlDropdown).props('text')).toBe(mockSortOptions[0].title);
     });
 
-    it('renders dropdown items', () => {
+    it('renders sort dropdown items', () => {
       const dropdownItemsEl = wrapper.findAll(GlDropdownItem);
 
       expect(dropdownItemsEl).toHaveLength(mockSortOptions.length);

@@ -10,6 +10,7 @@
 #     action_id: integer
 #     author_id: integer
 #     project_id; integer
+#     target_id; integer
 #     state: 'pending' (default) or 'done'
 #     type: 'Issue' or 'MergeRequest' or ['Issue', 'MergeRequest']
 #
@@ -23,7 +24,7 @@ class TodosFinder
 
   NONE = '0'
 
-  TODO_TYPES = Set.new(%w(Issue MergeRequest DesignManagement::Design)).freeze
+  TODO_TYPES = Set.new(%w(Issue MergeRequest DesignManagement::Design AlertManagement::Alert)).freeze
 
   attr_accessor :current_user, :params
 
@@ -47,6 +48,7 @@ class TodosFinder
     items = by_action(items)
     items = by_author(items)
     items = by_state(items)
+    items = by_target_id(items)
     items = by_types(items)
     items = by_group(items)
     # Filtering by project HAS TO be the last because we use
@@ -196,6 +198,12 @@ class TodosFinder
     return items.pending if params[:state].blank?
 
     items.with_states(params[:state])
+  end
+
+  def by_target_id(items)
+    return items if params[:target_id].blank?
+
+    items.for_target(params[:target_id])
   end
 
   def by_types(items)

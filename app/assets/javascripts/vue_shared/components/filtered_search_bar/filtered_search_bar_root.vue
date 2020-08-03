@@ -184,6 +184,21 @@ export default {
           this.recentSearches = resultantSearches;
         });
     },
+    /**
+     * When user hits Enter/Return key while typing tokens, we emit `onFilter`
+     * event immediately so at that time, we don't want to keep tokens dropdown
+     * visible on UI so this is essentially a hack which allows us to do that
+     * until `GlFilteredSearch` natively supports this.
+     * See this discussion https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36421#note_385729546
+     */
+    blurSearchInput() {
+      const searchInputEl = this.$refs.filteredSearchInput.$el.querySelector(
+        '.gl-filtered-search-token-segment-input',
+      );
+      if (searchInputEl) {
+        searchInputEl.blur();
+      }
+    },
     handleSortOptionClick(sortBy) {
       this.selectedSortOption = sortBy;
       this.$emit('onSort', sortBy.sortDirection[this.selectedSortDirection]);
@@ -217,6 +232,7 @@ export default {
             // https://gitlab.com/gitlab-org/gitlab-foss/issues/30821
           });
       }
+      this.blurSearchInput();
       this.$emit('onFilter', filters);
     },
   },
@@ -226,6 +242,7 @@ export default {
 <template>
   <div class="vue-filtered-search-bar-container d-md-flex">
     <gl-filtered-search
+      ref="filteredSearchInput"
       v-model="filterValue"
       :placeholder="searchInputPlaceholder"
       :available-tokens="tokens"

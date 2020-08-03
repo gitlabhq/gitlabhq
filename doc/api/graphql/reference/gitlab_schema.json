@@ -872,6 +872,167 @@
               "deprecationReason": null
             },
             {
+              "name": "todos",
+              "description": "Todos of the current user for the alert",
+              "args": [
+                {
+                  "name": "action",
+                  "description": "The action to be filtered",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "TodoActionEnum",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "authorId",
+                  "description": "The ID of an author",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "projectId",
+                  "description": "The ID of a project",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "groupId",
+                  "description": "The ID of a group",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "state",
+                  "description": "The state of the todo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "TodoStateEnum",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "type",
+                  "description": "The type of the todo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "TodoTargetEnum",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TodoConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "updatedAt",
               "description": "Timestamp the alert was last updated",
               "args": [

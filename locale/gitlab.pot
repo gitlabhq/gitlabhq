@@ -7507,6 +7507,12 @@ msgstr ""
 msgid "DastProfiles|Do you want to discard this site profile?"
 msgstr ""
 
+msgid "DastProfiles|Edit feature will come soon. Please create a new profile if changes needed"
+msgstr ""
+
+msgid "DastProfiles|Error fetching the profiles list. Please check your network connection and try again."
+msgstr ""
+
 msgid "DastProfiles|Manage Profiles"
 msgstr ""
 
@@ -14220,6 +14226,9 @@ msgid "Lists"
 msgstr ""
 
 msgid "Live preview"
+msgstr ""
+
+msgid "Load more"
 msgstr ""
 
 msgid "Loading"
@@ -24159,6 +24168,9 @@ msgid "There was a problem communicating with your device."
 msgstr ""
 
 msgid "There was a problem fetching groups."
+msgstr ""
+
+msgid "There was a problem fetching labels."
 msgstr ""
 
 msgid "There was a problem fetching project branches."

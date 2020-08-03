@@ -320,6 +320,61 @@ type AlertManagementAlert implements Noteable {
   title: String
 
   """
+  Todos of the current user for the alert
+  """
+  todos(
+    """
+    The action to be filtered
+    """
+    action: [TodoActionEnum!]
+
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    The ID of an author
+    """
+    authorId: [ID!]
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    The ID of a group
+    """
+    groupId: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    The ID of a project
+    """
+    projectId: [ID!]
+
+    """
+    The state of the todo
+    """
+    state: [TodoStateEnum!]
+
+    """
+    The type of the todo
+    """
+    type: [TodoTargetEnum!]
+  ): TodoConnection
+
+  """
   Timestamp the alert was last updated
   """
   updatedAt: Time

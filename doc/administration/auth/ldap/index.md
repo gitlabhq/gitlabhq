@@ -548,7 +548,7 @@ or more LDAP group links](#adding-group-links-starter-only).
 
 ### Adding group links **(STARTER ONLY)**
 
-For information on adding group links via CNs and filters, refer to [the GitLab groups documentation](../../../user/group/index.md#manage-group-memberships-via-ldap).
+For information on adding group links via CNs and filters, refer to [the GitLab groups documentation](../../../user/group/index.md#manage-group-memberships-via-ldap-starter-only).
 
 ### Administrator sync **(STARTER ONLY)**
 

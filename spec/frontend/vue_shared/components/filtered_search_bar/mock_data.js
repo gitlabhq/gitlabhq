@@ -1,5 +1,8 @@
 import Api from '~/api';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
+
+import { mockLabels } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 
 export const mockAuthor1 = {
   id: 1,
@@ -42,7 +45,18 @@ export const mockAuthorToken = {
   fetchAuthors: Api.projectUsers.bind(Api),
 };
 
-export const mockAvailableTokens = [mockAuthorToken];
+export const mockLabelToken = {
+  type: 'label_name',
+  icon: 'labels',
+  title: 'Label',
+  unique: false,
+  symbol: '~',
+  token: LabelToken,
+  operators: [{ value: '=', description: 'is', default: 'true' }],
+  fetchLabels: () => Promise.resolve(mockLabels),
+};
+
+export const mockAvailableTokens = [mockAuthorToken, mockLabelToken];
 
 export const mockHistoryItems = [
   [
@@ -50,6 +64,13 @@ export const mockHistoryItems = [
       type: 'author_username',
       value: {
         data: 'toby',
+        operator: '=',
+      },
+    },
+    {
+      type: 'label_name',
+      value: {
+        data: 'Bug',
         operator: '=',
       },
     },

@@ -97,6 +97,12 @@ module Types
             description: 'URL for metrics embed for the alert',
             resolve: -> (alert, _args, _context) { alert.present.metrics_dashboard_url }
 
+      field :todos,
+            Types::TodoType.connection_type,
+            null: true,
+            description: 'Todos of the current user for the alert',
+            resolver: Resolvers::TodoResolver
+
       def notes
         object.ordered_notes
       end

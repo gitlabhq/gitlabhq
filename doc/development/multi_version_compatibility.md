@@ -36,6 +36,105 @@ since point releases bundle many changes together. Minimizing the time
 between when versions are out of sync across the fleet may help mitigate
 errors caused by upgrades.
 
+## Requirements for zero downtime upgrades
+
+One way to guarantee zero downtime upgrades for on-premise instances is following the
+[expand and contract pattern](https://martinfowler.com/bliki/ParallelChange.html).
+
+This means that every breaking change is broken down in three phases: expand, migrate, and contract.
+
+1. **expand**: a breaking change is introduced keeping the software backward-compatible.
+1. **migrate**: all consumers are updated to make use of the new implementation.
+1. **contract**: backward compatibility is removed.
+
+Those three phases **must be part of different milestones**, to allow zero downtime upgrades.
+
+Depending on the support level for the feature, the contract phase could be delayed until the next major release.
+
+## Expand and contract examples
+
+Route changes, changing Sidekiq worker parameters, and database migrations are all perfect examples of a breaking change.
+Let's see how we can handle them safely.
+
+### Route changes
+
+When changing routing we should pay attention to make sure a route generated from the new version can be served by the old one and vice versa.
+As you can see in [an example later on this page](#some-links-to-issues-and-mrs-were-broken), not doing it can lead to an outage.
+This type of change may look like an immediate switch between the two implementations. However,
+especially with the canary stage, there is an extended period of time where both version of the code
+coexists in production.
+
+1. **expand**: a new route is added, pointing to the same controller as the old one. But nothing in the application will generate links for the new routes.
+1. **migrate**: now that every machine in the fleet can understand the new route, we can generate links with the new routing.
+1. **contract**: the old route can be safely removed. (If the old route was likely to be widely shared, like the link to a repository file, we might want to add redirects and keep the old route for a longer period.)
+
+### Changing Sidekiq worker's parameters
+
+This topic is explained in detail in [Sidekiq Compatibility across Updates](sidekiq_style_guide.md#sidekiq-compatibility-across-updates).
+
+When we need to add a new parameter to a Sidekiq worker class, we can split this into the following steps:
+
+1. **expand**: the worker class adds a new parameter with a default value.
+1. **migrate**: we add the new parameter to all the invocations of the worker.
+1. **contract**: we remove the default value.
+
+At a first look, it may seem safe to bundle expand and migrate into a single milestone, but this will cause an outage if Puma restarts before Sidekiq.
+Puma enqueues jobs with an extra parameter that the old Sidekiq cannot handle.
+
+### Database migrations
+
+The following graph is a simplified visual representation of a deployment, this will guide us in understanding how expand and contract is implemented in our migrations strategy.
+
+There's a special consideration here. Using our post-deployment migrations framework allows us to bundle all three phases into one milestone.
+
+```mermaid
+gantt
+  title Deployment
+  dateFormat  HH:mm
+
+  section Deploy box
+  Run migrations           :done, migr, after schemaA, 2m
+  Run post-deployment migrations     :postmigr, after mcvn  , 2m
+
+  section Database
+    Schema A      :done, schemaA, 00:00  , 1h
+    Schema B      :crit, schemaB, after migr, 58m
+    Schema C.     : schmeaC, after postmigr, 1h
+
+  section Machine A
+    Version N      :done, mavn, 00:00 , 75m
+    Version N+1      : after mavn, 105m
+
+  section Machine B
+    Version N      :done, mbvn, 00:00 , 105m
+    Version N+1      : mbdone, after mbvn, 75m
+
+  section Machine C
+    Version N      :done, mcvn, 00:00 , 2h
+    Version N+1      : mbcdone, after mcvn, 1h
+```
+
+If we look at this schema from a database point of view, we can see two deployments feed into a single GitLab deployment:
+
+1. from `Schema A` to `Schema B`
+1. from `Schema B` to `Schema C`
+
+And these deployments align perfectly with application changes.
+
+1. At the beginning we have `Version N` on `Schema A`.
+1. Then we have a _long_ transition periond with both `Version N` and `Version N+1` on `Schema B`.
+1. When we only have `Version N+1` on `Schema B` the schema changes again.
+1. Finally we have  `Version N+1` on `Schema C`.
+
+With all those details in mind, let's imagine we need to replace a query, and this query has an index to support it.
+
+1. **expand**: this is the from `Schema A` to `Schema B` deployment. We add the new index, but the application will ignore it for now
+1. **migrate**: this is the `Version N` to `Version N+1` application deployment. The new code is deployed, at this point in time only the new query will run.
+1. **contract**: from `Schema B` to `Schema C` (post-deployment migration). Nothing uses the old index anymore, we can safely remove it.
+
+This is only an example. More complex migrations, especially when background migrations are needed will
+still require more than one milestone. For details please refer to our [migration style guide](migration_style_guide.md).
+
 ## Examples of previous incidents
 
 ### Some links to issues and MRs were broken

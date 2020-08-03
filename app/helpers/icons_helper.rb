@@ -45,7 +45,7 @@ module IconsHelper
     ActionController::Base.helpers.image_path('file_icons.svg', host: sprite_base_url)
   end
 
-  def sprite_icon(icon_name, size: nil, css_class: nil)
+  def sprite_icon(icon_name, size: DEFAULT_ICON_SIZE, css_class: nil)
     if known_sprites&.exclude?(icon_name)
       exception = ArgumentError.new("#{icon_name} is not a known icon in @gitlab-org/gitlab-svg")
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception)
@@ -117,7 +117,9 @@ module IconsHelper
         'earth'
       end
 
-    sprite_icon(name, size: DEFAULT_ICON_SIZE, css_class: 'gl-vertical-align-text-bottom')
+    css_class = options.delete(:class)
+
+    sprite_icon(name, size: DEFAULT_ICON_SIZE, css_class: css_class)
   end
 
   def file_type_icon_class(type, mode, name)

@@ -4,6 +4,7 @@ stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
+
 # Reference architectures
 
 You can set up GitLab on a single server or scale it up to serve many users.
@@ -20,10 +21,8 @@ you scale GitLab accordingly.
 Testing on these reference architectures were performed with
 [GitLab's Performance Tool](https://gitlab.com/gitlab-org/quality/performance)
 at specific coded workloads, and the throughputs used for testing were
-calculated based on sample customer data. After selecting the reference
-architecture that matches your scale, refer to
-[Configure GitLab to Scale](#configure-gitlab-to-scale) to see the components
-involved, and how to configure them.
+calculated based on sample customer data. Select the
+[reference architecture](#available-reference-architectures) that matches your scale.
 
 Each endpoint type is tested with the following number of requests per second (RPS)
 per 1,000 users:
@@ -152,42 +151,7 @@ is recommended.
 instance to other geographical locations as a read-only fully operational instance
 that can also be promoted in case of disaster.
 
-## Configure GitLab to scale
-
-NOTE: **Note:**
-From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
-support for NFS for Git repositories is scheduled to be removed. Upgrade to
-[Gitaly Cluster](../gitaly/praefect.md) as soon as possible.
-
-The following components are the ones you need to configure in order to scale
-GitLab. They are listed in the order you'll typically configure them if they are
-required by your [reference architecture](#reference-architectures) of choice.
-
-Most of them are bundled in the GitLab deb/rpm package (called Omnibus GitLab),
-but depending on your system architecture, you may require some components which are
-not included in it. If required, those should be configured before
-setting up components provided by GitLab. Advice on how to select the right
-solution for your organization is provided in the configuration instructions
-column.
-
-| Component | Description | Configuration instructions | Bundled with Omnibus GitLab |
-|-----------|-------------|----------------------------|
-| Load balancer(s) ([6](#footnotes)) | Handles load balancing, typically when you have multiple GitLab application services nodes | [Load balancer configuration](../high_availability/load_balancer.md) ([6](#footnotes))      | No |
-| Object storage service ([4](#footnotes)) | Recommended store for shared data objects | [Object Storage configuration](../object_storage.md) | No |
-| NFS ([5](#footnotes)) ([7](#footnotes)) | Shared disk storage service. Can be used as an alternative Object Storage. Required for GitLab Pages | [NFS configuration](../high_availability/nfs.md) | No |
-| [Consul](../../development/architecture.md#consul) ([3](#footnotes)) | Service discovery and health checks/failover | [Consul configuration](../high_availability/consul.md) **(PREMIUM ONLY)** | Yes |
-| [PostgreSQL](../../development/architecture.md#postgresql) | Database | [PostgreSQL configuration](https://docs.gitlab.com/omnibus/settings/database.html) | Yes |
-| [PgBouncer](../../development/architecture.md#pgbouncer) | Database connection pooler | [PgBouncer configuration](../postgresql/pgbouncer.md) **(PREMIUM ONLY)** | Yes |
-| Repmgr | PostgreSQL cluster management and failover | [PostgreSQL and Repmgr configuration](../postgresql/replication_and_failover.md) | Yes |
-| Patroni | An alternative PostgreSQL cluster management and failover | [PostgreSQL and Patroni configuration](../postgresql/replication_and_failover.md#patroni) | Yes |
-| [Redis](../../development/architecture.md#redis) ([3](#footnotes))  | Key/value store for fast data lookup and caching | [Redis configuration](../high_availability/redis.md) | Yes |
-| Redis Sentinel | Redis | [Redis Sentinel configuration](../high_availability/redis.md) | Yes |
-| [Gitaly](../../development/architecture.md#gitaly) ([2](#footnotes)) ([7](#footnotes)) | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#run-gitaly-on-its-own-server) | Yes |
-| [Sidekiq](../../development/architecture.md#sidekiq) | Asynchronous/background jobs | [Sidekiq configuration](../high_availability/sidekiq.md) | Yes |
-| [GitLab application services](../../development/architecture.md#unicorn)([1](#footnotes)) | Puma/Unicorn, Workhorse, GitLab Shell - serves front-end requests (UI, API, Git over HTTP/SSH) | [GitLab app scaling configuration](../high_availability/gitlab.md) | Yes |
-| [Prometheus](../../development/architecture.md#prometheus) and [Grafana](../../development/architecture.md#grafana) | GitLab environment monitoring | [Monitoring node for scaling](../high_availability/monitoring_node.md) | Yes |
-
-### Configuring select components with Cloud Native Helm
+## Configuring select components with Cloud Native Helm
 
 We also provide [Helm charts](https://docs.gitlab.com/charts/) as a Cloud Native installation
 method for GitLab. For the reference architectures, select components can be set up in this
@@ -205,44 +169,3 @@ specs, only translated into Kubernetes resources.
 For example, if you were to set up a 50k installation with the Rails nodes being run in Helm,
 then the same amount of resources as given for Omnibus should be given to the Kubernetes
 cluster with the Rails nodes broken down into a number of smaller Pods across that cluster.
-
-## Footnotes
-
-1. In our architectures we run each GitLab Rails node using the Puma webserver
-   and have its number of workers set to 90% of available CPUs along with four threads. For
-   nodes that are running Rails with other components the worker value should be reduced
-   accordingly where we've found 50% achieves a good balance but this is dependent
-   on workload.
-
-1. Gitaly node requirements are dependent on customer data, specifically the number of
-   projects and their sizes. We recommend that each Gitaly node should store no more than 5TB of data
-   and have the number of [`gitaly-ruby` workers](../gitaly/index.md#gitaly-ruby)
-   set to 20% of available CPUs. Additional nodes should be considered in conjunction
-   with a review of expected data size and spread based on the recommendations above.
-
-1. Recommended Redis setup differs depending on the size of the architecture.
-   For smaller architectures (less than 3,000 users) a single instance should suffice.
-   For medium sized installs (3,000 - 5,000) we suggest one Redis cluster for all
-   classes and that Redis Sentinel is hosted alongside Consul.
-   For larger architectures (10,000 users or more) we suggest running a separate
-   [Redis Cluster](../redis/replication_and_failover.md#running-multiple-redis-clusters) for the Cache class
-   and another for the Queues and Shared State classes respectively. We also recommend
-   that you run the Redis Sentinel clusters separately for each Redis Cluster.
-
-1. For data objects such as LFS, Uploads, Artifacts, etc. We recommend an [Object Storage service](../object_storage.md)
-   over NFS where possible, due to better performance.
-
-1. NFS can be used as an alternative for object storage but this isn't typically
-   recommended for performance reasons. Note however it is required for [GitLab
-   Pages](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196).
-
-1. Our architectures have been tested and validated with [HAProxy](https://www.haproxy.org/)
-   as the load balancer. Although other load balancers with similar feature sets
-   could also be used, those load balancers have not been validated.
-
-1. We strongly recommend that any Gitaly or NFS nodes be set up with SSD disks over
-   HDD with a throughput of at least 8,000 IOPS for read operations and 2,000 IOPS for write
-   as these components have heavy I/O. These IOPS values are recommended only as a starter
-   as with time they may be adjusted higher or lower depending on the scale of your
-   environment's workload. If you're running the environment on a Cloud provider
-   you may need to refer to their documentation on how configure IOPS correctly.

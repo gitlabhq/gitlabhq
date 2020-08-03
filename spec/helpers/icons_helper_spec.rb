@@ -48,8 +48,13 @@ RSpec.describe IconsHelper do
   describe 'sprite_icon' do
     icon_name = 'clock'
 
-    it 'returns svg icon html' do
+    it 'returns svg icon html with DEFAULT_ICON_SIZE' do
       expect(sprite_icon(icon_name).to_s)
+        .to eq "<svg class=\"s#{IconsHelper::DEFAULT_ICON_SIZE}\" data-testid=\"#{icon_name}-icon\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
+    end
+
+    it 'returns svg icon html without size class' do
+      expect(sprite_icon(icon_name, size: nil).to_s)
         .to eq "<svg data-testid=\"#{icon_name}-icon\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 

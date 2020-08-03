@@ -99,7 +99,7 @@ RSpec.describe Resolvers::TodoResolver do
       end
     end
 
-    context 'when no user is provided' do
+    context 'when no target is provided' do
       it 'returns no todos' do
         todos = resolve(described_class, obj: nil, args: {}, ctx: { current_user: current_user })
 
@@ -107,13 +107,23 @@ RSpec.describe Resolvers::TodoResolver do
       end
     end
 
-    context 'when provided user is not current user' do
+    context 'when target user is not the current user' do
       it 'returns no todos' do
         other_user = create(:user)
 
         todos = resolve(described_class, obj: other_user, args: {}, ctx: { current_user: current_user })
 
         expect(todos).to be_empty
+      end
+    end
+
+    context 'when request is for a todo target' do
+      it 'returns only the todos for the target' do
+        target = issue_todo_pending.target
+
+        todos = resolve(described_class, obj: target, args: {}, ctx: { current_user: current_user })
+
+        expect(todos).to contain_exactly(issue_todo_pending)
       end
     end
   end
