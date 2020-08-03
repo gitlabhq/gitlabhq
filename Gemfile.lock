@@ -400,7 +400,7 @@ GEM
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
     git (1.5.0)
-    gitaly (13.3.0.pre.rc1)
+    gitaly (13.3.0.pre.rc2)
       grpc (~> 1.0)
     github-markup (1.7.0)
     gitlab-chronic (0.10.5)

@@ -727,7 +727,7 @@ X-Gitlab-Event: Note Hook
         "type": "ProjectLabel",
         "group_id": null
       }
-    ],
+    ]
   }
 }
 ```
