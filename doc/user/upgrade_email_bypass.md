@@ -5,8 +5,8 @@ we described a security issue that allowed users to bypass the email verificatio
 In that notice, we strongly recommended that you upgrade all affected installations to the
 latest version as soon as possible.
 
-There is a chance that users on a self-managed instance may be unable to commit code and
-sign in. For more information, see the following resolved and closed
+There is a chance that users with multiple email addresses on a self-managed instance may
+be unable to commit code and sign in. For more information, see the following resolved and closed
 [security issue](https://gitlab.com/gitlab-org/gitlab/-/issues/121664).
 
 This page can help you identify the users at risk, as well as potential issues of the update.
@@ -61,6 +61,10 @@ When an affected user commits code to a Git repository, that user may see the fo
 
 ```shell
 Your account has been blocked. Fatal: Could not read from remote repository
+
+# or
+
+Your primary email address is not confirmed.
 ```
 
 You can assure your users that they have not been [Blocked](admin_area/blocking_unblocking_users.md) by an administrator.
@@ -82,7 +86,7 @@ instance with a [Rails console session](../administration/troubleshooting/naviga
 Once connected, run the following commands to confirm your administrator account:
 
 ```ruby
-admin = User.find_by_username "root" #replace with your admin username
+admin = User.find_by_username "root" # replace with your admin username
 admin.confirmed_at = Time.zone.now
 admin.save!
 ```
@@ -102,4 +106,18 @@ The command described in this section may activate users who have not properly c
 
 ## What about LDAP users?
 
-LDAP users should NOT be affected.
+LDAP Users will remain confirmed if all of the following conditions are met:
+
+- The ["User email confirmation at sign-up" option](../security/user_email_confirmation.md) is set to false.
+- The first sign-in is based on user LDAP credentials.
+- The user has added and verified [a secondary email address](profile/index.md#profile-settings) some time later.
+
+NOTE: **Note:**
+Confirmation timestamps (primary vs. secondary) will be different.
+
+Users will be unconfirmed by the background migration if any of the following conditions are met:
+
+- They [create an account through GitLab](profile/account/create_accounts.md).
+- They [swap their primary email address](profile/index.md#profile-settings) and verify it.
+- If they have two email addresses with the same `confirmed_at` timestamp due to the linked [security issue](https://gitlab.com/gitlab-org/gitlab/-/issues/121664).
+- [LDAP is introduced](../administration/auth/ldap/index.md), and users' primary email address matches that in LDAP.

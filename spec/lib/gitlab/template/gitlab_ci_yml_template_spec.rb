@@ -6,44 +6,12 @@ RSpec.describe Gitlab::Template::GitlabCiYmlTemplate do
   subject { described_class }
 
   describe '.all' do
-    it 'strips the gitlab-ci suffix' do
-      expect(subject.all.first.name).not_to end_with('.gitlab-ci.yml')
-    end
-
     it 'combines the globals and rest' do
       all = subject.all.map(&:name)
 
       expect(all).to include('Elixir')
       expect(all).to include('Docker')
       expect(all).to include('Ruby')
-    end
-
-    it 'ensure that the template name is used exactly once' do
-      all = subject.all.group_by(&:name)
-      duplicates = all.select { |_, templates| templates.length > 1 }
-
-      expect(duplicates).to be_empty
-    end
-  end
-
-  describe '.find' do
-    it 'returns nil if the file does not exist' do
-      expect(subject.find('mepmep-yadida')).to be nil
-    end
-
-    it 'returns the GitlabCiYml object of a valid file' do
-      ruby = subject.find('Ruby')
-
-      expect(ruby).to be_a described_class
-      expect(ruby.name).to eq('Ruby')
-    end
-  end
-
-  describe '.by_category' do
-    it 'returns sorted results' do
-      result = described_class.by_category('General')
-
-      expect(result).to eq(result.sort)
     end
   end
 
@@ -56,13 +24,5 @@ RSpec.describe Gitlab::Template::GitlabCiYmlTemplate do
     end
   end
 
-  describe '#<=>' do
-    it 'sorts lexicographically' do
-      one = described_class.new('a.gitlab-ci.yml')
-      other = described_class.new('z.gitlab-ci.yml')
-
-      expect(one.<=>(other)).to be(-1)
-      expect([other, one].sort).to eq([one, other])
-    end
-  end
+  it_behaves_like 'file template shared examples', 'Ruby', '.gitlab-ci.yml'
 end

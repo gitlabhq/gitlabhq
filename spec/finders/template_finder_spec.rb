@@ -12,7 +12,8 @@ RSpec.describe TemplateFinder do
       :dockerfiles    | described_class
       :gitignores     | described_class
       :gitlab_ci_ymls | described_class
-      :licenses       | ::LicenseTemplateFinder
+      :licenses | ::LicenseTemplateFinder
+      :metrics_dashboard_ymls | described_class
     end
 
     with_them do
@@ -28,6 +29,7 @@ RSpec.describe TemplateFinder do
       :dockerfiles    | 'Binary'
       :gitignores     | 'Actionscript'
       :gitlab_ci_ymls | 'Android'
+      :metrics_dashboard_ymls | 'Default'
     end
 
     with_them do

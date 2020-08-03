@@ -6,7 +6,8 @@ class TemplateFinder
   VENDORED_TEMPLATES = HashWithIndifferentAccess.new(
     dockerfiles: ::Gitlab::Template::DockerfileTemplate,
     gitignores: ::Gitlab::Template::GitignoreTemplate,
-    gitlab_ci_ymls: ::Gitlab::Template::GitlabCiYmlTemplate
+    gitlab_ci_ymls: ::Gitlab::Template::GitlabCiYmlTemplate,
+    metrics_dashboard_ymls: ::Gitlab::Template::MetricsDashboardTemplate
   ).freeze
 
   class << self

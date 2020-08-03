@@ -2086,7 +2086,7 @@ rspec:
 
 `needs` can be used to download artifacts from up to five jobs in pipelines on
 [other refs in the same project](#artifact-downloads-between-pipelines-in-the-same-project),
-or pipelines in different projects:
+or pipelines in different projects, groups and namespaces:
 
 ```yaml
 build_job:
@@ -2094,14 +2094,18 @@ build_job:
   script:
     - ls -lhR
   needs:
-    - project: group/project-name
+    - project: namespace/group/project-name
       job: build-1
       ref: master
       artifacts: true
 ```
 
 `build_job` will download the artifacts from the latest successful `build-1` job
-on the `master` branch in the `group/project-name` project.
+on the `master` branch in the `group/project-name` project. If the project is in the
+same group or namespace, you can omit them from the `project:` key. For example,
+`project: group/project-name` or `project: project-name`.
+
+The user running the pipeline must have at least `reporter` access to the group or project, or the group/project must have public visibility.
 
 ##### Artifact downloads between pipelines in the same project
 

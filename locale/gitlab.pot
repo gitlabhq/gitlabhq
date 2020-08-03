@@ -21141,6 +21141,9 @@ msgstr ""
 msgid "SecurityConfiguration|Testing & Compliance"
 msgstr ""
 
+msgid "SecurityConfiguration|Using custom settings. You won't receive automatic updates on this variable. %{anchorStart}Restore to default%{anchorEnd}"
+msgstr ""
+
 msgid "SecurityConfiguration|You can quickly enable all security scanning tools by enabling %{linkStart}Auto DevOps%{linkEnd}."
 msgstr ""
 

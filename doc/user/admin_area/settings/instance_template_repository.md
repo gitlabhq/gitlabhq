@@ -33,12 +33,13 @@ Templates must be added to a specific subdirectory in the repository,
 corresponding to the kind of template. The following types of custom templates
 are supported:
 
-| Type              | Directory     | Extension     |
-| :---------------: | :-----------: | :-----------: |
-| `Dockerfile`      | `Dockerfile`  | `.dockerfile` |
-| `.gitignore`      | `gitignore`   | `.gitignore`  |
-| `.gitlab-ci.yml`  | `gitlab-ci`   | `.yml`        |
-| `LICENSE`         | `LICENSE`     | `.txt`        |
+| Type                    | Directory            | Extension     |
+| :---------------:       | :-----------:        | :-----------: |
+| `Dockerfile`            | `Dockerfile`         | `.dockerfile` |
+| `.gitignore`            | `gitignore`          | `.gitignore`  |
+| `.gitlab-ci.yml`        | `gitlab-ci`          | `.yml`        |
+| `LICENSE`               | `LICENSE`            | `.txt`        |
+| `metrics-dashboard.yml` | `metrics-dashboards` | `.yml`        |
 
 Each template must go in its respective subdirectory, have the correct
 extension and not be empty. So, the hierarchy should look like this:
@@ -57,6 +58,9 @@ extension and not be empty. So, the hierarchy should look like this:
 |-- LICENSE
     |-- custom_license.txt
     |-- another_license.txt
+|-- metrics-dashboards
+    |-- custom_metrics-dashboard.yml
+    |-- another_metrics-dashboard.yml
 ```
 
 Once this is established, the list of custom templates will be included when

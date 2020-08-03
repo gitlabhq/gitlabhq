@@ -44,6 +44,7 @@ Example response:
    {
       "name":"merge_train",
       "description":"This feature is about merge train",
+      "active": true,
       "created_at":"2019-11-04T08:13:51.423Z",
       "updated_at":"2019-11-04T08:13:51.423Z",
       "scopes":[
@@ -97,6 +98,7 @@ Example response:
    {
       "name":"new_live_trace",
       "description":"This is a new live trace feature",
+      "active": true,
       "created_at":"2019-11-04T08:13:10.507Z",
       "updated_at":"2019-11-04T08:13:10.507Z",
       "scopes":[
@@ -163,6 +165,7 @@ POST /projects/:id/feature_flags
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
 | `name`              | string           | yes        | The name of the feature flag.                                                          |
 | `description`       | string           | no         | The description of the feature flag.                                                   |
+| `active`            | boolean          | no         | The active state of the flag. Defaults to true. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
 | `scopes`            | JSON             | no         | The feature flag specs of the feature flag.                                            |
 | `scopes:environment_scope` | string    | no         | The environment spec.                                                                  |
 | `scopes:active`     | boolean          | no         | Whether the spec is active.                                                            |
@@ -187,6 +190,7 @@ Example response:
 {
    "name":"awesome_feature",
    "description":null,
+   "active": true,
    "created_at":"2019-11-04T08:32:27.288Z",
    "updated_at":"2019-11-04T08:32:27.288Z",
    "scopes":[
@@ -247,6 +251,7 @@ Example response:
 {
    "name":"new_live_trace",
    "description":"This is a new live trace feature",
+   "active": true,
    "created_at":"2019-11-04T08:13:10.507Z",
    "updated_at":"2019-11-04T08:13:10.507Z",
    "scopes":[
