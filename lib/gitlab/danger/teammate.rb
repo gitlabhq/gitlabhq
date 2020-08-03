@@ -82,7 +82,7 @@ module Gitlab
         diff = floored_offset_hours - author.floored_offset_hours
         return "same timezone as `@#{author.username}`" if diff.zero?
 
-        ahead_or_behind = diff < 0 ? 'behind' : 'ahead'
+        ahead_or_behind = diff < 0 ? 'behind' : 'ahead of'
         pluralized_hours = pluralize(diff.abs, 'hour', 'hours')
 
         "#{pluralized_hours} #{ahead_or_behind} `@#{author.username}`"
