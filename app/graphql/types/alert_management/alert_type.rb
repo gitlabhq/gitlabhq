@@ -71,7 +71,7 @@ module Types
             description: 'Number of events of this alert',
             method: :events
 
-      field :details,
+      field :details, # rubocop:disable Graphql/JSONType
             GraphQL::Types::JSON,
             null: true,
             description: 'Alert details'

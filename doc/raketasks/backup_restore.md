@@ -9,6 +9,11 @@ You can only restore a backup to **exactly the same version and type (CE/EE)**
 of GitLab on which it was created. The best way to migrate your repositories
 from one server to another is through backup restore.
 
+CAUTION: **Warning:**
+GitLab will not backup items that are not stored on the
+filesystem. If using [object storage](../administration/object_storage.md),
+remember to enable backups with your object storage provider if desired.
+
 ## Requirements
 
 In order to be able to backup and restore, you need two essential tools

@@ -271,6 +271,7 @@ The following issue metadata will be copied to the epic:
 - Upvotes/downvotes.
 - Participants.
 - Group labels that the issue already has.
+- Parent epic. **(ULTIMATE)**
 
 ## Manage multi-level child epics **(ULTIMATE)**
 

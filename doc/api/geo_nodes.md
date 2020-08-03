@@ -325,9 +325,11 @@ Example response:
     "design_repositories_failed_count": nil,
     "design_repositories_synced_in_percentage": "0.00%",
     "projects_count": 41,
+    "repositories_count": 41,
     "repositories_failed_count": nil,
     "repositories_synced_count": nil,
     "repositories_synced_in_percentage": "0.00%",
+    "wikis_count": 41,
     "wikis_failed_count": nil,
     "wikis_synced_count": nil,
     "wikis_synced_in_percentage": "0.00%",
@@ -402,9 +404,11 @@ Example response:
     "design_repositories_failed_count": nil,
     "design_repositories_synced_in_percentage": "0.00%",
     "projects_count": 41,
+    "repositories_count": 41,
     "repositories_failed_count": 1,
     "repositories_synced_count": 40,
     "repositories_synced_in_percentage": "97.56%",
+    "wikis_count": 41,
     "wikis_failed_count": 0,
     "wikis_synced_count": 41,
     "wikis_synced_in_percentage": "100.00%",
@@ -447,9 +451,6 @@ Example response:
   }
 ]
 ```
-
-NOTE: **Note:**
-In GitLab 12.0, deprecated fields `wikis_count` and `repositories_count` were removed. Use `projects_count` instead.
 
 ## Retrieve status about a specific Geo node
 
@@ -495,9 +496,11 @@ Example response:
   "design_repositories_failed_count": nil,
   "design_repositories_synced_in_percentage": "0.00%",
   "projects_count": 41,
+  "repositories_count": 41,
   "repositories_failed_count": 1,
   "repositories_synced_count": 40,
   "repositories_synced_in_percentage": "97.56%",
+  "wikis_count": 41,
   "wikis_failed_count": 0,
   "wikis_synced_count": 41,
   "wikis_synced_in_percentage": "100.00%",
@@ -516,9 +519,6 @@ Example response:
 ```
 
 Note: The `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
-
-NOTE: **Note:**
-In GitLab 12.0, deprecated fields `wikis_count` and `repositories_count` were removed. Use `projects_count` instead.
 
 ## Retrieve project sync or verification failures that occurred on the current node
 

@@ -1964,7 +1964,12 @@ input CreateIterationInput {
   """
   The target group for the iteration
   """
-  groupPath: ID!
+  groupPath: ID
+
+  """
+  The target project for the iteration
+  """
+  projectPath: ID
 
   """
   The start date of the iteration
@@ -9713,6 +9718,68 @@ type Project {
   Indicates if Issues are enabled for the current user
   """
   issuesEnabled: Boolean
+
+  """
+  Find iterations
+  """
+  iterations(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
+    """
+    endDate: Time
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    The ID of the Iteration to look up
+    """
+    id: ID
+
+    """
+    The internal ID of the Iteration to look up
+    """
+    iid: ID
+
+    """
+    Whether to include ancestor iterations. Defaults to true
+    """
+    includeAncestors: Boolean
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
+    """
+    startDate: Time
+
+    """
+    Filter iterations by state
+    """
+    state: IterationState
+
+    """
+    Fuzzy search by title
+    """
+    title: String
+  ): IterationConnection
 
   """
   Status of Jira import background job of the project

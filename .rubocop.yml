@@ -336,6 +336,15 @@ Graphql/AuthorizeTypes:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
+Graphql/JSONType:
+  Enabled: true
+  Include:
+    - 'app/graphql/types/**/*'
+    - 'ee/app/graphql/types/**/*'
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 RSpec/EnvAssignment:
   Enable: true
   Include:

@@ -1,0 +1,5 @@
+---
+title: Refactor ee/spec/features/* to fix SaveBang Cop
+merge_request: 38289
+author: Rajendra Kadam
+type: fixed
