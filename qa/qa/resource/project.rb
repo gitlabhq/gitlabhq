@@ -123,6 +123,10 @@ module QA
         "#{api_get_path}/runners"
       end
 
+      def api_commits_path
+        "#{api_get_path}/repository/commits"
+      end
+
       def api_repository_branches_path
         "#{api_get_path}/repository/branches"
       end
@@ -174,6 +178,10 @@ module QA
         wait_until(sleep_interval: 1) { Runtime::API::RepositoryStorageMoves.has_status?(self, 'finished', new_storage) }
       rescue Support::Repeater::RepeaterConditionExceededError
         raise Runtime::API::RepositoryStorageMoves::RepositoryStorageMovesError, 'Timed out while waiting for the repository storage move to finish'
+      end
+
+      def commits
+        parse_body(get(Runtime::API::Request.new(api_client, api_commits_path).url))
       end
 
       def import_status

@@ -41,8 +41,6 @@ module QA
             expect(show).to have_file(initial_file)
           end
 
-          praefect_manager.enable_writes
-
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project
             commit.add_files([
