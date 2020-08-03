@@ -12,7 +12,7 @@ RSpec.describe ::Gitlab::JiraImport::StuckJiraImportJobsWorker do
       let(:import_state) { create(:jira_import_state, :scheduled, project: project) }
 
       before do
-        import_state.update(jid: '123')
+        import_state.update!(jid: '123')
       end
     end
   end
@@ -22,7 +22,7 @@ RSpec.describe ::Gitlab::JiraImport::StuckJiraImportJobsWorker do
       let(:import_state) { create(:jira_import_state, :started, project: project) }
 
       before do
-        import_state.update(jid: '123')
+        import_state.update!(jid: '123')
       end
     end
   end

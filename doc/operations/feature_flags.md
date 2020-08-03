@@ -140,6 +140,14 @@ Enables the feature for lists of users created [in the Feature Flags UI](#create
 Similar to [User IDs](#user-ids), it uses the Unleash [`userWithId`](https://unleash.github.io/docs/activation_strategy#userwithid)
 activation strategy.
 
+It's not possible to *disable* a feature for members of a user list, but you can achieve the same
+effect by enabling a feature for a user list that doesn't contain the excluded users.
+
+For example:
+
+- `Full-user-list` = `User1A, User1B, User2A, User2B, User3A, User3B, ...`
+- `Full-user-list-excluding-B-users` = `User1A, User2A, User3A, ...`
+
 #### Create a user list
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.

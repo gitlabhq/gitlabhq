@@ -9,7 +9,7 @@ describe('tokenization for .vue files', () => {
     registerLanguages(vue);
   });
 
-  test.each([
+  it.each([
     [
       '<div v-if="something">content</div>',
       [

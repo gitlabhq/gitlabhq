@@ -56,7 +56,7 @@
 
     .draggable-remove-link {
       cursor: pointer;
-      color: $gray-600;
+      color: $gray-400;
       background-color: $white;
     }
   }
@@ -117,7 +117,7 @@
 
 .prometheus-graph-cursor {
   position: absolute;
-  background: $gray-600;
+  background: $gray-400;
   width: 1px;
 }
 
@@ -290,7 +290,7 @@
       }
 
       > text {
-        fill: $gray-600;
+        fill: $gray-400;
         font-size: 10px;
       }
     }

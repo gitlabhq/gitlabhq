@@ -55,7 +55,7 @@ making the software lifecycle faster and radically improving the speed of busine
 
 GitLab provides solutions for [each of the stages of the DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/):
 
-![DevOps Stages](img/devops-stages.png)
+![DevOps Stages](img/devops-stages-13_3.png)
 
 GitLab is like a top-of-the-line kitchen for making software. As the executive
 chef, you decide what software you want to serve. Using your recipe, GitLab handles
@@ -71,10 +71,11 @@ The following sections provide links to documentation for each DevOps stage:
 | [Create](#create)       | Source code, data creation, and management features.        |
 | [Verify](#verify)       | Testing, code quality, and continuous integration features. |
 | [Package](#package)     | Docker container registry.                                  |
+| [Secure](#secure)       | Security capability features.                               |
 | [Release](#release)     | Application release and delivery features.                  |
 | [Configure](#configure) | Application and infrastructure configuration tools.         |
 | [Monitor](#monitor)     | Application monitoring and metrics features.                |
-| [Secure](#secure)       | Security capability features.                               |
+| [Defend](#defend)       | Protection against security intrusions.                     |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
@@ -274,6 +275,30 @@ The following documentation relates to the DevOps **Package** stage:
   </a>
 </div>
 
+### Secure
+
+Check your application for security vulnerabilities that may lead to unauthorized access, data
+leaks, or denial of service. GitLab can perform static and dynamic tests on your application's code,
+looking for known flaws and reporting them in the merge request. You can then fix flaws prior to
+merge. Security teams can use dashboards to get a high-level view on projects and groups, and start
+remediation processes when needed.
+
+The following documentation relates to the DevOps **Secure** stage:
+
+| Secure topics                                                                                         | Description                                                            |
+|:------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------|
+| [Compliance Dashboard](user/compliance/compliance_dashboard/index.md) **(ULTIMATE)**        | View the most recent Merge Request activity in a group.                |
+| [Container Scanning](user/application_security/container_scanning/index.md) **(ULTIMATE)**            | Use Clair to scan Docker images for known vulnerabilities.             |
+| [Dependency List](user/application_security/dependency_list/index.md) **(ULTIMATE)**                  | View your project's dependencies and their known vulnerabilities.      |
+| [Dependency Scanning](user/application_security/dependency_scanning/index.md) **(ULTIMATE)**          | Analyze your dependencies for known vulnerabilities.                   |
+| [Dynamic Application Security Testing (DAST)](user/application_security/dast/index.md) **(ULTIMATE)** | Analyze running web applications for known vulnerabilities.            |
+| [Group Security Dashboard](user/application_security/security_dashboard/index.md#group-security-dashboard) **(ULTIMATE)**      | View vulnerabilities in all the projects in a group and its subgroups. |
+| [Instance Security Dashboard](user/application_security/security_dashboard/index.md#instance-security-dashboard) **(ULTIMATE)**      | View vulnerabilities in all the projects you're interested in. |
+| [License Compliance](user/compliance/license_compliance/index.md) **(ULTIMATE)**            | Search your project's dependencies for their licenses.                 |
+| [Pipeline Security](user/application_security/security_dashboard/index.md#pipeline-security) **(ULTIMATE)**    | View the security reports for your project's pipelines.               |
+| [Project Security Dashboard](user/application_security/security_dashboard/index.md#project-security-dashboard) **(ULTIMATE)**    | View the latest security reports for your project.                     |
+| [Static Application Security Testing (SAST)](user/application_security/sast/index.md) **(ULTIMATE)**  | Analyze source code for known vulnerabilities.                         |
+
 ### Release
 
 Spend less time configuring your tools, and more time creating. Whether you’re
@@ -352,29 +377,21 @@ The following documentation relates to the DevOps **Monitor** stage:
   </a>
 </div>
 
-### Secure
+### Defend
 
-Check your application for security vulnerabilities that may lead to unauthorized access,
-data leaks, and denial of services. GitLab will perform static and dynamic tests on the
-code of your application, looking for known flaws and report them in the merge request
-so you can fix them before merging. Security teams can use dashboards to get a
-high-level view on projects and groups, and start remediation processes when needed.
+GitLab Defend enables organizations to proactively protect cloud-native environments by providing
+context-aware technologies to reduce overall security risk. Defend is a natural extension of your
+existing operation's practices and provides security visibility across the entire DevSecOps
+lifecycle. This empowers your organization to apply DevSecOps best practices from the first line of
+code through monitoring and protecting your applications deployed into production.
 
-The following documentation relates to the DevOps **Secure** stage:
+The following documentation relates to the DevOps **Defend** stage:
 
-| Secure topics                                                                                         | Description                                                            |
+| Defend topics                                                                                         | Description                                                            |
 |:------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------|
-| [Compliance Dashboard](user/compliance/compliance_dashboard/index.md) **(ULTIMATE)**        | View the most recent Merge Request activity in a group.                |
-| [Container Scanning](user/application_security/container_scanning/index.md) **(ULTIMATE)**            | Use Clair to scan Docker images for known vulnerabilities.             |
-| [Dependency List](user/application_security/dependency_list/index.md) **(ULTIMATE)**                  | View your project's dependencies and their known vulnerabilities.      |
-| [Dependency Scanning](user/application_security/dependency_scanning/index.md) **(ULTIMATE)**          | Analyze your dependencies for known vulnerabilities.                   |
-| [Dynamic Application Security Testing (DAST)](user/application_security/dast/index.md) **(ULTIMATE)** | Analyze running web applications for known vulnerabilities.            |
-| [Group Security Dashboard](user/application_security/security_dashboard/index.md#group-security-dashboard) **(ULTIMATE)**      | View vulnerabilities in all the projects in a group and its subgroups. |
-| [Instance Security Dashboard](user/application_security/security_dashboard/index.md#instance-security-dashboard) **(ULTIMATE)**      | View vulnerabilities in all the projects you're interested in. |
-| [License Compliance](user/compliance/license_compliance/index.md) **(ULTIMATE)**            | Search your project's dependencies for their licenses.                 |
-| [Pipeline Security](user/application_security/security_dashboard/index.md#pipeline-security) **(ULTIMATE)**    | View the security reports for your project's pipelines.               |
-| [Project Security Dashboard](user/application_security/security_dashboard/index.md#project-security-dashboard) **(ULTIMATE)**    | View the latest security reports for your project.                     |
-| [Static Application Security Testing (SAST)](user/application_security/sast/index.md) **(ULTIMATE)**  | Analyze source code for known vulnerabilities.                         |
+| [Web Application Firewall with ModSecurity](user/compliance/compliance_dashboard/index.md) **(ULTIMATE)**  | Filter, monitor, and block HTTP traffic to and from a web application. |
+| [Container Host Security](user/clusters/applications.md#install-falco-using-gitlab-cicd)                   | Detect and respond to security threats at the Kubernetes, network, and host level. |
+| [Container Network Security](user/clusters/applications.md#install-cilium-using-gitlab-cicd)               |  Detect and block unauthorized network traffic between pods and to/from the internet.|
 
 ## New to Git and GitLab?
 

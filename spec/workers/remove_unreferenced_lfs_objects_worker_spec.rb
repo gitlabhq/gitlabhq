@@ -46,7 +46,7 @@ RSpec.describe RemoveUnreferencedLfsObjectsWorker do
     end
 
     it 'removes unreferenced lfs objects after project removal' do
-      project1.destroy
+      project1.destroy!
 
       worker.perform
 

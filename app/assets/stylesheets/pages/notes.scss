@@ -727,7 +727,7 @@ $note-form-margin-left: 72px;
   display: inline-flex;
   align-items: center;
   margin-left: 10px;
-  color: $gray-600;
+  color: $gray-400;
 
   @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     float: none;

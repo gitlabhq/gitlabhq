@@ -436,7 +436,7 @@ describe('Dashboard header', () => {
         });
       });
 
-      test.each(systemDashboards)('is rendered for system dashboards', dashboardPath => {
+      it.each(systemDashboards)('is rendered for system dashboards', dashboardPath => {
         setupAllDashboards(store, dashboardPath);
 
         return wrapper.vm.$nextTick(() => {
@@ -444,7 +444,7 @@ describe('Dashboard header', () => {
         });
       });
 
-      test.each(nonSystemDashboards)('is not rendered for non-system dashboards', dashboardPath => {
+      it.each(nonSystemDashboards)('is not rendered for non-system dashboards', dashboardPath => {
         setupAllDashboards(store, dashboardPath);
 
         return wrapper.vm.$nextTick(() => {

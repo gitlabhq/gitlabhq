@@ -133,12 +133,12 @@ export default {
           </div>
 
           <div class="table-section section-100 gl-white-space-normal mt-md-3">
-            <div class="gl-display-flex gl-text-gray-600">
+            <div class="gl-display-flex gl-text-gray-400">
               <gl-icon name="issues" class="gl-mr-2" />
               <gl-link
                 data-testid="issue-id-link"
                 :href="issue.webUrl"
-                class="gl-text-gray-600 gl-mr-5"
+                class="gl-text-gray-400 gl-mr-5"
                 @click="onIssueLinkClick(issue.iid, issue.title)"
                 >#{{ issue.iid }}</gl-link
               >

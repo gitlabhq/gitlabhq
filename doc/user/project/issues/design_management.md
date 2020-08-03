@@ -1,7 +1,8 @@
 # Design Management
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Core in 13.0.
+> - Support for SVGs was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12771) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
+> - Design Management was [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Core in 13.0.
 
 ## Overview
 
@@ -41,10 +42,9 @@ If the requirements are not met, the **Designs** tab displays a message to the u
 ## Supported files
 
 Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`,
-`gif`, `bmp`, `tiff` or `ico`.
+`gif`, `bmp`, `tiff`, `ico`, or `svg`.
 
-Support for [SVG files](https://gitlab.com/gitlab-org/gitlab/-/issues/12771)
-and [PDFs](https://gitlab.com/gitlab-org/gitlab/-/issues/32811) is planned for a future release.
+Support for [PDF](https://gitlab.com/gitlab-org/gitlab/issues/32811) is planned for a future release.
 
 ## Limitations
 

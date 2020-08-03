@@ -94,7 +94,7 @@ export default {
       {{ issue.title }}
     </h2>
     <a
-      class="gl-text-gray-600 gl-text-decoration-none gl-mb-6 gl-display-block"
+      class="gl-text-gray-400 gl-text-decoration-none gl-mb-6 gl-display-block"
       :href="issue.webUrl"
       >{{ issue.webPath }}</a
     >

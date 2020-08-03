@@ -109,7 +109,7 @@ export default {
 <template>
   <gl-new-dropdown v-bind="$attrs" class="ref-selector" @shown="focusSearchBox">
     <template slot="button-content">
-      <span class="gl-flex-grow-1 gl-ml-2 gl-text-gray-600" data-testid="button-content">
+      <span class="gl-flex-grow-1 gl-ml-2 gl-text-gray-400" data-testid="button-content">
         <span v-if="selectedRef" class="gl-font-monospace">{{ selectedRef }}</span>
         <span v-else>{{ i18n.noRefSelected }}</span>
       </span>

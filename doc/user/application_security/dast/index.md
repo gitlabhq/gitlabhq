@@ -608,8 +608,11 @@ Alternatively, you can use the variable `SECURE_ANALYZERS_PREFIX` to override th
 > - It's able to be enabled or disabled per-project.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-on-demand-scans).
 
-Passive DAST scans may be run on demand against a target website, outside the DevOps lifecycle. These scans will
-always be associated with the default or `master` branch of your project and the results can be seen in the project dashboard.
+Passive DAST scans may be run on demand against a target website, outside the DevOps lifecycle. These scans are
+always associated with the default or `master` branch of your project and the results can be seen in the project dashboard.
+
+NOTE: **Note:**
+You cannot run an on-demand DAST scan against a protected branch unless you have permission to do so. The `master` branch is protected by default. For more details, see [Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 
 ![DAST On-Demand Scan](img/dast_on_demand_v13_2.png)
 

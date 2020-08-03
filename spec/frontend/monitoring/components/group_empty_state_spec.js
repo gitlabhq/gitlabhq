@@ -24,7 +24,7 @@ describe('GroupEmptyState', () => {
     'FOO STATE', // does not fail with unknown states
   ];
 
-  test.each(supportedStates)('Renders an empty state for %s', selectedState => {
+  it.each(supportedStates)('Renders an empty state for %s', selectedState => {
     const wrapper = createComponent({ selectedState });
 
     expect(wrapper.element).toMatchSnapshot();

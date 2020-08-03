@@ -41,7 +41,7 @@ exports[`Design management design index page renders design index 1`] = `
     </h2>
      
     <a
-      class="gl-text-gray-600 gl-text-decoration-none gl-mb-6 gl-display-block"
+      class="gl-text-gray-400 gl-text-decoration-none gl-mb-6 gl-display-block"
       href="full-issue-url"
     >
       ull-issue-path
@@ -188,7 +188,7 @@ exports[`Design management design index page with error GlAlert is rendered in c
     </h2>
      
     <a
-      class="gl-text-gray-600 gl-text-decoration-none gl-mb-6 gl-display-block"
+      class="gl-text-gray-400 gl-text-decoration-none gl-mb-6 gl-display-block"
       href="full-issue-url"
     >
       ull-issue-path

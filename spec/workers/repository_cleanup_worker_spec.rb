@@ -25,13 +25,13 @@ RSpec.describe RepositoryCleanupWorker do
     end
 
     it 'raises an error if the project cannot be found' do
-      project.destroy
+      project.destroy!
 
       expect { worker.perform(project.id, user.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'raises an error if the user cannot be found' do
-      user.destroy
+      user.destroy!
 
       expect { worker.perform(project.id, user.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end

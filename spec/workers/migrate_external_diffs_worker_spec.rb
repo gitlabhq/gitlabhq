@@ -17,7 +17,7 @@ RSpec.describe MigrateExternalDiffsWorker do
     end
 
     it 'does nothing if the diff is missing' do
-      diff.destroy
+      diff.destroy!
 
       worker.perform(diff.id)
     end

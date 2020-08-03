@@ -138,7 +138,7 @@ export default {
                     :aria-label="$options.externalLinkTooltipText"
                     :title="$options.externalLinkTooltipText"
                     data-testid="external-link-indicator"
-                    class="gl-ml-2 gl-flex-shrink-0 gl-flex-grow-0 gl-text-gray-600"
+                    class="gl-ml-2 gl-flex-shrink-0 gl-flex-grow-0 gl-text-gray-400"
                   />
                 </gl-link>
               </li>
