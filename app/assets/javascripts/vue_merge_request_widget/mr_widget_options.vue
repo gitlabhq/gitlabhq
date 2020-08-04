@@ -116,7 +116,12 @@ export default {
       return this.mr.hasCI || this.hasPipelineMustSucceedConflict;
     },
     shouldSuggestPipelines() {
-      return gon.features?.suggestPipeline && !this.mr.hasCI && this.mr.mergeRequestAddCiConfigPath;
+      return (
+        gon.features?.suggestPipeline &&
+        !this.mr.hasCI &&
+        this.mr.mergeRequestAddCiConfigPath &&
+        !this.mr.isDismissedSuggestPipeline
+      );
     },
     shouldRenderCodeQuality() {
       return this.mr?.codeclimate?.head_path;
@@ -374,6 +379,9 @@ export default {
         this.stopPolling();
       });
     },
+    dismissSuggestPipelines() {
+      this.mr.isDismissedSuggestPipeline = true;
+    },
   },
 };
 </script>
@@ -382,10 +390,14 @@ export default {
     <mr-widget-header :mr="mr" />
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
+      data-testid="mr-suggest-pipeline"
       class="mr-widget-workflow"
       :pipeline-path="mr.mergeRequestAddCiConfigPath"
       :pipeline-svg-path="mr.pipelinesEmptySvgPath"
       :human-access="mr.humanAccess.toLowerCase()"
+      :user-callouts-path="mr.userCalloutsPath"
+      :user-callout-feature-id="mr.suggestPipelineFeatureId"
+      @dismiss="dismissSuggestPipelines"
     />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"

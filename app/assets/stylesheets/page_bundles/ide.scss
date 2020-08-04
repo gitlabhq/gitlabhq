@@ -863,9 +863,6 @@ $ide-commit-header-height: 48px;
 .ide-external-link {
   svg {
     display: none;
-    position: absolute;
-    top: 2px;
-    right: -$gl-padding;
   }
 
   &:hover,

@@ -420,8 +420,6 @@ FactoryBot.define do
     end
 
     trait :sast do
-      name { "sast" }
-
       options do
         {
             artifacts: { reports: { sast: 'gl-sast-report.json' } }

@@ -3,6 +3,8 @@
 class MergeRequestWidgetEntity < Grape::Entity
   include RequestAwareEntity
 
+  SUGGEST_PIPELINE = 'suggest_pipeline'
+
   expose :id
   expose :iid
 
@@ -62,6 +64,18 @@ class MergeRequestWidgetEntity < Grape::Entity
       commit_message: s_("CommitMessage|Add %{file_name}") % { file_name: Gitlab::FileDetector::PATTERNS[:gitlab_ci] },
       suggest_gitlab_ci_yml: true
     )
+  end
+
+  expose :user_callouts_path, if: -> (*) { Feature.enabled?(:suggest_pipeline) } do |merge_request|
+    user_callouts_path
+  end
+
+  expose :suggest_pipeline_feature_id, if: -> (*) { Feature.enabled?(:suggest_pipeline) } do |merge_request|
+    SUGGEST_PIPELINE
+  end
+
+  expose :is_dismissed_suggest_pipeline, if: -> (*) { Feature.enabled?(:suggest_pipeline) } do |merge_request|
+    current_user && current_user.dismissed_callout?(feature_name: SUGGEST_PIPELINE)
   end
 
   expose :human_access do |merge_request|

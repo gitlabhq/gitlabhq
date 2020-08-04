@@ -62,6 +62,9 @@ describe('mrWidgetOptions', () => {
     return axios.waitForAll();
   };
 
+  const findSuggestPipeline = () => vm.$el.querySelector('[data-testid="mr-suggest-pipeline"]');
+  const findSuggestPipelineButton = () => findSuggestPipeline().querySelector('button');
+
   describe('default', () => {
     beforeEach(() => {
       return createComponent();
@@ -804,42 +807,48 @@ describe('mrWidgetOptions', () => {
       });
     });
 
-    it('should not suggest pipelines', () => {
-      vm.mr.mergeRequestAddCiConfigPath = null;
-
-      expect(vm.shouldSuggestPipelines).toBeFalsy();
+    it('should not suggest pipelines when feature flag is not present', () => {
+      expect(findSuggestPipeline()).toBeNull();
     });
   });
 
   describe('given suggestPipeline feature flag is enabled', () => {
     beforeEach(() => {
+      mock.onAny().reply(200);
+
       // This is needed because some grandchildren Bootstrap components throw warnings
       // https://gitlab.com/gitlab-org/gitlab/issues/208458
       jest.spyOn(console, 'warn').mockImplementation();
 
       gon.features = { suggestPipeline: true };
-      return createComponent();
+
+      createComponent();
+
+      vm.mr.hasCI = false;
     });
 
     it('should suggest pipelines when none exist', () => {
-      vm.mr.mergeRequestAddCiConfigPath = 'some/path';
-      vm.mr.hasCI = false;
-
-      expect(vm.shouldSuggestPipelines).toBeTruthy();
+      expect(findSuggestPipeline()).toEqual(expect.any(Element));
     });
 
-    it('should not suggest pipelines when they exist', () => {
-      vm.mr.mergeRequestAddCiConfigPath = null;
-      vm.mr.hasCI = false;
+    it.each([
+      { isDismissedSuggestPipeline: true },
+      { mergeRequestAddCiConfigPath: null },
+      { hasCI: true },
+    ])('with %s, should not suggest pipeline', async obj => {
+      Object.assign(vm.mr, obj);
 
-      expect(vm.shouldSuggestPipelines).toBeFalsy();
+      await vm.$nextTick();
+
+      expect(findSuggestPipeline()).toBeNull();
     });
 
-    it('should not suggest pipelines hasCI is true', () => {
-      vm.mr.mergeRequestAddCiConfigPath = 'some/path';
-      vm.mr.hasCI = true;
+    it('should allow dismiss of the suggest pipeline message', async () => {
+      findSuggestPipelineButton().click();
 
-      expect(vm.shouldSuggestPipelines).toBeFalsy();
+      await vm.$nextTick();
+
+      expect(findSuggestPipeline()).toBeNull();
     });
   });
 });

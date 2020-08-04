@@ -3,6 +3,7 @@ import { GlLink, GlSprintf, GlButton } from '@gitlab/ui';
 import MrWidgetIcon from './mr_widget_icon.vue';
 import Tracking from '~/tracking';
 import { s__ } from '~/locale';
+import DismissibleContainer from '~/vue_shared/components/dismissible_container.vue';
 
 const trackingMixin = Tracking.mixin();
 const TRACK_LABEL = 'no_pipeline_noticed';
@@ -24,6 +25,7 @@ export default {
     GlSprintf,
     GlButton,
     MrWidgetIcon,
+    DismissibleContainer,
   },
   mixins: [trackingMixin],
   props: {
@@ -36,6 +38,14 @@ export default {
       required: true,
     },
     humanAccess: {
+      type: String,
+      required: true,
+    },
+    userCalloutsPath: {
+      type: String,
+      required: true,
+    },
+    userCalloutFeatureId: {
       type: String,
       required: true,
     },
@@ -54,8 +64,13 @@ export default {
 };
 </script>
 <template>
-  <div class="mr-widget-body mr-pipeline-suggest gl-mb-3">
-    <div class="gl-display-flex gl-align-items-center">
+  <dismissible-container
+    class="mr-widget-body mr-pipeline-suggest gl-mb-3"
+    :path="userCalloutsPath"
+    :feature-id="userCalloutFeatureId"
+    @dismiss="$emit('dismiss')"
+  >
+    <template #title>
       <mr-widget-icon :name="$options.iconName" />
       <div>
         <gl-sprintf
@@ -85,9 +100,9 @@ export default {
           </template>
         </gl-sprintf>
       </div>
-    </div>
+    </template>
     <div class="row">
-      <div class="col-md-5 order-md-last col-12 gl-mt-5 mt-md-n3 svg-content svg-225">
+      <div class="col-md-5 order-md-last col-12 gl-mt-5 mt-md-n1 pt-md-1 svg-content svg-225">
         <img data-testid="pipeline-image" :src="pipelineSvgPath" />
       </div>
       <div class="col-md-7 order-md-first col-12">
@@ -124,5 +139,5 @@ export default {
         </div>
       </div>
     </div>
-  </div>
+  </dismissible-container>
 </template>

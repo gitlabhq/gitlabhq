@@ -188,6 +188,49 @@ node, using `psql` which is installed by Omnibus GitLab.
 
 The database used by Praefect is now configured.
 
+#### PgBouncer
+
+To reduce PostgreSQL resource consumption, you should set up and configure
+[PgBouncer](https://www.pgbouncer.org/) in front of the PostgreSQL instance. To do
+this, replace value of the `POSTGRESQL_SERVER_ADDRESS` with corresponding IP or host
+address of the PgBouncer instance.
+
+This documentation doesn't provide PgBouncer installation instructions,
+you can:
+
+- Find instructions on the [official website](https://www.pgbouncer.org/install.html).
+- Use a [Docker image](https://hub.docker.com/r/edoburu/pgbouncer/).
+
+In addition to base PgBouncer configuration options, set the following values:
+
+- The [Praefect PostgreSQL database](#postgresql) in the `[databases]` section:
+
+   ```ini
+   [databases]
+   * = host=POSTGRESQL_SERVER_ADDRESS port=5432 auth_user=praefect
+   ```
+
+- [`pool_mode`](https://www.pgbouncer.org/config.html#pool_mode)
+  and [`ignore_startup_parameters`](https://www.pgbouncer.org/config.html#ignore_startup_parameters)
+  in the `[pgbouncer]` section:
+
+   ```ini
+   [pgbouncer]
+   pool_mode = transaction
+   ignore_startup_parameters = extra_float_digits
+   ```
+
+The `praefect` user and its password should be included in the file (default is
+`userlist.txt`) used by PgBouncer if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
+configuration option is set.
+
+NOTE: **Note:**
+By default PgBouncer uses port `6432` to accept incoming
+connections. You can change it by setting the [`listen_port`](https://www.pgbouncer.org/config.html#listen_port)
+configuration option. We recommend setting it to the default port value (`5432`) used by
+PostgreSQL instances. Otherwise you should change the configuration parameter
+`praefect['database_port']` for each Praefect instance to the correct value.
+
 ### Praefect
 
 To complete this section you will need:
