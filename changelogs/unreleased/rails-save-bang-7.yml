@@ -1,0 +1,5 @@
+---
+title: Refactor spec/finders and ee/spec/finders to fix SaveBang Cop
+merge_request: 38173
+author: Rajendra Kadam
+type: fixed

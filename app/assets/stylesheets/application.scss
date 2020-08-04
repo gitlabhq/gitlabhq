@@ -51,3 +51,9 @@
 @media print {
   @import 'print';
 }
+
+/* Rules for overriding cloaking in startup-general.scss */
+.container-limited,
+.modal-dialog {
+  display: block;
+}

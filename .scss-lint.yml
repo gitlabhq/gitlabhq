@@ -7,6 +7,7 @@ scss_files:
 
 exclude:
   - 'app/assets/stylesheets/pages/emojis.scss'
+  - 'app/assets/stylesheets/startup/startup-general.scss'
 
 linters:
   # Reports when you use improper spacing around ! (the "bang") in !default,

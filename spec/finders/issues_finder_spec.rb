@@ -185,9 +185,9 @@ RSpec.describe IssuesFinder do
         let(:params) { { milestone_title: group_milestone.title } }
 
         before do
-          project2.update(namespace: group)
-          issue2.update(milestone: group_milestone)
-          issue3.update(milestone: group_milestone)
+          project2.update!(namespace: group)
+          issue2.update!(milestone: group_milestone)
+          issue3.update!(milestone: group_milestone)
         end
 
         it 'returns issues assigned to that group milestone' do

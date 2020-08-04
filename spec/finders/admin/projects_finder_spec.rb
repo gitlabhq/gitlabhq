@@ -88,7 +88,7 @@ RSpec.describe Admin::ProjectsFinder do
 
     context 'filter by abandoned' do
       before do
-        private_project.update(last_activity_at: Time.zone.now - 6.months - 1.minute)
+        private_project.update!(last_activity_at: Time.zone.now - 6.months - 1.minute)
       end
 
       let(:params) { { abandoned: true } }
@@ -98,7 +98,7 @@ RSpec.describe Admin::ProjectsFinder do
 
     context 'filter by last_repository_check_failed' do
       before do
-        private_project.update(last_repository_check_failed: true)
+        private_project.update!(last_repository_check_failed: true)
       end
 
       let(:params) { { last_repository_check_failed: true } }

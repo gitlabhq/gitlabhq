@@ -2,7 +2,7 @@
 import { mapGetters } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlTooltipDirective, GlFriendlyWrap } from '@gitlab/ui';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 export default {
@@ -10,6 +10,7 @@ export default {
   components: {
     Icon,
     SmartVirtualList,
+    GlFriendlyWrap,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -29,6 +30,7 @@ export default {
   },
   maxShownRows: 30,
   typicalRowHeight: 75,
+  wrapSymbols: ['::', '#', '.', '_', '-', '/', '\\'],
 };
 </script>
 
@@ -72,14 +74,18 @@ export default {
           <div class="table-section section-20 section-wrap">
             <div role="rowheader" class="table-mobile-header">{{ __('Suite') }}</div>
             <div class="table-mobile-content pr-md-1 gl-overflow-wrap-break">
-              {{ testCase.classname }}
+              <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.classname" />
             </div>
           </div>
 
           <div class="table-section section-20 section-wrap">
             <div role="rowheader" class="table-mobile-header">{{ __('Name') }}</div>
             <div class="table-mobile-content pr-md-1 gl-overflow-wrap-break">
-              {{ testCase.name }}
+              <gl-friendly-wrap
+                data-testid="caseName"
+                :symbols="$options.wrapSymbols"
+                :text="testCase.name"
+              />
             </div>
           </div>
 

@@ -55,7 +55,7 @@ RSpec.describe JoinedGroupsFinder do
 
       context 'external users' do
         before do
-          profile_visitor.update(external: true)
+          profile_visitor.update!(external: true)
         end
 
         context 'if not a member' do

@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import DesignVersionDropdown from '~/design_management_legacy/components/upload/design_version_dropdown.vue';
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
 import mockAllVersions from './mock_data/all_versions';
 
 const LATEST_VERSION_ID = 3;
@@ -75,7 +75,9 @@ describe('Design management design version dropdown component', () => {
       createComponent();
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlDropdown).attributes('text')).toBe('Showing Latest Version');
+        expect(wrapper.find(GlDeprecatedDropdown).attributes('text')).toBe(
+          'Showing Latest Version',
+        );
       });
     });
 
@@ -83,7 +85,9 @@ describe('Design management design version dropdown component', () => {
       createComponent({ maxVersions: 1 });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlDropdown).attributes('text')).toBe('Showing Latest Version');
+        expect(wrapper.find(GlDeprecatedDropdown).attributes('text')).toBe(
+          'Showing Latest Version',
+        );
       });
     });
 
@@ -91,7 +95,7 @@ describe('Design management design version dropdown component', () => {
       createComponent({ $route: designRouteFactory(PREVIOUS_VERSION_ID) });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlDropdown).attributes('text')).toBe(`Showing Version #1`);
+        expect(wrapper.find(GlDeprecatedDropdown).attributes('text')).toBe(`Showing Version #1`);
       });
     });
 
@@ -99,7 +103,9 @@ describe('Design management design version dropdown component', () => {
       createComponent({ $route: designRouteFactory(LATEST_VERSION_ID) });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlDropdown).attributes('text')).toBe('Showing Latest Version');
+        expect(wrapper.find(GlDeprecatedDropdown).attributes('text')).toBe(
+          'Showing Latest Version',
+        );
       });
     });
 
@@ -107,7 +113,9 @@ describe('Design management design version dropdown component', () => {
       createComponent();
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.findAll(GlDropdownItem)).toHaveLength(wrapper.vm.allVersions.length);
+        expect(wrapper.findAll(GlDeprecatedDropdownItem)).toHaveLength(
+          wrapper.vm.allVersions.length,
+        );
       });
     });
   });

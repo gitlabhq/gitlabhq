@@ -49,14 +49,17 @@
 
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
+  - if use_startup_css?
+    %style{ type: "text/css" }
+      = Rails.application.assets_manifest.find_sources('startup/startup-general.css').first.to_s.html_safe
   - if user_application_theme == 'gl-dark'
-    = stylesheet_link_tag "application_dark", media: "all"
+    = stylesheet_link_tag_defer "application_dark"
   - else
-    = stylesheet_link_tag "application", media: "all"
+    = stylesheet_link_tag_defer "application"
   = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
-  = stylesheet_link_tag "highlight/themes/#{user_color_scheme}", media: "all"
+  = stylesheet_link_tag_defer "highlight/themes/#{user_color_scheme}"
 
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
 

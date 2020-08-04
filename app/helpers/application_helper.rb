@@ -231,6 +231,18 @@ module ApplicationHelper
     "#{request.path}?#{options.compact.to_param}"
   end
 
+  def use_startup_css?
+    params[:startup_css] == 'true' || cookies['startup_css'] == 'true'
+  end
+
+  def stylesheet_link_tag_defer(path)
+    if use_startup_css?
+      stylesheet_link_tag(path, media: "print", onload: "this.onload=null;this.media='all'")
+    else
+      stylesheet_link_tag(path, media: "all")
+    end
+  end
+
   def outdated_browser?
     browser.ie?
   end

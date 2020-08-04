@@ -51,7 +51,7 @@ RSpec.describe GroupProjectsFinder do
         let!(:shared_project_4) { create(:project, :internal, path: '8') }
 
         before do
-          shared_project_4.project_group_links.create(group_access: Gitlab::Access::REPORTER, group: group)
+          shared_project_4.project_group_links.create!(group_access: Gitlab::Access::REPORTER, group: group)
         end
 
         let(:params) { { min_access_level: Gitlab::Access::MAINTAINER } }
@@ -76,7 +76,7 @@ RSpec.describe GroupProjectsFinder do
 
       context "with external user" do
         before do
-          current_user.update(external: true)
+          current_user.update!(external: true)
         end
 
         it { is_expected.to match_array([shared_project_2, shared_project_1]) }
@@ -107,7 +107,7 @@ RSpec.describe GroupProjectsFinder do
 
       context "with external user" do
         before do
-          current_user.update(external: true)
+          current_user.update!(external: true)
         end
 
         context 'with subgroups projects' do

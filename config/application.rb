@@ -169,6 +169,8 @@ module Gitlab
 
     config.assets.precompile << "application_dark.css"
 
+    config.assets.precompile << "startup/*.css"
+
     config.assets.precompile << "print.css"
     config.assets.precompile << "mailer.css"
     config.assets.precompile << "mailer_client_specific.css"

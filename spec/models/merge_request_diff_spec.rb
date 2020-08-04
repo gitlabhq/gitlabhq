@@ -735,12 +735,6 @@ RSpec.describe MergeRequestDiff do
       let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
       let(:diff) { merge_request.merge_request_diff }
 
-      # before do
-      #   # Temporarily unstub diff.modified_paths in favor of original code
-      #   #
-      #   allow(diff).to receive(:modified_paths).and_call_original
-      # end
-
       context "when the merge_request_diff is overflowed" do
         before do
           expect(diff).to receive(:overflow?).and_return(true)

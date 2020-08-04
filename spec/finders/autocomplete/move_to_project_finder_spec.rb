@@ -53,7 +53,7 @@ RSpec.describe Autocomplete::MoveToProjectFinder do
 
       it 'does not return projects for which issues are disabled' do
         reporter_project.add_reporter(user)
-        reporter_project.update(issues_enabled: false)
+        reporter_project.update!(issues_enabled: false)
         other_reporter_project = create(:project)
         other_reporter_project.add_reporter(user)
 

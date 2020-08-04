@@ -37,7 +37,7 @@ RSpec.describe PersonalProjectsFinder do
 
     context 'external' do
       before do
-        current_user.update(external: true)
+        current_user.update!(external: true)
       end
 
       it { is_expected.to eq([public_project, private_project]) }

@@ -382,14 +382,15 @@ The following documentation relates to the DevOps **Monitor** stage:
 GitLab Defend enables organizations to proactively protect cloud-native environments by providing
 context-aware technologies to reduce overall security risk. Defend is a natural extension of your
 existing operation's practices and provides security visibility across the entire DevSecOps
-lifecycle. This empowers your organization to apply DevSecOps best practices from the first line of
-code through monitoring and protecting your applications deployed into production.
+lifecycle. This visibility empowers your organization to apply DevSecOps best practices from the
+first line of code written and extends all the way through to greater monitoring and protection for
+your applications that are deployed in production.
 
 The following documentation relates to the DevOps **Defend** stage:
 
 | Defend topics                                                                                         | Description                                                            |
 |:------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------|
-| [Web Application Firewall with ModSecurity](user/compliance/compliance_dashboard/index.md) **(ULTIMATE)**  | Filter, monitor, and block HTTP traffic to and from a web application. |
+| [Web Application Firewall with ModSecurity](user/compliance/compliance_dashboard/index.md)  | Filter, monitor, and block HTTP traffic to and from a web application. |
 | [Container Host Security](user/clusters/applications.md#install-falco-using-gitlab-cicd)                   | Detect and respond to security threats at the Kubernetes, network, and host level. |
 | [Container Network Security](user/clusters/applications.md#install-cilium-using-gitlab-cicd)               |  Detect and block unauthorized network traffic between pods and to/from the internet.|
 
