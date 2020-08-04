@@ -1385,7 +1385,7 @@
     source-map "~0.6.1"
     vue-template-es2015-compiler "^1.9.0"
 
-"@vue/test-utils@^1.0.0-beta.30":
+"@vue/test-utils@1.0.0-beta.30":
   version "1.0.0-beta.30"
   resolved "https://registry.yarnpkg.com/@vue/test-utils/-/test-utils-1.0.0-beta.30.tgz#d5f26d1e2411fdb7fa7fdedb61b4b4ea4194c49d"
   integrity sha512-Wyvcha9fNk8+kzTDwb3xWGjPkCPzHSYSwKP6MplrPTG/auhqoad7JqUEceZLc6u7AU4km2pPQ8/m9s0RgCZ0NA==
@@ -12161,7 +12161,7 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.0.tgz#97976142405d13d8efae154749e88c4e358cf926"
   integrity sha512-2j/t+wIbyVMP5NvctQoSUvLkYKoWAAk2QlQiilrM2a6/ulzFgdcLUJfTvs4XQ/3eZhHiBmmEojbjmM4AzZj8JA==
 
-vue-jest@^4.0.0-beta.2:
+vue-jest@4.0.0-beta.2:
   version "4.0.0-beta.2"
   resolved "https://registry.yarnpkg.com/vue-jest/-/vue-jest-4.0.0-beta.2.tgz#f2120ea9d24224aad3a100c2010b0760d47ee6fe"
   integrity sha512-SywBIciuIfqsCb8Eb9UQ02s06+NV8Ry8KnbyhAfnvnyFFulIuh7ujtga9eJYq720nCS4Hz4TpVtS4pD1ZbUILQ==

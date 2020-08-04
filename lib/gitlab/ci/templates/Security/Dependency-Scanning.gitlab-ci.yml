@@ -111,6 +111,7 @@ gemnasium-dependency_scanning:
         - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
         - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
         - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
+        - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
 
 gemnasium-maven-dependency_scanning:
   extends: .ds-analyzer

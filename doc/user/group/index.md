@@ -668,6 +668,23 @@ To enable delayed deletion of projects:
 1. Expand the **Permissions, LFS, 2FA** section, and check **Enable delayed project removal**.
 1. Click **Save changes**.
 
+#### Prevent project forking outside group **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
+
+By default, projects within a group can be forked.
+Optionally, on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
+you can prevent the projects within a group from being forked outside of the current top-level group.
+
+Previously this setting was available only for groups enforcing group managed account. This setting will be
+removed from SAML setting page and migrated to group setting, but in the interim period of changes both of those settings will be taken into consideration, if even one is set to `true` then it will be assumed group does not allow forking projects outside.
+
+To enable prevent project forking:
+
+1. Navigate to the top-level group's **Settings > General** page.
+1. Expand the **Permissions, LFS, 2FA** section, and check **Prevent project forking outside current group**.
+1. Click **Save changes**.
+
 ### Advanced settings
 
 - **Projects**: View all projects within that group, add members to each project,

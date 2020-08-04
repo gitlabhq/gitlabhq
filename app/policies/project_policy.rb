@@ -328,6 +328,7 @@ class ProjectPolicy < BasePolicy
     enable :move_design
     enable :destroy_design
     enable :read_terraform_state
+    enable :read_pod_logs
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -367,7 +368,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_operations
     enable :read_deploy_token
     enable :create_deploy_token
-    enable :read_pod_logs
     enable :destroy_deploy_token
     enable :read_prometheus_alerts
     enable :admin_terraform_state

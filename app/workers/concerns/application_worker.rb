@@ -10,6 +10,7 @@ module ApplicationWorker
   include Sidekiq::Worker # rubocop:disable Cop/IncludeSidekiqWorker
   include WorkerAttributes
   include WorkerContext
+  include Gitlab::SidekiqVersioning::Worker
 
   LOGGING_EXTRA_KEY = 'extra'
 

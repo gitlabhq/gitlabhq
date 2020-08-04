@@ -22,7 +22,7 @@ module Gitlab
         keys = keys.map { |key| cache_key(key) }
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          unlink_or_delete(redis, keys)
+          redis.unlink(*keys)
         end
       end
     end
@@ -59,18 +59,6 @@ module Gitlab
 
     def with(&blk)
       Gitlab::Redis::Cache.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
-    end
-
-    def unlink_or_delete(redis, keys)
-      if Feature.enabled?(:repository_set_cache_unlink, default_enabled: true)
-        redis.unlink(*keys)
-      else
-        redis.del(*keys)
-      end
-    rescue ::Redis::CommandError => e
-      Gitlab::ErrorTracking.log_exception(e)
-
-      redis.del(*keys)
     end
   end
 end

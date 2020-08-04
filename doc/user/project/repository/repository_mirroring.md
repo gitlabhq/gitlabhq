@@ -3,6 +3,9 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.html'
+stage: Create
+group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Repository mirroring
@@ -124,7 +127,87 @@ To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
 The mirrored repository will be listed. For example, `https://*****:*****@github.com/<your_github_group>/<your_github_project>.git`.
 
-The repository will push soon. To force a push, click the appropriate button.
+The repository will push soon. To force a push, click the **Update now** (**{retry}**) button.
+
+## Setting up a push mirror from GitLab to AWS CodeCommit
+
+AWS CodeCommit push mirroring is currently the best way to connect GitLab repositories to AWS CodePipeline, as GitLab is not yet supported as one of their Source Code Management (SCM) providers.
+
+Each new AWS Codepipeline needs significant AWS infrastructure setup. It also requires an individual pipeline per branch.
+
+If AWS CodeDeploy is the final step of a CodePipeline, you can, instead, leverage GitLab CI/CD pipelines and simply use the AWS CLI in the final job in `.gitlab-ci.yml` to deploy to CodeDeploy.
+
+NOTE: **Note:**
+GitLab-to-AWS-CodeCommit push mirroring cannot use SSH authentication until [GitLab issue 34014](https://gitlab.com/gitlab-org/gitlab/-/issues/34014) is resolved.
+
+To set up a mirror from GitLab to AWS CodeCommit:
+
+1. In the AWS IAM console, create an IAM user.
+1. Add the following least privileges permissions for repository mirroring as an "inline policy".
+
+   The Amazon Resource Names (ARNs) must explicitly include the region and account. The IAM policy
+   below grants privilege for mirroring access to two sample repositories. These permissions have
+   been tested to be the minimum (least privileged) required for mirroring:
+
+   ```json
+
+{
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Sid": "MinimumGitLabPushMirroringPermissions",
+               "Effect": "Allow",
+               "Action": [
+                   "codecommit:GitPull",
+                   "codecommit:GitPush"
+               ],
+               "Resource": [
+                 "arn:aws:codecommit:us-east-1:111111111111:MyDestinationRepo",
+                 "arn:aws:codecommit:us-east-1:111111111111:MyDemo*"
+               ]
+           }
+       ]
+   }
+
+   ```json
+   
+1. After the user was created, click the AWS IAM user name.
+1. Click the **Security credentials** tab.
+1. Under **HTTPS Git credentials for AWS CodeCommit** click **Generate credentials**.
+
+   NOTE: **Note:**
+   This Git user ID and password is specific to communicating with CodeCommit. Do
+   not confuse it with the IAM user ID or AWS keys of this user.
+
+1. Copy or download special Git HTTPS user ID and password.
+1. In the AWS CodeCommit console, create a new repository to mirror from your GitLab repo.
+1. Open your new repository and click **Clone URL > Clone HTTPS** (not **Clone HTTPS (GRC)**).
+1. In GitLab, open the repository to be push-mirrored.
+1. Click **Settings > Repository** and expand **Mirroring repositories**.
+1. Fill in the **Git repository URL** field using this format:
+
+   ```plaintext
+   https://<your_aws_git_userid>@git-codecommit.<aws-region>.amazonaws.com/v1/repos/<your_codecommit_repo>
+   ```
+
+   Replace `<your_aws_git_userid>` with the AWS **special HTTPS Git user ID** from the IAM Git
+   credentials created earlier. Replace `<your_codecommit_repo>` with the name of your repo in CodeCommit.
+
+1. For **Mirror direction**, select **Push**.
+1. For **Authentication method**, select **Password** and fill in the **Password** field with the special IAM Git clone user ID **password** created earlier in AWS.
+1. The option **Only mirror protected branches** should be good for CodeCommit as it pushes more
+   frequently (from every five minutes to every minute).
+   CodePipeline requires individual pipeline setups for named branches you wish to have a AWS CI setup for. Since feature branches that have dynamic names will not be supported anyway, configuring **Only mirror protected branches** does not cause flexibility problems with CodePipeline integration as long as you are also willing to protect all the named branches you want to build CodePipelines for.
+
+1. Click **Mirror repository**. You should see the mirrored repository appear:
+
+   ```plaintext
+   https://*****:*****@git-codecommit.<aws-region>.amazonaws.com/v1/repos/<your_codecommit_repo>
+   ```
+
+To test mirroring by forcing a push, click the half-circle arrows button (hover text is **Update now**).
+If **Last successful update** shows a date, you have configured mirroring correctly.
+If it is not working correctly a red `error` tag appears and shows the error message as hover text.
 
 ## Setting up a push mirror to another GitLab instance with 2FA activated
 

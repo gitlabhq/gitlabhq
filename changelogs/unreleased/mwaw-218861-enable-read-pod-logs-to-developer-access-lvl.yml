@@ -1,0 +1,6 @@
+---
+title: Allow users with developer access level for given project to view kubernetes
+  pod logs
+merge_request: 38467
+author:
+type: changed

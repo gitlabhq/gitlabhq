@@ -64,6 +64,36 @@ the extra jobs will take resources away from jobs from workers that were already
 there, if the resources available to the Sidekiq process handling the namespace
 are not adjusted appropriately.
 
+## Versioning
+
+Version can be specified on each Sidekiq worker class.
+This is then sent along when the job is created.
+
+```ruby
+class FooWorker
+  include ApplicationWorker
+
+  version 2
+
+  def perform(*args)
+    if job_version == 2
+      foo = args.first['foo']
+    else
+      foo = args.first
+    end
+  end
+end
+```
+
+Under this schema, any worker is expected to be able to handle any job that was
+enqueued by an older version of that worker. This means that when changing the
+arguments a worker takes, you must increment the `version` (or set `version 1`
+if this is the first time a worker's arguments are changing), but also make sure
+that the worker is still able to handle jobs that were queued with any earlier
+version of the arguments. From the worker's `perform` method, you can read
+`self.job_version` if you want to specifically branch on job version, or you
+can read the number or type of provided arguments.
+
 ## Idempotent Jobs
 
 It's known that a job can fail for multiple reasons. For example, network outages or bugs.

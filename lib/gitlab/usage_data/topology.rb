@@ -51,7 +51,7 @@ module Gitlab
 
       def topology_app_requests_per_hour(client)
         result = query_safely('gitlab_usage_ping:ops:rate5m', 'app_requests', fallback: nil) do |query|
-          client.query(one_week_average(query)).first
+          client.query(aggregate_one_week(query)).first
         end
 
         return unless result
@@ -84,14 +84,14 @@ module Gitlab
       end
 
       def topology_node_memory(client)
-        query_safely('gitlab_usage_ping:node_memory_total_bytes:avg', 'node_memory', fallback: {}) do |query|
-          aggregate_by_instance(client, one_week_average(query))
+        query_safely('gitlab_usage_ping:node_memory_total_bytes:max', 'node_memory', fallback: {}) do |query|
+          aggregate_by_instance(client, aggregate_one_week(query, aggregation: :max))
         end
       end
 
       def topology_node_cpus(client)
         query_safely('gitlab_usage_ping:node_cpus:count', 'node_cpus', fallback: {}) do |query|
-          aggregate_by_instance(client, one_week_average(query, aggregation: :max))
+          aggregate_by_instance(client, aggregate_one_week(query, aggregation: :max))
         end
       end
 
@@ -114,25 +114,25 @@ module Gitlab
       def topology_service_memory_rss(client)
         query_safely(
           'gitlab_usage_ping:node_service_process_resident_memory_bytes:avg', 'service_rss', fallback: {}
-        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
+        ) { |query| aggregate_by_labels(client, aggregate_one_week(query)) }
       end
 
       def topology_service_memory_uss(client)
         query_safely(
           'gitlab_usage_ping:node_service_process_unique_memory_bytes:avg', 'service_uss', fallback: {}
-        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
+        ) { |query| aggregate_by_labels(client, aggregate_one_week(query)) }
       end
 
       def topology_service_memory_pss(client)
         query_safely(
           'gitlab_usage_ping:node_service_process_proportional_memory_bytes:avg', 'service_pss', fallback: {}
-        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
+        ) { |query| aggregate_by_labels(client, aggregate_one_week(query)) }
       end
 
       def topology_all_service_process_count(client)
         query_safely(
           'gitlab_usage_ping:node_service_process:count', 'service_process_count', fallback: {}
-        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
+        ) { |query| aggregate_by_labels(client, aggregate_one_week(query)) }
       end
 
       def topology_all_service_server_types(client)
@@ -231,7 +231,7 @@ module Gitlab
         end
       end
 
-      def one_week_average(query, aggregation: :avg)
+      def aggregate_one_week(query, aggregation: :avg)
         "#{aggregation}_over_time (#{query}[1w])"
       end
 

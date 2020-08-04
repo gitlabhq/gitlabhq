@@ -10336,6 +10336,9 @@ msgstr ""
 msgid "FeatureFlags|New feature flag"
 msgstr ""
 
+msgid "FeatureFlags|New list"
+msgstr ""
+
 msgid "FeatureFlags|Percent rollout (logged in users)"
 msgstr ""
 
@@ -12019,6 +12022,12 @@ msgstr ""
 msgid "GroupSettings|Please choose a group URL with no special characters."
 msgstr ""
 
+msgid "GroupSettings|Prevent forking outside of the group"
+msgstr ""
+
+msgid "GroupSettings|Prevent forking setting was not saved"
+msgstr ""
+
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr ""
 
@@ -12053,6 +12062,9 @@ msgid "GroupSettings|This setting will override user notification preferences fo
 msgstr ""
 
 msgid "GroupSettings|This setting will prevent group members from being notified if the group is mentioned."
+msgstr ""
+
+msgid "GroupSettings|This setting will prevent group members from forking projects outside of the group."
 msgstr ""
 
 msgid "GroupSettings|Transfer group"
@@ -17933,6 +17945,9 @@ msgid "Prevent approval of merge requests by merge request committers"
 msgstr ""
 
 msgid "Prevent environment from auto-stopping"
+msgstr ""
+
+msgid "Prevent project forking outside current group"
 msgstr ""
 
 msgid "Prevent users from changing their profile name"
@@ -26211,9 +26226,6 @@ msgstr ""
 msgid "User List"
 msgstr ""
 
-msgid "User Lists can only be created and modified with %{linkStart}the API%{linkEnd}"
-msgstr ""
-
 msgid "User OAuth applications"
 msgstr ""
 
@@ -26281,6 +26293,9 @@ msgid "UserLists|Create"
 msgstr ""
 
 msgid "UserLists|Define a set of users to be used within feature flag strategies"
+msgstr ""
+
+msgid "UserLists|Edit"
 msgstr ""
 
 msgid "UserLists|Edit %{name}"

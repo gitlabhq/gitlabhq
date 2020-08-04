@@ -22,8 +22,8 @@ RSpec.describe Projects::LogsController do
   describe 'GET #index' do
     let(:empty_project) { create(:project) }
 
-    it 'returns 404 with developer access' do
-      project.add_developer(user)
+    it 'returns 404 with reporter access' do
+      project.add_reporter(user)
 
       get :index, params: environment_params
 
@@ -31,7 +31,7 @@ RSpec.describe Projects::LogsController do
     end
 
     it 'renders empty logs page if no environment exists' do
-      empty_project.add_maintainer(user)
+      empty_project.add_developer(user)
 
       get :index, params: { namespace_id: empty_project.namespace, project_id: empty_project }
 
@@ -40,7 +40,7 @@ RSpec.describe Projects::LogsController do
     end
 
     it 'renders index template' do
-      project.add_maintainer(user)
+      project.add_developer(user)
 
       get :index, params: environment_params
 
@@ -69,12 +69,25 @@ RSpec.describe Projects::LogsController do
       end
     end
 
-    it 'returns 404 with developer access' do
-      project.add_developer(user)
+    it 'returns 404 with reporter access' do
+      project.add_reporter(user)
 
       get endpoint, params: environment_params(pod_name: pod_name, format: :json)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'with developer access' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns the service result' do
+        get endpoint, params: environment_params(pod_name: pod_name, format: :json)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response).to eq(service_result_json)
+      end
     end
 
     context 'with maintainer access' do

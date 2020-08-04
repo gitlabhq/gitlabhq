@@ -1,0 +1,7 @@
+---
+name: sidekiq_versioning
+introduced_by_url: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/232934
+group: group::fulfillment
+type: development
+default_enabled: false

@@ -142,7 +142,7 @@ The following table depicts the various user permission levels in a project.
 | Remove GitLab Pages                               |         |            |             | ✓        | ✓      |
 | Manage clusters                                   |         |            |             | ✓        | ✓      |
 | Manage Project Operations                         |         |            |             | ✓        | ✓      |
-| View Pods logs                                    |         |            |             | ✓        | ✓      |
+| View Pods logs                                    |         |            | ✓           | ✓        | ✓      |
 | Read Terraform state                              |         |            | ✓           | ✓        | ✓      |
 | Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |

@@ -19,6 +19,7 @@ module Gitlab
         chain.add ::Labkit::Middleware::Sidekiq::Server
         chain.add ::Gitlab::SidekiqMiddleware::InstrumentationLogger
         chain.add ::Gitlab::SidekiqMiddleware::AdminMode::Server
+        chain.add ::Gitlab::SidekiqVersioning::Middleware
         chain.add ::Gitlab::SidekiqStatus::ServerMiddleware
         chain.add ::Gitlab::SidekiqMiddleware::WorkerContext::Server
         chain.add ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server
