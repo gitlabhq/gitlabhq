@@ -10,8 +10,6 @@ import { dashboardEmptyStates, metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
-import RefreshButton from '~/monitoring/components/refresh_button.vue';
-import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import EmptyState from '~/monitoring/components/empty_state.vue';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
@@ -449,7 +447,7 @@ describe('Dashboard', () => {
   });
 
   describe('star dashboards', () => {
-    const findToggleStar = () => wrapper.find(DashboardHeader).find({ ref: 'toggleStarBtn' });
+    const findToggleStar = () => findDashboardHeader().find({ ref: 'toggleStarBtn' });
     const findToggleStarIcon = () => findToggleStar().find(GlIcon);
 
     beforeEach(() => {
@@ -524,28 +522,6 @@ describe('Dashboard', () => {
           expect(findToggleStarIcon().attributes('name')).toBe('star');
         });
       });
-    });
-  });
-
-  it('renders the datetimepicker dropdown', () => {
-    createMountedWrapper({ hasMetrics: true });
-
-    setupStoreWithData(store);
-
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.find(DateTimePicker).exists()).toBe(true);
-    });
-  });
-
-  it('renders the refresh dashboard button', () => {
-    createMountedWrapper({ hasMetrics: true });
-
-    setupStoreWithData(store);
-
-    return wrapper.vm.$nextTick().then(() => {
-      const refreshBtn = wrapper.find(DashboardHeader).find(RefreshButton);
-
-      expect(refreshBtn.exists()).toBe(true);
     });
   });
 
@@ -806,57 +782,6 @@ describe('Dashboard', () => {
     });
   });
 
-  describe('dashboard timezone', () => {
-    const setupWithTimezone = value => {
-      store = createStore({ dashboardTimezone: value });
-      setupStoreWithData(store);
-      createShallowWrapper({ hasMetrics: true });
-      return wrapper.vm.$nextTick;
-    };
-
-    describe('local timezone is enabled by default', () => {
-      beforeEach(() => {
-        return setupWithTimezone();
-      });
-
-      it('shows the data time picker in local timezone', () => {
-        expect(
-          findDashboardHeader()
-            .find(DateTimePicker)
-            .props('utc'),
-        ).toBe(false);
-      });
-    });
-
-    describe('when LOCAL timezone is enabled', () => {
-      beforeEach(() => {
-        return setupWithTimezone('LOCAL');
-      });
-
-      it('shows the data time picker in local timezone', () => {
-        expect(
-          findDashboardHeader()
-            .find(DateTimePicker)
-            .props('utc'),
-        ).toBe(false);
-      });
-    });
-
-    describe('when UTC timezone is enabled', () => {
-      beforeEach(() => {
-        return setupWithTimezone('UTC');
-      });
-
-      it('shows the data time picker in UTC format', () => {
-        expect(
-          findDashboardHeader()
-            .find(DateTimePicker)
-            .props('utc'),
-        ).toBe(true);
-      });
-    });
-  });
-
   describe('cluster health', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true, showHeader: false });
@@ -1039,7 +964,7 @@ describe('Dashboard', () => {
   });
 
   describe('add custom metrics', () => {
-    const findAddMetricButton = () => wrapper.find(DashboardHeader).find({ ref: 'addMetricBtn' });
+    const findAddMetricButton = () => findDashboardHeader().find({ ref: 'addMetricBtn' });
 
     describe('when not available', () => {
       beforeEach(() => {

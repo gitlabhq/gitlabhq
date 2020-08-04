@@ -252,6 +252,7 @@ on that specific branch:
 - Run manual pipelines (using the [Web UI](#run-a-pipeline-manually) or [pipelines API](#pipelines-api)).
 - Run scheduled pipelines.
 - Run pipelines using triggers.
+- Run on-demand DAST scan.
 - Trigger manual actions on existing pipelines.
 - Retry or cancel existing jobs (using the Web UI or pipelines API).
 

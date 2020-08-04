@@ -20245,6 +20245,9 @@ msgstr ""
 msgid "Reports|Vulnerability"
 msgstr ""
 
+msgid "Reports|Vulnerability Name"
+msgstr ""
+
 msgid "Reports|no changed test results"
 msgstr ""
 

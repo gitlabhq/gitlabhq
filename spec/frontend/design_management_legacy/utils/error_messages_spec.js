@@ -55,7 +55,7 @@ describe('Error message', () => {
       'Upload skipped. Some of the designs you tried uploading did not change: 1.jpg, 2.jpg, 3.jpg, 4.jpg, 5.jpg, and 2 more.',
     ],
   ])('designUploadSkippedWarning', (uploadedFiles, skippedFiles, expected) => {
-    test('returns expected warning message', () => {
+    it('returns expected warning message', () => {
       expect(designUploadSkippedWarning(uploadedFiles, skippedFiles)).toBe(expected);
     });
   });

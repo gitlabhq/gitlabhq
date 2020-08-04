@@ -2,6 +2,8 @@ import { shallowMount } from '@vue/test-utils';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import { GlDeprecatedDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
+import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
+import RefreshButton from '~/monitoring/components/refresh_button.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 import DuplicateDashboardModal from '~/monitoring/components/duplicate_dashboard_modal.vue';
@@ -34,6 +36,9 @@ describe('Dashboard header', () => {
   const findEnvsDropdownSearch = () => findEnvsDropdown().find(GlSearchBoxByType);
   const findEnvsDropdownSearchMsg = () => wrapper.find({ ref: 'monitorEnvironmentsDropdownMsg' });
   const findEnvsDropdownLoadingIcon = () => findEnvsDropdown().find(GlLoadingIcon);
+
+  const findDateTimePicker = () => wrapper.find(DateTimePicker);
+  const findRefreshButton = () => wrapper.find(RefreshButton);
 
   const findActionsMenu = () => wrapper.find('[data-testid="actions-menu"]');
   const findCreateDashboardMenuItem = () =>
@@ -202,6 +207,59 @@ describe('Dashboard header', () => {
             expect(findEnvsDropdownLoadingIcon().exists()).toBe(false);
           });
       });
+    });
+  });
+
+  describe('date time picker', () => {
+    beforeEach(() => {
+      createShallowWrapper();
+    });
+
+    it('is rendered', () => {
+      expect(findDateTimePicker().exists()).toBe(true);
+    });
+
+    describe('timezone setting', () => {
+      const setupWithTimezone = value => {
+        store = createStore({ dashboardTimezone: value });
+        createShallowWrapper();
+      };
+
+      describe('local timezone is enabled by default', () => {
+        it('shows the data time picker in local timezone', () => {
+          expect(findDateTimePicker().props('utc')).toBe(false);
+        });
+      });
+
+      describe('when LOCAL timezone is enabled', () => {
+        beforeEach(() => {
+          setupWithTimezone('LOCAL');
+        });
+
+        it('shows the data time picker in local timezone', () => {
+          expect(findDateTimePicker().props('utc')).toBe(false);
+        });
+      });
+
+      describe('when UTC timezone is enabled', () => {
+        beforeEach(() => {
+          setupWithTimezone('UTC');
+        });
+
+        it('shows the data time picker in UTC format', () => {
+          expect(findDateTimePicker().props('utc')).toBe(true);
+        });
+      });
+    });
+  });
+
+  describe('refresh button', () => {
+    beforeEach(() => {
+      createShallowWrapper();
+    });
+
+    it('is rendered', () => {
+      expect(findRefreshButton().exists()).toBe(true);
     });
   });
 

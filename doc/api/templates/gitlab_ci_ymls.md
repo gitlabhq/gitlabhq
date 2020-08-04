@@ -1,4 +1,7 @@
 ---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 ---
 
@@ -8,9 +11,9 @@ In GitLab, there is an API endpoint available to work with GitLab CI/CD YMLs. Fo
 information on CI/CD pipeline configuration in GitLab, see the
 [configuration reference documentation](../../ci/yaml/README.md).
 
-## List GitLab CI YML templates
+## List GitLab CI YAML templates
 
-Get all GitLab CI/CD YML templates.
+Get all GitLab CI/CD YAML templates.
 
 ```plaintext
 GET /templates/gitlab_ci_ymls
@@ -19,7 +22,7 @@ GET /templates/gitlab_ci_ymls
 Example request:
 
 ```shell
-curl https://gitlab.example.com/api/v4/templates/gitlab_ci_ymls
+curl "https://gitlab.example.com/api/v4/templates/gitlab_ci_ymls"
 ```
 
 Example response:
@@ -109,9 +112,9 @@ Example response:
 ]
 ```
 
-## Single GitLab CI YML template
+## Single GitLab CI YAML template
 
-Get a single GitLab CI/CD YML template.
+Get a single GitLab CI/CD YAML template.
 
 ```plaintext
 GET /templates/gitlab_ci_ymls/:key
@@ -119,12 +122,12 @@ GET /templates/gitlab_ci_ymls/:key
 
 | Attribute  | Type   | Required | Description                           |
 | ---------- | ------ | -------- | ------------------------------------- |
-| `key`      | string | yes      | The key of the GitLab CI/CD YML template |
+| `key`      | string | yes      | The key of the GitLab CI/CD YAML template |
 
 Example request:
 
 ```shell
-curl https://gitlab.example.com/api/v4/templates/gitlab_ci_ymls/Ruby
+curl "https://gitlab.example.com/api/v4/templates/gitlab_ci_ymls/Ruby"
 ```
 
 Example response:

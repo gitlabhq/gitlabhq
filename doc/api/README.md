@@ -338,10 +338,10 @@ In the example below, we list 50 [namespaces](namespaces.md) per page.
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
 ```
 
-#### Pagination Link header
+#### Pagination `Link` header
 
-[Link headers](https://www.w3.org/wiki/LinkHeader) are sent back with each
-response. They have `rel` set to prev/next/first/last and contain the relevant
+[`Link` headers](https://www.w3.org/wiki/LinkHeader) are sent back with each
+response. They have `rel` set to `prev`/`next`/`first`/`last` and contain the relevant
 URL. Please use these links instead of generating your own URLs.
 
 In the cURL example below, we limit the output to 3 items per page (`per_page=3`)
@@ -424,12 +424,14 @@ Status: 200 OK
 ```
 
 CAUTION: **Deprecation:**
-The `Links` Header will be removed in GitLab 14.0 to be aligned with the [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader)
+The `Links` header will be removed in GitLab 14.0 to be aligned with the [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader).
+The `Link` header was [added in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33714)
+and should be used instead.
 
 The link to the next page contains an additional filter `id_after=42` which excludes records we have retrieved already.
 Note the type of filter depends on the `order_by` option used and we may have more than one additional filter.
 
-When the end of the collection has been reached and there are no additional records to retrieve, the `Links` header is absent and the resulting array is empty.
+When the end of the collection has been reached and there are no additional records to retrieve, the `Link` header is absent and the resulting array is empty.
 
 We recommend using only the given link to retrieve the next page instead of building your own URL. Apart from the headers shown,
 we don't expose additional pagination headers.
