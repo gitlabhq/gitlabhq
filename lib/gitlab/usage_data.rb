@@ -356,6 +356,8 @@ module Gitlab
         # rubocop: disable UsageData/LargeTable:
         Service.available_services_names.each_with_object({}) do |service_name, response|
           response["projects_#{service_name}_active".to_sym] = count(Service.active.where(template: false, instance: false, type: "#{service_name}_service".camelize))
+          response["templates_#{service_name}_active".to_sym] = count(Service.active.where(template: true, type: "#{service_name}_service".camelize))
+          response["instances_#{service_name}_active".to_sym] = count(Service.active.where(instance: true, type: "#{service_name}_service".camelize))
         end.merge(jira_usage, jira_import_usage)
         # rubocop: enable UsageData/LargeTable:
       end
