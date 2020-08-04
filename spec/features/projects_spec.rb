@@ -260,7 +260,7 @@ RSpec.describe 'Project' do
     end
 
     it 'removes a project', :sidekiq_might_not_need_inline do
-      expect { remove_with_confirm('Remove project', project.path) }.to change { Project.count }.by(-1)
+      expect { remove_with_confirm('Remove project', project.path, 'Yes, delete project') }.to change { Project.count }.by(-1)
       expect(page).to have_content "Project '#{project.full_name}' is in the process of being deleted."
       expect(Project.all.count).to be_zero
       expect(project.issues).to be_empty
@@ -386,9 +386,9 @@ RSpec.describe 'Project' do
                                           { form: '.rspec-merge-request-settings', input: '#project_printing_merge_request_link_enabled' }]
   end
 
-  def remove_with_confirm(button_text, confirm_with)
+  def remove_with_confirm(button_text, confirm_with, confirm_button_text = 'Confirm')
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with
-    click_button 'Confirm'
+    click_button confirm_button_text
   end
 end

@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Design management design version dropdown component renders design version dropdown button 1`] = `
-<gl-dropdown-stub
+<gl-deprecated-dropdown-stub
   class="design-version-dropdown"
   issueiid=""
   projectpath=""
   text="Showing Latest Version"
   variant="link"
 >
-  <gl-dropdown-item-stub>
+  <gl-deprecated-dropdown-item-stub>
     <router-link-stub
       class="d-flex js-version-link"
       to="[object Object]"
@@ -31,8 +31,8 @@ exports[`Design management design version dropdown component renders design vers
         class="fa fa-check float-right gl-mr-2"
       />
     </router-link-stub>
-  </gl-dropdown-item-stub>
-  <gl-dropdown-item-stub>
+  </gl-deprecated-dropdown-item-stub>
+  <gl-deprecated-dropdown-item-stub>
     <router-link-stub
       class="d-flex js-version-link"
       to="[object Object]"
@@ -51,19 +51,19 @@ exports[`Design management design version dropdown component renders design vers
        
       <!---->
     </router-link-stub>
-  </gl-dropdown-item-stub>
-</gl-dropdown-stub>
+  </gl-deprecated-dropdown-item-stub>
+</gl-deprecated-dropdown-stub>
 `;
 
 exports[`Design management design version dropdown component renders design version list 1`] = `
-<gl-dropdown-stub
+<gl-deprecated-dropdown-stub
   class="design-version-dropdown"
   issueiid=""
   projectpath=""
   text="Showing Latest Version"
   variant="link"
 >
-  <gl-dropdown-item-stub>
+  <gl-deprecated-dropdown-item-stub>
     <router-link-stub
       class="d-flex js-version-link"
       to="[object Object]"
@@ -86,8 +86,8 @@ exports[`Design management design version dropdown component renders design vers
         class="fa fa-check float-right gl-mr-2"
       />
     </router-link-stub>
-  </gl-dropdown-item-stub>
-  <gl-dropdown-item-stub>
+  </gl-deprecated-dropdown-item-stub>
+  <gl-deprecated-dropdown-item-stub>
     <router-link-stub
       class="d-flex js-version-link"
       to="[object Object]"
@@ -106,6 +106,6 @@ exports[`Design management design version dropdown component renders design vers
        
       <!---->
     </router-link-stub>
-  </gl-dropdown-item-stub>
-</gl-dropdown-stub>
+  </gl-deprecated-dropdown-item-stub>
+</gl-deprecated-dropdown-stub>
 `;

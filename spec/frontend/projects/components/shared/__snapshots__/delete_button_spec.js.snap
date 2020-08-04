@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Project remove modal intialized matches the snapshot 1`] = `
+<form
+  action="some/path"
+  method="post"
+>
+  <input
+    name="_method"
+    type="hidden"
+    value="delete"
+  />
+   
+  <input
+    name="authenticity_token"
+    type="hidden"
+    value="test-csrf-token"
+  />
+   
+  <gl-button-stub
+    category="primary"
+    icon=""
+    role="button"
+    size="medium"
+    tabindex="0"
+    variant="danger"
+  >
+    Remove project
+  </gl-button-stub>
+   
+  <b-modal-stub
+    canceltitle="Cancel"
+    cancelvariant="secondary"
+    footerclass="gl-bg-gray-10 gl-p-5"
+    headerclosecontent="&times;"
+    headercloselabel="Close"
+    id="delete-project-modal-2"
+    ignoreenforcefocusselector=""
+    lazy="true"
+    modalclass="gl-modal,"
+    oktitle="OK"
+    okvariant="danger"
+    size="sm"
+    title=""
+    titleclass="gl-text-red-500"
+    titletag="h4"
+  >
+     
+    <div>
+       
+      <p
+        class="gl-mb-1"
+      >
+        Please type the following to confirm:
+      </p>
+       
+      <p>
+        <code>
+          foo
+        </code>
+      </p>
+       
+      <gl-form-input-stub
+        id="confirm_name_input"
+        name="confirm_name_input"
+        type="text"
+      />
+       
+    </div>
+     
+    <template />
+     
+    <template>
+      Delete project. Are you ABSOLUTELY SURE?
+    </template>
+     
+    <template />
+     
+    <template />
+     
+    <template />
+     
+    <template>
+      <gl-button-stub
+        category="tertiary"
+        class="js-modal-action-cancel"
+        icon=""
+        size="medium"
+        variant="default"
+      >
+        
+      Cancel, keep project
+    
+      </gl-button-stub>
+       
+      <!---->
+       
+      <gl-button-stub
+        category="tertiary"
+        class="js-modal-action-primary"
+        disabled="true"
+        icon=""
+        size="medium"
+        variant="danger"
+      >
+        
+      Yes, delete project
+    
+      </gl-button-stub>
+    </template>
+  </b-modal-stub>
+</form>
+`;

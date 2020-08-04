@@ -6,4 +6,4 @@
     %strong= _('Removing the project will delete its repository and all related resources including issues, merge requests etc.')
   %p
     %strong= _('Removed projects cannot be restored!')
-  #js-confirm-project-remove{ data: { form_path: project_path(project), confirm_phrase: project.path, warning_message: remove_project_message(project) } }
+  #js-project-delete-button{ data: { form_path: project_path(project), confirm_phrase: project.path } }

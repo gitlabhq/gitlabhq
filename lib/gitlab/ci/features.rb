@@ -85,6 +85,10 @@ module Gitlab
       def self.job_entry_matches_all_keys?
         ::Feature.enabled?(:ci_job_entry_matches_all_keys)
       end
+
+      def self.reset_ci_minutes_for_all_namespaces?
+        ::Feature.enabled?(:reset_ci_minutes_for_all_namespaces, default_enabled: false)
+      end
     end
   end
 end

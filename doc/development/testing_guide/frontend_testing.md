@@ -195,21 +195,59 @@ Following you'll find some general common practices you will find as part of our
 
 ### How to query DOM elements
 
-When it comes to querying DOM elements in your tests, it is best to uniquely and semantically target the element. Sometimes this cannot be done feasibly. In these cases, adding test attributes to simplify the selectors might be the best option.
+When it comes to querying DOM elements in your tests, it is best to uniquely and semantically target
+the element.
 
-Preferentially, in component testing with `@vue/test-utils`, you should query for child components using the component itself. This helps enforce that specific behavior can be covered by that component's individual unit tests. Otherwise, try to use:
+Preferentially, this is done by targeting text the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro).
+When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/dom-testing-library/api-queries#byrole)
+as these enforce accessibility best practices as well. The examples below demonstrate the order of preference.
+
+Sometimes this cannot be done feasibly. In these cases, adding test attributes to simplify the
+selectors might be the best option.
 
 - A semantic attribute like `name` (also verifies that `name` was setup properly)
 - A `data-testid` attribute ([recommended by maintainers of `@vue/test-utils`](https://github.com/vuejs/vue-test-utils/issues/1498#issuecomment-610133465))
 - a Vue `ref` (if using `@vue/test-utils`)
 
 ```javascript
-// Bad
+import { mount, shallowMount } from '@vue/test-utils'
+import { getByRole, getByText } from '@testing-library/dom'
+
+let wrapper
+let el
+
+const createComponent = (mountFn = shallowMount) => {
+  wrapper = mountFn(Component)
+  el = wrapper.vm.$el // reference to the container element
+}
+
+beforeEach(() => {
+  createComponent()
+})
+
+
 it('exists', () => {
-    wrapper.find('.js-foo');
-    wrapper.find('.btn-primary');
-    wrapper.find('.qa-foo-component');
-    wrapper.find('[data-qa-selector="foo"]');
+  // Best
+
+  // NOTE: both mount and shallowMount work as long as a DOM element is available  
+  // Finds a properly formatted link with an accessable name of "Click Me"
+  getByRole(el, 'link', { name: /Click Me/i })
+  getByRole(el, 'link', { name: 'Click Me' })
+  // Finds any element with the text "Click Me"
+  getByText(el, 'Click Me')
+  // Regex is also available
+  getByText(el, /Click Me/i)
+
+  // Good
+  wrapper.find('input[name=foo]');
+  wrapper.find('[data-testid="foo"]');
+  wrapper.find({ ref: 'foo'});
+
+  // Bad
+  wrapper.find('.js-foo');
+  wrapper.find('.btn-primary');
+  wrapper.find('.qa-foo-component');
+  wrapper.find('[data-qa-selector="foo"]');
 });
 
 // Good
@@ -224,6 +262,22 @@ it('exists', () => {
 It is not recommended that you add `.js-*` classes just for testing purposes. Only do this if there are no other feasible options available.
 
 Do not use a `.qa-*` class or `data-qa-selector` attribute for any tests other than QA end-to-end testing.
+
+### Querying for child components
+
+When testing Vue components with `@vue/test-utils` another possible approach is querying for child
+components instead of querying for DOM nodes. This assumes that implementation details of behavior
+under test should be covered by that component's individual unit test. There is no strong preference
+in writing DOM or component queries as long as your tests reliably cover expected behavior for the
+component under test.
+
+Example:
+
+```javascript
+it('exists', () => {
+    wrapper.find(FooComponent);
+});
+```
 
 ### Naming unit tests
 

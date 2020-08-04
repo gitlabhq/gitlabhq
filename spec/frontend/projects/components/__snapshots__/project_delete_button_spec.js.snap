@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Project remove modal initialized matches the snapshot 1`] = `
+<form
+  action="some/path"
+  method="post"
+>
+  <input
+    name="_method"
+    type="hidden"
+    value="delete"
+  />
+   
+  <input
+    name="authenticity_token"
+    type="hidden"
+  />
+   
+  <gl-button-stub
+    category="primary"
+    icon=""
+    role="button"
+    size="medium"
+    tabindex="0"
+    variant="danger"
+  >
+    Remove project
+  </gl-button-stub>
+   
+  <gl-modal-stub
+    actioncancel="[object Object]"
+    actionprimary="[object Object]"
+    footer-class="gl-bg-gray-10 gl-p-5"
+    modalclass=""
+    modalid="fakeUniqueId"
+    ok-variant="danger"
+    size="sm"
+    title-class="gl-text-red-500"
+    titletag="h4"
+  >
+     
+    <div>
+      <gl-alert-stub
+        class="gl-mb-5"
+        dismisslabel="Dismiss"
+        primarybuttonlink=""
+        primarybuttontext=""
+        secondarybuttonlink=""
+        secondarybuttontext=""
+        title="You are about to permanently delete this project"
+        variant="danger"
+      >
+        <gl-sprintf-stub
+          message="Once a project is permanently deleted it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its respositories and %{strongStart}all related resources%{strongEnd} including issues, merge requests etc."
+        />
+      </gl-alert-stub>
+       
+      <p>
+        This action cannot be undone. You will lose the project's respository and all conent: issues, merge requests, etc.
+      </p>
+       
+      <p
+        class="gl-mb-1"
+      >
+        Please type the following to confirm:
+      </p>
+       
+      <p>
+        <code>
+          foo
+        </code>
+      </p>
+       
+      <gl-form-input-stub
+        id="confirm_name_input"
+        name="confirm_name_input"
+        type="text"
+      />
+       
+    </div>
+  </gl-modal-stub>
+</form>
+`;
