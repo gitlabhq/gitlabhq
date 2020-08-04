@@ -225,7 +225,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :lets_encrypt_terms_of_service_accepted,
       :domain_blacklist_file,
       :raw_blob_request_limit,
-      :namespace_storage_size_limit,
       :issues_create_limit,
       :default_branch_name,
       disabled_oauth_sign_in_sources: [],

@@ -40,7 +40,7 @@ class MergeRequest < ApplicationRecord
   has_internal_id :iid, scope: :target_project, track_if: -> { !importing? }, init: ->(s) { s&.target_project&.merge_requests&.maximum(:iid) }
 
   has_many :merge_request_diffs
-  has_many :merge_request_context_commits
+  has_many :merge_request_context_commits, inverse_of: :merge_request
   has_many :merge_request_context_commit_diff_files, through: :merge_request_context_commits, source: :diff_files
 
   has_one :merge_request_diff,
@@ -427,7 +427,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def context_commits(limit: nil)
-    @context_commits ||= merge_request_context_commits.limit(limit).map(&:to_commit)
+    @context_commits ||= merge_request_context_commits.order_by_committed_date_desc.limit(limit).map(&:to_commit)
   end
 
   def recent_context_commits

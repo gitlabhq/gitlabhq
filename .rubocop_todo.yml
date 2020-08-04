@@ -1025,7 +1025,6 @@ Style/NumericLiteralPrefix:
 Style/NumericPredicate:
   EnforcedStyle: comparison
   Exclude:
-    - 'spec/**/*'
     - 'app/controllers/concerns/issuable_collections.rb'
     - 'app/controllers/concerns/paginated_collection.rb'
     - 'app/helpers/graph_helper.rb'
@@ -1126,8 +1125,6 @@ Style/NumericPredicate:
     - 'lib/tasks/gitlab/gitaly.rake'
     - 'lib/tasks/gitlab/snippets.rake'
     - 'lib/tasks/gitlab/workhorse.rake'
-    - 'qa/qa/git/repository.rb'
-    - 'qa/qa/support/wait_for_requests.rb'
     - 'ee/app/models/ee/project.rb'
     - 'lib/gitlab/usage_data/topology.rb'
 

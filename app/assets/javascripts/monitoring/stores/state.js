@@ -7,6 +7,7 @@ export default () => ({
   deploymentsEndpoint: null,
   dashboardEndpoint: invalidUrl,
   dashboardsEndpoint: invalidUrl,
+  panelPreviewEndpoint: invalidUrl,
 
   // Dashboard request parameters
   timeRange: null,

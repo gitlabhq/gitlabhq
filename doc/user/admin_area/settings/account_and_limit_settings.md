@@ -29,20 +29,6 @@ If you choose a size larger than what is currently configured for the web server
 you will likely get errors. See the [troubleshooting section](#troubleshooting) for more
 details.
 
-## Maximum namespace storage size
-
-This sets a maximum size limit on each namespace. The following are included in the namespace size:
-
-- Repository
-- Wiki
-- LFS objects
-- Build artifacts
-- Packages
-- Snippets
-
-NOTE: **Note:**
-This limit is not currently enforced but will be in a future release.
-
 ## Repository size limit **(STARTER ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/740) in [GitLab Enterprise Edition 8.12](https://about.gitlab.com/releases/2016/09/22/gitlab-8-12-released/#limit-project-size-ee).

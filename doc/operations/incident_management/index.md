@@ -15,10 +15,10 @@ of incident management are only available in
 [GitLab Ultimate and GitLab.com Gold](https://about.gitlab.com/pricing/).
 
 For users with at least Developer [permissions](../../user/permissions.md), the
-Incident Management list is available at **{cloud-gear}** **Operations > Incidents**
+Incident Management list is available at **Operations > Incidents**
 in your project's sidebar. The list contains the following metrics:
 
-![Incident Management List](img/incident_list_13_3.png)
+![Incident Management List](img/incident_list_v13_3.png)
 
 - **Incident** - The description of the incident, which attempts to capture the
   most meaningful data.
@@ -34,9 +34,9 @@ Incidents share the [Issues API](../../user/project/issues/index.md).
 
 > [Moved](https://gitlab.com/gitlab-org/monitor/health/-/issues/24) to GitLab core in 13.3.
 
-To create a Incident you can take any of the following actions:
+For users with at least Developer [permissions](../../user/permissions.md), to create a Incident you can take any of the following actions:
 
-- Navigate to **{cloud-gear}** **Operations > Incidents** and click **Create Incident**.
+- Navigate to **Operations > Incidents** and click **Create Incident**.
 - Create a new issue using the `incident` template available when creating it.
 - Create a new issue and assign the `incident` label to it.
 
@@ -44,7 +44,7 @@ To create a Incident you can take any of the following actions:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in GitLab Ultimate 11.11.
 
-You can enable or disable Incident Management features in the GitLab user interface
+With Maintainer or higher [permissions](../../user/permissions.md), you can enable or disable Incident Management features in the GitLab user interface
 to create issues when alerts are triggered:
 
 1. Navigate to **Settings > Operations > Incidents** and expand

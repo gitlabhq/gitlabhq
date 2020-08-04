@@ -135,7 +135,7 @@ This [content was moved to another location](background_verification.md).
 
 ### Notify users of scheduled maintenance
 
-On the **primary** node, navigate to **Admin Area >** **{bullhorn}** **Messages**, add a broadcast
+On the **primary** node, navigate to **Admin Area > Messages**, add a broadcast
 message. You can check under **Admin Area > Geo** to estimate how long it
 will take to finish syncing. An example message would be:
 
@@ -181,7 +181,7 @@ access to the **primary** node during the maintenance window.
    connection.
 
 1. Disable non-Geo periodic background jobs on the **primary** node by navigating
-   to **Admin Area >** **{monitor}** **Monitoring > Background Jobs > Cron**, pressing `Disable All`,
+   to **Admin Area > Monitoring > Background Jobs > Cron**, pressing `Disable All`,
    and then pressing `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
    This job will re-enable several other cron jobs that are essential for planned
    failover to complete successfully.
@@ -190,7 +190,7 @@ access to the **primary** node during the maintenance window.
 
 1. If you are manually replicating any data not managed by Geo, trigger the
    final replication process now.
-1. On the **primary** node, navigate to **Admin Area >** **{monitor}** **Monitoring > Background Jobs > Queues**
+1. On the **primary** node, navigate to **Admin Area > Monitoring > Background Jobs > Queues**
    and wait for all queues except those with `geo` in the name to drop to 0.
    These queues contain work that has been submitted by your users; failing over
    before it is completed will cause the work to be lost.
@@ -202,7 +202,7 @@ access to the **primary** node during the maintenance window.
    - Database replication lag is 0ms.
    - The Geo log cursor is up to date (0 events behind).
 
-1. On the **secondary** node, navigate to **Admin Area >** **{monitor}** **Monitoring > Background Jobs > Queues**
+1. On the **secondary** node, navigate to **Admin Area > Monitoring > Background Jobs > Queues**
    and wait for all the `geo` queues to drop to 0 queued and 0 running jobs.
 1. On the **secondary** node, use [these instructions](../../raketasks/check.md)
    to verify the integrity of CI artifacts, LFS objects, and uploads in file

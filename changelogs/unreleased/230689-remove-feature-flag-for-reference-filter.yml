@@ -1,0 +1,5 @@
+---
+title: Improve performance of Banzai reference filters
+merge_request: 38290
+author:
+type: performance

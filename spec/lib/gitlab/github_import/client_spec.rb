@@ -169,7 +169,7 @@ RSpec.describe Gitlab::GithubImport::Client do
       expect(client).to receive(:raise_or_wait_for_rate_limit)
 
       client.with_rate_limit do
-        if retries.zero?
+        if retries == 0
           retries += 1
           raise(Octokit::TooManyRequests)
         end

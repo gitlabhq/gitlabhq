@@ -12,6 +12,9 @@ class MergeRequestContextCommit < ApplicationRecord
   validates :sha, presence: true
   validates :sha, uniqueness: { message: 'has already been added' }
 
+  # Sort by committed date in descending order to ensure latest commits comes on the top
+  scope :order_by_committed_date_desc, -> { order('committed_date DESC') }
+
   # delete all MergeRequestContextCommit & MergeRequestContextCommitDiffFile for given merge_request & commit SHAs
   def self.delete_bulk(merge_request, commits)
     commit_ids = commits.map(&:sha)

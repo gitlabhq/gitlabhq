@@ -23,7 +23,7 @@ FactoryBot.define do
     end
 
     create_versions = ->(design, evaluator, commit_version) do
-      unless evaluator.versions_count.zero?
+      unless evaluator.versions_count == 0
         project = design.project
         issue = design.issue
         repository = project.design_repository

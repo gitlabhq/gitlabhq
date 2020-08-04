@@ -507,6 +507,7 @@ To use SAST in an offline environment, you need:
 - To keep Docker-In-Docker disabled (default).
 - A GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - A Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
+- Configure certificate checking of packages (optional).
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
@@ -562,6 +563,13 @@ variables:
 
 The SAST job should now use local copies of the SAST analyzers to scan your code and generate
 security reports without requiring internet access.
+
+### Configure certificate checking of packages
+
+If a SAST job invokes a package manager, you must configure its certificate verification. In an
+offline environment, certificate verification with an external source isn't possible. Either use a
+self-signed certificate or disable certificate verification. Refer to the package manager's
+documentation for instructions.
 
 ## Troubleshooting
 

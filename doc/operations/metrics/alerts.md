@@ -19,7 +19,7 @@ For managed Prometheus instances using auto configuration, you can
 [configure alerts for metrics](index.md#adding-custom-metrics) directly in the
 [metrics dashboard](index.md). To set an alert:
 
-1. In your project, navigate to **{cloud-gear}** **Operations > Metrics**,
+1. In your project, navigate to **Operations > Metrics**,
 1. Identify the metric you want to create the alert for, and click the
    **ellipsis** **{ellipsis_v}** icon in the top right corner of the metric.
 1. Choose **Alerts**.

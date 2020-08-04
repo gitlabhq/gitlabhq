@@ -239,6 +239,11 @@ msgid_plural "%d personal projects will be removed and cannot be restored."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d previously merged commit"
+msgid_plural "%d previously merged commits"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d project"
 msgid_plural "%d projects"
 msgstr[0] ""
@@ -1528,7 +1533,13 @@ msgstr ""
 msgid "Add new directory"
 msgstr ""
 
+msgid "Add or remove previously merged commits"
+msgstr ""
+
 msgid "Add or subtract spent time"
+msgstr ""
+
+msgid "Add previously merged commits"
 msgstr ""
 
 msgid "Add reaction"
@@ -1574,6 +1585,15 @@ msgid "Add variable"
 msgstr ""
 
 msgid "Add webhook"
+msgstr ""
+
+msgid "Add/remove"
+msgstr ""
+
+msgid "AddContextCommits|Add previously merged commits"
+msgstr ""
+
+msgid "AddContextCommits|Add/remove"
 msgstr ""
 
 msgid "AddMember|No users specified."
@@ -6140,6 +6160,9 @@ msgstr ""
 msgid "Commits to"
 msgstr ""
 
+msgid "Commits you select appear here. Go to the first tab and select commits to add to this merge request."
+msgstr ""
+
 msgid "Commits|An error occurred while fetching merge requests data."
 msgstr ""
 
@@ -6639,6 +6662,15 @@ msgid "Contains %{count} blobs of images (%{size})"
 msgstr ""
 
 msgid "Contents of .gitlab-ci.yml"
+msgstr ""
+
+msgid "ContextCommits|Failed to create context commits. Please try again."
+msgstr ""
+
+msgid "ContextCommits|Failed to create/remove context commits. Please try again."
+msgstr ""
+
+msgid "ContextCommits|Failed to delete context commits. Please try again."
 msgstr ""
 
 msgid "Continue"
@@ -12830,9 +12862,6 @@ msgstr ""
 msgid "Includes an MVC structure, mvnw and pom.xml to help you get started."
 msgstr ""
 
-msgid "Includes repository storage, wiki storage, LFS objects, build artifacts and packages. 0 for unlimited."
-msgstr ""
-
 msgid "Incoming email"
 msgstr ""
 
@@ -14648,9 +14677,6 @@ msgstr ""
 msgid "Maximum lifetime allowable for Personal Access Tokens is active, your expire date must be set before %{maximum_allowable_date}."
 msgstr ""
 
-msgid "Maximum namespace storage (MB)"
-msgstr ""
-
 msgid "Maximum number of %{name} (%{count}) exceeded"
 msgstr ""
 
@@ -16044,6 +16070,9 @@ msgid "No changes between %{ref_start}%{source_branch}%{ref_end} and %{ref_start
 msgstr ""
 
 msgid "No child epics match applied filters"
+msgstr ""
+
+msgid "No commits present here"
 msgstr ""
 
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
@@ -19573,6 +19602,9 @@ msgstr ""
 msgid "Push an existing folder"
 msgstr ""
 
+msgid "Push commits to the source branch or add previously merged commits to review them."
+msgstr ""
+
 msgid "Push events"
 msgstr ""
 
@@ -20941,6 +20973,9 @@ msgstr ""
 msgid "Search by author"
 msgstr ""
 
+msgid "Search by commit title or SHA"
+msgstr ""
+
 msgid "Search by message"
 msgstr ""
 
@@ -21589,6 +21624,9 @@ msgid "Select timezone"
 msgstr ""
 
 msgid "Select user"
+msgstr ""
+
+msgid "Selected commits"
 msgstr ""
 
 msgid "Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users."
@@ -24158,6 +24196,9 @@ msgstr ""
 msgid "There are no closed merge requests"
 msgstr ""
 
+msgid "There are no commits yet."
+msgstr ""
+
 msgid "There are no custom project templates set up for this GitLab instance. They are enabled from GitLab's Admin Area. Contact your GitLab instance administrator to setup custom project templates."
 msgstr ""
 
@@ -25702,6 +25743,9 @@ msgid "Unable to find Jira project to import data from."
 msgstr ""
 
 msgid "Unable to generate new instance ID"
+msgstr ""
+
+msgid "Unable to load commits. Try again later."
 msgstr ""
 
 msgid "Unable to load file contents. Try again later."
@@ -28048,6 +28092,9 @@ msgid "Your response has been recorded."
 msgstr ""
 
 msgid "Your search didn't match any commits."
+msgstr ""
+
+msgid "Your search didn't match any commits. Try a different query."
 msgstr ""
 
 msgid "Your subscription expired!"

@@ -82,7 +82,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @note = @project.notes.new(noteable: @merge_request)
 
         @noteable = @merge_request
-        @commits_count = @merge_request.commits_count
+        @commits_count = @merge_request.commits_count + @merge_request.context_commits_count
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
         @current_user_data = UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json
         @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
@@ -116,6 +116,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def commits
+    # Get context commits from repository
+    @context_commits =
+      set_commits_for_rendering(
+        @merge_request.recent_context_commits
+      )
+
     # Get commits from repository
     # or from cache if already merged
     @commits =

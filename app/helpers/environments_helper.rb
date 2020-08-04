@@ -98,7 +98,8 @@ module EnvironmentsHelper
       'deployments-endpoint' => project_environment_deployments_path(project, environment, format: :json),
       'alerts-endpoint'      => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
       'operations-settings-path' => project_settings_operations_path(project),
-      'can-access-operations-settings' => can?(current_user, :admin_operations, project).to_s
+      'can-access-operations-settings' => can?(current_user, :admin_operations, project).to_s,
+      'panel-preview-endpoint' => project_metrics_dashboards_builder_path(project, format: :json)
     }
   end
 

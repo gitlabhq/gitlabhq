@@ -141,7 +141,7 @@ sudo gitlab-rake geo:verification:wiki:reset
 
 If the **primary** and **secondary** nodes have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
 
-1. Navigate to the **Admin Area >** **{overview}** **Overview > Projects** dashboard on the **primary** node, find the
+1. Navigate to the **Admin Area > Overview > Projects** dashboard on the **primary** node, find the
    project that you want to check the checksum differences and click on the
    **Edit** button:
    ![Projects dashboard](img/checksum-differences-admin-projects.png)

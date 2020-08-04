@@ -96,7 +96,6 @@ module ApplicationSettingImplementation
         max_import_size: 50,
         minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,
         mirror_available: true,
-        namespace_storage_size_limit: 0,
         notify_on_unknown_sign_in: true,
         outbound_local_requests_whitelist: [],
         password_authentication_enabled_for_git: true,

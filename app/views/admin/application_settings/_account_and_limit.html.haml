@@ -9,14 +9,6 @@
           = _('Gravatar enabled')
 
     .form-group
-      = f.label :namespace_storage_size_limit, class: 'label-bold' do
-        = _('Maximum namespace storage (MB)')
-      = f.number_field :namespace_storage_size_limit, class: 'form-control', min: 0
-      %span.form-text.text-muted
-        = _('Includes repository storage, wiki storage, LFS objects, build artifacts and packages. 0 for unlimited.')
-        = link_to _('More information'), help_page_path('user/admin_area/settings/account_and_limit_settings', anchor: 'maximum-namespace-storage-size'), target: '_blank'
-
-    .form-group
       = f.label :default_projects_limit, _('Default projects limit'), class: 'label-bold'
       = f.number_field :default_projects_limit, class: 'form-control', title: _('Maximum number of projects.'), data: { toggle: 'tooltip', container: 'body' }
     .form-group

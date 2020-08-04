@@ -28,6 +28,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get 'metrics(/:dashboard_path)(/:page)', constraints: { dashboard_path: /.+\.yml/, page: 'panel/new' },
           to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
 
+        namespace :metrics, module: :metrics do
+          namespace :dashboards do
+            post :builder, to: 'builder#panel_preview'
+          end
+        end
+
         resources :artifacts, only: [:index, :destroy]
 
         resources :packages, only: [:index, :show, :destroy], module: :packages

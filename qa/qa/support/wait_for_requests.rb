@@ -14,13 +14,13 @@ module QA
       end
 
       def finished_all_axios_requests?
-        Capybara.page.evaluate_script('window.pendingRequests || 0').zero?
+        Capybara.page.evaluate_script('window.pendingRequests || 0').zero? # rubocop:disable Style/NumericPredicate
       end
 
       def finished_all_ajax_requests?
         return true if Capybara.page.evaluate_script('typeof jQuery === "undefined"')
 
-        Capybara.page.evaluate_script('jQuery.active').zero?
+        Capybara.page.evaluate_script('jQuery.active').zero? # rubocop:disable Style/NumericPredicate
       end
 
       def finished_loading?(wait: DEFAULT_MAX_WAIT_TIME)

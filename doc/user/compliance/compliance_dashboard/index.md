@@ -19,6 +19,9 @@ To access the Compliance Dashboard for a group, navigate to **{shield}** **Secur
 
 ![Compliance Dashboard](img/compliance_dashboard_v13_3.png)
 
+NOTE: **Note:**
+The Compliance Dashboard shows only the latest MR on each project.
+
 ## Use cases
 
 This feature is for people who care about the compliance status of projects within their group.

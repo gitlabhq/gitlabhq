@@ -28,9 +28,9 @@ This namespace:
 To see a list of available applications to install. For a:
 
 - [Project-level cluster](../project/clusters/index.md), navigate to your project's
-  **{cloud-gear}** **Operations > Kubernetes**.
+  **Operations > Kubernetes**.
 - [Group-level cluster](../group/clusters/index.md), navigate to your group's
-  **{cloud-gear}** **Kubernetes** page.
+  **Kubernetes** page.
 
 NOTE: **Note:**
 As of GitLab 11.6, Helm will be upgraded to the latest version supported
@@ -343,7 +343,7 @@ To help you tune your WAF rules, you can globally set your WAF to either
 To change your WAF's mode:
 
 1. [Install ModSecurity](../../topics/web_application_firewall/quick_start_guide.md) if you have not already done so.
-1. Navigate to **{cloud-gear}** **Operations > Kubernetes**.
+1. Navigate to **Operations > Kubernetes**.
 1. In **Applications**, scroll to **Ingress**.
 1. Under **Global default**, select your desired mode.
 1. Click **Save changes**.
@@ -535,7 +535,7 @@ To enable log shipping:
 
 1. Ensure your cluster contains at least 3 nodes of instance types larger than
    `f1-micro`, `g1-small`, or `n1-standard-1`.
-1. Navigate to **{cloud-gear}** **Operations > Kubernetes**.
+1. Navigate to **Operations > Kubernetes**.
 1. In **Kubernetes Cluster**, select a cluster.
 1. In the **Applications** section, find **Elastic Stack** and click **Install**.
 
@@ -601,7 +601,7 @@ your data. Fluentd sends logs in syslog format.
 
 To enable Fluentd:
 
-1. Navigate to **{cloud-gear}** **Operations > Kubernetes** and click
+1. Navigate to **Operations > Kubernetes** and click
    **Applications**. You will be prompted to enter a host, port and protocol
    where the WAF logs will be sent to via syslog.
 1. Provide the host domain name or URL in **SIEM Hostname**.

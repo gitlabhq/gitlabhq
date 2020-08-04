@@ -5,6 +5,9 @@ class ApplicationSetting < ApplicationRecord
   include CacheMarkdownField
   include TokenAuthenticatable
   include ChronicDurationAttribute
+  include IgnorableColumns
+
+  ignore_column :namespace_storage_size_limit, remove_with: '13.5', remove_after: '2020-09-22'
 
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
@@ -362,10 +365,6 @@ class ApplicationSetting < ApplicationRecord
               message: N_('cannot include leading slash or directory traversal.') },
     length: { maximum: 255 },
     allow_blank: true
-
-  validates :namespace_storage_size_limit,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :issues_create_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }

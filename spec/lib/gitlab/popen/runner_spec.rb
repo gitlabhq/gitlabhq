@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Popen::Runner do
     stdout: 'stdout',
     stderr: '',
     exitstatus: 0,
-    status: double(exitstatus: exitstatus, success?: exitstatus.zero?),
+    status: double(exitstatus: exitstatus, success?: exitstatus == 0),
     duration: 0.1)
 
     result =

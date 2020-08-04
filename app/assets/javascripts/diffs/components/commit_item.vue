@@ -52,9 +52,19 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
+    isSelectable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     commit: {
       type: Object,
       required: true,
+    },
+    checked: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     collapsible: {
       type: Boolean,
@@ -83,6 +93,10 @@ export default {
     authorAvatar() {
       return this.author.avatar_url || this.commit.author_gravatar_url;
     },
+    commitDescription() {
+      // Strip the newline at the beginning
+      return this.commit.description_html.replace(/^&#x000A;/, '');
+    },
     nextCommitUrl() {
       return this.commit.next_commit_id
         ? setUrlParams({ commit_id: this.commit.next_commit_id })
@@ -110,13 +124,22 @@ export default {
 
 <template>
   <li :class="{ 'js-toggle-container': collapsible }" class="commit flex-row">
-    <user-avatar-link
-      :link-href="authorUrl"
-      :img-src="authorAvatar"
-      :img-alt="authorName"
-      :img-size="40"
-      class="avatar-cell d-none d-sm-block"
-    />
+    <div class="d-flex align-items-center align-self-start">
+      <input
+        v-if="isSelectable"
+        class="mr-2"
+        type="checkbox"
+        :checked="checked"
+        @change="$emit('handleCheckboxChange', $event.target.checked)"
+      />
+      <user-avatar-link
+        :link-href="authorUrl"
+        :img-src="authorAvatar"
+        :img-alt="authorName"
+        :img-size="40"
+        class="avatar-cell d-none d-sm-block"
+      />
+    </div>
     <div class="commit-detail flex-list">
       <div class="commit-content qa-commit-content">
         <a
@@ -151,7 +174,7 @@ export default {
           v-if="commit.description_html"
           :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
           class="commit-row-description gl-mb-3 text-dark"
-          v-html="commit.description_html"
+          v-html="commitDescription"
         ></pre>
       </div>
       <div class="commit-actions flex-row d-none d-sm-flex">

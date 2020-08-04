@@ -52,7 +52,7 @@ user interface:
 
 1. Sign in to GitLab as a user with Reporter or greater
    [permissions](../user/permissions.md).
-1. Navigate to **{cloud-gear}** **Operations > Product Analytics**
+1. Navigate to **Operations > Product Analytics**
 
 The user interface contains:
 

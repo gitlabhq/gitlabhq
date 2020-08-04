@@ -650,6 +650,6 @@ To use Auto Monitoring:
 1. After the pipeline finishes successfully, open the
    [monitoring dashboard for a deployed environment](../../ci/environments/index.md#monitoring-environments)
    to view the metrics of your deployed application. To view the metrics of the
-   whole Kubernetes cluster, navigate to **{cloud-gear}** **Operations > Metrics**.
+   whole Kubernetes cluster, navigate to **Operations > Metrics**.
 
 ![Auto Metrics](img/auto_monitoring.png)

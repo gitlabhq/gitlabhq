@@ -23,15 +23,14 @@ The metrics as defined below do not support alerts, unlike
 > UI option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223204) in GitLab 13.2.
 
 You can configure a custom dashboard by adding a new YAML file into your project's
-`.gitlab/dashboards/` directory. For the dashboard to display on your project's
-**{cloud-gear}** **Operations > Metrics** page, the files must have a `.yml`
+`.gitlab/dashboards/` directory. For the dashboard to display on your project's **Operations > Metrics** page, the files must have a `.yml`
 extension and be present in your project's **default** branch.
 
 To create a new dashboard from the GitLab user interface:
 
 1. Sign in to GitLab as a user with Maintainer or Owner
    [permissions](../../../user/permissions.md#project-members-permissions).
-1. Navigate to your dashboard at **{cloud-gear}** **Operations > Metrics**.
+1. Navigate to your dashboard at **Operations > Metrics**.
 1. In the top-right corner of your dashboard, click the **{file-addition-solid}** **Actions** menu,
    and select **Create new**:
    ![Monitoring Dashboard actions menu with create new item](img/actions_menu_create_new_dashboard_v13_2.png)
@@ -103,7 +102,7 @@ To manage the settings for your metrics dashboard:
 
 1. Sign in as a user with project Maintainer or Admin
    [permissions](../../../user/permissions.md#project-members-permissions).
-1. Navigate to your dashboard at **{cloud-gear}** **Operations > Metrics**.
+1. Navigate to your dashboard at **Operations > Metrics**.
 1. In the top-right corner of your dashboard, click **Metrics Settings**:
 
    ![Monitoring Dashboard actions menu with create new item](img/metrics_settings_button_v13_2.png)

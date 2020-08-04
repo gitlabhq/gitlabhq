@@ -105,22 +105,6 @@ RSpec.describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.minimum_password_length).to eq(10)
     end
 
-    it 'updates namespace_storage_size_limit setting' do
-      put :update, params: { application_setting: { namespace_storage_size_limit: '100' } }
-
-      expect(response).to redirect_to(general_admin_application_settings_path)
-      expect(response).to set_flash[:notice].to('Application settings saved successfully')
-      expect(ApplicationSetting.current.namespace_storage_size_limit).to eq(100)
-    end
-
-    it 'does not accept an invalid namespace_storage_size_limit' do
-      put :update, params: { application_setting: { namespace_storage_size_limit: '-100' } }
-
-      expect(response).to render_template(:general)
-      expect(assigns(:application_setting).errors[:namespace_storage_size_limit]).to be_present
-      expect(ApplicationSetting.current.namespace_storage_size_limit).not_to eq(-100)
-    end
-
     it 'updates repository_storages_weighted setting' do
       put :update, params: { application_setting: { repository_storages_weighted_default: 75 } }
 

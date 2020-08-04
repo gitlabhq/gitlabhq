@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
+<gl-modal-stub
+  body-class="add-review-item pt-0"
+  cancel-variant="light"
+  modalclass=""
+  modalid="add-review-item"
+  ok-disabled="true"
+  ok-title="Save changes"
+  scrollable="true"
+  size="md"
+  title="Add or remove previously merged commits"
+  titletag="h4"
+>
+  <gl-tabs-stub
+    contentclass="pt-0"
+    theme="indigo"
+    value="0"
+  >
+    <gl-tab-stub>
+       
+      <div
+        class="mt-2"
+      >
+        <gl-search-box-by-type-stub
+          clearbuttontitle="Clear"
+          placeholder="Search by commit title or SHA"
+          value=""
+        />
+         
+        <review-tab-container-stub
+          commits=""
+          emptylisttext="Your search didn't match any commits. Try a different query."
+          loadingfailedtext="Unable to load commits. Try again later."
+        />
+      </div>
+    </gl-tab-stub>
+     
+    <gl-tab-stub>
+       
+      <review-tab-container-stub
+        commits=""
+        emptylisttext="Commits you select appear here. Go to the first tab and select commits to add to this merge request."
+        loadingfailedtext="Unable to load commits. Try again later."
+      />
+    </gl-tab-stub>
+  </gl-tabs-stub>
+</gl-modal-stub>
+`;

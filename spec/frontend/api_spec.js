@@ -667,6 +667,79 @@ describe('Api', () => {
     });
   });
 
+  describe('createContextCommits', () => {
+    it('creates a new context commit', done => {
+      const projectPath = 'abc';
+      const mergeRequestId = '123456';
+      const commitsData = ['abcdefg'];
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}/context_commits`;
+      const expectedData = {
+        commits: commitsData,
+      };
+
+      jest.spyOn(axios, 'post');
+
+      mock.onPost(expectedUrl).replyOnce(200, [
+        {
+          id: 'abcdefghijklmnop',
+          short_id: 'abcdefg',
+          title: 'Dummy commit',
+        },
+      ]);
+
+      Api.createContextCommits(projectPath, mergeRequestId, expectedData)
+        .then(({ data }) => {
+          expect(data[0].title).toBe('Dummy commit');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('allContextCommits', () => {
+    it('gets all context commits', done => {
+      const projectPath = 'abc';
+      const mergeRequestId = '123456';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}/context_commits`;
+
+      jest.spyOn(axios, 'get');
+
+      mock
+        .onGet(expectedUrl)
+        .replyOnce(200, [{ id: 'abcdef', short_id: 'abcdefghi', title: 'Dummy commit title' }]);
+
+      Api.allContextCommits(projectPath, mergeRequestId)
+        .then(({ data }) => {
+          expect(data[0].title).toBe('Dummy commit title');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('removeContextCommits', () => {
+    it('removes context commits', done => {
+      const projectPath = 'abc';
+      const mergeRequestId = '123456';
+      const commitsData = ['abcdefg'];
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests/${mergeRequestId}/context_commits`;
+      const expectedData = {
+        commits: commitsData,
+      };
+
+      jest.spyOn(axios, 'delete');
+
+      mock.onDelete(expectedUrl).replyOnce(204);
+
+      Api.removeContextCommits(projectPath, mergeRequestId, expectedData)
+        .then(() => {
+          expect(axios.delete).toHaveBeenCalledWith(expectedUrl, { data: expectedData });
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
   describe('release-related methods', () => {
     const dummyProjectPath = 'gitlab-org/gitlab';
     const dummyTagName = 'v1.3';

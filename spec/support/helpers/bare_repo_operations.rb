@@ -44,7 +44,7 @@ class BareRepoOperations
       yield stdin if block_given?
     end
 
-    unless status.zero?
+    unless status == 0
       if allow_failure
         return []
       else

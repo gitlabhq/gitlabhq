@@ -20,7 +20,7 @@ To view the metrics dashboard for an environment that has
 
 1. *If the metrics dashboard is only visible to project members,* sign in to
    GitLab as a member of a project. Learn more about [metrics dashboard visibility](#metrics-dashboard-visibility).
-1. In your project, navigate to **{cloud-gear}** **Operations > Metrics**.
+1. In your project, navigate to **Operations > Metrics**.
 
 GitLab displays the default metrics dashboard for the environment, like the
 following example:
@@ -52,11 +52,11 @@ navigation bar contains:
 ## Populate your metrics dashboard
 
 After [configuring Prometheus for a cluster](../../user/project/integrations/prometheus.md),
-you must also deploy code for the **{cloud-gear}** **Operations > Metrics** page
+you must also deploy code for the **Operations > Metrics** page
 to contain data. Setting up [Auto DevOps](../../topics/autodevops/index.md)
 helps quickly create a deployment:
 
-1. Navigate to your project's **{cloud-gear}** **Operations > Kubernetes** page.
+1. Navigate to your project's **Operations > Kubernetes** page.
 1. Ensure that, in addition to Prometheus, you also have Runner and Ingress
    installed.
 1. After installing Ingress, copy its endpoint.
@@ -68,7 +68,7 @@ helps quickly create a deployment:
 1. Navigate to your project's **{rocket}** **CI/CD > Pipelines** page, and run a
    pipeline on any branch.
 1. When the pipeline has run successfully, graphs are available on the
-   **{cloud-gear}** **Operations > Metrics** page.
+   **Operations > Metrics** page.
 
 ![Monitoring Dashboard](img/prometheus_monitoring_dashboard_v13_1.png)
 

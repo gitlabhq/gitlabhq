@@ -204,7 +204,7 @@ module QA
         alias_method :to_s, :response
 
         def success?
-          exitstatus.zero?
+          exitstatus == 0
         end
       end
 

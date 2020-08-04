@@ -44,7 +44,8 @@ RSpec.describe EnvironmentsHelper do
         'prometheus-alerts-available' => 'true',
         'custom-dashboard-base-path' => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT,
         'operations-settings-path' => project_settings_operations_path(project),
-        'can-access-operations-settings' => 'true'
+        'can-access-operations-settings' => 'true',
+        'panel-preview-endpoint' => project_metrics_dashboards_builder_path(project, format: :json)
       )
     end
 

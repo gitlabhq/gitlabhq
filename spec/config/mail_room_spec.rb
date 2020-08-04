@@ -17,7 +17,7 @@ RSpec.describe 'mail_room.yml' do
     cmd = "puts ERB.new(File.read(#{absolute_path(mailroom_config_path).inspect})).result"
 
     output, status = Gitlab::Popen.popen(%W(ruby -rerb -e #{cmd}), absolute_path('config'), vars)
-    raise "Error interpreting #{mailroom_config_path}: #{output}" unless status.zero?
+    raise "Error interpreting #{mailroom_config_path}: #{output}" unless status == 0
 
     YAML.load(output)
   end
