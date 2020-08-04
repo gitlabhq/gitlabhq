@@ -7,6 +7,8 @@ module QA
 
       attr_accessor :gitlab
 
+      PrometheusQueryError = Class.new(StandardError)
+
       def initialize
         @gitlab = 'gitlab-gitaly-ha'
         @praefect = 'praefect'
@@ -104,6 +106,18 @@ module QA
           sleep_interval: 5,
           retry_on_exception: true
         )
+      end
+
+      def query_read_distribution
+        output = shell "docker exec gitlab-gitaly-ha bash -c 'curl -s http://localhost:9090/api/v1/query?query=gitaly_praefect_read_distribution'" do |line|
+          QA::Runtime::Logger.debug(line)
+          break line
+        end
+        result = JSON.parse(output)
+
+        raise PrometheusQueryError, "Unable to query read distribution metrics" unless result['status'] == 'success'
+
+        result['data']['result'].map { |result| { node: result['metric']['storage'], value: result['value'][1].to_i } }
       end
 
       def replication_queue_lock_count
@@ -283,6 +297,18 @@ module QA
           "docker exec #{@gitlab} bash -c 'gitlab-rake gitlab:gitlab_shell:check'",
           /Checking GitLab Shell ... Finished/
         )
+      end
+
+      # Waits until there is an increase in the number of reads for
+      # any node compared to the number of reads provided
+      def wait_for_read_count_change(pre_read_data)
+        diff_found = false
+        Support::Waiter.wait_until(sleep_interval: 5) do
+          query_read_distribution.each_with_index do |data, index|
+            diff_found = true if data[:value] > pre_read_data[index][:value]
+          end
+          diff_found
+        end
       end
 
       def wait_for_reliable_connection

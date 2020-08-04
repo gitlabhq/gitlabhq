@@ -60,9 +60,9 @@ module SnippetsHelper
   def snippet_badge(snippet)
     return unless attrs = snippet_badge_attributes(snippet)
 
-    css_class, text = attrs
+    icon_name, text = attrs
     tag.span(class: %w[badge badge-gray]) do
-      concat(tag.i(class: ['fa', css_class]))
+      concat(sprite_icon(icon_name, size: 14, css_class: 'gl-vertical-align-middle'))
       concat(' ')
       concat(text)
     end
@@ -70,7 +70,7 @@ module SnippetsHelper
 
   def snippet_badge_attributes(snippet)
     if snippet.private?
-      ['fa-lock', _('private')]
+      ['lock', _('private')]
     end
   end
 

@@ -6,11 +6,12 @@
       = link_to _("%{token}...") % { token: runner.short_sha }, project_runner_path(@project, runner), class: 'commit-sha has-tooltip', title: _("Partial token for reference only")
 
       - if runner.locked?
-        = icon('lock', class: 'has-tooltip', title: _('Locked to current projects'))
+        %span.has-tooltip{ title: _('Locked to current projects') }
+          = sprite_icon('lock', size: 16)
 
       %small.edit-runner
-        = link_to edit_project_runner_path(@project, runner) do
-          %i.fa.fa-edit.btn
+        = link_to edit_project_runner_path(@project, runner), class: 'btn btn-edit' do
+          = sprite_icon('pencil', size: 16)
     - else
       %span.commit-sha
         = runner.short_sha

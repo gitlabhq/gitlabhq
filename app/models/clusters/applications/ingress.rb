@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Ingress < ApplicationRecord
-      VERSION = '1.29.7'
+      VERSION = '1.40.2'
       INGRESS_CONTAINER_NAME = 'nginx-ingress-controller'
       MODSECURITY_LOG_CONTAINER_NAME = 'modsecurity-log'
       MODSECURITY_MODE_LOGGING = "DetectionOnly"

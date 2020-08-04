@@ -59,14 +59,19 @@ module QA
           @update_files = files
         end
 
-        def resource_web_url(resource)
+        # If `actions` are specified, it performs the actions to create,
+        # update, or delete commits. If no actions are specified it
+        # gets existing commits.
+        def fabricate_via_api!
+          return api_get if actions.empty?
+
           super
-        rescue ResourceURLMissingError
-          # this particular resource does not expose a web_url property
+        rescue ResourceNotFoundError
+          super
         end
 
         def api_get_path
-          "#{api_post_path}/#{@sha}"
+          api_post_path
         end
 
         def api_post_path

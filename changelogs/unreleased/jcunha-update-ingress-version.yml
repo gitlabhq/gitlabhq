@@ -1,0 +1,5 @@
+---
+title: Updates GitLab managed app Ingress version to 1.40.2
+merge_request: 35924
+author:
+type: changed

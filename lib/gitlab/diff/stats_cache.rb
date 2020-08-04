@@ -6,7 +6,8 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       EXPIRATION = 1.week
-      VERSION = 1
+      # The DiffStats#as_json representation is tied to the Gitaly protobuf version
+      VERSION = Gem.loaded_specs['gitaly'].version.to_s
 
       def initialize(cachable_key:)
         @cachable_key = cachable_key
@@ -29,6 +30,7 @@ module Gitlab
         return unless stats
 
         cache.write(key, stats.as_json, expires_in: EXPIRATION)
+        clear_memoization(:cached_values)
       end
 
       def clear

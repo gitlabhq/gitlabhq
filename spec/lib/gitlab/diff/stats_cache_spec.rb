@@ -81,4 +81,28 @@ RSpec.describe Gitlab::Diff::StatsCache, :use_clean_rails_memory_store_caching d
       stats_cache.clear
     end
   end
+
+  it 'VERSION is set' do
+    expect(described_class::VERSION).to be_present
+  end
+
+  context 'with multiple cache versions' do
+    before do
+      stats_cache.write_if_empty(stats)
+    end
+
+    it 'does not read from a stale cache' do
+      expect(stats_cache.read.to_json).to eq(stats.to_json)
+
+      stub_const('Gitlab::Diff::StatsCache::VERSION', '1.0.new-new-thing')
+
+      stats_cache = described_class.new(cachable_key: cachable_key)
+
+      expect(stats_cache.read).to be_nil
+
+      stats_cache.write_if_empty(stats)
+
+      expect(stats_cache.read.to_json).to eq(stats.to_json)
+    end
+  end
 end
