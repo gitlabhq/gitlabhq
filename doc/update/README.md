@@ -222,6 +222,11 @@ possible.
 
 ## Version specific upgrading instructions
 
+### 13.3.0
+
+In 13.3.0, you must upgrade to at least Git v2.28. Previously, the minimum
+required version was Git v2.24.
+
 ### 13.2.0
 
 GitLab installations that have multiple web nodes will need to be

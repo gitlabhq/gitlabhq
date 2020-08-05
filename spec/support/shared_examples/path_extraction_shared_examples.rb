@@ -88,9 +88,16 @@ RSpec.shared_examples 'extracts refs' do
         expect(extract_ref('stable')).to eq(['stable', ''])
       end
 
-      it 'extracts the longest matching ref' do
-        expect(extract_ref('release/app/v1.0.0/README.md')).to eq(
-          ['release/app/v1.0.0', 'README.md'])
+      it 'does not fetch ref names when there is no slash' do
+        expect(self).not_to receive(:ref_names)
+
+        extract_ref('master')
+      end
+
+      it 'fetches ref names when there is a slash' do
+        expect(self).to receive(:ref_names).and_call_original
+
+        extract_ref('release/app/v1.0.0')
       end
     end
 
@@ -112,6 +119,11 @@ RSpec.shared_examples 'extracts refs' do
 
       it 'falls back to a primitive split for an invalid ref' do
         expect(extract_ref('stable/CHANGELOG')).to eq(%w(stable CHANGELOG))
+      end
+
+      it 'extracts the longest matching ref' do
+        expect(extract_ref('release/app/v1.0.0/README.md')).to eq(
+          ['release/app/v1.0.0', 'README.md'])
       end
     end
   end

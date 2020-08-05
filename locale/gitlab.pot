@@ -7548,10 +7548,19 @@ msgstr ""
 msgid "DastProfiles|Could not create the site profile. Please try again."
 msgstr ""
 
+msgid "DastProfiles|Could not update the site profile. Please try again."
+msgstr ""
+
 msgid "DastProfiles|Do you want to discard this site profile?"
 msgstr ""
 
+msgid "DastProfiles|Do you want to discard your changes?"
+msgstr ""
+
 msgid "DastProfiles|Edit feature will come soon. Please create a new profile if changes needed"
+msgstr ""
+
+msgid "DastProfiles|Edit site profile"
 msgstr ""
 
 msgid "DastProfiles|Error fetching the profiles list. Please check your network connection and try again."

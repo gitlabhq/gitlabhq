@@ -9,6 +9,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
   let(:presenter) { described_class.new(package) }
 
   let_it_be(:user_info) { { name: user.name, avatar_url: user.avatar_url } }
+
   let!(:expected_package_files) do
     package.package_files.map do |file|
       {
@@ -19,6 +20,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       }
     end
   end
+
   let(:pipeline_info) do
     pipeline = package.build_info.pipeline
     {
@@ -30,11 +32,15 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       user: user_info,
       project: {
         name: pipeline.project.name,
-        web_url: pipeline.project.web_url
+        web_url: pipeline.project.web_url,
+        pipeline_url: include("pipelines/#{pipeline.id}"),
+        commit_url: include("commit/#{pipeline.sha}")
       }
     }
   end
+
   let!(:dependency_links) { [] }
+
   let!(:expected_package_details) do
     {
       id: package.id,
@@ -56,7 +62,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       let(:expected_package_details) { super().merge(pipeline: pipeline_info) }
 
       it 'returns details with pipeline' do
-        expect(presenter.detail_view).to eq expected_package_details
+        expect(presenter.detail_view).to match expected_package_details
       end
     end
 
@@ -91,6 +97,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       let_it_be(:package) { create(:nuget_package, project: project) }
       let_it_be(:dependency_link) { create(:packages_dependency_link, package: package) }
       let_it_be(:nuget_dependency) { create(:nuget_dependency_link_metadatum, dependency_link: dependency_link) }
+
       let_it_be(:expected_link) do
         {
           name: dependency_link.dependency.name,
@@ -98,6 +105,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
           target_framework: nuget_dependency.target_framework
         }
       end
+
       let_it_be(:dependency_links) { [expected_link] }
 
       it 'returns the correct dependency link' do

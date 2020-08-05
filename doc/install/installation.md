@@ -134,7 +134,7 @@ Make sure you have the right version of Git installed:
 # Install Git
 sudo apt-get install -y git-core
 
-# Make sure Git is version 2.27.0 or higher (minimal supported version is 2.25.0)
+# Make sure Git is version 2.28.0 or higher
 git --version
 ```
 
@@ -181,9 +181,9 @@ sudo make install
 
 # Download and compile from source
 cd /tmp
-curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.27.0.tar.gz
-echo '77ded85cbe42b1ffdc2578b460a1ef5d23bcbc6683eabcafbb0d394dffe2e787  git-2.27.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.27.0.tar.gz
-cd git-2.27.0/
+curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.28.0.tar.gz
+echo 'f914c60a874d466c1e18467c864a910dd4ea22281ba6d4d58077cb0c3f115170  git-2.28.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.28.0.tar.gz
+cd git-2.28.0/
 ./configure --with-libpcre
 make prefix=/usr/local all
 

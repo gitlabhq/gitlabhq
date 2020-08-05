@@ -456,7 +456,7 @@ you can pull from the Container Registry, but you cannot push.
    sudo aws --endpoint-url https://your-object-storage-backend.com s3 ls
    ```
 
-   If you are using AWS as your back end, you do not need the [`--endpoint-url`](https://docs.aws.amazon.com/cli/latest/reference/#:~:text=--endpoint-url).
+   If you are using AWS as your back end, you do not need the [`--endpoint-url`](https://docs.aws.amazon.com/cli/latest/reference/#options).
 1. Copy initial data to your S3 bucket, for example with the `aws` CLI
    [`cp`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/cp.html)
    or [`sync`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html)

@@ -187,7 +187,8 @@
   .gitignore-selector,
   .gitlab-ci-yml-selector,
   .dockerfile-selector,
-  .template-type-selector {
+  .template-type-selector,
+  .metrics-dashboard-selector {
     display: inline-block;
     vertical-align: top;
     font-family: $regular_font;

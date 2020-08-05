@@ -210,6 +210,7 @@ export default {
         v-model="key"
         :token-list="$options.tokenList"
         :label-text="__('Key')"
+        data-qa-selector="ci_variable_key_field"
       />
 
       <gl-form-group v-else :label="__('Key')" label-for="ci-variable-key">

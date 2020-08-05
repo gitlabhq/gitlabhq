@@ -1,0 +1,5 @@
+---
+title: Remove some unnecessary Redis calls on commit lists
+merge_request: 38343
+author:
+type: performance

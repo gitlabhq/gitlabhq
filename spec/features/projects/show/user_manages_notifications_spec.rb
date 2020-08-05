@@ -22,7 +22,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
 
     click_notifications_button
     expect(find('.update-notification.is-active')).to have_content('On mention')
-    expect(find('.notifications-icon use')[:'xlink:href']).to end_with('#notifications')
+    expect(page).to have_css('.notifications-icon[data-testid="notifications-icon"]')
   end
 
   it 'changes the notification setting to disabled' do
@@ -32,7 +32,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
 
     wait_for_requests
 
-    expect(find('.notifications-icon use')[:'xlink:href']).to end_with('#notifications-off')
+    expect(page).to have_css('.notifications-icon[data-testid="notifications-off-icon"]')
   end
 
   context 'custom notification settings' do

@@ -56,8 +56,7 @@ The minimum required Go version is 1.13.
 
 From GitLab 13.1:
 
-- Git 2.25.x and later is required.
-- Git 2.27.x and later [is recommended](https://gitlab.com/gitlab-org/gitaly/-/issues/2829).
+- Git 2.28.x and later [is required](https://gitlab.com/gitlab-org/gitaly/-/issues/2959).
 
 ### Node.js versions
 

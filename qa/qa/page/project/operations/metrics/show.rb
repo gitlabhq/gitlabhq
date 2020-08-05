@@ -20,6 +20,7 @@ module QA
               element :environments_dropdown
               element :edit_dashboard_button
               element :range_picker_dropdown
+              element :actions_menu_dropdown
             end
 
             view 'app/assets/javascripts/monitoring/components/duplicate_dashboard_form.vue' do
@@ -60,8 +61,8 @@ module QA
             end
 
             def duplicate_dashboard(save_as = 'test_duplication.yml', commit_option = 'Commit to master branch')
-              click_element :dashboards_filter_dropdown
-              click_on 'Duplicate dashboard'
+              click_element :actions_menu_dropdown
+              click_on 'Duplicate current dashboard'
               fill_element :duplicate_dashboard_filename_field, "#{SecureRandom.hex(8)}-#{save_as}"
               choose commit_option
               within('.modal-content') { click_button(class: 'btn-success') }

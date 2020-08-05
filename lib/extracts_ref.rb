@@ -47,6 +47,10 @@ module ExtractsRef
     if id =~ /^(\h{40})(.+)/
       # If the ref appears to be a SHA, we're done, just split the string
       pair = $~.captures
+    elsif id.exclude?('/')
+      # If the ID contains no slash, we must have a ref and no path, so
+      # we can skip the Redis calls below
+      pair = [id, '']
     else
       # Otherwise, attempt to detect the ref using a list of the repository_container's
       # branches and tags
@@ -71,12 +75,10 @@ module ExtractsRef
       end
     end
 
-    pair[0] = pair[0].strip
-
-    # Remove ending slashes from path
-    pair[1].gsub!(%r{^/|/$}, '')
-
-    pair
+    [
+      pair[0].strip,
+      pair[1].gsub(%r{^/|/$}, '') # Remove leading and trailing slashes from path
+    ]
   end
 
   # Assigns common instance variables for views working with Git tree-ish objects

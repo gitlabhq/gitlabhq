@@ -18,6 +18,10 @@ module API
 
       UNKNOWN_CHECK_RESULT_ERROR = 'Unknown check result'.freeze
 
+      VALID_PAT_SCOPES = Set.new(
+        Gitlab::Auth::API_SCOPES + Gitlab::Auth::REPOSITORY_SCOPES + Gitlab::Auth::REGISTRY_SCOPES
+      ).freeze
+
       helpers do
         def response_with_status(code: 200, success: true, message: nil, **extra_options)
           status code
@@ -192,6 +196,60 @@ module API
           end
 
           { success: true, recovery_codes: codes }
+        end
+
+        post '/personal_access_token' do
+          status 200
+
+          actor.update_last_used_at!
+          user = actor.user
+
+          if params[:key_id]
+            unless actor.key
+              break { success: false, message: 'Could not find the given key' }
+            end
+
+            if actor.key.is_a?(DeployKey)
+              break { success: false, message: 'Deploy keys cannot be used to create personal access tokens' }
+            end
+
+            unless user
+              break { success: false, message: 'Could not find a user for the given key' }
+            end
+          elsif params[:user_id] && user.nil?
+            break { success: false, message: 'Could not find the given user' }
+          end
+
+          if params[:name].blank?
+            break { success: false, message: "No token name specified" }
+          end
+
+          if params[:scopes].blank?
+            break { success: false, message: "No token scopes specified" }
+          end
+
+          invalid_scope = params[:scopes].find { |scope| VALID_PAT_SCOPES.exclude?(scope.to_sym) }
+
+          if invalid_scope
+            valid_scopes = VALID_PAT_SCOPES.map(&:to_s).sort
+            break { success: false, message: "Invalid scope: '#{invalid_scope}'. Valid scopes are: #{valid_scopes}" }
+          end
+
+          begin
+            expires_at = params[:expires_at].presence && Date.parse(params[:expires_at])
+          rescue ArgumentError
+            break { success: false, message: "Invalid token expiry date: '#{params[:expires_at]}'" }
+          end
+
+          access_token = nil
+
+          ::Users::UpdateService.new(current_user, user: user).execute! do |user|
+            access_token = user.personal_access_tokens.create!(
+              name: params[:name], scopes: params[:scopes], expires_at: expires_at
+            )
+          end
+
+          { success: true, token: access_token.token, scopes: access_token.scopes, expires_at: access_token.expires_at }
         end
 
         post '/pre_receive' do

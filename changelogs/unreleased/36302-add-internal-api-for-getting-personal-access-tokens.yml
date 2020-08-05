@@ -1,0 +1,5 @@
+---
+title: "Add internal api for getting personal access tokens from gitlab-shell"
+merge_request: 36302
+author: Taylan Develioglu @tdevelioglu
+type: added

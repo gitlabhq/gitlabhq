@@ -407,6 +407,7 @@ export default {
           right
           class="gl-flex-grow-1"
           data-testid="actions-menu"
+          data-qa-selector="actions_menu_dropdown"
           :title="s__('Metrics|Create dashboard')"
           :icon="'plus-square'"
         >

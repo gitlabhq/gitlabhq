@@ -29,7 +29,7 @@ module Gitlab
         return if cache.exist?(key)
         return unless stats
 
-        cache.write(key, stats.as_json, expires_in: EXPIRATION)
+        cache.write(key, stats.map(&:to_h).as_json, expires_in: EXPIRATION)
         clear_memoization(:cached_values)
       end
 

@@ -9,6 +9,7 @@ RSpec.describe Gitlab::Diff::StatsCache, :use_clean_rails_memory_store_caching d
   let(:cachable_key) { 'cachecachecache' }
   let(:stat) { Gitaly::DiffStats.new(path: 'temp', additions: 10, deletions: 15) }
   let(:stats) { Gitlab::Git::DiffStatsCollection.new([stat]) }
+  let(:serialized_stats) { stats.map(&:to_h).as_json }
   let(:cache) { Rails.cache }
 
   describe '#read' do
@@ -38,7 +39,7 @@ RSpec.describe Gitlab::Diff::StatsCache, :use_clean_rails_memory_store_caching d
       it 'writes the stats' do
         expect(cache)
           .to receive(:write)
-          .with(key, stats.as_json, expires_in: described_class::EXPIRATION)
+          .with(key, serialized_stats, expires_in: described_class::EXPIRATION)
           .and_call_original
 
         stats_cache.write_if_empty(stats)
@@ -53,7 +54,7 @@ RSpec.describe Gitlab::Diff::StatsCache, :use_clean_rails_memory_store_caching d
         it 'writes the stats' do
           expect(cache)
             .to receive(:write)
-            .with(key, stats.as_json, expires_in: described_class::EXPIRATION)
+            .with(key, serialized_stats, expires_in: described_class::EXPIRATION)
             .and_call_original
 
           stats_cache.write_if_empty(stats)

@@ -23,7 +23,7 @@ module QA
           end
 
           def fill_variable(key, value, masked)
-            fill_element :ci_variable_key_field, key
+            within_element(:ci_variable_key_field) { find('input').set key }
             fill_element :ci_variable_value_field, value
             click_ci_variable_save_button
           end

@@ -281,12 +281,16 @@ first time.
 ### Assigning a merge request for a review
 
 When you are ready to have your merge request reviewed,
-you should default to assigning it to a reviewer from your group or team for the first review,
-however, you can also assign it to any reviewer. The list of reviewers can be found on [Engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page.
+you should request an initial review by assigning it to a reviewer from your group or team.
+However, you can also assign it to any reviewer. The list of reviewers can be found on [Engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page.
 
 You can also use `workflow::ready for review` label. That means that your merge request is ready to be reviewed and any reviewer can pick it. It is recommended to use that label only if there isn't time pressure and make sure the merge request is assigned to a reviewer.
 
-When your merge request was reviewed and can be passed to a maintainer, you should default to choosing a maintainer with [domain expertise](#domain-experts), and otherwise follow the Reviewer Roulette recommendation or use the label `ready for merge`.
+When your merge request receives an approval from the first reviewer it can be passed to a maintainer. You should default to choosing a maintainer with [domain expertise](#domain-experts), and otherwise follow the Reviewer Roulette recommendation or use the label `ready for merge`.
+
+Sometimes, a maintainer may not be available for review. They could be out of the office or [at capacity](#review-response-slo).
+You can and should check the maintainer’s availability in their profile. If the maintainer recommended by
+the roulette is not available, choose someone else from that list.
 
 It is responsibility of the author of a merge request that the merge request is reviewed. If it stays in `ready for review` state too long it is recommended to assign it to a specific reviewer.
 

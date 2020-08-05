@@ -8,12 +8,6 @@ Set the title to: `Security Release: 12.2.X, 12.1.X, and 12.0.X`
 
 -------
 
-## Releases tasks
-
-- https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/release-manager.md
-- https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md
-- https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/security-engineer.md
-
 ## Version issues:
 
 12.2.X, 12.1.X, 12.0.X: {release task link}
@@ -25,11 +19,8 @@ your security issues as related to this release tracking issue. You can do this
 in the "Linked issues" section below this issue description.
 
 :warning: If your security issues are not marked as related to this release
-tracking issue, their merge requests may not be included in the security
+tracking issue, their merge requests will not be included in the security
 release.
-
-## QA
-{QA issue link}
 
 ## Blog post
 

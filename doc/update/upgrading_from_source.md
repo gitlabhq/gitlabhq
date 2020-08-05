@@ -124,7 +124,7 @@ rm go1.13.5.linux-amd64.tar.gz
 
 CAUTION: **Caution:**
 From GitLab 13.1, you must use at least Git v2.24 (previous minimum version was v2.22).
-Git v2.26 is recommended.
+From GitLab 13.3, you must use at least Git v2.28.
 
 To check you are running the minimum required Git version, see
 [Git versions](../install/requirements.md#git-versions).
@@ -132,7 +132,7 @@ To check you are running the minimum required Git version, see
 In Debian or Ubuntu:
 
 ```shell
-# Make sure Git is version 2.24.0 or higher
+# Make sure Git is version 2.28.0 or higher
 git --version
 
 # Remove packaged Git
@@ -152,9 +152,9 @@ make install
 
 # Download and compile from source
 cd /tmp
-curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.26.0.tar.gz
-echo 'aa168c2318e7187cd295a645f7370cc6d71a324aafc932f80f00c780b6a26bed  git-2.26.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.26.0.tar.gz
-cd git-2.26.0/
+curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.28.0.tar.gz
+echo 'f914c60a874d466c1e18467c864a910dd4ea22281ba6d4d58077cb0c3f115170  git-2.28.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.28.0.tar.gz
+cd git-2.28.0/
 ./configure --with-libpcre
 make prefix=/usr/local all
 

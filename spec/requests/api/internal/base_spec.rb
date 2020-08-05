@@ -120,6 +120,138 @@ RSpec.describe API::Internal::Base do
     end
   end
 
+  describe 'POST /internal/personal_access_token' do
+    it 'returns an error message when the key does not exist' do
+      post api('/internal/personal_access_token'),
+           params: {
+             secret_token: secret_token,
+             key_id: non_existing_record_id
+           }
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq('Could not find the given key')
+    end
+
+    it 'returns an error message when the key is a deploy key' do
+      deploy_key = create(:deploy_key)
+
+      post api('/internal/personal_access_token'),
+           params: {
+             secret_token: secret_token,
+             key_id: deploy_key.id
+           }
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq('Deploy keys cannot be used to create personal access tokens')
+    end
+
+    it 'returns an error message when the user does not exist' do
+      key_without_user = create(:key, user: nil)
+
+      post api('/internal/personal_access_token'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_without_user.id
+           }
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq('Could not find a user for the given key')
+      expect(json_response['token']).to be_nil
+    end
+
+    it 'returns an error message when given an non existent user' do
+      post api('/internal/personal_access_token'),
+           params: {
+             secret_token: secret_token,
+             user_id: 0
+           }
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq("Could not find the given user")
+    end
+
+    it 'returns an error message when no name parameter is received' do
+      post api('/internal/personal_access_token'),
+           params: {
+             secret_token: secret_token,
+             key_id:  key.id
+           }
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq("No token name specified")
+    end
+
+    it 'returns an error message when no scopes parameter is received' do
+      post api('/internal/personal_access_token'),
+           params: {
+             secret_token: secret_token,
+             key_id:  key.id,
+             name: 'newtoken'
+           }
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq("No token scopes specified")
+    end
+
+    it 'returns an error message when expires_at contains an invalid date' do
+      post api('/internal/personal_access_token'),
+           params: {
+             secret_token: secret_token,
+             key_id:  key.id,
+             name: 'newtoken',
+             scopes: ['api'],
+             expires_at: 'invalid-date'
+           }
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq("Invalid token expiry date: 'invalid-date'")
+    end
+
+    it 'returns an error message when it receives an invalid scope' do
+      post api('/internal/personal_access_token'),
+           params: {
+             secret_token: secret_token,
+             key_id:  key.id,
+             name: 'newtoken',
+             scopes: %w(read_api badscope read_repository)
+           }
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to match(/\AInvalid scope: 'badscope'. Valid scopes are: /)
+    end
+
+    it 'returns a token without expiry when the expires_at parameter is missing' do
+      post api('/internal/personal_access_token'),
+           params: {
+             secret_token: secret_token,
+             key_id:  key.id,
+             name: 'newtoken',
+             scopes: %w(read_api read_repository)
+           }
+
+      expect(json_response['success']).to be_truthy
+      expect(json_response['token']).to match(/\A\S{20}\z/)
+      expect(json_response['scopes']).to match_array(%w(read_api read_repository))
+      expect(json_response['expires_at']).to be_nil
+    end
+
+    it 'returns a token with expiry when it receives a valid expires_at parameter' do
+      post api('/internal/personal_access_token'),
+           params: {
+             secret_token: secret_token,
+             key_id:  key.id,
+             name: 'newtoken',
+             scopes: %w(read_api read_repository),
+             expires_at: '9001-11-17'
+           }
+
+      expect(json_response['success']).to be_truthy
+      expect(json_response['token']).to match(/\A\S{20}\z/)
+      expect(json_response['scopes']).to match_array(%w(read_api read_repository))
+      expect(json_response['expires_at']).to eq('9001-11-17')
+    end
+  end
+
   describe "POST /internal/lfs_authenticate" do
     before do
       project.add_developer(user)

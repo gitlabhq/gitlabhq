@@ -50,7 +50,9 @@ module Packages
           user: build_user_info(pipeline_info.user),
           project: {
             name: pipeline_info.project.name,
-            web_url: pipeline_info.project.web_url
+            web_url: pipeline_info.project.web_url,
+            pipeline_url: Gitlab::Routing.url_helpers.project_pipeline_url(pipeline_info.project, pipeline_info),
+            commit_url: Gitlab::Routing.url_helpers.project_commit_url(pipeline_info.project, pipeline_info.sha)
           }
         }
       end

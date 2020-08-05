@@ -7,6 +7,7 @@ import BlobCiYamlSelector from './template_selectors/ci_yaml_selector';
 import DockerfileSelector from './template_selectors/dockerfile_selector';
 import GitignoreSelector from './template_selectors/gitignore_selector';
 import LicenseSelector from './template_selectors/license_selector';
+import MetricsDashboardSelector from './template_selectors/metrics_dashboard_selector';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
@@ -30,6 +31,7 @@ export default class FileTemplateMediator {
     this.templateSelectors = [
       GitignoreSelector,
       BlobCiYamlSelector,
+      MetricsDashboardSelector,
       DockerfileSelector,
       LicenseSelector,
     ].map(TemplateSelectorClass => new TemplateSelectorClass({ mediator: this }));
