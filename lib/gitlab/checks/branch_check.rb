@@ -12,7 +12,8 @@ module Gitlab
         push_protected_branch: 'You are not allowed to push code to protected branches on this project.',
         create_protected_branch: 'You are not allowed to create protected branches on this project.',
         invalid_commit_create_protected_branch: 'You can only use an existing protected branch ref as the basis of a new protected branch.',
-        non_web_create_protected_branch: 'You can only create protected branches using the web interface and API.'
+        non_web_create_protected_branch: 'You can only create protected branches using the web interface and API.',
+        prohibited_hex_branch_name: 'You cannot create a branch with a 40-character hexadecimal branch name.'
       }.freeze
 
       LOG_MESSAGES = {
@@ -32,10 +33,19 @@ module Gitlab
           end
         end
 
+        prohibited_branch_checks
         protected_branch_checks
       end
 
       private
+
+      def prohibited_branch_checks
+        return unless Feature.enabled?(:prohibit_hexadecimal_branch_names, project, default_enabled: true)
+
+        if branch_name =~ /\A\h{40}\z/
+          raise GitAccess::ForbiddenError, ERROR_MESSAGES[:prohibited_hex_branch_name]
+        end
+      end
 
       def protected_branch_checks
         logger.log_timed(LOG_MESSAGES[:protected_branch_checks]) do

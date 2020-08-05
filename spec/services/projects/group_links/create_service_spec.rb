@@ -6,9 +6,10 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute' do
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
   let_it_be(:project) { create :project }
+  let(:group_access) { Gitlab::Access::DEVELOPER }
   let(:opts) do
     {
-      link_group_access: '30',
+      link_group_access: group_access,
       expires_at: nil
     }
   end
@@ -49,7 +50,9 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute' do
         receive(:bulk_perform_async)
       )
       expect(AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker).to(
-        receive(:perform_async).and_call_original
+        receive(:perform_async)
+          .with(project.id, group.id, group_access)
+          .and_call_original
       )
       expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
         receive(:bulk_perform_in)

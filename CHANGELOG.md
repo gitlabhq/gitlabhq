@@ -4,7 +4,21 @@ entry.
 
 ## 13.2.3 (2020-08-05)
 
-- No changes.
+### Security (12 changes)
+
+- Update kramdown gem to version 2.3.0.
+- Enforce 2FA on Doorkeeper controllers.
+- Revoke OAuth grants when a user revokes an application.
+- Refresh project authorizations when transferring groups.
+- Stop excess logs from failure to send invite email when group no longer exists.
+- Verify confirmed email for OAuth Authorize POST endpoint.
+- Fix XSS in Markdown reference tooltips.
+- Fix XSS in milestone tooltips.
+- Fix xss vulnerability on jobs view.
+- Block 40-character hexadecimal branches.
+- Prevent a temporary access escalation before group memberships are recalculated when specialized project share workers are enabled.
+- Update GitLab Runner Helm Chart to 0.18.2.
+
 
 ## 13.2.2 (2020-07-29)
 

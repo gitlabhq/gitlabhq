@@ -13,8 +13,9 @@ RSpec.describe AuthorizedProjectUpdate::ProjectGroupLinkCreateService do
   let_it_be(:project) { create(:project, :private, group: create(:group, :private)) }
 
   let(:access_level) { Gitlab::Access::MAINTAINER }
+  let(:group_access) { nil }
 
-  subject(:service) { described_class.new(project, group) }
+  subject(:service) { described_class.new(project, group, group_access) }
 
   describe '#perform' do
     context 'direct group members' do
@@ -50,6 +51,26 @@ RSpec.describe AuthorizedProjectUpdate::ProjectGroupLinkCreateService do
           project_id: project.id,
           user_id: parent_group_user.id,
           access_level: access_level)
+        expect(project_authorization).to exist
+      end
+    end
+
+    context 'with group_access' do
+      let(:group_access) { Gitlab::Access::REPORTER }
+
+      before do
+        create(:group_member, access_level: access_level, group: group_parent, user: parent_group_user)
+        ProjectAuthorization.delete_all
+      end
+
+      it 'creates project authorization' do
+        expect { service.execute }.to(
+          change { ProjectAuthorization.count }.from(0).to(1))
+
+        project_authorization = ProjectAuthorization.where(
+          project_id: project.id,
+          user_id: parent_group_user.id,
+          access_level: group_access)
         expect(project_authorization).to exist
       end
     end

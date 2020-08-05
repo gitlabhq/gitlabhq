@@ -25,7 +25,8 @@ Rails.application.routes.draw do
     controllers applications: 'oauth/applications',
                 authorized_applications: 'oauth/authorized_applications',
                 authorizations: 'oauth/authorizations',
-                token_info: 'oauth/token_info'
+                token_info: 'oauth/token_info',
+                tokens: 'oauth/tokens'
   end
 
   # This prefixless path is required because Jira gets confused if we set it up with a path

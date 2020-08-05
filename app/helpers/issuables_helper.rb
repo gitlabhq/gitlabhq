@@ -29,7 +29,7 @@ module IssuablesHelper
   def sidebar_milestone_tooltip_label(milestone)
     return _('Milestone') unless milestone.present?
 
-    [milestone[:title], sidebar_milestone_remaining_days(milestone) || _('Milestone')].join('<br/>')
+    [escape_once(milestone[:title]), sidebar_milestone_remaining_days(milestone) || _('Milestone')].join('<br/>')
   end
 
   def sidebar_milestone_remaining_days(milestone)
