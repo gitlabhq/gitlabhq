@@ -387,6 +387,7 @@ reverify
 Rubix
 Rubocop
 Rubular
+ruleset
 runbook
 runbooks
 runit

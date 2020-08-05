@@ -72,10 +72,10 @@
       .btn-group
         - if runner.active?
           = link_to pause_group_runner_path(@group, runner), method: :post, class: 'btn btn-default has-tooltip', title: _('Pause'), ref: 'tooltip', aria: { label: _('Pause') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
-            = icon('pause')
+            = sprite_icon('pause')
         - else
           = link_to resume_group_runner_path(@group, runner), method: :post, class: 'btn btn-default has-tooltip', title: _('Resume'), ref: 'tooltip', aria: { label: _('Resume') }, data: { placement: 'top', container: 'body'} do
-            = icon('play')
+            = sprite_icon('play')
       - if runner.belongs_to_more_than_one_project?
         .btn-group
           .btn.btn-danger.has-tooltip{ 'aria-label' => 'Remove', 'data-container' => 'body', 'data-original-title' => _('Multi-project Runners cannot be removed'), 'data-placement' => 'top', disabled: 'disabled' }

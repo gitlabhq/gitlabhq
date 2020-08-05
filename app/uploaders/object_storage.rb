@@ -169,10 +169,6 @@ module ObjectStorage
         object_store_options.connection.to_hash.deep_symbolize_keys
       end
 
-      def consolidated_settings?
-        object_store_options.fetch('consolidated_settings', false)
-      end
-
       def remote_store_path
         object_store_options.remote_directory
       end
@@ -193,14 +189,18 @@ module ObjectStorage
         File.join(self.root, TMP_UPLOAD_PATH)
       end
 
+      def object_store_config
+        ObjectStorage::Config.new(object_store_options)
+      end
+
       def workhorse_remote_upload_options(has_length:, maximum_size: nil)
         return unless self.object_store_enabled?
         return unless self.direct_upload_enabled?
 
         id = [CarrierWave.generate_cache_id, SecureRandom.hex].join('-')
         upload_path = File.join(TMP_UPLOAD_PATH, id)
-        direct_upload = ObjectStorage::DirectUpload.new(self.object_store_credentials, remote_store_path, upload_path,
-          has_length: has_length, maximum_size: maximum_size, consolidated_settings: consolidated_settings?)
+        direct_upload = ObjectStorage::DirectUpload.new(self.object_store_config, upload_path,
+          has_length: has_length, maximum_size: maximum_size)
 
         direct_upload.to_hash.merge(ID: id)
       end
@@ -281,6 +281,10 @@ module ObjectStorage
 
     def fog_credentials
       self.class.object_store_credentials
+    end
+
+    def fog_attributes
+      @fog_attributes ||= self.class.object_store_config.fog_attributes
     end
 
     # Set ACL of uploaded objects to not-public (fog-aws)[1] or no ACL at all

@@ -10,26 +10,23 @@ we suggest investigating to see if a plugin exists. For instance here is the
 
 ## Pre-commit static analysis
 
-You're strongly advised to install
-[Overcommit](https://github.com/sds/overcommit) to automatically check for
+You should install [`overcommit`](https://github.com/sds/overcommit) to automatically check for
 static analysis offenses before committing locally.
 
-In your GitLab source directory run:
+After installing `overcommit`, run the following in your GitLab source directory:
 
 ```shell
 make -C tooling/overcommit
 ```
 
-Then before a commit is created, Overcommit will automatically check for
-RuboCop (and other checks) offenses on every modified file.
+Then before a commit is created, `overcommit` automatically checks for RuboCop (and other checks)
+offenses on every modified file.
 
-This saves you time as you don't have to wait for the same errors to be detected
-by the CI.
+This saves you time as you don't have to wait for the same errors to be detected by CI/CD.
 
-Overcommit relies on a pre-commit hook to prevent commits that violate its ruleset.
-If you wish to override this behavior, it can be done by passing the ENV variable
-`OVERCOMMIT_DISABLE`; i.e. `OVERCOMMIT_DISABLE=1 git rebase master` to rebase while
-disabling the Git hook.
+`overcommit` relies on a pre-commit hook to prevent commits that violate its ruleset. To override
+this behavior, pass the `OVERCOMMIT_DISABLE` environment variable. For example,
+`OVERCOMMIT_DISABLE=1 git rebase master` to rebase while disabling the Git hook.
 
 ## Ruby, Rails, RSpec
 

@@ -10,13 +10,14 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
 
   let_it_be(:user_info) { { name: user.name, avatar_url: user.avatar_url } }
   let!(:expected_package_files) do
-    npm_file = package.package_files.first
-    [{
-      created_at: npm_file.created_at,
-      download_path: npm_file.download_path,
-      file_name: npm_file.file_name,
-      size: npm_file.size
-    }]
+    package.package_files.map do |file|
+      {
+        created_at: file.created_at,
+        download_path: file.download_path,
+        file_name: file.file_name,
+        size: file.size
+      }
+    end
   end
   let(:pipeline_info) do
     pipeline = package.build_info.pipeline
@@ -63,6 +64,15 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       let_it_be(:package) { create(:npm_package, project: project) }
 
       it 'returns details without pipeline' do
+        expect(presenter.detail_view).to eq expected_package_details
+      end
+    end
+
+    context 'with composer metadata' do
+      let(:package) { create(:composer_package, :with_metadatum, sha: '123', project: project) }
+      let(:expected_package_details) { super().merge(composer_metadatum: package.composer_metadatum) }
+
+      it 'returns composer_metadatum' do
         expect(presenter.detail_view).to eq expected_package_details
       end
     end

@@ -13,6 +13,7 @@ class ObjectStoreSettings
     object_store['direct_upload'] = false if object_store['direct_upload'].nil?
     object_store['background_upload'] = true if object_store['background_upload'].nil?
     object_store['proxy_download'] = false if object_store['proxy_download'].nil?
+    object_store['storage_options'] ||= {}
 
     # Convert upload connection settings to use string keys, to make Fog happy
     object_store['connection']&.deep_stringify_keys!
@@ -37,6 +38,8 @@ class ObjectStoreSettings
   #     region: gdk
   #     endpoint: 'http://127.0.0.1:9000'
   #     path_style: true
+  #   storage_options:
+  #     server_side_encryption: AES256
   #   proxy_download: true
   #   objects:
   #     artifacts:
@@ -49,13 +52,16 @@ class ObjectStoreSettings
   #
   # Settings.artifacts['object_store'] = {
   #   "enabled" => true,
-  #   "connection"=> {
+  #   "connection" => {
   #     "provider" => "AWS",
   #     "aws_access_key_id" => "minio",
   #     "aws_secret_access_key" => "gdk-minio",
   #     "region" => "gdk",
   #     "endpoint" => "http://127.0.0.1:9000",
   #     "path_style" => true
+  #   },
+  #   "storage_options" => {
+  #     "server_side_encryption" => "AES256"
   #   },
   #   "direct_upload" => true,
   #   "background_upload" => false,
@@ -72,6 +78,9 @@ class ObjectStoreSettings
   #     "region" => "gdk",
   #     "endpoint" => "http://127.0.0.1:9000",
   #     "path_style" => true
+  #   },
+  #   "storage_options" => {
+  #     "server_side_encryption" => "AES256"
   #   },
   #   "direct_upload" => true,
   #   "background_upload" => false,
@@ -91,12 +100,13 @@ class ObjectStoreSettings
     return unless use_consolidated_settings?
 
     main_config = settings['object_store']
-    common_config = main_config.slice('enabled', 'connection', 'proxy_download')
+    common_config = main_config.slice('enabled', 'connection', 'proxy_download', 'storage_options')
     # Convert connection settings to use string keys, to make Fog happy
     common_config['connection']&.deep_stringify_keys!
     # These are no longer configurable if common config is used
     common_config['direct_upload'] = true
     common_config['background_upload'] = false
+    common_config['storage_options'] ||= {}
 
     SUPPORTED_TYPES.each do |store_type|
       overrides = main_config.dig('objects', store_type) || {}

@@ -382,6 +382,32 @@ RSpec.describe ObjectStorage do
     it { is_expected.to eq(nil) }
   end
 
+  describe '#fog_attributes' do
+    subject { uploader.fog_attributes }
+
+    it { is_expected.to eq({}) }
+
+    context 'with encryption configured' do
+      let(:raw_options) do
+        {
+          "enabled" => true,
+          "connection" => { "provider" => 'AWS' },
+          "storage_options" => { "server_side_encryption" => "AES256" }
+        }
+      end
+
+      let(:options) { Settingslogic.new(raw_options) }
+
+      before do
+        allow(uploader_class).to receive(:options) do
+          double(object_store: options)
+        end
+      end
+
+      it { is_expected.to eq({ "x-amz-server-side-encryption" => "AES256" }) }
+    end
+  end
+
   describe '.workhorse_authorize' do
     let(:has_length) { true }
     let(:maximum_size) { nil }
@@ -459,13 +485,18 @@ RSpec.describe ObjectStorage do
 
         context 'uses AWS' do
           let(:storage_url) { "https://uploads.s3-eu-central-1.amazonaws.com/" }
+          let(:credentials) do
+            {
+              provider: "AWS",
+              aws_access_key_id: "AWS_ACCESS_KEY_ID",
+              aws_secret_access_key: "AWS_SECRET_ACCESS_KEY",
+              region: "eu-central-1"
+            }
+          end
 
           before do
-            expect(uploader_class).to receive(:object_store_credentials) do
-              { provider: "AWS",
-                aws_access_key_id: "AWS_ACCESS_KEY_ID",
-                aws_secret_access_key: "AWS_SECRET_ACCESS_KEY",
-                region: "eu-central-1" }
+            expect_next_instance_of(ObjectStorage::Config) do |instance|
+              allow(instance).to receive(:credentials).and_return(credentials)
             end
           end
 
@@ -502,12 +533,17 @@ RSpec.describe ObjectStorage do
 
         context 'uses Google' do
           let(:storage_url) { "https://storage.googleapis.com/uploads/" }
+          let(:credentials) do
+            {
+              provider: "Google",
+              google_storage_access_key_id: 'ACCESS_KEY_ID',
+              google_storage_secret_access_key: 'SECRET_ACCESS_KEY'
+            }
+          end
 
           before do
-            expect(uploader_class).to receive(:object_store_credentials) do
-              { provider: "Google",
-                google_storage_access_key_id: 'ACCESS_KEY_ID',
-                google_storage_secret_access_key: 'SECRET_ACCESS_KEY' }
+            expect_next_instance_of(ObjectStorage::Config) do |instance|
+              allow(instance).to receive(:credentials).and_return(credentials)
             end
           end
 
@@ -537,15 +573,18 @@ RSpec.describe ObjectStorage do
 
         context 'uses GDK/minio' do
           let(:storage_url) { "http://minio:9000/uploads/" }
+          let(:credentials) do
+            { provider: "AWS",
+              aws_access_key_id: "AWS_ACCESS_KEY_ID",
+              aws_secret_access_key: "AWS_SECRET_ACCESS_KEY",
+              endpoint: 'http://minio:9000',
+              path_style: true,
+              region: "gdk" }
+          end
 
           before do
-            expect(uploader_class).to receive(:object_store_credentials) do
-              { provider: "AWS",
-                aws_access_key_id: "AWS_ACCESS_KEY_ID",
-                aws_secret_access_key: "AWS_SECRET_ACCESS_KEY",
-                endpoint: 'http://minio:9000',
-                path_style: true,
-                region: "gdk" }
+            expect_next_instance_of(ObjectStorage::Config) do |instance|
+              allow(instance).to receive(:credentials).and_return(credentials)
             end
           end
 

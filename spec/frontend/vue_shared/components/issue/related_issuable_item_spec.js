@@ -1,7 +1,7 @@
-import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
+import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { defaultAssignees, defaultMilestone } from './related_issuable_mock_data';
 import { TEST_HOST } from 'jest/helpers/test_constants';
 
@@ -71,85 +71,65 @@ describe('RelatedIssuableItem', () => {
   });
 
   describe('token state', () => {
-    let tokenState;
+    const tokenState = () => wrapper.find({ ref: 'iconElementXL' });
 
-    beforeEach(done => {
+    beforeEach(() => {
       wrapper.setProps({ state: 'opened' });
-
-      Vue.nextTick(() => {
-        tokenState = wrapper.find('.issue-token-state-icon-open');
-
-        done();
-      });
     });
 
     it('renders if hasState', () => {
-      expect(tokenState.exists()).toBe(true);
+      expect(tokenState().exists()).toBe(true);
     });
 
     it('renders state title', () => {
-      const stateTitle = tokenState.attributes('title');
+      const stateTitle = tokenState().attributes('title');
       const formattedCreateDate = formatDate(props.createdAt);
 
       expect(stateTitle).toContain('<span class="bold">Opened</span>');
-
       expect(stateTitle).toContain(`<span class="text-tertiary">${formattedCreateDate}</span>`);
     });
 
     it('renders aria label', () => {
-      expect(tokenState.attributes('aria-label')).toEqual('opened');
+      expect(tokenState().attributes('aria-label')).toEqual('opened');
     });
 
     it('renders open icon when open state', () => {
-      expect(tokenState.classes('issue-token-state-icon-open')).toBe(true);
+      expect(tokenState().classes('issue-token-state-icon-open')).toBe(true);
     });
 
-    it('renders close icon when close state', done => {
+    it('renders close icon when close state', async () => {
       wrapper.setProps({
         state: 'closed',
         closedAt: '2018-12-01T00:00:00.00Z',
       });
+      await wrapper.vm.$nextTick();
 
-      Vue.nextTick(() => {
-        expect(tokenState.classes('issue-token-state-icon-closed')).toBe(true);
-
-        done();
-      });
+      expect(tokenState().classes('issue-token-state-icon-closed')).toBe(true);
     });
   });
 
   describe('token metadata', () => {
-    let tokenMetadata;
-
-    beforeEach(done => {
-      Vue.nextTick(() => {
-        tokenMetadata = wrapper.find('.item-meta');
-
-        done();
-      });
-    });
+    const tokenMetadata = () => wrapper.find('.item-meta');
 
     it('renders item path and ID', () => {
-      const pathAndID = tokenMetadata.find('.item-path-id').text();
+      const pathAndID = tokenMetadata()
+        .find('.item-path-id')
+        .text();
 
       expect(pathAndID).toContain('gitlab-org/gitlab-test');
       expect(pathAndID).toContain('#1');
     });
 
     it('renders milestone icon and name', () => {
-      const milestoneIcon = tokenMetadata.find('.item-milestone svg use');
-      const milestoneTitle = tokenMetadata.find('.item-milestone .milestone-title');
+      const milestoneIcon = tokenMetadata().find('.item-milestone svg use');
+      const milestoneTitle = tokenMetadata().find('.item-milestone .milestone-title');
 
       expect(milestoneIcon.attributes('href')).toContain('clock');
       expect(milestoneTitle.text()).toContain('Milestone title');
     });
 
-    it('renders due date component', () => {
-      expect(tokenMetadata.find('.js-due-date-slot').exists()).toBe(true);
-    });
-
-    it('renders weight component', () => {
-      expect(tokenMetadata.find('.js-weight-slot').exists()).toBe(true);
+    it('renders due date component with correct due date', () => {
+      expect(wrapper.find(IssueDueDate).props('date')).toBe(props.dueDate);
     });
   });
 
@@ -163,40 +143,30 @@ describe('RelatedIssuableItem', () => {
   });
 
   describe('remove button', () => {
-    let removeBtn;
+    const removeButton = () => wrapper.find({ ref: 'removeButton' });
 
-    beforeEach(done => {
+    beforeEach(() => {
       wrapper.setProps({ canRemove: true });
-      Vue.nextTick(() => {
-        removeBtn = wrapper.find({ ref: 'removeButton' });
-
-        done();
-      });
     });
 
     it('renders if canRemove', () => {
-      expect(removeBtn.exists()).toBe(true);
+      expect(removeButton().exists()).toBe(true);
     });
 
-    it('renders disabled button when removeDisabled', done => {
-      wrapper.vm.removeDisabled = true;
+    it('renders disabled button when removeDisabled', async () => {
+      wrapper.setData({ removeDisabled: true });
+      await wrapper.vm.$nextTick();
 
-      Vue.nextTick(() => {
-        expect(removeBtn.attributes('disabled')).toEqual('disabled');
-
-        done();
-      });
+      expect(removeButton().attributes('disabled')).toEqual('disabled');
     });
 
-    it('triggers onRemoveRequest when clicked', () => {
-      removeBtn.trigger('click');
+    it('triggers onRemoveRequest when clicked', async () => {
+      removeButton().trigger('click');
+      await wrapper.vm.$nextTick();
+      const { relatedIssueRemoveRequest } = wrapper.emitted();
 
-      return wrapper.vm.$nextTick().then(() => {
-        const { relatedIssueRemoveRequest } = wrapper.emitted();
-
-        expect(relatedIssueRemoveRequest.length).toBe(1);
-        expect(relatedIssueRemoveRequest[0]).toEqual([props.idKey]);
-      });
+      expect(relatedIssueRemoveRequest.length).toBe(1);
+      expect(relatedIssueRemoveRequest[0]).toEqual([props.idKey]);
     });
   });
 });
