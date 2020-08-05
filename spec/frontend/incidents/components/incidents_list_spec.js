@@ -56,6 +56,7 @@ describe('Incidents List', () => {
         newIssuePath,
         incidentTemplateName,
         issuePath: '/project/isssues',
+        publishedAvailable: true,
       },
       stubs: {
         GlButton: true,

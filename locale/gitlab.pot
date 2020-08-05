@@ -12817,10 +12817,19 @@ msgstr ""
 msgid "IncidentManagement|Open"
 msgstr ""
 
+msgid "IncidentManagement|Published"
+msgstr ""
+
+msgid "IncidentManagement|Published to status page"
+msgstr ""
+
 msgid "IncidentManagement|There was an error displaying the incidents."
 msgstr ""
 
 msgid "IncidentManagement|Unassigned"
+msgstr ""
+
+msgid "IncidentManagement|Unpublished"
 msgstr ""
 
 msgid "IncidentSettings|Alert integration"
@@ -21043,6 +21052,9 @@ msgid "Search projects..."
 msgstr ""
 
 msgid "Search requirements"
+msgstr ""
+
+msgid "Search results..."
 msgstr ""
 
 msgid "Search users"

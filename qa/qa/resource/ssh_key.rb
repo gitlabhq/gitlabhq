@@ -14,6 +14,7 @@ module QA
 
       def initialize
         self.title = Time.now.to_f
+        @expires_at = Date.today + 2
       end
 
       def key

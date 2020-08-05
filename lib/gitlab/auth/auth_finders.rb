@@ -82,7 +82,7 @@ module Gitlab
 
         login, password = user_name_and_password(current_request)
         return unless login.present? && password.present?
-        return unless ::Gitlab::Auth::CI_REGISTRY_USER == login
+        return unless ::Gitlab::Auth::CI_JOB_USER == login
 
         job = ::Ci::Build.find_by_token(password)
         raise UnauthorizedError unless job

@@ -15672,7 +15672,13 @@ CREATE TABLE public.terraform_states (
     locked_at timestamp with time zone,
     locked_by_user_id bigint,
     uuid character varying(32) NOT NULL,
-    name character varying(255)
+    name character varying(255),
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    verification_retry_count smallint,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_21a47163ea CHECK ((char_length(verification_failure) <= 255))
 );
 
 CREATE SEQUENCE public.terraform_states_id_seq
@@ -20924,6 +20930,10 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON public.snippet_
 CREATE UNIQUE INDEX taggings_idx ON public.taggings USING btree (tag_id, taggable_id, taggable_type, context, tagger_id, tagger_type);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON public.term_agreements USING btree (user_id, term_id);
+
+CREATE INDEX terraform_states_verification_checksum_partial ON public.terraform_states USING btree (verification_checksum) WHERE (verification_checksum IS NOT NULL);
+
+CREATE INDEX terraform_states_verification_failure_partial ON public.terraform_states USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
 
 CREATE INDEX tmp_build_stage_position_index ON public.ci_builds USING btree (stage_id, stage_idx) WHERE (stage_idx IS NOT NULL);
 

@@ -24,10 +24,10 @@ module QA
         Page::Main::Menu.perform(&:click_settings_link)
         Page::Profile::Menu.perform(&:click_ssh_keys)
         Page::Profile::SSHKeys.perform do |ssh_keys|
-          ssh_keys.remove_key(key_title)
+          ssh_keys.remove_key(key.title)
         end
 
-        expect(page).not_to have_content("Title: #{key_title}")
+        expect(page).not_to have_content("Title: #{key.title}")
         expect(page).not_to have_content(key.md5_fingerprint)
       end
     end

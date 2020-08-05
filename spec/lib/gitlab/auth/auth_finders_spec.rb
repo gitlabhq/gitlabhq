@@ -554,7 +554,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
     end
 
     context 'with CI username' do
-      let(:username) { ::Gitlab::Auth::CI_REGISTRY_USER }
+      let(:username) { ::Gitlab::Auth::CI_JOB_USER }
       let(:user) { create(:user) }
       let(:build) { create(:ci_build, user: user) }
 
@@ -727,7 +727,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
 
     context 'when the job token is provided via basic auth' do
       let(:route_authentication_setting) { { job_token_allowed: :basic_auth } }
-      let(:username) { ::Gitlab::Auth::CI_REGISTRY_USER }
+      let(:username) { ::Gitlab::Auth::CI_JOB_USER }
       let(:token) { job.token }
 
       before do

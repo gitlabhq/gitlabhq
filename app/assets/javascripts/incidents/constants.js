@@ -5,7 +5,8 @@ export const I18N = {
   noIncidents: s__('IncidentManagement|No incidents to display.'),
   unassigned: s__('IncidentManagement|Unassigned'),
   createIncidentBtnLabel: s__('IncidentManagement|Create incident'),
-  searchPlaceholder: __('Search or filter results...'),
+  unPublished: s__('IncidentManagement|Unpublished'),
+  searchPlaceholder: __('Search results...'),
 };
 
 export const INCIDENT_STATE_TABS = [

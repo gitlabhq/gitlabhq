@@ -27,7 +27,6 @@ module Gitlab
     DEFAULT_SCOPES = [:api].freeze
 
     CI_JOB_USER = 'gitlab-ci-token'
-    CI_REGISTRY_USER = 'gitlab-ci-token'
 
     class << self
       prepend_if_ee('EE::Gitlab::Auth') # rubocop: disable Cop/InjectEnterpriseEditionModule
@@ -129,7 +128,7 @@ module Gitlab
       # rubocop:enable Gitlab/RailsLogger
 
       def skip_rate_limit?(login:)
-        CI_REGISTRY_USER == login
+        CI_JOB_USER == login
       end
 
       def look_to_limit_user(actor)
