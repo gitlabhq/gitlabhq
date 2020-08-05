@@ -5,6 +5,8 @@
 module Gitlab
   class BaseDoorkeeperController < ActionController::Base
     include Gitlab::Allowable
+    include EnforcesTwoFactorAuthentication
+
     helper_method :can?
   end
 end

@@ -4,7 +4,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include Gitlab::Experimentation::ControllerConcern
   include InitializesCurrentUserMode
 
-  before_action :verify_confirmed_email!, only: [:new]
+  before_action :verify_confirmed_email!
 
   layout 'profile'
 

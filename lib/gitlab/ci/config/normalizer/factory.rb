@@ -29,11 +29,7 @@ module Gitlab
           end
 
           def strategies
-            if ::Gitlab::Ci::Features.parallel_matrix_enabled?
-              [NumberStrategy, MatrixStrategy]
-            else
-              [NumberStrategy]
-            end
+            [NumberStrategy, MatrixStrategy]
           end
         end
       end

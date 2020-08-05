@@ -14657,7 +14657,9 @@ CREATE TABLE public.prometheus_metrics (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     common boolean DEFAULT false NOT NULL,
-    identifier character varying
+    identifier character varying,
+    dashboard_path text,
+    CONSTRAINT check_0ad9f01463 CHECK ((char_length(dashboard_path) <= 2048))
 );
 
 CREATE SEQUENCE public.prometheus_metrics_id_seq

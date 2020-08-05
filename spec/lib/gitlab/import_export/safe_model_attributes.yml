@@ -659,6 +659,7 @@ PrometheusMetric:
 - group
 - common
 - identifier
+- dashboard_path
 PrometheusAlert:
 - threshold
 - operator

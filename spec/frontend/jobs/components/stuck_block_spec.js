@@ -1,4 +1,4 @@
-import { GlLink } from '@gitlab/ui';
+import { GlBadge, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import StuckBlock from '~/jobs/components/stuck_block.vue';
 
@@ -27,7 +27,7 @@ describe('Stuck Block Job component', () => {
   const findStuckNoRunners = () => wrapper.find('[data-testid="job-stuck-no-runners"]');
   const findStuckWithTags = () => wrapper.find('[data-testid="job-stuck-with-tags"]');
   const findRunnerPathLink = () => wrapper.find(GlLink);
-  const findAllBadges = () => wrapper.findAll('[data-testid="badge"]');
+  const findAllBadges = () => wrapper.findAll(GlBadge);
 
   describe('with no runners for project', () => {
     beforeEach(() => {

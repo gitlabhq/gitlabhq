@@ -598,7 +598,7 @@ GEM
     kgio (2.11.3)
     knapsack (1.17.0)
       rake
-    kramdown (2.2.1)
+    kramdown (2.3.0)
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
@@ -1308,7 +1308,7 @@ DEPENDENCIES
   jwt (~> 2.1.0)
   kaminari (~> 1.0)
   knapsack (~> 1.17)
-  kramdown (~> 2.2.1)
+  kramdown (~> 2.3.0)
   kubeclient (~> 4.6.0)
   letter_opener_web (~> 1.3.4)
   license_finder (~> 5.4)

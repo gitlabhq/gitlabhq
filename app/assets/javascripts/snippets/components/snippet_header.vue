@@ -68,6 +68,11 @@ export default {
     snippetHasBinary() {
       return Boolean(this.snippet.blobs.find(blob => blob.binary));
     },
+    authoredMessage() {
+      return this.snippet.author
+        ? __('Authored %{timeago} by %{author}')
+        : __('Authored %{timeago}');
+    },
     personalSnippetActions() {
       return [
         {
@@ -178,8 +183,8 @@ export default {
         </span>
         <gl-icon :name="visibilityLevelIcon" :size="14" />
       </div>
-      <div class="creator">
-        <gl-sprintf :message="__('Authored %{timeago} by %{author}')">
+      <div class="creator" data-testid="authored-message">
+        <gl-sprintf :message="authoredMessage">
           <template #timeago>
             <time-ago-tooltip
               :time="snippet.createdAt"

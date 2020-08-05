@@ -3479,10 +3479,6 @@ job split into three separate jobs.
 #### Parallel `matrix` jobs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15356) in GitLab 13.3.
-> - It's deployed behind a feature flag, disabled by default.
-> - It's enabled on GitLab.com.
-> - It can't be enabled or disabled per-project.
-> - It's recommended for production use.
 
 `matrix:` allows you to configure different variables for jobs that are running in parallel.
 There can be from 2 to 50 jobs.

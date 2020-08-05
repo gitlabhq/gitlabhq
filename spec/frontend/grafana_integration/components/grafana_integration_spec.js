@@ -1,5 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import GrafanaIntegration from '~/grafana_integration/components/grafana_integration.vue';
 import { createStore } from '~/grafana_integration/store';
@@ -51,7 +51,7 @@ describe('grafana integration component', () => {
     it('renders as an expand button by default', () => {
       wrapper = shallowMount(GrafanaIntegration, { store });
 
-      const button = wrapper.find(GlDeprecatedButton);
+      const button = wrapper.find(GlButton);
 
       expect(button.text()).toBe('Expand');
     });
@@ -77,8 +77,7 @@ describe('grafana integration component', () => {
     });
 
     describe('submit button', () => {
-      const findSubmitButton = () =>
-        wrapper.find('.settings-content form').find(GlDeprecatedButton);
+      const findSubmitButton = () => wrapper.find('.settings-content form').find(GlButton);
 
       const endpointRequest = [
         operationsSettingsEndpoint,

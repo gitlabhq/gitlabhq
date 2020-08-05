@@ -87,7 +87,9 @@ Enter the further details on the page as described in the following table.
 | `Password/API token` |Created in [configuring Jira](#configuring-jira) step. Use `password` for **Jira Server** or `API token` for **Jira Cloud**. |
 | `Transition ID` | Required for closing Jira issues via commits or merge requests. This is the ID of a transition in Jira that moves issues to a desired state. (See [Obtaining a transition ID](#obtaining-a-transition-id).) If you insert multiple transition IDs separated by `,` or `;`, the issue is moved to each state, one after another, using the given order. |
 
-To enable users to view Jira issues inside GitLab, select **Enable Jira issues** and enter a project key. **(PREMIUM)**
+To enable users to view Jira issues inside the GitLab project, select **Enable Jira issues** and enter a Jira project key. **(PREMIUM)**
+
+You can only display issues from a single Jira project within a given GitLab project.
 
 CAUTION: **Caution:**
 If you enable Jira issues with the setting above, all users that have access to this GitLab project will be able to view all issues from the specified Jira project.

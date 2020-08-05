@@ -104,13 +104,11 @@ Link each one to an appropriate place for more information.
 
 ## Instructions
 
-"Instructions" is usually not the name of the heading.
-
-This is the part of the document where you can include one or more sets of instructions,
-each to accomplish a specific task.
+This is the part of the document where you can include one or more sets of instructions.
+Each topic should help users accomplish a specific task.
 
 Headers should describe the task the reader will achieve by following the instructions within,
-typically starting with a verb.
+typically starting with a verb. For example, `Create a package` or `Configure a pipeline`.
 
 Larger instruction sets may have subsections covering specific phases of the process.
 Where appropriate, provide examples of code or configuration files to better clarify
@@ -126,6 +124,32 @@ intended usage.
 - Use short and descriptive headings (up to ~50 chars). You can use one
   single heading like `## Configure X` for instructions when the feature
   is simple and the document is short.
+
+Example topic:
+
+## Create a teddy bear
+
+Start by writing a sentence or two about _why_ someone would want to perform this task.
+It's not always possible, but is a good practice. For example:
+
+Create a teddy bear when you need something to hug.
+
+Follow this information with the task steps.
+
+To create a teddy bear:
+
+1. Go to **Settings > CI/CD**.
+1. Expand **This** and click **This**.
+1. Do another step.
+
+After the numbered list, add a sentence with the expected result, if it
+is not obvious, and any next steps. For example:
+
+The teddy bear is now in the kitchen, in the cupboard above the sink.
+
+You can retrieve the teddy bear and put it on the couch with the other animals.
+
+Screenshots are not necessary. They are difficult to keep up-to-date and can clutter the page.
 
 <!-- ## Troubleshooting
 

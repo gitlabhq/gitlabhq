@@ -1,14 +1,13 @@
-import Vue from 'vue';
-import component from '~/jobs/components/environments_block.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
+import EnvironmentsBlock from '~/jobs/components/environments_block.vue';
 
 const TEST_CLUSTER_NAME = 'test_cluster';
 const TEST_CLUSTER_PATH = 'path/to/test_cluster';
 const TEST_KUBERNETES_NAMESPACE = 'this-is-a-kubernetes-namespace';
 
 describe('Environments block', () => {
-  const Component = Vue.extend(component);
-  let vm;
+  let wrapper;
+
   const status = {
     group: 'success',
     icon: 'status_success',
@@ -38,20 +37,23 @@ describe('Environments block', () => {
   });
 
   const createComponent = (deploymentStatus = {}, deploymentCluster = {}) => {
-    vm = mountComponent(Component, {
-      deploymentStatus,
-      deploymentCluster,
-      iconStatus: status,
+    wrapper = mount(EnvironmentsBlock, {
+      propsData: {
+        deploymentStatus,
+        deploymentCluster,
+        iconStatus: status,
+      },
     });
   };
 
-  const findText = () => vm.$el.textContent.trim();
-  const findJobDeploymentLink = () => vm.$el.querySelector('.js-job-deployment-link');
-  const findEnvironmentLink = () => vm.$el.querySelector('.js-environment-link');
-  const findClusterLink = () => vm.$el.querySelector('.js-job-cluster-link');
+  const findText = () => wrapper.find(EnvironmentsBlock).text();
+  const findJobDeploymentLink = () => wrapper.find('[data-testid="job-deployment-link"]');
+  const findEnvironmentLink = () => wrapper.find('[data-testid="job-environment-link"]');
+  const findClusterLink = () => wrapper.find('[data-testid="job-cluster-link"]');
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
   describe('with last deployment', () => {
@@ -61,7 +63,7 @@ describe('Environments block', () => {
         environment,
       });
 
-      expect(findText()).toEqual('This job is deployed to environment.');
+      expect(findText()).toBe('This job is deployed to environment.');
     });
 
     describe('when there is a cluster', () => {
@@ -74,7 +76,7 @@ describe('Environments block', () => {
           createDeploymentWithCluster(),
         );
 
-        expect(findText()).toEqual(
+        expect(findText()).toBe(
           `This job is deployed to environment using cluster ${TEST_CLUSTER_NAME}.`,
         );
       });
@@ -89,7 +91,7 @@ describe('Environments block', () => {
             createDeploymentWithClusterAndKubernetesNamespace(),
           );
 
-          expect(findText()).toEqual(
+          expect(findText()).toBe(
             `This job is deployed to environment using cluster ${TEST_CLUSTER_NAME} and namespace ${TEST_KUBERNETES_NAMESPACE}.`,
           );
         });
@@ -105,11 +107,11 @@ describe('Environments block', () => {
           environment: createEnvironmentWithLastDeployment(),
         });
 
-        expect(findText()).toEqual(
+        expect(findText()).toBe(
           'This job is an out-of-date deployment to environment. View the most recent deployment.',
         );
 
-        expect(findJobDeploymentLink().getAttribute('href')).toEqual('bar');
+        expect(findJobDeploymentLink().attributes('href')).toBe('bar');
       });
 
       describe('when there is a cluster', () => {
@@ -122,7 +124,7 @@ describe('Environments block', () => {
             createDeploymentWithCluster(),
           );
 
-          expect(findText()).toEqual(
+          expect(findText()).toBe(
             `This job is an out-of-date deployment to environment using cluster ${TEST_CLUSTER_NAME}. View the most recent deployment.`,
           );
         });
@@ -137,7 +139,7 @@ describe('Environments block', () => {
               createDeploymentWithClusterAndKubernetesNamespace(),
             );
 
-            expect(findText()).toEqual(
+            expect(findText()).toBe(
               `This job is an out-of-date deployment to environment using cluster ${TEST_CLUSTER_NAME} and namespace ${TEST_KUBERNETES_NAMESPACE}. View the most recent deployment.`,
             );
           });
@@ -152,7 +154,7 @@ describe('Environments block', () => {
           environment,
         });
 
-        expect(findText()).toEqual('This job is an out-of-date deployment to environment.');
+        expect(findText()).toBe('This job is an out-of-date deployment to environment.');
       });
     });
   });
@@ -164,7 +166,7 @@ describe('Environments block', () => {
         environment,
       });
 
-      expect(findText()).toEqual('The deployment of this job to environment did not succeed.');
+      expect(findText()).toBe('The deployment of this job to environment did not succeed.');
     });
   });
 
@@ -176,13 +178,15 @@ describe('Environments block', () => {
           environment: createEnvironmentWithLastDeployment(),
         });
 
-        expect(findText()).toEqual(
+        expect(findText()).toBe(
           'This job is creating a deployment to environment. This will overwrite the latest deployment.',
         );
 
-        expect(findJobDeploymentLink().getAttribute('href')).toEqual('bar');
-        expect(findEnvironmentLink().getAttribute('href')).toEqual(environment.environment_path);
-        expect(findClusterLink()).toBeNull();
+        expect(findEnvironmentLink().attributes('href')).toBe(environment.environment_path);
+
+        expect(findJobDeploymentLink().attributes('href')).toBe('bar');
+
+        expect(findClusterLink().exists()).toBe(false);
       });
     });
 
@@ -193,7 +197,7 @@ describe('Environments block', () => {
           environment,
         });
 
-        expect(findText()).toEqual('This job is creating a deployment to environment.');
+        expect(findText()).toBe('This job is creating a deployment to environment.');
       });
 
       describe('when there is a cluster', () => {
@@ -206,7 +210,7 @@ describe('Environments block', () => {
             createDeploymentWithCluster(),
           );
 
-          expect(findText()).toEqual(
+          expect(findText()).toBe(
             `This job is creating a deployment to environment using cluster ${TEST_CLUSTER_NAME}.`,
           );
         });
@@ -220,7 +224,7 @@ describe('Environments block', () => {
           environment: null,
         });
 
-        expect(findEnvironmentLink()).toBeNull();
+        expect(findEnvironmentLink().exists()).toBe(false);
       });
     });
   });
@@ -235,11 +239,11 @@ describe('Environments block', () => {
         createDeploymentWithCluster(),
       );
 
-      expect(findText()).toEqual(
+      expect(findText()).toBe(
         `This job is deployed to environment using cluster ${TEST_CLUSTER_NAME}.`,
       );
 
-      expect(findClusterLink().getAttribute('href')).toEqual(TEST_CLUSTER_PATH);
+      expect(findClusterLink().attributes('href')).toBe(TEST_CLUSTER_PATH);
     });
 
     describe('when the cluster is missing the path', () => {
@@ -254,7 +258,7 @@ describe('Environments block', () => {
 
         expect(findText()).toContain('using cluster the-cluster.');
 
-        expect(findClusterLink()).toBeNull();
+        expect(findClusterLink().exists()).toBe(false);
       });
     });
   });

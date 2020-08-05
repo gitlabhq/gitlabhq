@@ -20,4 +20,8 @@ class ClusterEntity < Grape::Entity
   expose :gitlab_managed_apps_logs_path do |cluster|
     Clusters::ClusterPresenter.new(cluster, current_user: request.current_user).gitlab_managed_apps_logs_path # rubocop: disable CodeReuse/Presenter
   end
+
+  expose :kubernetes_errors do |cluster|
+    ClusterErrorEntity.new(cluster)
+  end
 end

@@ -17,6 +17,7 @@ RSpec.describe 'Git LFS API and storage' do
       'X-Sendfile-Type' => sendfile
     }.compact
   end
+  let(:include_workhorse_jwt_header) { true }
   let(:authorization) { }
   let(:sendfile) { }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
@@ -1075,14 +1076,24 @@ RSpec.describe 'Git LFS API and storage' do
             end
           end
 
-          context 'invalid tempfiles' do
+          context 'without the lfs object' do
             before do
               lfs_object.destroy
             end
 
             it 'rejects slashes in the tempfile name (path traversal)' do
               put_finalize('../bar', with_tempfile: true)
-              expect(response).to have_gitlab_http_status(:forbidden)
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
+
+            context 'not sending the workhorse jwt header' do
+              let(:include_workhorse_jwt_header) { false }
+
+              it 'rejects the request' do
+                put_finalize(with_tempfile: true)
+
+                expect(response).to have_gitlab_http_status(:unprocessable_entity)
+              end
             end
           end
         end
@@ -1308,7 +1319,8 @@ RSpec.describe 'Git LFS API and storage' do
         method: :put,
         file_key: :file,
         params: args.merge(file: uploaded_file),
-        headers: finalize_headers
+        headers: finalize_headers,
+        send_rewritten_field: include_workhorse_jwt_header
       )
     end
 

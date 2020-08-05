@@ -73,9 +73,8 @@ module Repositories
     # rubocop: enable CodeReuse/ActiveRecord
 
     def create_file!(oid, size)
-      uploaded_file = UploadedFile.from_params(
-        params, :file, LfsObjectUploader.workhorse_local_upload_path)
-      return unless uploaded_file
+      uploaded_file = params[:file]
+      return unless uploaded_file.is_a?(UploadedFile)
 
       LfsObject.create!(oid: oid, size: size, file: uploaded_file)
     end

@@ -80,13 +80,13 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     context 'errored' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:error, :error_status) do
-        SocketError                     | :unreachable
-        OpenSSL::X509::CertificateError | :authentication_failure
-        StandardError                   | :unknown_failure
-        Kubeclient::HttpError.new(408, "timed out", nil) | :unreachable
-        Kubeclient::HttpError.new(408, "timeout", nil) | :unreachable
-        Kubeclient::HttpError.new(408, "", nil) | :authentication_failure
+      where(:error, :connection_status, :error_status) do
+        SocketError                                      | :unreachable            | :connection_error
+        OpenSSL::X509::CertificateError                  | :authentication_failure | :authentication_error
+        StandardError                                    | :unknown_failure        | :unknown_error
+        Kubeclient::HttpError.new(408, "timed out", nil) | :unreachable            | :http_error
+        Kubeclient::HttpError.new(408, "timeout", nil)   | :unreachable            | :http_error
+        Kubeclient::HttpError.new(408, "", nil)          | :authentication_failure | :http_error
       end
 
       with_them do
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
         it 'returns error status' do
           result = described_class.graceful_request(1) { client.foo }
 
-          expect(result).to eq({ status: error_status })
+          expect(result).to eq({ status: connection_status, connection_error: error_status })
         end
       end
     end

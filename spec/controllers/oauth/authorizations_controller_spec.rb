@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Oauth::AuthorizationsController do
+  let(:user) { create(:user, confirmed_at: confirmed_at) }
+  let(:confirmed_at) { 1.hour.ago }
   let!(:application) { create(:oauth_application, scopes: 'api read_user', redirect_uri: 'http://example.com') }
   let(:params) do
     {
@@ -17,9 +19,45 @@ RSpec.describe Oauth::AuthorizationsController do
     sign_in(user)
   end
 
-  describe 'GET #new' do
+  shared_examples 'OAuth Authorizations require confirmed user' do
     context 'when the user is confirmed' do
-      let(:user) { create(:user) }
+      context 'when there is already an access token for the application with a matching scope' do
+        before do
+          scopes = Doorkeeper::OAuth::Scopes.from_string('api')
+
+          allow(Doorkeeper.configuration).to receive(:scopes).and_return(scopes)
+
+          create(:oauth_access_token, application: application, resource_owner_id: user.id, scopes: scopes)
+        end
+
+        it 'authorizes the request and redirects' do
+          subject
+
+          expect(request.session['user_return_to']).to be_nil
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+    end
+
+    context 'when the user is unconfirmed' do
+      let(:confirmed_at) { nil }
+
+      it 'returns 200 and renders error view' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('doorkeeper/authorizations/error')
+      end
+    end
+  end
+
+  describe 'GET #new' do
+    subject { get :new, params: params }
+
+    include_examples 'OAuth Authorizations require confirmed user'
+
+    context 'when the user is confirmed' do
+      let(:confirmed_at) { 1.hour.ago }
 
       context 'without valid params' do
         it 'returns 200 code and renders error view' do
@@ -34,7 +72,7 @@ RSpec.describe Oauth::AuthorizationsController do
         render_views
 
         it 'returns 200 code and renders view' do
-          get :new, params: params
+          subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template('doorkeeper/authorizations/new')
@@ -44,42 +82,28 @@ RSpec.describe Oauth::AuthorizationsController do
           application.update(trusted: true)
           request.session['user_return_to'] = 'http://example.com'
 
-          get :new, params: params
+          subject
 
           expect(request.session['user_return_to']).to be_nil
           expect(response).to have_gitlab_http_status(:found)
         end
-
-        context 'when there is already an access token for the application' do
-          context 'when the request scope matches any of the created token scopes' do
-            before do
-              scopes = Doorkeeper::OAuth::Scopes.from_string('api')
-
-              allow(Doorkeeper.configuration).to receive(:scopes).and_return(scopes)
-
-              create :oauth_access_token, application: application, resource_owner_id: user.id, scopes: scopes
-            end
-
-            it 'authorizes the request and redirects' do
-              get :new, params: params
-
-              expect(request.session['user_return_to']).to be_nil
-              expect(response).to have_gitlab_http_status(:found)
-            end
-          end
-        end
       end
     end
+  end
 
-    context 'when the user is unconfirmed' do
-      let(:user) { create(:user, confirmed_at: nil) }
+  describe 'POST #create' do
+    subject { post :create, params: params }
 
-      it 'returns 200 and renders error view' do
-        get :new, params: params
+    include_examples 'OAuth Authorizations require confirmed user'
+  end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template('doorkeeper/authorizations/error')
-      end
-    end
+  describe 'DELETE #destroy' do
+    subject { delete :destroy, params: params }
+
+    include_examples 'OAuth Authorizations require confirmed user'
+  end
+
+  it 'includes Two-factor enforcement concern' do
+    expect(described_class.included_modules.include?(EnforcesTwoFactorAuthentication)).to eq(true)
   end
 end

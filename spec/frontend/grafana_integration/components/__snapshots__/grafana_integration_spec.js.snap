@@ -16,13 +16,15 @@ exports[`grafana integration component default state to match the default snapsh
     
     </h3>
      
-    <gl-deprecated-button-stub
+    <gl-button-stub
+      category="tertiary"
       class="js-settings-toggle"
-      size="md"
-      variant="secondary"
+      icon=""
+      size="medium"
+      variant="default"
     >
       Expand
-    </gl-deprecated-button-stub>
+    </gl-button-stub>
      
     <p
       class="js-section-sub-header"
@@ -90,14 +92,16 @@ exports[`grafana integration component default state to match the default snapsh
         </p>
       </gl-form-group-stub>
        
-      <gl-deprecated-button-stub
-        size="md"
+      <gl-button-stub
+        category="primary"
+        icon=""
+        size="medium"
         variant="success"
       >
         
         Save Changes
       
-      </gl-deprecated-button-stub>
+      </gl-button-stub>
     </form>
   </div>
 </section>

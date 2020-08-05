@@ -218,6 +218,24 @@ module Clusters
       provider&.status_name || connection_status.presence || :created
     end
 
+    def connection_error
+      with_reactive_cache do |data|
+        data[:connection_error]
+      end
+    end
+
+    def node_connection_error
+      with_reactive_cache do |data|
+        data[:node_connection_error]
+      end
+    end
+
+    def metrics_connection_error
+      with_reactive_cache do |data|
+        data[:metrics_connection_error]
+      end
+    end
+
     def connection_status
       with_reactive_cache do |data|
         data[:connection_status]
@@ -233,9 +251,7 @@ module Clusters
     def calculate_reactive_cache
       return unless enabled?
 
-      gitlab_kubernetes_nodes = Gitlab::Kubernetes::Node.new(self)
-
-      { connection_status: retrieve_connection_status, nodes: gitlab_kubernetes_nodes.all.presence }
+      connection_data.merge(Gitlab::Kubernetes::Node.new(self).all)
     end
 
     def persisted_applications
@@ -395,9 +411,10 @@ module Clusters
       @instance_domain ||= Gitlab::CurrentSettings.auto_devops_domain
     end
 
-    def retrieve_connection_status
+    def connection_data
       result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.core_client.discover }
-      result[:status]
+
+      { connection_status: result[:status], connection_error: result[:connection_error] }.compact
     end
 
     # To keep backward compatibility with AUTO_DEVOPS_DOMAIN

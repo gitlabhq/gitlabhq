@@ -1,0 +1,5 @@
+---
+title: Add dashboard_path to PrometheusMetric
+merge_request: 38237
+author:
+type: added

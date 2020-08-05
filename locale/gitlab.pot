@@ -3482,6 +3482,9 @@ msgstr ""
 msgid "Author: %{author_name}"
 msgstr ""
 
+msgid "Authored %{timeago}"
+msgstr ""
+
 msgid "Authored %{timeago} by %{author}"
 msgstr ""
 
@@ -7648,6 +7651,9 @@ msgid "Decline"
 msgstr ""
 
 msgid "Decline and sign out"
+msgstr ""
+
+msgid "Decompressed archive size validation failed."
 msgstr ""
 
 msgid "Default Branch"
@@ -13627,6 +13633,12 @@ msgid "Job|This job failed because the necessary resources were not successfully
 msgstr ""
 
 msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
+msgstr ""
+
+msgid "Job|This job is stuck because you don't have any active runners online or available with any of these tags assigned to them:"
+msgstr ""
+
+msgid "Job|This job is stuck because you don't have any active runners that can run this job."
 msgstr ""
 
 msgid "Job|for"
@@ -24788,12 +24800,6 @@ msgid "This job is performing tasks that must complete before it can start"
 msgstr ""
 
 msgid "This job is preparing to start"
-msgstr ""
-
-msgid "This job is stuck because you don't have any active runners online or available with any of these tags assigned to them:"
-msgstr ""
-
-msgid "This job is stuck because you don't have any active runners that can run this job."
 msgstr ""
 
 msgid "This job is waiting for resource: "

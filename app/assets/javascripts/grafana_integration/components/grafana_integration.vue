@@ -1,11 +1,11 @@
 <script>
-import { GlDeprecatedButton, GlFormGroup, GlFormInput, GlFormCheckbox } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlFormCheckbox } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlFormCheckbox,
     GlFormGroup,
     GlFormInput,
@@ -58,7 +58,7 @@ export default {
       <h3 class="js-section-header h4">
         {{ s__('GrafanaIntegration|Grafana authentication') }}
       </h3>
-      <gl-deprecated-button class="js-settings-toggle">{{ __('Expand') }}</gl-deprecated-button>
+      <gl-button class="js-settings-toggle">{{ __('Expand') }}</gl-button>
       <p class="js-section-sub-header">
         {{ s__('GrafanaIntegration|Embed Grafana charts in GitLab issues.') }}
       </p>
@@ -93,9 +93,9 @@ export default {
             </a>
           </p>
         </gl-form-group>
-        <gl-deprecated-button variant="success" @click="updateGrafanaIntegration">
+        <gl-button variant="success" category="primary" @click="updateGrafanaIntegration">
           {{ __('Save Changes') }}
-        </gl-deprecated-button>
+        </gl-button>
       </form>
     </div>
   </section>

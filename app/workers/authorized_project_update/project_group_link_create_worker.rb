@@ -10,12 +10,13 @@ module AuthorizedProjectUpdate
 
     idempotent!
 
-    def perform(project_id, group_id)
+    def perform(project_id, group_id, group_access = nil)
       project = Project.find(project_id)
       group = Group.find(group_id)
 
-      AuthorizedProjectUpdate::ProjectGroupLinkCreateService.new(project, group)
-                                                            .execute
+      AuthorizedProjectUpdate::ProjectGroupLinkCreateService
+        .new(project, group, group_access)
+        .execute
     end
   end
 end

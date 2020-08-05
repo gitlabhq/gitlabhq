@@ -2,7 +2,6 @@
 
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include Gitlab::GonHelper
-  include Gitlab::Allowable
   include PageLayoutHelper
   include OauthApplications
   include Gitlab::Experimentation::ControllerConcern
@@ -18,8 +17,6 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   before_action :load_scopes, only: [:index, :create, :edit, :update]
 
   around_action :set_locale
-
-  helper_method :can?
 
   layout 'profile'
 

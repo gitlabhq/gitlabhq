@@ -13,6 +13,8 @@ For programmatic help adhering to the guidelines, see [Testing](index.md#testing
 See the GitLab handbook for further [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
 that apply to all GitLab content, not just documentation.
 
+View [a list of recent style guide updates](https://gitlab.com/dashboard/merge_requests?scope=all&utf8=%E2%9C%93&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix).
+
 ## Documentation is the single source of truth (SSOT)
 
 ### Why a single source of truth
@@ -1522,43 +1524,43 @@ GitLab Community Edition), don't split the product or feature name across lines.
 
 ### Product badges
 
-When a feature is available in EE-only tiers, add the corresponding tier according to the
-feature availability:
+When a feature is available in paid tiers, add the corresponding tier to the
+header or other page element according to the feature's availability:
 
-- For GitLab Core and GitLab.com Free: `**(CORE)**`.
-- For GitLab Starter and GitLab.com Bronze: `**(STARTER)**`.
-- For GitLab Premium and GitLab.com Silver: `**(PREMIUM)**`.
-- For GitLab Ultimate and GitLab.com Gold: `**(ULTIMATE)**`.
+| Tier in which feature is available                                     | Tier markup           |
+|:-----------------------------------------------------------------------|:----------------------|
+| GitLab Core and GitLab.com Free, and their higher tiers                | `**(CORE)**`          |
+| GitLab Starter and GitLab.com Bronze, and their higher tiers           | `**(STARTER)**`       |
+| GitLab Premium and GitLab.com Silver, and their higher tiers           | `**(PREMIUM)**`       |
+| GitLab Ultimate and GitLab.com Gold                                    | `**(ULTIMATE)**`      |
+| *Only* GitLab Core and higher tiers (no GitLab.com-based tiers)        | `**(CORE ONLY)**`     |
+| *Only* GitLab Starter and higher tiers (no GitLab.com-based tiers)     | `**(STARTER ONLY)**`  |
+| *Only* GitLab Premium and higher tiers (no GitLab.com-based tiers)     | `**(PREMIUM ONLY)**`  |
+| *Only* GitLab Ultimate (no GitLab.com-based tiers)                     | `**(ULTIMATE ONLY)**` |
+| *Only* GitLab.com Free and higher tiers (no self-managed instances)    | `**(FREE ONLY)**`     |
+| *Only* GitLab.com Bronze and higher tiers (no self-managed instances)  | `**(BRONZE ONLY)**`   |
+| *Only* GitLab.com Silver and higher tiers (no self-managed instances)  | `**(SILVER ONLY)**`   |
+| *Only* GitLab.com Gold (no self-managed instances)                     | `**(GOLD ONLY)**`     |
 
-To exclude GitLab.com tiers (when the feature is not available in GitLab.com), add the
-keyword "only":
+For clarity, all page title headers (H1s) must be have a tier markup for
+the lowest tier that has information on the documentation page.
 
-- For GitLab Core: `**(CORE ONLY)**`.
-- For GitLab Starter: `**(STARTER ONLY)**`.
-- For GitLab Premium: `**(PREMIUM ONLY)**`.
-- For GitLab Ultimate: `**(ULTIMATE ONLY)**`.
+If sections of a page apply to higher tier levels, they can be separately
+labeled with their own tier markup.
 
-For GitLab.com only tiers (when the feature is not available for self-managed instances):
+#### Product badge display behavior
 
-- For GitLab Free and higher tiers: `**(FREE ONLY)**`.
-- For GitLab Bronze and higher tiers: `**(BRONZE ONLY)**`.
-- For GitLab Silver and higher tiers: `**(SILVER ONLY)**`.
-- For GitLab Gold: `**(GOLD ONLY)**`.
+When using the tier markup with headers, the documentation page will
+display the full tier badge with the header line.
 
-The tier should be ideally added to headers, so that the full badge will be displayed.
-However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
-the tier mention will be represented by an orange info icon **(information)** that will show the tiers on hover.
+You can also use the tier markup with paragraphs, list items,
+and table cells. For these cases, the tier mention will be represented by an
+orange info icon **{information}** that will display the tiers when visitors
+point to the icon. For example:
 
-Use the lowest tier at the page level, even if higher-level tiers exist on the page. For example, you might have a page that is marked as Starter but a section badged as Premium.
-
-For example:
-
-- `**(STARTER)**` renders as **(STARTER)**
-- `**(STARTER ONLY)**` renders as **(STARTER ONLY)**
-- `**(SILVER ONLY)**` renders as **(SILVER ONLY)**
-
-The absence of tiers' mentions mean that the feature is available in GitLab Core,
-GitLab.com Free, and all higher tiers.
+- `**(STARTER)**` displays as **(STARTER)**
+- `**(STARTER ONLY)**` displays as **(STARTER ONLY)**
+- `**(SILVER ONLY)**` displays as **(SILVER ONLY)**
 
 #### How it works
 
