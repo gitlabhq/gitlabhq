@@ -4,7 +4,20 @@ entry.
 
 ## 13.1.6 (2020-08-05)
 
-- No changes.
+### Security (11 changes)
+
+- Add decompressed archive size validation on Project/Group Import. !562
+- Enforce 2FA on Doorkeeper controllers.
+- Refresh project authorizations when transferring groups.
+- Stop excess logs from failure to send invite email when group no longer exists.
+- Verify confirmed email for OAuth Authorize POST endpoint.
+- Revoke OAuth grants when a user revokes an application.
+- Fix XSS in Markdown reference tooltips.
+- Fix XSS in milestone tooltips.
+- Fix xss vulnerability on jobs view.
+- Block 40-character hexadecimal branches.
+- Update GitLab Runner Helm Chart to 0.17.2.
+
 
 ## 13.1.5 (2020-07-23)
 

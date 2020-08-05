@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Oauth::TokenInfoController < Doorkeeper::TokenInfoController
+  include EnforcesTwoFactorAuthentication
+
   def show
     if doorkeeper_token && doorkeeper_token.accessible?
       token_json = doorkeeper_token.as_json

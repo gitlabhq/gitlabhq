@@ -13,6 +13,8 @@ module Emails
       @member_source_type = member_source_type
       @member_id = member_id
 
+      return unless member_exists?
+
       user = User.find(recipient_id)
 
       member_email_with_layout(
@@ -23,6 +25,8 @@ module Emails
     def member_access_granted_email(member_source_type, member_id)
       @member_source_type = member_source_type
       @member_id = member_id
+
+      return unless member_exists?
 
       member_email_with_layout(
         to: member.user.notification_email_for(notification_group),
@@ -45,6 +49,8 @@ module Emails
       @member_id = member_id
       @token = token
 
+      return unless member_exists?
+
       member_email_with_layout(
         to: member.invite_email,
         subject: subject("Invitation to join the #{member_source.human_name} #{member_source.model_name.singular}"))
@@ -53,6 +59,8 @@ module Emails
     def member_invite_accepted_email(member_source_type, member_id)
       @member_source_type = member_source_type
       @member_id = member_id
+
+      return unless member_exists?
       return unless member.created_by
 
       member_email_with_layout(
@@ -74,9 +82,11 @@ module Emails
         subject: subject('Invitation declined'))
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def member
-      @member ||= Member.find(@member_id)
+      @member ||= Member.find_by(id: @member_id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def member_source
       @member_source ||= member.source
@@ -87,6 +97,11 @@ module Emails
     end
 
     private
+
+    def member_exists?
+      Gitlab::AppLogger.info("Tried to send an email invitation for a deleted group. Member id: #{@member_id}") if member.blank?
+      member.present?
+    end
 
     def member_source_class
       @member_source_type.classify.constantize
