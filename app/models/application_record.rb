@@ -42,15 +42,15 @@ class ApplicationRecord < ActiveRecord::Base
     limit(count)
   end
 
-  def self.safe_find_or_create_by!(*args)
-    safe_find_or_create_by(*args).tap do |record|
+  def self.safe_find_or_create_by!(*args, &block)
+    safe_find_or_create_by(*args, &block).tap do |record|
       record.validate! unless record.persisted?
     end
   end
 
-  def self.safe_find_or_create_by(*args)
+  def self.safe_find_or_create_by(*args, &block)
     safe_ensure_unique(retries: 1) do
-      find_or_create_by(*args)
+      find_or_create_by(*args, &block)
     end
   end
 

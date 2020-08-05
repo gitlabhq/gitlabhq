@@ -8,12 +8,105 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2479) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 
-GitLab Status Page allows you to create and deploy a static website to communicate efficiently to users during an incident.
+With a GitLab Status Page, you can create and deploy a static website to communicate
+efficiently to users during an incident. The Status Page landing page displays an
+overview of recent incidents:
 
-## How to set up
+![Status Page landing page](img/status_page_incidents_v12_10.png)
+
+Clicking an incident displays a detail page with more information about a particular incident:
+
+![Status Page detail](img/status_page_detail_v12_10.png)
+
+- Status on the incident, including when the incident was last updated.
+- The incident title, including any emojis.
+- The description of the incident, including emojis.
+- Any file attachments provided in the incident description, or comments with a
+  valid image extension. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.
+- A chronological ordered list of updates to the incident.
+
+## Set up a GitLab Status Page
+
+To configure a GitLab Status Page you must:
+
+1. [Configure GitLab](#configure-gitlab-with-cloud-provider-information) with your
+   cloud provider information.
+1. [Configure your AWS account](#configure-your-aws-account).
+1. [Create a Status Page project](#create-a-status-page-project) on GitLab.
+1. [Sync incidents to the Status Page](#sync-incidents-to-the-status-page).
+
+### Configure GitLab with cloud provider information
+
+To provide GitLab with the AWS account information needed to push content to your Status Page:
 
 NOTE: **Note:**
 Only AWS S3 is supported as a deploy target.
+
+1. Sign into GitLab as a user with Maintainer or greater [permissions](../../user/permissions.md).
+1. Navigate to **{settings}** **Settings > Operations**. Next to **Status Page**,
+   click **Expand**.
+1. Click **Active** to enable the Status Page feature.
+1. In **Status Page URL**, provide the URL to your external status page.
+1. Provide the **S3 Bucket name**. For more information, see
+   [Bucket configuration documentation](https://docs.aws.amazon.com/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html).
+1. Provide the **AWS region** for your bucket. For more information, see the
+   [AWS documentation](https://github.com/aws/aws-sdk-ruby#configuration).
+1. Provide your **AWS access key ID** and **AWS Secret access key**.
+1. Click **Save changes**.
+
+### Configure your AWS account
+
+1. Within your AWS account, create two new IAM policies, using the following files
+   as examples:
+    - [Create bucket](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_create_policy.json).
+    - [Update bucket contents](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_update_bucket_policy.json) (Remember replace `S3_BUCKET_NAME` with your bucket name).
+1. Create a new AWS access key with the permissions policies created in the first step.
+
+### Create a status page project
+
+After configuring your AWS account, you must add the Status Page project and configure
+the necessary CI/CD variables to deploy the Status Page to AWS S3:
+
+1. Fork the [Status Page](https://gitlab.com/gitlab-org/status-page) project.
+   You can do this through [Repository Mirroring](https://gitlab.com/gitlab-org/status-page#repository-mirroring),
+   which ensures you get the up-to-date Status Page features.
+1. Navigate to **{settings}** **Settings > CI/CD**.
+1. Scroll to **Variables**, and click **Expand**.
+1. Add the following variables from your Amazon Console:
+   - `S3_BUCKET_NAME` - The name of the Amazon S3 bucket.
+
+     NOTE: **Note:**
+     If no bucket with the provided name exists, the first pipeline run creates
+     one and configures it for
+     [static website hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html).
+
+   - `AWS_DEFAULT_REGION` - The AWS region.
+   - `AWS_ACCESS_KEY_ID` - The AWS access key ID.
+   - `AWS_SECRET_ACCESS_KEY` - The AWS secret.
+1. Navigate to **CI / CD > Pipelines > Run Pipeline**, and run the pipeline to
+   deploy the Status Page to S3.
+
+CAUTION: **Caution:**
+Consider limiting who can access issues in this project, as any user who can view
+the issue can potentially [publish comments to your GitLab Status Page](#publish-comments-on-incidents).
+
+### Sync incidents to the Status Page
+
+After creating the CI/CD variables, configure the Project you want to use for
+Incident issues:
+
+1. To view the [Operations Settings](../../user/project/settings/#operations-settings)
+   page, navigate to **{settings}** **Settings > Operations > Status Page**.
+1. Fill in your cloud provider's credentials and make sure the **Active** checkbox is checked.
+1. Click **Save changes**.
+
+## How to use your GitLab Status Page
+
+After configuring your GitLab instance, relevant updates trigger a background job
+that pushes JSON-formatted data about the incident to your external cloud provider.
+Your status page website periodically fetches this JSON-formatted data. It formats
+and displays it to users, providing information about ongoing incidents without
+extra effort from your team:
 
 ```mermaid
 graph TB
@@ -28,107 +121,59 @@ graph TB
     end
 ```
 
-Setting up a Status Page is pretty painless but there are a few things you need to do.
+### Publish an incident
 
-### Cloud account set up
+To publish an incident:
 
-To use GitLab Status Page you first need to set up your account details for your cloud provider in the operations settings page. Today, only AWS is supported.
+1. Create an issue in the project you enabled the GitLab Status Page settings in.
+1. A [project or group owner](../../user/permissions.md) must use the
+   `/publish` [quick action](../../user/project/quick_actions.md) to publish the
+   issue to the GitLab Status Page.
 
-#### AWS Setup
+   NOTE: **Note:**
+   Confidential issues can't be published.
 
-1. Within your AWS acccout, create two new IAM policies.
-    - [Create bucket](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_create_policy.json).
-    - [Update bucket contents](https://gitlab.com/gitlab-org/status-page/-/blob/master/deploy/etc/s3_update_bucket_policy.json) (Remember replace `S3_BUCKET_NAME` with your bucket name).
-1. Create a new AWS access key with the permissions policies created in the first step.
+A background worker publishes the issue onto the Status Page using the credentials
+you provided during setup. As part of publication, GitLab will:
 
-### Status Page project
+- Anonymize user and group mentions with `Incident Responder`.
+- Remove titles of non-public [GitLab references](../../user/markdown.md#special-gitlab-references).
+- Publish any files attached to incident issue descriptions, up to 5000 per issue.
+  ([Introduced in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/205166).)
 
-To deploy the Status Page to AWS S3 you need to add the Status Page project & configure the necessary CI variables.
-
-1. Fork the [Status Page](https://gitlab.com/gitlab-org/status-page) project. This can also be done via [Repository Mirroring](https://gitlab.com/gitlab-org/status-page#repository-mirroring) which will ensure you get the up-to-date Status Page features.
-1. Add the following variables in **Settings > CI/CD > Variables**. (To get these variables from Amazon, use your Amazon Console):
-    - `S3_BUCKET_NAME` - name of the Amazon S3 bucket (If a bucket with the provided name doesn't exist, the first pipeline run will create one and configure it for [static website hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html))
-    - `AWS_DEFAULT_REGION` - the AWS region
-    - `AWS_ACCESS_KEY_ID` - the AWS access key ID
-    - `AWS_SECRET_ACCESS_KEY` - the AWS secret
-1. Run the pipeline to deploy the Status Page to S3.
-
-### Syncing incidents to the Status Page
-
-Once the CI/CD variables are set, you'll need to set up the Project you want to use for Incident issues:
-
-1. To view the [Operations Settings](../../user/project/settings/#operations-settings) page, navigate to **Settings > Operations > Status Page**.
-1. Fill in your cloud provider's credentials and make sure the **Active** checkbox is checked.
-1. Click **Save changes**.
-
-## Status Page UI
-
-The Status Page landing page shows you an overview of the recent incidents. Clicking on an incident will take you to the incident's detail page.
-
-![Status Page landing page](img/status_page_incidents_v12_10.png)
-
-### Incident detail page
-
-The incident detail page shows detailed information about a particular incident. For example:
-
-- Status on the incident, including when the incident was last updated.
-- The incident title, including any emojis.
-- The description of the incident, including emojis.
-- Any file attachments provided in the incident description or comments with a valid image extension. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.
-- A chronological ordered list of updates to the incident.
-
-![Status Page detail](img/status_page_detail_v12_10.png)
-
-## How it works
-
-### Publishing Incidents
-
-To publish an Incident, you first need to create an issue in the Project you enabled the Status Page settings in.
-
-Issues are not published to the Status Page by default. Use the `/publish` [quick action](../../user/project/quick_actions.md) in an issue to publish the issue. Only [project or group owners](../../user/permissions.md) are permitted to publish issues.
-
-After the quick action is used, a background worker publishes the issue onto the Status Page using the credentials you provided during setup.
-
-Since all incidents are published publicly, user and group mentions are anonymized with `Incident Responder`,
-and titles of non-public [GitLab references](../../user/markdown.md#special-gitlab-references) are removed.
-
-When an Incident is published in the GitLab project, you can access the
-details page of the Incident by clicking the **Published on status page** button
-displayed under the Incident's title.
+After publication, you can access the incident's details page by clicking the
+**Published on status page** button displayed under the Incident's title.
 
 ![Status Page detail link](img/status_page_detail_link_v13_1.png)
 
-NOTE: **Note:**
-Confidential issues can't be published. If you make a published issue confidential, it will be unpublished.
-
-### Publishing updates
+### Update an incident
 
 To publish an update to the Incident, update the incident issue's description.
 
 CAUTION: **Caution:**
-When referenced issues are changed (e.g. title, confidentiality) the incident they were referenced in are not updated automatically.
+When referenced issues are changed (such as title or confidentiality) the incident
+they were referenced in is not updated.
 
-### Adding comments
+### Publish comments on incidents
 
-To add comments to the Status Page Incident, create a comment on the incident issue.
+To publish comments to the Status Page Incident:
 
-When you're ready to publish the comment, add a microphone [award emoji](../../user/award_emojis.md) reaction (`:microphone` 🎤) to the comment. This marks the comment as one which should be deployed to the Status Page.
+- Create a comment on the incident issue.
+- When you're ready to publish the comment, mark the comment for publication by
+  adding a microphone [award emoji](../../user/award_emojis.md)
+  reaction (`:microphone:` 🎤) to the comment.
+- Any files attached to the comment (up to 5000 per issue) are also published.
+  ([Introduced in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/205166).)
 
 CAUTION: **Caution:**
-Anyone with access to view the Issue can add an Emoji Award to a comment, so you may want to keep your Issues limited to team members only.
+Anyone with access to view the Issue can add an emoji award to a comment, so
+consider limiting access to issues to team members only.
 
-### Changing the Incident status
+### Update the incident status
 
-To change the incident status from `open` to `closed`, close the incident issue within GitLab. This will then be updated shortly on the Status Page website.
+To change the incident status from `open` to `closed`, close the incident issue
+within GitLab. Closing the issue triggers a background worker to update the
+GitLab Status Page website.
 
-## Attachment storage
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.
-
-Beginning with GitLab 13.1, files attached to incident issue descriptions or
-comments are published and unpublished to the status page storage as part of
-the [publication flow](#how-it-works).
-
-### Limit
-
-Only 5000 attachments per issue will be transferred to the status page.
+If you make a published issue confidential, GitLab unpublishes it from your
+GitLab Status Page website.

@@ -1,0 +1,5 @@
+---
+title: Fix vertical alignment of svg icons on Jobs page
+merge_request: 38656
+author:
+type: fixed

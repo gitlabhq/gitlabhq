@@ -135,9 +135,7 @@ describe('Pipeline DAG graph wrapper', () => {
         return waitForPromises();
       });
 
-      it('shows the graph and the beta alert', () => {
-        expect(getAllAlerts().length).toBe(1);
-        expect(getAlert().text()).toContain('This feature is currently in beta.');
+      it('shows the graph', () => {
         expect(getGraph().exists()).toBe(true);
       });
 
@@ -178,8 +176,7 @@ describe('Pipeline DAG graph wrapper', () => {
       });
 
       it('does not render an error alert or the graph', () => {
-        expect(getAllAlerts().length).toBe(1);
-        expect(getAlert().text()).toContain('This feature is currently in beta.');
+        expect(getAllAlerts().length).toBe(0);
         expect(getGraph().exists()).toBe(false);
       });
 

@@ -815,7 +815,7 @@ module Gitlab
       def fsck
         msg, status = gitaly_repository_client.fsck
 
-        raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
+        raise GitError.new("Could not fsck repository: #{msg}") unless status == 0
       end
 
       def create_from_bundle(bundle_path)

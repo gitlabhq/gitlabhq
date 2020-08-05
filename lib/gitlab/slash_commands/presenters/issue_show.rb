@@ -23,14 +23,14 @@ module Gitlab
         def text
           message = ["**#{status_text(resource)}**"]
 
-          if resource.upvotes.zero? && resource.downvotes.zero? && resource.user_notes_count.zero?
+          if resource.upvotes == 0 && resource.downvotes == 0 && resource.user_notes_count == 0
             return message.join
           end
 
           message << " · "
-          message << ":+1: #{resource.upvotes} " unless resource.upvotes.zero?
-          message << ":-1: #{resource.downvotes} " unless resource.downvotes.zero?
-          message << ":speech_balloon: #{resource.user_notes_count}" unless resource.user_notes_count.zero?
+          message << ":+1: #{resource.upvotes} " unless resource.upvotes == 0
+          message << ":-1: #{resource.downvotes} " unless resource.downvotes == 0
+          message << ":speech_balloon: #{resource.user_notes_count}" unless resource.user_notes_count == 0
 
           message.join
         end

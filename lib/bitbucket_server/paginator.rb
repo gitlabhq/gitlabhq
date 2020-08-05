@@ -36,7 +36,7 @@ module BitbucketServer
     def over_limit?
       return false unless @limit
 
-      @limit.positive? && @total >= @limit
+      @limit > 0 && @total >= @limit
     end
 
     def next_offset

@@ -84,6 +84,7 @@ are certain use cases that you may need to work around. For more information:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215517) in GitLab 13.1 as a [Beta feature](https://about.gitlab.com/handbook/product/#beta).
 > - It was deployed behind a feature flag, disabled by default.
 > - It became [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36802) in 13.2.
+> - It became a [standard feature](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38517) in 13.3.
 > - It's enabled on GitLab.com.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-dag-visualization-core-only).
 
@@ -97,9 +98,7 @@ Clicking a node will highlight all the job paths it depends on.
 
 ### Enable or disable DAG Visualization **(CORE ONLY)**
 
-DAG Visualization is under development, but is being made available as a beta feature so users can check its limitations and uses.
-
-It is deployed behind a feature flag that is **enabled by default**.
+DAG Visualization is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to disable it for your instance:
 

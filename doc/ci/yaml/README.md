@@ -1415,6 +1415,9 @@ In this example:
   to continue running even if the job is not triggered (`allow_failure: true`).
 - If `Dockerfile` has not changed, do not add job to any pipeline (same as `when: never`).
 
+To implement a rule similar to [`except: changes`](#onlychangesexceptchanges),
+use `when: never`.
+
 ##### `rules:exists`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24021) in GitLab 12.4.
@@ -2227,6 +2230,9 @@ failure.
     [manual actions](#whenmanual) below.
 1. `delayed` - execute job after a certain period (added in GitLab 11.14).
     Read about [delayed actions](#whendelayed) below.
+1. `never`:
+   - With [`rules`](#rules), don't execute job.
+   - With [`workflow:rules`](#workflowrules), don't run pipeline.
 
 For example:
 

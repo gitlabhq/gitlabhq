@@ -476,7 +476,7 @@ module Gitlab
       return unless stack_counter
 
       max = max_call_count
-      return if max.zero?
+      return if max == 0
 
       stack_counter.select { |_, v| v == max }.keys
     end

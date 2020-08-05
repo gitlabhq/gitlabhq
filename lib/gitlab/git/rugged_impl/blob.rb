@@ -48,7 +48,7 @@ module Gitlab
                   name: blob_entry[:name],
                   size: blob.size,
                   # Rugged::Blob#content is expensive; don't call it if we don't have to.
-                  data: limit.zero? ? '' : blob.content(limit),
+                  data: limit == 0 ? '' : blob.content(limit),
                   mode: blob_entry[:filemode].to_s(8),
                   path: path,
                   commit_id: sha,

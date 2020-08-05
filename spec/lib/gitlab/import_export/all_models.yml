@@ -466,6 +466,7 @@ project:
 - vulnerability_identifiers
 - vulnerability_scanners
 - dast_site_profiles
+- dast_scanner_profiles
 - dast_sites
 - operations_feature_flags
 - operations_feature_flags_client

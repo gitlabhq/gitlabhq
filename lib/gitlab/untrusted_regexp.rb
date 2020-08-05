@@ -31,7 +31,7 @@ module Gitlab
 
     def scan(text)
       matches = scan_regexp.scan(text).to_a
-      matches.map!(&:first) if regexp.number_of_capturing_groups.zero?
+      matches.map!(&:first) if regexp.number_of_capturing_groups == 0
       matches
     end
 
@@ -68,7 +68,7 @@ module Gitlab
     # groups, so work around it
     def scan_regexp
       @scan_regexp ||=
-        if regexp.number_of_capturing_groups.zero?
+        if regexp.number_of_capturing_groups == 0
           RE2::Regexp.new('(' + regexp.source + ')')
         else
           regexp

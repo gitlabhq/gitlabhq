@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlEmptyState, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -23,7 +23,6 @@ export default {
     DagAnnotations,
     DagGraph,
     GlAlert,
-    GlLink,
     GlSprintf,
     GlEmptyState,
     GlButton,
@@ -51,7 +50,6 @@ export default {
       failureType: null,
       graphData: null,
       showFailureAlert: false,
-      showBetaInfo: true,
       hasNoDependentJobs: false,
     };
   },
@@ -72,11 +70,6 @@ export default {
     button: __('Learn more about job dependencies'),
   },
   computed: {
-    betaMessage() {
-      return __(
-        'This feature is currently in beta. We invite you to %{linkStart}give feedback%{linkEnd}.',
-      );
-    },
     failure() {
       switch (this.failureType) {
         case LOAD_FAILURE:
@@ -154,9 +147,6 @@ export default {
     hideAlert() {
       this.showFailureAlert = false;
     },
-    hideBetaInfo() {
-      this.showBetaInfo = false;
-    },
     removeAnnotationFromMap({ uid }) {
       this.$delete(this.annotationsMap, uid);
     },
@@ -188,15 +178,6 @@ export default {
       {{ failure.text }}
     </gl-alert>
 
-    <gl-alert v-if="showBetaInfo" @dismiss="hideBetaInfo">
-      <gl-sprintf :message="betaMessage">
-        <template #link="{ content }">
-          <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/220368" target="_blank">
-            {{ content }}
-          </gl-link>
-        </template>
-      </gl-sprintf>
-    </gl-alert>
     <div class="gl-relative">
       <dag-annotations v-if="shouldDisplayAnnotations" :annotations="annotationsMap" />
       <dag-graph

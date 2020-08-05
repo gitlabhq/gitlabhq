@@ -170,7 +170,7 @@ module Gitlab
 
     Experiment = Struct.new(:key, :environment, :tracking_category, keyword_init: true) do
       def enabled?
-        experiment_percentage.positive?
+        experiment_percentage > 0
       end
 
       def enabled_for_environment?

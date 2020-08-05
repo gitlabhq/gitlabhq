@@ -82,7 +82,7 @@ module Banzai
       def process_tag(tag)
         parts = tag.split('|')
 
-        return if parts.size.zero?
+        return if parts.empty?
 
         process_image_tag(parts) || process_page_link_tag(parts)
       end

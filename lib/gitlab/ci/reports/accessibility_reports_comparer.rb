@@ -17,7 +17,7 @@ module Gitlab
         end
 
         def status
-          head_reports.errors_count.positive? ? STATUS_FAILED : STATUS_SUCCESS
+          head_reports.errors_count > 0 ? STATUS_FAILED : STATUS_SUCCESS
         end
 
         def existing_errors

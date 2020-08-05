@@ -34,7 +34,7 @@ module Gitlab
       @second_collection_pages ||= Hash.new do |hash, page|
         second_collection_page = page - first_collection_page_count
 
-        offset = if second_collection_page < 1 || first_collection_page_count.zero?
+        offset = if second_collection_page < 1 || first_collection_page_count == 0
                    0
                  else
                    per_page - first_collection_last_page_size

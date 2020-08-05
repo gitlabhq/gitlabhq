@@ -101,7 +101,7 @@ module Gitlab
 
       def any_non_empty_queue?(*workers)
         workers.any? do |worker|
-          !Sidekiq::Queue.new(worker.queue).size.zero?
+          Sidekiq::Queue.new(worker.queue).size != 0 # rubocop:disable Style/ZeroLengthPredicate
         end
       end
 

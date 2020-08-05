@@ -39,7 +39,7 @@ module Gitlab
       end
 
       def first_attempt?
-        attempts.zero?
+        attempts == 0
       end
 
       def sleep_sec

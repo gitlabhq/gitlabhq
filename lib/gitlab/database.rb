@@ -74,7 +74,7 @@ module Gitlab
 
     # @deprecated
     def self.postgresql?
-      adapter_name.casecmp('postgresql').zero?
+      adapter_name.casecmp('postgresql') == 0
     end
 
     def self.read_only?

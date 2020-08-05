@@ -66,7 +66,7 @@ module Gitlab
       estimated_minutes = (size.to_f / ESTIMATED_INSERT_PER_MINUTE).round
       humanized_minutes = 'minute'.pluralize(estimated_minutes)
 
-      if estimated_minutes.zero?
+      if estimated_minutes == 0
         "Rough estimated time: less than a minute ⏰"
       else
         "Rough estimated time: #{estimated_minutes} #{humanized_minutes} ⏰"

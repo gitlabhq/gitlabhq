@@ -17,7 +17,7 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
 
       command = []
       _, status = Gitlab::Popen.popen(%w[which gmake])
-      command << (status.zero? ? 'gmake' : 'make')
+      command << (status == 0 ? 'gmake' : 'make')
 
       if Rails.env.test?
         command.push(

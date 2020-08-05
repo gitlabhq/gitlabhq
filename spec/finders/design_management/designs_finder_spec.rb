@@ -8,9 +8,9 @@ RSpec.describe DesignManagement::DesignsFinder do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:design1) { create(:design, :with_file, issue: issue, versions_count: 1) }
-  let_it_be(:design2) { create(:design, :with_file, issue: issue, versions_count: 1) }
-  let_it_be(:design3) { create(:design, :with_file, issue: issue, versions_count: 1) }
+  let_it_be(:design1) { create(:design, :with_file, issue: issue, versions_count: 1, relative_position: 3) }
+  let_it_be(:design2) { create(:design, :with_file, issue: issue, versions_count: 1, relative_position: 2) }
+  let_it_be(:design3) { create(:design, :with_file, issue: issue, versions_count: 1, relative_position: 1) }
   let(:params) { {} }
 
   subject(:designs) { described_class.new(issue, user, params).execute }
@@ -38,8 +38,28 @@ RSpec.describe DesignManagement::DesignsFinder do
           enable_design_management
         end
 
-        it 'returns the designs' do
-          is_expected.to contain_exactly(design1, design2, design3)
+        it 'returns the designs sorted by their relative position' do
+          is_expected.to eq([design3, design2, design1])
+        end
+
+        context 'when the :reorder_designs feature is enabled for the project' do
+          before do
+            stub_feature_flags(reorder_designs: project)
+          end
+
+          it 'returns the designs sorted by their relative position' do
+            is_expected.to eq([design3, design2, design1])
+          end
+        end
+
+        context 'when the :reorder_designs feature is disabled' do
+          before do
+            stub_feature_flags(reorder_designs: false)
+          end
+
+          it 'returns the designs sorted by ID' do
+            is_expected.to eq([design1, design2, design3])
+          end
         end
 
         context 'when argument is the ids of designs' do

@@ -637,10 +637,13 @@ $issue-boards-card-shadow: rgba(0, 0, 0, 0.1);
  They probably should be derived in a smarter way.
 */
 $issue-boards-filter-height: 68px;
+$issue-boards-filter-height-md: 110px;
+$issue-boards-filter-height-sm: 299px;
 $issue-boards-breadcrumbs-height-xs: 63px;
 $issue-board-list-difference-xs: $header-height + $issue-boards-breadcrumbs-height-xs;
 $issue-board-list-difference-sm: $header-height + $breadcrumb-min-height;
-$issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards-filter-height;
+$issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards-filter-height-md;
+$issue-board-list-difference-lg: $issue-board-list-difference-sm + $issue-boards-filter-height;
 /*
  The following heights are used in environment_logs.scss and are used for calculation of the log viewer height.
 */

@@ -22,7 +22,9 @@ module DesignManagement
       items = by_filename(items)
       items = by_id(items)
 
-      items
+      # TODO: We don't need to pass the project anymore after the feature flag is removed
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/34382
+      items.ordered(issue.project)
     end
 
     private

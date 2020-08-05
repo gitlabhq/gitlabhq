@@ -20,7 +20,7 @@ module Gitlab
     end
 
     def self.polling_enabled?
-      !Gitlab::CurrentSettings.polling_interval_multiplier.zero?
+      Gitlab::CurrentSettings.polling_interval_multiplier != 0
     end
   end
 end

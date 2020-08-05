@@ -213,7 +213,7 @@ module Gitlab
 
       def normalize_localhost_address(instance)
         ip_addr = IPAddr.new(instance)
-        is_local_ip = ip_addr.loopback? || ip_addr.to_i.zero?
+        is_local_ip = ip_addr.loopback? || ip_addr.to_i == 0
 
         is_local_ip ? 'localhost' : instance
       rescue IPAddr::InvalidAddressError

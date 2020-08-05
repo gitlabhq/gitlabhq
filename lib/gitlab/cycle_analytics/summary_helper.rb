@@ -4,7 +4,7 @@ module Gitlab
   module CycleAnalytics
     module SummaryHelper
       def frequency(count, from, to)
-        return Summary::Value::None.new if count.zero?
+        return Summary::Value::None.new if count == 0
 
         freq = (count / days(from, to)).round(1)
 

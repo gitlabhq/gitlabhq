@@ -59,6 +59,10 @@
     height: calc(100vh - #{$issue-board-list-difference-md});
   }
 
+  @include media-breakpoint-up(lg) {
+    height: calc(100vh - #{$issue-board-list-difference-lg});
+  }
+
   .with-performance-bar & {
     height: calc(100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height});
 
@@ -68,6 +72,10 @@
 
     @include media-breakpoint-up(md) {
       height: calc(100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height});
+    }
+
+    @include media-breakpoint-up(lg) {
+      height: calc(100vh - #{$issue-board-list-difference-lg} - #{$performance-bar-height});
     }
   }
 }
@@ -191,7 +199,8 @@
   align-items: center;
   font-size: 1em;
   border-bottom: 1px solid $gray-100;
-  padding: $gl-padding-8;
+  padding: 0 $gl-spacing-scale-3;
+  height: 3rem;
 
   .js-max-issue-size::before {
     content: '/';
@@ -584,4 +593,22 @@
 
 .board-header-collapsed-info-icon:hover {
   color: $gray-900;
+}
+
+$epic-icons-spacing: 40px;
+
+.board-epic-lane {
+  max-width: calc(100vw - #{$contextual-sidebar-width} - $epic-icons-spacing);
+
+  .page-with-icon-sidebar & {
+    max-width: calc(100vw - #{$contextual-sidebar-collapsed-width} - $epic-icons-spacing);
+  }
+
+  .page-with-icon-sidebar .is-compact & {
+    max-width: calc(100vw - #{$contextual-sidebar-collapsed-width} - #{$gutter-width} - $epic-icons-spacing);
+  }
+
+  .is-compact & {
+    max-width: calc(100vw - #{$contextual-sidebar-width} - #{$gutter-width} - $epic-icons-spacing);
+  }
 }

@@ -9,6 +9,7 @@ module DesignManagement
     include Referable
     include Mentionable
     include WhereComposite
+    include RelativePositioning
 
     belongs_to :project, inverse_of: :designs
     belongs_to :issue
@@ -75,7 +76,19 @@ module DesignManagement
       join = designs.join(actions)
         .on(actions[:design_id].eq(designs[:id]))
 
-      joins(join.join_sources).where(actions[:event].not_eq(deletion)).order(:id)
+      joins(join.join_sources).where(actions[:event].not_eq(deletion))
+    end
+
+    scope :ordered, -> (project) do
+      # TODO: Always order by relative position after the feature flag is removed
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/34382
+      if Feature.enabled?(:reorder_designs, project)
+        # We need to additionally sort by `id` to support keyset pagination.
+        # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17788/diffs#note_230875678
+        order(:relative_position, :id)
+      else
+        order(:id)
+      end
     end
 
     scope :with_filename, -> (filenames) { where(filename: filenames) }
@@ -86,6 +99,14 @@ module DesignManagement
 
     # A design is current if the most recent event is not a deletion
     scope :current, -> { visible_at_version(nil) }
+
+    def self.relative_positioning_query_base(design)
+      on_issue(design.issue_id)
+    end
+
+    def self.relative_positioning_parent_column
+      :issue_id
+    end
 
     def status
       if new_design?

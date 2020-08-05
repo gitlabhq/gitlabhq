@@ -239,7 +239,7 @@ module Gitlab
         memory_growth_kb = get_job_options(job, 'memory_killer_memory_growth_kb', 0).to_i
         max_memory_growth_kb = get_job_options(job, 'memory_killer_max_memory_growth_kb', DEFAULT_MAX_MEMORY_GROWTH_KB).to_i
 
-        return 0 if memory_growth_kb.zero?
+        return 0 if memory_growth_kb == 0
 
         time_elapsed = [Gitlab::Metrics::System.monotonic_time - job[:started_at], 0].max
         [memory_growth_kb * time_elapsed, max_memory_growth_kb].min

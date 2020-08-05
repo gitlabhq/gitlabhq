@@ -26,7 +26,7 @@ module Backup
         cmd = %W(rsync -a --exclude=lost+found #{app_files_dir} #{Gitlab.config.backup.path})
         output, status = Gitlab::Popen.popen(cmd)
 
-        unless status.zero?
+        unless status == 0
           puts output
           raise Backup::Error, 'Backup failed'
         end

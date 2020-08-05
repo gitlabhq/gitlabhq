@@ -92,7 +92,7 @@ export default {
           searchTerm: this.searchTerm,
           state: this.stateFilter,
           projectPath: this.projectPath,
-          labelNames: ['incident'],
+          issueTypes: ['INCIDENT'],
           firstPageSize: this.pagination.firstPageSize,
           lastPageSize: this.pagination.lastPageSize,
           prevPageCursor: this.pagination.prevPageCursor,

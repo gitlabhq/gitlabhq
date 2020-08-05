@@ -274,52 +274,7 @@ RSpec.describe API::Snippets do
     end
 
     context 'with files parameter' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:path, :content, :status, :error) do
-        '.gitattributes'      | 'file content' | :created     | nil
-        'valid/path/file.rb'  | 'file content' | :created     | nil
-
-        '.gitattributes'      | nil            | :bad_request | 'files[0][content] is empty'
-        '.gitattributes'      | ''             | :bad_request | 'files[0][content] is empty'
-
-        ''                    | 'file content' | :bad_request | 'files[0][file_path] is empty'
-        nil                   | 'file content' | :bad_request | 'files[0][file_path] should be a valid file path, files[0][file_path] is empty'
-        '../../etc/passwd'    | 'file content' | :bad_request | 'files[0][file_path] should be a valid file path'
-      end
-
-      with_them do
-        let(:file_path)    { path }
-        let(:file_content) { content }
-
-        before do
-          subject
-        end
-
-        it 'responds correctly' do
-          expect(response).to have_gitlab_http_status(status)
-          expect(json_response['error']).to eq(error)
-        end
-      end
-
-      it 'returns 400 if both files and content are provided' do
-        params[:file_name] = 'foo.rb'
-        params[:content] = 'bar'
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq 'files, content are mutually exclusive'
-      end
-
-      it 'returns 400 when neither files or content are provided' do
-        params.delete(:files)
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq 'files, content are missing, exactly one parameter must be provided'
-      end
+      it_behaves_like 'snippet creation with files parameter'
 
       context 'with multiple files' do
         let(:file_params) do
@@ -335,24 +290,7 @@ RSpec.describe API::Snippets do
       end
     end
 
-    context 'without files parameter' do
-      let(:file_params) { { file_name: 'testing.rb', content: 'snippet content' } }
-
-      it 'allows file_name and content parameters' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:created)
-      end
-
-      it 'returns 400 if file_name and content are not both provided' do
-        params.delete(:file_name)
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq 'file_name is missing'
-      end
-    end
+    it_behaves_like 'snippet creation without files parameter'
 
     context 'with restricted visibility settings' do
       before do

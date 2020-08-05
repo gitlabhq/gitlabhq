@@ -123,15 +123,18 @@ RSpec.describe API::ProjectSnippets do
   end
 
   describe 'POST /projects/:project_id/snippets/' do
-    let(:params) do
+    let(:base_params) do
       {
         title: 'Test Title',
-        file_name: 'test.rb',
         description: 'test description',
-        content: 'puts "hello world"',
         visibility: 'public'
       }
     end
+
+    let(:file_path) { 'file_1.rb' }
+    let(:file_content) { 'puts "hello world"' }
+    let(:params) { base_params.merge(file_params) }
+    let(:file_params) { { files: [{ file_path: file_path, content: file_content }] } }
 
     shared_examples 'project snippet repository actions' do
       let(:snippet) { ProjectSnippet.find(json_response['id']) }
@@ -145,9 +148,9 @@ RSpec.describe API::ProjectSnippets do
       it 'commit the files to the repository' do
         subject
 
-        blob = snippet.repository.blob_at('master', params[:file_name])
+        blob = snippet.repository.blob_at('master', file_path)
 
-        expect(blob.data).to eq params[:content]
+        expect(blob.data).to eq file_content
       end
     end
 
@@ -184,63 +187,60 @@ RSpec.describe API::ProjectSnippets do
         params['visibility'] = 'internal'
       end
 
+      subject { post api("/projects/#{project.id}/snippets/", user), params: params }
+
       it 'creates a new snippet' do
-        post api("/projects/#{project.id}/snippets/", user), params: params
+        subject
 
         expect(response).to have_gitlab_http_status(:created)
         snippet = ProjectSnippet.find(json_response['id'])
-        expect(snippet.content).to eq(params[:content])
+        expect(snippet.content).to eq(file_content)
         expect(snippet.description).to eq(params[:description])
         expect(snippet.title).to eq(params[:title])
-        expect(snippet.file_name).to eq(params[:file_name])
+        expect(snippet.file_name).to eq(file_path)
         expect(snippet.visibility_level).to eq(Snippet::INTERNAL)
       end
 
-      it_behaves_like 'project snippet repository actions' do
-        subject { post api("/projects/#{project.id}/snippets/", user), params: params }
-      end
+      it_behaves_like 'project snippet repository actions'
     end
 
-    it 'creates a new snippet' do
-      post api("/projects/#{project.id}/snippets/", admin), params: params
-
-      expect(response).to have_gitlab_http_status(:created)
-      snippet = ProjectSnippet.find(json_response['id'])
-      expect(snippet.content).to eq(params[:content])
-      expect(snippet.description).to eq(params[:description])
-      expect(snippet.title).to eq(params[:title])
-      expect(snippet.file_name).to eq(params[:file_name])
-      expect(snippet.visibility_level).to eq(Snippet::PUBLIC)
-    end
-
-    it_behaves_like 'project snippet repository actions' do
+    context 'with an admin' do
       subject { post api("/projects/#{project.id}/snippets/", admin), params: params }
-    end
 
-    it 'returns 400 for missing parameters' do
-      params.delete(:title)
+      it 'creates a new snippet' do
+        subject
 
-      post api("/projects/#{project.id}/snippets/", admin), params: params
+        expect(response).to have_gitlab_http_status(:created)
+        snippet = ProjectSnippet.find(json_response['id'])
+        expect(snippet.content).to eq(file_content)
+        expect(snippet.description).to eq(params[:description])
+        expect(snippet.title).to eq(params[:title])
+        expect(snippet.file_name).to eq(file_path)
+        expect(snippet.visibility_level).to eq(Snippet::PUBLIC)
+      end
 
-      expect(response).to have_gitlab_http_status(:bad_request)
-    end
+      it_behaves_like 'project snippet repository actions'
 
-    it 'returns 400 if content is blank' do
-      params[:content] = ''
+      it 'returns 400 for missing parameters' do
+        params.delete(:title)
 
-      post api("/projects/#{project.id}/snippets/", admin), params: params
+        subject
 
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq 'content is empty'
-    end
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
 
-    it 'returns 400 if title is blank' do
-      params[:title] = ''
+      it_behaves_like 'snippet creation with files parameter'
 
-      post api("/projects/#{project.id}/snippets/", admin), params: params
+      it_behaves_like 'snippet creation without files parameter'
 
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq 'title is empty'
+      it 'returns 400 if title is blank' do
+        params[:title] = ''
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq 'title is empty'
+      end
     end
 
     context 'when save fails because the repository could not be created' do

@@ -1062,7 +1062,7 @@ into similar problems in the future (e.g. when new tables are created).
           AND pg_class.relname = '#{table}'
         SQL
 
-        connection.select_value(check_sql).positive?
+        connection.select_value(check_sql) > 0
       end
 
       # Adds a check constraint to a table

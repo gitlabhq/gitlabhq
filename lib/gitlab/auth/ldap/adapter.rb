@@ -54,7 +54,7 @@ module Gitlab
             if results.nil?
               response = ldap.get_operation_result
 
-              unless response.code.zero?
+              unless response.code == 0
                 Rails.logger.warn("LDAP search error: #{response.message}") # rubocop:disable Gitlab/RailsLogger
               end
 

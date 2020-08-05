@@ -34,7 +34,7 @@ module Gitlab
           end
 
           def to_s
-            value.zero? ? '0' : value.to_s
+            value == 0 ? '0' : value.to_s
           end
 
           def to_i

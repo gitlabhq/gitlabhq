@@ -123,7 +123,7 @@ module Gitlab
         cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{repo_path} bundle create #{bundle_path} --all)
         output, status = Gitlab::Popen.popen(cmd)
 
-        raise output unless status.zero?
+        raise output unless status == 0
 
         bundle_path
       end

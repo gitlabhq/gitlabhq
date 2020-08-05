@@ -161,7 +161,7 @@ module Gitlab
 
         # The cache key may be empty to indicate a previously looked up user for
         # which we couldn't find an ID.
-        [exists, number.positive? ? number : nil]
+        [exists, number > 0 ? number : nil]
       end
     end
   end

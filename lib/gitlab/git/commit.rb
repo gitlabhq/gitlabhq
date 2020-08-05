@@ -261,7 +261,7 @@ module Gitlab
       end
 
       def has_zero_stats?
-        stats.total.zero?
+        stats.total == 0
       rescue
         true
       end
@@ -423,7 +423,7 @@ module Gitlab
       end
 
       def message_from_gitaly_body
-        return @raw_commit.subject.dup if @raw_commit.body_size.zero?
+        return @raw_commit.subject.dup if @raw_commit.body_size == 0
         return @raw_commit.body.dup if full_body_fetched_from_gitaly?
 
         if @raw_commit.body_size > MAX_COMMIT_MESSAGE_DISPLAY_SIZE

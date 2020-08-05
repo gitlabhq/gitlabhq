@@ -11203,7 +11203,8 @@ CREATE TABLE public.design_management_designs (
     id bigint NOT NULL,
     project_id integer NOT NULL,
     issue_id integer,
-    filename character varying NOT NULL
+    filename character varying NOT NULL,
+    relative_position integer
 );
 
 CREATE SEQUENCE public.design_management_designs_id_seq
@@ -19393,6 +19394,8 @@ CREATE INDEX index_description_versions_on_epic_id ON public.description_version
 CREATE INDEX index_description_versions_on_issue_id ON public.description_versions USING btree (issue_id) WHERE (issue_id IS NOT NULL);
 
 CREATE INDEX index_description_versions_on_merge_request_id ON public.description_versions USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
+
+CREATE INDEX index_design_management_designs_issue_id_relative_position_id ON public.design_management_designs USING btree (issue_id, relative_position, id);
 
 CREATE UNIQUE INDEX index_design_management_designs_on_issue_id_and_filename ON public.design_management_designs USING btree (issue_id, filename);
 

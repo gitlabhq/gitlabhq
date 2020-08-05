@@ -10,7 +10,7 @@ module API
           value = model.gate_values[gate.key]
 
           # By default all gate values are populated. Only show relevant ones.
-          if (value.is_a?(Integer) && value.zero?) || (value.is_a?(Set) && value.empty?)
+          if (value.is_a?(Integer) && value == 0) || (value.is_a?(Set) && value.empty?)
             next
           end
 

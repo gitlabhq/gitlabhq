@@ -768,6 +768,7 @@ DesignManagement::Design:
 - id
 - project_id
 - filename
+- relative_position
 DesignManagement::Action:
 - id
 - event
