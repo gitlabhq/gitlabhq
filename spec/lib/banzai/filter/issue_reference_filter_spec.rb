@@ -73,6 +73,12 @@ describe Banzai::Filter::IssueReferenceFilter do
       expect(doc.text).to eq "Issue #{reference}"
     end
 
+    it 'renders non-HTML tooltips' do
+      doc = reference_filter("Issue #{reference}")
+
+      expect(doc.at_css('a')).not_to have_attribute('data-html')
+    end
+
     it 'includes default classes' do
       doc = reference_filter("Issue #{reference}")
       expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'

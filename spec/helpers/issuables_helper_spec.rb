@@ -303,4 +303,12 @@ describe IssuablesHelper do
       end
     end
   end
+
+  describe '#sidebar_milestone_tooltip_label' do
+    it 'escapes HTML in the milestone title' do
+      milestone = build(:milestone, title: '&lt;img onerror=alert(1)&gt;')
+
+      expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq('&lt;img onerror=alert(1)&gt;<br/>Milestone')
+    end
+  end
 end

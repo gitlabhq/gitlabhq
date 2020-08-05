@@ -37,6 +37,7 @@ module Groups
 
     # Overridden in EE
     def post_update_hooks(updated_project_ids)
+      refresh_project_authorizations
     end
 
     def ensure_allowed_transfer
@@ -113,6 +114,16 @@ module Groups
       return unless @group.owners.empty?
 
       @group.add_owner(current_user)
+    end
+
+    def refresh_project_authorizations
+      ProjectAuthorization.where(project_id: @group.all_projects.select(:id)).delete_all # rubocop: disable CodeReuse/ActiveRecord
+
+      # refresh authorized projects for current_user immediately
+      current_user.refresh_authorized_projects
+
+      # schedule refreshing projects for all the members of the group
+      @group.refresh_members_authorized_projects
     end
 
     def raise_transfer_error(message)

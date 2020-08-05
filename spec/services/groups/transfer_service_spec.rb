@@ -337,44 +337,117 @@ describe Groups::TransferService do
       end
 
       context 'when transferring a group with nested groups and projects' do
-        let!(:group) { create(:group, :public) }
+        let(:subgroup1) { create(:group, :private, parent: group) }
         let!(:project1) { create(:project, :repository, :private, namespace: group) }
-        let!(:subgroup1) { create(:group, :private, parent: group) }
         let!(:nested_subgroup) { create(:group, :private, parent: subgroup1) }
         let!(:nested_project) { create(:project, :repository, :private, namespace: subgroup1) }
 
         before do
           TestEnv.clean_test_path
           create(:group_member, :owner, group: new_parent_group, user: user)
-          transfer_service.execute(new_parent_group)
         end
 
-        it 'updates subgroups path' do
-          new_base_path = "#{new_parent_group.path}/#{group.path}"
-          group.children.each do |children|
-            expect(children.full_path).to eq("#{new_base_path}/#{children.path}")
+        context 'updated paths' do
+          let(:group) { create(:group, :public) }
+
+          before do
+            transfer_service.execute(new_parent_group)
           end
 
-          new_base_path = "#{new_parent_group.path}/#{group.path}/#{subgroup1.path}"
-          subgroup1.children.each do |children|
-            expect(children.full_path).to eq("#{new_base_path}/#{children.path}")
+          it 'updates subgroups path' do
+            new_base_path = "#{new_parent_group.path}/#{group.path}"
+            group.children.each do |children|
+              expect(children.full_path).to eq("#{new_base_path}/#{children.path}")
+            end
+
+            new_base_path = "#{new_parent_group.path}/#{group.path}/#{subgroup1.path}"
+            subgroup1.children.each do |children|
+              expect(children.full_path).to eq("#{new_base_path}/#{children.path}")
+            end
+          end
+
+          it 'updates projects path' do
+            new_parent_path = "#{new_parent_group.path}/#{group.path}"
+            subgroup1.projects.each do |project|
+              project_full_path = "#{new_parent_path}/#{project.namespace.path}/#{project.name}"
+              expect(project.full_path).to eq(project_full_path)
+            end
+          end
+
+          it 'creates redirect for the subgroups and projects' do
+            expect(group.redirect_routes.count).to eq(1)
+            expect(project1.redirect_routes.count).to eq(1)
+            expect(subgroup1.redirect_routes.count).to eq(1)
+            expect(nested_subgroup.redirect_routes.count).to eq(1)
+            expect(nested_project.redirect_routes.count).to eq(1)
           end
         end
 
-        it 'updates projects path' do
-          new_parent_path = "#{new_parent_group.path}/#{group.path}"
-          subgroup1.projects.each do |project|
-            project_full_path = "#{new_parent_path}/#{project.namespace.path}/#{project.name}"
-            expect(project.full_path).to eq(project_full_path)
-          end
-        end
+        context 'resets project authorizations' do
+          let(:old_parent_group) { create(:group) }
+          let(:group) { create(:group, :private, parent: old_parent_group) }
+          let(:new_group_member) { create(:user) }
+          let(:old_group_member) { create(:user) }
 
-        it 'creates redirect for the subgroups and projects' do
-          expect(group.redirect_routes.count).to eq(1)
-          expect(project1.redirect_routes.count).to eq(1)
-          expect(subgroup1.redirect_routes.count).to eq(1)
-          expect(nested_subgroup.redirect_routes.count).to eq(1)
-          expect(nested_project.redirect_routes.count).to eq(1)
+          before do
+            new_parent_group.add_maintainer(new_group_member)
+            old_parent_group.add_maintainer(old_group_member)
+            group.refresh_members_authorized_projects
+          end
+
+          it 'removes old project authorizations' do
+            expect { transfer_service.execute(new_parent_group) }.to change {
+              ProjectAuthorization.where(project_id: project1.id, user_id: old_group_member.id).size
+            }.from(1).to(0)
+          end
+
+          it 'adds new project authorizations' do
+            expect { transfer_service.execute(new_parent_group) }.to change {
+              ProjectAuthorization.where(project_id: project1.id, user_id: new_group_member.id).size
+            }.from(0).to(1)
+          end
+
+          it 'performs authorizations job immediately' do
+            expect(AuthorizedProjectsWorker).to receive(:bulk_perform_inline)
+
+            transfer_service.execute(new_parent_group)
+          end
+
+          context 'for nested projects' do
+            it 'removes old project authorizations' do
+              expect { transfer_service.execute(new_parent_group) }.to change {
+                ProjectAuthorization.where(project_id: nested_project.id, user_id: old_group_member.id).size
+              }.from(1).to(0)
+            end
+
+            it 'adds new project authorizations' do
+              expect { transfer_service.execute(new_parent_group) }.to change {
+                ProjectAuthorization.where(project_id: nested_project.id, user_id: new_group_member.id).size
+              }.from(0).to(1)
+            end
+          end
+
+          context 'for groups with many members' do
+            before do
+              11.times do
+                new_parent_group.add_maintainer(create(:user))
+              end
+            end
+
+            it 'adds new project authorizations for the user which makes a transfer' do
+              transfer_service.execute(new_parent_group)
+
+              expect(ProjectAuthorization.where(project_id: project1.id, user_id: user.id).size).to eq(1)
+              expect(ProjectAuthorization.where(project_id: nested_project.id, user_id: user.id).size).to eq(1)
+            end
+
+            it 'schedules authorizations job' do
+              expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
+                .with(array_including(new_parent_group.members_with_parents.pluck(:user_id).map {|id| [id, anything] }))
+
+              transfer_service.execute(new_parent_group)
+            end
+          end
         end
       end
 

@@ -38,7 +38,6 @@ module Banzai
         attributes[:reference_type] ||= self.class.reference_type
         attributes[:container] ||= 'body'
         attributes[:placement] ||= 'top'
-        attributes[:html] ||= 'true'
         attributes.delete(:original) if context[:no_original_data]
         attributes.map do |key, value|
           %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}")

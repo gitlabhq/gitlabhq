@@ -45,6 +45,21 @@ describe Notify do
     end
   end
 
+  shared_examples 'it requires a group' do
+    context 'when given an deleted group' do
+      before do
+        # destroy group and group member
+        group_member.destroy!
+        group.destroy!
+      end
+
+      it 'returns NullMail type message' do
+        expect(Gitlab::AppLogger).to receive(:info)
+        expect(subject.message).to be_a(ActionMailer::Base::NullMail)
+      end
+    end
+  end
+
   context 'for a project' do
     shared_examples 'an assignee email' do
       let(:recipient) { assignee }
@@ -1309,6 +1324,7 @@ describe Notify do
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'
+      it_behaves_like 'it requires a group'
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Access to the #{group.name} group was granted"
@@ -1343,6 +1359,7 @@ describe Notify do
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'
+      it_behaves_like 'it requires a group'
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Invitation to join the #{group.name} group"
@@ -1369,6 +1386,7 @@ describe Notify do
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'
+      it_behaves_like 'it requires a group'
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation accepted'

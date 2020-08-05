@@ -16,6 +16,9 @@ class AuthorizedProjectsWorker
   if Rails.env.test?
     def self.bulk_perform_and_wait(args_list, timeout: 10)
     end
+
+    def self.bulk_perform_inline(args_list)
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

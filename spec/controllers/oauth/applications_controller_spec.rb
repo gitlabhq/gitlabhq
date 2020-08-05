@@ -19,12 +19,29 @@ describe Oauth::ApplicationsController do
       it { is_expected.to redirect_to(new_user_session_path) }
     end
 
+    shared_examples 'redirects to 2fa setup page when the user requires it' do
+      context 'when 2fa is set up on application level' do
+        before do
+          stub_application_setting(require_two_factor_authentication: true)
+        end
+
+        it { is_expected.to redirect_to(profile_two_factor_auth_path) }
+      end
+
+      context 'when 2fa is set up on group level' do
+        let(:user) { create(:user, require_two_factor_authentication_from_group: true) }
+
+        it { is_expected.to redirect_to(profile_two_factor_auth_path) }
+      end
+    end
+
     describe 'GET #new' do
       subject { get :new }
 
       it { is_expected.to have_gitlab_http_status(:ok) }
 
       it_behaves_like 'redirects to login page when the user is not signed in'
+      it_behaves_like 'redirects to 2fa setup page when the user requires it'
     end
 
     describe 'DELETE #destroy' do
@@ -33,6 +50,7 @@ describe Oauth::ApplicationsController do
       it { is_expected.to redirect_to(oauth_applications_url) }
 
       it_behaves_like 'redirects to login page when the user is not signed in'
+      it_behaves_like 'redirects to 2fa setup page when the user requires it'
     end
 
     describe 'GET #edit' do
@@ -41,6 +59,7 @@ describe Oauth::ApplicationsController do
       it { is_expected.to have_gitlab_http_status(:ok) }
 
       it_behaves_like 'redirects to login page when the user is not signed in'
+      it_behaves_like 'redirects to 2fa setup page when the user requires it'
     end
 
     describe 'PUT #update' do
@@ -49,6 +68,7 @@ describe Oauth::ApplicationsController do
       it { is_expected.to redirect_to(oauth_application_url(application)) }
 
       it_behaves_like 'redirects to login page when the user is not signed in'
+      it_behaves_like 'redirects to 2fa setup page when the user requires it'
     end
 
     describe 'GET #show' do
@@ -57,6 +77,7 @@ describe Oauth::ApplicationsController do
       it { is_expected.to have_gitlab_http_status(:ok) }
 
       it_behaves_like 'redirects to login page when the user is not signed in'
+      it_behaves_like 'redirects to 2fa setup page when the user requires it'
     end
 
     describe 'GET #index' do
@@ -73,6 +94,7 @@ describe Oauth::ApplicationsController do
       end
 
       it_behaves_like 'redirects to login page when the user is not signed in'
+      it_behaves_like 'redirects to 2fa setup page when the user requires it'
     end
 
     describe 'POST #create' do
@@ -112,12 +134,17 @@ describe Oauth::ApplicationsController do
       end
 
       it_behaves_like 'redirects to login page when the user is not signed in'
+      it_behaves_like 'redirects to 2fa setup page when the user requires it'
     end
   end
 
   context 'Helpers' do
     it 'current_user_mode available' do
       expect(subject.current_user_mode).not_to be_nil
+    end
+
+    it 'includes Two-factor enforcement concern' do
+      expect(described_class.included_modules.include?(EnforcesTwoFactorAuthentication)).to eq(true)
     end
   end
 

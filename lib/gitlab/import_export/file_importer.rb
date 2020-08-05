@@ -28,6 +28,7 @@ module Gitlab
         copy_archive
 
         wait_for_archived_file do
+          validate_decompressed_archive_size if Feature.enabled?(:validate_import_decompressed_archive_size, default_enabled: true)
           decompress_archive
         end
       rescue => e
@@ -81,6 +82,14 @@ module Gitlab
 
       def extracted_files
         Dir.glob("#{@shared.export_path}/**/*", File::FNM_DOTMATCH).reject { |f| IGNORED_FILENAMES.include?(File.basename(f)) }
+      end
+
+      def validate_decompressed_archive_size
+        raise ImporterError.new(size_validator.error) unless size_validator.valid?
+      end
+
+      def size_validator
+        @size_validator ||= DecompressedArchiveSizeValidator.new(archive_path: @archive_file)
       end
     end
   end
