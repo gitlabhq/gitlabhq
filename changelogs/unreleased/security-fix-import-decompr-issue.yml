@@ -1,0 +1,5 @@
+---
+title: Add decompressed archive size validation on Project/Group Import
+merge_request: 562
+author:
+type: security
