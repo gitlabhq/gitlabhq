@@ -54,4 +54,20 @@ RSpec.describe Metrics::Dashboard::PodDashboardService, :use_clean_rails_memory_
       let(:dashboard_version) { subject.send(:dashboard_version) }
     end
   end
+
+  describe '.all_dashboard_paths' do
+    it 'returns the dashboard attributes' do
+      all_dashboards = described_class.all_dashboard_paths(project)
+
+      expect(all_dashboards).to eq(
+        [{
+          path: described_class::DASHBOARD_PATH,
+          display_name: described_class::DASHBOARD_NAME,
+          default: false,
+          system_dashboard: false,
+          out_of_the_box_dashboard: true
+        }]
+      )
+    end
+  end
 end

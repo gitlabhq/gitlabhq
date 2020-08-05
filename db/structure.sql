@@ -13003,7 +13003,7 @@ CREATE TABLE public.merge_request_diffs (
     start_commit_sha character varying,
     commits_count integer,
     external_diff character varying,
-    external_diff_store integer,
+    external_diff_store integer DEFAULT 1,
     stored_externally boolean
 );
 
@@ -14008,12 +14008,12 @@ CREATE TABLE public.plan_limits (
     ci_max_artifact_size_trace integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_junit integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_sast integer DEFAULT 0 NOT NULL,
-    ci_max_artifact_size_dependency_scanning integer DEFAULT 0 NOT NULL,
-    ci_max_artifact_size_container_scanning integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_dependency_scanning integer DEFAULT 350 NOT NULL,
+    ci_max_artifact_size_container_scanning integer DEFAULT 150 NOT NULL,
     ci_max_artifact_size_dast integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_codequality integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_license_management integer DEFAULT 0 NOT NULL,
-    ci_max_artifact_size_license_scanning integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_license_scanning integer DEFAULT 100 NOT NULL,
     ci_max_artifact_size_performance integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_metrics integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_metrics_referee integer DEFAULT 0 NOT NULL,
@@ -17614,6 +17614,9 @@ ALTER TABLE public.design_management_designs
 ALTER TABLE public.vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
+ALTER TABLE public.merge_request_diffs
+    ADD CONSTRAINT check_93ee616ac9 CHECK ((external_diff_store IS NOT NULL)) NOT VALID;
+
 ALTER TABLE ONLY public.ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
 
@@ -19849,6 +19852,8 @@ CREATE UNIQUE INDEX index_merge_request_diff_commits_on_mr_diff_id_and_order ON 
 CREATE INDEX index_merge_request_diff_commits_on_sha ON public.merge_request_diff_commits USING btree (sha);
 
 CREATE UNIQUE INDEX index_merge_request_diff_files_on_mr_diff_id_and_order ON public.merge_request_diff_files USING btree (merge_request_diff_id, relative_order);
+
+CREATE INDEX index_merge_request_diffs_external_diff_store_is_null ON public.merge_request_diffs USING btree (id) WHERE (external_diff_store IS NULL);
 
 CREATE INDEX index_merge_request_diffs_on_external_diff_store ON public.merge_request_diffs USING btree (external_diff_store);
 

@@ -30,7 +30,7 @@ class Gitlab::Ci::Build::AutoRetry
   end
 
   def options_retry_max
-    options_retry[:max] if retry_on_reason_or_always?
+    Integer(options_retry[:max], exception: false) if retry_on_reason_or_always?
   end
 
   def options_retry_when

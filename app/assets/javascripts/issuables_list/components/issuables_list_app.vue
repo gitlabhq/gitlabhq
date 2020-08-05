@@ -98,6 +98,8 @@ export default {
         return {
           title: __('Sorry, your filter produced no results'),
           description: __('To widen your search, change or remove filters above'),
+          primaryLink: this.createIssuePath,
+          primaryText: __('New issue'),
         };
       } else if (this.filters.state === 'opened') {
         return {

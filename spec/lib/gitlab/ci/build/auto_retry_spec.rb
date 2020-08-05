@@ -16,6 +16,7 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry do
       "retries are disabled" | 0 | { max: 0 } | nil | false
       "max equals count" | 2 | { max: 2 } | nil | false
       "max is higher than count" | 1 | { max: 2 } | nil | true
+      "max is a string" | 1 | { max: '2' } | nil | true
       "matching failure reason" | 0 | { when: %w[api_failure], max: 2 } | :api_failure | true
       "not matching with always" | 0 | { when: %w[always], max: 2 } | :api_failure | true
       "not matching reason" | 0 | { when: %w[script_error], max: 2 } | :api_failure | false

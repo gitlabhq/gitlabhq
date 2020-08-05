@@ -20,7 +20,7 @@
           = _("To widen your search, change or remove filters above")
         - if show_new_issue_link?(@project)
           .text-center
-            = link_to _("New issue"), new_project_issue_path(@project), class: "btn btn-success", id: "new_issue_body_link"
+            = link_to _("New issue"), new_project_issue_path(@project), class: "btn btn-success"
       - elsif is_opened_state && opened_issues_count == 0 && closed_issues_count > 0
         %h4.text-center
           = _("There are no open issues")
@@ -28,7 +28,7 @@
           = _("To keep this project going, create a new issue")
         - if show_new_issue_link?(@project)
           .text-center
-            = link_to _("New issue"), new_project_issue_path(@project), class: "btn btn-success", id: "new_issue_body_link"
+            = link_to _("New issue"), new_project_issue_path(@project), class: "btn btn-success"
       - elsif is_closed_state && opened_issues_count > 0 && closed_issues_count == 0
         %h4.text-center
           = _("There are no closed issues")

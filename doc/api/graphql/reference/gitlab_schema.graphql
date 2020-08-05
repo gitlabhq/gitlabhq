@@ -4606,6 +4606,11 @@ type EpicIssue implements Noteable {
   totalTimeSpent: Int!
 
   """
+  Type of the issue
+  """
+  type: IssueType
+
+  """
   Timestamp of when the issue was last updated
   """
   updatedAt: Time!
@@ -5362,6 +5367,11 @@ type Group {
     Current state of this issue
     """
     state: IssuableState
+
+    """
+    Filter issues by the given issue types
+    """
+    types: [IssueType!]
 
     """
     Issues updated after this date
@@ -6239,6 +6249,11 @@ type Issue implements Noteable {
   totalTimeSpent: Int!
 
   """
+  Type of the issue
+  """
+  type: IssueType
+
+  """
   Timestamp of when the issue was last updated
   """
   updatedAt: Time!
@@ -6767,6 +6782,21 @@ enum IssueState {
   closed
   locked
   opened
+}
+
+"""
+Issue type
+"""
+enum IssueType {
+  """
+  Incident issue type
+  """
+  INCIDENT
+
+  """
+  Issue issue type
+  """
+  ISSUE
 }
 
 """
@@ -9695,6 +9725,11 @@ type Project {
     state: IssuableState
 
     """
+    Filter issues by the given issue types
+    """
+    types: [IssueType!]
+
+    """
     Issues updated after this date
     """
     updatedAfter: Time
@@ -9798,6 +9833,11 @@ type Project {
     Current state of this issue
     """
     state: IssuableState
+
+    """
+    Filter issues by the given issue types
+    """
+    types: [IssueType!]
 
     """
     Issues updated after this date

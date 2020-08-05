@@ -668,6 +668,58 @@ RSpec.describe IssuesFinder do
         end
       end
 
+      context 'filtering by issue type' do
+        let_it_be(:incident_issue) { create(:incident, project: project1) }
+
+        context 'no type given' do
+          let(:params) { { issue_types: [] } }
+
+          it 'returns all issues' do
+            expect(issues).to contain_exactly(incident_issue, issue1, issue2, issue3, issue4)
+          end
+        end
+
+        context 'incident type' do
+          let(:params) { { issue_types: ['incident'] } }
+
+          it 'returns incident issues' do
+            expect(issues).to contain_exactly(incident_issue)
+          end
+        end
+
+        context 'issue type' do
+          let(:params) { { issue_types: ['issue'] } }
+
+          it 'returns all issues with type issue' do
+            expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
+          end
+        end
+
+        context 'multiple params' do
+          let(:params) { { issue_types: %w(issue incident) } }
+
+          it 'returns all issues' do
+            expect(issues).to contain_exactly(incident_issue, issue1, issue2, issue3, issue4)
+          end
+        end
+
+        context 'without array' do
+          let(:params) { { issue_types: 'incident' } }
+
+          it 'returns incident issues' do
+            expect(issues).to contain_exactly(incident_issue)
+          end
+        end
+
+        context 'invalid params' do
+          let(:params) { { issue_types: ['nonsense'] } }
+
+          it 'returns no issues' do
+            expect(issues).to eq(Issue.none)
+          end
+        end
+      end
+
       context 'when the user is unauthorized' do
         let(:search_user) { nil }
 

@@ -183,12 +183,9 @@ RSpec.describe PlanLimits do
         ci_max_artifact_size_trace
         ci_max_artifact_size_junit
         ci_max_artifact_size_sast
-        ci_max_artifact_size_dependency_scanning
-        ci_max_artifact_size_container_scanning
         ci_max_artifact_size_dast
         ci_max_artifact_size_codequality
         ci_max_artifact_size_license_management
-        ci_max_artifact_size_license_scanning
         ci_max_artifact_size_performance
         ci_max_artifact_size_browser_performance
         ci_max_artifact_size_load_performance

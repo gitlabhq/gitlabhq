@@ -128,6 +128,22 @@ RSpec.describe Issue do
     end
   end
 
+  describe '.with_issue_type' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:incident) { create(:incident, project: project) }
+
+    it 'gives issues with the given issue type' do
+      expect(described_class.with_issue_type('issue'))
+        .to contain_exactly(issue)
+    end
+
+    it 'gives issues with the given issue type' do
+      expect(described_class.with_issue_type(%w(issue incident)))
+        .to contain_exactly(issue, incident)
+    end
+  end
+
   describe '#order_by_position_and_priority' do
     let(:project) { create :project }
     let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }

@@ -1,16 +1,22 @@
 # frozen_string_literal: true
 
 module MetricsDashboardHelpers
-  def project_with_dashboard(dashboard_path, dashboard_yml = nil)
-    dashboard_yml ||= fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')
-
-    create(:project, :custom_repo, files: { dashboard_path => dashboard_yml })
+  # @param dashboards [Hash<string, string>] - Should contain a hash where
+  #     each key is the path to a dashboard in the repository and each value is
+  #     the dashboard content.
+  #     Ex: { '.gitlab/dashboards/dashboard1.yml' => fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
+  def project_with_dashboards(dashboards, project_params = {})
+    create(:project, :custom_repo, **project_params, files: dashboards)
   end
 
-  def project_with_dashboard_namespace(dashboard_path, dashboard_yml = nil)
+  def project_with_dashboard(dashboard_path, dashboard_yml = nil, project_params = {})
     dashboard_yml ||= fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')
 
-    create(:project, :custom_repo, namespace: namespace, path: 'monitor-project', files: { dashboard_path => dashboard_yml })
+    project_with_dashboards({ dashboard_path => dashboard_yml }, project_params)
+  end
+
+  def project_with_dashboard_namespace(dashboard_path, dashboard_yml = nil, project_params = {})
+    project_with_dashboard(dashboard_path, dashboard_yml, project_params.reverse_merge(path: 'monitor-project'))
   end
 
   def delete_project_dashboard(project, user, dashboard_path)

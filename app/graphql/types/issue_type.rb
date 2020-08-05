@@ -97,6 +97,10 @@ module Types
 
     field :design_collection, Types::DesignManagement::DesignCollectionType, null: true,
           description: 'Collection of design images associated with this issue'
+
+    field :type, Types::IssueTypeEnum, null: true,
+          method: :issue_type,
+          description: 'Type of the issue'
   end
 end
 

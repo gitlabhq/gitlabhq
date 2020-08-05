@@ -8,7 +8,7 @@ RSpec.describe MetricsDashboard, '(JavaScript fixtures)', type: :controller do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:namespace, name: 'monitoring' )}
-  let_it_be(:project) { project_with_dashboard_namespace('.gitlab/dashboards/test.yml', namespace: namespace) }
+  let_it_be(:project) { project_with_dashboard_namespace('.gitlab/dashboards/test.yml', nil, namespace: namespace) }
   let_it_be(:environment) { create(:environment, id: 1, project: project) }
   let_it_be(:params) { { environment: environment } }
 

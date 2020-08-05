@@ -1,0 +1,15 @@
+# Only one dashboard should be defined per file
+# More info: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html
+dashboard: 'Area Panel Example'
+
+# For more information about the required properties of panel_groups
+# please visit: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html#panel-group-panel_groups-properties
+panel_groups:
+  - group: 'Server Statistics'
+    panels:
+      - title: Average amount of time spent by the CPU
+        type: area-chart
+        metrics:
+            - query_range: 'rate(node_cpu_seconds_total[15m])'
+              unit: 'Seconds'
+              label: "Time in Seconds"

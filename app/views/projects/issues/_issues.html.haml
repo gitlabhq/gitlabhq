@@ -1,5 +1,6 @@
 - if Feature.enabled?(:vue_issuables_list, @project)
   .js-issuables-list{ data: { endpoint: expose_url(api_v4_projects_issues_path(id: @project.id)),
+    'create_issue_path': expose_url(new_project_issue_path(@project)),
     'can-bulk-edit': @can_bulk_update.to_json,
     'empty-svg-path': image_path('illustrations/issues.svg'),
     'sort-key': @sort } }

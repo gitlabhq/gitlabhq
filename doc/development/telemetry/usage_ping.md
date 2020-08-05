@@ -155,7 +155,7 @@ There are two batch counting methods provided, `Ordinary Batch Counters` and `Di
 
 Handles `ActiveRecord::StatementInvalid` error
 
-Simple count of a given ActiveRecord_Relation
+Simple count of a given ActiveRecord_Relation, does a non-distinct batch count, smartly reduces batch_size and handles errors.
 
 Method: `count(relation, column = nil, batch: true, start: nil, finish: nil)`
 
@@ -179,15 +179,16 @@ count(::Clusters::Cluster.aws_installed.enabled, :cluster_id, start: ::Clusters:
 
 Handles `ActiveRecord::StatementInvalid` error
 
-Distinct count of a given ActiveRecord_Relation on given column
+Distinct count of a given ActiveRecord_Relation on given column, a distinct batch count, smartly reduces batch_size and handles errors.
 
-Method: `distinct_count(relation, column = nil, batch: true, start: nil, finish: nil)`
+Method: `distinct_count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)`
 
 Arguments:
 
 - `relation` the ActiveRecord_Relation to perform the count
 - `column` the column to perform the distinct count, by default is the primary key
 - `batch`: default `true` in order to use batch counting
+- `batch_size`: if none set it will use default value 10000 from `Gitlab::Database::BatchCounter`
 - `start`: custom start of the batch counting in order to avoid complex min calculations
 - `end`: custom end of the batch counting in order to avoid complex min calculations
 
@@ -318,6 +319,7 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 - Use specialized indexes [example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26871), [example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26445).
 - Use defined `start` and `finish`, and simple queries, because these values can be memoized and reused, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37155).
 - Avoid joins and write the queries as simply as possible, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316).
+- Set a custom `batch_size` for `distinct_count`, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38000).
 
 ### 4. Add the metric definition
 

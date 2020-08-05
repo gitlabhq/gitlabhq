@@ -1,0 +1,5 @@
+---
+title: Add a new K8s Pod health metrics dashboard
+merge_request: 37482
+author:
+type: added

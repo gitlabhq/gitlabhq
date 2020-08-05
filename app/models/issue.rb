@@ -106,6 +106,7 @@ class Issue < ApplicationRecord
       milestone: { project: [:route, { namespace: :route }] },
       project: [:route, { namespace: :route }])
   }
+  scope :with_issue_type, ->(types) { where(issue_type: types) }
 
   scope :public_only, -> { where(confidential: false) }
   scope :confidential_only, -> { where(confidential: true) }
