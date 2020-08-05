@@ -72,10 +72,6 @@ export default {
       type: String,
       required: true,
     },
-    addDashboardDocumentationPath: {
-      type: String,
-      required: true,
-    },
     settingsPath: {
       type: String,
       required: true,
@@ -409,7 +405,6 @@ export default {
       v-if="showHeader"
       ref="prometheusGraphsHeader"
       class="prometheus-graphs-header d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 border-bottom bg-gray-light"
-      :add-dashboard-documentation-path="addDashboardDocumentationPath"
       :default-branch="defaultBranch"
       :rearrange-panels-available="rearrangePanelsAvailable"
       :custom-metrics-available="customMetricsAvailable"

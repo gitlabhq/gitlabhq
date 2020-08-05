@@ -51,7 +51,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   before_action only: :show do
-    push_frontend_feature_flag(:real_time_issue_sidebar, @project)
+    real_time_feature_flag = :real_time_issue_sidebar
+    real_time_enabled = Gitlab::ActionCable::Config.in_app? || Feature.enabled?(real_time_feature_flag, @project)
+
+    gon.push({ features: { real_time_feature_flag.to_s.camelize(:lower) => real_time_enabled } }, true)
   end
 
   before_action only: :index do

@@ -2,7 +2,7 @@
 
 exports[`History Element renders the correct markup 1`] = `
 <li
-  class="timeline-entry system-note note-wrapper gl-my-6!"
+  class="timeline-entry system-note note-wrapper gl-mb-6!"
 >
   <div
     class="timeline-entry-inner"

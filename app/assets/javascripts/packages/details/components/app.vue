@@ -12,6 +12,7 @@ import {
   GlTable,
   GlSprintf,
 } from '@gitlab/ui';
+import { mapActions, mapState } from 'vuex';
 import Tracking from '~/tracking';
 import PackageActivity from './activity.vue';
 import PackageHistory from './package_history.vue';
@@ -25,6 +26,7 @@ import PypiInstallation from './pypi_installation.vue';
 import PackagesListLoader from '../../shared/components/packages_list_loader.vue';
 import PackageListRow from '../../shared/components/package_list_row.vue';
 import DependencyRow from './dependency_row.vue';
+import AdditionalMetadata from './additional_metadata.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -32,7 +34,6 @@ import { generatePackageInfo } from '../utils';
 import { __, s__ } from '~/locale';
 import { PackageType, TrackingActions } from '../../shared/constants';
 import { packageTypeToTrackCategory } from '../../shared/utils';
-import { mapActions, mapState } from 'vuex';
 
 export default {
   name: 'PackagesApp',
@@ -59,6 +60,7 @@ export default {
     PackageListRow,
     DependencyRow,
     PackageHistory,
+    AdditionalMetadata,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -253,9 +255,12 @@ export default {
           <package-activity />
         </template>
 
-        <package-history v-else :package-entity="packageEntity" :project-name="projectName" />
+        <template v-else>
+          <package-history :package-entity="packageEntity" :project-name="projectName" />
+          <additional-metadata :package-entity="packageEntity" />
+        </template>
 
-        <h3 class="gl-font-lg">{{ __('Files') }}</h3>
+        <h3 class="gl-font-lg gl-mt-5">{{ __('Files') }}</h3>
         <gl-table
           :fields="$options.filesTableHeaderFields"
           :items="filesTableRows"

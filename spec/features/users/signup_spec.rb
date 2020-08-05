@@ -509,4 +509,29 @@ RSpec.describe 'With experimental flow' do
       expect(page).to have_current_path(new_project_path)
     end
   end
+
+  context 'when terms_opt_in experimental is enabled' do
+    include TermsHelper
+
+    before do
+      enforce_terms
+      stub_experiment(signup_flow: true, terms_opt_in: true)
+      stub_experiment_for_user(signup_flow: true, terms_opt_in: true)
+    end
+
+    it 'terms are checked by default' do
+      new_user = build_stubbed(:user)
+      visit new_user_registration_path
+
+      fill_in 'new_user_username', with: new_user.username
+      fill_in 'new_user_email', with: new_user.email
+      fill_in 'new_user_first_name', with: new_user.first_name
+      fill_in 'new_user_last_name', with: new_user.last_name
+      fill_in 'new_user_password', with: new_user.password
+
+      click_button 'Register'
+
+      expect(current_path).to eq users_sign_up_welcome_path
+    end
+  end
 end

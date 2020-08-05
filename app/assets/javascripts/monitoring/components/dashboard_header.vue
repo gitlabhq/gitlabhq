@@ -107,10 +107,6 @@ export default {
       type: Object,
       required: true,
     },
-    addDashboardDocumentationPath: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
@@ -128,6 +124,7 @@ export default {
       'canAccessOperationsSettings',
       'operationsSettingsPath',
       'currentDashboard',
+      'addDashboardDocumentationPath',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'filteredEnvironments']),
     isOutOfTheBoxDashboard() {

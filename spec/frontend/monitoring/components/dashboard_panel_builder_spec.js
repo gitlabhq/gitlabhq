@@ -34,6 +34,8 @@ describe('dashboard invalid url parameters', () => {
   const findTxtArea = () => findForm().find(GlFormTextarea);
   const findSubmitBtn = () => findForm().find('[type="submit"]');
   const findClipboardCopyBtn = () => wrapper.find({ ref: 'clipboardCopyBtn' });
+  const findViewDocumentationBtn = () => wrapper.find({ ref: 'viewDocumentationBtn' });
+  const findOpenRepositoryBtn = () => wrapper.find({ ref: 'openRepositoryBtn' });
   const findPanel = () => wrapper.find(DashboardPanel);
 
   beforeEach(() => {
@@ -105,6 +107,26 @@ describe('dashboard invalid url parameters', () => {
       it('submit button is disabled', () => {
         expect(findSubmitBtn().is('[disabled]')).toBe(true);
       });
+    });
+  });
+
+  describe('instructions card', () => {
+    const mockDocsPath = '/docs-path';
+    const mockProjectPath = '/project-path';
+
+    beforeEach(() => {
+      store.state.monitoringDashboard.addDashboardDocumentationPath = mockDocsPath;
+      store.state.monitoringDashboard.projectPath = mockProjectPath;
+
+      createComponent();
+    });
+
+    it('displays next actions for the user', () => {
+      expect(findViewDocumentationBtn().exists()).toBe(true);
+      expect(findViewDocumentationBtn().attributes('href')).toBe(mockDocsPath);
+
+      expect(findOpenRepositoryBtn().exists()).toBe(true);
+      expect(findOpenRepositoryBtn().attributes('href')).toBe(mockProjectPath);
     });
   });
 

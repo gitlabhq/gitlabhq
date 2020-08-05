@@ -29,7 +29,6 @@ const datasetState = stateAndPropsFromDataset(
 // https://gitlab.com/gitlab-org/gitlab/-/issues/229256
 export const dashboardProps = {
   ...datasetState.dataProps,
-  addDashboardDocumentationPath: 'https://path/to/docs',
   alertsEndpoint: null,
 };
 

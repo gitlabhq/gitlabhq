@@ -65,7 +65,7 @@ module Issuable
     has_many :labels, through: :label_links
     has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-    has_one :metrics
+    has_one :metrics, inverse_of: model_name.singular.to_sym, autosave: true
 
     delegate :name,
              :email,

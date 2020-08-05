@@ -2,12 +2,10 @@ dashboard: 'Environment metrics'
 priority: 1
 panel_groups:
 - group: System metrics (Kubernetes)
-  priority: 15
   panels:
   - title: "Memory Usage (Total)"
     type: "area-chart"
     y_label: "Total Memory Used (GB)"
-    weight: 4
     metrics:
     - id: system_metrics_kubernetes_container_memory_total
       # Remove the second metric (after OR) when we drop support for K8s 1.13
@@ -18,7 +16,6 @@ panel_groups:
   - title: "Core Usage (Total)"
     type: "area-chart"
     y_label: "Total Cores"
-    weight: 3
     metrics:
     - id: system_metrics_kubernetes_container_cores_total
       # Remove the second metric (after OR) when we drop support for K8s 1.13
@@ -29,7 +26,6 @@ panel_groups:
   - title: "Memory Usage (Pod average)"
     type: "line-chart"
     y_label: "Memory Used per Pod (MB)"
-    weight: 2
     metrics:
     - id: system_metrics_kubernetes_container_memory_average
       # Remove the second metric (after OR) when we drop support for K8s 1.13
@@ -40,7 +36,6 @@ panel_groups:
   - title: "Canary: Memory Usage (Pod Average)"
     type: "line-chart"
     y_label: "Memory Used per Pod (MB)"
-    weight: 2
     metrics:
     - id: system_metrics_kubernetes_container_memory_average_canary
       # Remove the second metric (after OR) when we drop support for K8s 1.13
@@ -52,7 +47,6 @@ panel_groups:
   - title: "Core Usage (Pod Average)"
     type: "line-chart"
     y_label: "Cores per Pod"
-    weight: 1
     metrics:
     - id: system_metrics_kubernetes_container_core_usage
       # Remove the second metric (after OR) when we drop support for K8s 1.13
@@ -63,7 +57,6 @@ panel_groups:
   - title: "Canary: Core Usage (Pod Average)"
     type: "line-chart"
     y_label: "Cores per Pod"
-    weight: 1
     metrics:
     - id: system_metrics_kubernetes_container_core_usage_canary
       # Remove the second metric (after OR) when we drop support for K8s 1.13
@@ -75,7 +68,6 @@ panel_groups:
   - title: "Knative function invocations"
     type: "area-chart"
     y_label: "Invocations"
-    weight: 1
     metrics:
     - id: system_metrics_knative_function_invocation_count
       query_range: 'sum(ceil(rate(istio_requests_total{destination_service_namespace="{{kube_namespace}}", destination_service=~"{{function_name}}.*"}[1m])*60))'
@@ -83,12 +75,10 @@ panel_groups:
       unit: requests
 # NGINX Ingress metrics for pre-0.16.0 versions
 - group: Response metrics (NGINX Ingress VTS)
-  priority: 10
   panels:
   - title: "Throughput"
     type: "area-chart"
     y_label: "Requests / Sec"
-    weight: 1
     metrics:
     - id: response_metrics_nginx_ingress_throughput_status_code
       query_range: 'sum(rate(nginx_upstream_responses_total{upstream=~"{{kube_namespace}}-{{ci_environment_slug}}-.*"}[2m])) by (status_code)'
@@ -99,7 +89,6 @@ panel_groups:
     y_label: "Latency (ms)"
     y_axis:
       format: milliseconds
-    weight: 1
     metrics:
     - id: response_metrics_nginx_ingress_latency_pod_average
       query_range: 'avg(nginx_upstream_response_msecs_avg{upstream=~"{{kube_namespace}}-{{ci_environment_slug}}-.*"})'
@@ -110,7 +99,6 @@ panel_groups:
     y_label: "HTTP Errors (%)"
     y_axis:
       format: percentHundred
-    weight: 1
     metrics:
     - id: response_metrics_nginx_ingress_http_error_rate
       query_range: 'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"{{kube_namespace}}-{{ci_environment_slug}}-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"{{kube_namespace}}-{{ci_environment_slug}}-.*"}[2m])) * 100'
@@ -118,12 +106,10 @@ panel_groups:
       unit: "%"
 # NGINX Ingress metrics for post-0.16.0 versions
 - group: Response metrics (NGINX Ingress)
-  priority: 10
   panels:
   - title: "Throughput"
     type: "area-chart"
     y_label: "Requests / Sec"
-    weight: 1
     metrics:
     - id: response_metrics_nginx_ingress_16_throughput_status_code
       query_range: 'sum(label_replace(rate(nginx_ingress_controller_requests{namespace="{{kube_namespace}}",ingress=~".*{{ci_environment_slug}}.*"}[2m]), "status_code", "${1}xx", "status", "(.)..")) by (status_code)'
@@ -132,7 +118,6 @@ panel_groups:
   - title: "Latency"
     type: "area-chart"
     y_label: "Latency (ms)"
-    weight: 1
     metrics:
     - id: response_metrics_nginx_ingress_16_latency_pod_average
       query_range: 'sum(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_sum{namespace="{{kube_namespace}}",ingress=~".*{{ci_environment_slug}}.*"}[2m])) / sum(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_count{namespace="{{kube_namespace}}",ingress=~".*{{ci_environment_slug}}.*"}[2m])) * 1000'
@@ -141,19 +126,16 @@ panel_groups:
   - title: "HTTP Error Rate"
     type: "area-chart"
     y_label: "HTTP Errors (%)"
-    weight: 1
     metrics:
     - id: response_metrics_nginx_ingress_16_http_error_rate
       query_range: 'sum(rate(nginx_ingress_controller_requests{status=~"5.*",namespace="{{kube_namespace}}",ingress=~".*{{ci_environment_slug}}.*"}[2m])) / sum(rate(nginx_ingress_controller_requests{namespace="{{kube_namespace}}",ingress=~".*{{ci_environment_slug}}.*"}[2m])) * 100'
       label: 5xx Errors (%)
       unit: "%"
 - group: Response metrics (HA Proxy)
-  priority: 10
   panels:
   - title: "Throughput"
     type: "area-chart"
     y_label: "Requests / Sec"
-    weight: 1
     metrics:
     - id: response_metrics_ha_proxy_throughput_status_code
       query_range: 'sum(rate(haproxy_frontend_http_requests_total{ {{environment_filter}} }[2m])) by (code)'
@@ -162,19 +144,16 @@ panel_groups:
   - title: "HTTP Error Rate"
     type: "area-chart"
     y_label: "Error Rate (%)"
-    weight: 1
     metrics:
     - id: response_metrics_ha_proxy_http_error_rate
       query_range: 'sum(rate(haproxy_frontend_http_responses_total{code="5xx",{{environment_filter}} }[2m])) / sum(rate(haproxy_frontend_http_responses_total{ {{environment_filter}} }[2m]))'
       label: HTTP Errors (%)
       unit: "%"
 - group: Response metrics (AWS ELB)
-  priority: 10
   panels:
   - title: "Throughput"
     type: "area-chart"
     y_label: "Requests / Sec"
-    weight: 1
     metrics:
     - id: response_metrics_aws_elb_throughput_requests
       query_range: 'sum(aws_elb_request_count_sum{ {{environment_filter}} }) / 60'
@@ -183,7 +162,6 @@ panel_groups:
   - title: "Latency"
     type: "area-chart"
     y_label: "Latency (ms)"
-    weight: 1
     metrics:
     - id: response_metrics_aws_elb_latency_average
       query_range: 'avg(aws_elb_latency_average{ {{environment_filter}} }) * 1000'
@@ -192,19 +170,16 @@ panel_groups:
   - title: "HTTP Error Rate"
     type: "area-chart"
     y_label: "Error Rate (%)"
-    weight: 1
     metrics:
     - id: response_metrics_aws_elb_http_error_rate
       query_range: 'sum(aws_elb_httpcode_backend_5_xx_sum{ {{environment_filter}} }) / sum(aws_elb_request_count_sum{ {{environment_filter}} })'
       label: HTTP Errors (%)
       unit: "%"
 - group: Response metrics (NGINX)
-  priority: 10
   panels:
   - title: "Throughput"
     type: "area-chart"
     y_label: "Requests / Sec"
-    weight: 1
     metrics:
     - id: response_metrics_nginx_throughput_status_code
       query_range: 'sum(rate(nginx_server_requests{server_zone!="*", server_zone!="_", {{environment_filter}} }[2m])) by (code)'
@@ -213,7 +188,6 @@ panel_groups:
   - title: "Latency"
     type: "area-chart"
     y_label: "Latency (ms)"
-    weight: 1
     metrics:
     - id: response_metrics_nginx_latency
       query_range: 'avg(nginx_server_requestMsec{ {{environment_filter}} })'
@@ -224,7 +198,6 @@ panel_groups:
     y_label: "HTTP 500 Errors / Sec"
     y_axis:
       precision: 0
-    weight: 1
     metrics:
     - id: response_metrics_nginx_http_error_rate
       query_range: 'sum(rate(nginx_server_requests{code="5xx", {{environment_filter}} }[2m]))'
@@ -233,7 +206,6 @@ panel_groups:
   - title: "HTTP Error Rate"
     type: "area-chart"
     y_label: "HTTP Errors (%)"
-    weight: 1
     metrics:
     - id: response_metrics_nginx_http_error_percentage
       query_range: 'sum(rate(nginx_server_requests{code=~"5.*", host="*", {{environment_filter}} }[2m])) / sum(rate(nginx_server_requests{code="total", host="*", {{environment_filter}} }[2m])) * 100'

@@ -1,0 +1,5 @@
+---
+title: Add target_project_id to merge_request_metrics table
+merge_request: 37713
+author:
+type: added

@@ -96,13 +96,13 @@ Example response:
 Gets a single feature flag.
 
 ```plaintext
-GET /projects/:id/feature_flags/:name
+GET /projects/:id/feature_flags/:feature_flag_name
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
-| `name`              | string           | yes        | The name of the feature flag.                                                          |
+| `feature_flag_name` | string           | yes        | The name of the feature flag.                                                          |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature
@@ -201,15 +201,16 @@ Example response:
 Updates a feature flag.
 
 ```plaintext
-PUT /projects/:id/feature_flags/:name
+PUT /projects/:id/feature_flags/:feature_flag_name
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
-| `name`              | string           | yes        | The name of the feature flag.                                                          |
+| `feature_flag_name` | string           | yes        | The current name of the feature flag.                                                  |
 | `description`       | string           | no         | The description of the feature flag.                                                   |
 | `active`            | boolean          | no         | The active state of the flag. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
+| `name`              | string           | no         | The new name of the feature flag. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
 | `strategies`        | JSON             | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
 | `strategies:id`     | JSON             | no         | The feature flag strategy id.                                                          |
 | `strategies:name`   | JSON             | no         | The strategy name.                                                                     |
@@ -275,13 +276,13 @@ Example response:
 Deletes a feature flag.
 
 ```plaintext
-DELETE /projects/:id/feature_flags/:name
+DELETE /projects/:id/feature_flags/:feature_flag_name
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
-| `name`              | string           | yes        | The name of the feature flag.  |
+| `feature_flag_name` | string           | yes        | The name of the feature flag.                                                          |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"

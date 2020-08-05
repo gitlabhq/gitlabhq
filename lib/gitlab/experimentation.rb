@@ -53,6 +53,9 @@ module Gitlab
       },
       new_create_project_ui: {
         tracking_category: 'Manage::Import::Experiment::NewCreateProjectUi'
+      },
+      terms_opt_in: {
+        tracking_category: 'Growth::Acquisition::Experiment::TermsOptIn'
       }
     }.freeze
 

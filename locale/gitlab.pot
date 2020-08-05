@@ -1629,6 +1629,9 @@ msgstr ""
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
 msgstr ""
 
+msgid "Additional Metadata"
+msgstr ""
+
 msgid "Additional minutes"
 msgstr ""
 
@@ -4107,6 +4110,9 @@ msgid "By %{user_name}"
 msgstr ""
 
 msgid "By URL"
+msgstr ""
+
+msgid "By clicking Register, I agree that I have read and accepted the GitLab %{linkStart}Terms of Use and Privacy Policy%{linkEnd}"
 msgstr ""
 
 msgid "By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format."
@@ -15094,6 +15100,12 @@ msgstr ""
 msgid "MetricsSettings|User's local timezone"
 msgstr ""
 
+msgid "Metrics|1. Define and preview panel"
+msgstr ""
+
+msgid "Metrics|2. Paste panel YAML into dashboard"
+msgstr ""
+
 msgid "Metrics|Add metric"
 msgstr ""
 
@@ -15115,6 +15127,9 @@ msgstr ""
 msgid "Metrics|Copy YAML"
 msgstr ""
 
+msgid "Metrics|Copy and paste the panel YAML into your dashboard YAML file."
+msgstr ""
+
 msgid "Metrics|Create custom dashboard %{fileName}"
 msgstr ""
 
@@ -15133,10 +15148,10 @@ msgstr ""
 msgid "Metrics|Current"
 msgstr ""
 
-msgid "Metrics|Define and preview panel"
+msgid "Metrics|Dashboard files can be found in %{codeStart}.gitlab/dashboards%{codeEnd} at the root of this project."
 msgstr ""
 
-msgid "Metrics|Define panel YAML to preview panel."
+msgid "Metrics|Define panel YAML below to preview panel."
 msgstr ""
 
 msgid "Metrics|Delete metric"
@@ -16914,6 +16929,12 @@ msgstr ""
 msgid "PackageRegistry|Add NuGet Source"
 msgstr ""
 
+msgid "PackageRegistry|App group: %{group}"
+msgstr ""
+
+msgid "PackageRegistry|App name: %{name}"
+msgstr ""
+
 msgid "PackageRegistry|Commit %{link} on branch %{branch}"
 msgstr ""
 
@@ -17004,6 +17025,9 @@ msgstr ""
 msgid "PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab."
 msgstr ""
 
+msgid "PackageRegistry|License information located at %{link}"
+msgstr ""
+
 msgid "PackageRegistry|Manually Published"
 msgstr ""
 
@@ -17046,6 +17070,9 @@ msgstr ""
 msgid "PackageRegistry|PyPi"
 msgstr ""
 
+msgid "PackageRegistry|Recipe: %{recipe}"
+msgstr ""
+
 msgid "PackageRegistry|Registry Setup"
 msgstr ""
 
@@ -17053,6 +17080,9 @@ msgid "PackageRegistry|Remove package"
 msgstr ""
 
 msgid "PackageRegistry|Sorry, your filter produced no results"
+msgstr ""
+
+msgid "PackageRegistry|Source project located at %{link}"
 msgstr ""
 
 msgid "PackageRegistry|There are no %{packageType} packages yet"

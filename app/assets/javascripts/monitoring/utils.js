@@ -32,6 +32,7 @@ export const stateAndPropsFromDataset = (dataset = {}) => {
     logsPath,
     currentEnvironmentName,
     customDashboardBasePath,
+    addDashboardDocumentationPath,
     ...dataProps
   } = dataset;
 
@@ -54,6 +55,7 @@ export const stateAndPropsFromDataset = (dataset = {}) => {
       logsPath,
       currentEnvironmentName,
       customDashboardBasePath,
+      addDashboardDocumentationPath,
     },
     dataProps,
   };

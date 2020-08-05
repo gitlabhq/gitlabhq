@@ -19,7 +19,7 @@ export default {
 </script>
 
 <template>
-  <timeline-entry-item class="system-note note-wrapper gl-my-6!">
+  <timeline-entry-item class="system-note note-wrapper gl-mb-6!">
     <div class="timeline-icon">
       <gl-icon :name="icon" />
     </div>

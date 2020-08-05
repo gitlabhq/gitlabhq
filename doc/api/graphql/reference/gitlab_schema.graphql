@@ -3951,6 +3951,11 @@ type Epic implements Noteable {
     last: Int
 
     """
+    Filter epics by milestone title, computed from epic's issues
+    """
+    milestoneTitle: String
+
+    """
     Search query for epic title or description
     """
     search: String
@@ -5248,6 +5253,11 @@ type Group {
     labelName: [String!]
 
     """
+    Filter epics by milestone title, computed from epic's issues
+    """
+    milestoneTitle: String
+
+    """
     Search query for epic title or description
     """
     search: String
@@ -5323,6 +5333,11 @@ type Group {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Filter epics by milestone title, computed from epic's issues
+    """
+    milestoneTitle: String
 
     """
     Search query for epic title or description

@@ -18,6 +18,8 @@ class RegistrationsController < Devise::RegistrationsController
   def new
     if experiment_enabled?(:signup_flow)
       track_experiment_event(:signup_flow, 'start') # We want this event to be tracked when the user is _in_ the experimental group
+      track_experiment_event(:terms_opt_in, 'start')
+
       @resource = build_resource
     else
       redirect_to new_user_session_path(anchor: 'register-pane')
@@ -26,6 +28,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     track_experiment_event(:signup_flow, 'end') unless experiment_enabled?(:signup_flow) # We want this event to be tracked when the user is _in_ the control group
+    track_experiment_event(:terms_opt_in, 'end')
 
     accept_pending_invitations
 
@@ -178,6 +181,8 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def terms_accepted?
+    return true if experiment_enabled?(:terms_opt_in)
+
     Gitlab::Utils.to_boolean(params[:terms_opt_in])
   end
 

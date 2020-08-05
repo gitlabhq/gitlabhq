@@ -9,7 +9,7 @@ module Metrics
       DASHBOARD_NAME = 'Cluster'
 
       # SHA256 hash of dashboard content
-      DASHBOARD_VERSION = '9349afc1d96329c08ab478ea0b77db94ee5cc2549b8c754fba67a7f424666b22'
+      DASHBOARD_VERSION = 'e1a4f8cc2c044cf32273af2cd775eb484729baac0995db687d81d92686bf588e'
 
       SEQUENCE = [
         STAGES::ClusterEndpointInserter,

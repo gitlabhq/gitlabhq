@@ -9,7 +9,7 @@ module Metrics
       DASHBOARD_NAME = N_('Overview')
 
       # SHA256 hash of dashboard content
-      DASHBOARD_VERSION = '4685fe386c25b1a786b3be18f79bb2ee9828019003e003816284cdb634fa3e13'
+      DASHBOARD_VERSION = 'ce9ae27d2913f637de851d61099bc4151583eae68b1386a2176339ef6e653223'
 
       SEQUENCE = [
         STAGES::CommonMetricsInserter,

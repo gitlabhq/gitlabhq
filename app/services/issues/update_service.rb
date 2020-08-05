@@ -22,7 +22,7 @@ module Issues
     end
 
     def after_update(issue)
-      IssuesChannel.broadcast_to(issue, event: 'updated') if Feature.enabled?(:broadcast_issue_updates, issue.project)
+      IssuesChannel.broadcast_to(issue, event: 'updated') if Gitlab::ActionCable::Config.in_app? || Feature.enabled?(:broadcast_issue_updates, issue.project)
     end
 
     def handle_changes(issue, options)

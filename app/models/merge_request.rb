@@ -1607,7 +1607,12 @@ class MergeRequest < ApplicationRecord
 
   override :ensure_metrics
   def ensure_metrics
-    MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id).tap do |metrics_record|
+    # Backward compatibility: some merge request metrics records will not have target_project_id filled in.
+    # In that case the first `safe_find_or_create_by` will return false.
+    # The second finder call will be eliminated in https://gitlab.com/gitlab-org/gitlab/-/issues/233507
+    metrics_record = MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id, target_project_id: target_project_id) || MergeRequest::Metrics.safe_find_or_create_by(merge_request_id: id)
+
+    metrics_record.tap do |metrics_record|
       # Make sure we refresh the loaded association object with the newly created/loaded item.
       # This is needed in order to have the exact functionality than before.
       #
@@ -1617,6 +1622,8 @@ class MergeRequest < ApplicationRecord
       # merge_request.ensure_metrics
       # merge_request.metrics # should return the metrics record and not nil
       # merge_request.metrics.merge_request # should return the same MR record
+
+      metrics_record.target_project_id = target_project_id
       metrics_record.association(:merge_request).target = self
       association(:metrics).target = metrics_record
     end

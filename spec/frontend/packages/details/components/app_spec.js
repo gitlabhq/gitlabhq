@@ -17,6 +17,7 @@ import NugetInstallation from '~/packages/details/components/nuget_installation.
 import PypiInstallation from '~/packages/details/components/pypi_installation.vue';
 import DependencyRow from '~/packages/details/components/dependency_row.vue';
 import PackageHistory from '~/packages/details/components/package_history.vue';
+import AdditionalMetadata from '~/packages/details/components/additional_metadata.vue';
 import PackageActivity from '~/packages/details/components/activity.vue';
 import {
   conanPackage,
@@ -99,6 +100,7 @@ describe('PackagesApp', () => {
   const noDependenciesMessage = () => wrapper.find('[data-testid="no-dependencies-message"]');
   const dependencyRows = () => wrapper.findAll(DependencyRow);
   const findPackageHistory = () => wrapper.find(PackageHistory);
+  const findAdditionalMetadata = () => wrapper.find(AdditionalMetadata);
   const findPackageActivity = () => wrapper.find(PackageActivity);
   const findOldPackageInfo = () => wrapper.find('[data-testid="old-package-info"]');
 
@@ -295,30 +297,38 @@ describe('PackagesApp', () => {
     });
   });
 
+  it('package history has the right props', () => {
+    createComponent({ oneColumnView: true });
+    expect(findPackageHistory().props('packageEntity')).toEqual(wrapper.vm.packageEntity);
+    expect(findPackageHistory().props('projectName')).toEqual(wrapper.vm.projectName);
+  });
+
+  it('additional metadata has the right props', () => {
+    createComponent({ oneColumnView: true });
+    expect(findAdditionalMetadata().props('packageEntity')).toEqual(wrapper.vm.packageEntity);
+  });
+
   describe('one column layout feature flag', () => {
-    describe.each`
-      oneColumnView | history  | oldInfo  | activity
-      ${true}       | ${true}  | ${false} | ${false}
-      ${false}      | ${false} | ${true}  | ${true}
-    `(
-      'with oneColumnView set to $oneColumnView',
-      ({ oneColumnView, history, oldInfo, activity }) => {
-        beforeEach(() => {
-          createComponent({ oneColumnView });
-        });
+    describe.each([true, false])('with oneColumnView set to %s', oneColumnView => {
+      beforeEach(() => {
+        createComponent({ oneColumnView });
+      });
 
-        it('package history', () => {
-          expect(findPackageHistory().exists()).toBe(history);
-        });
+      it(`is ${oneColumnView} that package history is visible`, () => {
+        expect(findPackageHistory().exists()).toBe(oneColumnView);
+      });
 
-        it('old info block', () => {
-          expect(findOldPackageInfo().exists()).toBe(oldInfo);
-        });
+      it(`is ${oneColumnView} that additional metadata is visible`, () => {
+        expect(findAdditionalMetadata().exists()).toBe(oneColumnView);
+      });
 
-        it('package activity', () => {
-          expect(findPackageActivity().exists()).toBe(activity);
-        });
-      },
-    );
+      it(`is ${!oneColumnView} that old info block is visible`, () => {
+        expect(findOldPackageInfo().exists()).toBe(!oneColumnView);
+      });
+
+      it(`is ${!oneColumnView} that package activity is visible`, () => {
+        expect(findPackageActivity().exists()).toBe(!oneColumnView);
+      });
+    });
   });
 });
