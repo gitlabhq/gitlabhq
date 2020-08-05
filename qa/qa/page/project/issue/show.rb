@@ -38,23 +38,6 @@ module QA
             element :new_note_form, 'attr: :note' # rubocop:disable QA/ElementWithPattern
           end
 
-          view 'app/views/projects/issues/_tabs.html.haml' do
-            element :designs_tab_content
-            element :designs_tab_link
-            element :discussion_tab_content
-            element :discussion_tab_link
-          end
-
-          def click_discussion_tab
-            click_element(:discussion_tab_link)
-            active_element?(:discussion_tab_content)
-          end
-
-          def click_designs_tab
-            click_element(:designs_tab_link)
-            active_element?(:designs_tab_content)
-          end
-
           def click_remove_related_issue_button
             click_element(:remove_related_issue_button)
           end

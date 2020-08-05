@@ -46,6 +46,8 @@ module Clusters
       releases = []
 
       artifact.each_blob do |blob|
+        next if blob.empty?
+
         releases.concat(Gitlab::Kubernetes::Helm::Parsers::ListV2.new(blob).releases)
       end
 

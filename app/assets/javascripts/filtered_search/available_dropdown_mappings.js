@@ -106,7 +106,7 @@ export default class AvailableDropdownMappings {
         gl: DropdownEmoji,
         element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
-      wip: {
+      draft: {
         reference: null,
         gl: DropdownNonUser,
         element: this.container.querySelector('#js-dropdown-wip'),

@@ -64,10 +64,10 @@ export default {
           this.groupId,
           term,
           {
-            search_namespaces: true,
             with_issues_enabled: true,
             with_shared: false,
             include_subgroups: true,
+            order_by: 'similarity',
             ...additionalAttrs,
           },
           projects => {

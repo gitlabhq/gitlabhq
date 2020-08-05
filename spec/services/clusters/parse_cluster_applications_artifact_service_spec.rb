@@ -108,6 +108,17 @@ RSpec.describe Clusters::ParseClusterApplicationsArtifactService do
         end
       end
 
+      context 'blob is empty' do
+        let(:file) { fixture_file_upload(Rails.root.join("spec/fixtures/helm/helm_list_v2_empty_blob.json.gz")) }
+        let(:artifact) { create(:ci_job_artifact, :cluster_applications, job: job, file: file) }
+
+        it 'returns success' do
+          result = described_class.new(job, user).execute(artifact)
+
+          expect(result[:status]).to eq(:success)
+        end
+      end
+
       context 'job has deployment cluster' do
         context 'current user does not have access to deployment cluster' do
           let(:other_user) { create(:user) }

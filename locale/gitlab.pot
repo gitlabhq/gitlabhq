@@ -957,9 +957,6 @@ msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "1 month"
-msgstr ""
-
 msgid "1 open issue"
 msgid_plural "%{issues} open issues"
 msgstr[0] ""
@@ -985,9 +982,6 @@ msgid_plural "%{num} users"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "1 week"
-msgstr ""
-
 msgid "1-9 contributions"
 msgstr ""
 
@@ -1012,6 +1006,9 @@ msgstr ""
 msgid "3 hours"
 msgstr ""
 
+msgid "30 days"
+msgstr ""
+
 msgid "30 minutes"
 msgstr ""
 
@@ -1031,6 +1028,9 @@ msgid "404|Page Not Found"
 msgstr ""
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "7 days"
 msgstr ""
 
 msgid "8 hours"
@@ -8644,6 +8644,9 @@ msgid "Downstream"
 msgstr ""
 
 msgid "Downvotes"
+msgstr ""
+
+msgid "Draft"
 msgstr ""
 
 msgid "Draft merge requests can't be merged."
@@ -26998,9 +27001,6 @@ msgid "Vulnerability|Severity"
 msgstr ""
 
 msgid "Vulnerability|Status"
-msgstr ""
-
-msgid "WIP"
 msgstr ""
 
 msgid "Wait for the file to load to copy its contents"
