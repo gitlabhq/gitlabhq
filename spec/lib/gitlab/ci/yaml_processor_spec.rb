@@ -443,15 +443,15 @@ module Gitlab
         context 'when a warning is raised in a given entry' do
           let(:config) do
             <<-EOYML
-              rspec:
-                script: rspec
-                rules:
-                  - if: '$VAR == "value"'
+            rspec:
+              script: echo
+              rules:
+                - when: always
             EOYML
           end
 
           it 'is propagated all the way up to the processor' do
-            expect(subject.warnings).to contain_exactly('jobs:rspec uses `rules` without defining `workflow:rules`')
+            expect(subject.warnings).to contain_exactly(/jobs:rspec may allow multiple pipelines to run/)
           end
         end
 
@@ -461,7 +461,7 @@ module Gitlab
               rspec:
                 script: rspec
                 rules:
-                  - if: '$VAR == "value"'
+                  - when: always
               invalid:
                 script: echo
                 artifacts:
@@ -473,7 +473,7 @@ module Gitlab
             expect { subject }.to raise_error do |error|
               expect(error).to be_a(described_class::ValidationError)
               expect(error.message).to eq('jobs:invalid:artifacts config should be a hash')
-              expect(error.warnings).to contain_exactly('jobs:rspec uses `rules` without defining `workflow:rules`')
+              expect(error.warnings).to contain_exactly(/jobs:rspec may allow multiple pipelines to run/)
             end
           end
         end
@@ -485,7 +485,7 @@ module Gitlab
               rspec:
                 script: rspec
                 rules:
-                  - if: '$VAR == "value"'
+                  - when: always
             EOYML
           end
 
@@ -516,7 +516,7 @@ module Gitlab
                   stage: custom_stage
                   script: rspec
                   rules:
-                    - if: '$VAR == "value"'
+                    - when: always
               EOYML
             end
 
@@ -530,7 +530,7 @@ module Gitlab
                   stage: build
                   script: echo
                   rules:
-                    - if: '$VAR == "value"'
+                    - when: always
                 test:
                   stage: test
                   script: echo
@@ -549,7 +549,7 @@ module Gitlab
                   script: echo
                   needs: [test]
                   rules:
-                    - if: '$VAR == "value"'
+                    - when: always
                 test:
                   stage: test
                   script: echo
@@ -571,7 +571,7 @@ module Gitlab
                 rspec:
                   script: rspec
                   rules:
-                    - if: '$VAR == "value"'
+                    - when: always
               EOYML
             end
 

@@ -190,20 +190,10 @@ RSpec.describe ApplicationController do
       expect(response).to redirect_to new_user_session_path
     end
 
-    context 'request format is unknown' do
-      it 'redirects if unauthenticated' do
-        get :index, format: 'unknown'
+    it 'redirects if unauthenticated and request format is unknown' do
+      get :index, format: 'unknown'
 
-        expect(response).to redirect_to new_user_session_path
-      end
-
-      it 'returns a 401 if the feature flag is disabled' do
-        stub_feature_flags(devise_redirect_unknown_formats: false)
-
-        get :index, format: 'unknown'
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
+      expect(response).to redirect_to new_user_session_path
     end
   end
 

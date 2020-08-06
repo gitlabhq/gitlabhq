@@ -328,5 +328,13 @@ RSpec.describe Gitlab::I18n::TranslationEntry do
         expect(entry.translations_html_allowed?).to be false
       end
     end
+
+    context 'when the todolist only has the msgid' do
+      let(:html_todo) { { 'plural_id' => nil, 'translations' => nil } }
+
+      it 'returns false' do
+        expect(entry.translations_html_allowed?).to be false
+      end
+    end
   end
 end

@@ -8018,6 +8018,11 @@ The connection type for MergeRequest.
 """
 type MergeRequestConnection {
   """
+  Total count of collection
+  """
+  count: Int!
+
+  """
   A list of edges.
   """
   edges: [MergeRequestEdge]
@@ -10313,6 +10318,16 @@ type Project {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Merge requests merged after this date
+    """
+    mergedAfter: Time
+
+    """
+    Merge requests merged before this date
+    """
+    mergedBefore: Time
 
     """
     Array of source branch names. All resolved merge requests will have one of these branches as their source.
@@ -15188,6 +15203,16 @@ type User {
     last: Int
 
     """
+    Merge requests merged after this date
+    """
+    mergedAfter: Time
+
+    """
+    Merge requests merged before this date
+    """
+    mergedBefore: Time
+
+    """
     The global ID of the project the authored merge requests should be in. Incompatible with projectPath.
     """
     projectId: ID
@@ -15246,6 +15271,16 @@ type User {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Merge requests merged after this date
+    """
+    mergedAfter: Time
+
+    """
+    Merge requests merged before this date
+    """
+    mergedBefore: Time
 
     """
     The global ID of the project the authored merge requests should be in. Incompatible with projectPath.

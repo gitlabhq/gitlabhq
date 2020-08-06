@@ -9,6 +9,7 @@ module QA
             project.name = 'gitaly_high_availability'
           end
         end
+
         let(:initial_file) { 'pushed_to_primary.txt' }
         let(:final_file) { 'committed_to_primary.txt' }
         let(:praefect_manager) { Service::PraefectManager.new }

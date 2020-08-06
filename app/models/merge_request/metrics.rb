@@ -8,6 +8,9 @@ class MergeRequest::Metrics < ApplicationRecord
 
   before_save :ensure_target_project_id
 
+  scope :merged_after, ->(date) { where(arel_table[:merged_at].gteq(date)) }
+  scope :merged_before, ->(date) { where(arel_table[:merged_at].lteq(date)) }
+
   private
 
   def ensure_target_project_id

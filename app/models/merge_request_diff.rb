@@ -115,15 +115,7 @@ class MergeRequestDiff < ApplicationRecord
     end
 
     def ids_for_external_storage_migration_strategy_always(limit:)
-      ids = []
-
-      files_in_database.each_batch(column: :merge_request_id, order_hint: :id) do |scope|
-        ids.concat(scope.has_diff_files.pluck(:id))
-
-        break if ids.count >= limit
-      end
-
-      ids.first(limit)
+      has_diff_files.files_in_database.limit(limit).pluck(:id)
     end
 
     def ids_for_external_storage_migration_strategy_outdated(limit:)

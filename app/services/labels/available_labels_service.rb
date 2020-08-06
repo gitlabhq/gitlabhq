@@ -39,11 +39,11 @@ module Labels
       ids.map(&:to_i) & existing_ids
     end
 
-    private
-
     def available_labels
       @available_labels ||= LabelsFinder.new(current_user, finder_params).execute
     end
+
+    private
 
     def finder_params
       params = { include_ancestor_groups: true }

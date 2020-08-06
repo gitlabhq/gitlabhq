@@ -69,7 +69,9 @@ RSpec.describe GitlabSchema.types['Project'] do
                                             :before,
                                             :after,
                                             :first,
-                                            :last
+                                            :last,
+                                            :merged_after,
+                                            :merged_before
                                            )
     end
   end

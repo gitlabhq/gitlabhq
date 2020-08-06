@@ -14,6 +14,7 @@ module QA
 
         Resource::PersonalAccessToken.fabricate!.access_token
       end
+
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'npm-registry-project'

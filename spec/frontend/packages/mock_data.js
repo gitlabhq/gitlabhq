@@ -13,6 +13,8 @@ export const mockPipelineInfo = {
   project: {
     name: 'foo-project',
     web_url: 'foo-project-link',
+    commit_url: 'foo-commit-link',
+    pipeline_url: 'foo-pipeline-link',
   },
   created_at: '2015-12-10',
 };

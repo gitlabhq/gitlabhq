@@ -76,7 +76,7 @@ export default {
         <history-element icon="commit" data-testid="commit">
           <gl-sprintf :message="$options.i18n.commitText">
             <template #link>
-              <gl-link :href="`../../commit/${packagePipeline.sha}`">{{
+              <gl-link :href="packagePipeline.project.commit_url">{{
                 packagePipeline.sha
               }}</gl-link>
             </template>
@@ -88,7 +88,7 @@ export default {
         <history-element icon="pipeline" data-testid="pipeline">
           <gl-sprintf :message="$options.i18n.pipelineText">
             <template #link>
-              <gl-link :href="`../../pipelines/${packagePipeline.id}`"
+              <gl-link :href="packagePipeline.project.pipeline_url"
                 >#{{ packagePipeline.id }}</gl-link
               >
             </template>

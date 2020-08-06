@@ -278,6 +278,11 @@ export default {
     Object.assign(selectedDiscussion, { ...note });
   },
 
+  [types.UPDATE_DISCUSSION_POSITION](state, { discussionId, position }) {
+    const selectedDiscussion = state.discussions.find(disc => disc.id === discussionId);
+    if (selectedDiscussion) Object.assign(selectedDiscussion.position, { ...position });
+  },
+
   [types.CLOSE_ISSUE](state) {
     Object.assign(state.noteableData, { state: constants.CLOSED });
   },

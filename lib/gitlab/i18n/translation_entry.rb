@@ -106,7 +106,7 @@ module Gitlab
       end
 
       def translations_html_allowed?
-        html_allowed.present? && all_translations.all? do |translation|
+        msgid_html_allowed? && html_allowed['translations'].present? && all_translations.all? do |translation|
           html_allowed['translations'].include?(translation)
         end
       end

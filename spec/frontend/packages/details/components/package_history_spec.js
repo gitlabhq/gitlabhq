@@ -57,8 +57,8 @@ describe('Package History', () => {
     name            | icon          | text                                               | timeAgoTooltip                 | link
     ${'created-on'} | ${'clock'}    | ${'Test package version 1.0.0 was created'}        | ${mavenPackage.created_at}     | ${null}
     ${'updated-at'} | ${'pencil'}   | ${'Test package version 1.0.0 was updated'}        | ${mavenPackage.updated_at}     | ${null}
-    ${'commit'}     | ${'commit'}   | ${'Commit sha-baz on branch branch-name'}          | ${null}                        | ${'../../commit/sha-baz'}
-    ${'pipeline'}   | ${'pipeline'} | ${'Pipeline #1 triggered  by foo'}                 | ${mockPipelineInfo.created_at} | ${'../../pipelines/1'}
+    ${'commit'}     | ${'commit'}   | ${'Commit sha-baz on branch branch-name'}          | ${null}                        | ${mockPipelineInfo.project.commit_url}
+    ${'pipeline'}   | ${'pipeline'} | ${'Pipeline #1 triggered  by foo'}                 | ${mockPipelineInfo.created_at} | ${mockPipelineInfo.project.pipeline_url}
     ${'published'}  | ${'package'}  | ${'Published to the baz project Package Registry'} | ${mavenPackage.created_at}     | ${null}
   `('history element $name', ({ name, icon, text, timeAgoTooltip, link }) => {
     let element;

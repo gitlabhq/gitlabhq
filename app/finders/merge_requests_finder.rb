@@ -30,8 +30,10 @@
 #     updated_before: datetime
 #
 class MergeRequestsFinder < IssuableFinder
+  include MergedAtFilter
+
   def self.scalar_params
-    @scalar_params ||= super + [:wip, :draft, :target_branch]
+    @scalar_params ||= super + [:wip, :draft, :target_branch, :merged_after, :merged_before]
   end
 
   def klass
@@ -44,6 +46,7 @@ class MergeRequestsFinder < IssuableFinder
     items = by_source_branch(items)
     items = by_draft(items)
     items = by_target_branch(items)
+    items = by_merged_at(items)
     by_source_project_id(items)
   end
 

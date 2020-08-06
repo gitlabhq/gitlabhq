@@ -10,6 +10,7 @@ module QA
           project.initialize_with_readme = true
         end
       end
+
       let(:fork_project) do
         Resource::Fork.fabricate_via_api! do |fork|
           fork.user = user

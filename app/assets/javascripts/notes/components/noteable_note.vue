@@ -208,6 +208,7 @@ export default {
       'scrollToNoteIfNeeded',
       'updateAssignees',
       'setSelectedCommentPositionHover',
+      'updateDiscussionPosition',
     ]),
     editHandler() {
       this.isEditing = true;
@@ -250,8 +251,13 @@ export default {
         ...this.note.position,
       };
 
-      if (this.commentLineStart && this.line)
+      if (this.discussionRoot && this.commentLineStart && this.line) {
         position.line_range = formatLineRange(this.commentLineStart, this.line);
+        this.updateDiscussionPosition({
+          discussionId: this.note.discussion_id,
+          position,
+        });
+      }
 
       this.$emit('handleUpdateNote', {
         note: this.note,

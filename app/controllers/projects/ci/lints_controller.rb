@@ -12,6 +12,7 @@ class Projects::Ci::LintsController < Projects::ApplicationController
 
     @status = result.valid?
     @errors = result.errors
+    @warnings = result.warnings
 
     if result.valid?
       @config_processor = result.config

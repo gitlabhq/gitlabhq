@@ -1322,4 +1322,18 @@ describe('Actions Notes Store', () => {
       });
     });
   });
+
+  describe('updateDiscussionPosition', () => {
+    it('update the assignees state', done => {
+      const updatedPosition = { discussionId: 1, position: { test: true } };
+      testAction(
+        actions.updateDiscussionPosition,
+        updatedPosition,
+        { state: { discussions: [] } },
+        [{ type: mutationTypes.UPDATE_DISCUSSION_POSITION, payload: updatedPosition }],
+        [],
+        done,
+      );
+    });
+  });
 });

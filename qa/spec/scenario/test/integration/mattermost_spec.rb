@@ -10,6 +10,7 @@ describe QA::Scenario::Test::Integration::Mattermost do
           mattermost_address: 'http://mattermost_address'
         }
       end
+
       let(:named_options) { %w[--address http://gitlab_address --mattermost-address http://mattermost_address] }
       let(:tags) { [:mattermost] }
       let(:options) { ['path1']}

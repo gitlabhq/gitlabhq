@@ -4,6 +4,8 @@ module Types
   class MergeRequestType < BaseObject
     graphql_name 'MergeRequest'
 
+    connection_type_class(Types::IssuableConnectionType)
+
     implements(Types::Notes::NoteableType)
 
     authorize :read_merge_request

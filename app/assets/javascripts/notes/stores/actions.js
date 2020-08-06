@@ -708,3 +708,7 @@ export const receiveDeleteDescriptionVersionError = ({ commit }, error) => {
 export const updateAssignees = ({ commit }, assignees) => {
   commit(types.UPDATE_ASSIGNEES, assignees);
 };
+
+export const updateDiscussionPosition = ({ commit }, updatedPosition) => {
+  commit(types.UPDATE_DISCUSSION_POSITION, updatedPosition);
+};

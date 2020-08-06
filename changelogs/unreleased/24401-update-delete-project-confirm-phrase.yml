@@ -1,0 +1,6 @@
+---
+title: Update the project deletion confirmation modal to be more specific, the confirmation
+  phrase now includes the project full path
+merge_request: 38700
+author:
+type: changed

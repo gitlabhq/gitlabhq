@@ -1,0 +1,5 @@
+---
+title: Add attributes to filter project merge requests by merged at date in GraphQL
+merge_request: 38584
+author:
+type: added
