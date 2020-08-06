@@ -59,6 +59,8 @@ RSpec.describe Ci::DailyBuildGroupReportResultsFinder do
     end
   end
 
+  private
+
   def create_daily_coverage(group_name, coverage, date)
     create(
       :ci_daily_build_group_report_result,

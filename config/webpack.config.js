@@ -119,6 +119,15 @@ if (IS_EE) {
   });
 }
 
+if (!IS_PRODUCTION) {
+  const fixtureDir = IS_EE ? 'fixtures-ee' : 'fixtures';
+
+  Object.assign(alias, {
+    test_fixtures: path.join(ROOT_PATH, `tmp/tests/frontend/${fixtureDir}`),
+    test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
+  });
+}
+
 let dll;
 
 if (VENDOR_DLL && !IS_PRODUCTION) {

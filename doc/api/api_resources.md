@@ -140,6 +140,7 @@ The following API resources are available outside of project and group contexts 
 | [Namespaces](namespaces.md)                        | `/namespaces`                                                           |
 | [Notification settings](notification_settings.md)  | `/notification_settings` (also available for groups and projects)       |
 | [Pages domains](pages_domains.md)                  | `/pages/domains` (also available for projects)                          |
+| [Personal access tokens](personal_access_tokens.md) | `/personal_access_tokens`                                              |
 | [Projects](projects.md)                            | `/users/:id/projects` (also available for projects)                     |
 | [Project repository storage moves](project_repository_storage_moves.md) **(CORE ONLY)** | `/project_repository_storage_moves` |
 | [Runners](runners.md)                              | `/runners` (also available for projects)                                |

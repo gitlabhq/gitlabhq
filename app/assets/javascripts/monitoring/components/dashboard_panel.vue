@@ -22,6 +22,7 @@ import MonitorEmptyChart from './charts/empty_chart.vue';
 import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorAnomalyChart from './charts/anomaly.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
+import MonitorGaugeChart from './charts/gauge.vue';
 import MonitorHeatmapChart from './charts/heatmap.vue';
 import MonitorColumnChart from './charts/column.vue';
 import MonitorBarChart from './charts/bar.vue';
@@ -170,6 +171,9 @@ export default {
       if (this.isPanelType(panelTypes.SINGLE_STAT)) {
         return MonitorSingleStatChart;
       }
+      if (this.isPanelType(panelTypes.GAUGE_CHART)) {
+        return MonitorGaugeChart;
+      }
       if (this.isPanelType(panelTypes.HEATMAP)) {
         return MonitorHeatmapChart;
       }
@@ -215,7 +219,8 @@ export default {
       return (
         this.isPanelType(panelTypes.AREA_CHART) ||
         this.isPanelType(panelTypes.LINE_CHART) ||
-        this.isPanelType(panelTypes.SINGLE_STAT)
+        this.isPanelType(panelTypes.SINGLE_STAT) ||
+        this.isPanelType(panelTypes.GAUGE_CHART)
       );
     },
     editCustomMetricLink() {

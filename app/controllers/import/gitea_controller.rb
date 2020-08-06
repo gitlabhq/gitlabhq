@@ -54,16 +54,6 @@ class Import::GiteaController < Import::GithubController
     end
   end
 
-  override :client_repos
-  def client_repos
-    @client_repos ||= filtered(client.repos)
-  end
-
-  override :client
-  def client
-    @client ||= Gitlab::LegacyGithubImport::Client.new(session[access_token_key], client_options)
-  end
-
   override :client_options
   def client_options
     { host: provider_url, api_version: 'v1' }

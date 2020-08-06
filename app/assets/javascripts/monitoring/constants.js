@@ -87,6 +87,10 @@ export const panelTypes = {
    */
   SINGLE_STAT: 'single-stat',
   /**
+   * Gauge
+   */
+  GAUGE_CHART: 'gauge-chart',
+  /**
    * Heatmap
    */
   HEATMAP: 'heatmap',
@@ -271,4 +275,9 @@ export const keyboardShortcutKeys = {
   SHOW_ALERT: 'a',
   DOWNLOAD_CSV: 'd',
   CHART_COPY: 'c',
+};
+
+export const thresholdModeTypes = {
+  ABSOLUTE: 'absolute',
+  PERCENTAGE: 'percentage',
 };

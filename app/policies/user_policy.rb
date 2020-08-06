@@ -20,6 +20,7 @@ class UserPolicy < BasePolicy
     enable :destroy_user
     enable :update_user
     enable :update_user_status
+    enable :read_user_personal_access_tokens
   end
 
   rule { default }.enable :read_user_profile

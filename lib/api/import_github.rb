@@ -10,11 +10,7 @@ module API
 
     helpers do
       def client
-        @client ||= if Feature.enabled?(:remove_legacy_github_client, default_enabled: false)
-                      Gitlab::GithubImport::Client.new(params[:personal_access_token])
-                    else
-                      Gitlab::LegacyGithubImport::Client.new(params[:personal_access_token], client_options)
-                    end
+        @client ||= Gitlab::LegacyGithubImport::Client.new(params[:personal_access_token], client_options)
       end
 
       def access_params

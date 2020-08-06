@@ -3,13 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe PersonalAccessTokensFinder do
-  def finder(options = {})
-    described_class.new(options)
+  def finder(options = {}, current_user = nil)
+    described_class.new(options, current_user)
   end
 
   describe '#execute' do
     let(:user) { create(:user) }
     let(:params) { {} }
+    let(:current_user) { nil }
     let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
     let!(:expired_personal_access_token) { create(:personal_access_token, :expired, user: user) }
     let!(:revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
@@ -17,7 +18,42 @@ RSpec.describe PersonalAccessTokensFinder do
     let!(:expired_impersonation_token) { create(:personal_access_token, :expired, :impersonation, user: user) }
     let!(:revoked_impersonation_token) { create(:personal_access_token, :revoked, :impersonation, user: user) }
 
-    subject { finder(params).execute }
+    subject { finder(params, current_user).execute }
+
+    context 'when current_user is defined' do
+      let(:current_user) { create(:admin) }
+      let(:params) { { user: user } }
+
+      context 'current_user is allowed to read PATs' do
+        it do
+          is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
+                                        revoked_personal_access_token, expired_personal_access_token,
+                                        revoked_impersonation_token, expired_impersonation_token)
+        end
+      end
+
+      context 'current_user is not allowed to read PATs' do
+        let(:current_user) { create(:user) }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'when user param is not set' do
+        let(:params) { {} }
+
+        it do
+          is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
+                                         revoked_personal_access_token, expired_personal_access_token,
+                                         revoked_impersonation_token, expired_impersonation_token)
+        end
+
+        context 'when current_user is not an administrator' do
+          let(:current_user) { create(:user) }
+
+          it { is_expected.to be_empty }
+        end
+      end
+    end
 
     describe 'without user' do
       it do

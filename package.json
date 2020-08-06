@@ -109,6 +109,7 @@
     "mermaid": "^8.5.2",
     "mersenne-twister": "1.1.0",
     "minimatch": "^3.0.4",
+    "miragejs": "^0.1.40",
     "monaco-editor": "^0.20.0",
     "monaco-editor-webpack-plugin": "^1.9.0",
     "monaco-yaml": "^2.4.1",

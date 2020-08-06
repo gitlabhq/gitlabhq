@@ -10,9 +10,6 @@ class Import::GithubController < Import::BaseController
   before_action :provider_auth, only: [:status, :realtime_changes, :create]
   before_action :expire_etag_cache, only: [:status, :create]
 
-  OAuthConfigMissingError = Class.new(StandardError)
-
-  rescue_from OAuthConfigMissingError, with: :missing_oauth_config
   rescue_from Octokit::Unauthorized, with: :provider_unauthorized
   rescue_from Octokit::TooManyRequests, with: :provider_rate_limit
 
@@ -25,7 +22,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def callback
-    session[access_token_key] = get_token(params[:code])
+    session[access_token_key] = client.get_token(params[:code])
     redirect_to status_import_url
   end
 
@@ -80,7 +77,9 @@ class Import::GithubController < Import::BaseController
   override :provider_url
   def provider_url
     strong_memoize(:provider_url) do
-      oauth_config&.dig('url').presence || 'https://github.com'
+      provider = Gitlab::Auth::OAuth::Provider.config_for('github')
+
+      provider&.dig('url').presence || 'https://github.com'
     end
   end
 
@@ -105,56 +104,11 @@ class Import::GithubController < Import::BaseController
   end
 
   def client
-    @client ||= if Feature.enabled?(:remove_legacy_github_client, default_enabled: false)
-                  Gitlab::GithubImport::Client.new(session[access_token_key])
-                else
-                  Gitlab::LegacyGithubImport::Client.new(session[access_token_key], client_options)
-                end
+    @client ||= Gitlab::LegacyGithubImport::Client.new(session[access_token_key], client_options)
   end
 
   def client_repos
-    @client_repos ||= filtered(client.octokit.repos)
-  end
-
-  def oauth_client
-    raise OAuthConfigMissingError unless oauth_config
-
-    @oauth_client ||= ::OAuth2::Client.new(
-      oauth_config.app_id,
-      oauth_config.app_secret,
-      oauth_options.merge(ssl: { verify: oauth_config['verify_ssl'] })
-    )
-  end
-
-  def oauth_config
-    @oauth_config ||= Gitlab::Auth::OAuth::Provider.config_for('github')
-  end
-
-  def oauth_options
-    if oauth_config
-      oauth_config.dig('args', 'client_options').deep_symbolize_keys
-    else
-      OmniAuth::Strategies::GitHub.default_options[:client_options].symbolize_keys
-    end
-  end
-
-  def authorize_url(redirect_uri)
-    if Feature.enabled?(:remove_legacy_github_client, default_enabled: false)
-      oauth_client.auth_code.authorize_url({
-                                             redirect_uri: redirect_uri,
-                                             scope: 'repo, user, user:email'
-                                           })
-    else
-      client.authorize_url(callback_import_url)
-    end
-  end
-
-  def get_token(code)
-    if Feature.enabled?(:remove_legacy_github_client, default_enabled: false)
-      oauth_client.auth_code.get_token(code).token
-    else
-      client.get_token(code)
-    end
+    @client_repos ||= filtered(client.repos)
   end
 
   def verify_import_enabled
@@ -162,7 +116,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def go_to_provider_for_permissions
-    redirect_to authorize_url(callback_import_url)
+    redirect_to client.authorize_url(callback_import_url)
   end
 
   def import_enabled?
@@ -196,12 +150,6 @@ class Import::GithubController < Import::BaseController
     session[access_token_key] = nil
     redirect_to new_import_url,
       alert: _("GitHub API rate limit exceeded. Try again after %{reset_time}") % { reset_time: reset_time }
-  end
-
-  def missing_oauth_config
-    session[access_token_key] = nil
-    redirect_to new_import_url,
-      alert: _('OAuth configuration for GitHub missing.')
   end
 
   def access_token_key

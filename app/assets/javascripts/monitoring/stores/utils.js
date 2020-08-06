@@ -176,7 +176,11 @@ export const mapPanelToViewModel = ({
   field,
   metrics = [],
   links = [],
+  min_value,
   max_value,
+  split,
+  thresholds,
+  format,
 }) => {
   // Both `x_axis.name` and `x_label` are supported for now
   // https://gitlab.com/gitlab-org/gitlab/issues/210521
@@ -195,7 +199,11 @@ export const mapPanelToViewModel = ({
     yAxis,
     xAxis,
     field,
+    minValue: min_value,
     maxValue: max_value,
+    split,
+    thresholds,
+    format,
     links: links.map(mapLinksToViewModel),
     metrics: mapToMetricsViewModel(metrics),
   };

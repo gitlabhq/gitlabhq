@@ -28,7 +28,7 @@ module Gitlab
         def total_count
           return 0 if suite_error
 
-          test_cases.values.sum(&:count)
+          [success_count, failed_count, skipped_count, error_count].sum
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

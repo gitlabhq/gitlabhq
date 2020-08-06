@@ -288,6 +288,7 @@ create an issue or an MR to propose a change to the UI text.
   - merge requests
   - milestones
   - reorder issues
+  - runner, runners, shared runners
 - **Some features are capitalized**, typically nouns naming GitLab-specific capabilities or tools. For example:
   - GitLab CI/CD
   - Repository Mirroring
@@ -295,6 +296,7 @@ create an issue or an MR to propose a change to the UI text.
   - the To-Do List
   - the Web IDE
   - Geo
+  - GitLab Runner (see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529) for details)
 
 Document any exceptions in this style guide. If you're not sure, ask a GitLab Technical Writer so that they can help decide and document the result.
 

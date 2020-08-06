@@ -210,3 +210,39 @@ export const heatmapGraphData = (panelOptions = {}, dataOptions = {}) => {
     ...panelOptions,
   });
 };
+
+/**
+ * Generate gauge chart mock graph data according to options
+ *
+ * @param {Object} panelOptions - Panel options as in YML.
+ *
+ */
+export const gaugeChartGraphData = (panelOptions = {}) => {
+  const {
+    minValue = 100,
+    maxValue = 1000,
+    split = 20,
+    thresholds = {
+      mode: 'absolute',
+      values: [500, 800],
+    },
+    format = 'kilobytes',
+  } = panelOptions;
+
+  return mapPanelToViewModel({
+    title: 'Gauge Chart Panel',
+    type: panelTypes.GAUGE_CHART,
+    min_value: minValue,
+    max_value: maxValue,
+    split,
+    thresholds,
+    format,
+    metrics: [
+      {
+        label: `Metric`,
+        state: metricStates.OK,
+        result: matrixSingleResult(),
+      },
+    ],
+  });
+};

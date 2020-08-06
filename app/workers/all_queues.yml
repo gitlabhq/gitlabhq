@@ -1442,7 +1442,7 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 5
-  :idempotent: true
+  :idempotent: 
   :tags: []
 - :name: merge_request_mergeability_check
   :feature_category: :source_code_management
