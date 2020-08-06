@@ -332,7 +332,10 @@ export default {
         <p v-html="errorMessage || $options.i18n.errorMsg"></p>
       </gl-alert>
 
-      <gl-tabs content-class="gl-p-0" @input="filterAlertsByStatus">
+      <gl-tabs
+        content-class="gl-p-0 gl-border-b-solid gl-border-b-1 gl-border-gray-100"
+        @input="filterAlertsByStatus"
+      >
         <gl-tab v-for="tab in $options.statusTabs" :key="tab.status">
           <template slot="title">
             <span>{{ tab.title }}</span>

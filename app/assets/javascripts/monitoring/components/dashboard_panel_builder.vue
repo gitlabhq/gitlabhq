@@ -11,12 +11,13 @@ import {
 } from '@gitlab/ui';
 import DashboardPanel from './dashboard_panel.vue';
 
-const initialYml = `title:
-y_label:
+const initialYml = `title: Go heap size
 type: area-chart
+y_axis:
+  format: 'bytes'
 metrics:
-- query_range:
-  label:
+  - metric_id: 'go_memstats_alloc_bytes_1'
+    query_range: 'go_memstats_alloc_bytes'
 `;
 
 export default {

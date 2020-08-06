@@ -10269,6 +10269,11 @@ msgstr ""
 msgid "Feature flag was successfully removed."
 msgstr ""
 
+msgid "FeatureFlags|%d user"
+msgid_plural "FeatureFlags|%d users"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "FeatureFlags|* (All Environments)"
 msgstr ""
 
@@ -10282,6 +10287,12 @@ msgid "FeatureFlags|Active"
 msgstr ""
 
 msgid "FeatureFlags|Add strategy"
+msgstr ""
+
+msgid "FeatureFlags|All Environments"
+msgstr ""
+
+msgid "FeatureFlags|All Users"
 msgstr ""
 
 msgid "FeatureFlags|All users"
@@ -10398,6 +10409,9 @@ msgstr ""
 msgid "FeatureFlags|New list"
 msgstr ""
 
+msgid "FeatureFlags|Percent of users"
+msgstr ""
+
 msgid "FeatureFlags|Percent rollout (logged in users)"
 msgstr ""
 
@@ -10438,6 +10452,9 @@ msgid "FeatureFlags|Try again in a few moments or contact your support team."
 msgstr ""
 
 msgid "FeatureFlags|User IDs"
+msgstr ""
+
+msgid "FeatureFlags|User List"
 msgstr ""
 
 msgid "FeatureFlag|Delete strategy"
@@ -12811,7 +12828,7 @@ msgstr ""
 msgid "Incident Management Limits"
 msgstr ""
 
-msgid "IncidentManagement|All incidents"
+msgid "IncidentManagement|All"
 msgstr ""
 
 msgid "IncidentManagement|Assignees"
@@ -21108,7 +21125,7 @@ msgstr ""
 msgid "Search requirements"
 msgstr ""
 
-msgid "Search results..."
+msgid "Search results…"
 msgstr ""
 
 msgid "Search users"
@@ -21410,13 +21427,7 @@ msgstr ""
 msgid "SecurityReports|No vulnerabilities found for this pipeline"
 msgstr ""
 
-msgid "SecurityReports|No vulnerabilities found for this project"
-msgstr ""
-
 msgid "SecurityReports|Oops, something doesn't seem right."
-msgstr ""
-
-msgid "SecurityReports|Pipeline %{pipelineLink} triggered %{timeago} by %{user}"
 msgstr ""
 
 msgid "SecurityReports|Project"
@@ -21510,9 +21521,6 @@ msgid "SecurityReports|Undo dismiss"
 msgstr ""
 
 msgid "SecurityReports|While it's rare to have no vulnerabilities for your pipeline, it can happen. In any event, we ask that you double check your settings to make sure all security scanning jobs have passed successfully."
-msgstr ""
-
-msgid "SecurityReports|While it's rare to have no vulnerabilities for your project, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
 msgid "SecurityReports|While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."

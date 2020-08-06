@@ -30,9 +30,11 @@ describe('Incidents List', () => {
   const findAlert = () => wrapper.find(GlAlert);
   const findLoader = () => wrapper.find(GlLoadingIcon);
   const findTimeAgo = () => wrapper.findAll(TimeAgoTooltip);
+  const findDateColumnHeader = () =>
+    wrapper.find('[data-testid="incident-management-created-at-sort"]');
+  const findSearch = () => wrapper.find(GlSearchBoxByType);
   const findAssingees = () => wrapper.findAll('[data-testid="incident-assignees"]');
   const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
-  const findSearch = () => wrapper.find(GlSearchBoxByType);
   const findClosedIcon = () => wrapper.findAll("[data-testid='incident-closed']");
   const findPagination = () => wrapper.find(GlPagination);
   const findStatusFilterTabs = () => wrapper.findAll(GlTab);
@@ -301,6 +303,24 @@ describe('Incidents List', () => {
         tabs.forEach((tab, i) => {
           expect(tab.attributes('data-testid')).toContain(INCIDENT_STATE_TABS[i].state);
         });
+      });
+    });
+  });
+
+  describe('sorting the incident list by column', () => {
+    beforeEach(() => {
+      mountComponent({
+        data: { incidents: mockIncidents },
+        loading: false,
+      });
+    });
+
+    it('updates sort with new direction and column key', () => {
+      expect(findDateColumnHeader().attributes('aria-sort')).toBe('descending');
+
+      findDateColumnHeader().trigger('click');
+      return wrapper.vm.$nextTick(() => {
+        expect(findDateColumnHeader().attributes('aria-sort')).toBe('ascending');
       });
     });
   });

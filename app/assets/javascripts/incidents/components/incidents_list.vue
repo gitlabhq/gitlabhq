@@ -14,13 +14,15 @@ import {
   GlTabs,
   GlTab,
 } from '@gitlab/ui';
-import { debounce, trim } from 'lodash';
+import { debounce } from 'lodash';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import { mergeUrlParams, joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
 import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_SEARCH_DELAY, INCIDENT_STATE_TABS } from '../constants';
 
+const TH_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };
 const tdClass =
   'table-col gl-display-flex d-md-table-cell gl-align-items-center gl-white-space-nowrap';
 const thClass = 'gl-hover-bg-blue-50';
@@ -48,8 +50,10 @@ export default {
     {
       key: 'createdAt',
       label: s__('IncidentManagement|Date created'),
-      thClass: `${thClass} gl-pointer-events-none`,
-      tdClass,
+      thClass,
+      tdClass: `${tdClass} sortable-cell`,
+      sortable: true,
+      thAttr: TH_TEST_ID,
     },
     {
       key: 'assignees',
@@ -93,6 +97,7 @@ export default {
           state: this.stateFilter,
           projectPath: this.projectPath,
           issueTypes: ['INCIDENT'],
+          sort: this.sort,
           firstPageSize: this.pagination.firstPageSize,
           lastPageSize: this.pagination.lastPageSize,
           prevPageCursor: this.pagination.prevPageCursor,
@@ -119,6 +124,9 @@ export default {
       pagination: initialPaginationState,
       incidents: {},
       stateFilter: '',
+      sort: 'created_desc',
+      sortBy: 'createdAt',
+      sortDesc: true,
     };
   },
   computed: {
@@ -168,7 +176,7 @@ export default {
   },
   methods: {
     onInputChange: debounce(function debounceSearch(input) {
-      const trimmedInput = trim(input);
+      const trimmedInput = input.trim();
       if (trimmedInput !== this.searchTerm) {
         this.searchTerm = trimmedInput;
       }
@@ -205,6 +213,12 @@ export default {
     resetPagination() {
       this.pagination = initialPaginationState;
     },
+    fetchSortedData({ sortBy, sortDesc }) {
+      const sortingDirection = sortDesc ? 'desc' : 'asc';
+      const sortingColumn = convertToSnakeCase(sortBy).replace(/_.*/, '');
+
+      this.sort = `${sortingColumn}_${sortingDirection}`;
+    },
   },
 };
 </script>
@@ -214,7 +228,9 @@ export default {
       {{ $options.i18n.errorMsg }}
     </gl-alert>
 
-    <div class="incident-management-list-header gl-display-flex gl-justify-content-space-between">
+    <div
+      class="incident-management-list-header gl-display-flex gl-justify-content-space-between gl-border-b-solid gl-border-b-1 gl-border-gray-100"
+    >
       <gl-tabs content-class="gl-p-0" @input="filterIncidentsByState">
         <gl-tab v-for="tab in $options.stateTabs" :key="tab.state" :data-testid="tab.state">
           <template #title>
@@ -224,7 +240,7 @@ export default {
       </gl-tabs>
 
       <gl-button
-        class="gl-my-3 create-incident-button"
+        class="gl-my-3 gl-mr-5 create-incident-button"
         data-testid="createIncidentBtn"
         :loading="redirecting"
         :disabled="redirecting"
@@ -257,16 +273,22 @@ export default {
       stacked="md"
       :tbody-tr-class="tbodyTrClass"
       :no-local-sorting="true"
+      :sort-direction="'desc'"
+      :sort-desc.sync="sortDesc"
+      :sort-by.sync="sortBy"
+      sort-icon-left
       fixed
       @row-clicked="navigateToIncidentDetails"
+      @sort-changed="fetchSortedData"
     >
       <template #cell(title)="{ item }">
-        <div class="gl-display-sm-flex gl-align-items-center">
+        <div class="incident-management-list-title gl-display-flex gl-align-items-center">
           <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
           <gl-icon
             v-if="item.state === 'closed'"
             name="issue-close"
-            class="gl-ml-1 gl-fill-blue-500"
+            class="gl-mx-1 gl-fill-blue-500"
+            :size="16"
             data-testid="incident-closed"
           />
         </div>

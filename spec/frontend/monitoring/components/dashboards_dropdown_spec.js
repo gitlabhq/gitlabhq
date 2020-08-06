@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDeprecatedDropdownItem, GlIcon } from '@gitlab/ui';
+import { GlNewDropdownItem, GlIcon } from '@gitlab/ui';
 
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 
@@ -22,7 +22,7 @@ describe('DashboardsDropdown', () => {
       },
     };
 
-    return shallowMount(DashboardsDropdown, {
+    wrapper = shallowMount(DashboardsDropdown, {
       propsData: {
         ...props,
         defaultBranch,
@@ -33,8 +33,8 @@ describe('DashboardsDropdown', () => {
     });
   }
 
-  const findItems = () => wrapper.findAll(GlDeprecatedDropdownItem);
-  const findItemAt = i => wrapper.findAll(GlDeprecatedDropdownItem).at(i);
+  const findItems = () => wrapper.findAll(GlNewDropdownItem);
+  const findItemAt = i => wrapper.findAll(GlNewDropdownItem).at(i);
   const findSearchInput = () => wrapper.find({ ref: 'monitorDashboardsDropdownSearch' });
   const findNoItemsMsg = () => wrapper.find({ ref: 'monitorDashboardsDropdownMsg' });
   const findStarredListDivider = () => wrapper.find({ ref: 'starredListDivider' });
@@ -47,7 +47,7 @@ describe('DashboardsDropdown', () => {
 
   describe('when it receives dashboards data', () => {
     beforeEach(() => {
-      wrapper = createComponent();
+      createComponent();
     });
 
     it('displays an item for each dashboard', () => {
@@ -91,10 +91,22 @@ describe('DashboardsDropdown', () => {
     });
   });
 
+  describe('when a dashboard is selected', () => {
+    beforeEach(() => {
+      [mockSelectedDashboard] = starredDashboards;
+      createComponent();
+    });
+
+    it('dashboard item is selected', () => {
+      expect(findItemAt(0).props('isChecked')).toBe(true);
+      expect(findItemAt(1).props('isChecked')).toBe(false);
+    });
+  });
+
   describe('when the dashboard is missing a display name', () => {
     beforeEach(() => {
       mockDashboards = dashboardGitResponse.map(d => ({ ...d, display_name: undefined }));
-      wrapper = createComponent();
+      createComponent();
     });
 
     it('displays items with the dashboard path, with starred dashboards first', () => {
@@ -107,7 +119,7 @@ describe('DashboardsDropdown', () => {
   describe('when it receives starred dashboards', () => {
     beforeEach(() => {
       mockDashboards = starredDashboards;
-      wrapper = createComponent();
+      createComponent();
     });
 
     it('displays an item for each dashboard', () => {
@@ -128,7 +140,7 @@ describe('DashboardsDropdown', () => {
   describe('when it receives only not-starred dashboards', () => {
     beforeEach(() => {
       mockDashboards = notStarredDashboards;
-      wrapper = createComponent();
+      createComponent();
     });
 
     it('displays an item for each dashboard', () => {
@@ -147,7 +159,7 @@ describe('DashboardsDropdown', () => {
 
   describe('when a dashboard gets selected by the user', () => {
     beforeEach(() => {
-      wrapper = createComponent();
+      createComponent();
       findItemAt(1).vm.$emit('click');
     });
 

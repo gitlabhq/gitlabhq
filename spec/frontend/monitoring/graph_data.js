@@ -7,6 +7,33 @@ const intervalSeconds = 120;
 const makeValue = val => [initTime, val];
 const makeValues = vals => vals.map((val, i) => [initTime + intervalSeconds * i, val]);
 
+// Raw Promethues Responses
+
+export const prometheusMatrixMultiResult = ({
+  values1 = ['1', '2', '3'],
+  values2 = ['4', '5', '6'],
+} = {}) => ({
+  resultType: 'matrix',
+  result: [
+    {
+      metric: {
+        __name__: 'up',
+        job: 'prometheus',
+        instance: 'localhost:9090',
+      },
+      values: makeValues(values1),
+    },
+    {
+      metric: {
+        __name__: 'up',
+        job: 'node',
+        instance: 'localhost:9091',
+      },
+      values: makeValues(values2),
+    },
+  ],
+});
+
 // Normalized Prometheus Responses
 
 const scalarResult = ({ value = '1' } = {}) =>

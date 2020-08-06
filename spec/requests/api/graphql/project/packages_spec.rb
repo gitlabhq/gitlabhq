@@ -28,42 +28,40 @@ RSpec.describe 'getting a package list for a project' do
     )
   end
 
-  context 'without the need for a license' do
-    context 'when user has access to the project' do
-      before do
-        project.add_reporter(current_user)
-        post_graphql(query, current_user: current_user)
-      end
-
-      it_behaves_like 'a working graphql query'
-
-      it 'returns packages successfully' do
-        expect(packages_data[0]['node']['name']).to eq package.name
-      end
+  context 'when user has access to the project' do
+    before do
+      project.add_reporter(current_user)
+      post_graphql(query, current_user: current_user)
     end
 
-    context 'when the user does not have access to the project/packages' do
-      before do
-        post_graphql(query, current_user: current_user)
-      end
+    it_behaves_like 'a working graphql query'
 
-      it_behaves_like 'a working graphql query'
+    it 'returns packages successfully' do
+      expect(packages_data[0]['node']['name']).to eq package.name
+    end
+  end
 
-      it 'returns nil' do
-        expect(graphql_data['project']).to be_nil
-      end
+  context 'when the user does not have access to the project/packages' do
+    before do
+      post_graphql(query, current_user: current_user)
     end
 
-    context 'when the user is not autenthicated' do
-      before do
-        post_graphql(query)
-      end
+    it_behaves_like 'a working graphql query'
 
-      it_behaves_like 'a working graphql query'
+    it 'returns nil' do
+      expect(graphql_data['project']).to be_nil
+    end
+  end
 
-      it 'returns nil' do
-        expect(graphql_data['project']).to be_nil
-      end
+  context 'when the user is not autenthicated' do
+    before do
+      post_graphql(query)
+    end
+
+    it_behaves_like 'a working graphql query'
+
+    it 'returns nil' do
+      expect(graphql_data['project']).to be_nil
     end
   end
 end

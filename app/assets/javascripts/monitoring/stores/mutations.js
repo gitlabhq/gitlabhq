@@ -53,6 +53,14 @@ const emptyStateFromError = error => {
   return metricStates.UNKNOWN_ERROR;
 };
 
+export const metricStateFromData = data => {
+  if (data?.result?.length) {
+    const result = normalizeQueryResponseData(data);
+    return { state: metricStates.OK, result: Object.freeze(result) };
+  }
+  return { state: metricStates.NO_DATA, result: null };
+};
+
 export default {
   /**
    * Dashboard panels structure and global state
@@ -154,17 +162,11 @@ export default {
   },
   [types.RECEIVE_METRIC_RESULT_SUCCESS](state, { metricId, data }) {
     const metric = findMetricInDashboard(metricId, state.dashboard);
+    const metricState = metricStateFromData(data);
+
     metric.loading = false;
-
-    if (!data.result || data.result.length === 0) {
-      metric.state = metricStates.NO_DATA;
-      metric.result = null;
-    } else {
-      const result = normalizeQueryResponseData(data);
-
-      metric.state = metricStates.OK;
-      metric.result = Object.freeze(result);
-    }
+    metric.state = metricState.state;
+    metric.result = metricState.result;
   },
   [types.RECEIVE_METRIC_RESULT_FAILURE](state, { metricId, error }) {
     const metric = findMetricInDashboard(metricId, state.dashboard);
@@ -237,5 +239,29 @@ export default {
 
     state.panelPreviewGraphData = null;
     state.panelPreviewError = error;
+  },
+
+  [types.REQUEST_PANEL_PREVIEW_METRIC_RESULT](state, { index }) {
+    const metric = state.panelPreviewGraphData.metrics[index];
+
+    metric.loading = true;
+    if (!metric.result) {
+      metric.state = metricStates.LOADING;
+    }
+  },
+  [types.RECEIVE_PANEL_PREVIEW_METRIC_RESULT_SUCCESS](state, { index, data }) {
+    const metric = state.panelPreviewGraphData.metrics[index];
+    const metricState = metricStateFromData(data);
+
+    metric.loading = false;
+    metric.state = metricState.state;
+    metric.result = metricState.result;
+  },
+  [types.RECEIVE_PANEL_PREVIEW_METRIC_RESULT_FAILURE](state, { index, error }) {
+    const metric = state.panelPreviewGraphData.metrics[index];
+
+    metric.loading = false;
+    metric.state = emptyStateFromError(error);
+    metric.result = null;
   },
 };

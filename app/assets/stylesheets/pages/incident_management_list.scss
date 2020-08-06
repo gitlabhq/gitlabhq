@@ -76,23 +76,31 @@
           }
         }
       }
+
+      .incident-management-list-title {
+        @include gl-flex-direction-row-reverse;
+      }
     }
   }
 
-  .gl-tab-nav-item {
-    color: $gl-gray-600;
+  .gl-tabs-nav {
+    border-bottom-width: 0;
 
-    > .gl-tab-counter-badge {
-      color: inherit;
-      @include gl-font-sm;
-      background-color: $white-normal;
+    .gl-tab-nav-item {
+      color: $gl-gray-600;
+
+      > .gl-tab-counter-badge {
+        color: inherit;
+        @include gl-font-sm;
+        background-color: $gray-50;
+      }
     }
   }
 
   @include media-breakpoint-down(xs) {
     .incident-management-list-header {
       flex-direction: column-reverse;
-    };
+    }
 
     .create-incident-button {
       @include gl-w-full;
