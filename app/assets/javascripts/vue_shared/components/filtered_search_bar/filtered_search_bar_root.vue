@@ -83,7 +83,7 @@ export default {
     return {
       initialRender: true,
       recentSearchesPromise: null,
-      recentSearches: [],
+      recentSearches: null,
       filterValue: this.initialFilterValue,
       selectedSortOption,
       selectedSortDirection,

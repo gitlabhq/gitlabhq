@@ -272,12 +272,11 @@ export default {
               :target="linkTarget"
               data-testid="issuable-title"
               data-qa-selector="issue_link"
-            >
-              {{ issuable.title }}
-              <gl-icon
+              >{{ issuable.title
+              }}<gl-icon
                 v-if="isJiraIssue"
                 name="external-link"
-                class="gl-vertical-align-text-bottom"
+                class="gl-vertical-align-text-bottom gl-ml-2"
               />
             </gl-link>
           </span>

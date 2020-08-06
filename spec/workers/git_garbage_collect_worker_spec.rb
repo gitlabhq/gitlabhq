@@ -95,6 +95,7 @@ RSpec.describe GitGarbageCollectWorker do
         it_behaves_like 'it updates the project statistics'
 
         it "flushes ref caches when the task if 'gc'" do
+          expect(subject).to receive(:get_lease_uuid).with("git_gc:#{task}:#{project.id}").and_return(false)
           expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
           expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
           expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original

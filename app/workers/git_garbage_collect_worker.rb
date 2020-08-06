@@ -11,6 +11,7 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
   LEASE_TIMEOUT = 86400
 
   def perform(project_id, task = :gc, lease_key = nil, lease_uuid = nil)
+    lease_key ||= "git_gc:#{task}:#{project_id}"
     project = Project.find(project_id)
     active_uuid = get_lease_uuid(lease_key)
 
