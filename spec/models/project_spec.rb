@@ -6198,38 +6198,40 @@ RSpec.describe Project do
 
     subject { project.has_packages?(package_type) }
 
-    shared_examples 'returning true examples' do
-      let!(:package) { create("#{package_type}_package", project: project) }
+    shared_examples 'has_package' do
+      context 'package of package_type exists' do
+        let!(:package) { create("#{package_type}_package", project: project) }
 
-      it { is_expected.to be true }
-    end
+        it { is_expected.to be true }
+      end
 
-    shared_examples 'returning false examples' do
-      it { is_expected.to be false }
+      context 'package of package_type does not exist' do
+        it { is_expected.to be false }
+      end
     end
 
     context 'with maven packages' do
-      it_behaves_like 'returning true examples' do
+      it_behaves_like 'has_package' do
         let(:package_type) { :maven }
       end
     end
 
     context 'with npm packages' do
-      it_behaves_like 'returning true examples' do
+      it_behaves_like 'has_package' do
         let(:package_type) { :npm }
       end
     end
 
     context 'with conan packages' do
-      it_behaves_like 'returning true examples' do
+      it_behaves_like 'has_package' do
         let(:package_type) { :conan }
       end
     end
 
-    context 'with no package type' do
-      it_behaves_like 'returning false examples' do
-        let(:package_type) { nil }
-      end
+    context 'calling has_package? with nil' do
+      let(:package_type) { nil }
+
+      it { is_expected.to be false }
     end
   end
 

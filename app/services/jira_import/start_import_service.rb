@@ -42,7 +42,7 @@ module JiraImport
 
       ServiceResponse.success(payload: { import_data: jira_import } )
     rescue => ex
-      # in case project.save! raises an erorr
+      # in case project.save! raises an error
       Gitlab::ErrorTracking.track_exception(ex, project_id: project.id)
       jira_import&.do_fail!(error_message: ex.message)
       build_error_response(ex.message)

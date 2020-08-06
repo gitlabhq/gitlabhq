@@ -3,14 +3,15 @@
 module Gitlab
   module Kubernetes
     class NetworkPolicy
-      DISABLED_BY_LABEL = :'network-policy.gitlab.com/disabled_by'
+      include NetworkPolicyCommon
+      extend ::Gitlab::Utils::Override
 
-      def initialize(name:, namespace:, pod_selector:, ingress:, labels: nil, creation_timestamp: nil, policy_types: ["Ingress"], egress: nil)
+      def initialize(name:, namespace:, selector:, ingress:, labels: nil, creation_timestamp: nil, policy_types: ["Ingress"], egress: nil)
         @name = name
         @namespace = namespace
         @labels = labels
         @creation_timestamp = creation_timestamp
-        @pod_selector = pod_selector
+        @selector = selector
         @policy_types = policy_types
         @ingress = ingress
         @egress = egress
@@ -28,7 +29,7 @@ module Gitlab
           name: metadata[:name],
           namespace: metadata[:namespace],
           labels: metadata[:labels],
-          pod_selector: spec[:podSelector],
+          selector: spec[:podSelector],
           policy_types: spec[:policyTypes],
           ingress: spec[:ingress],
           egress: spec[:egress]
@@ -48,80 +49,29 @@ module Gitlab
           namespace: metadata[:namespace],
           labels: metadata[:labels]&.to_h,
           creation_timestamp: metadata[:creationTimestamp],
-          pod_selector: spec[:podSelector],
+          selector: spec[:podSelector],
           policy_types: spec[:policyTypes],
           ingress: spec[:ingress],
           egress: spec[:egress]
         )
       end
 
-      def generate
-        ::Kubeclient::Resource.new.tap do |resource|
-          resource.metadata = metadata
-          resource.spec = spec
-        end
-      end
-
-      def as_json(opts = nil)
-        {
-          name: name,
-          namespace: namespace,
-          creation_timestamp: creation_timestamp,
-          manifest: manifest,
-          is_autodevops: autodevops?,
-          is_enabled: enabled?
-        }
-      end
-
-      def autodevops?
-        return false unless labels
-
-        !labels[:chart].nil? && labels[:chart].start_with?('auto-deploy-app-')
-      end
-
-      # podSelector selects pods that should be targeted by this
-      # policy. We can narrow selection by requiring this policy to
-      # match our custom labels. Since DISABLED_BY label will not be
-      # on any pod a policy will be effectively disabled.
-      def enabled?
-        return true unless pod_selector&.key?(:matchLabels)
-
-        !pod_selector[:matchLabels]&.key?(DISABLED_BY_LABEL)
-      end
-
-      def enable
-        return if enabled?
-
-        pod_selector[:matchLabels].delete(DISABLED_BY_LABEL)
-      end
-
-      def disable
-        @pod_selector ||= {}
-        pod_selector[:matchLabels] ||= {}
-        pod_selector[:matchLabels].merge!(DISABLED_BY_LABEL => 'gitlab')
-      end
-
       private
 
-      attr_reader :name, :namespace, :labels, :creation_timestamp, :pod_selector, :policy_types, :ingress, :egress
+      attr_reader :name, :namespace, :labels, :creation_timestamp, :policy_types, :ingress, :egress
 
-      def metadata
-        meta = { name: name, namespace: namespace }
-        meta[:labels] = labels if labels
-        meta
+      def selector
+        @selector ||= {}
       end
 
+      override :spec
       def spec
         {
-          podSelector: pod_selector,
+          podSelector: selector,
           policyTypes: policy_types,
           ingress: ingress,
           egress: egress
         }
-      end
-
-      def manifest
-        YAML.dump({ metadata: metadata, spec: spec }.deep_stringify_keys)
       end
     end
   end

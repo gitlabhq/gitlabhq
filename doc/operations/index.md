@@ -78,7 +78,9 @@ infrastructure.
 
 ## Manage your infrastructure in code
 
-GitLab integrates with [Terraform](https://www.terraform.io/), uniting your GitOps and
+GitLab stores and executes your infrastructure as code, whether it's
+defined in Ansible, Puppet or Chef. We also offer native integration with
+[Terraform](https://www.terraform.io/), uniting your GitOps and
 Infrastructure-as-Code (IaC) workflows with GitLab's authentication, authorization,
 and user interface. By lowering the barrier to entry for adopting Terraform, you
 can manage and provision infrastructure through machine-readable definition files,

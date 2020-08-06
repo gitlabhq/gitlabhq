@@ -55,9 +55,7 @@ module Groups
 
       npm_packages = ::Packages::GroupPackagesFinder.new(current_user, group, package_type: :npm).execute
 
-      return true if different_root_ancestor? && npm_packages.exists?
-
-      false
+      different_root_ancestor? && npm_packages.exists?
     end
 
     def different_root_ancestor?
