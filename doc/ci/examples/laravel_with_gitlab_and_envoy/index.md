@@ -398,7 +398,7 @@ But let's take a step forward to do it automatically with [Continuous Delivery](
 We need to check every commit with a set of automated tests to become aware of issues at the earliest, and then, we can deploy to the target environment if we are happy with the result of the tests.
 
 [GitLab CI/CD](../../README.md) allows us to use [Docker](https://www.docker.com) engine to handle the process of testing and deploying our app.
-In the case you're not familiar with Docker, refer to [How to Automate Docker Deployments](http://paislee.io/how-to-automate-docker-deployments/).
+In case you're not familiar with Docker, refer to [Set up automated builds](https://docs.docker.com/get-started/).
 
 To be able to build, test, and deploy our app with GitLab CI/CD, we need to prepare our work environment.
 To do that, we'll use a Docker image which has the minimum requirements that a Laravel app needs to run.

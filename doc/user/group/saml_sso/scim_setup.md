@@ -40,7 +40,7 @@ Once [Group Single Sign-On](index.md) has been configured, we can:
 1. Click on the **Generate a SCIM token** button.
 1. Save the token and URL so they can be used in the next step.
 
-![SCIM token configuration](img/scim_token.png)
+![SCIM token configuration](img/scim_token_v13_3.png)
 
 ## Identity Provider configuration
 
@@ -49,7 +49,7 @@ Once [Group Single Sign-On](index.md) has been configured, we can:
 
 ### Azure configuration steps
 
-The SAML application that was created during [Single sign-on](index.md) setup for [Azure](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/configure-single-sign-on-non-gallery-applications) now needs to be set up for SCIM.
+The SAML application that was created during [Single sign-on](index.md) setup for [Azure](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) now needs to be set up for SCIM.
 
 1. Check the configuration for your GitLab SAML app and ensure that **Name identifier value** (NameID) points to `user.objectid` or another unique identifier. This will match the `extern_uid` used on GitLab.
 

@@ -176,7 +176,7 @@ Once you write your comment, you can either:
 
 ### Activity sort order
 
-> [Introduced](https://https://gitlab.com/gitlab-org/gitlab/-/issues/214364) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214364) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
 You can reverse the default order and interact with the activity feed sorted by most recent items
 at the top. Your preference is saved via local storage and automatically applied to every issue

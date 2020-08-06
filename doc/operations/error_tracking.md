@@ -16,7 +16,7 @@ Error Tracking allows developers to easily discover and view the errors that the
 
 ### Deploying Sentry
 
-You may sign up to the cloud hosted <https://sentry.io>, deploy your own [on-premise instance](https://docs.sentry.io/server/installation/) or use GitLab to [install Sentry to a Kubernetes cluster](../user/clusters/applications.md#install-sentry-using-gitlab-cicd).
+You can sign up to the cloud hosted <https://sentry.io>, deploy your own [on-premise instance](https://github.com/getsentry/onpremise/) or use GitLab to [install Sentry to a Kubernetes cluster](../user/clusters/applications.md#install-sentry-using-gitlab-cicd).
 
 ### Enabling Sentry
 
@@ -26,7 +26,7 @@ You will need at least Maintainer [permissions](../user/permissions.md) to enabl
 GitLab provides an easy way to connect Sentry to your project:
 
 1. Sign up to Sentry.io or [deploy your own](#deploying-sentry) Sentry instance.
-1. [Create](https://docs.sentry.io/guides/integrate-frontend/create-new-project/) a new Sentry project. For each GitLab project that you want to integrate, we recommend that you create a new Sentry project.
+1. [Create](https://docs.sentry.io/guides/tutorials/integrate-frontend/create-new-project/) a new Sentry project. For each GitLab project that you want to integrate, we recommend that you create a new Sentry project.
 1. [Find or generate](https://docs.sentry.io/api/auth/) a Sentry auth token for your Sentry project.
    Make sure to give the token at least the following scopes: `event:read` and `project:read`.
 1. Navigate to your project’s **Settings > Operations**.
@@ -40,7 +40,7 @@ GitLab provides an easy way to connect Sentry to your project:
 
 ### Enabling GitLab issues links
 
-You may also want to enable Sentry's GitLab integration by following the steps in the [Sentry documentation](https://docs.sentry.io/workflow/integrations/global-integrations/#gitlab)
+You may also want to enable Sentry's GitLab integration by following the steps in the [Sentry documentation](https://docs.sentry.io/workflow/integrations/gitlab/)
 
 ## Error Tracking List
 

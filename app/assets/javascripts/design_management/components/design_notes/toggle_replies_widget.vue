@@ -56,7 +56,7 @@ export default {
       <gl-link
         :href="lastReply.author.webUrl"
         target="_blank"
-        class="link-inherit-color gl-text-black-normal gl-text-decoration-none gl-font-weight-bold gl-ml-2 gl-mr-2"
+        class="link-inherit-color gl-text-body gl-text-decoration-none gl-font-weight-bold gl-ml-2 gl-mr-2"
       >
         {{ lastReply.author.name }}
       </gl-link>

@@ -23,7 +23,7 @@ cannot be used to authenticate with GitHub as an external CI/CD repository.
 
 NOTE: **Note:**
 Personal access tokens can only be used to connect GitHub.com
-repositories to GitLab, and the GitHub user must have the [owner role](https://help.github.com/en/github/getting-started-with-github/access-permissions-on-github).
+repositories to GitLab, and the GitHub user must have the [owner role](https://docs.github.com/en/github/getting-started-with-github/access-permissions-on-github).
 
 To perform a one-off authorization with GitHub to grant GitLab access your
 repositories:

@@ -20,7 +20,7 @@ and is automatically configured on [GitHub import](../../../integration/github.m
 
 ### Complete these steps on GitHub
 
-This integration requires a [GitHub API token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+This integration requires a [GitHub API token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 with `repo:status` access granted:
 
 1. Go to your "Personal access tokens" page at <https://github.com/settings/tokens>

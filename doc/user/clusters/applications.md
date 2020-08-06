@@ -719,7 +719,7 @@ for the available configuration options.
 
 NOTE: **Note:**
 Support for installing the Ingress managed application is provided by the GitLab Configure group.
-If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/product-categories/#configure-group).
 
 ### Install cert-manager using GitLab CI/CD
 
@@ -760,7 +760,7 @@ available configuration options.
 
 NOTE: **Note:**
 Support for installing the Cert Manager managed application is provided by the GitLab Configure group.
-If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/product-categories/#configure-group).
 
 ### Install Sentry using GitLab CI/CD
 
@@ -1276,7 +1276,7 @@ available configuration options.
 
 NOTE: **Note:**
 Support for installing the JupyterHub managed application is provided by the GitLab Configure group.
-If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/product-categories/#configure-group).
 
 ### Install Elastic Stack using GitLab CI/CD
 
@@ -1391,7 +1391,7 @@ If you plan to use GitLab Serverless capabilities, be sure to set an A record wi
 
 NOTE: **Note:**
 Support for installing the Knative managed application is provided by the GitLab Configure group.
-If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/categories/#configure-group).
+If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Configure group](https://about.gitlab.com/handbook/product/product-categories/#configure-group).
 
 #### Knative Metrics
 

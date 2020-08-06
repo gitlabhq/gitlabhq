@@ -18,7 +18,7 @@ export default {
 <template>
   <div class="gl-responsive-table-row">
     <div class="table-section section-50">
-      <strong class="gl-text-black-normal">{{ dependency.name }}</strong>
+      <strong class="gl-text-body">{{ dependency.name }}</strong>
       <span v-if="dependency.target_framework" data-testid="target-framework"
         >({{ dependency.target_framework }})</span
       >
@@ -29,7 +29,7 @@ export default {
       class="table-section section-50 gl-display-flex justify-content-md-end"
       data-testid="version-pattern"
     >
-      <span class="gl-text-black-normal">{{ dependency.version_pattern }}</span>
+      <span class="gl-text-body">{{ dependency.version_pattern }}</span>
     </div>
   </div>
 </template>

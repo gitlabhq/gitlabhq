@@ -11930,6 +11930,9 @@ msgstr ""
 msgid "GroupSAML|Copy SAML Response XML"
 msgstr ""
 
+msgid "GroupSAML|Default membership role"
+msgstr ""
+
 msgid "GroupSAML|Enable SAML authentication for this group."
 msgstr ""
 
@@ -12000,6 +12003,9 @@ msgid "GroupSAML|SHA1 fingerprint of the SAML token signing certificate. Get thi
 msgstr ""
 
 msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to "
+msgstr ""
+
+msgid "GroupSAML|This will be set as the access level of users added to the group."
 msgstr ""
 
 msgid "GroupSAML|To be able to enable enforced SSO, you first need to enable SAML authentication."

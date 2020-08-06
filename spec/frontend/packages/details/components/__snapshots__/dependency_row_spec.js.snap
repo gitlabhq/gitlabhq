@@ -8,7 +8,7 @@ exports[`DependencyRow renders full dependency 1`] = `
     class="table-section section-50"
   >
     <strong
-      class="gl-text-black-normal"
+      class="gl-text-body"
     >
       Test.Dependency
     </strong>
@@ -25,7 +25,7 @@ exports[`DependencyRow renders full dependency 1`] = `
     data-testid="version-pattern"
   >
     <span
-      class="gl-text-black-normal"
+      class="gl-text-body"
     >
       2.3.7
     </span>

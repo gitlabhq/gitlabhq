@@ -1,5 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlIcon, GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 import VueRouter from 'vue-router';
 import Item from '~/design_management_legacy/components/list/item.vue';
 
@@ -17,6 +18,10 @@ const DESIGN_VERSION_EVENT = {
 
 describe('Design management list item component', () => {
   let wrapper;
+
+  const findDesignEvent = () => wrapper.find('[data-testid="designEvent"]');
+  const findEventIcon = () => findDesignEvent().find(Icon);
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
   function createComponent({
     notesCount = 0,
@@ -134,35 +139,31 @@ describe('Design management list item component', () => {
     });
   });
 
-  describe('with no notes', () => {
-    it('renders item with no status icon for none event', () => {
-      createComponent();
+  it('renders loading spinner when isUploading is true', () => {
+    createComponent({ isUploading: true });
 
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    expect(findLoadingIcon().exists()).toBe(true);
+  });
 
-    it('renders item with correct status icon for modification event', () => {
-      createComponent({ event: DESIGN_VERSION_EVENT.MODIFICATION });
+  it('renders item with no status icon for none event', () => {
+    createComponent();
 
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    expect(findDesignEvent().exists()).toBe(false);
+  });
 
-    it('renders item with correct status icon for deletion event', () => {
-      createComponent({ event: DESIGN_VERSION_EVENT.DELETION });
+  describe('with associated event', () => {
+    it.each`
+      event                                | icon                     | className
+      ${DESIGN_VERSION_EVENT.MODIFICATION} | ${'file-modified-solid'} | ${'text-primary-500'}
+      ${DESIGN_VERSION_EVENT.DELETION}     | ${'file-deletion-solid'} | ${'text-danger-500'}
+      ${DESIGN_VERSION_EVENT.CREATION}     | ${'file-addition-solid'} | ${'text-success-500'}
+    `('renders item with correct status icon for $event event', ({ event, icon, className }) => {
+      createComponent({ event });
+      const eventIcon = findEventIcon();
 
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
-    it('renders item with correct status icon for creation event', () => {
-      createComponent({ event: DESIGN_VERSION_EVENT.CREATION });
-
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
-    it('renders loading spinner when isUploading is true', () => {
-      createComponent({ isUploading: true });
-
-      expect(wrapper.element).toMatchSnapshot();
+      expect(eventIcon.exists()).toBe(true);
+      expect(eventIcon.props('name')).toBe(icon);
+      expect(eventIcon.classes()).toContain(className);
     });
   });
 });

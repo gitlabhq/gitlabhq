@@ -63,10 +63,11 @@ Once you've set up your identity provider to work with GitLab, you'll need to co
 1. Navigate to the group's **Settings > SAML SSO**.
 1. Find the SSO URL from your Identity Provider and enter it the **Identity provider single sign-on URL** field.
 1. Find and enter the fingerprint for the SAML token signing certificate in the **Certificate** field.
+1. Select the access level to be applied to newly added users in the **Default membership role** field. The default access level is 'Guest'.
 1. Click the **Enable SAML authentication for this group** toggle switch.
 1. Click the **Save changes** button.
 
-![Group SAML Settings for GitLab.com](img/group_saml_settings.png)
+![Group SAML Settings for GitLab.com](img/group_saml_settings_v13_3.png)
 
 NOTE: **Note:**
 Please note that the certificate [fingerprint algorithm](#additional-providers-and-setup-options) must be in SHA1. When configuring the identity provider, use a secure signature algorithm.
@@ -94,7 +95,7 @@ GitLab is unable to provide support for IdPs that are not listed here.
 | Provider | Documentation |
 |----------|---------------|
 | ADFS (Active Directory Federation Services) | [Create a Relying Party Trust](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust) |
-| Azure | [Configuring single sign-on to applications](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/configure-single-sign-on-non-gallery-applications) |
+| Azure | [Configuring single sign-on to applications](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) |
 | Okta | [Setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/) |
 | OneLogin | [Use the OneLogin SAML Test Connector](https://onelogin.service-now.com/support?id=kb_article&sys_id=93f95543db109700d5505eea4b96198f) |
 
@@ -216,7 +217,9 @@ On subsequent visits, you should be able to go [sign in to GitLab.com with SAML]
 
 ### Role
 
-The first time you sign in, GitLab adds you to the top-level parent group with the Guest role. Existing members with appropriate privileges can promote that new user.
+Starting from [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523), group owners can set a 'Default membership role' other than 'Guest'. To do so, [configure the SAML SSO for the group](#configuring-gitlab). That role becomes the starting access level of all users added to the group.
+
+Existing members with appropriate privileges can promote or demote users, as needed.
 
 If a user is already a member of the group, linking the SAML identity does not change their role.
 

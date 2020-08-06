@@ -278,7 +278,7 @@ Custom event tracking and instrumentation can be added by directly calling the `
 |:-----------|:-------|:--------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `category` | string | 'application' | Area or aspect of the application. This could be `HealthCheckController` or `Lfs::FileTransformer` for instance.                                                                                                                                                       |
 | `action`   | string | 'generic'     | The action being taken, which can be anything from a controller action like `create` to something like an Active Record callback.                                                                                                                                      |
-| `data`     | object | {}            | Additional data such as `label`, `property`, `value`, and `context` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). These are set as empty strings if you don't provide them. |
+| `data`     | object | {}            | Additional data such as `label`, `property`, `value`, and `context` as described in [Instrumentation at GitLab](https://about.gitlab.com/handbook/product/product-processes/#taxonomy). These are set as empty strings if you don't provide them. |
 
 Tracking can be viewed as either tracking user behavior, or can be utilized for instrumentation to monitor and visualize performance over time in an area or aspect of code.
 

@@ -101,7 +101,7 @@ The following options are available.
 | Maximum file size | **Starter** 7.12 | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. Files tracked by Git LFS are exempted. |
 
 TIP: **Tip:**
-GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules, and you can test them at the [GoLang regex tester](https://regex-golang.appspot.com/assets/html/index.html).
+GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules, and you can test them at the [regex101 regex tester](https://regex101.com/).
 
 ## Prevent pushing secrets to the repository
 

@@ -273,7 +273,7 @@ Use sentence case. For example:
 #### UI text
 
 When referring to specific user interface text, like a button label or menu item, use the same capitalization that is displayed in the UI.
-Standards for this content are listed in the [Pajamas Design System Content section](https://design.gitlab.com/content/punctuation) and typically
+Standards for this content are listed in the [Pajamas Design System Content section](https://design.gitlab.com/content/punctuation/) and typically
 match what is called for in this Documentation Style Guide.
 
 If you think there is a mistake in the way the UI text is styled,

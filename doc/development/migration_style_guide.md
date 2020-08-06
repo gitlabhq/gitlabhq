@@ -30,7 +30,7 @@ versions. If needed copy-paste GitLab code into the migration to make it forward
 compatible.
 
 For GitLab.com, please take into consideration that regular migrations (under `db/migrate`)
-are run before [Canary is deployed](https://about.gitlab.com/handbook/engineering/infrastructure/library/canary/#configuration-and-deployment),
+are run before [Canary is deployed](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/#configuration-and-deployment),
 and post-deployment migrations (`db/post_migrate`) are run after the deployment to production has finished.
 
 ## Schema Changes
@@ -875,14 +875,7 @@ end
 When doing so be sure to explicitly set the model's table name, so it's not
 derived from the class name or namespace.
 
-Finally, make sure that `reset_column_information` is run in the `up` method of
-the migration for all local Models that update the database.
-
-The reason for that is that all migration classes are loaded at the beginning
-(when `db:migrate` starts), so they can get out of sync with the table schema
-they map to in case another migration updates that schema. That makes the data
-migration fail when trying to insert or make updates to the underlying table,
-as the new columns are reported as `unknown attribute` by `ActiveRecord`.
+Be aware of the limitations [when using models in migrations](#using-models-in-migrations-discouraged).
 
 ### Renaming reserved paths
 
@@ -908,3 +901,78 @@ _namespaces_ that have a `project_id`.
 
 The `path` column for these rows will be renamed to their previous value followed
 by an integer. For example: `users` would turn into `users0`
+
+## Using models in migrations (discouraged)
+
+The use of models in migrations is generally discouraged. As such models are
+[contraindicated for background migrations](background_migrations.md#isolation),
+the model needs to be declared in the migration.
+
+If using a model in the migrations, you should first
+[clear the column cache](https://api.rubyonrails.org/classes/ActiveRecord/ModelSchema/ClassMethods.html#method-i-reset_column_information)
+using `reset_column_information`.
+
+This avoids problems where a column that you are using was altered and cached
+in a previous migration.
+
+### Example: Add a column `my_column` to the users table
+
+NOTE: **Note:**
+It is important not to leave out the `User.reset_column_information` command, in order to ensure that the old schema is dropped from the cache and ActiveRecord loads the updated schema information.
+
+```ruby
+class AddAndSeedMyColumn < ActiveRecord::Migration[6.0]
+  class User < ActiveRecord::Base
+    self.table_name = 'users'
+  end
+
+  def up
+    User.count # Any ActiveRecord calls on the model that caches the column information.
+
+    add_column :users, :my_column, :integer, default: 1
+
+    User.reset_column_information # The old schema is dropped from the cache.
+    User.find_each do |user|
+      user.my_column = 42 if some_condition # ActiveRecord sees the correct schema here.
+      user.save!
+    end
+  end
+end
+```
+
+The underlying table is modified and then accessed via ActiveRecord.
+
+Note that this also needs to be used if the table is modified in a previous, different migration,
+if both migrations are run in the same `db:migrate` process.
+
+This results in the following. Note the inclusion of `my_column`:
+
+```shell
+== 20200705232821 AddAndSeedMyColumn: migrating ==============================
+D, [2020-07-06T00:37:12.483876 #130101] DEBUG -- :    (0.2ms)  BEGIN
+D, [2020-07-06T00:37:12.521660 #130101] DEBUG -- :    (0.4ms)  SELECT COUNT(*) FROM "user"
+-- add_column(:users, :my_column, :integer, {:default=>1})
+D, [2020-07-06T00:37:12.523309 #130101] DEBUG -- :    (0.8ms)  ALTER TABLE "users" ADD "my_column" integer DEFAULT 1
+   -> 0.0016s
+D, [2020-07-06T00:37:12.650641 #130101] DEBUG -- :   AddAndSeedMyColumn::User Load (0.7ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT $1  [["LIMIT", 1000]]
+D, [2020-07-18T00:41:26.851769 #459802] DEBUG -- :   AddAndSeedMyColumn::User Update (1.1ms)  UPDATE "users" SET "my_column" = $1, "updated_at" = $2 WHERE "users"."id" = $3  [["my_column", 42], ["updated_at", "2020-07-17 23:41:26.849044"], ["id", 1]]
+D, [2020-07-06T00:37:12.653648 #130101] DEBUG -- :   ↳ config/initializers/config_initializers_active_record_locking.rb:13:in `_update_row'
+== 20200705232821 AddAndSeedMyColumn: migrated (0.1706s) =====================
+```
+
+If you skip clearing the schema cache (`User.reset_column_information`), the column is not
+used by ActiveRecord and the intended changes are not made, leading to the result below,
+where `my_column` is missing from the query.
+
+```shell
+== 20200705232821 AddAndSeedMyColumn: migrating ==============================
+D, [2020-07-06T00:37:12.483876 #130101] DEBUG -- :    (0.2ms)  BEGIN
+D, [2020-07-06T00:37:12.521660 #130101] DEBUG -- :    (0.4ms)  SELECT COUNT(*) FROM "user"
+-- add_column(:users, :my_column, :integer, {:default=>1})
+D, [2020-07-06T00:37:12.523309 #130101] DEBUG -- :    (0.8ms)  ALTER TABLE "users" ADD "my_column" integer DEFAULT 1
+   -> 0.0016s
+D, [2020-07-06T00:37:12.650641 #130101] DEBUG -- :   AddAndSeedMyColumn::User Load (0.7ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT $1  [["LIMIT", 1000]]
+D, [2020-07-06T00:37:12.653459 #130101] DEBUG -- :   AddAndSeedMyColumn::User Update (0.5ms)  UPDATE "users" SET "updated_at" = $1 WHERE "users"."id" = $2  [["updated_at", "2020-07-05 23:37:12.652297"], ["id", 1]]
+D, [2020-07-06T00:37:12.653648 #130101] DEBUG -- :   ↳ config/initializers/config_initializers_active_record_locking.rb:13:in `_update_row'
+== 20200705232821 AddAndSeedMyColumn: migrated (0.1706s) =====================
+```

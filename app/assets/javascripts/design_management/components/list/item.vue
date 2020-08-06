@@ -130,7 +130,7 @@ export default {
     class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   >
     <div class="card-body p-0 d-flex-center overflow-hidden position-relative">
-      <div v-if="icon.name" class="design-event position-absolute">
+      <div v-if="icon.name" data-testid="designEvent" class="design-event position-absolute">
         <span :title="icon.tooltip" :aria-label="icon.tooltip">
           <icon :name="icon.name" :size="18" :class="icon.classes" />
         </span>

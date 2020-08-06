@@ -547,7 +547,8 @@ The current stages are:
 - `pages`: This stage includes a job that deploys the various reports as
   GitLab Pages (e.g. [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
   [`coverage-javascript`](https://gitlab-org.gitlab.io/gitlab/coverage-javascript/),
-  [`webpack-report`](https://gitlab-org.gitlab.io/gitlab/webpack-report/).
+  and `webpack-report` (found at `https://gitlab-org.gitlab.io/gitlab/webpack-report/`, but there is
+  [an issue with the deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/233458)).
 
 ### Default image
 
