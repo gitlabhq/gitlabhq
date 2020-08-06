@@ -4,7 +4,7 @@ module Gitlab
   module Metrics
     # Rack middleware for tracking Elasticsearch metrics from Grape and Web requests.
     class ElasticsearchRackMiddleware
-      HISTOGRAM_BUCKETS = [0.1, 0.25, 0.5, 1, 2.5, 5, 10, 60].freeze
+      HISTOGRAM_BUCKETS = [0.1, 0.5, 1, 10, 50].freeze
 
       def initialize(app)
         @app = app
@@ -27,6 +27,8 @@ module Gitlab
         transaction.increment(:http_elasticsearch_requests_total, request_count) do
           docstring 'Amount of calls to Elasticsearch servers during web requests'
         end
+
+        return unless request_count > 0
 
         transaction.observe(:http_elasticsearch_requests_duration_seconds, query_time) do
           docstring 'Query time for Elasticsearch servers during web requests'

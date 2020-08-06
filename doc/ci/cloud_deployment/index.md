@@ -97,11 +97,25 @@ Before getting started with this process, you need a cluster on AWS ECS, as well
 components, like an ECS service, ECS task definition, a database on AWS RDS, etc.
 [Read more about AWS ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html).
 
-After you're all set up on AWS ECS, follow these steps:
+The ECS task definition can be:
+
+- An existing task definition in AWS ECS
+- A JSON file containing a task definition. Create the JSON file by using the template provided in
+  the [AWS documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html#task-definition-template).
+  Copy the task definition into a new file in your project, for example `<project-root>/ci/aws/task-definition.json`.
+  [Available](https://gitlab.com/gitlab-org/gitlab/-/issues/222618) in GitLab 13.3 and later.
+
+After you have these prerequisites ready, follow these steps:
 
 1. Make sure your AWS credentials are set up as environment variables for your
    project. You can follow [the steps above](#run-aws-commands-from-gitlab-cicd) to complete this setup.
-1. Add these variables to your project's `.gitlab-ci.yml` file:
+1. Add these variables to your project's `.gitlab-ci.yml` file, or in the project's
+   [CI/CD settings](../variables/README.md#create-a-custom-variable-in-the-ui):
+
+   - `CI_AWS_ECS_CLUSTER`: The name of the AWS ECS cluster that you're targeting for your deployments.
+   - `CI_AWS_ECS_SERVICE`: The name of the targeted service tied to your AWS ECS cluster.
+   - `CI_AWS_ECS_TASK_DEFINITION`: The name of an existing task definition in ECS tied
+     to the service mentioned above.
 
    ```yaml
    variables:
@@ -110,18 +124,36 @@ After you're all set up on AWS ECS, follow these steps:
      CI_AWS_ECS_TASK_DEFINITION: my-task-definition
    ```
 
-   Three variables are defined in this snippet:
-
-   - `CI_AWS_ECS_CLUSTER`: The name of your AWS ECS cluster that you're
-   targeting for your deployments.
-   - `CI_AWS_ECS_SERVICE`: The name of the targeted service tied to
-   your AWS ECS cluster.
-   - `CI_AWS_ECS_TASK_DEFINITION`: The name of the task definition tied
-   to the service mentioned above.
-
    You can find these names after selecting the targeted cluster on your [AWS ECS dashboard](https://console.aws.amazon.com/ecs/home):
 
    ![AWS ECS dashboard](../img/ecs_dashboard_v12_9.png)
+
+   Alternatively, if you want to use a task definition defined in a JSON file, use
+   `CI_AWS_ECS_TASK_DEFINITION_FILE` instead:
+
+   ```yaml
+   variables:
+     CI_AWS_ECS_CLUSTER: my-cluster
+     CI_AWS_ECS_SERVICE: my-service
+     CI_AWS_ECS_TASK_DEFINITION_FILE: ci/aws/my_task_definition.json
+   ```
+
+   You can create your `CI_AWS_ECS_TASK_DEFINITION_FILE` variable as a
+   [file-typed environment variable](../variables/README.md#custom-environment-variables-of-type-file) instead of a
+   regular environment variable. If you choose to do so, set the variable value to be the full contents of
+   the JSON task definition. You can then remove the JSON file from your project.
+
+   In both cases, make sure that the value for the `containerDefinitions[].name` attribute is
+   the same as the `Container name` defined in your targeted ECS service.
+
+   CAUTION: **Warning:**
+   `CI_AWS_ECS_TASK_DEFINITION_FILE` takes precedence over `CI_AWS_ECS_TASK_DEFINITION` if both these environment
+   variables are defined within your project.
+
+   NOTE: **Note:**
+   If the name of the task definition you wrote in your JSON file is the same name
+   as an existing task definition on AWS, then a new revision is created for it.
+   Otherwise, a brand new task definition is created, starting at revision 1.
 
 1. Include this template in `.gitlab-ci.yml`:
 
