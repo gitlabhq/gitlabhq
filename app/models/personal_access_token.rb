@@ -19,6 +19,7 @@ class PersonalAccessToken < ApplicationRecord
 
   scope :active, -> { where("revoked = false AND (expires_at >= CURRENT_DATE OR expires_at IS NULL)") }
   scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
+  scope :expired_today_and_not_notified, -> { where(["revoked = false AND expires_at = CURRENT_DATE AND after_expiry_notification_delivered = false"]) }
   scope :inactive, -> { where("revoked = true OR expires_at < CURRENT_DATE") }
   scope :with_impersonation, -> { where(impersonation: true) }
   scope :without_impersonation, -> { where(impersonation: false) }

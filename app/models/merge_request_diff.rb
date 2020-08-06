@@ -58,7 +58,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   scope :recent, -> { order(id: :desc).limit(100) }
-  scope :files_in_database, -> { has_diff_files.where(stored_externally: [false, nil]) }
+  scope :files_in_database, -> { where(stored_externally: [false, nil]) }
 
   scope :not_latest_diffs, -> do
     merge_requests = MergeRequest.arel_table
@@ -100,37 +100,55 @@ class MergeRequestDiff < ApplicationRecord
     joins(merge_request: :metrics).where(condition)
   end
 
-  def self.ids_for_external_storage_migration(limit:)
-    # No point doing any work unless the feature is enabled
-    return [] unless Gitlab.config.external_diffs.enabled
+  class << self
+    def ids_for_external_storage_migration(limit:)
+      return [] unless Gitlab.config.external_diffs.enabled
 
-    case Gitlab.config.external_diffs.when
-    when 'always'
-      files_in_database.limit(limit).pluck(:id)
-    when 'outdated'
+      case Gitlab.config.external_diffs.when
+      when 'always'
+        ids_for_external_storage_migration_strategy_always(limit: limit)
+      when 'outdated'
+        ids_for_external_storage_migration_strategy_outdated(limit: limit)
+      else
+        []
+      end
+    end
+
+    def ids_for_external_storage_migration_strategy_always(limit:)
+      ids = []
+
+      files_in_database.each_batch(column: :merge_request_id, order_hint: :id) do |scope|
+        ids.concat(scope.has_diff_files.pluck(:id))
+
+        break if ids.count >= limit
+      end
+
+      ids.first(limit)
+    end
+
+    def ids_for_external_storage_migration_strategy_outdated(limit:)
       # Outdated is too complex to be a single SQL query, so split into three
       before = EXTERNAL_DIFF_CUTOFF.ago
+      potentials = has_diff_files.files_in_database
 
-      ids = files_in_database
+      ids = potentials
         .old_merged_diffs(before)
         .limit(limit)
         .pluck(:id)
 
       return ids if ids.size >= limit
 
-      ids += files_in_database
+      ids += potentials
         .old_closed_diffs(before)
         .limit(limit - ids.size)
         .pluck(:id)
 
       return ids if ids.size >= limit
 
-      ids + files_in_database
+      ids + potentials
         .not_latest_diffs
         .limit(limit - ids.size)
         .pluck(:id)
-    else
-      []
     end
   end
 

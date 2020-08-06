@@ -8,6 +8,7 @@ import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/consta
 import { DEFAULT_IMAGE_UPLOAD_PATH } from '../constants';
 import imageRepository from '../image_repository';
 import formatter from '../services/formatter';
+import templater from '../services/templater';
 
 export default {
   components: {
@@ -44,7 +45,7 @@ export default {
   data() {
     return {
       saveable: false,
-      parsedSource: parseSourceFile(this.content),
+      parsedSource: parseSourceFile(this.preProcess(true, this.content)),
       editorMode: EDITOR_TYPES.wysiwyg,
       isModified: false,
     };
@@ -59,22 +60,30 @@ export default {
     },
   },
   methods: {
+    preProcess(isWrap, value) {
+      const formattedContent = formatter(value);
+      const templatedContent = isWrap
+        ? templater.wrap(formattedContent)
+        : templater.unwrap(formattedContent);
+      return templatedContent;
+    },
     onInputChange(newVal) {
       this.parsedSource.sync(newVal, this.isWysiwygMode);
       this.isModified = this.parsedSource.isModified();
     },
     onModeChange(mode) {
       this.editorMode = mode;
-      const formattedContent = formatter(this.editableContent);
-      this.$refs.editor.resetInitialValue(formattedContent);
+
+      const preProcessedContent = this.preProcess(this.isWysiwygMode, this.editableContent);
+      this.$refs.editor.resetInitialValue(preProcessedContent);
     },
     onUploadImage({ file, imageUrl }) {
       this.$options.imageRepository.add(file, imageUrl);
     },
     onSubmit() {
-      const formattedContent = formatter(this.parsedSource.content());
+      const preProcessedContent = this.preProcess(false, this.parsedSource.content());
       this.$emit('submit', {
-        content: formattedContent,
+        content: preProcessedContent,
         images: this.$options.imageRepository.getAll(),
       });
     },

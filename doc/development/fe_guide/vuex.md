@@ -138,44 +138,12 @@ import { mapActions } from 'vuex';
 ### `mutations.js`
 
 The mutations specify how the application state changes in response to actions sent to the store.
-The only way to change state in a Vuex store should be by committing a mutation.
+The only way to change state in a Vuex store is by committing a mutation.
 
-**It's a good idea to think of the state before writing any code.**
+Most mutations are committed from an action using `commit`. If you don't have any
+asynchronous operations, you can call mutations from a component using the `mapMutations` helper.
 
-Remember that actions only describe that something happened, they don't describe how the application state changes.
-
-**Never commit a mutation directly from a component**
-
-Instead, you should create an action that will commit a mutation.
-
-```javascript
-  import * as types from './mutation_types';
-
-  export default {
-    [types.REQUEST_USERS](state) {
-      state.isLoading = true;
-    },
-    [types.RECEIVE_USERS_SUCCESS](state, data) {
-      // Do any needed data transformation to the received payload here
-      state.users = data;
-      state.isLoading = false;
-    },
-    [types.RECEIVE_USERS_ERROR](state, error) {
-      state.isLoading = false;
-    },
-    [types.REQUEST_ADD_USER](state, user) {
-      state.isAddingUser = true;
-    },
-    [types.RECEIVE_ADD_USER_SUCCESS](state, user) {
-      state.isAddingUser = false;
-      state.users.push(user);
-    },
-    [types.REQUEST_ADD_USER_ERROR](state, error) {
-      state.isAddingUser = false;
-      state.errorAddingUser = error;
-    },
-  };
-```
+See the Vuex docs for examples of [committing mutations from components](https://vuex.vuejs.org/guide/mutations.html#committing-mutations-in-components).
 
 #### Naming Pattern: `REQUEST` and `RECEIVE` namespaces
 
@@ -447,29 +415,6 @@ export default {
   </ul>
 </template>
 ```
-
-### Vuex Gotchas
-
-1. Do not call a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency throughout the application. From Vuex docs:
-
-   > Why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
-
-   ```javascript
-     // component.vue
-
-     // bad
-     created() {
-       this.$store.commit('mutation');
-     }
-
-     // good
-     created() {
-       this.$store.dispatch('action');
-     }
-   ```
-
-1. Use mutation types instead of hardcoding strings. It will be less error prone.
-1. The State will be accessible in all components descending from the use where the store is instantiated.
 
 ### Testing Vuex
 

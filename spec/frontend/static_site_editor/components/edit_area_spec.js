@@ -15,11 +15,11 @@ import {
   returnUrl,
 } from '../mock_data';
 
-jest.mock('~/static_site_editor/services/formatter', () => jest.fn(str => `${str} formatted`));
+jest.mock('~/static_site_editor/services/formatter', () => jest.fn(str => `${str} format-pass`));
 
 describe('~/static_site_editor/components/edit_area.vue', () => {
   let wrapper;
-  const formattedContent = `${content} formatted`;
+  const formattedBody = `${body} format-pass`;
   const savingChanges = true;
   const newBody = `new ${body}`;
 
@@ -53,9 +53,9 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
     expect(findEditHeader().props('title')).toBe(title);
   });
 
-  it('renders rich content editor', () => {
+  it('renders rich content editor with a format pass', () => {
     expect(findRichContentEditor().exists()).toBe(true);
-    expect(findRichContentEditor().props('content')).toBe(body);
+    expect(findRichContentEditor().props('content')).toBe(formattedBody);
   });
 
   it('renders publish toolbar', () => {
@@ -97,7 +97,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
     });
 
     it('sets publish toolbar as not saveable when content changes are rollback', () => {
-      findRichContentEditor().vm.$emit('input', body);
+      findRichContentEditor().vm.$emit('input', formattedBody);
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findPublishToolbar().props('saveable')).toBe(false);
@@ -124,8 +124,8 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
 
     it.each`
       initialMode              | targetMode               | resetValue
-      ${EDITOR_TYPES.wysiwyg}  | ${EDITOR_TYPES.markdown} | ${formattedContent}
-      ${EDITOR_TYPES.markdown} | ${EDITOR_TYPES.wysiwyg}  | ${`${body} formatted`}
+      ${EDITOR_TYPES.wysiwyg}  | ${EDITOR_TYPES.markdown} | ${`${content} format-pass format-pass`}
+      ${EDITOR_TYPES.markdown} | ${EDITOR_TYPES.wysiwyg}  | ${`${body} format-pass format-pass`}
     `(
       'sets editorMode from $initialMode to $targetMode',
       ({ initialMode, targetMode, resetValue }) => {
@@ -144,7 +144,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
 
       findRichContentEditor().vm.$emit('modeChange', EDITOR_TYPES.markdown);
 
-      expect(resetInitialValue).toHaveBeenCalledWith(formattedContent);
+      expect(resetInitialValue).toHaveBeenCalledWith(`${content} format-pass format-pass`);
     });
   });
 
@@ -152,7 +152,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
     it('should format the content', () => {
       findPublishToolbar().vm.$emit('submit', content);
 
-      expect(wrapper.emitted('submit')[0][0].content).toBe(formattedContent);
+      expect(wrapper.emitted('submit')[0][0].content).toBe(`${content} format-pass format-pass`);
     });
   });
 });

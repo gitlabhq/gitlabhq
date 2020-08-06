@@ -855,6 +855,24 @@ RSpec.describe User do
       end
     end
 
+    describe '.with_personal_access_tokens_expired_today' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:expired_today) { create(:personal_access_token, user: user1, expires_at: Date.current) }
+
+      let_it_be(:user2) { create(:user) }
+      let_it_be(:revoked_token) { create(:personal_access_token, user: user2, expires_at: Date.current, revoked: true) }
+
+      let_it_be(:user3) { create(:user) }
+      let_it_be(:impersonated_token) { create(:personal_access_token, user: user3, expires_at: Date.current, impersonation: true) }
+
+      let_it_be(:user4) { create(:user) }
+      let_it_be(:already_notified) { create(:personal_access_token, user: user4, expires_at: Date.current, after_expiry_notification_delivered: true) }
+
+      it 'returns users whose token has expired today' do
+        expect(described_class.with_personal_access_tokens_expired_today).to contain_exactly(user1)
+      end
+    end
+
     describe '.active_without_ghosts' do
       let_it_be(:user1) { create(:user, :external) }
       let_it_be(:user2) { create(:user, state: 'blocked') }

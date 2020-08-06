@@ -238,6 +238,26 @@ RSpec.describe NotificationService, :mailer do
         expect { subject }.to have_enqueued_email(user, mail: "access_token_about_to_expire_email")
       end
     end
+
+    describe '#access_token_expired' do
+      let_it_be(:user) { create(:user) }
+
+      subject { notification.access_token_expired(user) }
+
+      it 'sends email to the token owner' do
+        expect { subject }.to have_enqueued_email(user, mail: "access_token_expired_email")
+      end
+
+      context 'when user is not allowed to receive notifications' do
+        before do
+          user.block!
+        end
+
+        it 'does not send email to the token owner' do
+          expect { subject }.not_to have_enqueued_email(user, mail: "access_token_expired_email")
+        end
+      end
+    end
   end
 
   describe '#unknown_sign_in' do

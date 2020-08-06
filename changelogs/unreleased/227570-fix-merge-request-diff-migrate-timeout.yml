@@ -1,0 +1,5 @@
+---
+title: Optimise the external diff storage migration query
+merge_request: 38579
+author:
+type: performance

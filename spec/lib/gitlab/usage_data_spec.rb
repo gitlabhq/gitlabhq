@@ -13,8 +13,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   describe '.uncached_data' do
     describe '.usage_activity_by_stage' do
       it 'includes usage_activity_by_stage data' do
-        expect(described_class.uncached_data).to include(:usage_activity_by_stage)
-        expect(described_class.uncached_data).to include(:usage_activity_by_stage_monthly)
+        uncached_data = described_class.uncached_data
+
+        expect(uncached_data).to include(:usage_activity_by_stage)
+        expect(uncached_data).to include(:usage_activity_by_stage_monthly)
+        expect(uncached_data[:usage_activity_by_stage])
+          .to include(:configure, :create, :manage, :monitor, :plan, :release, :verify)
+        expect(uncached_data[:usage_activity_by_stage_monthly])
+          .to include(:configure, :create, :manage, :monitor, :plan, :release, :verify)
       end
 
       it 'clears memoized values' do
@@ -30,264 +36,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         described_class.uncached_data
       end
 
-      context 'for configure' do
-        it 'includes accurate usage_activity_by_stage data' do
-          for_defined_days_back do
-            user = create(:user)
-            cluster = create(:cluster, user: user)
-            create(:clusters_applications_cert_manager, :installed, cluster: cluster)
-            create(:clusters_applications_helm, :installed, cluster: cluster)
-            create(:clusters_applications_ingress, :installed, cluster: cluster)
-            create(:clusters_applications_knative, :installed, cluster: cluster)
-            create(:cluster, :disabled, user: user)
-            create(:cluster_provider_gcp, :created)
-            create(:cluster_provider_aws, :created)
-            create(:cluster_platform_kubernetes)
-            create(:cluster, :group, :disabled, user: user)
-            create(:cluster, :group, user: user)
-            create(:cluster, :instance, :disabled, :production_environment)
-            create(:cluster, :instance, :production_environment)
-            create(:cluster, :management_project)
-          end
+      it 'merge_requests_users is included only in montly counters' do
+        uncached_data = described_class.uncached_data
 
-          expect(described_class.uncached_data[:usage_activity_by_stage][:configure]).to include(
-            clusters_applications_cert_managers: 2,
-            clusters_applications_helm: 2,
-            clusters_applications_ingress: 2,
-            clusters_applications_knative: 2,
-            clusters_management_project: 2,
-            clusters_disabled: 4,
-            clusters_enabled: 12,
-            clusters_platforms_gke: 2,
-            clusters_platforms_eks: 2,
-            clusters_platforms_user: 2,
-            instance_clusters_disabled: 2,
-            instance_clusters_enabled: 2,
-            group_clusters_disabled: 2,
-            group_clusters_enabled: 2,
-            project_clusters_disabled: 2,
-            project_clusters_enabled: 10
-          )
-          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:configure]).to include(
-            clusters_applications_cert_managers: 1,
-            clusters_applications_helm: 1,
-            clusters_applications_ingress: 1,
-            clusters_applications_knative: 1,
-            clusters_management_project: 1,
-            clusters_disabled: 2,
-            clusters_enabled: 6,
-            clusters_platforms_gke: 1,
-            clusters_platforms_eks: 1,
-            clusters_platforms_user: 1,
-            instance_clusters_disabled: 1,
-            instance_clusters_enabled: 1,
-            group_clusters_disabled: 1,
-            group_clusters_enabled: 1,
-            project_clusters_disabled: 1,
-            project_clusters_enabled: 5
-          )
-        end
-      end
-
-      context 'for create' do
-        it 'include usage_activity_by_stage data' do
-          expect(described_class.uncached_data[:usage_activity_by_stage][:create])
-            .not_to include(
-              :merge_requests_users
-            )
-        end
-
-        it 'includes monthly usage_activity_by_stage data' do
-          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:create])
-            .to include(
-              :merge_requests_users
-            )
-        end
-
-        it 'includes accurate usage_activity_by_stage data' do
-          for_defined_days_back do
-            user = create(:user)
-            project = create(:project, :repository_private,
-                             :test_repo, :remote_mirror, creator: user)
-            create(:merge_request, source_project: project)
-            create(:deploy_key, user: user)
-            create(:key, user: user)
-            create(:project, creator: user, disable_overriding_approvers_per_merge_request: true)
-            create(:project, creator: user, disable_overriding_approvers_per_merge_request: false)
-            create(:remote_mirror, project: project)
-            create(:snippet, author: user)
-          end
-
-          expect(described_class.uncached_data[:usage_activity_by_stage][:create]).to include(
-            deploy_keys: 2,
-            keys: 2,
-            merge_requests: 2,
-            projects_with_disable_overriding_approvers_per_merge_request: 2,
-            projects_without_disable_overriding_approvers_per_merge_request: 4,
-            remote_mirrors: 2,
-            snippets: 2
-          )
-          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:create]).to include(
-            deploy_keys: 1,
-            keys: 1,
-            merge_requests: 1,
-            projects_with_disable_overriding_approvers_per_merge_request: 1,
-            projects_without_disable_overriding_approvers_per_merge_request: 2,
-            remote_mirrors: 1,
-            snippets: 1
-          )
-        end
-      end
-
-      context 'for manage' do
-        it 'includes accurate usage_activity_by_stage data' do
-          stub_config(
-            omniauth:
-              { providers: omniauth_providers }
-          )
-
-          for_defined_days_back do
-            user = create(:user)
-            create(:event, author: user)
-            create(:group_member, user: user)
-          end
-
-          expect(described_class.uncached_data[:usage_activity_by_stage][:manage]).to include(
-            events: 2,
-            groups: 2,
-            users_created: 6,
-            omniauth_providers: ['google_oauth2']
-          )
-          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:manage]).to include(
-            events: 1,
-            groups: 1,
-            users_created: 4,
-            omniauth_providers: ['google_oauth2']
-          )
-        end
-
-        def omniauth_providers
-          [
-            OpenStruct.new(name: 'google_oauth2'),
-            OpenStruct.new(name: 'ldapmain'),
-            OpenStruct.new(name: 'group_saml')
-          ]
-        end
-      end
-
-      context 'for monitor' do
-        it 'includes accurate usage_activity_by_stage data' do
-          for_defined_days_back do
-            user    = create(:user, dashboard: 'operations')
-            cluster = create(:cluster, user: user)
-            create(:project, creator: user)
-            create(:clusters_applications_prometheus, :installed, cluster: cluster)
-          end
-
-          expect(described_class.uncached_data[:usage_activity_by_stage][:monitor]).to include(
-            clusters: 2,
-            clusters_applications_prometheus: 2,
-            operations_dashboard_default_dashboard: 2
-          )
-          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:monitor]).to include(
-            clusters: 1,
-            clusters_applications_prometheus: 1,
-            operations_dashboard_default_dashboard: 1
-          )
-        end
-      end
-
-      context 'for plan' do
-        it 'includes accurate usage_activity_by_stage data' do
-          for_defined_days_back do
-            user = create(:user)
-            project = create(:project, creator: user)
-            issue = create(:issue, project: project, author: user)
-            create(:issue, project: project, author: User.support_bot)
-            create(:note, project: project, noteable: issue, author: user)
-            create(:todo, project: project, target: issue, author: user)
-          end
-
-          expect(described_class.uncached_data[:usage_activity_by_stage][:plan]).to include(
-            issues: 3,
-            notes: 2,
-            projects: 2,
-            todos: 2,
-            service_desk_enabled_projects: 2,
-            service_desk_issues: 2
-          )
-          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:plan]).to include(
-            issues: 2,
-            notes: 1,
-            projects: 1,
-            todos: 1,
-            service_desk_enabled_projects: 1,
-            service_desk_issues: 1
-          )
-        end
-      end
-
-      context 'for release' do
-        it 'includes accurate usage_activity_by_stage data' do
-          for_defined_days_back do
-            user = create(:user)
-            create(:deployment, :failed, user: user)
-            create(:release, author: user)
-            create(:deployment, :success, user: user)
-          end
-
-          expect(described_class.uncached_data[:usage_activity_by_stage][:release]).to include(
-            deployments: 2,
-            failed_deployments: 2,
-            releases: 2,
-            successful_deployments: 2
-          )
-          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:release]).to include(
-            deployments: 1,
-            failed_deployments: 1,
-            releases: 1,
-            successful_deployments: 1
-          )
-        end
-      end
-
-      context 'for verify' do
-        it 'includes accurate usage_activity_by_stage data' do
-          for_defined_days_back do
-            user = create(:user)
-            create(:ci_build, user: user)
-            create(:ci_empty_pipeline, source: :external, user: user)
-            create(:ci_empty_pipeline, user: user)
-            create(:ci_pipeline, :auto_devops_source, user: user)
-            create(:ci_pipeline, :repository_source, user: user)
-            create(:ci_pipeline_schedule, owner: user)
-            create(:ci_trigger, owner: user)
-            create(:clusters_applications_runner, :installed)
-          end
-
-          expect(described_class.uncached_data[:usage_activity_by_stage][:verify]).to include(
-            ci_builds: 2,
-            ci_external_pipelines: 2,
-            ci_internal_pipelines: 2,
-            ci_pipeline_config_auto_devops: 2,
-            ci_pipeline_config_repository: 2,
-            ci_pipeline_schedules: 2,
-            ci_pipelines: 2,
-            ci_triggers: 2,
-            clusters_applications_runner: 2
-          )
-          expect(described_class.uncached_data[:usage_activity_by_stage_monthly][:verify]).to include(
-            ci_builds: 1,
-            ci_external_pipelines: 1,
-            ci_internal_pipelines: 1,
-            ci_pipeline_config_auto_devops: 1,
-            ci_pipeline_config_repository: 1,
-            ci_pipeline_schedules: 1,
-            ci_pipelines: 1,
-            ci_triggers: 1,
-            clusters_applications_runner: 1
-          )
-        end
+        expect(uncached_data[:usage_activity_by_stage][:create])
+          .not_to include(:merge_requests_users)
+        expect(uncached_data[:usage_activity_by_stage_monthly][:create])
+          .to include(:merge_requests_users)
       end
     end
 
@@ -298,6 +53,252 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(described_class).to receive(:recorded_at).and_raise(Exception.new('Stopped calculating recorded_at'))
 
       expect { described_class.uncached_data }.to raise_error('Stopped calculating recorded_at')
+    end
+  end
+
+  describe '.usage_activity_by_stage_configure' do
+    it 'includes accurate usage_activity_by_stage data' do
+      for_defined_days_back do
+        user = create(:user)
+        cluster = create(:cluster, user: user)
+        create(:clusters_applications_cert_manager, :installed, cluster: cluster)
+        create(:clusters_applications_helm, :installed, cluster: cluster)
+        create(:clusters_applications_ingress, :installed, cluster: cluster)
+        create(:clusters_applications_knative, :installed, cluster: cluster)
+        create(:cluster, :disabled, user: user)
+        create(:cluster_provider_gcp, :created)
+        create(:cluster_provider_aws, :created)
+        create(:cluster_platform_kubernetes)
+        create(:cluster, :group, :disabled, user: user)
+        create(:cluster, :group, user: user)
+        create(:cluster, :instance, :disabled, :production_environment)
+        create(:cluster, :instance, :production_environment)
+        create(:cluster, :management_project)
+      end
+
+      expect(described_class.usage_activity_by_stage_configure({})).to include(
+        clusters_applications_cert_managers: 2,
+        clusters_applications_helm: 2,
+        clusters_applications_ingress: 2,
+        clusters_applications_knative: 2,
+        clusters_management_project: 2,
+        clusters_disabled: 4,
+        clusters_enabled: 12,
+        clusters_platforms_gke: 2,
+        clusters_platforms_eks: 2,
+        clusters_platforms_user: 2,
+        instance_clusters_disabled: 2,
+        instance_clusters_enabled: 2,
+        group_clusters_disabled: 2,
+        group_clusters_enabled: 2,
+        project_clusters_disabled: 2,
+        project_clusters_enabled: 10
+      )
+      expect(described_class.usage_activity_by_stage_configure(described_class.last_28_days_time_period)).to include(
+        clusters_applications_cert_managers: 1,
+        clusters_applications_helm: 1,
+        clusters_applications_ingress: 1,
+        clusters_applications_knative: 1,
+        clusters_management_project: 1,
+        clusters_disabled: 2,
+        clusters_enabled: 6,
+        clusters_platforms_gke: 1,
+        clusters_platforms_eks: 1,
+        clusters_platforms_user: 1,
+        instance_clusters_disabled: 1,
+        instance_clusters_enabled: 1,
+        group_clusters_disabled: 1,
+        group_clusters_enabled: 1,
+        project_clusters_disabled: 1,
+        project_clusters_enabled: 5
+      )
+    end
+  end
+
+  describe 'usage_activity_by_stage_create' do
+    it 'includes accurate usage_activity_by_stage data' do
+      for_defined_days_back do
+        user = create(:user)
+        project = create(:project, :repository_private,
+                         :test_repo, :remote_mirror, creator: user)
+        create(:merge_request, source_project: project)
+        create(:deploy_key, user: user)
+        create(:key, user: user)
+        create(:project, creator: user, disable_overriding_approvers_per_merge_request: true)
+        create(:project, creator: user, disable_overriding_approvers_per_merge_request: false)
+        create(:remote_mirror, project: project)
+        create(:snippet, author: user)
+      end
+
+      expect(described_class.usage_activity_by_stage_create({})).to include(
+        deploy_keys: 2,
+        keys: 2,
+        merge_requests: 2,
+        projects_with_disable_overriding_approvers_per_merge_request: 2,
+        projects_without_disable_overriding_approvers_per_merge_request: 4,
+        remote_mirrors: 2,
+        snippets: 2
+      )
+      expect(described_class.usage_activity_by_stage_create(described_class.last_28_days_time_period)).to include(
+        deploy_keys: 1,
+        keys: 1,
+        merge_requests: 1,
+        projects_with_disable_overriding_approvers_per_merge_request: 1,
+        projects_without_disable_overriding_approvers_per_merge_request: 2,
+        remote_mirrors: 1,
+        snippets: 1
+      )
+    end
+  end
+
+  describe 'usage_activity_by_stage_manage' do
+    it 'includes accurate usage_activity_by_stage data' do
+      stub_config(
+        omniauth:
+          { providers: omniauth_providers }
+      )
+
+      for_defined_days_back do
+        user = create(:user)
+        create(:event, author: user)
+        create(:group_member, user: user)
+      end
+
+      expect(described_class.usage_activity_by_stage_manage({})).to include(
+        events: 2,
+        groups: 2,
+        users_created: 4,
+        omniauth_providers: ['google_oauth2']
+      )
+      expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
+        events: 1,
+        groups: 1,
+        users_created: 2,
+        omniauth_providers: ['google_oauth2']
+      )
+    end
+
+    def omniauth_providers
+      [
+        OpenStruct.new(name: 'google_oauth2'),
+        OpenStruct.new(name: 'ldapmain'),
+        OpenStruct.new(name: 'group_saml')
+      ]
+    end
+  end
+
+  describe 'usage_activity_by_stage_monitor' do
+    it 'includes accurate usage_activity_by_stage data' do
+      for_defined_days_back do
+        user    = create(:user, dashboard: 'operations')
+        cluster = create(:cluster, user: user)
+        create(:project, creator: user)
+        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+      end
+
+      expect(described_class.usage_activity_by_stage_monitor({})).to include(
+        clusters: 2,
+        clusters_applications_prometheus: 2,
+        operations_dashboard_default_dashboard: 2
+      )
+      expect(described_class.usage_activity_by_stage_monitor(described_class.last_28_days_time_period)).to include(
+        clusters: 1,
+        clusters_applications_prometheus: 1,
+        operations_dashboard_default_dashboard: 1
+      )
+    end
+  end
+
+  describe 'usage_activity_by_stage_plan' do
+    it 'includes accurate usage_activity_by_stage data' do
+      for_defined_days_back do
+        user = create(:user)
+        project = create(:project, creator: user)
+        issue = create(:issue, project: project, author: user)
+        create(:issue, project: project, author: User.support_bot)
+        create(:note, project: project, noteable: issue, author: user)
+        create(:todo, project: project, target: issue, author: user)
+      end
+
+      expect(described_class.usage_activity_by_stage_plan({})).to include(
+        issues: 3,
+        notes: 2,
+        projects: 2,
+        todos: 2,
+        service_desk_enabled_projects: 2,
+        service_desk_issues: 2
+      )
+      expect(described_class.usage_activity_by_stage_plan(described_class.last_28_days_time_period)).to include(
+        issues: 2,
+        notes: 1,
+        projects: 1,
+        todos: 1,
+        service_desk_enabled_projects: 1,
+        service_desk_issues: 1
+      )
+    end
+  end
+
+  describe 'usage_activity_by_stage_release' do
+    it 'includes accurate usage_activity_by_stage data' do
+      for_defined_days_back do
+        user = create(:user)
+        create(:deployment, :failed, user: user)
+        create(:release, author: user)
+        create(:deployment, :success, user: user)
+      end
+
+      expect(described_class.usage_activity_by_stage_release({})).to include(
+        deployments: 2,
+        failed_deployments: 2,
+        releases: 2,
+        successful_deployments: 2
+      )
+      expect(described_class.usage_activity_by_stage_release(described_class.last_28_days_time_period)).to include(
+        deployments: 1,
+        failed_deployments: 1,
+        releases: 1,
+        successful_deployments: 1
+      )
+    end
+  end
+
+  describe 'usage_activity_by_stage_verify' do
+    it 'includes accurate usage_activity_by_stage data' do
+      for_defined_days_back do
+        user = create(:user)
+        create(:ci_build, user: user)
+        create(:ci_empty_pipeline, source: :external, user: user)
+        create(:ci_empty_pipeline, user: user)
+        create(:ci_pipeline, :auto_devops_source, user: user)
+        create(:ci_pipeline, :repository_source, user: user)
+        create(:ci_pipeline_schedule, owner: user)
+        create(:ci_trigger, owner: user)
+        create(:clusters_applications_runner, :installed)
+      end
+
+      expect(described_class.usage_activity_by_stage_verify({})).to include(
+        ci_builds: 2,
+        ci_external_pipelines: 2,
+        ci_internal_pipelines: 2,
+        ci_pipeline_config_auto_devops: 2,
+        ci_pipeline_config_repository: 2,
+        ci_pipeline_schedules: 2,
+        ci_pipelines: 2,
+        ci_triggers: 2,
+        clusters_applications_runner: 2
+      )
+      expect(described_class.usage_activity_by_stage_verify(described_class.last_28_days_time_period)).to include(
+        ci_builds: 1,
+        ci_external_pipelines: 1,
+        ci_internal_pipelines: 1,
+        ci_pipeline_config_auto_devops: 1,
+        ci_pipeline_config_repository: 1,
+        ci_pipeline_schedules: 1,
+        ci_pipelines: 1,
+        ci_triggers: 1,
+        clusters_applications_runner: 1
+      )
     end
   end
 

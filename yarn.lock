@@ -11208,11 +11208,6 @@ svg-tags@^1.0.0:
   resolved "https://registry.yarnpkg.com/svg-tags/-/svg-tags-1.0.0.tgz#58f71cee3bd519b59d4b2a843b6c7de64ac04764"
   integrity sha1-WPcc7jvVGbWdSyqEO2x95krAR2Q=
 
-svg4everybody@^2.1.9:
-  version "2.1.9"
-  resolved "https://registry.yarnpkg.com/svg4everybody/-/svg4everybody-2.1.9.tgz#5bd9f6defc133859a044646d4743fabc28db7e2d"
-  integrity sha1-W9n23vwTOFmgRGRtR0P6vCjbfi0=
-
 swagger-ui-dist@^3.26.2:
   version "3.26.2"
   resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-3.26.2.tgz#22c700906c8911b1c9956da6c3fca371dba6219f"

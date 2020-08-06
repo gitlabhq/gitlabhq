@@ -32,17 +32,32 @@ module RelativePositioning
   class_methods do
     def move_nulls_to_end(objects)
       objects = objects.reject(&:relative_position)
-
       return if objects.empty?
 
-      max_relative_position = objects.first.max_relative_position
-
       self.transaction do
+        max_relative_position = objects.first.max_relative_position
+
         objects.each do |object|
           relative_position = position_between(max_relative_position || START_POSITION, MAX_POSITION)
-          object.relative_position = relative_position
+          object.update_column(:relative_position, relative_position)
+
           max_relative_position = relative_position
-          object.save(touch: false)
+        end
+      end
+    end
+
+    def move_nulls_to_start(objects)
+      objects = objects.reject(&:relative_position)
+      return if objects.empty?
+
+      self.transaction do
+        min_relative_position = objects.first.min_relative_position
+
+        objects.reverse_each do |object|
+          relative_position = position_between(MIN_POSITION, min_relative_position || START_POSITION)
+          object.update_column(:relative_position, relative_position)
+
+          min_relative_position = relative_position
         end
       end
     end

@@ -33,6 +33,8 @@ class CreateVulnerabilitiesExportVerificationStatus < ActiveRecord::Migration[6.
   end
 
   def down
+    return unless table_exists?(:vulnerability_export_verification_status)
+
     with_lock_retries do
       drop_table :vulnerability_export_verification_status
     end

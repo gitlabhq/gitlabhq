@@ -16,6 +16,7 @@
 #  batch_count(::Clusters::Cluster.aws_installed.enabled, :cluster_id)
 #  batch_distinct_count(::Project, :creator_id)
 #  batch_distinct_count(::Project.with_active_services.service_desk_enabled.where(time_period), start: ::User.minimum(:id), finish: ::User.maximum(:id))
+#  batch_sum(User, :sign_in_count)
 module Gitlab
   module Database
     module BatchCount
@@ -27,6 +28,10 @@ module Gitlab
         BatchCounter.new(relation, column: column).count(mode: :distinct, batch_size: batch_size, start: start, finish: finish)
       end
 
+      def batch_sum(relation, column, batch_size: nil, start: nil, finish: nil)
+        BatchCounter.new(relation, column: nil, operation: :sum, operation_args: [column]).count(batch_size: batch_size, start: start, finish: finish)
+      end
+
       class << self
         include BatchCount
       end
@@ -35,6 +40,7 @@ module Gitlab
     class BatchCounter
       FALLBACK = -1
       MIN_REQUIRED_BATCH_SIZE = 1_250
+      DEFAULT_SUM_BATCH_SIZE = 1_000
       MAX_ALLOWED_LOOPS = 10_000
       SLEEP_TIME_IN_SECONDS = 0.01 # 10 msec sleep
       ALLOWED_MODES = [:itself, :distinct].freeze
@@ -43,13 +49,16 @@ module Gitlab
       DEFAULT_DISTINCT_BATCH_SIZE = 10_000
       DEFAULT_BATCH_SIZE = 100_000
 
-      def initialize(relation, column: nil)
+      def initialize(relation, column: nil, operation: :count, operation_args: nil)
         @relation = relation
         @column = column || relation.primary_key
+        @operation = operation
+        @operation_args = operation_args
       end
 
       def unwanted_configuration?(finish, batch_size, start)
-        batch_size <= MIN_REQUIRED_BATCH_SIZE ||
+        (@operation == :count && batch_size <= MIN_REQUIRED_BATCH_SIZE) ||
+          (@operation == :sum && batch_size < DEFAULT_SUM_BATCH_SIZE) ||
           (finish - start) / batch_size >= MAX_ALLOWED_LOOPS ||
           start > finish
       end
@@ -60,7 +69,7 @@ module Gitlab
         check_mode!(mode)
 
         # non-distinct have better performance
-        batch_size ||= mode == :distinct ? DEFAULT_DISTINCT_BATCH_SIZE : DEFAULT_BATCH_SIZE
+        batch_size ||= batch_size_for_mode_and_operation(mode, @operation)
 
         start = actual_start(start)
         finish = actual_finish(finish)
@@ -91,10 +100,16 @@ module Gitlab
 
       def batch_fetch(start, finish, mode)
         # rubocop:disable GitlabSecurity/PublicSend
-        @relation.select(@column).public_send(mode).where(between_condition(start, finish)).count
+        @relation.select(@column).public_send(mode).where(between_condition(start, finish)).send(@operation, *@operation_args)
       end
 
       private
+
+      def batch_size_for_mode_and_operation(mode, operation)
+        return DEFAULT_SUM_BATCH_SIZE if operation == :sum
+
+        mode == :distinct ? DEFAULT_DISTINCT_BATCH_SIZE : DEFAULT_BATCH_SIZE
+      end
 
       def between_condition(start, finish)
         return @column.between(start..(finish - 1)) if @column.is_a?(Arel::Attributes::Attribute)

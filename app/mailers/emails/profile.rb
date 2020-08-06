@@ -45,6 +45,17 @@ module Emails
       end
     end
 
+    def access_token_expired_email(user)
+      return unless user && user.active?
+
+      @user = user
+      @target_url = profile_personal_access_tokens_url
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        mail(to: @user.notification_email, subject: subject(_("Your personal access token has expired")))
+      end
+    end
+
     def unknown_sign_in_email(user, ip, time)
       @user = user
       @ip = ip

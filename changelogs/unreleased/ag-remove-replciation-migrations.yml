@@ -1,0 +1,5 @@
+---
+title: 'Geo: Drop tables related to vulnerability export replication'
+merge_request: 38299
+author:
+type: removed

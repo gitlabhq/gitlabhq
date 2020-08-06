@@ -66,6 +66,13 @@ class NotificationService
     mailer.access_token_about_to_expire_email(user).deliver_later
   end
 
+  # Notify the user when at least one of their personal access tokens has expired today
+  def access_token_expired(user)
+    return unless user.can?(:receive_notifications)
+
+    mailer.access_token_expired_email(user).deliver_later
+  end
+
   # Notify a user when a previously unknown IP or device is used to
   # sign in to their account
   def unknown_sign_in(user, ip, time)
