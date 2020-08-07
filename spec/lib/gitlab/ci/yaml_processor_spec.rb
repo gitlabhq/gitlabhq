@@ -1559,6 +1559,21 @@ module Gitlab
           })
         end
 
+        it "returns artifacts with expire_in never keyword" do
+          config = YAML.dump({
+                                rspec: {
+                                  script: "rspec",
+                                  artifacts: { paths: ["releases/"], expire_in: "never" }
+                                }
+                              })
+
+          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          builds = config_processor.stage_builds_attributes("test")
+
+          expect(builds.size).to eq(1)
+          expect(builds.first[:options][:artifacts][:expire_in]).to eq('never')
+        end
+
         %w[on_success on_failure always].each do |when_state|
           it "returns artifacts for when #{when_state}  defined" do
             config = YAML.dump({

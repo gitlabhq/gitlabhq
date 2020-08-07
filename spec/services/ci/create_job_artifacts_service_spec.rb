@@ -73,7 +73,7 @@ RSpec.describe Ci::CreateJobArtifactsService do
           expect(metadata_artifact.expire_at).to be_within(1.minute).of(expected_expire_at)
         end
 
-        context 'when expire_in params is set' do
+        context 'when expire_in params is set to a specific value' do
           before do
             params.merge!('expire_in' => '2 hours')
           end
@@ -87,6 +87,23 @@ RSpec.describe Ci::CreateJobArtifactsService do
             expect(job.artifacts_expire_at).to be_within(1.minute).of(expected_expire_at)
             expect(archive_artifact.expire_at).to be_within(1.minute).of(expected_expire_at)
             expect(metadata_artifact.expire_at).to be_within(1.minute).of(expected_expire_at)
+          end
+        end
+
+        context 'when expire_in params is set to `never`' do
+          before do
+            params.merge!('expire_in' => 'never')
+          end
+
+          it 'sets expiration date according to the parameter' do
+            expected_expire_at = nil
+
+            expect(subject).to be_truthy
+            archive_artifact, metadata_artifact = job.job_artifacts.last(2)
+
+            expect(job.artifacts_expire_at).to eq(expected_expire_at)
+            expect(archive_artifact.expire_at).to eq(expected_expire_at)
+            expect(metadata_artifact.expire_at).to eq(expected_expire_at)
           end
         end
       end

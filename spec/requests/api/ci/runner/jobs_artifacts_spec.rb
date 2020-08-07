@@ -479,6 +479,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                     expect(job.reload.artifacts_expire_at).to be_nil
                   end
                 end
+
+                context 'when value is never' do
+                  let(:expire_in) { 'never' }
+                  let(:default_artifacts_expire_in) { '5 days' }
+
+                  it 'does not set expire_in' do
+                    expect(response).to have_gitlab_http_status(:created)
+                    expect(job.reload.artifacts_expire_at).to be_nil
+                  end
+                end
               end
             end
           end

@@ -204,6 +204,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `external_https` |  Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`.
 | `gitlab_client_http_timeout`  | GitLab API HTTP client connection timeout in seconds (default: 10s).
 | `gitlab_client_jwt_expiry`  | JWT Token expiry time in seconds (default: 30s).
+| `domain_config_source` | Domain configuration source (default: `disk`)
 | `gitlab_id` |  The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab.
 | `gitlab_secret` |  The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab.
 | `gitlab_server` |  Server to use for authentication when access control is enabled; defaults to GitLab `external_url`.
@@ -601,6 +602,43 @@ configuring a load balancer to work at the IP level, and so on. If you wish to
 set up GitLab Pages on multiple servers, perform the above procedure for each
 Pages server.
 
+## Domain source configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217912) in GitLab 13.3.
+
+GitLab Pages can use different sources to get domain configuration.
+The default value is `nil`; however, GitLab Pages will default to `disk`.
+
+   ```ruby
+   gitlab_pages['domain_config_source'] = nil
+   ```
+
+You can specify `gitlab` to enable [API-based configuration](#gitlab-api-based-configuration).
+
+For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/).
+
+### GitLab API-based configuration
+
+GitLab Pages can use an API-based configuration. This replaces disk source configuration, which
+was used prior to GitLab 13.0. Follow these steps to enable it:
+
+1. Add the following to your `/etc/gitlab/gitlab.erb` file:
+
+   ```ruby
+   gitlab_pages['domain_config_source'] = "gitlab"
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+If you encounter an issue, you can disable it by choosing `disk` or `nil`:
+
+```ruby
+gitlab_pages['domain_config_source'] = nil
+```
+
+For other common issues, see the [troubleshooting section](#failed-to-connect-to-the-internal-gitlab-api)
+or report an issue.
+
 ## Backup
 
 GitLab Pages are part of the [regular backup](../../raketasks/backup_restore.md), so there is no separate backup to configure.
@@ -696,3 +734,24 @@ date > /var/opt/gitlab/gitlab-rails/shared/pages/.update
 ```
 
 If you've customized the Pages storage path, adjust the command above to use your custom path.
+
+### Failed to connect to the internal GitLab API
+
+If you have enabled [API-based configuration](#gitlab-api-based-configuration) and see the following error:
+
+```plaintext
+ERRO[0010] Failed to connect to the internal GitLab API after 0.50s  error="failed to connect to internal Pages API: HTTP status: 401"
+```
+
+If you are [Running GitLab Pages on a separate server](#running-gitlab-pages-on-a-separate-server)
+you must copy the `/etc/gitlab/gitlab-secrets.json` file
+from the **GitLab server** to the **Pages server** after upgrading to GitLab 13.3,
+as described in that section.
+
+Other reasons may include network connectivity issues between your
+**GitLab server** and your **Pages server** such as firewall configurations or closed ports.
+For example, if there is a connection timeout:
+
+```plaintext
+error="failed to connect to internal Pages API: Get \"https://gitlab.example.com:3000/api/v4/internal/pages/status\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)"
+```

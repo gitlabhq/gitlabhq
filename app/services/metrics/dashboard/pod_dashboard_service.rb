@@ -7,7 +7,7 @@ module Metrics
       DASHBOARD_NAME = N_('K8s pod health')
 
       # SHA256 hash of dashboard content
-      DASHBOARD_VERSION = '0515db7a99078a2423b037f99251ba16bd163603c0a30229ae8aa7386e96421c'
+      DASHBOARD_VERSION = '3a91b32f91b2dd3d90275333c0ea3630b3f3f37c4296ede5b5eef59bf523d66b'
 
       SEQUENCE = [
         STAGES::MetricEndpointInserter,

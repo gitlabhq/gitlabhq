@@ -3184,8 +3184,11 @@ stored on GitLab. If the expiry time is not defined, it defaults to the
 [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration-core-only)
 (30 days by default).
 
-You can use the **Keep** button on the job page to override expiration and
-keep artifacts forever.
+To override the expiration time and keep artifacts forever:
+
+- Use the **Keep** button on the job page.
+- Set the value of `expire_in` to `never`. [Available](https://gitlab.com/gitlab-org/gitlab/-/issues/22761)
+  in GitLab 13.3 and later.
 
 After their expiry, artifacts are deleted hourly by default (via a cron job),
 and are not accessible anymore.
@@ -3200,6 +3203,7 @@ provided. Examples of valid values:
 - `6 mos 1 day`
 - `47 yrs 6 mos and 4d`
 - `3 weeks and 2 days`
+- `never`
 
 To expire artifacts 1 week after being uploaded:
 

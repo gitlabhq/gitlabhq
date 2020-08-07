@@ -20,12 +20,8 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
   def revoke
     @personal_access_token = finder.find(params[:id])
-
-    if @personal_access_token.revoke!
-      flash[:notice] = _("Revoked personal access token %{personal_access_token_name}!") % { personal_access_token_name: @personal_access_token.name }
-    else
-      flash[:alert] = _("Could not revoke personal access token %{personal_access_token_name}.") % { personal_access_token_name: @personal_access_token.name }
-    end
+    service = PersonalAccessTokens::RevokeService.new(current_user, token: @personal_access_token).execute
+    service.success? ? flash[:notice] = service.message : flash[:alert] = service.message
 
     redirect_to profile_personal_access_tokens_path
   end

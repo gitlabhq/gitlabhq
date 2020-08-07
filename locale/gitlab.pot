@@ -3824,6 +3824,9 @@ msgstr ""
 msgid "BillingPlans|per user"
 msgstr ""
 
+msgid "BillingPlan|Contact sales"
+msgstr ""
+
 msgid "BillingPlan|Upgrade"
 msgstr ""
 
@@ -21301,6 +21304,9 @@ msgid "SecurityConfiguration|Configure"
 msgstr ""
 
 msgid "SecurityConfiguration|Could not retrieve configuration data. Please refresh the page, or try again later."
+msgstr ""
+
+msgid "SecurityConfiguration|Create Merge Request"
 msgstr ""
 
 msgid "SecurityConfiguration|Customize common SAST settings to suit your requirements. Configuration changes made here override those provided by GitLab and are excluded from updates. For details of more advanced configuration options, see the %{linkStart}GitLab SAST documentation%{linkEnd}."

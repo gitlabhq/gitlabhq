@@ -194,14 +194,13 @@ keys must be manually replicated to the **secondary** node.
 1. Visit the **primary** node's **Admin Area > Geo**
    (`/admin/geo/nodes`) in your browser.
 1. Click the **New node** button.
-   ![Add secondary node](img/adding_a_secondary_node.png)
+   ![Add secondary node](img/adding_a_secondary_node_v13_3.png)
 1. Fill in **Name** with the `gitlab_rails['geo_node_name']` in
    `/etc/gitlab/gitlab.rb`. These values must always match *exactly*, character
    for character.
 1. Fill in **URL** with the `external_url` in `/etc/gitlab/gitlab.rb`. These
    values must always match, but it doesn't matter if one ends with a `/` and
    the other doesn't.
-1. **Do NOT** check the **This is a primary node** checkbox.
 1. Optionally, choose which groups or storage shards should be replicated by the
    **secondary** node. Leave blank to replicate all. Read more in
    [selective synchronization](#selective-synchronization).

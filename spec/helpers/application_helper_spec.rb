@@ -168,6 +168,19 @@ RSpec.describe ApplicationHelper do
     it { expect(helper.active_when(false)).to eq(nil) }
   end
 
+  describe '#contact_sales_url' do
+    subject { helper.contact_sales_url }
+
+    it 'passes a smoke test' do
+      is_expected.to eq('https://about.gitlab.com/sales')
+    end
+
+    it 'changes if promo_url changes' do
+      allow(helper).to receive(:promo_url).and_return('https://somewhere.else')
+      is_expected.to eq('https://somewhere.else/sales')
+    end
+  end
+
   describe '#support_url' do
     context 'when alternate support url is specified' do
       let(:alternate_url) { 'http://company.example.com/getting-help' }

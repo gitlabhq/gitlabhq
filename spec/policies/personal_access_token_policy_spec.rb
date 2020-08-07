@@ -14,7 +14,7 @@ RSpec.describe PersonalAccessTokenPolicy do
   end
 
   with_them do
-    context 'determine if a token is readable by a user' do
+    context 'determine if a token is readable or revocable by a user' do
       let(:user) { build_stubbed(user_type) }
       let(:token_owner) { owned_by_same_user ? user : build(:user) }
       let(:token) { build(:personal_access_token, user: token_owner) }
@@ -26,6 +26,17 @@ RSpec.describe PersonalAccessTokenPolicy do
       end
 
       it { is_expected.to(expected_permitted? ? be_allowed(:read_token) : be_disallowed(:read_token)) }
+      it { is_expected.to(expected_permitted? ? be_allowed(:revoke_token) : be_disallowed(:revoke_token)) }
     end
+  end
+
+  context 'current_user is a blocked administrator', :enable_admin_mode do
+    subject { described_class.new(current_user, token) }
+
+    let(:current_user) { create(:user, :admin, :blocked) }
+    let(:token) { create(:personal_access_token) }
+
+    it { is_expected.to be_disallowed(:revoke_token) }
+    it { is_expected.to be_disallowed(:read_token) }
   end
 end

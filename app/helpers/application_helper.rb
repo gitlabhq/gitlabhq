@@ -194,6 +194,10 @@ module ApplicationHelper
     'https://' + promo_host
   end
 
+  def contact_sales_url
+    promo_url + '/sales'
+  end
+
   def support_url
     Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
   end

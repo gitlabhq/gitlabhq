@@ -106,12 +106,12 @@ module Gitlab
           include LegacyValidationHelpers
 
           def validate_each(record, attribute, value)
-            unless validate_duration(value)
+            unless validate_duration(value, options[:parser])
               record.errors.add(attribute, 'should be a duration')
             end
 
             if options[:limit]
-              unless validate_duration_limit(value, options[:limit])
+              unless validate_duration_limit(value, options[:limit], options[:parser])
                 record.errors.add(attribute, 'should not exceed the limit')
               end
             end
