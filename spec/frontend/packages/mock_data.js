@@ -140,6 +140,18 @@ export const pypiPackage = {
   version: '1.0.0',
 };
 
+export const composerPackage = {
+  created_at: '2015-12-10',
+  id: 5,
+  name: 'ComposerPackage',
+  package_files: [],
+  package_type: 'composer',
+  project_id: 1,
+  tags: [],
+  updated_at: '2015-12-10',
+  version: '1.0.0',
+};
+
 export const mockTags = [
   {
     name: 'foo-1',

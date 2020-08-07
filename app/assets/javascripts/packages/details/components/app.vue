@@ -14,23 +14,16 @@ import {
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
 import Tracking from '~/tracking';
-import PackageActivity from './activity.vue';
 import PackageHistory from './package_history.vue';
-import PackageInformation from './information.vue';
 import PackageTitle from './package_title.vue';
-import ConanInstallation from './conan_installation.vue';
-import MavenInstallation from './maven_installation.vue';
-import NpmInstallation from './npm_installation.vue';
-import NugetInstallation from './nuget_installation.vue';
-import PypiInstallation from './pypi_installation.vue';
 import PackagesListLoader from '../../shared/components/packages_list_loader.vue';
 import PackageListRow from '../../shared/components/package_list_row.vue';
 import DependencyRow from './dependency_row.vue';
 import AdditionalMetadata from './additional_metadata.vue';
+import InstallationCommands from './installation_commands.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import { generatePackageInfo } from '../utils';
 import { __, s__ } from '~/locale';
 import { PackageType, TrackingActions } from '../../shared/constants';
 import { packageTypeToTrackCategory } from '../../shared/utils';
@@ -48,19 +41,13 @@ export default {
     GlTable,
     FileIcon,
     GlSprintf,
-    PackageActivity,
-    PackageInformation,
     PackageTitle,
-    ConanInstallation,
-    MavenInstallation,
-    NpmInstallation,
-    NugetInstallation,
-    PypiInstallation,
     PackagesListLoader,
     PackageListRow,
     DependencyRow,
     PackageHistory,
     AdditionalMetadata,
+    InstallationCommands,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -79,61 +66,12 @@ export default {
       'svgPath',
       'npmPath',
       'npmHelpPath',
-      'oneColumnView',
     ]),
-    installationComponent() {
-      switch (this.packageEntity.package_type) {
-        case PackageType.CONAN:
-          return ConanInstallation;
-        case PackageType.MAVEN:
-          return MavenInstallation;
-        case PackageType.NPM:
-          return NpmInstallation;
-        case PackageType.NUGET:
-          return NugetInstallation;
-        case PackageType.PYPI:
-          return PypiInstallation;
-        default:
-          return null;
-      }
-    },
     isValidPackage() {
       return Boolean(this.packageEntity.name);
     },
     canDeletePackage() {
       return this.canDelete && this.destroyPath;
-    },
-    packageInformation() {
-      return generatePackageInfo(this.packageEntity);
-    },
-    packageMetadataTitle() {
-      switch (this.packageEntity.package_type) {
-        case PackageType.MAVEN:
-          return s__('Maven Metadata');
-        default:
-          return s__('Package information');
-      }
-    },
-    packageMetadata() {
-      switch (this.packageEntity.package_type) {
-        case PackageType.MAVEN:
-          return [
-            {
-              label: s__('Group ID'),
-              value: this.packageEntity.maven_metadatum.app_group,
-            },
-            {
-              label: s__('Artifact ID'),
-              value: this.packageEntity.maven_metadatum.app_name,
-            },
-            {
-              label: s__('Version'),
-              value: this.packageEntity.maven_metadatum.app_version,
-            },
-          ];
-        default:
-          return null;
-      }
     },
     filesTableRows() {
       return this.packageFiles.map(x => ({
@@ -156,6 +94,9 @@ export default {
     },
     showDependencies() {
       return this.packageEntity.package_type === PackageType.NUGET;
+    },
+    showFiles() {
+      return this.packageEntity?.package_type !== PackageType.COMPOSER;
     },
   },
   methods: {
@@ -225,68 +166,47 @@ export default {
 
     <gl-tabs>
       <gl-tab :title="__('Detail')">
-        <template v-if="!oneColumnView">
-          <div
-            class="row"
-            data-qa-selector="package_information_content"
-            data-testid="old-package-info"
-          >
-            <div class="col-sm-6">
-              <package-information :information="packageInformation" />
-              <package-information
-                v-if="packageMetadata"
-                :heading="packageMetadataTitle"
-                :information="packageMetadata"
-                :show-copy="true"
-              />
-            </div>
-
-            <div class="col-sm-6">
-              <component
-                :is="installationComponent"
-                v-if="installationComponent"
-                :name="packageEntity.name"
-                :registry-url="npmPath"
-                :help-url="npmHelpPath"
-              />
-            </div>
-          </div>
-
-          <package-activity />
-        </template>
-
-        <template v-else>
+        <div data-qa-selector="package_information_content">
           <package-history :package-entity="packageEntity" :project-name="projectName" />
+
+          <installation-commands
+            :package-entity="packageEntity"
+            :npm-path="npmPath"
+            :npm-help-path="npmHelpPath"
+          />
+
           <additional-metadata :package-entity="packageEntity" />
+        </div>
+
+        <template v-if="showFiles">
+          <h3 class="gl-font-lg gl-mt-5">{{ __('Files') }}</h3>
+          <gl-table
+            :fields="$options.filesTableHeaderFields"
+            :items="filesTableRows"
+            tbody-tr-class="js-file-row"
+          >
+            <template #cell(name)="{ item }">
+              <gl-link
+                :href="item.downloadPath"
+                class="js-file-download gl-relative"
+                @click="track($options.trackingActions.PULL_PACKAGE)"
+              >
+                <file-icon
+                  :file-name="item.name"
+                  css-classes="gl-relative file-icon"
+                  class="gl-mr-1 gl-relative"
+                />
+                <span class="gl-relative">{{ item.name }}</span>
+              </gl-link>
+            </template>
+
+            <template #cell(created)="{ item }">
+              <span v-gl-tooltip :title="tooltipTitle(item.created)">{{
+                timeFormatted(item.created)
+              }}</span>
+            </template>
+          </gl-table>
         </template>
-
-        <h3 class="gl-font-lg gl-mt-5">{{ __('Files') }}</h3>
-        <gl-table
-          :fields="$options.filesTableHeaderFields"
-          :items="filesTableRows"
-          tbody-tr-class="js-file-row"
-        >
-          <template #cell(name)="items">
-            <gl-link
-              :href="items.item.downloadPath"
-              class="js-file-download gl-relative"
-              @click="track($options.trackingActions.PULL_PACKAGE)"
-            >
-              <file-icon
-                :file-name="items.item.name"
-                css-classes="gl-relative file-icon"
-                class="gl-mr-1 gl-relative"
-              />
-              <span class="gl-relative">{{ items.item.name }}</span>
-            </gl-link>
-          </template>
-
-          <template #cell(created)="items">
-            <span v-gl-tooltip :title="tooltipTitle(items.item.created)">{{
-              timeFormatted(items.item.created)
-            }}</span>
-          </template>
-        </gl-table>
       </gl-tab>
 
       <gl-tab v-if="showDependencies" title-item-class="js-dependencies-tab">

@@ -1,0 +1,5 @@
+---
+title: Enable New Package details UI, remove feature flag and remove all old code
+merge_request: 38680
+author:
+type: changed

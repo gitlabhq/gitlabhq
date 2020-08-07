@@ -20,5 +20,4 @@
       pypi_path: pypi_registry_url(@project.id),
       pypi_setup_path: package_registry_project_url(@project.id, :pypi),
       pypi_help_path: help_page_path('user/packages/pypi_repository/index'),
-      project_name: @project.name,
-      one_column_view: Feature.enabled?(:packages_details_one_column, @project).to_s } }
+      project_name: @project.name} }

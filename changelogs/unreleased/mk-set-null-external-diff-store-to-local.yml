@@ -1,0 +1,5 @@
+---
+title: Backfill null values to prepare for Geo replication feature
+merge_request: 38719
+author:
+type: added

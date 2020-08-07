@@ -6531,7 +6531,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "DastSiteProfileID",
                   "ofType": null
                 }
               },
@@ -6785,7 +6785,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "DastSiteProfileID",
                 "ofType": null
               },
               "isDeprecated": false,

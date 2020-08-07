@@ -8,6 +8,7 @@ module QA
         @project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'monitoring-project'
           project.auto_devops_enabled = true
+          project.template_name = 'express'
         end
 
         deploy_project_with_prometheus
@@ -83,7 +84,7 @@ module QA
         %w[
           CODE_QUALITY_DISABLED TEST_DISABLED LICENSE_MANAGEMENT_DISABLED
           SAST_DISABLED DAST_DISABLED DEPENDENCY_SCANNING_DISABLED
-          CONTAINER_SCANNING_DISABLED PERFORMANCE_DISABLED
+          CONTAINER_SCANNING_DISABLED PERFORMANCE_DISABLED SECRET_DETECTION_DISABLED
         ].each do |key|
           Resource::CiVariable.fabricate_via_api! do |resource|
             resource.project = @project
@@ -103,16 +104,9 @@ module QA
           cluster_settings.install_prometheus = true
         end
 
-        Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project = @project
-          push.directory = Pathname
-                               .new(__dir__)
-                               .join('../../../../fixtures/auto_devops_rack')
-          push.commit_message = 'Create AutoDevOps compatible Project for Monitoring'
-        end
-
-        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-        Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
+        Resource::Pipeline.fabricate_via_api! do |pipeline|
+          pipeline.project = @project
+        end.visit!
 
         Page::Project::Pipeline::Show.perform do |pipeline|
           pipeline.click_job('build')

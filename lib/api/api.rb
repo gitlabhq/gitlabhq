@@ -194,7 +194,6 @@ module API
       mount ::API::GoProxy
       mount ::API::Pages
       mount ::API::PagesDomains
-      mount ::API::PersonalAccessTokens
       mount ::API::ProjectClusters
       mount ::API::ProjectContainerRepositories
       mount ::API::ProjectEvents

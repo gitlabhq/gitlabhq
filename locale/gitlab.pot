@@ -3235,9 +3235,6 @@ msgstr ""
 msgid "Artifact"
 msgstr ""
 
-msgid "Artifact ID"
-msgstr ""
-
 msgid "Artifact could not be deleted."
 msgstr ""
 
@@ -6761,9 +6758,6 @@ msgid "Copied labels and milestone from %{source_issuable_reference}."
 msgstr ""
 
 msgid "Copy"
-msgstr ""
-
-msgid "Copy %{field}"
 msgstr ""
 
 msgid "Copy %{http_label} clone URL"
@@ -13025,6 +13019,9 @@ msgstr ""
 msgid "Install on clusters"
 msgstr ""
 
+msgid "Installation Commands"
+msgstr ""
+
 msgid "Installed"
 msgstr ""
 
@@ -14091,9 +14088,6 @@ msgstr ""
 msgid "License ID:"
 msgstr ""
 
-msgid "License URL"
-msgstr ""
-
 msgid "License-Check"
 msgstr ""
 
@@ -14691,9 +14685,6 @@ msgid "MattermostService|Suggestions:"
 msgstr ""
 
 msgid "MattermostService|This service allows users to perform common operations on this project by entering slash commands in Mattermost."
-msgstr ""
-
-msgid "Maven Metadata"
 msgstr ""
 
 msgid "Max Group Export Download requests per minute per user"
@@ -16963,9 +16954,6 @@ msgstr ""
 msgid "Package deleted successfully"
 msgstr ""
 
-msgid "Package information"
-msgstr ""
-
 msgid "Package recipe already exists"
 msgstr ""
 
@@ -17122,16 +17110,10 @@ msgstr ""
 msgid "PackageRegistry|Pip Command"
 msgstr ""
 
-msgid "PackageRegistry|Pipeline %{linkStart}%{linkEnd} triggered %{timestamp} by %{author}"
-msgstr ""
-
 msgid "PackageRegistry|Pipeline %{link} triggered %{datetime} by %{author}"
 msgstr ""
 
 msgid "PackageRegistry|Published to the %{project} Package Registry %{datetime}"
-msgstr ""
-
-msgid "PackageRegistry|Published to the repository at %{timestamp}"
 msgstr ""
 
 msgid "PackageRegistry|PyPi"
@@ -19856,9 +19838,6 @@ msgid "Recent Searches Service is unavailable"
 msgstr ""
 
 msgid "Recent searches"
-msgstr ""
-
-msgid "Recipe"
 msgstr ""
 
 msgid "Reconfigure"
@@ -24938,6 +24917,9 @@ msgstr ""
 msgid "This project is archived and cannot be commented on."
 msgstr ""
 
+msgid "This project manages its dependencies using %{strong_start}%{manager_name}%{strong_end}"
+msgstr ""
+
 msgid "This project path either does not exist or you do not have access."
 msgstr ""
 
@@ -26131,9 +26113,6 @@ msgid "Updated"
 msgstr ""
 
 msgid "Updated %{updated_at} by %{updated_by}"
-msgstr ""
-
-msgid "Updated at"
 msgstr ""
 
 msgid "Updated to %{linkStart}chart v%{linkEnd}"
