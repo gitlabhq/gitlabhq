@@ -34,10 +34,6 @@ module Gitlab
         Feature.enabled?(:ci_pipeline_status_omit_commit_sha_in_cache_key, project, default_enabled: true)
       end
 
-      def self.release_generation_enabled?
-        ::Feature.enabled?(:ci_release_generation, default_enabled: true)
-      end
-
       # Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/224199
       def self.store_pipeline_messages?(project)
         ::Feature.enabled?(:ci_store_pipeline_messages, project, default_enabled: true)

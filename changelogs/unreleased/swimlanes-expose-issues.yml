@@ -1,0 +1,5 @@
+---
+title: Expose board list issues via GraphQL
+merge_request: 36259
+author:
+type: added

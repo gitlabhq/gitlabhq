@@ -22,12 +22,6 @@ module Gitlab
             validates :config, allowed_keys: ALLOWED_KEYS + PROCESSABLE_ALLOWED_KEYS
             validates :config, required_keys: REQUIRED_BY_NEEDS, if: :has_needs?
             validates :script, presence: true
-            validates :config,
-              disallowed_keys: {
-                in: %i[release],
-                message: 'release features are not enabled'
-              },
-              unless: -> { Gitlab::Ci::Features.release_generation_enabled? }
 
             with_options allow_nil: true do
               validates :allow_failure, boolean: true

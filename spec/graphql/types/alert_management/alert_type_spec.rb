@@ -28,6 +28,7 @@ RSpec.describe GitlabSchema.types['AlertManagementAlert'] do
       notes
       discussions
       metrics_dashboard_url
+      runbook
       todos
     ]
 

@@ -21,8 +21,6 @@ module Gitlab
           end
 
           def from_release(job)
-            return unless Gitlab::Ci::Features.release_generation_enabled?
-
             release = job.options[:release]
             return unless release
 

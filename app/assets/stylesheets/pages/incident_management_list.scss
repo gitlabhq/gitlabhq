@@ -19,10 +19,6 @@
         @include gl-relative;
       }
 
-      .sortable-cell {
-        padding-left: calc(0.75rem + 0.65em);
-      }
-
       th {
         @include gl-bg-transparent;
         @include gl-font-weight-bold;
@@ -42,6 +38,10 @@
           }
         }
       }
+
+      .sortable-cell {
+        padding-left: calc(0.75rem + 0.65em);
+      }
     }
   }
 
@@ -57,6 +57,11 @@
         &:hover {
           @include gl-bg-white;
           @include gl-border-none;
+        }
+
+        th,
+        td {
+          @include gl-pt-6;
         }
       }
 
@@ -77,8 +82,24 @@
         }
       }
 
-      .incident-management-list-title {
-        @include gl-flex-direction-row-reverse;
+      .b-table-empty-row {
+        td {
+          @include gl-border-b-0;
+
+          div {
+            text-align: unset !important;
+          }
+        }
+      }
+
+      .b-table-busy-slot {
+        td {
+          @include gl-border-b-0;
+
+          div {
+            text-align: center !important;
+          }
+        }
       }
     }
   }

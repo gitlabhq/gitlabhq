@@ -9,7 +9,10 @@ RSpec.describe Gitlab::Metrics::Dashboard::RepoDashboardFinder do
 
   describe '.list_dashboards' do
     it 'deletes dashboard cache entries' do
-      expect(Gitlab::Metrics::Dashboard::Cache).to receive(:delete_all!).and_call_original
+      cache = instance_double(Gitlab::Metrics::Dashboard::Cache)
+      allow(Gitlab::Metrics::Dashboard::Cache).to receive(:for).and_return(cache)
+
+      expect(cache).to receive(:delete_all!)
 
       described_class.list_dashboards(project)
     end

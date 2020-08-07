@@ -71,6 +71,7 @@ Describes an alert from the project's Alert Management
 | `issueIid` | ID | Internal ID of the GitLab issue attached to the alert |
 | `metricsDashboardUrl` | String | URL for metrics embed for the alert |
 | `monitoringTool` | String | Monitoring tool the alert came from |
+| `runbook` | String | Runbook for the alert as defined in alert details |
 | `service` | String | Service the alert came from |
 | `severity` | AlertManagementSeverity | Severity of the alert |
 | `startedAt` | Time | Timestamp the alert was raised |

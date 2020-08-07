@@ -1641,26 +1641,9 @@ module Gitlab
           }
         end
 
-        context 'with feature flag active' do
-          before do
-            stub_feature_flags(ci_release_generation: true)
-          end
-
-          it "returns release info" do
-            expect(processor.stage_builds_attributes('release').first[:options])
-              .to eq(config[:release].except(:stage, :only))
-          end
-        end
-
-        context 'with feature flag inactive' do
-          before do
-            stub_feature_flags(ci_release_generation: false)
-          end
-
-          it 'raises error' do
-            expect { processor }.to raise_error(
-              'jobs:release config release features are not enabled: release')
-          end
+        it "returns release info" do
+          expect(processor.stage_builds_attributes('release').first[:options])
+            .to eq(config[:release].except(:stage, :only))
         end
       end
 

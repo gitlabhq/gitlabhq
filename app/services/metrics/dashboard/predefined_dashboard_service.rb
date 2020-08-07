@@ -30,6 +30,11 @@ module Metrics
         end
       end
 
+      # Returns an un-processed dashboard from the cache.
+      def raw_dashboard
+        Gitlab::Metrics::Dashboard::Cache.fetch(cache_key) { get_raw_dashboard }
+      end
+
       private
 
       def dashboard_version

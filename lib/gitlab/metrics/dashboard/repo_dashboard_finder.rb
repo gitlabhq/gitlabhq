@@ -14,7 +14,7 @@ module Gitlab
           # Also deletes all dashboard cache entries.
           # @return [Array] ex) ['.gitlab/dashboards/dashboard1.yml']
           def list_dashboards(project)
-            Gitlab::Metrics::Dashboard::Cache.delete_all!
+            Gitlab::Metrics::Dashboard::Cache.for(project).delete_all!
 
             file_finder(project).list_files_for(DASHBOARD_ROOT)
           end

@@ -115,7 +115,7 @@ module Gitlab
       end
 
       def release(job)
-        job[:release] if Gitlab::Ci::Features.release_generation_enabled?
+        job[:release]
       end
 
       def stage_builds_attributes(stage)

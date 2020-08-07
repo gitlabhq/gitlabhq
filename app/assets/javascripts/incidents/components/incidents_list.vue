@@ -282,7 +282,7 @@ export default {
       @sort-changed="fetchSortedData"
     >
       <template #cell(title)="{ item }">
-        <div class="incident-management-list-title gl-display-flex gl-align-items-center">
+        <div :class="{ 'gl-display-flex gl-align-items-center': item.state === 'closed' }">
           <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
           <gl-icon
             v-if="item.state === 'closed'"

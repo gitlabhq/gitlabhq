@@ -90,14 +90,19 @@ When a link of a commit reference is found in a thread inside a merge
 request, it will be automatically converted to a link in the context of the
 current merge request.
 
-### Jumping between unresolved threads
+### Jumping between unresolved threads (deprecated)
+
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/199718) in GitLab 13.3.
+> - This button's removal is behind a feature flag enabled by default.
+> - For GitLab self-managed instances, GitLab administrators with access to the
+  [GitLab Rails console](../../administration/feature_flags.md) can opt to disable it by running
+  `Feature.disable(:hide_jump_to_next_unresolved_in_threads)` (for the instance) or
+  `Feature.disable(:hide_jump_to_next_unresolved_in_threads, Project.find(<project id>))`
+  (per project.) **(CORE ONLY)**
 
 When a merge request has a large number of comments it can be difficult to track
 what remains unresolved. You can jump between unresolved threads with the
 Jump button next to the Reply field on a thread.
-
-You can also jump to the next unresolved thread from the button next to the
-resolved threads tracker.
 
 You can also use keyboard shortcuts to navigate among threads:
 
@@ -111,7 +116,7 @@ You can also use keyboard shortcuts to navigate among threads:
 You can mark a thread as resolved by clicking the **Resolve thread**
 button at the bottom of the thread.
 
-!["Resolve thread" button](img/resolve_thread_button.png)
+!["Resolve thread" button](img/resolve_thread_button_v13_3.png)
 
 Alternatively, you can mark each comment as resolved individually.
 

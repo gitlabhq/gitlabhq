@@ -2,6 +2,12 @@
 
 module AlertManagement
   class PrometheusAlertPresenter < AlertManagement::AlertPresenter
+    def runbook
+      strong_memoize(:runbook) do
+        payload&.dig('annotations', 'runbook')
+      end
+    end
+
     def metrics_dashboard_url
       alerting_alert.metrics_dashboard_url
     end

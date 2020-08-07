@@ -982,7 +982,6 @@ RSpec.describe Ci::CreatePipelineService do
     context 'with release' do
       shared_examples_for 'a successful release pipeline' do
         before do
-          stub_feature_flags(ci_release_generation: true)
           stub_ci_pipeline_yaml_file(YAML.dump(config))
         end
 

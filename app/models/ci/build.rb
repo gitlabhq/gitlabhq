@@ -857,8 +857,7 @@ module Ci
     end
 
     def multi_build_steps?
-      options.dig(:release)&.any? &&
-        Gitlab::Ci::Features.release_generation_enabled?
+      options.dig(:release)&.any?
     end
 
     def hide_secrets(trace)

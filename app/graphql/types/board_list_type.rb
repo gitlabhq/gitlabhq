@@ -19,6 +19,10 @@ module Types
     field :collapsed, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if list is collapsed for this user',
           resolve: -> (list, _args, ctx) { list.collapsed?(ctx[:current_user]) }
+
+    field :issues, ::Types::IssueType.connection_type, null: true,
+          description: 'Board issues',
+          resolver: ::Resolvers::BoardListIssuesResolver
   end
   # rubocop: enable Graphql/AuthorizeTypes
 end

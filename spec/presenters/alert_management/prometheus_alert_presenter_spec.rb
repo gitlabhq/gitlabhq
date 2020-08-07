@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe AlertManagement::PrometheusAlertPresenter do
   let_it_be(:project) { create(:project) }
-  let_it_be(:payload) do
+  let(:payload) do
     {
       'annotations' => {
         'title' => 'Alert title',
@@ -15,6 +15,7 @@ RSpec.describe AlertManagement::PrometheusAlertPresenter do
       'generatorURL' => 'http://8d467bd4607a:9090/graph?g0.expr=vector%281%29&g0.tab=1'
     }
   end
+
   let(:alert) do
     create(:alert_management_alert, :prometheus, project: project, payload: payload)
   end
@@ -63,6 +64,19 @@ RSpec.describe AlertManagement::PrometheusAlertPresenter do
       include_context 'gitlab-managed prometheus alert attributes'
 
       it { is_expected.to eq(dashboard_url_for_alert) }
+    end
+  end
+
+  describe '#runbook' do
+    subject { presenter.runbook }
+
+    it { is_expected.to be_nil }
+
+    context 'with runbook in payload' do
+      let(:expected_runbook) { 'https://awesome-runbook.com' }
+      let(:payload) { { 'annotations' => { 'runbook' => expected_runbook } } }
+
+      it { is_expected.to eq(expected_runbook) }
     end
   end
 end
