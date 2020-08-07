@@ -1,10 +1,6 @@
 import * as types from './mutation_types';
 
 export default {
-  [types.SET_REPORTS](state, testReports) {
-    Object.assign(state, { testReports, hasFullReport: true });
-  },
-
   [types.SET_SUITE](state, { suite = {}, index = null }) {
     state.testReports.test_suites[index] = { ...suite, hasFullSuite: true };
   },
@@ -13,8 +9,8 @@ export default {
     Object.assign(state, { selectedSuiteIndex });
   },
 
-  [types.SET_SUMMARY](state, summary) {
-    Object.assign(state, { testReports: { ...state.testReports, ...summary } });
+  [types.SET_SUMMARY](state, testReports) {
+    Object.assign(state, { testReports });
   },
 
   [types.TOGGLE_LOADING](state) {

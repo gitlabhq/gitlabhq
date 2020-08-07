@@ -14,7 +14,7 @@ export default {
     TestSummaryTable,
   },
   computed: {
-    ...mapState(['hasFullReport', 'isLoading', 'selectedSuiteIndex', 'testReports']),
+    ...mapState(['isLoading', 'selectedSuiteIndex', 'testReports']),
     ...mapGetters(['getSelectedSuite']),
     showSuite() {
       return this.selectedSuiteIndex !== null;

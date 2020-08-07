@@ -354,6 +354,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:projects_with_prometheus_alerts]).to eq(2)
       expect(count_data[:projects_with_terraform_reports]).to eq(2)
       expect(count_data[:projects_with_terraform_states]).to eq(2)
+      expect(count_data[:protected_branches]).to eq(2)
+      expect(count_data[:protected_branches_except_default]).to eq(1)
       expect(count_data[:terraform_reports]).to eq(6)
       expect(count_data[:terraform_states]).to eq(3)
       expect(count_data[:issues_created_from_gitlab_error_tracking_ui]).to eq(1)

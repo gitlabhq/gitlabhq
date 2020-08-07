@@ -87,6 +87,7 @@ The following table depicts the various user permission levels in a project.
 | Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
 | Pull [packages](packages/index.md)                |         | ✓          | ✓           | ✓        | ✓      |
 | Publish [packages](packages/index.md)             |         |            | ✓           | ✓        | ✓      |
+| Delete [packages](packages/index.md)              |         |            |             | ✓        | ✓      |
 | Create/edit/delete a Cleanup policy               |         |            | ✓           | ✓        | ✓      |
 | Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
 | Create/edit/delete [Releases](project/releases/index.md)|   |            | ✓           | ✓        | ✓      |

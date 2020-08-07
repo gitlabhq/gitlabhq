@@ -16,16 +16,13 @@ describe('Actions TestReports Store', () => {
   const testReports = getJSONFixture('pipelines/test_report.json');
   const summary = { total_count: 1 };
 
-  const fullReportEndpoint = `${TEST_HOST}/test_reports.json`;
   const suiteEndpoint = `${TEST_HOST}/tests/:suite_name.json`;
   const summaryEndpoint = `${TEST_HOST}/test_reports/summary.json`;
   const defaultState = {
-    fullReportEndpoint,
     suiteEndpoint,
     summaryEndpoint,
     testReports: {},
     selectedSuite: null,
-    useBuildSummaryReport: false,
   };
 
   beforeEach(() => {
@@ -42,63 +39,29 @@ describe('Actions TestReports Store', () => {
       mock.onGet(summaryEndpoint).replyOnce(200, summary, {});
     });
 
-    describe('when useBuildSummaryReport in state is true', () => {
-      it('sets testReports and shows tests', done => {
-        testAction(
-          actions.fetchSummary,
-          null,
-          { ...state, useBuildSummaryReport: true },
-          [{ type: types.SET_SUMMARY, payload: summary }],
-          [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
-          done,
-        );
-      });
-
-      it('should create flash on API error', done => {
-        testAction(
-          actions.fetchSummary,
-          null,
-          {
-            summaryEndpoint: null,
-            useBuildSummaryReport: true,
-          },
-          [],
-          [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
-          () => {
-            expect(createFlash).toHaveBeenCalled();
-            done();
-          },
-        );
-      });
+    it('sets testReports and shows tests', done => {
+      testAction(
+        actions.fetchSummary,
+        null,
+        state,
+        [{ type: types.SET_SUMMARY, payload: summary }],
+        [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
+        done,
+      );
     });
 
-    describe('when useBuildSummaryReport in state is false', () => {
-      it('sets testReports and shows tests', done => {
-        testAction(
-          actions.fetchSummary,
-          null,
-          state,
-          [{ type: types.SET_SUMMARY, payload: summary }],
-          [],
-          done,
-        );
-      });
-
-      it('should create flash on API error', done => {
-        testAction(
-          actions.fetchSummary,
-          null,
-          {
-            summaryEndpoint: null,
-          },
-          [],
-          [],
-          () => {
-            expect(createFlash).toHaveBeenCalled();
-            done();
-          },
-        );
-      });
+    it('should create flash on API error', done => {
+      testAction(
+        actions.fetchSummary,
+        null,
+        { summaryEndpoint: null },
+        [],
+        [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
+        () => {
+          expect(createFlash).toHaveBeenCalled();
+          done();
+        },
+      );
     });
   });
 
@@ -149,77 +112,6 @@ describe('Actions TestReports Store', () => {
 
         testAction(actions.fetchTestSuite, index, { ...state, testReports }, [], [], done);
       });
-    });
-
-    describe('when we already have the full report data', () => {
-      it('should not fetch suite', done => {
-        const index = 0;
-        testReports.hasFullReport = true;
-
-        testAction(actions.fetchTestSuite, index, { ...state, testReports }, [], [], done);
-      });
-    });
-
-    describe('when the suite name has a `/` in it', () => {
-      it('sets test suite, shows tests, and encodes the suite name', done => {
-        const index = 0;
-        const suite = testReports.test_suites[0];
-        const { name } = suite;
-        const slashName = `${name}/8`;
-        testReports.test_suites[0].name = slashName;
-        const buildIds = [1];
-        testReports.test_suites[0].hasFullSuite = false;
-        testReports.test_suites[0].build_ids = buildIds;
-        const endpoint = suiteEndpoint.replace(':suite_name', encodeURIComponent(slashName));
-        mock
-          .onGet(endpoint, { params: { build_ids: buildIds } })
-          .replyOnce(200, testReports.test_suites[0], {});
-
-        testAction(
-          actions.fetchTestSuite,
-          index,
-          { ...state, testReports },
-          [{ type: types.SET_SUITE, payload: { suite, index } }],
-          [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
-          () => {
-            expect(mock.history.get.map(x => x.url)).toEqual([endpoint]);
-            done();
-          },
-        );
-      });
-    });
-  });
-
-  describe('fetch full report', () => {
-    beforeEach(() => {
-      mock.onGet(fullReportEndpoint).replyOnce(200, testReports, {});
-    });
-
-    it('sets testReports and shows tests', done => {
-      testAction(
-        actions.fetchFullReport,
-        null,
-        state,
-        [{ type: types.SET_REPORTS, payload: testReports }],
-        [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
-        done,
-      );
-    });
-
-    it('should create flash on API error', done => {
-      testAction(
-        actions.fetchFullReport,
-        null,
-        {
-          fullReportEndpoint: null,
-        },
-        [],
-        [{ type: 'toggleLoading' }, { type: 'toggleLoading' }],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
-      );
     });
   });
 

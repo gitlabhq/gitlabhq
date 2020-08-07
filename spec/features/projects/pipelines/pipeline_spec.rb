@@ -363,66 +363,29 @@ RSpec.describe 'Pipeline', :js do
     describe 'test tabs' do
       let(:pipeline) { create(:ci_pipeline, :with_test_reports, :with_report_results, project: project) }
 
-      context 'with build_report_summary feature flag disabled' do
-        before do
-          stub_feature_flags(build_report_summary: false)
-          visit_pipeline
-          wait_for_requests
+      before do
+        visit_pipeline
+        wait_for_requests
+      end
+
+      context 'with test reports' do
+        it 'shows badge counter in Tests tab' do
+          expect(page.find('.js-test-report-badge-counter').text).to eq(pipeline.test_report_summary.total_count.to_s)
         end
 
-        context 'with test reports' do
-          it 'shows badge counter in Tests tab' do
-            expect(pipeline.test_reports.total_count).to eq(4)
-            expect(page.find('.js-test-report-badge-counter').text).to eq(pipeline.test_reports.total_count.to_s)
-          end
+        it 'calls summary.json endpoint', :js do
+          find('.js-tests-tab-link').click
 
-          it 'does not call test_report.json endpoint by default', :js do
-            expect(page).to have_selector('.js-no-tests-to-show', visible: :all)
-          end
-
-          it 'does call test_report.json endpoint when tab is selected', :js do
-            find('.js-tests-tab-link').click
-            wait_for_requests
-
-            expect(page).to have_content('Jobs')
-            expect(page).to have_selector('.js-tests-detail', visible: :all)
-          end
-        end
-
-        context 'without test reports' do
-          let(:pipeline) { create(:ci_pipeline, project: project) }
-
-          it 'shows zero' do
-            expect(page.find('.js-test-report-badge-counter', visible: :all).text).to eq("0")
-          end
+          expect(page).to have_content('Jobs')
+          expect(page).to have_selector('.js-tests-detail', visible: :all)
         end
       end
 
-      context 'with build_report_summary feature flag enabled' do
-        before do
-          visit_pipeline
-          wait_for_requests
-        end
+      context 'without test reports' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
 
-        context 'with test reports' do
-          it 'shows badge counter in Tests tab' do
-            expect(page.find('.js-test-report-badge-counter').text).to eq(pipeline.test_report_summary.total_count.to_s)
-          end
-
-          it 'calls summary.json endpoint', :js do
-            find('.js-tests-tab-link').click
-
-            expect(page).to have_content('Jobs')
-            expect(page).to have_selector('.js-tests-detail', visible: :all)
-          end
-        end
-
-        context 'without test reports' do
-          let(:pipeline) { create(:ci_pipeline, project: project) }
-
-          it 'shows zero' do
-            expect(page.find('.js-test-report-badge-counter', visible: :all).text).to eq("0")
-          end
+        it 'shows zero' do
+          expect(page.find('.js-test-report-badge-counter', visible: :all).text).to eq("0")
         end
       end
     end

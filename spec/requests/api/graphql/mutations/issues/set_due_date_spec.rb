@@ -49,13 +49,13 @@ RSpec.describe 'Setting Due Date of an issue' do
     expect(mutation_response['issue']['dueDate']).to eq(2.days.since.to_date.to_s)
   end
 
-  context 'when passing due date without a date value' do
+  context 'when the due date value is not a valid time' do
     let(:input) { { due_date: 'test' } }
 
-    it 'returns internal server error' do
+    it 'returns a coercion error' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect(graphql_errors).to include(a_hash_including('message' => 'Internal server error'))
+      expect(graphql_errors).to include(a_hash_including('message' => /provided invalid value for dueDate/))
     end
   end
 end

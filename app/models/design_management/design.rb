@@ -217,6 +217,17 @@ module DesignManagement
       project
     end
 
+    def immediately_before?(next_design)
+      return false if next_design.relative_position <= relative_position
+
+      interloper = self.class.on_issue(issue).where(
+        "relative_position <@ int4range(?, ?, '()')",
+        *[self, next_design].map(&:relative_position)
+      )
+
+      !interloper.exists?
+    end
+
     private
 
     def head_version

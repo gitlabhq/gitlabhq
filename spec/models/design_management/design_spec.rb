@@ -603,4 +603,25 @@ RSpec.describe DesignManagement::Design do
       end
     end
   end
+
+  describe '#immediately_before' do
+    let_it_be(:design) { create(:design, issue: issue, relative_position: 100) }
+    let_it_be(:next_design) { create(:design, issue: issue, relative_position: 200) }
+
+    it 'is true when there is no element positioned between this item and the next' do
+      expect(design.immediately_before?(next_design)).to be true
+    end
+
+    it 'is false when there is an element positioned between this item and the next' do
+      create(:design, issue: issue, relative_position: 150)
+
+      expect(design.immediately_before?(next_design)).to be false
+    end
+
+    it 'is false when the next design is to the left of this design' do
+      further_left = create(:design, issue: issue, relative_position: 50)
+
+      expect(design.immediately_before?(further_left)).to be false
+    end
+  end
 end

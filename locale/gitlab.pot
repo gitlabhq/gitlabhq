@@ -670,6 +670,9 @@ msgstr ""
 msgid "%{size} bytes"
 msgstr ""
 
+msgid "%{sourceBranch} into %{targetBranch}"
+msgstr ""
+
 msgid "%{spammable_titlecase} was submitted to Akismet successfully."
 msgstr ""
 
@@ -23879,9 +23882,6 @@ msgid "TestReports|There are no tests to show."
 msgstr ""
 
 msgid "TestReports|There was an error fetching the summary."
-msgstr ""
-
-msgid "TestReports|There was an error fetching the test reports."
 msgstr ""
 
 msgid "TestReports|There was an error fetching the test suite."

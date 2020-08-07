@@ -160,20 +160,6 @@ RSpec.describe PipelineSerializer do
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
         end
-
-        context 'with the :build_report_summary flag turned off' do
-          before do
-            stub_feature_flags(build_report_summary: false)
-          end
-
-          it 'verifies number of queries', :request_store do
-            recorded = ActiveRecord::QueryRecorder.new { subject }
-            expected_queries = Gitlab.ee? ? 43 : 40
-
-            expect(recorded.count).to be_within(2).of(expected_queries)
-            expect(recorded.cached_count).to eq(0)
-          end
-        end
       end
 
       context 'with different refs' do
@@ -194,20 +180,6 @@ RSpec.describe PipelineSerializer do
 
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
-        end
-
-        context 'with the :build_report_summary flag turned off' do
-          before do
-            stub_feature_flags(build_report_summary: false)
-          end
-
-          it 'verifies number of queries', :request_store do
-            recorded = ActiveRecord::QueryRecorder.new { subject }
-            expected_queries = Gitlab.ee? ? 46 : 43
-
-            expect(recorded.count).to be_within(2).of(expected_queries)
-            expect(recorded.cached_count).to eq(0)
-          end
         end
       end
 

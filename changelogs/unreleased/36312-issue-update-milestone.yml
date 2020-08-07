@@ -1,0 +1,5 @@
+---
+title: Add milestone_id param to issue update graphQL mutation
+merge_request: 38684
+author:
+type: added

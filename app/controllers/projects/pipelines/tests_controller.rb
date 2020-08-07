@@ -3,7 +3,6 @@
 module Projects
   module Pipelines
     class TestsController < Projects::Pipelines::ApplicationController
-      before_action :validate_feature_flag!
       before_action :authorize_read_build!
       before_action :builds, only: [:show]
 
@@ -28,10 +27,6 @@ module Projects
       end
 
       private
-
-      def validate_feature_flag!
-        render_404 unless Feature.enabled?(:build_report_summary, project)
-      end
 
       # rubocop: disable CodeReuse/ActiveRecord
       def builds

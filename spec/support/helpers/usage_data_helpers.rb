@@ -119,6 +119,7 @@ module UsageDataHelpers
       projects_with_terraform_states
       pages_domains
       protected_branches
+      protected_branches_except_default
       releases
       remote_mirrors
       snippets

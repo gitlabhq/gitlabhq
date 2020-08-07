@@ -47,6 +47,8 @@ FactoryBot.define do
       create(:zoom_meeting, project: projects[0], issue: projects[0].issues[2], issue_status: :added)
       create_list(:zoom_meeting, 2, project: projects[0], issue: projects[0].issues[2], issue_status: :removed)
       create(:sentry_issue, issue: projects[0].issues[0])
+      create(:protected_branch, project: projects[0])
+      create(:protected_branch, name: 'main', project: projects[0])
 
       # Incident Labeled Issues
       incident_label_attrs = IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES

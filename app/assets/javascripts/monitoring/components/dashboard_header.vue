@@ -3,8 +3,6 @@ import { debounce } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   GlButton,
-  GlIcon,
-  GlDeprecatedButton,
   GlDeprecatedDropdown,
   GlDeprecatedDropdownItem,
   GlDeprecatedDropdownHeader,
@@ -39,8 +37,6 @@ export default {
   components: {
     Icon,
     GlButton,
-    GlIcon,
-    GlDeprecatedButton,
     GlDeprecatedDropdown,
     GlLoadingIcon,
     GlDeprecatedDropdownItem,
@@ -305,38 +301,37 @@ export default {
             selectedDashboard.starred ? $options.i18n.unstarDashboard : $options.i18n.starDashboard
           "
         >
-          <gl-deprecated-button
+          <gl-button
             ref="toggleStarBtn"
             class="w-100"
             :disabled="isUpdatingStarredValue"
             variant="default"
+            :icon="selectedDashboard.starred ? 'star' : 'star-o'"
             @click="toggleStarredValue()"
-          >
-            <gl-icon :name="selectedDashboard.starred ? 'star' : 'star-o'" />
-          </gl-deprecated-button>
+          />
         </div>
       </div>
 
       <div v-if="showRearrangePanelsBtn" class="mb-2 mr-2 d-flex">
-        <gl-deprecated-button
+        <gl-button
           :pressed="isRearrangingPanels"
           variant="default"
           class="flex-grow-1 js-rearrange-button"
           @click="toggleRearrangingPanels"
         >
           {{ __('Arrange charts') }}
-        </gl-deprecated-button>
+        </gl-button>
       </div>
       <div v-if="addingMetricsAvailable" class="mb-2 mr-2 d-flex d-sm-block">
-        <gl-deprecated-button
+        <gl-button
           ref="addMetricBtn"
           v-gl-modal="$options.modalIds.addMetric"
-          variant="outline-success"
+          variant="default"
           data-qa-selector="add_metric_button"
           class="flex-grow-1"
         >
           {{ $options.i18n.addMetric }}
-        </gl-deprecated-button>
+        </gl-button>
         <gl-modal
           ref="addMetricModal"
           :modal-id="$options.modalIds.addMetric"
@@ -350,18 +345,19 @@ export default {
             />
           </form>
           <div slot="modal-footer">
-            <gl-deprecated-button @click="hideAddMetricModal">
+            <gl-button @click="hideAddMetricModal">
               {{ __('Cancel') }}
-            </gl-deprecated-button>
-            <gl-deprecated-button
+            </gl-button>
+            <gl-button
               ref="submitCustomMetricsFormBtn"
               v-track-event="getAddMetricTrackingOptions()"
               :disabled="!formIsValid"
               variant="success"
+              category="primary"
               @click="submitCustomMetricsForm"
             >
               {{ __('Save changes') }}
-            </gl-deprecated-button>
+            </gl-button>
           </div>
         </gl-modal>
       </div>
@@ -370,28 +366,29 @@ export default {
         v-if="selectedDashboard && selectedDashboard.can_edit"
         class="mb-2 mr-2 d-flex d-sm-block"
       >
-        <gl-deprecated-button
+        <gl-button
           class="flex-grow-1 js-edit-link"
           :href="selectedDashboard.project_blob_path"
           data-qa-selector="edit_dashboard_button"
         >
           {{ __('Edit dashboard') }}
-        </gl-deprecated-button>
+        </gl-button>
       </div>
 
       <div
         v-if="externalDashboardUrl && externalDashboardUrl.length"
         class="mb-2 mr-2 d-flex d-sm-block"
       >
-        <gl-deprecated-button
+        <gl-button
           class="flex-grow-1 js-external-dashboard-link"
-          variant="primary"
+          variant="info"
+          category="primary"
           :href="externalDashboardUrl"
           target="_blank"
           rel="noopener noreferrer"
         >
           {{ __('View full dashboard') }} <icon name="external-link" />
-        </gl-deprecated-button>
+        </gl-button>
       </div>
 
       <!-- This separator should be displayed only if at least one of the action menu or settings button are displayed  -->

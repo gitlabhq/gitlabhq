@@ -1,7 +1,7 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import Tracking from '~/tracking';
 import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
-import { GlModal, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
+import { GlModal, GlButton } from '@gitlab/ui';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
@@ -448,7 +448,6 @@ describe('Dashboard', () => {
 
   describe('star dashboards', () => {
     const findToggleStar = () => findDashboardHeader().find({ ref: 'toggleStarBtn' });
-    const findToggleStarIcon = () => findToggleStar().find(GlIcon);
 
     beforeEach(() => {
       createShallowWrapper();
@@ -502,7 +501,7 @@ describe('Dashboard', () => {
         });
 
         it('toggle star button shows  an unstarred state', () => {
-          expect(findToggleStarIcon().attributes('name')).toBe('star-o');
+          expect(findToggleStar().attributes('icon')).toBe('star-o');
         });
       });
 
@@ -519,7 +518,7 @@ describe('Dashboard', () => {
         });
 
         it('toggle star button shows a starred state', () => {
-          expect(findToggleStarIcon().attributes('name')).toBe('star');
+          expect(findToggleStar().attributes('icon')).toBe('star');
         });
       });
     });
@@ -900,7 +899,7 @@ describe('Dashboard', () => {
       const externalDashboardButton = wrapper.find('.js-external-dashboard-link');
 
       expect(externalDashboardButton.exists()).toBe(true);
-      expect(externalDashboardButton.is(GlDeprecatedButton)).toBe(true);
+      expect(externalDashboardButton.is(GlButton)).toBe(true);
       expect(externalDashboardButton.text()).toContain('View full dashboard');
     });
   });

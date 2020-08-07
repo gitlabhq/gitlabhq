@@ -16,6 +16,14 @@
 # why this change has been made.
 #
 
+"<project name>":
+  translations:
+    - "<название проекта>"
+    - "<project name>"
+    - "<proje adı>"
+    - "<naziv projekta>"
+    - "<ім’я проєкту>"
+    - "<프로젝트 이름>"
 " or <!merge request id>":
   translations:
     - " ወይም <!merge request id>"
@@ -64,6 +72,7 @@
     - " o <&epic id>"
     - " veya <&epic id>"
     - " neu <#epic id>"
+    - " 또는 <&epic id>"
 "< 1 hour":
   translations:
     - "1 時間未満"
@@ -74,6 +83,7 @@
     - "< 1 hora"
     - "< 1 saat"
     - "< 1 Stunde"
+    - "< 1시간"
 "<strong>Deletes</strong> source branch":
   plural_id:
   translations:
@@ -187,6 +197,7 @@
 "Go to <strong>Issues</strong> > <strong>Boards</strong> to access your personalized learning issue board.":
   plural_id:
   translations:
+    - "转至<strong>议题</strong> > <strong>看板</strong>访问您的个性化学习议题看板。"
 "Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>.":
   plural_id:
   translations:
@@ -442,13 +453,6 @@
     - "<keine Bereiche ausgewählt>"
     - "<ningún alcance seleccionado>"
     - "<hiçbir kapsam seçilmedi>"
-"<project name>":
-  translations:
-    - "<название проекта>"
-    - "<project name>"
-    - "<proje adı>"
-    - "<naziv projekta>"
-    - "<ім’я проєкту>"
 "AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings > General.":
   translations:
     - "Elasticsearch、PlantUML、Slackアプリケーション、サードパーティのオファー、Snowplow、Amazon EKS は 設定 > 全般 に移動しました。"

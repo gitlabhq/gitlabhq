@@ -92,48 +92,18 @@ const createPipelineHeaderApp = mediator => {
   });
 };
 
-const createPipelinesTabs = testReportsStore => {
-  const tabsElement = document.querySelector('.pipelines-tabs');
-
-  if (tabsElement) {
-    const fetchReportsAction = 'fetchFullReport';
-    const isTestTabActive = Boolean(
-      document.querySelector('.pipelines-tabs > li > a.test-tab.active'),
-    );
-
-    if (isTestTabActive) {
-      testReportsStore.dispatch(fetchReportsAction);
-    } else {
-      const tabClickHandler = e => {
-        if (e.target.className === 'test-tab') {
-          testReportsStore.dispatch(fetchReportsAction);
-          tabsElement.removeEventListener('click', tabClickHandler);
-        }
-      };
-
-      tabsElement.addEventListener('click', tabClickHandler);
-    }
-  }
-};
-
 const createTestDetails = () => {
   if (!window.gon?.features?.junitPipelineView) {
     return;
   }
 
   const el = document.querySelector('#js-pipeline-tests-detail');
-  const { fullReportEndpoint, summaryEndpoint, suiteEndpoint, countEndpoint } = el?.dataset || {};
+  const { summaryEndpoint, suiteEndpoint } = el?.dataset || {};
 
   const testReportsStore = createTestReportsStore({
-    fullReportEndpoint,
-    summaryEndpoint: summaryEndpoint || countEndpoint,
+    summaryEndpoint,
     suiteEndpoint,
-    useBuildSummaryReport: window.gon?.features?.buildReportSummary,
   });
-
-  if (!window.gon?.features?.buildReportSummary) {
-    createPipelinesTabs(testReportsStore);
-  }
 
   // eslint-disable-next-line no-new
   new Vue({

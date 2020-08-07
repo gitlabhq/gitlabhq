@@ -57,6 +57,7 @@ module Types
     mount_mutation Mutations::JiraImport::ImportUsers
     mount_mutation Mutations::DesignManagement::Upload, calls_gitaly: true
     mount_mutation Mutations::DesignManagement::Delete, calls_gitaly: true
+    mount_mutation Mutations::DesignManagement::Move
     mount_mutation Mutations::ContainerExpirationPolicies::Update
   end
 end

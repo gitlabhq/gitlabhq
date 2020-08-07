@@ -77,6 +77,8 @@ class GitlabSchema < GraphQL::Schema
     #   will be called.
     # * All other classes will use `GlobalID#find`
     def find_by_gid(gid)
+      return unless gid
+
       if gid.model_class < ApplicationRecord
         Gitlab::Graphql::Loaders::BatchModelLoader.new(gid.model_class, gid.model_id).find
       elsif gid.model_class.respond_to?(:lazy_find)

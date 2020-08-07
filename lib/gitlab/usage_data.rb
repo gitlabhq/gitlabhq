@@ -140,6 +140,7 @@ module Gitlab
             projects_with_terraform_reports: distinct_count(::Ci::JobArtifact.terraform_reports, :project_id),
             projects_with_terraform_states: distinct_count(::Terraform::State, :project_id),
             protected_branches: count(ProtectedBranch),
+            protected_branches_except_default: count(ProtectedBranch.where.not(name: ['main', 'master', Gitlab::CurrentSettings.default_branch_name])),
             releases: count(Release),
             remote_mirrors: count(RemoteMirror),
             personal_snippets: count(PersonalSnippet),

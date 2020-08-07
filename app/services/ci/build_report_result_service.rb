@@ -3,7 +3,6 @@
 module Ci
   class BuildReportResultService
     def execute(build)
-      return unless Feature.enabled?(:build_report_summary, build.project)
       return unless build.has_test_reports?
 
       build.report_results.create!(

@@ -7,6 +7,7 @@ RSpec.describe Mutations::Issues::Update do
   let_it_be(:user) { create(:user) }
   let_it_be(:project_label) { create(:label, project: project) }
   let_it_be(:issue) { create(:issue, project: project, labels: [project_label]) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
 
   let(:expected_attributes) do
     {
@@ -14,7 +15,8 @@ RSpec.describe Mutations::Issues::Update do
       description: 'new description',
       confidential: true,
       due_date: Date.tomorrow,
-      discussion_locked: true
+      discussion_locked: true,
+      milestone_id: milestone.id
     }
   end
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
@@ -54,6 +56,16 @@ RSpec.describe Mutations::Issues::Update do
           mutation_params[:iid] = non_existing_record_iid
 
           expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
+      end
+
+      context 'when setting milestone to nil' do
+        let(:expected_attributes) { { milestone_id: nil } }
+
+        it 'changes the milestone corrrectly' do
+          issue.update_column(:milestone_id, milestone.id)
+
+          expect { subject }.to change { issue.reload.milestone }.from(milestone).to(nil)
         end
       end
 

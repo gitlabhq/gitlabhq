@@ -41,6 +41,11 @@ module Mutations
                required: false,
                description: 'The IDs of labels to be removed from the issue.'
 
+      argument :milestone_id,
+               GraphQL::ID_TYPE,
+               required: false,
+               description: 'The ID of the milestone to be assigned, milestone will be removed if set to null.'
+
       def resolve(project_path:, iid:, **args)
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project

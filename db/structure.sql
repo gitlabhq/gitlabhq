@@ -16191,7 +16191,8 @@ CREATE TABLE public.vulnerabilities (
     confirmed_by_id bigint,
     confirmed_at timestamp with time zone,
     dismissed_at timestamp with time zone,
-    dismissed_by_id bigint
+    dismissed_by_id bigint,
+    resolved_on_default_branch boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.vulnerabilities_id_seq

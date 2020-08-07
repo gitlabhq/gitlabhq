@@ -22,6 +22,10 @@ FactoryBot.define do
       imported { true }
     end
 
+    trait :with_relative_position do
+      sequence(:relative_position) { |n| n * 1000 }
+    end
+
     create_versions = ->(design, evaluator, commit_version) do
       unless evaluator.versions_count == 0
         project = design.project

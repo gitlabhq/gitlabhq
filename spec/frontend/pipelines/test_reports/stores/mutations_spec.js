@@ -12,21 +12,10 @@ describe('Mutations TestReports Store', () => {
     testReports: {},
     selectedSuite: null,
     isLoading: false,
-    hasFullReport: false,
   };
 
   beforeEach(() => {
     mockState = { ...defaultState };
-  });
-
-  describe('set reports', () => {
-    it('should set testReports', () => {
-      const expectedState = { ...mockState, testReports };
-      mutations[types.SET_REPORTS](mockState, testReports);
-
-      expect(mockState.testReports).toEqual(expectedState.testReports);
-      expect(mockState.hasFullReport).toBe(true);
-    });
   });
 
   describe('set suite', () => {

@@ -10,6 +10,10 @@ module DesignManagement
       @issue = issue
     end
 
+    def ==(other)
+      other.is_a?(self.class) && issue == other.issue
+    end
+
     def find_or_create_design!(filename:)
       designs.find { |design| design.filename == filename } ||
         designs.safe_find_or_create_by!(project: project, filename: filename) do |design|
