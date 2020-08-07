@@ -46,6 +46,7 @@ RSpec.describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
+  it { is_expected.to have_many(:pipeline_artifacts) }
 
   describe 'associations' do
     it 'has a bidirectional relationship with projects' do

@@ -214,13 +214,13 @@ which will help you get your starting configuration correct.
 If you are seeing two pipelines when using `only/except`, please see the caveats
 related to using `only/except` above (or, consider moving to `rules`).
 
+It is not possible to run a job for branch pipelines first, then only for merge request
+pipelines after the merge request is created (skipping the duplicate branch pipeline). See
+the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) for more details.
+
 ### Two pipelines created when pushing an invalid CI configuration file
 
 Pushing to a branch with an invalid CI configuration file can trigger
 the creation of two types of failed pipelines. One pipeline is a failed merge request
 pipeline, and the other is a failed branch pipeline, but both are caused by the same
 invalid configuration.
-
-In rare cases, duplicate pipelines are created.
-
-See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) for details.

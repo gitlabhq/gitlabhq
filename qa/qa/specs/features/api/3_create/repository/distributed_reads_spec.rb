@@ -29,19 +29,46 @@ module QA
           pre_read_data = praefect_manager.query_read_distribution
 
           QA::Runtime::Logger.info('Fetching commits from the repository')
-          Parallel.each((1..number_of_reads)) do |index|
-            Resource::Repository::Commit.fabricate_via_api! do |commits|
-              commits.project = project
-            end
-          end
+          Parallel.each((1..number_of_reads)) { project.commits }
 
           praefect_manager.wait_for_read_count_change(pre_read_data)
 
           aggregate_failures "each gitaly node" do
             praefect_manager.query_read_distribution.each_with_index do |data, index|
               expect(data[:value])
-                .to be > pre_read_data[index][:value],
-                  "Read counts did not differ for node #{pre_read_data[index][:node]}"
+                .to be > praefect_manager.value_for_node(pre_read_data, data[:node]),
+                  "Read counts did not differ for node #{data[:node]}"
+            end
+          end
+        end
+
+        context 'when a node is unhealthy' do
+          before do
+            praefect_manager.stop_secondary_node
+            praefect_manager.wait_for_secondary_node_health_check_failure
+          end
+
+          after do
+            # Leave the cluster in a suitable state for subsequent tests
+            praefect_manager.start_secondary_node
+            praefect_manager.wait_for_health_check_all_nodes
+            praefect_manager.wait_for_reliable_connection
+          end
+
+          it 'does not read from the unhealthy node' do
+            pre_read_data = praefect_manager.query_read_distribution
+
+            QA::Runtime::Logger.info('Fetching commits from the repository')
+            Parallel.each((1..number_of_reads)) { project.commits }
+
+            praefect_manager.wait_for_read_count_change(pre_read_data)
+
+            post_read_data = praefect_manager.query_read_distribution
+
+            aggregate_failures "each gitaly node" do
+              expect(praefect_manager.value_for_node(post_read_data, 'gitaly1')).to be > praefect_manager.value_for_node(pre_read_data, 'gitaly1')
+              expect(praefect_manager.value_for_node(post_read_data, 'gitaly2')).to eq praefect_manager.value_for_node(pre_read_data, 'gitaly2')
+              expect(praefect_manager.value_for_node(post_read_data, 'gitaly3')).to be > praefect_manager.value_for_node(pre_read_data, 'gitaly3')
             end
           end
         end

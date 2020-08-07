@@ -1250,6 +1250,10 @@ are permitted. Allowing only merge request pipelines, or only branch pipelines,
 eliminates duplicated pipelines. Alternatively, you can rewrite the rules to be
 stricter, or avoid using a final `when` (`always`, `on_success` or `delayed`).
 
+It is not possible to run a job for branch pipelines first, then only for merge request
+pipelines after the merge request is created (skipping the duplicate branch pipeline). See
+the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) for more details.
+
 Also, we don't recommend mixing `only/except` jobs with `rules` jobs in the same pipeline.
 It may not cause YAML errors, but debugging the exact execution behavior can be complex
 due to the different default behaviors of `only/except` and `rules`.

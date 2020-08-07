@@ -74,6 +74,34 @@ RSpec.describe PrometheusAlert do
     end
   end
 
+  describe 'runbook validations' do
+    it 'disallow invalid urls' do
+      unsafe_url = %{https://replaceme.com/'><script>alert(document.cookie)</script>}
+      non_ascii_url = 'http://gitlab.com/user/project1/wiki/something€'
+      excessively_long_url = 'https://gitla' + 'b' * 1024 + '.com'
+
+      is_expected.not_to allow_values(
+        unsafe_url,
+        non_ascii_url,
+        excessively_long_url
+      ).for(:runbook_url)
+    end
+
+    it 'allow valid urls' do
+      external_url = 'http://runbook.gitlab.com/'
+      internal_url = 'http://192.168.1.1'
+      blank_url = ''
+      nil_url = nil
+
+      is_expected.to allow_value(
+        external_url,
+        internal_url,
+        blank_url,
+        nil_url
+      ).for(:runbook_url)
+    end
+  end
+
   describe '#full_query' do
     before do
       subject.operator = "gt"
@@ -91,6 +119,7 @@ RSpec.describe PrometheusAlert do
       subject.operator = "gt"
       subject.threshold = 1
       subject.prometheus_metric = metric
+      subject.runbook_url = 'runbook'
     end
 
     it 'returns the params of the prometheus alert' do
@@ -102,7 +131,11 @@ RSpec.describe PrometheusAlert do
           "gitlab" => "hook",
           "gitlab_alert_id" => metric.id,
           "gitlab_prometheus_alert_id" => subject.id
-        })
+        },
+        "annotations" => {
+          "runbook" => "runbook"
+        }
+      )
     end
   end
 end

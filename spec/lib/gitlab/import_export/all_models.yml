@@ -230,6 +230,7 @@ ci_pipelines:
 - daily_report_results
 - latest_builds_report_results
 - messages
+- pipeline_artifacts
 ci_refs:
 - project
 - ci_pipelines
@@ -519,6 +520,7 @@ project:
 - vulnerability_statistic
 - vulnerability_historical_statistics
 - product_analytics_events
+- pipeline_artifacts
 award_emoji:
 - awardable
 - user

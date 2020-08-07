@@ -22,6 +22,8 @@ class PrometheusAlert < ApplicationRecord
   after_destroy :clear_prometheus_adapter_cache!
 
   validates :environment, :project, :prometheus_metric, presence: true
+  validates :runbook_url, length: { maximum: 255 }, allow_blank: true,
+            addressable_url: { enforce_sanitization: true, ascii_only: true }
   validate :require_valid_environment_project!
   validate :require_valid_metric_project!
 
@@ -59,6 +61,9 @@ class PrometheusAlert < ApplicationRecord
         "gitlab" => "hook",
         "gitlab_alert_id" => prometheus_metric_id,
         "gitlab_prometheus_alert_id" => id
+      },
+      "annotations" => {
+        "runbook" => runbook_url
       }
     }
   end

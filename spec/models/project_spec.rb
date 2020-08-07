@@ -122,6 +122,7 @@ RSpec.describe Project do
     it { is_expected.to have_many(:reviews).inverse_of(:project) }
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
+    it { is_expected.to have_many(:pipeline_artifacts) }
 
     it_behaves_like 'model with repository' do
       let_it_be(:container) { create(:project, :repository, path: 'somewhere') }
