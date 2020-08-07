@@ -1015,29 +1015,49 @@ recovering the data is not possible, the repository can be enabled for writes ag
 The Praefect `dataloss` sub-command identifies replicas that are likely to be outdated. This is useful for identifying potential data loss after a failover.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>]
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>] [-writable]
 ```
 
-If the virtual storage is not specified, every configured virtual storage is checked for outdated repositories.
+- `-virtual-storage` specifies which virtual storage to check. Every configured virtual storage is checked if none is specified.
+- `-writable` specifies whether to report outdated replicas of writable repositories. Repository is writable if the primary has the latest changes. Secondaries might be temporarily outdated while they are waiting to replicate the latest changes. To reduce the noise, default behavior is to display outdated replicas of read-only repositories as they generally require administrator action.
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss
 ```
 
-The number of potentially unapplied changes to repositories are listed for each replica. Listed repositories might have the latest changes but it is not guaranteed. Up to date replicas are not listed.
+The number of potentially unapplied changes to repositories are listed for each replica. Listed repositories might have the latest changes but it is not guaranteed. Only outdated replicas of read-only repositories are listed by default.
 
 ```shell
 Virtual storage: default
   Primary: gitaly-3
   Outdated repositories:
-    @hashed/2c/62/2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3.git:
+    @hashed/2c/62/2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3.git (read-only):
       gitaly-2 is behind by 1 change or less
       gitaly-3 is behind by 2 changes or less
-    @hashed/4b/22/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a.git:
+```
+
+Set the `-writable` flag also list the outdated replicas of writable repositories.
+
+```shell
+Virtual storage: default
+  Primary: gitaly-3
+  Outdated repositories:
+    @hashed/2c/62/2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3.git (read-only):
+      gitaly-2 is behind by 1 change or less
+      gitaly-3 is behind by 2 changes or less
+    @hashed/4b/22/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a.git (writable):
       gitaly-2 is behind by 1 change or less
 ```
 
-A confirmation is printed out if all changes have been successfully applied to every replica.
+A confirmation is printed out when every repository is writable.
+
+```shell
+Virtual storage: default
+  Primary: gitaly-1
+  All repositories are writable!
+```
+
+With the `-writable` flag set, a confirmation is printed out if every replica is fully up to date.
 
 ```shell
 Virtual storage: default

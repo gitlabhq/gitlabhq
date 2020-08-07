@@ -7,6 +7,14 @@ import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_hel
 import { suggestProps, iconName } from './pipeline_tour_mock_data';
 import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
+import {
+  SP_TRACK_LABEL,
+  SP_LINK_TRACK_EVENT,
+  SP_SHOW_TRACK_EVENT,
+  SP_LINK_TRACK_VALUE,
+  SP_SHOW_TRACK_VALUE,
+  SP_HELP_URL,
+} from '~/vue_merge_request_widget/constants';
 
 describe('MRWidgetSuggestPipeline', () => {
   describe('template', () => {
@@ -80,7 +88,7 @@ describe('MRWidgetSuggestPipeline', () => {
         const link = wrapper.find('[data-testid="help"]');
 
         expect(link.exists()).toBe(true);
-        expect(link.attributes('href')).toBe(wrapper.vm.$options.helpURL);
+        expect(link.attributes('href')).toBe(SP_HELP_URL);
       });
 
       it('renders the empty pipelines image', () => {
@@ -96,7 +104,7 @@ describe('MRWidgetSuggestPipeline', () => {
           const expectedAction = undefined;
 
           expect(trackingSpy).toHaveBeenCalledWith(expectedCategory, expectedAction, {
-            label: wrapper.vm.$options.trackLabel,
+            label: SP_TRACK_LABEL,
             property: suggestProps.humanAccess,
           });
         });
@@ -106,10 +114,10 @@ describe('MRWidgetSuggestPipeline', () => {
           const link = wrapper.find('[data-testid="add-pipeline-link"]');
           triggerEvent(link.element);
 
-          expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_link', {
-            label: wrapper.vm.$options.trackLabel,
+          expect(trackingSpy).toHaveBeenCalledWith('_category_', SP_LINK_TRACK_EVENT, {
+            label: SP_TRACK_LABEL,
             property: suggestProps.humanAccess,
-            value: '30',
+            value: SP_LINK_TRACK_VALUE.toString(),
           });
         });
 
@@ -118,10 +126,10 @@ describe('MRWidgetSuggestPipeline', () => {
           const okBtn = findOkBtn();
           triggerEvent(okBtn.element);
 
-          expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_button', {
-            label: wrapper.vm.$options.trackLabel,
+          expect(trackingSpy).toHaveBeenCalledWith('_category_', SP_SHOW_TRACK_EVENT, {
+            label: SP_TRACK_LABEL,
             property: suggestProps.humanAccess,
-            value: '10',
+            value: SP_SHOW_TRACK_VALUE.toString(),
           });
         });
       });

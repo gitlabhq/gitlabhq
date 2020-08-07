@@ -168,7 +168,10 @@ If you select `Limit namespaces and projects that can be indexed`, more options 
 You can select namespaces and projects to index exclusively. Please note that if the namespace is a group it will include
 any sub-groups and projects belonging to those sub-groups to be indexed as well.
 
-Elasticsearch only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search will not provide a code or commit scope. This will be possible only in the scope of an indexed namespace. Currently there is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
+NOTE: **Note:**
+Elasticsearch only provides cross-group [code, commit, comment, and wiki](../user/search/advanced_global_search.md#overview) global search for indexed namespaces.
+
+In this particular scenario where only a subset of namespaces are indexed, a global search will provide code, commit, comment, and wiki scopes which return values from the subset of indexed namespaces. If you would like to perform a search against a namespace that is not indexed, you can select the group or project in the search filter. Additionally, it is possible to perform a global "basic search" by appending `&basic_search=true` to the URL in the browser bar. This search will use other data sources (that is PostgreSQL data and Git data) and the code, commit, comment, and wiki scopes will not be displayed.
 
 You can filter the selection dropdown by writing part of the namespace or project name you're interested in.
 

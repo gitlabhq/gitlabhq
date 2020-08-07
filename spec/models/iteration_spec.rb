@@ -8,11 +8,11 @@ RSpec.describe Iteration do
 
   describe "#iid" do
     it "is properly scoped on project and group" do
-      iteration1 = create(:iteration, project: project)
-      iteration2 = create(:iteration, project: project)
+      iteration1 = create(:iteration, :skip_project_validation, project: project)
+      iteration2 = create(:iteration, :skip_project_validation, project: project)
       iteration3 = create(:iteration, group: group)
       iteration4 = create(:iteration, group: group)
-      iteration5 = create(:iteration, project: project)
+      iteration5 = create(:iteration, :skip_project_validation, project: project)
 
       want = {
           iteration1: 1,
@@ -34,6 +34,15 @@ RSpec.describe Iteration do
 
   context 'Validations' do
     subject { build(:iteration, group: group, start_date: start_date, due_date: due_date) }
+
+    describe '#not_belonging_to_project' do
+      subject { build(:iteration, project: project, start_date: Time.current, due_date: 1.day.from_now) }
+
+      it 'is invalid' do
+        expect(subject).not_to be_valid
+        expect(subject.errors[:project_id]).to include('is not allowed. We do not currently support project-level iterations')
+      end
+    end
 
     describe '#dates_do_not_overlap' do
       let_it_be(:existing_iteration) { create(:iteration, group: group, start_date: 4.days.from_now, due_date: 1.week.from_now) }
@@ -115,24 +124,12 @@ RSpec.describe Iteration do
               expect { subject.save! }.not_to raise_exception
             end
           end
-
-          context 'in a project' do
-            let(:project) { create(:project) }
-
-            subject { build(:iteration, project: project, start_date: start_date, due_date: due_date) }
-
-            it { is_expected.to be_valid }
-
-            it 'does not trigger exclusion constraints' do
-              expect { subject.save! }.not_to raise_exception
-            end
-          end
         end
 
         context 'project' do
-          let_it_be(:existing_iteration) { create(:iteration, project: project, start_date: 4.days.from_now, due_date: 1.week.from_now) }
+          let_it_be(:existing_iteration) { create(:iteration, :skip_project_validation, project: project, start_date: 4.days.from_now, due_date: 1.week.from_now) }
 
-          subject { build(:iteration, project: project, start_date: start_date, due_date: due_date) }
+          subject { build(:iteration, :skip_project_validation, project: project, start_date: start_date, due_date: due_date) }
 
           it_behaves_like 'overlapping dates' do
             let(:constraint_name) { 'iteration_start_and_due_daterange_project_id_constraint' }
@@ -215,9 +212,9 @@ RSpec.describe Iteration do
 
   context 'time scopes' do
     let_it_be(:project) { create(:project, :empty_repo) }
-    let_it_be(:iteration_1) { create(:iteration, :skip_future_date_validation, project: project, start_date: 3.days.ago, due_date: 1.day.from_now) }
-    let_it_be(:iteration_2) { create(:iteration, :skip_future_date_validation, project: project, start_date: 10.days.ago, due_date: 4.days.ago) }
-    let_it_be(:iteration_3) { create(:iteration, project: project, start_date: 4.days.from_now, due_date: 1.week.from_now) }
+    let_it_be(:iteration_1) { create(:iteration, :skip_future_date_validation, :skip_project_validation, project: project, start_date: 3.days.ago, due_date: 1.day.from_now) }
+    let_it_be(:iteration_2) { create(:iteration, :skip_future_date_validation, :skip_project_validation, project: project, start_date: 10.days.ago, due_date: 4.days.ago) }
+    let_it_be(:iteration_3) { create(:iteration, :skip_project_validation, project: project, start_date: 4.days.from_now, due_date: 1.week.from_now) }
 
     describe 'start_date_passed' do
       it 'returns iterations where start_date is in the past but due_date is in the future' do
@@ -235,9 +232,9 @@ RSpec.describe Iteration do
   describe '.within_timeframe' do
     let_it_be(:now) { Time.current }
     let_it_be(:project) { create(:project, :empty_repo) }
-    let_it_be(:iteration_1) { create(:iteration, project: project, start_date: now, due_date: 1.day.from_now) }
-    let_it_be(:iteration_2) { create(:iteration, project: project, start_date: 2.days.from_now, due_date: 3.days.from_now) }
-    let_it_be(:iteration_3) { create(:iteration, project: project, start_date: 4.days.from_now, due_date: 1.week.from_now) }
+    let_it_be(:iteration_1) { create(:iteration, :skip_project_validation, project: project, start_date: now, due_date: 1.day.from_now) }
+    let_it_be(:iteration_2) { create(:iteration, :skip_project_validation, project: project, start_date: 2.days.from_now, due_date: 3.days.from_now) }
+    let_it_be(:iteration_3) { create(:iteration, :skip_project_validation, project: project, start_date: 4.days.from_now, due_date: 1.week.from_now) }
 
     it 'returns iterations with start_date and/or end_date between timeframe' do
       iterations = described_class.within_timeframe(2.days.from_now, 3.days.from_now)

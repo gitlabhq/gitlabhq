@@ -28818,6 +28818,9 @@ msgstr ""
 msgid "is not allowed. Try again with a different email address, or contact your GitLab admin."
 msgstr ""
 
+msgid "is not allowed. We do not currently support project-level iterations"
+msgstr ""
+
 msgid "is not an email you own"
 msgstr ""
 

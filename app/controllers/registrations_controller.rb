@@ -17,7 +17,6 @@ class RegistrationsController < Devise::RegistrationsController
 
   def new
     if experiment_enabled?(:signup_flow)
-      track_experiment_event(:signup_flow, 'start') # We want this event to be tracked when the user is _in_ the experimental group
       track_experiment_event(:terms_opt_in, 'start')
 
       @resource = build_resource
@@ -27,9 +26,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    track_experiment_event(:signup_flow, 'end') unless experiment_enabled?(:signup_flow) # We want this event to be tracked when the user is _in_ the control group
     track_experiment_event(:terms_opt_in, 'end')
-
     accept_pending_invitations
 
     super do |new_user|
@@ -65,8 +62,6 @@ class RegistrationsController < Devise::RegistrationsController
     result = ::Users::SignupService.new(current_user, user_params).execute
 
     if result[:status] == :success
-      track_experiment_event(:signup_flow, 'end') # We want this event to be tracked when the user is _in_ the experimental group
-
       track_experiment_event(:onboarding_issues, 'signed_up') if ::Gitlab.com? && show_onboarding_issues_experiment?
       return redirect_to new_users_sign_up_group_path if experiment_enabled?(:onboarding_issues) && show_onboarding_issues_experiment?
 

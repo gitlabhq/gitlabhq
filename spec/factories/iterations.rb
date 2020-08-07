@@ -36,6 +36,12 @@ FactoryBot.define do
       end
     end
 
+    trait(:skip_project_validation) do
+      after(:stub, :build) do |iteration|
+        iteration.skip_project_validation = true
+      end
+    end
+
     after(:build, :stub) do |iteration, evaluator|
       if evaluator.group
         iteration.group = evaluator.group
@@ -49,7 +55,7 @@ FactoryBot.define do
         id = evaluator.resource_parent.id
         evaluator.resource_parent.is_a?(Group) ? evaluator.group_id = id : evaluator.project_id = id
       else
-        iteration.project = create(:project)
+        iteration.group = create(:group)
       end
     end
 
