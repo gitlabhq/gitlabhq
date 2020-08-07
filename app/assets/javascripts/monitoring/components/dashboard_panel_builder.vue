@@ -55,7 +55,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="gl-display-flex gl-mx-n3">
+    <div class="gl-xs-flex-direction-column gl-display-flex gl-mx-n3">
       <gl-card class="gl-flex-grow-1 gl-flex-basis-0 gl-mx-3">
         <template #header>
           <h2 class="gl-font-size-h2 gl-my-3">{{ s__('Metrics|1. Define and preview panel') }}</h2>
@@ -76,6 +76,7 @@ export default {
                 variant="success"
                 category="secondary"
                 :data-clipboard-text="yml"
+                class="gl-xs-w-full gl-xs-mb-3"
                 @click="$toast.show(s__('Metrics|Panel YAML copied'))"
               >
                 {{ s__('Metrics|Copy YAML') }}
@@ -84,7 +85,7 @@ export default {
                 type="submit"
                 variant="success"
                 :disabled="panelPreviewIsLoading"
-                class="js-no-auto-disable"
+                class="js-no-auto-disable gl-xs-w-full"
               >
                 {{ s__('Metrics|Preview panel') }}
               </gl-button>
@@ -127,13 +128,19 @@ export default {
             <gl-button
               ref="viewDocumentationBtn"
               category="secondary"
+              class="gl-xs-w-full gl-xs-mb-3"
               variant="info"
               target="_blank"
               :href="addDashboardDocumentationPath"
             >
               {{ s__('Metrics|View documentation') }}
             </gl-button>
-            <gl-button ref="openRepositoryBtn" variant="success" :href="projectPath">
+            <gl-button
+              ref="openRepositoryBtn"
+              variant="success"
+              :href="projectPath"
+              class="gl-xs-w-full"
+            >
               {{ s__('Metrics|Open repository') }}
             </gl-button>
           </div>

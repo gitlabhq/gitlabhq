@@ -396,6 +396,29 @@ RSpec.describe Projects::UpdateService do
       end
     end
 
+    shared_examples 'updating pages configuration' do
+      it 'schedules the `PagesUpdateConfigurationWorker`' do
+        expect(PagesUpdateConfigurationWorker).to receive(:perform_async).with(project.id)
+
+        subject
+      end
+
+      context 'when `async_update_pages_config` is disabled' do
+        before do
+          stub_feature_flags(async_update_pages_config: false)
+        end
+
+        it 'calls Projects::UpdatePagesConfigurationService' do
+          expect(Projects::UpdatePagesConfigurationService)
+            .to receive(:new)
+                  .with(project)
+                  .and_call_original
+
+          subject
+        end
+      end
+    end
+
     context 'when updating #pages_https_only', :https_pages_enabled do
       subject(:call_service) do
         update_project(project, admin, pages_https_only: false)
@@ -407,14 +430,7 @@ RSpec.describe Projects::UpdateService do
           .to(false)
       end
 
-      it 'calls Projects::UpdatePagesConfigurationService' do
-        expect(Projects::UpdatePagesConfigurationService)
-          .to receive(:new)
-          .with(project)
-          .and_call_original
-
-        call_service
-      end
+      it_behaves_like 'updating pages configuration'
     end
 
     context 'when updating #pages_access_level' do
@@ -428,14 +444,7 @@ RSpec.describe Projects::UpdateService do
           .to(ProjectFeature::ENABLED)
       end
 
-      it 'calls Projects::UpdatePagesConfigurationService' do
-        expect(Projects::UpdatePagesConfigurationService)
-          .to receive(:new)
-          .with(project)
-          .and_call_original
-
-        call_service
-      end
+      it_behaves_like 'updating pages configuration'
     end
 
     context 'when updating #emails_disabled' do

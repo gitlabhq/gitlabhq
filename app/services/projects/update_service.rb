@@ -142,7 +142,11 @@ module Projects
     end
 
     def update_pages_config
-      Projects::UpdatePagesConfigurationService.new(project).execute
+      if Feature.enabled?(:async_update_pages_config, project)
+        PagesUpdateConfigurationWorker.perform_async(project.id)
+      else
+        Projects::UpdatePagesConfigurationService.new(project).execute
+      end
     end
 
     def changing_pages_https_only?

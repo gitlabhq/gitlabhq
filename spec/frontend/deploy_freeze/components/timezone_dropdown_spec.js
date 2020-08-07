@@ -2,7 +2,6 @@ import Vuex from 'vuex';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import createStore from '~/deploy_freeze/store';
-import { mockTimezoneData } from '../mock_data';
 
 import { GlDeprecatedDropdownItem, GlNewDropdown } from '@gitlab/ui';
 
@@ -12,18 +11,19 @@ localVue.use(Vuex);
 describe('Deploy freeze timezone dropdown', () => {
   let wrapper;
   let store;
+  const timezoneDataFixture = getJSONFixture('/api/freeze-periods/timezone_data.json');
 
   const createComponent = (searchTerm, selectedTimezone) => {
     store = createStore({
       projectId: '8',
-      timezoneData: mockTimezoneData,
+      timezoneData: timezoneDataFixture,
     });
     wrapper = shallowMount(TimezoneDropdown, {
       store,
       localVue,
       propsData: {
         value: selectedTimezone,
-        timezoneData: mockTimezoneData,
+        timezoneData: timezoneDataFixture,
       },
     });
 
@@ -54,7 +54,7 @@ describe('Deploy freeze timezone dropdown', () => {
     });
 
     it('renders all timezones when search term is empty', () => {
-      expect(findAllDropdownItems()).toHaveLength(mockTimezoneData.length);
+      expect(findAllDropdownItems()).toHaveLength(timezoneDataFixture.length);
     });
   });
 

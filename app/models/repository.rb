@@ -43,7 +43,7 @@ class Repository
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
                       has_visible_content? issue_template_names merge_request_template_names
-                      user_defined_metrics_dashboard_paths xcode_project?).freeze
+                      user_defined_metrics_dashboard_paths xcode_project? has_ambiguous_refs?).freeze
 
   # Methods that use cache_method but only memoize the value
   MEMOIZED_CACHED_METHODS = %i(license).freeze
@@ -194,6 +194,31 @@ class Repository
 
   def ambiguous_ref?(ref)
     tag_exists?(ref) && branch_exists?(ref)
+  end
+
+  # It's possible for a tag name to be a prefix (including slash) of a branch
+  # name, or vice versa. For instance, a tag named `foo` means we can't create a
+  # tag `foo/bar`, but we _can_ create a branch `foo/bar`.
+  #
+  # If we know a repository has no refs of this type (which is the common case)
+  # then separating refs from paths - as in ExtractsRef - can be faster.
+  #
+  # This method only checks one level deep, so only prefixes that contain no
+  # slashes are considered. If a repository has a tag `foo/bar` and a branch
+  # `foo/bar/baz`, it will return false.
+  def has_ambiguous_refs?
+    return false unless branch_names.present? && tag_names.present?
+
+    with_slash, no_slash = (branch_names + tag_names).partition { |ref| ref.include?('/') }
+
+    return false if with_slash.empty?
+
+    prefixes = no_slash.map { |ref| Regexp.escape(ref) }.join('|')
+    prefix_regex = %r{^#{prefixes}/}
+
+    with_slash.any? do |ref|
+      prefix_regex.match?(ref)
+    end
   end
 
   def expand_ref(ref)

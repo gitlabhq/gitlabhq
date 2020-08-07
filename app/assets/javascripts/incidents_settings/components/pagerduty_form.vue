@@ -149,15 +149,17 @@ export default {
             </template>
           </gl-sprintf>
         </div>
-        <gl-button
-          v-gl-modal.resetWebhookModal
-          class="gl-mt-3"
-          :disabled="loading"
-          :loading="resettingWebhook"
-          data-testid="webhook-reset-btn"
-        >
-          {{ $options.i18n.webhookUrl.resetWebhookUrl }}
-        </gl-button>
+        <div class="gl-display-flex gl-justify-content-end">
+          <gl-button
+            v-gl-modal.resetWebhookModal
+            class="gl-mt-3"
+            :disabled="loading"
+            :loading="resettingWebhook"
+            data-testid="webhook-reset-btn"
+          >
+            {{ $options.i18n.webhookUrl.resetWebhookUrl }}
+          </gl-button>
+        </div>
         <gl-modal
           modal-id="resetWebhookModal"
           :title="$options.i18n.webhookUrl.resetWebhookUrl"
@@ -168,16 +170,17 @@ export default {
           {{ $options.i18n.webhookUrl.restKeyInfo }}
         </gl-modal>
       </gl-form-group>
-
-      <gl-button
-        ref="submitBtn"
-        :disabled="isSaveDisabled"
-        variant="success"
-        type="submit"
-        class="js-no-auto-disable"
-      >
-        {{ $options.i18n.saveBtnLabel }}
-      </gl-button>
+      <div class="gl-display-flex gl-justify-content-end">
+        <gl-button
+          ref="submitBtn"
+          :disabled="isSaveDisabled"
+          variant="success"
+          type="submit"
+          class="js-no-auto-disable"
+        >
+          {{ $options.i18n.saveBtnLabel }}
+        </gl-button>
+      </div>
     </form>
   </div>
 </template>

@@ -93,9 +93,11 @@ export default {
             </a>
           </p>
         </gl-form-group>
-        <gl-button variant="success" category="primary" @click="updateGrafanaIntegration">
-          {{ __('Save Changes') }}
-        </gl-button>
+        <div class="gl-display-flex gl-justify-content-end">
+          <gl-button variant="success" category="primary" @click="updateGrafanaIntegration">
+            {{ __('Save Changes') }}
+          </gl-button>
+        </div>
       </form>
     </div>
   </section>

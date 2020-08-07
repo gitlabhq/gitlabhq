@@ -67,6 +67,8 @@ module WikiActions
       @ref = params[:version_id]
       @path = page.path
 
+      Gitlab::UsageDataCounters::WikiPageCounter.count(:view)
+
       render 'shared/wikis/show'
     elsif file_blob
       send_blob(wiki.repository, file_blob)

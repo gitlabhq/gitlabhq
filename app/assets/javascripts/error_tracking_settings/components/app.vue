@@ -1,11 +1,11 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlDeprecatedButton as GlButton } from '@gitlab/ui';
 import ProjectDropdown from './project_dropdown.vue';
 import ErrorTrackingForm from './error_tracking_form.vue';
 
 export default {
-  components: { ProjectDropdown, ErrorTrackingForm, GlDeprecatedButton },
+  components: { ProjectDropdown, ErrorTrackingForm, GlButton },
   props: {
     initialApiHost: {
       type: String,
@@ -92,13 +92,15 @@ export default {
         @select-project="updateSelectedProject"
       />
     </div>
-    <gl-deprecated-button
-      :disabled="settingsLoading"
-      class="js-error-tracking-button"
-      variant="success"
-      @click="handleSubmit"
-    >
-      {{ __('Save changes') }}
-    </gl-deprecated-button>
+    <div class="gl-display-flex gl-justify-content-end">
+      <gl-button
+        :disabled="settingsLoading"
+        class="js-error-tracking-button"
+        variant="success"
+        @click="handleSubmit"
+      >
+        {{ __('Save changes') }}
+      </gl-button>
+    </div>
   </div>
 </template>

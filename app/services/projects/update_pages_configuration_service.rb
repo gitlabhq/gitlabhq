@@ -19,7 +19,7 @@ module Projects
       success
     rescue => e
       Gitlab::ErrorTracking.track_exception(e)
-      error(e.message)
+      error(e.message, pass_back: { exception: e })
     end
 
     private

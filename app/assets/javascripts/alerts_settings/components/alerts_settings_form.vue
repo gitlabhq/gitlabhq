@@ -512,9 +512,14 @@ export default {
               />
             </template>
           </gl-form-input-group>
-          <gl-button v-gl-modal.authKeyModal :disabled="!selectedService.active" class="gl-mt-3">{{
-            $options.i18n.resetKey
-          }}</gl-button>
+          <div class="gl-display-flex gl-justify-content-end">
+            <gl-button
+              v-gl-modal.authKeyModal
+              :disabled="!selectedService.active"
+              class="gl-mt-3"
+              >{{ $options.i18n.resetKey }}</gl-button
+            >
+          </div>
           <gl-modal
             modal-id="authKeyModal"
             :title="$options.i18n.resetKey"
@@ -541,11 +546,16 @@ export default {
             max-rows="10"
           />
         </gl-form-group>
-        <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
-          $options.i18n.testAlertInfo
-        }}</gl-button>
+        <div class="gl-display-flex gl-justify-content-end">
+          <gl-button :disabled="!canTestAlert" @click="validateTestAlert">{{
+            $options.i18n.testAlertInfo
+          }}</gl-button>
+        </div>
       </template>
       <div class="footer-block row-content-block gl-display-flex gl-justify-content-space-between">
+        <gl-button category="primary" :disabled="!canSaveConfig" @click="onReset">
+          {{ __('Cancel') }}
+        </gl-button>
         <gl-button
           variant="success"
           category="primary"
@@ -553,9 +563,6 @@ export default {
           @click="onSubmit"
         >
           {{ __('Save changes') }}
-        </gl-button>
-        <gl-button variant="default" category="primary" :disabled="!canSaveConfig" @click="onReset">
-          {{ __('Cancel') }}
         </gl-button>
       </div>
     </gl-form>

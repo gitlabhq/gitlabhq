@@ -60,18 +60,24 @@ module ExtractsRef
         id = [id, '/'].join
       end
 
-      valid_refs = ref_names.select { |v| id.start_with?("#{v}/") }
+      first_path_segment, rest = id.split('/', 2)
 
-      if valid_refs.empty?
-        # No exact ref match, so just try our best
-        pair = id.match(%r{([^/]+)(.*)}).captures
+      if use_first_path_segment?(first_path_segment)
+        pair = [first_path_segment, rest]
       else
-        # There is a distinct possibility that multiple refs prefix the ID.
-        # Use the longest match to maximize the chance that we have the
-        # right ref.
-        best_match = valid_refs.max_by(&:length)
-        # Partition the string into the ref and the path, ignoring the empty first value
-        pair = id.partition(best_match)[1..-1]
+        valid_refs = ref_names.select { |v| id.start_with?("#{v}/") }
+
+        if valid_refs.empty?
+          # No exact ref match, so just try our best
+          pair = id.match(%r{([^/]+)(.*)}).captures
+        else
+          # There is a distinct possibility that multiple refs prefix the ID.
+          # Use the longest match to maximize the chance that we have the
+          # right ref.
+          best_match = valid_refs.max_by(&:length)
+          # Partition the string into the ref and the path, ignoring the empty first value
+          pair = id.partition(best_match)[1..-1]
+        end
       end
     end
 
@@ -110,6 +116,15 @@ module ExtractsRef
   end
 
   private
+
+  def use_first_path_segment?(ref)
+    return false unless ::Feature.enabled?(:extracts_path_optimization)
+    return false unless repository_container
+    return false if repository_container.repository.has_ambiguous_refs?
+
+    repository_container.repository.branch_names_include?(ref) ||
+      repository_container.repository.tag_names_include?(ref)
+  end
 
   # overridden in subclasses, do not remove
   def get_id

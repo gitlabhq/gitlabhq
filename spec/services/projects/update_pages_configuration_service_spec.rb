@@ -6,7 +6,7 @@ RSpec.describe Projects::UpdatePagesConfigurationService do
   let(:project) { create(:project) }
   let(:service) { described_class.new(project) }
 
-  describe "#update" do
+  describe "#execute" do
     let(:file) { Tempfile.new('pages-test') }
 
     subject { service.execute }
@@ -38,6 +38,15 @@ RSpec.describe Projects::UpdatePagesConfigurationService do
         expect(service).not_to receive(:reload_daemon)
 
         expect(subject).to include(status: :success)
+      end
+    end
+
+    context 'when an error occurs' do
+      it 'returns an error object' do
+        e = StandardError.new("Failure")
+        allow(service).to receive(:reload_daemon).and_raise(e)
+
+        expect(subject).to eq(status: :error, message: "Failure", exception: e)
       end
     end
   end

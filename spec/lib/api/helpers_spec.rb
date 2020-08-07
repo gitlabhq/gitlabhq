@@ -230,4 +230,90 @@ RSpec.describe API::Helpers do
       end
     end
   end
+
+  describe "#destroy_conditionally!" do
+    let!(:project) { create(:project) }
+
+    context 'when unmodified check passes' do
+      before do
+        allow(subject).to receive(:check_unmodified_since!).with(project.updated_at).and_return(true)
+      end
+
+      it 'destroys given project' do
+        allow(subject).to receive(:status).with(204)
+        allow(subject).to receive(:body).with(false)
+        expect(project).to receive(:destroy).and_call_original
+
+        expect { subject.destroy_conditionally!(project) }.to change(Project, :count).by(-1)
+      end
+    end
+
+    context 'when unmodified check fails' do
+      before do
+        allow(subject).to receive(:check_unmodified_since!).with(project.updated_at).and_throw(:error)
+      end
+
+      # #destroy_conditionally! uses Grape errors which Ruby-throws a symbol, shifting execution to somewhere else.
+      # Since this spec isn't in the Grape context, we need to simulate this ourselves.
+      # Grape throws here: https://github.com/ruby-grape/grape/blob/470f80cd48933cdf11d4c1ee02cb43e0f51a7300/lib/grape/dsl/inside_route.rb#L168-L171
+      # And catches here: https://github.com/ruby-grape/grape/blob/cf57d250c3d77a9a488d9f56918d62fd4ac745ff/lib/grape/middleware/error.rb#L38-L40
+      it 'does not destroy given project' do
+        expect(project).not_to receive(:destroy)
+
+        expect { subject.destroy_conditionally!(project) }.to throw_symbol(:error).and change { Project.count }.by(0)
+      end
+    end
+  end
+
+  describe "#check_unmodified_since!" do
+    let(:unmodified_since_header) { Time.now.change(usec: 0) }
+
+    before do
+      allow(subject).to receive(:headers).and_return('If-Unmodified-Since' => unmodified_since_header.to_s)
+    end
+
+    context 'when last modified is later than header value' do
+      it 'renders error' do
+        expect(subject).to receive(:render_api_error!)
+
+        subject.check_unmodified_since!(unmodified_since_header + 1.hour)
+      end
+    end
+
+    context 'when last modified is earlier than header value' do
+      it 'does not render error' do
+        expect(subject).not_to receive(:render_api_error!)
+
+        subject.check_unmodified_since!(unmodified_since_header - 1.hour)
+      end
+    end
+
+    context 'when last modified is equal to header value' do
+      it 'does not render error' do
+        expect(subject).not_to receive(:render_api_error!)
+
+        subject.check_unmodified_since!(unmodified_since_header)
+      end
+    end
+
+    context 'when there is no header value present' do
+      let(:unmodified_since_header) { nil }
+
+      it 'does not render error' do
+        expect(subject).not_to receive(:render_api_error!)
+
+        subject.check_unmodified_since!(Time.now)
+      end
+    end
+
+    context 'when header value is not a valid time value' do
+      let(:unmodified_since_header) { "abcd" }
+
+      it 'does not render error' do
+        expect(subject).not_to receive(:render_api_error!)
+
+        subject.check_unmodified_since!(Time.now)
+      end
+    end
+  end
 end

@@ -2,7 +2,6 @@ import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import createStore from '~/deploy_freeze/store';
-import { mockFreezePeriods, mockTimezoneData } from '../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -10,11 +9,12 @@ localVue.use(Vuex);
 describe('Deploy freeze table', () => {
   let wrapper;
   let store;
+  const timezoneDataFixture = getJSONFixture('/api/freeze-periods/timezone_data.json');
 
   const createComponent = () => {
     store = createStore({
       projectId: '8',
-      timezoneData: mockTimezoneData,
+      timezoneData: timezoneDataFixture,
     });
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = mount(DeployFreezeTable, {
@@ -50,11 +50,12 @@ describe('Deploy freeze table', () => {
     });
 
     it('displays data', () => {
-      store.state.freezePeriods = mockFreezePeriods;
+      const freezePeriodsFixture = getJSONFixture('/api/freeze-periods/freeze_periods.json');
+      store.state.freezePeriods = freezePeriodsFixture;
 
       return wrapper.vm.$nextTick(() => {
         const tableRows = findDeployFreezeTable().findAll('tbody tr');
-        expect(tableRows.length).toBe(mockFreezePeriods.length);
+        expect(tableRows.length).toBe(freezePeriodsFixture.length);
         expect(findEmptyFreezePeriods().exists()).toBe(false);
       });
     });

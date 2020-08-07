@@ -15333,7 +15333,8 @@ CREATE TABLE public.services (
     instance boolean DEFAULT false NOT NULL,
     comment_detail smallint,
     inherit_from_id bigint,
-    alert_events boolean
+    alert_events boolean,
+    group_id bigint
 );
 
 CREATE SEQUENCE public.services_id_seq
@@ -20567,6 +20568,8 @@ CREATE UNIQUE INDEX index_services_on_type_and_template_partial ON public.servic
 
 CREATE INDEX index_services_on_type_id_when_active_not_instance_not_template ON public.services USING btree (type, id) WHERE ((active = true) AND (instance = false) AND (template = false));
 
+CREATE UNIQUE INDEX index_services_on_unique_group_id_and_type ON public.services USING btree (group_id, type);
+
 CREATE UNIQUE INDEX index_shards_on_name ON public.shards USING btree (name);
 
 CREATE INDEX index_slack_integrations_on_service_id ON public.slack_integrations USING btree (service_id);
@@ -21773,6 +21776,9 @@ ALTER TABLE ONLY public.application_settings
 
 ALTER TABLE ONLY public.ci_triggers
     ADD CONSTRAINT fk_e8e10d1964 FOREIGN KEY (owner_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.services
+    ADD CONSTRAINT fk_e8fe908a34 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.pages_domains
     ADD CONSTRAINT fk_ea2f6dfc6f FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;

@@ -92,16 +92,20 @@ exports[`grafana integration component default state to match the default snapsh
         </p>
       </gl-form-group-stub>
        
-      <gl-button-stub
-        category="primary"
-        icon=""
-        size="medium"
-        variant="success"
+      <div
+        class="gl-display-flex gl-justify-content-end"
       >
+        <gl-button-stub
+          category="primary"
+          icon=""
+          size="medium"
+          variant="success"
+        >
+          
+          Save Changes
         
-        Save Changes
-      
-      </gl-button-stub>
+        </gl-button-stub>
+      </div>
     </form>
   </div>
 </section>

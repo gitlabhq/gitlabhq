@@ -5,9 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Test Coverage Visualization
+# Test Coverage Visualization **(CORE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
+> - It's deployed behind a feature flag, disabled by default.
+> - It's disabled on GitLab.com.
+> - It can be enabled or disabled per-project.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-feature). **(CORE ONLY)**
 
 With the help of [GitLab CI/CD](../../../ci/README.md), you can collect the test
 coverage information of your favorite testing or coverage-analysis tool, and visualize
@@ -69,13 +73,25 @@ test:
 ## Enabling the feature
 
 This feature comes with the `:coverage_report_view` feature flag disabled by
-default. This feature is disabled due to some performance issues with very large
+default. It is disabled on GitLab.com. This feature is disabled due to some performance issues with very large
 data sets. When [the performance issue](https://gitlab.com/gitlab-org/gitlab/-/issues/211410)
-is resolved, the feature will be enabled by default.
+is resolved, the feature will be enabled by default. [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance. Test coverage visualization can be enabled or disabled per-project.
 
-To enable this feature, ask a GitLab administrator with Rails console access to
-run the following command:
+To enable it:
 
 ```ruby
+# Instance-wide
 Feature.enable(:coverage_report_view)
+# or by project
+Feature.enable(:coverage_report_view, Project.find(<project id>))
+```
+
+To disable it:
+
+```ruby
+# Instance-wide
+Feature.disable(:coverage_report_view)
+# or by project
+Feature.disable(:coverage_report_view, Project.find(<project id>))
 ```

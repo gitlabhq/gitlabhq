@@ -161,6 +161,14 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(assigns(:sidebar_limited)).to be(false)
       end
 
+      it 'increases the page view counter' do
+        expect do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end.to change { Gitlab::UsageDataCounters::WikiPageCounter.read(:view) }.by(1)
+      end
+
       context 'when page content encoding is invalid' do
         it 'sets flash error' do
           allow(controller).to receive(:valid_encoding?).and_return(false)

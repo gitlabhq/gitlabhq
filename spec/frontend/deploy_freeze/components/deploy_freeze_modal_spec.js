@@ -4,7 +4,6 @@ import { GlButton, GlModal } from '@gitlab/ui';
 import DeployFreezeModal from '~/deploy_freeze/components/deploy_freeze_modal.vue';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
 import createStore from '~/deploy_freeze/store';
-import { mockDeployFreezePayload, mockTimezoneData } from '../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -12,11 +11,13 @@ localVue.use(Vuex);
 describe('Deploy freeze modal', () => {
   let wrapper;
   let store;
+  const freezePeriodsFixture = getJSONFixture('/api/freeze-periods/freeze_periods.json');
+  const timezoneDataFixture = getJSONFixture('/api/freeze-periods/timezone_data.json');
 
   beforeEach(() => {
     store = createStore({
       projectId: '8',
-      timezoneData: mockTimezoneData,
+      timezoneData: timezoneDataFixture,
     });
     wrapper = shallowMount(DeployFreezeModal, {
       attachToDocument: true,
@@ -57,7 +58,7 @@ describe('Deploy freeze modal', () => {
 
   describe('Adding a new deploy freeze', () => {
     beforeEach(() => {
-      const { freeze_start, freeze_end, cron_timezone } = mockDeployFreezePayload;
+      const { freeze_start, freeze_end, cron_timezone } = freezePeriodsFixture[0];
       setInput(freeze_start, freeze_end, cron_timezone);
     });
 
@@ -79,7 +80,7 @@ describe('Deploy freeze modal', () => {
 
     describe('when the cron state is valid', () => {
       beforeEach(() => {
-        const { freeze_start, freeze_end, cron_timezone } = mockDeployFreezePayload;
+        const { freeze_start, freeze_end, cron_timezone } = freezePeriodsFixture[0];
         setInput(freeze_start, freeze_end, cron_timezone);
       });
 

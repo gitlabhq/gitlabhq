@@ -35,23 +35,19 @@ module Projects
 
       # rubocop: disable CodeReuse/ActiveRecord
       def builds
-        pipeline.latest_builds.where(id: build_params)
+        @builds ||= pipeline.latest_builds.for_ids(build_ids).presence || render_404
       end
 
-      def build_params
+      def build_ids
         return [] unless params[:build_ids]
 
         params[:build_ids].split(",")
       end
 
       def test_suite
-        if builds.present?
-          builds.map do |build|
-            build.collect_test_reports!(Gitlab::Ci::Reports::TestReports.new)
-          end.sum
-        else
-          render_404
-        end
+        builds.map do |build|
+          build.collect_test_reports!(Gitlab::Ci::Reports::TestReports.new)
+        end.sum
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

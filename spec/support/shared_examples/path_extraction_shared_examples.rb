@@ -125,6 +125,56 @@ RSpec.shared_examples 'extracts refs' do
         expect(extract_ref('release/app/v1.0.0/README.md')).to eq(
           ['release/app/v1.0.0', 'README.md'])
       end
+
+      context 'when the repository does not have ambiguous refs' do
+        before do
+          allow(container.repository).to receive(:has_ambiguous_refs?).and_return(false)
+        end
+
+        it 'does not fetch all ref names when the first path component is a ref' do
+          expect(self).not_to receive(:ref_names)
+          expect(container.repository).to receive(:branch_names_include?).with('v1.0.0').and_return(false)
+          expect(container.repository).to receive(:tag_names_include?).with('v1.0.0').and_return(true)
+
+          expect(extract_ref('v1.0.0/doc/README.md')).to eq(['v1.0.0', 'doc/README.md'])
+        end
+
+        it 'fetches all ref names when the first path component is not a ref' do
+          expect(self).to receive(:ref_names).and_call_original
+          expect(container.repository).to receive(:branch_names_include?).with('release').and_return(false)
+          expect(container.repository).to receive(:tag_names_include?).with('release').and_return(false)
+
+          expect(extract_ref('release/app/doc/README.md')).to eq(['release/app', 'doc/README.md'])
+        end
+
+        context 'when the extracts_path_optimization feature flag is disabled' do
+          before do
+            stub_feature_flags(extracts_path_optimization: false)
+          end
+
+          it 'always fetches all ref names' do
+            expect(self).to receive(:ref_names).and_call_original
+            expect(container.repository).not_to receive(:branch_names_include?)
+            expect(container.repository).not_to receive(:tag_names_include?)
+
+            expect(extract_ref('v1.0.0/doc/README.md')).to eq(['v1.0.0', 'doc/README.md'])
+          end
+        end
+      end
+
+      context 'when the repository has ambiguous refs' do
+        before do
+          allow(container.repository).to receive(:has_ambiguous_refs?).and_return(true)
+        end
+
+        it 'always fetches all ref names' do
+          expect(self).to receive(:ref_names).and_call_original
+          expect(container.repository).not_to receive(:branch_names_include?)
+          expect(container.repository).not_to receive(:tag_names_include?)
+
+          expect(extract_ref('v1.0.0/doc/README.md')).to eq(['v1.0.0', 'doc/README.md'])
+        end
+      end
     end
   end
 end

@@ -1,15 +1,16 @@
 import state from '~/deploy_freeze/store/state';
 import mutations from '~/deploy_freeze/store/mutations';
 import * as types from '~/deploy_freeze/store/mutation_types';
-import { mockFreezePeriods, mockTimezoneData } from '../mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 describe('Deploy freeze mutations', () => {
   let stateCopy;
+  const timezoneDataFixture = getJSONFixture('/api/freeze-periods/timezone_data.json');
+
   beforeEach(() => {
     stateCopy = state({
       projectId: '8',
-      timezoneData: mockTimezoneData,
+      timezoneData: timezoneDataFixture,
     });
   });
 
@@ -26,11 +27,12 @@ describe('Deploy freeze mutations', () => {
 
   describe('RECEIVE_FREEZE_PERIODS_SUCCESS', () => {
     it('should set freeze periods and format timezones from identifiers to names', () => {
-      const timezoneNames = ['Eastern Time (US & Canada)', 'UTC', 'Berlin'];
+      const timezoneNames = ['Berlin', 'UTC', 'Eastern Time (US & Canada)'];
+      const freezePeriodsFixture = getJSONFixture('/api/freeze-periods/freeze_periods.json');
 
-      mutations[types.RECEIVE_FREEZE_PERIODS_SUCCESS](stateCopy, mockFreezePeriods);
+      mutations[types.RECEIVE_FREEZE_PERIODS_SUCCESS](stateCopy, freezePeriodsFixture);
 
-      const expectedFreezePeriods = mockFreezePeriods.map((freezePeriod, index) => ({
+      const expectedFreezePeriods = freezePeriodsFixture.map((freezePeriod, index) => ({
         ...convertObjectPropsToCamelCase(freezePeriod),
         cronTimezone: timezoneNames[index],
       }));

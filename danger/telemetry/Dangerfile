@@ -9,7 +9,7 @@ Please check the ~telemetry [guide](https://docs.gitlab.com/ee/development/telem
 MSG
 
 UPDATE_METRICS_DEFINITIONS_MESSAGE = <<~MSG
-  When adding, changing, or updating metrics, please update the [Usage Statistics definition table](https://docs.gitlab.com/ee/development/telemetry/usage_ping.html#usage-statistics-definitions).
+  When adding, changing, or updating metrics, please update the [Event dictionary Usage Ping table](https://docs.gitlab.com/ee/development/telemetry/event_dictionary.html#usage-ping).
 
 MSG
 

@@ -257,7 +257,6 @@ Performance/Count:
   Exclude:
     - 'app/helpers/groups_helper.rb'
     - 'app/services/merge_requests/add_context_service.rb'
-    - 'ee/lib/gitlab/geo/fdw.rb'
     - 'ee/lib/gitlab/graphql/aggregations/epics/epic_node.rb'
     - 'ee/spec/controllers/projects/feature_flags_controller_spec.rb'
     - 'ee/spec/requests/api/feature_flags_spec.rb'

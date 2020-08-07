@@ -1245,6 +1245,32 @@ RSpec.describe Repository do
     end
   end
 
+  describe '#has_ambiguous_refs?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:branch_names, :tag_names, :result) do
+      nil | nil | false
+      %w() | %w() | false
+      %w(a b) | %w() | false
+      %w() | %w(c d) | false
+      %w(a b) | %w(c d) | false
+      %w(a/b) | %w(c/d) | false
+      %w(a b) | %w(c d a/z) | true
+      %w(a b c/z) | %w(c d) | true
+      %w(a/b/z) | %w(a/b) | false # we only consider refs ambiguous before the first slash
+      %w(a/b/z) | %w(a/b a) | true
+    end
+
+    with_them do
+      it do
+        allow(repository).to receive(:branch_names).and_return(branch_names)
+        allow(repository).to receive(:tag_names).and_return(tag_names)
+
+        expect(repository.has_ambiguous_refs?).to eq(result)
+      end
+    end
+  end
+
   describe '#expand_ref' do
     let(:ref) { 'ref' }
 
@@ -1927,7 +1953,8 @@ RSpec.describe Repository do
         :issue_template_names,
         :merge_request_template_names,
         :user_defined_metrics_dashboard_paths,
-        :xcode_project?
+        :xcode_project?,
+        :has_ambiguous_refs?
       ])
 
       repository.after_change_head

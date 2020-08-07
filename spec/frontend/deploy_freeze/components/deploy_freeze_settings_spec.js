@@ -3,9 +3,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import DeployFreezeSettings from '~/deploy_freeze/components/deploy_freeze_settings.vue';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import DeployFreezeModal from '~/deploy_freeze/components/deploy_freeze_modal.vue';
-
 import createStore from '~/deploy_freeze/store';
-import { mockTimezoneData } from '../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -13,11 +11,12 @@ localVue.use(Vuex);
 describe('Deploy freeze settings', () => {
   let wrapper;
   let store;
+  const timezoneDataFixture = getJSONFixture('/api/freeze-periods/timezone_data.json');
 
   beforeEach(() => {
     store = createStore({
       projectId: '8',
-      timezoneData: mockTimezoneData,
+      timezoneData: timezoneDataFixture,
     });
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = shallowMount(DeployFreezeSettings, {
