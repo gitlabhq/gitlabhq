@@ -739,6 +739,8 @@ Board:
 - milestone_id
 - weight
 - name
+- hide_backlog_list
+- hide_closed_list
 List:
 - id
 - board_id

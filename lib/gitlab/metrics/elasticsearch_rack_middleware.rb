@@ -24,11 +24,11 @@ module Gitlab
         query_time = ::Gitlab::Instrumentation::ElasticsearchTransport.query_time
         request_count = ::Gitlab::Instrumentation::ElasticsearchTransport.get_request_count
 
+        return unless request_count > 0
+
         transaction.increment(:http_elasticsearch_requests_total, request_count) do
           docstring 'Amount of calls to Elasticsearch servers during web requests'
         end
-
-        return unless request_count > 0
 
         transaction.observe(:http_elasticsearch_requests_duration_seconds, query_time) do
           docstring 'Query time for Elasticsearch servers during web requests'

@@ -5,7 +5,7 @@ module QA
     module MergeRequest
       class New < Page::Issuable::New
         view 'app/views/shared/issuable/_form.html.haml' do
-          element :issuable_create_button
+          element :issuable_create_button, required: true
         end
 
         def create_merge_request

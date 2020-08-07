@@ -237,7 +237,7 @@ module ApplicationHelper
 
   def stylesheet_link_tag_defer(path)
     if use_startup_css?
-      stylesheet_link_tag(path, media: "print", onload: "this.onload=null;this.media='all'")
+      stylesheet_link_tag(path, media: "print")
     else
       stylesheet_link_tag(path, media: "all")
     end

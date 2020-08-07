@@ -65,16 +65,16 @@ local machine, this is a simple way to get started:
    the `api` scope.
 
 1. On your local machine, run `terraform init`, passing in the following options,
-   replacing `<YOUR-PROJECT-NAME>`, `<YOUR-PROJECT-ID>`,  `<YOUR-USERNAME>` and
+   replacing `<YOUR-STATE-NAME>`, `<YOUR-PROJECT-ID>`,  `<YOUR-USERNAME>` and
    `<YOUR-ACCESS-TOKEN>` with the relevant values. This command initializes your
    Terraform state, and stores that state within your GitLab project. This example
    uses `gitlab.com`:
 
    ```shell
    terraform init \
-       -backend-config="address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-PROJECT-NAME>" \
-       -backend-config="lock_address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-PROJECT-NAME>/lock" \
-       -backend-config="unlock_address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-PROJECT-NAME>/lock" \
+       -backend-config="address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-STATE-NAME>" \
+       -backend-config="lock_address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-STATE-NAME>/lock" \
+       -backend-config="unlock_address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-STATE-NAME>/lock" \
        -backend-config="username=<YOUR-USERNAME>" \
        -backend-config="password=<YOUR-ACCESS-TOKEN>" \
        -backend-config="lock_method=POST" \
@@ -82,7 +82,7 @@ local machine, this is a simple way to get started:
        -backend-config="retry_wait_min=5"
    ```
 
-Next, [configure the backend](#configure-the-backend).
+You can now run `terraform plan` and `terraform apply` as you normally would.
 
 ## Get started using GitLab CI
 
@@ -121,17 +121,18 @@ and the CI YAML file:
    commands must be executed, `TF_ADDRESS` is the URL to the state on the GitLab
    instance where this pipeline runs, and the final path segment in `TF_ADDRESS`
    is the name of the Terraform state. Projects may have multiple states, and
-   this name is arbitrary, so in this example we will set it to the name of the
-   project, and we will ensure that the `.terraform` directory is cached between
-   jobs in the pipeline using a cache key based on the state name:
+   this name is arbitrary, so in this example we set it to `example-production`
+   which corresponds with the directory we're using as our `TF_ROOT`, and we
+   ensure that the `.terraform` directory is cached between jobs in the pipeline
+   using a cache key based on the state name (`example-production`):
 
    ```yaml
    variables:
-     TF_ROOT: ${CI_PROJECT_DIR}/environments/cloudflare/production
-     TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+     TF_ROOT: ${CI_PROJECT_DIR}/environments/example/production
+     TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/example-production
 
    cache:
-     key: ${CI_PROJECT_NAME}
+     key: example-production
      paths:
        - ${TF_ROOT}/.terraform
    ```
@@ -275,11 +276,11 @@ can configure this manually as follows:
 image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
 
 variables:
-  TF_ROOT: ${CI_PROJECT_DIR}/environments/cloudflare/production
-  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+  TF_ROOT: ${CI_PROJECT_DIR}/environments/example/production
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/example-production
 
 cache:
-  key: ${CI_PROJECT_NAME}
+  key: example-production
   paths:
     - ${TF_ROOT}/.terraform
 

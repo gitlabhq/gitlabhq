@@ -466,6 +466,10 @@ you can pull from the Container Registry, but you cannot push.
    sudo aws --endpoint-url https://your-object-storage-backend.com s3 sync registry s3://mybucket
    ```
 
+   TIP: **Tip:**
+   If you have a lot of data, you may be able to improve performance by
+   [running parallel sync operations](https://aws.amazon.com/premiumsupport/knowledge-center/s3-improve-transfer-sync-command/).
+
 1. To perform the final data sync,
    [put the Container Registry in `read-only` mode](#performing-garbage-collection-without-downtime) and
    [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -484,6 +488,19 @@ you can pull from the Container Registry, but you cannot push.
    flag will delete files that exist in the destination but not in the source.
    Make sure not to swap the source and destination, or you will delete all data in the Registry.
 
+1. Verify all Container Registry files have been uploaded to object storage
+   by looking at the file count returned by these two commands:
+
+   ```shell
+   sudo find registry -type f | wc -l
+   ```
+
+   ```shell
+   sudo aws --endpoint-url https://your-object-storage-backend.com s3 ls s3://mybucket --recursive | wc -l
+   ```
+
+   The output of these commands should match, except for the content in the
+   `_uploads` directories and sub-directories.
 1. Configure your registry to [use the S3 bucket for storage](#use-object-storage).
 1. For the changes to take effect, set the Registry back to `read-write` mode and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 

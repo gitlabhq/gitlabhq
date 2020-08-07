@@ -9660,7 +9660,9 @@ CREATE TABLE public.boards (
     name character varying DEFAULT 'Development'::character varying NOT NULL,
     milestone_id integer,
     group_id integer,
-    weight integer
+    weight integer,
+    hide_backlog_list boolean DEFAULT false NOT NULL,
+    hide_closed_list boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.boards_id_seq
@@ -20433,13 +20435,13 @@ CREATE INDEX index_requirements_on_title_trigram ON public.requirements USING gi
 
 CREATE INDEX index_requirements_on_updated_at ON public.requirements USING btree (updated_at);
 
-CREATE INDEX index_resource_label_events_on_epic_id ON public.resource_label_events USING btree (epic_id);
+CREATE INDEX index_resource_label_events_issue_id_label_id_action ON public.resource_label_events USING btree (issue_id, label_id, action);
 
-CREATE INDEX index_resource_label_events_on_issue_id ON public.resource_label_events USING btree (issue_id);
+CREATE INDEX index_resource_label_events_on_epic_id ON public.resource_label_events USING btree (epic_id);
 
 CREATE INDEX index_resource_label_events_on_label_id_and_action ON public.resource_label_events USING btree (label_id, action);
 
-CREATE INDEX index_resource_label_events_on_merge_request_id ON public.resource_label_events USING btree (merge_request_id);
+CREATE INDEX index_resource_label_events_on_merge_request_id_label_id_action ON public.resource_label_events USING btree (merge_request_id, label_id, action);
 
 CREATE INDEX index_resource_label_events_on_user_id ON public.resource_label_events USING btree (user_id);
 

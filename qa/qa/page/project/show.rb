@@ -143,6 +143,10 @@ module QA
           click_element :web_ide_button
         end
 
+        def has_edit_fork_button?
+          has_element?(:web_ide_button, text: 'Edit fork in Web IDE')
+        end
+
         def project_name
           find_element(:project_name_content).text
         end

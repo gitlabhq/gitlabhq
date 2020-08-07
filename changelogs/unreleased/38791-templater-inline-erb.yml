@@ -1,0 +1,5 @@
+---
+title: Add pre-processing step so inline ERB and HTML syntax are wrapped in codeblocks for code vs. content editing in the static site editor's WYSIWYG mode.
+merge_request: 38791
+author:
+type: added

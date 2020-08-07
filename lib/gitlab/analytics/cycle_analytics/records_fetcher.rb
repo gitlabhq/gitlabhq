@@ -90,7 +90,7 @@ module Gitlab
         end
 
         def ordered_and_limited_query
-          order_by_end_event(query).limit(MAX_RECORDS)
+          order_by_end_event(query, columns).limit(MAX_RECORDS)
         end
 
         def records

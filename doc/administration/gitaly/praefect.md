@@ -994,9 +994,21 @@ strategy in the future.
 
 Praefect recovers from a failing primary Gitaly node by promoting a healthy secondary as the new primary. To minimize data loss, Praefect elects the secondary with the least unreplicated writes from the primary. There can still be some unreplicated writes, leading to data loss.
 
-Praefect switches a virtual storage in to read-only mode after a failover event. This eases data recovery efforts by preventing new, possibly conflicting writes to the newly elected primary. This allows the administrator to attempt recovering the lost data before allowing new writes.
+### Read-only mode
 
-If you prefer write availability over consistency, this behavior can be turned off by setting `praefect['failover_read_only_after_failover'] = false` in `/etc/gitlab/gitlab.rb` and [reconfiguring Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+If the primary is not fully up to date, Praefect switches:
+
+- The virtual storage to read-only mode in GitLab 13.2 and earlier.
+- The affected repositories to read-only mode in
+  [GitLab 13.3](https://gitlab.com/gitlab-org/gitaly/-/issues/2862) and later.
+
+This can happen after failing over to an outdated secondary. Read-only mode eases data
+recovery efforts by preventing writes that may conflict with the unreplicated writes.
+
+To re-enable the repositories for writes, the administrator can attempt to
+[recover the missing data](#recover-missing-data) from an up-to-date replica. If
+recovering the data is not possible, the repository can be enabled for writes again by
+[accepting the data loss](#accept-data-loss).
 
 ### Checking for data loss
 
@@ -1041,28 +1053,40 @@ NOTE: **Note:**
 To check a project's repository checksums across on all Gitaly nodes, run the
 [replicas Rake task](../raketasks/praefect.md#replica-checksums) on the main GitLab node.
 
-### Recovering lost writes
+### Recover missing data
 
-The Praefect `reconcile` sub-command can be used to recover lost writes from the
-previous primary once it is back online. This is only possible when the virtual storage
-is still in read-only mode.
+The Praefect `reconcile` sub-command can be used to recover unreplicated changes from another replica. The source must be on a later generation than the target storage.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml reconcile -virtual <virtual-storage> -reference <previous-primary> -target <current-primary> -f
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml reconcile -virtual <virtual-storage> -reference <up-to-date-storage> -target <outdated-storage> -f
 ```
 
-Refer to [Backend Node Recovery](#backend-node-recovery) section for more details on
-the `reconcile` sub-command.
+Refer to [Backend Node Recovery](#backend-node-recovery) section for more details on the `reconcile` sub-command.
 
-### Enabling Writes
+### Accept data loss
 
-Any data recovery attempts should have been made before enabling writes to eliminate
-any chance of conflicting writes. Virtual storage can be re-enabled for writes by using
-the Praefect `enable-writes` sub-command.
+Praefect provides the following subcommands to re-enable writes:
 
-```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml enable-writes -virtual-storage <virtual-storage>
-```
+- In GitLab 13.2 and earlier, `enable-writes` to re-enable virtual storage for writes
+  after data recovery attempts.
+
+   ```shell
+   sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml enable-writes -virtual-storage <virtual-storage>
+   ```
+
+- [In GitLab 13.3](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2415) and
+  later, `accept-dataloss` to accept data loss and re-enable writes for repositories
+  after data recovery attempts have failed. Accepting data loss causes current version
+  of the repository on the authoritative storage to be considered latest. Other storages
+  are brought up to date with the authoritative storage by scheduling replication jobs.
+
+  ```shell
+  sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss -virtual-storage <virtual-storage> -repository <relative-path> -authoritative-storage <storage-name>
+  ```
+
+CAUTION: **Caution:**
+`accept-dataloss` causes permanent data loss by overwriting other versions of the
+repository. Data recovery efforts must be performed before using it.
 
 ## Backend Node Recovery
 

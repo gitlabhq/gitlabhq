@@ -2,25 +2,42 @@
 import templater from '~/static_site_editor/services/templater';
 
 describe('templater', () => {
-  const source = `Some text
+  const source = `Below this line is a simple ERB (single-line erb block) example.
 
 <% some erb code %>
 
-Some more text
+Below this line is a complex ERB (multi-line erb block) example.
 
 <% if apptype.maturity && (apptype.maturity != "planned") %>
   <% maturity = "This application type is at the \"#{apptype.maturity}\" level of maturity." %>
 <% end %>
 
-With even text with indented code above.
+Below this line is a non-erb (single-line HTML) markup example that also has erb.
+
+<a href="<%= compensation_roadmap.role_path %>"><%= compensation_roadmap.role_path %></a>
+
+Below this line is a non-erb (multi-line HTML block) markup example that also has erb.
+
+<ul>
+<% compensation_roadmap.recommendation.recommendations.each do |recommendation| %>
+  <li><%= recommendation %></li>
+<% end %>
+</ul>
+
+Below this line is a block of HTML.
+
+<div>
+  <h1>Heading</h1>
+  <p>Some paragraph...</p>
+</div>
 `;
-  const sourceTemplated = `Some text
+  const sourceTemplated = `Below this line is a simple ERB (single-line erb block) example.
 
 \`\`\` sse
 <% some erb code %>
 \`\`\`
 
-Some more text
+Below this line is a complex ERB (multi-line erb block) example.
 
 \`\`\` sse
 <% if apptype.maturity && (apptype.maturity != "planned") %>
@@ -28,7 +45,30 @@ Some more text
 <% end %>
 \`\`\`
 
-With even text with indented code above.
+Below this line is a non-erb (single-line HTML) markup example that also has erb.
+
+\`\`\` sse
+<a href="<%= compensation_roadmap.role_path %>"><%= compensation_roadmap.role_path %></a>
+\`\`\`
+
+Below this line is a non-erb (multi-line HTML block) markup example that also has erb.
+
+\`\`\` sse
+<ul>
+<% compensation_roadmap.recommendation.recommendations.each do |recommendation| %>
+  <li><%= recommendation %></li>
+<% end %>
+</ul>
+\`\`\`
+
+Below this line is a block of HTML.
+
+\`\`\` sse
+<div>
+  <h1>Heading</h1>
+  <p>Some paragraph...</p>
+</div>
+\`\`\`
 `;
 
   it.each`
@@ -38,7 +78,7 @@ With even text with indented code above.
     ${'unwrap'} | ${sourceTemplated} | ${source}
     ${'unwrap'} | ${source}          | ${source}
   `(
-    'wraps $initial in a templated sse codeblock if $fn is wrap, unwraps otherwise',
+    'wraps $initial in a templated sse codeblocks if $fn is wrap, unwraps otherwise',
     ({ fn, initial, target }) => {
       expect(templater[fn](initial)).toMatch(target);
     },
