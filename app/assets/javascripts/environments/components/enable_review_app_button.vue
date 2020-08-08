@@ -1,11 +1,11 @@
 <script>
-import { GlDeprecatedButton, GlModal, GlModalDirective, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlModal, GlModalDirective, GlLink, GlSprintf } from '@gitlab/ui';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import { s__ } from '~/locale';
 
 export default {
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlLink,
     GlModal,
     GlSprintf,
@@ -44,7 +44,7 @@ export default {
 </script>
 <template>
   <div>
-    <gl-deprecated-button
+    <gl-button
       v-gl-modal="$options.modalInfo.id"
       variant="info"
       category="secondary"
@@ -52,7 +52,7 @@ export default {
       class="js-enable-review-app-button"
     >
       {{ s__('Environments|Enable review app') }}
-    </gl-deprecated-button>
+    </gl-button>
     <gl-modal
       :modal-id="$options.modalInfo.id"
       :title="$options.modalInfo.title"
