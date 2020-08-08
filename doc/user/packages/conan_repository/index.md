@@ -284,7 +284,7 @@ To work with Conan commands within [GitLab CI/CD](./../../../ci/README.md), you 
 `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
 It is easiest to provide the `CONAN_LOGIN_USERNAME` and `CONAN_PASSWORD` with each
-Conan command in your `.gitlab-ci.yml` file:
+Conan command in your `.gitlab-ci.yml` file. For example:
 
 ```yaml
 image: conanio/gcc7
@@ -293,8 +293,10 @@ create_package:
   stage: deploy
   script:
     - conan remote add gitlab https://gitlab.example.com/api/v4/packages/conan
-    - conan create . my-group+my-project/beta
-    - CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload Hello/0.1@root+ci-conan/beta1 --all --remote=gitlab
+    - conan new <package-name>/0.1 -t
+    - conan create . <group-name>+<project-name>/stable
+    - CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload <package-name>/0.1@<group-name>+<project-name>/stable --all --remote=gitlab
+
 ```
 
 You can find additional Conan images to use as the base of your CI file
