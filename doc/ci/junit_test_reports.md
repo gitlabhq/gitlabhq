@@ -250,8 +250,7 @@ display a list of test suites and cases reported from the XML file.
 ![Test Reports Widget](img/pipelines_junit_test_report_ui_v12_5.png)
 
 You can view all the known test suites and click on each of these to see further
-details, including the cases that makeup the suite. Cases are ordered by status,
-with failed showing at the top, skipped next and successful cases last.
+details, including the cases that make up the suite.
 
 You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a-pipelines-test-report).
 
