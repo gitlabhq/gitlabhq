@@ -460,9 +460,9 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_REQUEST_HEADERS` | string | Set to a comma-separated list of request header names and values. Headers will be added to every request made by DAST. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
 | `DAST_DEBUG` | boolean | Enable debug message output. Default: `false` |
 | `DAST_SPIDER_MINS` | number | The maximum duration of the spider scan in minutes. Set to `0` for unlimited. Default: One minute, or unlimited when the scan is a full scan. |
-| `DAST_HTML_REPORT` | string | The file name of the HTML report written at the end of a scan. |
-| `DAST_MARKDOWN_REPORT` | string | The file name of the Markdown report written at the end of a scan. |
-| `DAST_XML_REPORT` | string | The file name of the XML report written at the end of a scan. |
+| `DAST_HTML_REPORT` | string | The filename of the HTML report written at the end of a scan. |
+| `DAST_MARKDOWN_REPORT` | string | The filename of the Markdown report written at the end of a scan. |
+| `DAST_XML_REPORT` | string | The filename of the XML report written at the end of a scan. |
 | `DAST_INCLUDE_ALPHA_VULNERABILITIES` | boolean | Set to `true` to include alpha passive and active scan rules. Default: `false` |
 | `DAST_USE_AJAX_SPIDER` | boolean | Set to `true` to use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Default: `false` |
 | `DAST_ZAP_CLI_OPTIONS` | string | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. |
