@@ -136,14 +136,14 @@ Enter file in which to save the key (/home/user/.ssh/id_rsa):
 ```
 
 If you don't already have an SSH key pair and are not generating a [deploy key](#deploy-keys),
-accept the suggested file and directory. Your SSH client will use
+accept the suggested file and directory. Your SSH client uses
 the resulting SSH key pair with no additional configuration.
 
 Alternatively, you can save the new SSH key pair in a different location.
-You can assign the directory and file name of your choice.
+You can assign the directory and filename of your choice.
 You can also dedicate that SSH key pair to a [specific host](#working-with-non-default-ssh-key-pair-paths).
 
-After assigning a file to save your SSH key, you'll get a chance to set up
+After assigning a file to save your SSH key, you can set up
 a [passphrase](https://www.ssh.com/ssh/passphrase/) for your SSH key:
 
 ```plaintext
@@ -224,7 +224,7 @@ Now you can copy the SSH key you created to your GitLab account. To do so, follo
 1. Include an (optional) expiry date for the key under "Expires at" section. (Introduced in [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36243).)
 1. Click the **Add key** button.
 
-SSH keys that have "expired" using this procedure will still be valid in GitLab workflows.
+SSH keys that have "expired" using this procedure are valid in GitLab workflows.
 As the GitLab-configured expiration date is not included in the SSH key itself,
 you can still export public SSH keys as needed.
 
@@ -241,7 +241,7 @@ your terminal (replacing `gitlab.com` with your GitLab's instance domain):
 ssh -T git@gitlab.com
 ```
 
-The first time you connect to GitLab via SSH, you will be asked to verify the
+The first time you connect to GitLab via SSH, you should verify the
 authenticity of the GitLab host that you're connecting to.
 For example, when connecting to GitLab.com, answer `yes` to add GitLab.com to
 the list of trusted hosts:
@@ -256,10 +256,10 @@ Warning: Permanently added 'gitlab.com' (ECDSA) to the list of known hosts.
 NOTE: **Note:**
 For GitLab.com, consult the
 [SSH host keys fingerprints](../user/gitlab_com/index.md#ssh-host-keys-fingerprints),
-section to make sure you're connecting to the correct server. For example, you'll see
+section to make sure you're connecting to the correct server. For example, you can see
 the ECDSA key fingerprint shown above in the linked section.
 
-Once added to the list of known hosts, you won't be asked to validate the
+Once added to the list of known hosts, you should validate the
 authenticity of GitLab's host again. Run the above command once more, and
 you should only receive a _Welcome to GitLab, `@username`!_ message.
 
@@ -297,8 +297,8 @@ Host gitlab.company.com
   IdentityFile ~/.ssh/example_com_rsa
 ```
 
-Public SSH keys need to be unique to GitLab, as they will bind to your account.
-Your SSH key is the only identifier you'll have when pushing code via SSH,
+Public SSH keys need to be unique to GitLab, as they bind to your account.
+Your SSH key is the only identifier you have when pushing code via SSH,
 that's why it needs to uniquely map to a single user.
 
 ## Per-repository SSH keys
@@ -310,7 +310,7 @@ on, you can issue the following command while inside your repository:
 git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-filename-for-this-repository -F /dev/null"
 ```
 
-This will not use the SSH Agent and requires at least Git 2.10.
+This does not use the SSH Agent and requires at least Git 2.10.
 
 ## Multiple accounts on a single GitLab instance
 
@@ -318,7 +318,7 @@ The [per-repository](#per-repository-ssh-keys) method also works for using
 multiple accounts within a single GitLab instance.
 
 Alternatively, it is possible to directly assign aliases to hosts in
-`~.ssh/config`. SSH and, by extension, Git will fail to log in if there is
+`~.ssh/config`. SSH and, by extension, Git fails to log in if there is
 an `IdentityFile` set outside of a `Host` block in `.ssh/config`. This is
 due to how SSH assembles `IdentityFile` entries and is not changed by
 setting `IdentitiesOnly` to `yes`. `IdentityFile` entries should point to
@@ -388,14 +388,14 @@ GitLab integrates with the system-installed SSH daemon, designating a user
 connecting to the GitLab server over SSH are identified by their SSH key instead
 of their username.
 
-SSH *client* operations performed on the GitLab server will be executed as this
+SSH *client* operations performed on the GitLab server are executed as this
 user. Although it is possible to modify the SSH configuration for this user to,
 e.g., provide a private SSH key to authenticate these requests by, this practice
 is **not supported** and is strongly discouraged as it presents significant
 security risks.
 
-The GitLab check process includes a check for this condition, and will direct you
-to this section if your server is configured like this, e.g.:
+The GitLab check process includes a check for this condition, and directs you
+to this section if your server is configured like this, for example:
 
 ```shell
 $ gitlab-rake gitlab:check

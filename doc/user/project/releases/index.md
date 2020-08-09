@@ -223,12 +223,12 @@ The following fields are available when you create or edit a release.
 
 The release title can be customized using the **Release title** field when
 creating or editing a release. If no title is provided, the release's tag name
-will be used instead.
+is used instead.
 
 NOTE: **Note:**
 Guest users of private projects are allowed to view the **Releases** page
 but are _not_ allowed to view details about the Git repository (in particular,
-tag names). Because of this, release titles will be replaced with a generic
+tag names). Because of this, release titles are replaced with a generic
 title like "Release-1234" for Guest users to avoid leaking tag name information.
 
 See the [Permissions](../../permissions.md#project-members-permissions) page for
@@ -273,12 +273,12 @@ as pre-built packages, compliance/security evidence, or container images.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27300) in GitLab 12.9.
 
 The assets associated with a release are accessible through a permanent URL.
-GitLab will always redirect this URL to the actual asset
+GitLab always redirects this URL to the actual asset
 location, so even if the assets move to a different location, you can continue
 to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-link) or [updating](../../../api/releases/links.md#update-a-link).
 
 Each asset has a name, a URL of the *actual* asset location, and optionally, a
-`filepath` parameter, which, if you specify it, will create a URL pointing
+`filepath` parameter, which, if you specify it, creates a URL pointing
 to the asset for the Release. The format of the URL is:
 
 ```plaintext
@@ -302,7 +302,7 @@ This asset has a direct link of:
 https://gitlab.com/gitlab-org/gitlab-runner/releases/v11.9.0-rc2/downloads/binaries/gitlab-runner-linux-amd64
 ```
 
-The physical location of the asset can change at any time and the direct link will remain unchanged.
+The physical location of the asset can change at any time and the direct link remains unchanged.
 
 ### Source code
 

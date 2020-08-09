@@ -82,6 +82,9 @@ Once created, you can edit a label by clicking the pencil (**{pencil}**), or del
 a label by clicking the three dots (**{ellipsis_v}**) next to the **Subscribe** button
 and selecting **Delete**.
 
+CAUTION: **Caution:**
+If you delete a label, it is permanently deleted. You will not be able to undo the deletion, and all references to the label will be removed from the system.
+
 #### Promote a project label to a group label
 
 If you previously created a project label and now want to make it available for other

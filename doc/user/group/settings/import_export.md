@@ -33,13 +33,13 @@ Note the following:
 - To preserve group-level relationships from imported projects, run the Group Import/Export first, to allow projects to
 be imported into the desired group structure.
 - Imported groups are given a `private` visibility level, unless imported into a parent group.
-- If imported into a parent group, subgroups will inherit the same level of visibility unless otherwise restricted.
+- If imported into a parent group, a subgroup inherits the same level of visibility unless otherwise restricted.
 - To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make
 sure these users exist before importing the desired groups.
 
 ### Exported Contents
 
-The following items will be exported:
+The following items are exported:
 
 - Milestones
 - Labels
@@ -49,7 +49,7 @@ The following items will be exported:
 - Epics
 - Events
 
-The following items will NOT be exported:
+The following items are **not** exported:
 
 - Projects
 - Runners token
@@ -83,7 +83,7 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 
 You can export groups from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/) and vice versa.
 
-If you're exporting a group from the Enterprise Edition to the Community Edition, you may lose data that is retained only in the Enterprise Edition. For more information, see [downgrading from EE to CE](../../../README.md).
+The Enterprise Edition retains some group data that isn't part of the Community Edition. If you're exporting a group from the Enterprise Edition to the Community Edition, you may lose this data. For more information, see [downgrading from EE to CE](../../../README.md).
 
 ## Importing the group
 
@@ -104,7 +104,7 @@ on an existing group's page.
 
 1. Select the file that you exported in the [exporting a group](#exporting-a-group) section.
 
-1. Click **Import group** to begin importing. Your newly imported group page will appear shortly.
+1. Click **Import group** to begin importing. Your newly imported group page appears after the operation completes.
 
 ## Version history
 

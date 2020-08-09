@@ -13,7 +13,7 @@ This is a [Closed Beta](https://about.gitlab.com/handbook/product/#closed-beta) 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/709) in GitLab 12.1.
 > - It's deployed behind a feature flag, disabled by default.
 
-When [SSO for Groups](index.md) is being enforced, groups can enable an additional level of protection by enforcing the creation of dedicated user accounts to access the group.
+When [SSO for Groups](index.md) is enforced, groups can enable an additional level of protection by enforcing the creation of dedicated user accounts to access the group.
 
 With group-managed accounts enabled, users are required to create a new, dedicated user linked to the group.
 The notification email address associated with the user is locked to the email address received from the configured identity provider.
@@ -21,8 +21,8 @@ Without group-managed accounts, users can link their SAML identity with any exis
 
 When this option is enabled:
 
-- All users in the group will be required to log in via the SSO URL associated with the group.
-- After the group-managed account has been created, group activity will require the use of this user account.
+- All users in the group are required to log in via the SSO URL associated with the group.
+- After the group-managed account has been created, group activity requires the use of this user account.
 - Users can't share a project in the group outside the top-level group (also applies to forked projects).
 
 Upon successful authentication, GitLab prompts the user with options, based on the email address received from the configured identity provider:
@@ -30,10 +30,10 @@ Upon successful authentication, GitLab prompts the user with options, based on t
 - To create a unique account with the newly received email address.
 - If the received email address matches one of the user's verified GitLab email addresses, the option to convert the existing account to a group-managed account. ([Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/13481).)
 
-Since use of the group-managed account requires the use of SSO, users of group-managed accounts will lose access to these accounts when they are no longer able to authenticate with the connected identity provider. In the case of an offboarded employee who has been removed from your identity provider:
+Since use of the group-managed account requires the use of SSO, users of group-managed accounts lose access to these accounts when they are no longer able to authenticate with the connected identity provider. In the case of an offboarded employee who has been removed from your identity provider:
 
-- The user will be unable to access the group (their credentials will no longer work on the identity provider when prompted to SSO).
-- Contributions in the group (e.g. issues, merge requests) will remain intact.
+- The user is unable to access the group (their credentials no longer work on the identity provider when prompted to use SSO).
+- Contributions in the group (for example, issues and merge requests) remains intact.
 
 ## Assertions
 
@@ -49,7 +49,7 @@ assertions to be able to create a user.
 
 ## Feature flag **(PREMIUM ONLY)**
 
-Currently the group-managed accounts feature is behind a feature flag: `group_managed_accounts`. The flag is disabled by default.
+The group-managed accounts feature is behind a feature flag: `group_managed_accounts`. The flag is disabled by default.
 To activate the feature, ask a GitLab administrator with Rails console access to run:
 
 ```ruby
@@ -101,7 +101,7 @@ Since personal access tokens are the only token needed for programmatic access t
 
 ### Setting a limit
 
-Only a GitLab administrator or an owner of a Group-managed account can set a limit. Leaving it empty means that the [instance level restrictions](../../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens-ultimate-only) on the lifetime of personal access tokens will apply.
+Only a GitLab administrator or an owner of a group-managed account can set a limit. When this field is left empty, the [instance-level restriction](../../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens-ultimate-only) on the lifetime of personal access tokens apply.
 
 To set a limit on how long personal access tokens are valid for users in a group managed account:
 
@@ -110,7 +110,7 @@ To set a limit on how long personal access tokens are valid for users in a group
 1. Fill in the **Maximum allowable lifetime for personal access tokens (days)** field.
 1. Click **Save changes**.
 
-Once a lifetime for personal access tokens is set, GitLab will:
+Once a lifetime for personal access tokens is set:
 
-- Apply the lifetime for new personal access tokens, and require users managed by the group to set an expiration date that is no later than the allowed lifetime.
+- GitLab applies the lifetime for new personal access tokens and requires users managed by the group to set an expiration date that's no later than the allowed lifetime.
 - After three hours, revoke old tokens with no expiration date or with a lifetime longer than the allowed lifetime. Three hours is given to allow administrators/group owner to change the allowed lifetime, or remove it, before revocation takes place.

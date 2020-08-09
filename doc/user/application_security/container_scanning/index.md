@@ -163,7 +163,7 @@ using environment variables.
 | `CLAIR_TRACE` | `"false"` | Set to true to enable more verbose output from the clair server process. |
 | `DOCKER_USER` | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. |
 | `DOCKER_PASSWORD` | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. |
-| `CLAIR_OUTPUT` | `Unknown` | Severity level threshold. Vulnerabilities with severity level higher than or equal to this threshold will be outputted. Supported levels are `Unknown`, `Negligible`, `Low`, `Medium`, `High`, `Critical` and `Defcon1`. |
+| `CLAIR_OUTPUT` | `Unknown` | Severity level threshold. Vulnerabilities with severity level higher than or equal to this threshold are outputted. Supported levels are `Unknown`, `Negligible`, `Low`, `Medium`, `High`, `Critical` and `Defcon1`. |
 | `REGISTRY_INSECURE` | `"false"` | Allow [Klar](https://github.com/optiopay/klar) to access insecure registries (HTTP only). Should only be set to `true` when testing the image locally. |
 | `DOCKER_INSECURE` | `"false"` | Allow [Klar](https://github.com/optiopay/klar) to access secure Docker registries using HTTPS with bad (or self-signed) SSL certificates. |
 | `CLAIR_VULNERABILITIES_DB_URL` | `clair-vulnerabilities-db` | (**DEPRECATED - use `CLAIR_DB_CONNECTION_STRING` instead**) This variable is explicitly set in the [services section](https://gitlab.com/gitlab-org/gitlab/-/blob/898c5da43504eba87b749625da50098d345b60d6/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml#L23) of the `Container-Scanning.gitlab-ci.yml` file and defaults to `clair-vulnerabilities-db`. This value represents the address that the [PostgreSQL server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db) is running on and **shouldn't be changed** unless you're running the image locally as described in the [Running the standalone Container Scanning Tool](#running-the-standalone-container-scanning-tool) section. |
@@ -172,7 +172,7 @@ using environment variables.
 | `CI_APPLICATION_TAG` | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. |
 | `CLAIR_DB_IMAGE` | `arminc/clair-db:latest` | The Docker image name and tag for the [PostgreSQL server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db). It can be useful to override this value with a specific version, for example, to provide a consistent set of vulnerabilities for integration testing purposes, or to refer to a locally hosted vulnerabilities database for an on-premise offline installation. |
 | `CLAIR_DB_IMAGE_TAG` | `latest` | (**DEPRECATED - use `CLAIR_DB_IMAGE` instead**) The Docker image tag for the [PostgreSQL server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db). It can be useful to override this value with a specific version, for example, to provide a consistent set of vulnerabilities for integration testing purposes. |
-| `DOCKERFILE_PATH` | `Dockerfile` | The path to the `Dockerfile` to be used for generating remediations. By default, the scanner will look for a file named `Dockerfile` in the root directory of the project, so this variable should only be configured if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. |
+| `DOCKERFILE_PATH` | `Dockerfile` | The path to the `Dockerfile` to be used for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project, so this variable should only be configured if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. |
 | `ADDITIONAL_CA_CERT_BUNDLE` | `""` | Bundle of CA certs that you want to trust. |
 | `SECURE_LOG_LEVEL` | `info` | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. |
 
@@ -291,7 +291,7 @@ build_latest_vulnerabilities:
     - docker push $CI_REGISTRY/namespace/clair-vulnerabilities-db
 ```
 
-The above template will work for a GitLab Docker registry running on a local installation, however, if you're using a non-GitLab Docker registry, you'll need to change the `$CI_REGISTRY` value and the `docker login` credentials to match the details of your local registry.
+The above template works for a GitLab Docker registry running on a local installation, however, if you're using a non-GitLab Docker registry, you'll need to change the `$CI_REGISTRY` value and the `docker login` credentials to match the details of your local registry.
 
 ## Running the standalone Container Scanning Tool
 

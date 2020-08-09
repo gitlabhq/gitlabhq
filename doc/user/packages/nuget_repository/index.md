@@ -19,7 +19,7 @@ The GitLab NuGet Repository works with:
 
 ## Setting up your development environment
 
-You will need [NuGet CLI 5.2 or later](https://www.nuget.org/downloads). Earlier versions have not been tested
+[NuGet CLI 5.2 or later](https://www.nuget.org/downloads) is required. Earlier versions have not been tested
 against the GitLab NuGet Repository and might not work. If you have [Visual Studio](https://visualstudio.microsoft.com/vs/),
 NuGet CLI is probably already installed.
 
@@ -64,7 +64,7 @@ NOTE: **Note:**
 This option is available only if your GitLab administrator has
 [enabled support for the Package Registry](../../../administration/packages/index.md).
 
-After the NuGet Repository is enabled, it will be available for all new projects
+When the NuGet Repository is enabled, it is available for all new projects
 by default. To enable it for existing projects, or if you want to disable it:
 
 1. Navigate to your project's **Settings > General > Visibility, project features, permissions**.
@@ -75,7 +75,7 @@ You should then be able to see the **Packages & Registries** section on the left
 
 ## Adding the GitLab NuGet Repository as a source to NuGet
 
-You will need the following:
+You need the following:
 
 - Your GitLab username.
 - A personal access token or deploy token. For repository authentication:
@@ -112,7 +112,7 @@ nuget source Add -Name "GitLab" -Source "https://gitlab.example/api/v4/projects/
 
 1. Open [Visual Studio](https://visualstudio.microsoft.com/vs/).
 1. Open the **FILE > OPTIONS** (Windows) or **Visual Studio > Preferences** (Mac OS).
-1. In the **NuGet** section, open **Sources**. You will see a list of all your NuGet sources.
+1. In the **NuGet** section, open **Sources** to see a list of all your NuGet sources.
 1. Click **Add**.
 1. Fill the fields with:
    - **Name**: Desired name for the source
@@ -156,8 +156,8 @@ When uploading packages, note that:
 
 - The maximum allowed size is 50 Megabytes.
 - If you upload the same package with the same version multiple times, each consecutive upload
-  is saved as a separate file. When installing a package, GitLab will serve the most recent file.
-- When uploading packages to GitLab, they will not be displayed in the packages UI of your project
+  is saved as a separate file. When installing a package, GitLab serves the most recent file.
+- When uploading packages to GitLab, they are not displayed in the packages UI of your project
   immediately. It can take up to 10 minutes to process a package.
 
 ### Upload packages with NuGet CLI
@@ -201,7 +201,7 @@ dotnet nuget push MyPackage.1.0.0.nupkg --source gitlab
 CAUTION: **Warning:**
 By default, `nuget` checks the official source at `nuget.org` first. If you have a package in the
 GitLab NuGet Repository with the same name as a package at `nuget.org`, you must specify the source
-name or the wrong package will be installed.
+name to install the correct package.
 
 Install the latest version of a package using the following command:
 
@@ -214,7 +214,7 @@ nuget install <package_id> -OutputDirectory <output_directory> \
 Where:
 
 - `<package_id>` is the package ID.
-- `<output_directory>` is the output directory, where the package will be installed.
+- `<output_directory>` is the output directory, where the package is installed.
 - `<package_version>` (Optional) is the package version.
 - `<source_name>` (Optional) is the source name.
 

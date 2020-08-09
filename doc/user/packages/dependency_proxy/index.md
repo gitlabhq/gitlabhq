@@ -63,10 +63,10 @@ To get a Docker image into the dependency proxy:
      image: gitlab.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
-GitLab will then pull the Docker image from Docker Hub and will cache the blobs
-on the GitLab server. The next time you pull the same image, it will get the latest
-information about the image from Docker Hub but will serve the existing blobs
-from GitLab.
+GitLab pulls the Docker image from Docker Hub and caches the blobs
+on the GitLab server. The next time you pull the same image, GitLab gets the latest
+information about the image from Docker Hub but serves the existing blobs
+from the GitLab server.
 
 The blobs are kept forever, and there is no hard limit on how much data can be
 stored.

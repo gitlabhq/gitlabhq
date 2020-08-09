@@ -9,9 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5105) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
 
-Dependency Scanning helps to automatically find security vulnerabilities in your dependencies
+Dependency Scanning helps to find security vulnerabilities in your dependencies automatically
 while you're developing and testing your applications, such as when your
-application is using an external (open source) library which is known to be vulnerable.
+application is using an external (open source) library that is known to be vulnerable.
 
 ## Overview
 
@@ -85,7 +85,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 To enable Dependency Scanning for GitLab 11.9 and later, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
 [`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
-that's provided as a part of your GitLab installation.
+that is provided as a part of your GitLab installation.
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
 
@@ -96,9 +96,9 @@ include:
   - template: Dependency-Scanning.gitlab-ci.yml
 ```
 
-The included template will create Dependency Scanning jobs in your CI/CD
-pipeline and scan your project's source code for possible vulnerabilities.
-The results will be saved as a
+The included template creates Dependency Scanning jobs in your CI/CD
+pipeline and scans your project's source code for possible vulnerabilities.
+The results are saved as a
 [Dependency Scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdependency_scanning-ultimate)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Dependency Scanning artifact available.
@@ -118,7 +118,7 @@ variables:
 ```
 
 Because template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
-configuration, the last mention of the variable will take precedence.
+configuration, the last mention of the variable takes precedence.
 
 ### Overriding Dependency Scanning jobs
 
@@ -187,10 +187,10 @@ The following variables are used for configuring specific analyzers (used for a 
 | `DS_PIP_VERSION`                        | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12811) in GitLab 12.7) |
 | `DS_PIP_DEPENDENCY_PATH`                | `gemnasium-python` |                              | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12412) in GitLab 12.2) |
 | `DS_PYTHON_VERSION`                     | `retire.js`        |                              | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12296) in GitLab 12.1)|
-| `DS_JAVA_VERSION`                       | `gemnasium-maven`  | `11`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`. Maven and Gradle will use the Java version specified by this value. |
-| `MAVEN_CLI_OPTS`                        | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that will be passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repos). |
-| `GRADLE_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command line arguments that will be passed to `gradle` by the analyzer. |
-| `SBT_CLI_OPTS`                          | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer will pass to `sbt`. |
+| `DS_JAVA_VERSION`                       | `gemnasium-maven`  | `11`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`. Maven and Gradle use the Java version specified by this value. |
+| `MAVEN_CLI_OPTS`                        | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repos). |
+| `GRADLE_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
+| `SBT_CLI_OPTS`                          | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
 | `BUNDLER_AUDIT_UPDATE_DISABLED`         | `bundler-audit`    | `"false"`                    | Disable automatic updates for the `bundler-audit` analyzer. Useful if you're running Dependency Scanning in an offline, air-gapped environment.|
 | `BUNDLER_AUDIT_ADVISORY_DB_URL`         | `bundler-audit`    | `https://github.com/rubysec/ruby-advisory-db` | URL of the advisory database used by bundler-audit. |
 | `BUNDLER_AUDIT_ADVISORY_DB_REF_NAME`    | `bundler-audit`    | `master`                     | Git ref for the advisory database specified by `BUNDLER_AUDIT_ADVISORY_DB_URL`. |
@@ -311,7 +311,7 @@ Here's an example Dependency Scanning report:
       "category": "dependency_scanning",
       "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
       "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
-      "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment therefore has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
+      "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment, therefore, has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
       "severity": "Unknown",
       "solution": "Upgrade to fixed version.\r\n",
       "scanner": {
@@ -392,7 +392,7 @@ Here are the requirements for using Dependency Scanning in an offline environmen
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - Docker Container Registry with locally available copies of Dependency Scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Host an offline Git copy of the [gemnasium-db advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/).
-  This is required because in an offline environment, the Gemnasium analyzer can't fetch the latest
+  This is required because, in an offline environment, the Gemnasium analyzer can't fetch the latest
   advisories from the online repository.
 - _Only if scanning Ruby projects_: Host an offline Git copy of the [advisory database](https://github.com/rubysec/ruby-advisory-db).
 - _Only if scanning npm/yarn projects_: Host an offline copy of the [retire.js](https://github.com/RetireJS/retire.js/) [node](https://github.com/RetireJS/retire.js/blob/master/repository/npmrepository.json) and [js](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json) advisory databases.

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Scanning Analyzers **(ULTIMATE)**
 
-Dependency Scanning relies on underlying third party tools that are wrapped into
+Dependency Scanning relies on underlying third-party tools that are wrapped into
 what we call "Analyzers". An analyzer is a
 [dedicated project](https://gitlab.com/gitlab-org/security-products/analyzers)
 that wraps a particular tool to:
@@ -26,7 +26,7 @@ Dependency Scanning supports the following official analyzers:
 - [`gemnasium-python`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python)
 - [`retire.js`](https://gitlab.com/gitlab-org/security-products/analyzers/retire.js)
 
-The analyzers are published as Docker images that Dependency Scanning will use
+The analyzers are published as Docker images, which Dependency Scanning uses
 to launch dedicated containers for each analysis.
 
 Dependency Scanning is pre-configured with a set of **default images** that are
@@ -70,12 +70,12 @@ variables:
   DS_DEFAULT_ANALYZERS: "bundler-audit,gemnasium"
 ```
 
-`bundler-audit` runs first. When merging the reports, Dependency Scanning will
-remove the duplicates and will keep the `bundler-audit` entries.
+`bundler-audit` runs first. When merging the reports, Dependency Scanning
+removes the duplicates and keeps the `bundler-audit` entries.
 
 ### Disabling default analyzers
 
-Setting `DS_DEFAULT_ANALYZERS` to an empty string will disable all the official
+Setting `DS_DEFAULT_ANALYZERS` to an empty string disables all the official
 default analyzers. In `.gitlab-ci.yml` define:
 
 ```yaml
@@ -158,8 +158,8 @@ The following table lists the data available for each official analyzer.
 | Credits                               | ✓                  | 𐄂                  | 𐄂                  |
 
 - ✓ => we have that data
-- ⚠ => we have that data but it's partially reliable, or we need to extract that data from unstructured content
-- 𐄂 => we don't have that data or it would need to develop specific or inefficient/unreliable logic to obtain it.
+- ⚠ => we have that data, but it's partially reliable, or we need to extract that data from unstructured content
+- 𐄂 => we don't have that data, or it would need to develop specific or inefficient/unreliable logic to obtain it.
 
-The values provided by these tools are heterogeneous so they are sometimes
+The values provided by these tools are heterogeneous, so they are sometimes
 normalized into common values (e.g., `severity`, `confidence`, etc).

@@ -87,13 +87,13 @@ to its **Pipelines** tab.
 
 ![Pipelines index page](img/pipelines_index_v13_0.png)
 
-Clicking a pipeline will bring you to the **Pipeline Details** page and show
+Click a pipeline to open the **Pipeline Details** page and show
 the jobs that were run for that pipeline. From here you can cancel a running pipeline,
 retry jobs on a failed pipeline, or [delete a pipeline](#delete-a-pipeline).
 
 [Starting in GitLab 12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/50499), a link to the
 latest pipeline for the last commit of a given branch is available at `/project/pipelines/[branch]/latest`.
-Also, `/project/pipelines/latest` will redirect you to the latest pipeline for the last commit
+Also, `/project/pipelines/latest` redirects you to the latest pipeline for the last commit
 on the project's default branch.
 
 [Starting in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/215367),
@@ -120,14 +120,14 @@ To execute a pipeline manually:
     1. Enter any [environment variables](../variables/README.md) required for the pipeline run.
     1. Click the **Create pipeline** button.
 
-The pipeline will execute the jobs as configured.
+The pipeline now executes the jobs as configured.
 
 ### Run a pipeline by using a URL query string
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.
 
 You can use a query string to pre-populate the **Run Pipeline** page. For example, the query string
-`.../pipelines/new?ref=my_branch&var[foo]=bar&file_var[file_foo]=file_bar` will pre-populate the
+`.../pipelines/new?ref=my_branch&var[foo]=bar&file_var[file_foo]=file_bar` pre-populates the
 **Run Pipeline** page with:
 
 - **Run for** field: `my_branch`.
@@ -174,7 +174,7 @@ stage has a job with a manual action.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27188) in GitLab 11.11.
 
 Multiple manual actions in a single stage can be started at the same time using the "Play all manual" button.
-Once the user clicks this button, each individual manual action will be triggered and refreshed
+Once you click this button, each individual manual action is triggered and refreshed
 to an updated status.
 
 This functionality is only available:
@@ -193,7 +193,7 @@ page, then using the **Delete** button.
 ![Pipeline Delete Button](img/pipeline-delete.png)
 
 CAUTION: **Warning:**
-Deleting a pipeline will expire all pipeline caches, and delete all related objects,
+Deleting a pipeline expires all pipeline caches, and deletes all related objects,
 such as builds, logs, artifacts, and triggers. **This action cannot be undone.**
 
 ### Pipeline quotas
@@ -264,13 +264,13 @@ sensitive information like deployment credentials and tokens.
 branches, preventing untrusted code from executing on the protected runner and
 preserving deployment keys and other credentials from being unintentionally
 accessed. In order to ensure that jobs intended to be executed on protected
-runners will not use regular runners, they must be tagged accordingly.
+runners do not use regular runners, they must be tagged accordingly.
 
 ## View jobs in a pipeline
 
 When you access a pipeline, you can see the related jobs for that pipeline.
 
-Clicking an individual job will show you its job log, and allow you to:
+Clicking an individual job shows you its job log, and allows you to:
 
 - Cancel the job.
 - Retry the job.
@@ -326,10 +326,10 @@ If you have many similar jobs, your [pipeline graph](#visualize-pipelines) becom
 to read.
 
 You can automatically group similar jobs together. If the job names are formatted in a certain way,
-they will be collapsed into a single group in regular pipeline graphs (not the mini graphs).
+they are collapsed into a single group in regular pipeline graphs (not the mini graphs).
 
-You'll know when a pipeline has grouped jobs if you don't see the retry or
-cancel button inside them. Hovering over them will show the number of grouped
+You can recognize when a pipeline has grouped jobs if you don't see the retry or
+cancel button inside them. Hovering over them shows the number of grouped
 jobs. Click to expand them.
 
 ![Grouped pipelines](img/pipelines_grouped.png)
@@ -343,7 +343,7 @@ separate each job name with a number and one of the following:
 
 You can use these symbols interchangeably.
 
-For example, these three jobs will be in a group named `build ruby`:
+In the example below, these three jobs are in a group named `build ruby`:
 
 ```yaml
 build ruby 1/3:
@@ -366,7 +366,7 @@ In the pipeline, the result is a group named `build ruby` with three jobs:
 
 ![Job group](img/job_group_v12_10.png)
 
-The jobs will be ordered by comparing the numbers from left to right. You
+The jobs are be ordered by comparing the numbers from left to right. You
 usually want the first number to be the index and the second number to be the total.
 
 [This regular expression](https://gitlab.com/gitlab-org/gitlab/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99)
@@ -384,7 +384,7 @@ the pipeline view, *not* the play (**{play}**) button.
 
 This is useful when you want to alter the execution of a job that uses
 [custom environment variables](../variables/README.md#custom-environment-variables).
-Adding a variable name (key) and value here will override the value defined in
+Add a variable name (key) and value here to override the value defined in
 [the UI or `.gitlab-ci.yml`](../variables/README.md#custom-environment-variables),
 for a single run of the manual job.
 
@@ -411,7 +411,7 @@ For example, if you start rolling out new code and:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14664) in GitLab 12.0.
 
-Job logs are divided into sections that can be collapsed or expanded. Each section will display
+Job logs are divided into sections that can be collapsed or expanded. Each section displays
 the duration.
 
 In the following example:
@@ -424,7 +424,7 @@ In the following example:
 #### Custom collapsible sections
 
 You can create collapsible sections in job logs by manually outputting special codes
-that GitLab will use to determine what sections to collapse:
+that GitLab uses to determine what sections to collapse:
 
 - Section start marker: `section_start:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K` + `TEXT_OF_SECTION_HEADER`
 - Section end marker: `section_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`

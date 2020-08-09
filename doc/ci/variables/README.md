@@ -74,8 +74,8 @@ pages:
     - echo $CI_PAGES_DOMAIN
 ```
 
-For GitLab.com users, the output will be `gitlab.io`. For your
-private instance, the output will be whatever your sysadmin has
+For GitLab.com users, the output is `gitlab.io`. For your
+private instance, the output is whatever your sysadmin has
 defined.
 
 ## Custom environment variables
@@ -120,8 +120,8 @@ From within the UI, you can add or update custom environment variables:
     - **Value**: No limitations.
     - **Type**: `File` or `Variable`.
     - **Environment scope**: `All`, or specific environments.
-    - **Protect variable** (Optional): If selected, the variable will only be available in pipelines that run on protected branches or tags.
-    - **Mask variable** (Optional): If selected, the variable's **Value** will be masked in job logs. The variable fails to save if the value does not meet the [masking requirements](#masked-variable-requirements).
+    - **Protect variable** (Optional): If selected, the variable is only available in pipelines that run on protected branches or tags.
+    - **Mask variable** (Optional): If selected, the variable's **Value** is masked in job logs. The variable fails to save if the value does not meet the [masking requirements](#masked-variable-requirements).
 
 After a variable is created, you can update any of the details by clicking the **{pencil}** **Edit** button.
 
@@ -137,7 +137,7 @@ test_variable:
     - cat $GREETING # the temp file itself contains the variable value
 ```
 
-The output will be:
+The output is:
 
 ![Output custom variable](img/custom_variables_output.png)
 
@@ -187,7 +187,7 @@ kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KU
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13784) in GitLab 11.10
 
-Variables can be masked so that the value of the variable will be hidden in job logs.
+Variables can be masked so that the value of the variable is hidden in job logs.
 
 To mask a variable:
 
@@ -308,7 +308,7 @@ job_name:
 
 You can also list all environment variables with the `export` command in Bash
 or `dir env:` command in PowerShell.
-Be aware that this will also expose the values of all the variables
+Be aware that this also exposes the values of all the variables
 you set, in the job log:
 
 ```yaml
@@ -376,8 +376,8 @@ These variables are saved in the repository, and they
 are meant to store non-sensitive project configuration, like `RAILS_ENV` or
 `DATABASE_URL`.
 
-For example, if you set the variable below globally (not inside a job), it will
-be used in all executed commands and scripts:
+For example, if you set the variable below globally (not inside a job), it is
+used in all executed commands and scripts:
 
 ```yaml
 variables:
@@ -419,9 +419,9 @@ Group-level variables can be added by:
 
 1. Navigating to your group's **Settings > CI/CD** page.
 1. Inputting variable types, keys, and values in the **Variables** section.
-   Any variables of [subgroups](../../user/group/subgroups/index.md) will be inherited recursively.
+   Any variables of [subgroups](../../user/group/subgroups/index.md) are inherited recursively.
 
-Once you set them, they will be available for all subsequent pipelines. Any group-level user defined variables can be viewed in projects by:
+Once you set them, they are available for all subsequent pipelines. Any group-level user defined variables can be viewed in projects by:
 
 1. Navigating to the project's **Settings > CI/CD** page.
 1. Expanding the **Variables** section.
@@ -447,8 +447,8 @@ To add an instance-level variable:
    - **Key**: Must be one line, using only letters, numbers, or `_` (underscore), with no spaces.
    - **Value**: [Since GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/220028), 10,000 characters allowed. This is also bounded by the limits of the selected Runner operating system. In GitLab 13.0 to 13.2, 700 characters allowed.
    - **Type**: `File` or `Variable`.
-   - **Protect variable** (Optional): If selected, the variable will only be available in pipelines that run on protected branches or tags.
-   - **Mask variable** (Optional): If selected, the variable's **Value** will not be shown in job logs. The variable will not be saved if the value does not meet the [masking requirements](#masked-variable-requirements).
+   - **Protect variable** (Optional): If selected, the variable is only available in pipelines that run on protected branches or tags.
+   - **Mask variable** (Optional): If selected, the variable's **Value** is not shown in job logs. The variable is not saved if the value does not meet the [masking requirements](#masked-variable-requirements).
 
 After a variable is created, you can update any of the details by clicking the **{pencil}** **Edit** button.
 
@@ -540,14 +540,14 @@ For example, if you define:
 - `API_TOKEN=secure` as a project variable.
 - `API_TOKEN=yaml` in your `.gitlab-ci.yml`.
 
-`API_TOKEN` will take the value `secure` as the project
+`API_TOKEN` takes the value `secure` as the project
 variables take precedence over those defined in `.gitlab-ci.yml`.
 
 ## Unsupported variables
 
 Variable names are limited by the underlying shell used to execute scripts (see [available shells](https://docs.gitlab.com/runner/shells/index.html).
 Each shell has its own unique set of reserved variable names.
-You will also want to keep in mind the [scope of environment variables](where_variables_can_be_used.md) to ensure a variable is defined in the scope
+You also want to keep in mind the [scope of environment variables](where_variables_can_be_used.md) to ensure a variable is defined in the scope
 in which you wish to use it.
 
 ## Where variables can be used
@@ -585,8 +585,8 @@ pass CI variables to the running application by prefixing the key of the
 variable with `K8S_SECRET_`.
 
 These [prefixed
-variables](../../topics/autodevops/customize.md#application-secret-variables) will
-then be available as environment variables on the running application
+variables](../../topics/autodevops/customize.md#application-secret-variables) are
+then available as environment variables on the running application
 container.
 
 CAUTION: **Caution:**
@@ -693,7 +693,7 @@ Examples:
 - `$VARIABLE_1 == $VARIABLE_2`
 - `$VARIABLE_1 != $VARIABLE_2` (introduced in GitLab 11.11)
 
-It is possible to compare two variables. This is going to compare values
+It is possible to compare two variables. This compares values
 of these variables.
 
 #### Variable presence check
@@ -703,7 +703,7 @@ Example: `$STAGING`
 If you only want to create a job when there is some variable present,
 which means that it is defined and non-empty, you can simply use
 variable name as an expression, like `$STAGING`. If `$STAGING` variable
-is defined, and is non empty, expression will evaluate to truth.
+is defined, and is non empty, expression evaluates to `true`.
 `$STAGING` value needs to be a string, with length higher than zero.
 Variable that contains only whitespace characters is not an empty variable.
 

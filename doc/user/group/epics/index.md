@@ -20,6 +20,10 @@ An epic's page contains the following tabs:
   shown in a tree view.
   - Click the chevron (**>**) next to a parent epic to reveal the child epics and issues.
   - Hover over the total counts to see a breakdown of open and closed items.
+
+  NOTE: **Note:**
+  The number provided here includes all epics associated with this project. The number includes epics for which users may not currently have permission.
+
 - **Roadmap**: a roadmap view of child epics which have start and due dates.
 
 ![epic view](img/epic_view_v13.0.png)
