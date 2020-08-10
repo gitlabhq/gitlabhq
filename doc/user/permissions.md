@@ -8,15 +8,14 @@ Users have different abilities depending on the access level they have in a
 particular group or project. If a user is both in a project's group and the
 project itself, the highest permission level is used.
 
-On public and internal projects the Guest role is not enforced. All users will
-be able to:
+On public and internal projects the Guest role is not enforced. All users can:
 
 - Create issues.
 - Leave comments.
 - Clone or download the project code.
 
 When a member leaves a team's project, all the assigned [Issues](project/issues/index.md) and [Merge Requests](project/merge_requests/index.md)
-will be unassigned automatically.
+are unassigned automatically.
 
 GitLab [administrators](../administration/index.md) receive all permissions.
 
@@ -39,7 +38,7 @@ NOTE: **Note:**
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
 While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner,
-or an instance admin, who receives all permissions. For more information, see [projects members documentation](project/members/index.md).
+or an instance administrator, who receives all permissions. For more information, see [projects members documentation](project/members/index.md).
 
 The following table depicts the various user permission levels in a project.
 
@@ -193,7 +192,7 @@ Project features like wiki and issues can be hidden from users depending on
 which visibility level you select on project settings.
 
 - Disabled: disabled for everyone
-- Only team members: only team members will see even if your project is public or internal
+- Only team members: only team members can see even if your project is public or internal
 - Everyone with access: everyone can see depending on your project visibility level
 - Everyone: enabled for everyone (only available for GitLab Pages)
 
@@ -310,10 +309,10 @@ External users:
   logged out).
 
 Access can be granted by adding the user as member to the project or group.
-Like usual users, they will receive a role in the project or group with all
+Like usual users, they receive a role in the project or group with all
 the abilities that are mentioned in the [permissions table above](#project-members-permissions).
 For example, if an external user is added as Guest, and your project is
-private, they will not have access to the code; you would need to grant the external
+private, they do not have access to the code; you need to grant the external
 user access at the Reporter level or above if you want them to have access to the code. You should
 always take into account the
 [project's visibility and permissions settings](project/settings/index.md#sharing-and-permissions)
@@ -326,7 +325,7 @@ An administrator can flag a user as external by either of the following methods:
 
 - Either [through the API](../api/users.md#user-modification).
 - Or by navigating to the **Admin Area > Overview > Users** to create a new user
-  or edit an existing one. There, you will find the option to flag the user as
+  or edit an existing one. There, you can find the option to flag the user as
   external.
 
 ### Setting new users to external
@@ -334,14 +333,14 @@ An administrator can flag a user as external by either of the following methods:
 By default, new users are not set as external users. This behavior can be changed
 by an administrator on the **Admin Area > Settings > General** page, under **Account and limit**.
 
-If you change the default behavior of creating new users as external, you will
+If you change the default behavior of creating new users as external, you
 have the option to narrow it down by defining a set of internal users.
 The **Internal users** field allows specifying an email address regex pattern to
 identify default internal users. New users whose email address matches the regex
-pattern will be set to internal by default rather than an external collaborator.
+pattern are set to internal by default rather than an external collaborator.
 
 The regex pattern format is Ruby, but it needs to be convertible to JavaScript,
-and the ignore case flag will be set (`/regex pattern/i`). Here are some examples:
+and the ignore case flag is set (`/regex pattern/i`). Here are some examples:
 
 - Use `\.internal@domain\.com$` to mark email addresses ending with
   `.internal@domain.com` as internal.
@@ -356,21 +355,21 @@ Be aware that this regex could lead to a
 
 When a user is given Guest permissions on a project, group, or both, and holds no
 higher permission level on any other project or group on the GitLab instance,
-the user is considered a guest user by GitLab and will not consume a license seat.
+the user is considered a guest user by GitLab and does not consume a license seat.
 There is no other specific "guest" designation for newly created users.
 
-If the user is assigned a higher role on any projects or groups, the user will
-take a license seat. If a user creates a project, the user becomes a Maintainer
+If the user is assigned a higher role on any projects or groups, the user
+takes a license seat. If a user creates a project, the user becomes a Maintainer
 on the project, resulting in the use of a license seat. Also, note that if your
-project is internal or private, Guest users will have all the abilities that are
+project is internal or private, Guest users have all the abilities that are
 mentioned in the [permissions table above](#project-members-permissions) (they
-will not be able to browse the project's repository for example).
+are unable to browse the project's repository, for example).
 
 TIP: **Tip:**
 To prevent a guest user from creating projects, as an admin, you can edit the
 user's profile to mark the user as [external](#external-users-core-only).
 Beware though that even if a user is external, if they already have Reporter or
-higher permissions in any project or group, they will **not** be counted as a
+higher permissions in any project or group, they are **not** counted as a
 free guest user.
 
 ## Auditor users **(PREMIUM ONLY)**

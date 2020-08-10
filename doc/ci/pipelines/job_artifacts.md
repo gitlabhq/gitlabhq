@@ -11,7 +11,7 @@ type: reference, howto
 > - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
 > - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format changed to `ZIP`, and it's now possible to browse its contents, with the added ability of downloading the files separately.
 > - In GitLab 8.17, builds were renamed to jobs.
-> - The artifacts browser will be available only for new artifacts that are sent to GitLab using GitLab Runner version 1.0 and up. It won't be possible to browse old artifacts already uploaded to GitLab.
+> - The artifacts browser is available only for new artifacts that are sent to GitLab using GitLab Runner version 1.0 and up. You cannot browse old artifacts already uploaded to GitLab.
 
 Job artifacts are a list of files and directories created by a job
 once it finishes. This feature is [enabled by default](../../administration/job_artifacts.md) in all
@@ -42,9 +42,9 @@ the latex source file `mycv.tex`. We then define the `artifacts` paths which in
 turn are defined with the `paths` keyword. All paths to files and directories
 are relative to the repository that was cloned during the build.
 
-The artifacts will be uploaded when the job succeeds by default, but can be set to upload
-when the job fails, or always, if the [`artifacts:when`](../yaml/README.md#artifactswhen)
-parameter is used. These uploaded artifacts will be kept in GitLab for 1 week as defined
+By default, the artifacts upload when the job succeeds. You can also set artifacts to upload
+when the job fails, or always, by using [`artifacts:when`](../yaml/README.md#artifactswhen)
+parameter. GitLab keeps these uploaded artifacts for 1 week, as defined
 by the `expire_in` definition. You can keep the artifacts from expiring
 via the [web interface](#browsing-artifacts). If the expiry time is not defined, it defaults
 to the [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration-core-only).
@@ -94,13 +94,12 @@ rspec:
       junit: rspec.xml
 ```
 
-The collected JUnit reports will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests.
+The collected JUnit reports upload to GitLab as an artifact and display in merge requests.
 
 NOTE: **Note:**
-In case the JUnit tool you use exports to multiple XML files, you can specify
-multiple test report paths within a single job and they will be automatically
-concatenated into a single file. Use a filename pattern (`junit: rspec-*.xml`),
+If the JUnit tool you use exports to multiple XML files, specify
+multiple test report paths within a single job to
+concatenate them into a single file. Use a filename pattern (`junit: rspec-*.xml`),
 an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`), or a
 combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
@@ -130,8 +129,8 @@ There are a couple of exceptions to the [original dotenv rules](https://github.c
 > - Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
 
 The `cobertura` report collects [Cobertura coverage XML files](../../user/project/merge_requests/test_coverage_visualization.md).
-The collected Cobertura coverage reports will be uploaded to GitLab as an artifact
-and will be automatically shown in merge requests.
+The collected Cobertura coverage reports upload to GitLab as an artifact
+and display in merge requests.
 
 Cobertura was originally developed for Java, but there are many
 third party ports for other languages like JavaScript, Python, Ruby, and so on.
@@ -142,7 +141,7 @@ third party ports for other languages like JavaScript, Python, Ruby, and so on.
 > - Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
 
 The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing required to remove credentials](../../user/infrastructure/index.md#output-terraform-plan-information-into-a-merge-request). The collected Terraform
-plan report will be uploaded to GitLab as an artifact and will be automatically shown
+plan report uploads to GitLab as an artifact and displays
 in merge requests. For more information, see
 [Output `terraform plan` information into a merge request](../../user/infrastructure/index.md#output-terraform-plan-information-into-a-merge-request).
 
@@ -155,8 +154,7 @@ in merge requests. For more information, see
 The `codequality` report collects [CodeQuality issues](../../user/project/merge_requests/code_quality.md)
 as artifacts.
 
-The collected Code Quality report will be uploaded to GitLab as an artifact and will
-be summarized in merge requests.
+The collected Code Quality report uploads to GitLab as an artifact and is summarized in merge requests.
 
 #### `artifacts:reports:sast` **(ULTIMATE)**
 
@@ -166,8 +164,8 @@ be summarized in merge requests.
 The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md)
 as artifacts.
 
-The collected SAST report will be uploaded to GitLab as an artifact and will be summarized
-in the merge requests and pipeline view. It's also used to provide data for security
+The collected SAST report uploads to GitLab as an artifact and is summarized
+in merge requests and the pipeline view. It's also used to provide data for security
 dashboards.
 
 #### `artifacts:reports:secret_detection` **(ULTIMATE)**
@@ -190,8 +188,7 @@ dashboards.
 The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/index.md)
 as artifacts.
 
-The collected Dependency Scanning report will be uploaded to GitLab as an artifact and will
-be summarized in the merge requests and pipeline view. It's also used to provide data for security
+The collected Dependency Scanning report uploads to GitLab as an artifact and is summarized in merge requests and the pipeline view. It's also used to provide data for security
 dashboards.
 
 #### `artifacts:reports:container_scanning` **(ULTIMATE)**
@@ -202,8 +199,8 @@ dashboards.
 The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/index.md)
 as artifacts.
 
-The collected Container Scanning report will be uploaded to GitLab as an artifact and will
-be summarized in the merge requests and pipeline view. It's also used to provide data for security
+The collected Container Scanning report uploads to GitLab as an artifact and
+is summarized in merge requests and the pipeline view. It's also used to provide data for security
 dashboards.
 
 #### `artifacts:reports:dast` **(ULTIMATE)**
@@ -214,8 +211,7 @@ dashboards.
 The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md)
 as artifacts.
 
-The collected DAST report will be uploaded to GitLab as an artifact and will
-be summarized in the merge requests and pipeline view. It's also used to provide data for security
+The collected DAST report uploads to GitLab as an artifact and is summarized in merge requests and the pipeline view. It's also used to provide data for security
 dashboards.
 
 #### `artifacts:reports:license_management` **(ULTIMATE)**
@@ -231,8 +227,7 @@ introduced in GitLab 12.8.
 The `license_management` report collects [Licenses](../../user/compliance/license_compliance/index.md)
 as artifacts.
 
-The collected License Compliance report will be uploaded to GitLab as an artifact and will
-be summarized in the merge requests and pipeline view. It's also used to provide data for security
+The collected License Compliance report uploads to GitLab as an artifact and is summarized in merge requests and the pipeline view. It's also used to provide data for security
 dashboards.
 
 #### `artifacts:reports:license_scanning` **(ULTIMATE)**
@@ -243,8 +238,7 @@ dashboards.
 The `license_scanning` report collects [Licenses](../../user/compliance/license_compliance/index.md)
 as artifacts.
 
-The License Compliance report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests, pipeline view and provide data for security
+The License Compliance report uploads to GitLab as an artifact and displays automatically in merge requests and the pipeline view, and provide data for security
 dashboards.
 
 #### `artifacts:reports:performance` **(PREMIUM)**
@@ -255,8 +249,7 @@ dashboards.
 The `performance` report collects [Browser Performance Testing metrics](../../user/project/merge_requests/browser_performance_testing.md)
 as artifacts.
 
-The collected Browser Performance report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests.
+The collected Browser Performance report uploads to GitLab as an artifact and displays in merge requests.
 
 #### `artifacts:reports:load_performance` **(PREMIUM)**
 
@@ -276,8 +269,7 @@ shown in merge requests automatically.
 The `metrics` report collects [Metrics](../metrics_reports.md)
 as artifacts.
 
-The collected Metrics report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests.
+The collected Metrics report uploads to GitLab as an artifact and displays in merge requests.
 
 #### `artifacts:reports:requirements` **(ULTIMATE)**
 
@@ -286,8 +278,8 @@ be automatically shown in merge requests.
 
 The `requirements` report collects `requirements.json` files as artifacts.
 
-The collected Requirements report will be uploaded to GitLab as an artifact and
-existing [requirements](../../user/project/requirements/index.md) will be
+The collected Requirements report uploads to GitLab as an artifact and
+existing [requirements](../../user/project/requirements/index.md) are
 marked as Satisfied.
 
 ## Browsing artifacts
@@ -348,10 +340,8 @@ so you can use it for scripting purposes.
 
 NOTE: **Note:**
 The latest artifacts are created by jobs in the **most recent** successful pipeline
-for the specific ref. If you run two types of pipelines for the same ref, the latest
-artifact will be determined by timing. For example, if a branch pipeline created
-by merging a merge request runs at the same time as a scheduled pipeline, the
-latest artifact will be from the pipeline that completed most recently.
+for the specific ref. If you run two types of pipelines for the same ref, timing determines the latest
+artifact. For example, if a merge request creates a branch pipeline at the same time as a scheduled pipeline, the pipeline that completed most recently creates the latest artifact.
 
 Artifacts for other pipelines can be accessed with direct access to them.
 
@@ -425,7 +415,7 @@ information in the UI.
 DANGER: **Danger:**
 This is a destructive action that leads to data loss. Use with caution.
 
-You can erase a single job via the UI, which will also remove the job's
+You can erase a single job via the UI, which also removes the job's
 artifacts and trace, if you are:
 
 - The owner of the job.

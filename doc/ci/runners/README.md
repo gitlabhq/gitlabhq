@@ -7,7 +7,7 @@ type: reference
 
 # Configuring GitLab Runners
 <!-- This topic contains several commented-out sections that were accidentally added in 13.2.-->
-<!-- The commented-out sections will be added back in 13.3.-->
+<!-- The commented-out sections are added back in 13.3.-->
 
 In GitLab CI/CD, Runners run the code defined in [`.gitlab-ci.yml`](../yaml/README.md).
 A GitLab Runner is a lightweight, highly-scalable agent that picks up a CI job through
@@ -266,7 +266,7 @@ if smaller than the [project defined timeout](../pipelines/settings.md#timeout),
 This feature can be used to prevent your shared Runner from being overwhelmed
 by a project that has jobs with a long timeout (for example, one week).
 
-When not configured, Runners will not override the project timeout.
+When not configured, Runners do not override the project timeout.
 
 How this feature works:
 
@@ -329,8 +329,7 @@ To protect or unprotect a Runner:
 
 Whenever a project is forked, it copies the settings of the jobs that relate
 to it. This means that if you have shared Runners set up for a project and
-someone forks that project, the shared Runners will also serve jobs of this
-project.
+someone forks that project, the shared Runners serve jobs of this project.
 
 ### Attack vectors in Runners
 
@@ -353,7 +352,7 @@ To reset the token:
 1. After the page is refreshed, expand the **Runners settings** section
    and check the registration token - it should be changed.
 
-From now on the old token is no longer valid and will not register
+From now on the old token is no longer valid and does not register
 any new Runners to the project. If you are using any tools to provision and
 register new Runners, the tokens used in those tools should be updated to reflect the
 value of the new token.

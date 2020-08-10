@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'ProductAnalytics::CollectorApp' do
   let_it_be(:project) { create(:project) }
   let(:params) { {} }
+  let(:raw_event) { Gitlab::Json.parse(fixture_file('product_analytics/event.json')) }
 
   subject { get '/-/collector/i', params: params }
 
@@ -17,24 +18,7 @@ RSpec.describe 'ProductAnalytics::CollectorApp' do
   end
 
   context 'correct event params' do
-    let(:params) do
-      {
-        aid: project.id,
-        p: 'web',
-        tna: 'sp',
-        tv: 'js-2.14.0',
-        eid: SecureRandom.uuid,
-        duid: SecureRandom.uuid,
-        sid: SecureRandom.uuid,
-        vid: 4,
-        url: 'http://example.com/products/1',
-        refr: 'http://example.com/products/1',
-        lang: 'en-US',
-        cookie: true,
-        tz: 'America/Los_Angeles',
-        cs: 'UTF-8'
-      }
-    end
+    let(:params) { raw_event.merge(aid: project.id) }
 
     it 'repond with 200' do
       expect { subject }.to change { ProductAnalyticsEvent.count }.by(1)

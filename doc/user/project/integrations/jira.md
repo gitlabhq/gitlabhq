@@ -75,7 +75,7 @@ Select **Enable integration**.
 
 Select a **Trigger** action. This determines whether a mention of a Jira issue in GitLab commits, merge requests, or both, should link the Jira issue back to that source commit/MR and transition the Jira issue, if indicated.
 
-To include a comment on the Jira issue when the above referene is made in GitLab, check **Enable comments**.
+To include a comment on the Jira issue when the above reference is made in GitLab, check **Enable comments**.
 
 Enter the further details on the page as described in the following table.
 

@@ -28,12 +28,12 @@ following the
 Since an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/install/) (deb/rpm).
 
 One reason the Omnibus package is more reliable is its use of runit to restart any of the GitLab processes in case one crashes.
-On heavily used GitLab instances the memory usage of the Sidekiq background worker will grow over time.
+On heavily used GitLab instances the memory usage of the Sidekiq background worker grows over time.
 
 Omnibus packages solve this by [letting the Sidekiq terminate gracefully](../administration/operations/sidekiq_memory_killer.md) if it uses too much memory.
-After this termination runit will detect Sidekiq is not running and will start it.
+After this termination runit detects Sidekiq is not running and starts it.
 Since installations from source don't use runit for process supervision, Sidekiq
-can't be terminated and its memory usage will grow over time.
+can't be terminated and its memory usage grows over time.
 
 ## Select a version to install
 
@@ -44,7 +44,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 
 ## GitLab directory structure
 
-This is the main directory structure you will end up with following the instructions
+This is the main directory structure you end up with following the instructions
 of this page:
 
 ```plaintext
@@ -99,7 +99,7 @@ apt-get install sudo -y
 ```
 
 NOTE: **Note:**
-During this installation, some files will need to be edited manually. If you are familiar with vim, set it as default editor with the commands below. If you are not familiar with vim, skip this and keep using the default editor.
+During this installation, some files need to be edited manually. If you are familiar with vim, set it as default editor with the commands below. If you are not familiar with vim, skip this and keep using the default editor.
 
 ```shell
 # Install vim and set as default editor
@@ -286,7 +286,7 @@ requirements for these are:
 
 In many distros,
 the versions provided by the official package repositories are out of date, so
-we'll need to install through the following commands:
+we need to install through the following commands:
 
 ```shell
 # install node v12.x
@@ -366,7 +366,7 @@ Starting from GitLab 12.1, only PostgreSQL is supported. Since GitLab 13.0, we r
    AND installed_version IS NOT NULL;
    ```
 
-   If the extension is enabled this will produce the following output:
+   If the extension is enabled this produces the following output:
 
    ```plaintext
    enabled
@@ -384,7 +384,7 @@ Starting from GitLab 12.1, only PostgreSQL is supported. Since GitLab 13.0, we r
    AND installed_version IS NOT NULL;
    ```
 
-   If the extension is enabled this will produce the following output:
+   If the extension is enabled this produces the following output:
 
    ```plaintext
    enabled
@@ -616,12 +616,12 @@ NOTE: **Note:**
 If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
 NOTE: **Note:**
-Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in `/etc/hosts` ("127.0.0.1 hostname"). This might be necessary, for example, if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with `Check GitLab API access: FAILED. code: 401` and pushing commits will be rejected with `[remote rejected] master -> master (hook declined)`.
+Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in `/etc/hosts` ("127.0.0.1 hostname"). This might be necessary, for example, if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check fails with `Check GitLab API access: FAILED. code: 401` and pushing commits are rejected with `[remote rejected] master -> master (hook declined)`.
 
 ### Install GitLab Workhorse
 
 GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/). The
-following command-line will install GitLab-Workhorse in `/home/git/gitlab-workhorse`
+following command-line installs GitLab-Workhorse in `/home/git/gitlab-workhorse`
 which is the recommended location.
 
 ```shell
@@ -637,7 +637,7 @@ sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workh
 ### Install GitLab-Elasticsearch-indexer on Enterprise Edition
 
 GitLab-Elasticsearch-Indexer uses [GNU Make](https://www.gnu.org/software/make/). The
-following command-line will install GitLab-Elasticsearch-Indexer in `/home/git/gitlab-elasticsearch-indexer`
+following command-line installs GitLab-Elasticsearch-Indexer in `/home/git/gitlab-elasticsearch-indexer`
 which is the recommended location.
 
 ```shell
@@ -650,15 +650,15 @@ You can specify a different Git repository by providing it as an extra parameter
 sudo -u git -H bundle exec rake "gitlab:indexer:install[/home/git/gitlab-elasticsearch-indexer,https://example.com/gitlab-elasticsearch-indexer.git]" RAILS_ENV=production
 ```
 
-The source code will first be fetched to the path specified by the first parameter. Then a binary will be built under its `bin` directory.
-You will then need to update `gitlab.yml`'s `production -> elasticsearch -> indexer_path` setting to point to that binary.
+The source code first is fetched to the path specified by the first parameter. Then a binary is built under its `bin` directory.
+You then need to update `gitlab.yml`'s `production -> elasticsearch -> indexer_path` setting to point to that binary.
 
 NOTE: **Note:**
 Elasticsearch is a feature of GitLab Enterprise Edition and isn't included in GitLab Community Edition.
 
 ### Install GitLab Pages
 
-GitLab Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands will install GitLab Pages in `/home/git/gitlab-pages`. For additional setup steps, consult the [administration guide](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be run several different ways.
+GitLab Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands install GitLab Pages in `/home/git/gitlab-pages`. For additional setup steps, consult the [administration guide](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be run several different ways.
 
 ```shell
 cd /home/git
@@ -737,7 +737,7 @@ Otherwise, your secrets are exposed if one of your backups is compromised.
 
 ### Install Init Script
 
-Download the init script (will be `/etc/init.d/gitlab`):
+Download the init script (is `/etc/init.d/gitlab`):
 
 ```shell
 sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
@@ -749,7 +749,7 @@ And if you are installing with a non-default folder or user copy and edit the de
 sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
 ```
 
-If you installed GitLab in another directory or as a user other than the default, you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab` as it will be changed on upgrade.
+If you installed GitLab in another directory or as a user other than the default, you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab` as it is changed on upgrade.
 
 Make GitLab start on boot:
 
@@ -946,7 +946,7 @@ See the [GitLab Runner section](https://about.gitlab.com/stages-devops-lifecycle
 ### Adding your Trusted Proxies
 
 If you are using a reverse proxy on a separate machine, you may want to add the
-proxy to the trusted proxies list. Otherwise users will appear signed in from the
+proxy to the trusted proxies list. Otherwise users appear signed in from the
 proxy's IP address.
 
 You can add trusted proxies in `config/gitlab.yml` by customizing the `trusted_proxies`
@@ -1018,7 +1018,7 @@ If you want to switch back to Unicorn, follow these steps:
 ### Using Sidekiq instead of Sidekiq Cluster
 
 As of GitLab 12.10, Source installations are using `bin/sidekiq-cluster` for managing Sidekiq processes.
-Using Sidekiq directly will still be supported until 14.0. So if you're experiencing issues, please:
+Using Sidekiq directly is still supported until 14.0. So if you're experiencing issues, please:
 
 1. Edit the system `init.d` script to remove the `SIDEKIQ_WORKERS` flag. If you have `/etc/default/gitlab`, then you should edit it instead.
 1. Restart GitLab.

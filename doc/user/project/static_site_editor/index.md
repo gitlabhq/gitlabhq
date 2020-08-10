@@ -61,7 +61,7 @@ click of a button:
 
 When an editor submits their changes, in the background, GitLab automatically
 creates a new branch, commits their changes, and opens a merge request. The
-editor will land directly on the merge request, and then they can assign it to
+editor lands directly on the merge request, and then they can assign it to
 a colleague for review.
 
 ## Getting started
@@ -76,7 +76,7 @@ easily edit your content.
 template. You can either [fork it](../repository/forking_workflow.md#creating-a-fork)
 or [create a new project from a template](../../../gitlab-basics/create-project.md#built-in-templates).
 1. Edit the `data/config.yml` file adding your project's path.
-1. Editing the file will trigger a CI/CD pipeline to deploy your project with GitLab Pages.
+1. Editing the file triggers a CI/CD pipeline to deploy your project with GitLab Pages.
 1. When the pipeline finishes, from your project's left-side menu, go to **Settings > Pages** to find the URL of your new website.
 1. Visit your website and look at the bottom-left corner of the screen to see the new **Edit this page** button.
 

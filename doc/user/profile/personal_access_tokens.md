@@ -17,7 +17,7 @@ You can also use personal access tokens with Git to authenticate over HTTP or SS
 
 Personal access tokens expire on the date you define, at midnight UTC.
 
-- GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that will expire in under seven days. The owners of these tokens are notified by email.
+- GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that expire in under seven days. The owners of these tokens are notified by email.
 - In GitLab Ultimate, administrators may [limit the lifetime of personal access tokens](../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens-ultimate-only).
 - In GitLab Ultimate, administrators may [toggle enforcement of personal access token expiry](../admin_area/settings/account_and_limit_settings.md#optional-enforcement-of-personal-access-token-expiry-ultimate-only).
 
@@ -36,8 +36,8 @@ profile.
 1. Choose a name and optional expiry date for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-personal-access-token).
 1. Click the **Create personal access token** button.
-1. Save the personal access token somewhere safe. Once you leave or refresh
-   the page, you won't be able to access it again.
+1. Save the personal access token somewhere safe. If you navigate away or refresh
+your page, and you did not save the token, you must create a new one.
 
 ### Revoking a personal access token
 
@@ -46,7 +46,7 @@ respective **Revoke** button under the **Active Personal Access Token** area.
 
 ### Token activity
 
-You can see when a token was last used from the **Personal Access Tokens** page. Updates to the token usage is fixed at once per 24 hours. Requests to [API resources](../../api/api_resources.md) and the [GraphQL API](../../api/graphql/index.md) will update a token's usage.
+You can see when a token was last used from the **Personal Access Tokens** page. Updates to the token usage is fixed at once per 24 hours. Requests to [API resources](../../api/api_resources.md) and the [GraphQL API](../../api/graphql/index.md) update a token's usage.
 
 ## Limiting scopes of a personal access token
 
@@ -60,14 +60,14 @@ the following table.
 | `api`              | [GitLab 8.15](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5951)   | Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry. |
 | `read_api`           | [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28944)  | Grants read access to the API, including all groups and projects, the container registry, and the package registry. |
 | `read_registry`    | [GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11845)   | Allows to read (pull) [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. |
-| `sudo`             | [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14838)  | Allows performing API actions as any user in the system (if the authenticated user is an admin). |
+| `sudo`             | [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14838)  | Allows performing API actions as any user in the system (if the authenticated user is an administrator). |
 | `read_repository`  | [GitLab 10.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17894)  | Allows read-only access (pull) to the repository through `git clone`. |
 | `write_repository` | [GitLab 11.11](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26021) | Allows read-write access (pull, push) to the repository through `git clone`. Required for accessing Git repositories over HTTP when 2FA is enabled. |
 
 ## Programmatically creating a personal access token
 
 You can programmatically create a predetermined personal access token for use in
-automation or tests. You will need sufficient access to run a
+automation or tests. You need sufficient access to run a
 [Rails console session](../../administration/troubleshooting/debug.md#starting-a-rails-console-session)
 for your GitLab instance.
 
@@ -89,15 +89,15 @@ sudo gitlab-rails runner "token = User.find_by_username('automation-bot').person
 ```
 
 NOTE: **Note:**
-The token string must be 20 characters in length, or it will not be
-recognized as a personal access token.
+The token string must be 20 characters in length to be
+recognized as a valid personal access token.
 
 The list of valid scopes and what they do can be found
 [in the source code](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/auth.rb).
 
 ## Programmatically revoking a personal access token
 
-You can programmatically revoke a personal access token. You will need
+You can programmatically revoke a personal access token. You need
 sufficient access to run a [Rails console session](../../administration/troubleshooting/debug.md#starting-a-rails-console-session)
 for your GitLab instance.
 

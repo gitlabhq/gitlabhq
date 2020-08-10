@@ -23,7 +23,12 @@ RSpec.describe ProductAnalytics::EventParams do
         br_lang: 'en-US',
         br_cookies: true,
         os_timezone: 'America/Los_Angeles',
-        doc_charset: 'UTF-8'
+        doc_charset: 'UTF-8',
+        se_category: 'category',
+        se_action: 'action',
+        se_label: 'label',
+        se_property: 'property',
+        se_value: 12.34
       }
 
       expect(subject).to include(expected_params)

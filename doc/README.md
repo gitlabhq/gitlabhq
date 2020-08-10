@@ -213,7 +213,8 @@ The following documentation relates to the DevOps **Create** stage:
 
 | Create topics - Integration and Automation                                    | Description                                                                                                            |
 |:------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------|
-| [GitLab API](api/README.md)                                                   | Integrate GitLab via a simple and powerful API.                                                                        |
+| [GitLab REST API](api/README.md)                                              | Integrate with GitLab using our REST API. |
+| [GitLab GraphQL API](api/graphql/index.md)                                    | Integrate with GitLab using our GraphQL API. |
 | [GitLab Integration](integration/README.md)                                   | Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication. |
 | [GitLab Webhooks](user/project/integrations/webhooks.md)                      | Let GitLab notify you when new code has been pushed to your project.                                                   |
 | [Jira Development Panel](integration/jira_development_panel.md) **(PREMIUM)** | See GitLab information in the Jira Development Panel.                                                                  |
@@ -468,7 +469,8 @@ There are many ways to integrate with GitLab, including:
 
 | Topic                                                      | Description                                     |
 |:-----------------------------------------------------------|:------------------------------------------------|
-| [GitLab API](api/README.md)                                | Integrate GitLab via a simple and powerful API. |
+| [GitLab REST API](api/README.md)                           | Integrate with GitLab using our REST API. |
+| [GitLab GraphQL API](api/graphql/index.md)                 | Integrate with GitLab using our GraphQL API. |
 | [Integrations and automation](#integration-and-automation) | All GitLab integration and automation options.  |
 
 <div align="right">

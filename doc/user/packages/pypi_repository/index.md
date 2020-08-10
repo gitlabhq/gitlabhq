@@ -18,7 +18,7 @@ The GitLab PyPi Repository works with:
 
 ## Setting up your development environment
 
-You will need a recent version of [pip](https://pypi.org/project/pip/) and [twine](https://pypi.org/project/twine/).
+You need a recent version of [pip](https://pypi.org/project/pip/) and [twine](https://pypi.org/project/twine/).
 
 ## Enabling the PyPi Repository
 
@@ -26,7 +26,7 @@ NOTE: **Note:**
 This option is available only if your GitLab administrator has
 [enabled support for the Package Registry](../../../administration/packages/index.md).
 
-After the PyPi Repository is enabled, it will be available for all new projects
+After the PyPi Repository is enabled, it is available for all new projects
 by default. To enable it for existing projects, or if you want to disable it:
 
 1. Navigate to your project's **Settings > General > Visibility, project features, permissions**.
@@ -37,7 +37,7 @@ You should then be able to see the **Packages & Registries** section on the left
 
 ## Getting started
 
-This section will cover creating a new example PyPi package to upload. This is a
+This section covers creating a new example PyPi package to upload. This is a
 quickstart to test out the **GitLab PyPi Registry**. If you already understand how
 to build and publish your own packages, move on to the [next section](#adding-the-gitlab-pypi-repository-as-a-source).
 
@@ -159,7 +159,7 @@ Package Registry**. Before we do so, we next need to set up authentication.
 
 ### Authenticating with a personal access token
 
-You will need the following:
+You need the following:
 
 - A personal access token. You can generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api` for repository authentication.
 - A suitable name for your source.
@@ -180,7 +180,7 @@ password = <your personal access token>
 
 ### Authenticating with a deploy token
 
-You will need the following:
+You need the following:
 
 - A deploy token. You can generate a [deploy token](./../../project/deploy_tokens/index.md) with the `read_package_registry` and/or `write_package_registry` scopes for repository authentication.
 - A suitable name for your source.
@@ -205,7 +205,7 @@ When uploading packages, note that:
 
 - The maximum allowed size is 50 Megabytes.
 - If you upload the same package with the same version multiple times, each consecutive upload
-  is saved as a separate file. When installing a package, GitLab will serve the most recent file.
+  is saved as a separate file. When installing a package, GitLab serves the most recent file.
 
 ### Upload packages with Twine
 
@@ -229,8 +229,8 @@ Uploading mypypipackage-0.0.1.tar.gz
 This indicates that the package was uploaded successfully. You can then navigate
 to your project's **Packages & Registries** page and see the uploaded packages.
 
-If you did not follow the guide above, the you'll need to ensure your package
-has been properly built and you [created a PyPi package with setuptools](https://packaging.python.org/tutorials/packaging-projects/).
+If you did not follow the guide above, then you need to ensure your package
+has been properly built and you [created a PyPi package with `setuptools`](https://packaging.python.org/tutorials/packaging-projects/).
 
 You can then upload your package using the following command:
 
