@@ -21,6 +21,12 @@ RSpec.describe SendFileUpload do
   let(:controller_class) do
     Class.new do
       include SendFileUpload
+
+      def params
+        {}
+      end
+
+      def current_user; end
     end
   end
 
@@ -42,6 +48,89 @@ RSpec.describe SendFileUpload do
       FileUtils.rm_f(temp_file)
     end
 
+    shared_examples 'handles image resize requests' do
+      let(:headers) { double }
+
+      before do
+        allow(uploader).to receive(:image?).and_return(true)
+        allow(uploader).to receive(:mounted_as).and_return(:avatar)
+
+        allow(controller).to receive(:headers).and_return(headers)
+        # both of these are valid cases, depending on whether we are dealing with
+        # local or remote files
+        allow(controller).to receive(:send_file)
+        allow(controller).to receive(:redirect_to)
+      end
+
+      context 'when feature is enabled for current user' do
+        let(:user) { build(:user) }
+
+        before do
+          stub_feature_flags(dynamic_image_resizing: user)
+          allow(controller).to receive(:current_user).and_return(user)
+        end
+
+        context 'with valid width parameter' do
+          it 'renders OK with workhorse command header' do
+            expect(controller).not_to receive(:send_file)
+            expect(controller).to receive(:params).at_least(:once).and_return(width: '64')
+            expect(controller).to receive(:head).with(:ok)
+            expect(headers).to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
+
+            subject
+          end
+        end
+
+        context 'with missing width parameter' do
+          it 'does not write workhorse command header' do
+            expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
+
+            subject
+          end
+        end
+
+        context 'with invalid width parameter' do
+          it 'does not write workhorse command header' do
+            expect(controller).to receive(:params).at_least(:once).and_return(width: 'not a number')
+            expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
+
+            subject
+          end
+        end
+
+        context 'with width that is not allowed' do
+          it 'does not write workhorse command header' do
+            expect(controller).to receive(:params).at_least(:once).and_return(width: '63')
+            expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
+
+            subject
+          end
+        end
+
+        context 'when image file is not an avatar' do
+          it 'does not write workhorse command header' do
+            expect(uploader).to receive(:mounted_as).and_return(nil) # FileUploader is not mounted
+            expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
+
+            subject
+          end
+        end
+      end
+
+      context 'when feature is disabled' do
+        before do
+          stub_feature_flags(dynamic_image_resizing: false)
+        end
+
+        it 'does not write workhorse command header' do
+          expect(controller).to receive(:params).at_least(:once).and_return(width: '64')
+          expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
+
+          subject
+        end
+      end
+    end
+
     context 'when local file is used' do
       before do
         uploader.store!(temp_file)
@@ -52,6 +141,8 @@ RSpec.describe SendFileUpload do
 
         subject
       end
+
+      it_behaves_like 'handles image resize requests'
     end
 
     context 'with inline image' do
@@ -155,6 +246,8 @@ RSpec.describe SendFileUpload do
           it_behaves_like 'proxied file'
         end
       end
+
+      it_behaves_like 'handles image resize requests'
     end
   end
 end

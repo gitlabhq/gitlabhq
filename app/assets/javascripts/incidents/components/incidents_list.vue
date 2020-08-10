@@ -287,7 +287,7 @@ export default {
           <gl-icon
             v-if="item.state === 'closed'"
             name="issue-close"
-            class="gl-mx-1 gl-fill-blue-500"
+            class="gl-mx-1 gl-fill-blue-500 gl-flex-shrink-0"
             :size="16"
             data-testid="incident-closed"
           />

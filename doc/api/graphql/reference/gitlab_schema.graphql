@@ -8960,6 +8960,11 @@ type MilestoneEdge {
   node: Milestone
 }
 
+"""
+Identifier of Milestone
+"""
+scalar MilestoneID
+
 enum MilestoneStateEnum {
   active
   closed
@@ -11622,6 +11627,16 @@ type Query {
   metadata: Metadata
 
   """
+  Find a milestone
+  """
+  milestone(
+    """
+    Find a milestone by its ID
+    """
+    id: MilestoneID!
+  ): Milestone
+
+  """
   Find a namespace
   """
   namespace(
@@ -13739,9 +13754,9 @@ type Snippet implements Noteable {
   author: User
 
   """
-  Snippet blob
+  Snippet blob. Deprecated in 13.3: Use `blobs`
   """
-  blob: SnippetBlob!
+  blob: SnippetBlob! @deprecated(reason: "Use `blobs`. Deprecated in 13.3")
 
   """
   Snippet blobs

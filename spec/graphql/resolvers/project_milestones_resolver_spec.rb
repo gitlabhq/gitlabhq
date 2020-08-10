@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::ProjectMilestoneResolver do
+RSpec.describe Resolvers::ProjectMilestonesResolver do
   include GraphqlHelpers
 
   describe '#resolve' do

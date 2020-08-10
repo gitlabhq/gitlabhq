@@ -5,16 +5,13 @@
  */
 
 import $ from 'jquery';
-import { GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
-import LoadingButton from '../../vue_shared/components/loading_button.vue';
 
 export default {
   components: {
-    Icon,
-    LoadingButton,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -55,16 +52,16 @@ export default {
 };
 </script>
 <template>
-  <loading-button
+  <gl-button
     v-gl-tooltip
     :loading="isLoading"
     :title="title"
     :aria-label="title"
-    container-class="btn btn-danger d-none d-sm-none d-md-block"
+    icon="stop"
+    category="primary"
+    variant="danger"
     data-toggle="modal"
     data-target="#stop-environment-modal"
     @click="onClick"
-  >
-    <icon name="stop" />
-  </loading-button>
+  />
 </template>

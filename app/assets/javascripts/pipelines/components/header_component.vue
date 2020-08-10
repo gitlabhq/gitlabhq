@@ -1,7 +1,6 @@
 <script>
-import { GlLoadingIcon, GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlLoadingIcon, GlModal, GlModalDirective, GlButton } from '@gitlab/ui';
 import ciHeader from '~/vue_shared/components/header_ci_component.vue';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import eventHub from '../event_hub';
 import { __ } from '~/locale';
 
@@ -13,7 +12,7 @@ export default {
     ciHeader,
     GlLoadingIcon,
     GlModal,
-    LoadingButton,
+    GlButton,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -77,35 +76,43 @@ export default {
       :user="pipeline.user"
       item-name="Pipeline"
     >
-      <loading-button
+      <gl-button
         v-if="pipeline.retry_path"
         :loading="isRetrying"
         :disabled="isRetrying"
-        class="js-retry-button btn btn-inverted-secondary"
-        container-class="d-inline"
-        :label="__('Retry')"
+        data-testid="retryButton"
+        category="secondary"
+        variant="info"
         @click="retryPipeline()"
-      />
+      >
+        {{ __('Retry') }}
+      </gl-button>
 
-      <loading-button
+      <gl-button
         v-if="pipeline.cancel_path"
         :loading="isCanceling"
         :disabled="isCanceling"
-        class="js-btn-cancel-pipeline btn btn-danger"
-        container-class="d-inline"
-        :label="__('Cancel running')"
+        data-testid="cancelPipeline"
+        class="gl-ml-3"
+        category="primary"
+        variant="danger"
         @click="cancelPipeline()"
-      />
+      >
+        {{ __('Cancel running') }}
+      </gl-button>
 
-      <loading-button
+      <gl-button
         v-if="pipeline.delete_path"
         v-gl-modal="$options.DELETE_MODAL_ID"
         :loading="isDeleting"
         :disabled="isDeleting"
-        class="js-btn-delete-pipeline btn btn-danger btn-inverted"
-        container-class="d-inline"
-        :label="__('Delete')"
-      />
+        data-testid="deletePipeline"
+        class="gl-ml-3"
+        category="secondary"
+        variant="danger"
+      >
+        {{ __('Delete') }}
+      </gl-button>
     </ci-header>
 
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3 gl-mb-3" />

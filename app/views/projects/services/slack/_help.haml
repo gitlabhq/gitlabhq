@@ -3,7 +3,7 @@
 
 .info-well
   .well-segment
-    %p= s_('SlackIntegration|This service send notifications about projects\' events to Slack channels. To set up this service:')
+    %p= s_('SlackIntegration|This service sends notifications about project events to Slack channels. To set up this service:')
     %ol
       %li
         = html_escape(s_('SlackIntegration|%{webhooks_link_start}Add an incoming webhook%{webhooks_link_end} in your Slack team. The default channel can be overridden for each event.')) % { webhooks_link_start: webhooks_link_start.html_safe, webhooks_link_end: '</a>'.html_safe }

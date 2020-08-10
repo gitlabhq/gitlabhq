@@ -25,6 +25,7 @@ class SessionsController < Devise::SessionsController
   before_action :store_unauthenticated_sessions, only: [:new]
   before_action :save_failed_login, if: :action_new_and_failed_login?
   before_action :load_recaptcha
+  before_action :set_invite_params, only: [:new]
 
   after_action :log_failed_login, if: :action_new_and_failed_login?
   after_action :verify_known_sign_in, only: [:create]
@@ -290,6 +291,10 @@ class SessionsController < Devise::SessionsController
     else
       "standard"
     end
+  end
+
+  def set_invite_params
+    @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
   end
 end
 

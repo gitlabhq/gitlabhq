@@ -32,32 +32,32 @@
               = render 'layouts/search' unless current_controller?(:search)
             %li.nav-item.d-inline-block.d-lg-none
               = link_to search_context.search_url, title: _('Search'), aria: { label: _('Search') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = sprite_icon('search', size: 16)
+                = sprite_icon('search')
           - if header_link?(:issues)
             = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
               = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues', aria: { label: _('Issues') }, data: { qa_selector: 'issues_shortcut_button', toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-                = sprite_icon('issues', size: 16)
+                = sprite_icon('issues')
                 - issues_count = assigned_issuables_count(:issues)
                 %span.badge.badge-pill.issues-count.green-badge{ class: ('hidden' if issues_count == 0) }
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do
               = link_to assigned_mrs_dashboard_path, title: _('Merge requests'), class: 'dashboard-shortcuts-merge_requests', aria: { label: _('Merge requests') }, data: { qa_selector: 'merge_requests_shortcut_button', toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-                = sprite_icon('git-merge', size: 16)
+                = sprite_icon('git-merge')
                 - merge_requests_count = assigned_issuables_count(:merge_requests)
                 %span.badge.badge-pill.merge-requests-count{ class: ('hidden' if merge_requests_count == 0) }
                   = number_with_delimiter(merge_requests_count)
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
               = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos', data: { qa_selector: 'todos_shortcut_button', toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-                = sprite_icon('todo-done', size: 16)
+                = sprite_icon('todo-done')
                 %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count == 0) }
                   = todos_count_format(todos_pending_count)
           %li.nav-item.header-help.dropdown.d-none.d-md-block
             = link_to help_path, class: 'header-help-dropdown-toggle', data: { toggle: "dropdown" } do
               %span.gl-sr-only
                 = s_('Nav|Help')
-              = sprite_icon('question', size: 16)
+              = sprite_icon('question')
               = sprite_icon('angle-down', css_class: 'caret-down')
             .dropdown-menu.dropdown-menu-right
               = render 'layouts/header/help_dropdown'

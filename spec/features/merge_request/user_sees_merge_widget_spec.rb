@@ -302,7 +302,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
   context 'view merge request with MWPS enabled but automatically merge fails' do
     before do
-      merge_request.update(
+      merge_request.update!(
         auto_merge_enabled: true,
         auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS,
         merge_user: merge_request.author,
@@ -324,7 +324,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
   context 'view merge request with MWPS enabled but automatically merge fails' do
     before do
-      merge_request.update(
+      merge_request.update!(
         merge_when_pipeline_succeeds: true,
         merge_user: merge_request.author,
         merge_error: 'Something went wrong'
@@ -345,9 +345,9 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
   context 'view merge request where fast-forward merge is not possible' do
     before do
-      project.update(merge_requests_ff_only_enabled: true)
+      project.update!(merge_requests_ff_only_enabled: true)
 
-      merge_request.update(
+      merge_request.update!(
         merge_user: merge_request.author,
         merge_status: :cannot_be_merged
       )
@@ -380,19 +380,19 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     end
   end
 
-  context 'user can merge into source project but cannot push to fork', :js do
-    let(:fork_project) { create(:project, :public, :repository) }
+  context 'user can merge into target project but cannot push to fork', :js do
+    let(:forked_project) { fork_project(project, nil, repository: true) }
     let(:user2) { create(:user) }
 
     before do
       project.add_maintainer(user2)
       sign_out(:user)
       sign_in(user2)
-      merge_request.update(target_project: fork_project)
+      merge_request.update!(source_project: forked_project)
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'user can merge into the source project' do
+    it 'user can merge into the target project', :sidekiq_inline do
       expect(page).to have_button('Merge', disabled: false)
     end
 
@@ -409,7 +409,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       project.add_developer(user2)
       sign_out(:user)
       sign_in(user2)
-      merge_request.update(
+      merge_request.update!(
         source_project: forked_project,
         target_project: project,
         merge_params: { 'force_remove_source_branch' => '1' }
@@ -879,7 +879,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     let!(:pipeline) { create(:ci_pipeline, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
 
     before do
-      project.update(
+      project.update!(
         visibility_level: Gitlab::VisibilityLevel::PUBLIC,
         public_builds: false
       )

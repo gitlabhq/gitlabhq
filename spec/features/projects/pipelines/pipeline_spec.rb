@@ -399,7 +399,7 @@ RSpec.describe 'Pipeline', :js do
 
       context 'when retrying' do
         before do
-          find('.js-retry-button').click
+          find('[data-testid="retryButton"]').click
         end
 
         it 'does not show a "Retry" button', :sidekiq_might_not_need_inline do
@@ -901,7 +901,7 @@ RSpec.describe 'Pipeline', :js do
 
       context 'when retrying' do
         before do
-          find('.js-retry-button').click
+          find('[data-testid="retryButton"]').click
         end
 
         it 'does not show a "Retry" button', :sidekiq_might_not_need_inline do

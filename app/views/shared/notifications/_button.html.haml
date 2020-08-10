@@ -18,7 +18,7 @@
         %div{ class: ("btn-group" if notification_setting.custom?) }
           - if notification_setting.custom?
             %button.dropdown-new.btn.btn-defaul.btn-icon.gl-button.has-tooltip.notifications-btn.text-left#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => aria_label, data: { container: "body", toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
-              = sprite_icon("notifications", size: 16, css_class: "js-notification-loading")
+              = sprite_icon("notifications", css_class: "js-notification-loading")
               = notification_title(notification_setting.level)
             %button.btn.dropdown-toggle.d-flex{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
               = icon('caret-down')
@@ -26,7 +26,7 @@
           - else
             %button.dropdown-new.btn.btn-default.btn-icon.gl-button.has-tooltip.notifications-btn#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => aria_label, data: { container: "body", toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
               .float-left
-                = sprite_icon("notifications", size: 16, css_class: "js-notification-loading")
+                = sprite_icon("notifications", css_class: "js-notification-loading")
                 = notification_title(notification_setting.level)
               .float-right
                 = icon("caret-down")

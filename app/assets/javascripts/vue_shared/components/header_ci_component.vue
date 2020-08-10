@@ -105,7 +105,7 @@ export default {
       </template>
     </section>
 
-    <section v-if="$slots.default" class="header-action-buttons">
+    <section v-if="$slots.default" data-testid="headerButtons" class="gl-display-flex">
       <slot></slot>
     </section>
     <gl-deprecated-button

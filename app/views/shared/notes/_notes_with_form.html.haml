@@ -25,7 +25,7 @@
 - elsif discussion_locked
   .disabled-comment.text-center.gl-mt-3
     %span.issuable-note-warning
-      = sprite_icon('lock', size: 16, css_class: 'icon')
+      = sprite_icon('lock', css_class: 'icon')
       %span
         = html_escape(_("This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment.")) % { issuable: issuable.class.to_s.titleize.downcase, strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
 -# haml-lint:disable InlineJavaScript

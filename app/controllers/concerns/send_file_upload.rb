@@ -18,7 +18,11 @@ module SendFileUpload
       send_params.merge!(filename: attachment, disposition: disposition)
     end
 
-    if file_upload.file_storage?
+    if image_scaling_request?(file_upload)
+      location = file_upload.file_storage? ? file_upload.path : file_upload.url
+      headers.store(*Gitlab::Workhorse.send_scaled_image(location, params[:width].to_i))
+      head :ok
+    elsif file_upload.file_storage?
       send_file file_upload.path, send_params
     elsif file_upload.class.proxy_download_enabled? || proxy
       headers.store(*Gitlab::Workhorse.send_url(file_upload.url(**redirect_params)))
@@ -36,5 +40,20 @@ module SendFileUpload
     else
       "application/octet-stream"
     end
+  end
+
+  private
+
+  def image_scaling_request?(file_upload)
+    avatar_image_upload?(file_upload) && valid_image_scaling_width? && current_user &&
+      Feature.enabled?(:dynamic_image_resizing, current_user)
+  end
+
+  def avatar_image_upload?(file_upload)
+    file_upload.try(:image?) && file_upload.try(:mounted_as)&.to_sym == :avatar
+  end
+
+  def valid_image_scaling_width?
+    Avatarable::ALLOWED_IMAGE_SCALER_WIDTHS.include?(params[:width]&.to_i)
   end
 end

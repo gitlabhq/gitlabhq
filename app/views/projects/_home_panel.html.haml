@@ -24,7 +24,7 @@
               = render 'shared/members/access_request_links', source: @project
           - if @project.tag_list.present?
             %span.home-panel-topic-list.mt-2.w-100.d-inline-flex
-              = sprite_icon('tag', size: 16, css_class: 'icon gl-mr-2')
+              = sprite_icon('tag', css_class: 'icon gl-mr-2')
 
               - @project.topics_to_show.each do |topic|
                 - project_topics_classes = "badge badge-pill badge-secondary gl-mr-2"

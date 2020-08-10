@@ -25,7 +25,7 @@
           %span.issuable-milestone.d-none.d-sm-inline-block
             &nbsp;
             = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
-              = sprite_icon('clock', size: 16, css_class: 'gl-vertical-align-text-bottom')
+              = sprite_icon('clock', css_class: 'gl-vertical-align-text-bottom')
               = merge_request.milestone.title
         - if merge_request.target_project.default_branch != merge_request.target_branch
           %span.project-ref-path.has-tooltip{ title: _('Target branch') }
@@ -45,13 +45,13 @@
             = _('MERGED')
         - elsif merge_request.closed?
           %li.issuable-status.d-none.d-sm-inline-block
-            = sprite_icon('cancel', size: 16, css_class: 'gl-vertical-align-text-bottom')
+            = sprite_icon('cancel', css_class: 'gl-vertical-align-text-bottom')
             = _('CLOSED')
         = render 'shared/merge_request_pipeline_status', merge_request: merge_request
         - if merge_request.open? && merge_request.broken?
           %li.issuable-pipeline-broken.d-none.d-sm-flex
             = link_to merge_request_path(merge_request), class: "has-tooltip", title: _('Cannot be merged automatically') do
-              = sprite_icon('warning-solid', size: 16)
+              = sprite_icon('warning-solid')
         - if merge_request.assignees.any?
           %li.d-flex
             = render 'shared/issuable/assignees', project: merge_request.project, issuable: merge_request

@@ -19,7 +19,7 @@
         %p.validation-pending.gl-field-error-ignore.field-validation.hide= _('Checking username availability...')
       .form-group
         = f.label :email, class: 'label-bold'
-        = f.email_field :email, class: "form-control middle", data: { qa_selector: 'new_user_email_field' }, required: true, title: _("Please provide a valid email address.")
+        = f.email_field :email, value: @invite_email, class: "form-control middle", data: { qa_selector: 'new_user_email_field' }, required: true, title: _("Please provide a valid email address.")
       .form-group
         = f.label :email_confirmation, class: 'label-bold'
         = f.email_field :email_confirmation, class: "form-control middle", data: { qa_selector: 'new_user_email_confirmation_field' }, required: true, title: _("Please retype the email address.")

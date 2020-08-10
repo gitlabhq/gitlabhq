@@ -3,7 +3,7 @@ import {
   GlToken,
   GlFilteredSearchToken,
   GlFilteredSearchSuggestion,
-  GlDropdownDivider,
+  GlNewDropdownDivider as GlDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
@@ -102,14 +102,14 @@ export default {
     @input="searchLabels"
   >
     <template #view-token="{ inputValue, cssClasses, listeners }">
-      <gl-token variant="search-value" :class="cssClasses" :style="containerStyle" v-on="listeners">
-        ~{{ activeLabel ? activeLabel.title : inputValue }}
-      </gl-token>
+      <gl-token variant="search-value" :class="cssClasses" :style="containerStyle" v-on="listeners"
+        >~{{ activeLabel ? activeLabel.title : inputValue }}</gl-token
+      >
     </template>
     <template #suggestions>
-      <gl-filtered-search-suggestion :value="$options.noLabel">
-        {{ __('No label') }}
-      </gl-filtered-search-suggestion>
+      <gl-filtered-search-suggestion :value="$options.noLabel">{{
+        __('No label')
+      }}</gl-filtered-search-suggestion>
       <gl-dropdown-divider />
       <gl-loading-icon v-if="loading" />
       <template v-else>

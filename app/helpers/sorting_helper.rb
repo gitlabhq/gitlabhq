@@ -238,7 +238,7 @@ module SortingHelper
     end
 
     link_to(url, type: 'button', class: link_class, title: s_('SortOptions|Sort direction')) do
-      sprite_icon(icon, size: 16)
+      sprite_icon(icon)
     end
   end
 

@@ -26,7 +26,7 @@ RSpec.describe 'Merge request > User cherry-picks', :js do
     context 'without a merge commit' do
       before do
         merge_request.merge_commit_sha = nil
-        merge_request.save
+        merge_request.save!
       end
 
       it 'does not show a Cherry-pick button' do

@@ -1,7 +1,7 @@
 - access = note_max_access_for_user(note)
 - if note.has_special_role?(Note::SpecialRole::FIRST_TIME_CONTRIBUTOR)
   %span.note-role.note-role-special.has-tooltip{ title: _("This is the author's first Merge Request to this project.") }
-    = sprite_icon('first-contribution', size: 16, css_class: 'gl-icon gl-vertical-align-top')
+    = sprite_icon('first-contribution', css_class: 'gl-icon gl-vertical-align-top')
 - if access.nonzero?
   %span.note-role.user-access-role= Gitlab::Access.human_access(access)
 

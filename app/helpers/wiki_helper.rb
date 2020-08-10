@@ -80,7 +80,7 @@ module WikiHelper
 
     link_to(wiki_path(wiki, action: :pages, sort: sort, direction: reversed_direction),
       type: 'button', class: link_class, title: _('Sort direction')) do
-      sprite_icon("sort-#{icon_class}", size: 16)
+      sprite_icon("sort-#{icon_class}")
     end
   end
 

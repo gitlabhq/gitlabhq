@@ -10,13 +10,15 @@ import {
  * @param {string} createFrom The ref to create a new tag from, if necessary
  */
 export const releaseToApiJson = (release, createFrom = null) => {
+  const name = release.name?.trim().length > 0 ? release.name.trim() : null;
+
   const milestones = release.milestones ? release.milestones.map(milestone => milestone.title) : [];
 
   return convertObjectPropsToSnakeCase(
     {
+      name,
       tagName: release.tagName,
       ref: createFrom,
-      name: release.name,
       description: release.description,
       milestones,
       assets: release.assets,

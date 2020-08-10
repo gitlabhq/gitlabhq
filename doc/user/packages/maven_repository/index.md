@@ -783,7 +783,7 @@ is updated:
 
    ```yaml
    deploy:
-     image: maven:3.3.9-jdk-8
+     image: maven:3.6-jdk-11
      script:
        - 'mvn deploy -s ci_settings.xml'
      only:
@@ -808,7 +808,7 @@ is updated:
 
    ```yaml
    deploy:
-     image: gradle:latest
+     image: gradle:6.5-jdk11
      script:
        - 'gradle publish'
      only:

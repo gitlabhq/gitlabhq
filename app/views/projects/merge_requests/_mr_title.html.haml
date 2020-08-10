@@ -10,7 +10,7 @@
 .detail-page-header{ class: ("border-bottom-0 pt-0 pb-0" if mr_tabs_position_enabled?) }
   .detail-page-header-body
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
-      = sprite_icon(state_icon_name, size: 16, css_class: 'd-block d-sm-none')
+      = sprite_icon(state_icon_name, css_class: 'd-block d-sm-none')
       %span.d-none.d-sm-block
         = state_human_name
 

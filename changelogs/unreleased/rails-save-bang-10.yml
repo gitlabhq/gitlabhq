@@ -1,0 +1,5 @@
+---
+title: Refactor spec/features/merge_requests/* to fix Rails/SaveBang Cop
+merge_request: 38591
+author: Rajendra Kadam
+type: fixed

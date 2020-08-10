@@ -29,7 +29,7 @@ gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
 ## Mail configuration
 
 GitLab.com sends emails from the `mg.gitlab.com` domain via [Mailgun](https://www.mailgun.com/) and has
-its own dedicated IP address (`192.237.158.143`).  
+its own dedicated IP address (`192.237.158.143`).
 
 NOTE: **Note:**
 The IP address for `mg.gitlab.com` is subject to change at any time.
@@ -216,10 +216,6 @@ sentry_dsn = "X"
   [runners.machine]
     IdleCount = 50
     IdleTime = 3600
-    OffPeakPeriods = ["* * * * * sat,sun *"]
-    OffPeakTimezone = "UTC"
-    OffPeakIdleCount = 15
-    OffPeakIdleTime = 3600
     MaxBuilds = 1 # For security reasons we delete the VM after job has finished so it's not reused.
     MachineName = "srm-%s"
     MachineDriver = "google"
@@ -237,6 +233,16 @@ sentry_dsn = "X"
       "engine-opt=fixed-cidr-v6=fc00::/7",
       "google-operation-backoff-initial-interval=2" # Custom flag from forked docker-machine, for more information check https://github.com/docker/machine/pull/4600
     ]
+    [[runners.machine.autoscaling]]
+      Periods = ["* * * * * sat,sun *"]
+      Timezone = "UTC"
+      IdleCount = 70
+      IdleTime = 3600
+    [[runners.machine.autoscaling]]
+      Periods = ["* 30-59 3 * * * *", "* 0-30 4 * * * *"]
+      Timezone = "UTC"
+      IdleCount = 700
+      IdleTime = 3600
   [runners.cache]
     Type = "gcs"
     Shared = true

@@ -85,13 +85,13 @@ describe('Pipeline details header', () => {
     });
 
     it('should call postAction when retry button action is clicked', () => {
-      wrapper.find('.js-retry-button').vm.$emit('click');
+      wrapper.find('[data-testid="retryButton"]').vm.$emit('click');
 
       expect(eventHub.$emit).toHaveBeenCalledWith('headerPostAction', 'retry');
     });
 
     it('should call postAction when cancel button action is clicked', () => {
-      wrapper.find('.js-btn-cancel-pipeline').vm.$emit('click');
+      wrapper.find('[data-testid="cancelPipeline"]').vm.$emit('click');
 
       expect(eventHub.$emit).toHaveBeenCalledWith('headerPostAction', 'cancel');
     });

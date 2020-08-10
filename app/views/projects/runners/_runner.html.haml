@@ -7,11 +7,11 @@
 
       - if runner.locked?
         %span.has-tooltip{ title: _('Locked to current projects') }
-          = sprite_icon('lock', size: 16)
+          = sprite_icon('lock')
 
       %small.edit-runner
         = link_to edit_project_runner_path(@project, runner), class: 'btn btn-edit' do
-          = sprite_icon('pencil', size: 16)
+          = sprite_icon('pencil')
     - else
       %span.commit-sha
         = runner.short_sha

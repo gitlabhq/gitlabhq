@@ -25147,6 +25147,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "MilestoneID",
+          "description": "Identifier of Milestone",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "MilestoneStateEnum",
           "description": null,
@@ -34302,6 +34312,33 @@
               "deprecationReason": null
             },
             {
+              "name": "milestone",
+              "description": "Find a milestone",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "Find a milestone by its ID",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "MilestoneID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Milestone",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "namespace",
               "description": "Find a namespace",
               "args": [
@@ -40450,7 +40487,7 @@
             },
             {
               "name": "blob",
-              "description": "Snippet blob",
+              "description": "Snippet blob. Deprecated in 13.3: Use `blobs`",
               "args": [
 
               ],
@@ -40463,8 +40500,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `blobs`. Deprecated in 13.3"
             },
             {
               "name": "blobs",

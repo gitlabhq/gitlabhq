@@ -13,8 +13,8 @@ RSpec.describe 'Merge request > User sees threads', :js do
   end
 
   describe "Diff discussions" do
-    let!(:old_merge_request_diff) { merge_request.merge_request_diffs.create(diff_refs: outdated_diff_refs) }
-    let!(:new_merge_request_diff) { merge_request.merge_request_diffs.create }
+    let!(:old_merge_request_diff) { merge_request.merge_request_diffs.create!(diff_refs: outdated_diff_refs) }
+    let!(:new_merge_request_diff) { merge_request.merge_request_diffs.create! }
     let!(:outdated_discussion) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position).to_discussion }
     let!(:active_discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
     let(:outdated_position) do

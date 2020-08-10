@@ -1,6 +1,5 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 /**
@@ -8,7 +7,7 @@ import { s__ } from '~/locale';
  */
 export default {
   components: {
-    Icon,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -27,15 +26,14 @@ export default {
 };
 </script>
 <template>
-  <a
+  <gl-button
     v-gl-tooltip
     :title="title"
     :aria-label="title"
     :href="externalUrl"
-    class="btn external-url"
+    class="external-url"
     target="_blank"
+    icon="external-link"
     rel="noopener noreferrer nofollow"
-  >
-    <icon name="external-link" />
-  </a>
+  />
 </template>

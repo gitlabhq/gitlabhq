@@ -2330,6 +2330,9 @@ msgstr ""
 msgid "All environments"
 msgstr ""
 
+msgid "All epics"
+msgstr ""
+
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
@@ -5025,6 +5028,9 @@ msgid "Closed"
 msgstr ""
 
 msgid "Closed %{epicTimeagoDate}"
+msgstr ""
+
+msgid "Closed epics"
 msgstr ""
 
 msgid "Closed issues"
@@ -16861,6 +16867,9 @@ msgstr ""
 msgid "Open comment type dropdown"
 msgstr ""
 
+msgid "Open epics"
+msgstr ""
+
 msgid "Open errors"
 msgstr ""
 
@@ -22477,7 +22486,7 @@ msgstr ""
 msgid "SlackIntegration|Select events below to enable notifications. The %{strong_open}Slack channel names%{strong_close} and %{strong_open}Slack username%{strong_close} fields are optional."
 msgstr ""
 
-msgid "SlackIntegration|This service send notifications about projects' events to Slack channels. To set up this service:"
+msgid "SlackIntegration|This service sends notifications about project events to Slack channels. To set up this service:"
 msgstr ""
 
 msgid "SlackService|2. Paste the %{strong_open}Token%{strong_close} into the field below"

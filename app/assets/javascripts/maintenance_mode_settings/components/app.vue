@@ -1,5 +1,5 @@
 <script>
-import { GlToggle, GlFormGroup, GlFormTextarea, GlDeprecatedButton } from '@gitlab/ui';
+import { GlToggle, GlFormGroup, GlFormTextarea, GlButton } from '@gitlab/ui';
 
 export default {
   name: 'MaintenanceModeSettingsApp',
@@ -7,7 +7,7 @@ export default {
     GlToggle,
     GlFormGroup,
     GlFormTextarea,
-    GlDeprecatedButton,
+    GlButton,
   },
   data() {
     return {
@@ -38,7 +38,7 @@ export default {
       />
     </gl-form-group>
     <div class="mt-4">
-      <gl-deprecated-button variant="success">{{ __('Save changes') }}</gl-deprecated-button>
+      <gl-button variant="success" category="primary">{{ __('Save changes') }}</gl-button>
     </div>
   </article>
 </template>

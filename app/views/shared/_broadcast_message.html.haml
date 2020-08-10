@@ -3,7 +3,7 @@
 %div{ class: "broadcast-message #{'alert-warning' if is_banner} broadcast-#{message.broadcast_type}-message #{opts[:preview] && 'preview'} js-broadcast-notification-#{message.id} gl-display-flex",
   style: broadcast_message_style(message), dir: 'auto' }
   .flex-grow-1.text-right.pr-2
-    = sprite_icon('bullhorn', size: 16, css_class: 'vertical-align-text-top')
+    = sprite_icon('bullhorn', css_class: 'vertical-align-text-top')
   %div{ class: !fluid_layout && 'container-limited' }
     = render_broadcast_message(message)
   .flex-grow-1.text-right{ style: 'flex-basis: 0' }

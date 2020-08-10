@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 module Resolvers
-  class MilestoneResolver < BaseResolver
+  class MilestonesResolver < BaseResolver
     include Gitlab::Graphql::Authorize::AuthorizeResource
     include TimeFrameArguments
 
     argument :ids, [GraphQL::ID_TYPE],
-              required: false,
-              description: 'Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1"'
+             required: false,
+             description: 'Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1"'
 
     argument :state, Types::MilestoneStateEnum,
-              required: false,
-              description: 'Filter milestones by state'
+             required: false,
+             description: 'Filter milestones by state'
 
     type Types::MilestoneType, null: true
 
@@ -35,7 +35,7 @@ module Resolvers
     end
 
     def parent
-      @parent ||= object.respond_to?(:sync) ? object.sync : object
+      synchronized_object
     end
 
     def parent_id_parameters(args)

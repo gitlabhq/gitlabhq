@@ -51,7 +51,7 @@ module Types
 
     field :milestones, Types::MilestoneType.connection_type, null: true,
           description: 'Milestones of the group',
-          resolver: Resolvers::GroupMilestoneResolver
+          resolver: Resolvers::GroupMilestonesResolver
 
     field :boards,
           Types::BoardType.connection_type,

@@ -154,7 +154,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
 
     context 'view merge request with MWPS enabled but automatically merge fails' do
       before do
-        merge_request.update(
+        merge_request.update!(
           merge_user: merge_request.author,
           merge_error: 'Something went wrong.'
         )
@@ -173,7 +173,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
 
     context 'view merge request with MWPS enabled but automatically merge fails' do
       before do
-        merge_request.update(
+        merge_request.update!(
           merge_user: merge_request.author,
           merge_error: 'Something went wrong.'
         )

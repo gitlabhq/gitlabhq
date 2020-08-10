@@ -273,6 +273,15 @@ The following issue metadata will be copied to the epic:
 - Group labels that the issue already has.
 - Parent epic. **(ULTIMATE)**
 
+### Use an epic template for repeating issues
+
+You can create a spreadsheet template to manage a pattern of consistently repeating issues.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an introduction to epic templates, see [GitLab Epics and Epic Template Tip](https://www.youtube.com/watch?v=D74xKFNw8vg).
+
+For more on epic templates, see [Epic Templates - Repeatable sets of issues](https://about.gitlab.com/handbook/marketing/product-marketing/getting-started/104/).
+
 ## Manage multi-level child epics **(ULTIMATE)**
 
 ### Add a child epic to an epic

@@ -23,7 +23,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
     before do
       project.add_maintainer(user)
       sign_in(user)
-      note.destroy
+      note.destroy!
       visit_merge_request
     end
 

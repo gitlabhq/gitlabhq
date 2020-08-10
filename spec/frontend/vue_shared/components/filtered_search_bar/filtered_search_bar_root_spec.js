@@ -20,7 +20,7 @@ const createComponent = ({
   namespace = 'gitlab-org/gitlab-test',
   recentSearchesStorageKey = 'requirements',
   tokens = mockAvailableTokens,
-  sortOptions = mockSortOptions,
+  sortOptions,
   searchInputPlaceholder = 'Filter requirements',
 } = {}) => {
   const mountMethod = shallow ? shallowMount : mount;
@@ -40,7 +40,7 @@ describe('FilteredSearchBarRoot', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = createComponent();
+    wrapper = createComponent({ sortOptions: mockSortOptions });
   });
 
   afterEach(() => {
@@ -48,10 +48,25 @@ describe('FilteredSearchBarRoot', () => {
   });
 
   describe('data', () => {
-    it('initializes `filterValue`, `selectedSortOption` and `selectedSortDirection` data props', () => {
+    it('initializes `filterValue`, `selectedSortOption` and `selectedSortDirection` data props and displays the sort dropdown', () => {
       expect(wrapper.vm.filterValue).toEqual([]);
       expect(wrapper.vm.selectedSortOption).toBe(mockSortOptions[0].sortDirection.descending);
       expect(wrapper.vm.selectedSortDirection).toBe(SortDirection.descending);
+      expect(wrapper.contains(GlButtonGroup)).toBe(true);
+      expect(wrapper.contains(GlButton)).toBe(true);
+      expect(wrapper.contains(GlDropdown)).toBe(true);
+      expect(wrapper.contains(GlDropdownItem)).toBe(true);
+    });
+
+    it('does not initialize `selectedSortOption` and `selectedSortDirection` when `sortOptions` is not applied and hides the sort dropdown', () => {
+      const wrapperNoSort = createComponent();
+
+      expect(wrapperNoSort.vm.filterValue).toEqual([]);
+      expect(wrapperNoSort.vm.selectedSortOption).toBe(undefined);
+      expect(wrapperNoSort.contains(GlButtonGroup)).toBe(false);
+      expect(wrapperNoSort.contains(GlButton)).toBe(false);
+      expect(wrapperNoSort.contains(GlDropdown)).toBe(false);
+      expect(wrapperNoSort.contains(GlDropdownItem)).toBe(false);
     });
   });
 
@@ -101,6 +116,19 @@ describe('FilteredSearchBarRoot', () => {
         });
 
         expect(wrapper.vm.sortDirectionTooltip).toBe('Sort direction: Descending');
+      });
+    });
+
+    describe('filteredRecentSearches', () => {
+      it('returns array of recent searches filtering out any string type (unsupported) items', async () => {
+        wrapper.setData({
+          recentSearches: [{ foo: 'bar' }, 'foo'],
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.filteredRecentSearches).toHaveLength(1);
+        expect(wrapper.vm.filteredRecentSearches[0]).toEqual({ foo: 'bar' });
       });
     });
   });
@@ -273,7 +301,7 @@ describe('FilteredSearchBarRoot', () => {
     });
 
     it('renders search history items dropdown with formatting done using token symbols', async () => {
-      const wrapperFullMount = createComponent({ shallow: false });
+      const wrapperFullMount = createComponent({ sortOptions: mockSortOptions, shallow: false });
       wrapperFullMount.vm.recentSearchesStore.addRecentSearch(mockHistoryItems[0]);
 
       await wrapperFullMount.vm.$nextTick();

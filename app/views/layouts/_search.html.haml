@@ -20,8 +20,8 @@
                   %a
                     = _('Loading...')
             = dropdown_loading
-          = sprite_icon('search', size: 16, css_class: 'search-icon')
-          = sprite_icon('close', size: 16, css_class: 'clear-icon js-clear-input')
+          = sprite_icon('search', css_class: 'search-icon')
+          = sprite_icon('close', css_class: 'clear-icon js-clear-input')
 
     = hidden_field_tag :group_id, search_context.for_group? ? search_context.group.id : '', class: 'js-search-group-options', data: search_context.group_metadata
     = hidden_field_tag :project_id, search_context.for_project? ? search_context.project.id : '', id: 'search_project_id', class: 'js-search-project-options', data: search_context.project_metadata

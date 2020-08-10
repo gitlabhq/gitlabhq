@@ -41,6 +41,24 @@ describe('releases/util.js', () => {
       });
     });
 
+    describe('release.name', () => {
+      it.each`
+        input                 | output
+        ${null}               | ${null}
+        ${''}                 | ${null}
+        ${' \t\n\r\n'}        | ${null}
+        ${'  Release name  '} | ${'Release name'}
+      `('converts a name like `$input` to `$output`', ({ input, output }) => {
+        const release = { name: input };
+
+        const expectedJson = {
+          name: output,
+        };
+
+        expect(releaseToApiJson(release)).toMatchObject(expectedJson);
+      });
+    });
+
     describe('when release.milestones is falsy', () => {
       it('includes a "milestone" property in the returned result as an empty array', () => {
         const release = {};

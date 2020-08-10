@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module Resolvers
-  class GroupMilestoneResolver < MilestoneResolver
+  class GroupMilestonesResolver < MilestonesResolver
     argument :include_descendants, GraphQL::BOOLEAN_TYPE,
-              required: false,
-              description: 'Also return milestones in all subgroups and subprojects'
+             required: false,
+             description: 'Also return milestones in all subgroups and subprojects'
 
     private
 

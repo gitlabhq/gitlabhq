@@ -26,7 +26,7 @@
             = icon('exclamation-circle')
       - if can?(current_user, :read_user_profile, @user)
         = link_to user_path(@user, rss_url_options), class: link_classes + 'btn btn-svg btn-default has-tooltip', title: s_('UserProfile|Subscribe'), 'aria-label': 'Subscribe' do
-          = sprite_icon('rss', css_class: 'qa-rss-icon', size: 16)
+          = sprite_icon('rss', css_class: 'qa-rss-icon')
       - if current_user && current_user.admin?
         = link_to [:admin, @user], class: link_classes + 'btn btn-default', title: s_('UserProfile|View user in admin area'),
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
@@ -55,12 +55,12 @@
           .cover-desc.cgray.mb-1.mb-sm-2
             - unless @user.location.blank?
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mb-1.mb-sm-0
-                = sprite_icon('location', size: 16, css_class: 'vertical-align-sub fgray')
+                = sprite_icon('location', css_class: 'vertical-align-sub fgray')
                 %span.vertical-align-middle
                   = @user.location
             - unless work_information(@user).blank?
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline
-                = sprite_icon('work', size: 16, css_class: 'vertical-align-middle fgray')
+                = sprite_icon('work', css_class: 'vertical-align-middle fgray')
                 %span.vertical-align-middle
                   = work_information(@user)
           .cover-desc.cgray.mb-1.mb-sm-2
@@ -172,4 +172,3 @@
               = s_('UserProfile|This user is blocked')
             - else
               = s_('UserProfile|This user has a private profile')
-

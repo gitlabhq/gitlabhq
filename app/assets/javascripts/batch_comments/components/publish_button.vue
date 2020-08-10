@@ -1,12 +1,12 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import { GlButton } from '@gitlab/ui';
 import DraftsCount from './drafts_count.vue';
 
 export default {
   components: {
-    LoadingButton,
+    GlButton,
     DraftsCount,
   },
   props: {
@@ -19,6 +19,16 @@ export default {
       type: String,
       required: false,
       default: __('Finish review'),
+    },
+    category: {
+      type: String,
+      required: false,
+      default: 'primary',
+    },
+    variant: {
+      type: String,
+      required: false,
+      default: 'success',
     },
     shouldPublish: {
       type: Boolean,
@@ -42,14 +52,14 @@ export default {
 </script>
 
 <template>
-  <loading-button
+  <gl-button
     :loading="isPublishing"
-    container-class="btn btn-success js-publish-draft-button qa-submit-review"
+    class="js-publish-draft-button qa-submit-review"
+    :category="category"
+    :variant="variant"
     @click="onClick"
   >
-    <span>
-      {{ label }}
-      <drafts-count v-if="showCount" />
-    </span>
-  </loading-button>
+    {{ label }}
+    <drafts-count v-if="showCount" />
+  </gl-button>
 </template>

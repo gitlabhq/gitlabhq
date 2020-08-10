@@ -4,9 +4,9 @@
 
 - if show_webhooks_moved_alert?
   .gl-alert.gl-alert-info.js-webhooks-moved-alert.gl-mt-3{ role: 'alert', data: { feature_id: UserCalloutsHelper::WEBHOOKS_MOVED, dismiss_endpoint: user_callouts_path } }
-    = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
     %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-      = sprite_icon('close', size: 16, css_class: 'gl-icon')
+      = sprite_icon('close', css_class: 'gl-icon')
     .gl-alert-body
       = _('Webhooks have moved. They can now be found under the Settings menu.')
     .gl-alert-actions

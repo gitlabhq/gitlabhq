@@ -62,7 +62,7 @@ RSpec.describe WikiHelper do
       path = "/#{wiki.project.full_path}/-/wikis/pages?direction=#{direction}&sort=#{sort}"
 
       helper.link_to(path, type: 'button', class: classes, title: 'Sort direction') do
-        helper.sprite_icon("sort-#{icon_class}", size: 16)
+        helper.sprite_icon("sort-#{icon_class}")
       end
     end
 

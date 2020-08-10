@@ -143,8 +143,8 @@
 
 .group-home-panel,
 .project-home-panel {
-  padding-top: $gl-padding;
-  padding-bottom: $gl-padding;
+  margin-top: $gl-padding;
+  margin-bottom: $gl-padding;
 
   .home-panel-avatar {
     width: $home-panel-title-row-height;

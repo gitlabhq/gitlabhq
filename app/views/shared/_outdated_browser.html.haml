@@ -1,6 +1,6 @@
 - if outdated_browser?
   .gl-alert.gl-alert-danger.outdated-browser{ :role => "alert" }
-    = sprite_icon('error', size: 16, css_class: "gl-alert-icon gl-alert-icon-no-title gl-icon")
+    = sprite_icon('error', css_class: "gl-alert-icon gl-alert-icon-no-title gl-icon")
     .gl-alert-body
       - if browser.ie? && browser.version.to_i == 11
         - feedback_link_url = 'https://gitlab.com/gitlab-org/gitlab/issues/197987'

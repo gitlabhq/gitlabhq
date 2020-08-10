@@ -6,8 +6,8 @@
       .js-toast-message{ data: { message: value } }
     - elsif value
       %div{ class: "flash-#{key} mb-2" }
-        = sprite_icon(icons[key], size: 16, css_class: 'align-middle mr-1') unless icons[key].nil?
+        = sprite_icon(icons[key], css_class: 'align-middle mr-1') unless icons[key].nil?
         %span= value
         - if %w(alert notice success).include?(key)
           %div{ class: "close-icon-wrapper js-close-icon" }
-            = sprite_icon('close', size: 16, css_class: 'close-icon')
+            = sprite_icon('close', css_class: 'close-icon')

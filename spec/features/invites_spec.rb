@@ -48,6 +48,14 @@ RSpec.describe 'Invites', :aggregate_failures do
       expect(page).to have_content('To accept this invitation, sign in')
     end
 
+    it 'pre-fills the "Username or email" field on the sign in box with the invite_email from the invite' do
+      expect(find_field('Username or email').value).to eq(group_invite.invite_email)
+    end
+
+    it 'pre-fills the Email field on the sign up box  with the invite_email from the invite' do
+      expect(find_field('Email').value).to eq(group_invite.invite_email)
+    end
+
     it 'sign in, grants access and redirects to group page' do
       fill_in_sign_in_form(user)
 

@@ -47,6 +47,15 @@ module Types
           null: false,
           description: 'Fields related to design management'
 
+    field :milestone, ::Types::MilestoneType,
+          null: true,
+          description: 'Find a milestone',
+          resolve: -> (_obj, args, _ctx) { GitlabSchema.find_by_gid(args[:id]) } do
+      argument :id, ::Types::GlobalIDType[Milestone],
+               required: true,
+               description: 'Find a milestone by its ID'
+    end
+
     field :user, Types::UserType,
           null: true,
           description: 'Find a user',

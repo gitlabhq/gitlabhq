@@ -150,7 +150,7 @@ module Types
 
     field :milestones, Types::MilestoneType.connection_type, null: true,
           description: 'Milestones of the project',
-          resolver: Resolvers::ProjectMilestoneResolver
+          resolver: Resolvers::ProjectMilestonesResolver
 
     field :project_members,
           Types::ProjectMemberType.connection_type,
