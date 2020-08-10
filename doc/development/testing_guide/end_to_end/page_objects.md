@@ -4,22 +4,22 @@ In GitLab QA we are using a known pattern, called _Page Objects_.
 
 This means that we have built an abstraction for all pages in GitLab that we use
 to drive GitLab QA scenarios. Whenever we do something on a page, like filling
-in a form, or clicking a button, we do that only through a page object
+in a form or clicking a button, we do that only through a page object
 associated with this area of GitLab.
 
 For example, when GitLab QA test harness signs in into GitLab, it needs to fill
-in a user login and user password. In order to do that, we have a class, called
+in user login and user password. To do that, we have a class, called
 `Page::Main::Login` and `sign_in_using_credentials` methods, that is the only
-piece of the code, that has knowledge about `user_login` and `user_password`
+piece of the code, that reads the `user_login` and `user_password`
 fields.
 
 ## Why do we need that?
 
-We need page objects, because we need to reduce duplication and avoid problems
+We need page objects because we need to reduce duplication and avoid problems
 whenever someone changes some selectors in GitLab's source code.
 
 Imagine that we have a hundred specs in GitLab QA, and we need to sign into
-GitLab each time, before we make assertions. Without a page object one would
+GitLab each time, before we make assertions. Without a page object, one would
 need to rely on volatile helpers or invoke Capybara methods directly. Imagine
 invoking `fill_in :user_login` in every `*_spec.rb` file / test example.
 
@@ -28,7 +28,7 @@ this page to `t.text_field :username` it will generate a different field
 identifier, what would effectively break all tests.
 
 Because we are using `Page::Main::Login.perform(&:sign_in_using_credentials)`
-everywhere, when we want to sign into GitLab, the page object is the single
+everywhere, when we want to sign in to GitLab, the page object is the single
 source of truth, and we will need to update `fill_in :user_login`
 to `fill_in :user_username` only in a one place.
 
@@ -42,23 +42,23 @@ That is why when someone changes `t.text_field :login` to
 change until our GitLab QA nightly pipeline fails, or until someone triggers
 `package-and-qa` action in their merge request.
 
-Obviously such a change would break all tests. We call this problem a _fragile
+Such a change would break all tests. We call this problem a _fragile
 tests problem_.
 
-In order to make GitLab QA more reliable and robust, we had to solve this
+To make GitLab QA more reliable and robust, we had to solve this
 problem by introducing coupling between GitLab CE / EE views and GitLab QA.
 
 ## How did we solve fragile tests problem?
 
 Currently, when you add a new `Page::Base` derived class, you will also need to
-define all selectors that your page objects depends on.
+define all selectors that your page objects depend on.
 
 Whenever you push your code to CE / EE repository, `qa:selectors` sanity test
 job is going to be run as a part of a CI pipeline.
 
 This test is going to validate all page objects that we have implemented in
 `qa/page` directory. When it fails, you will be notified about missing
-or invalid views / selectors definition.
+or invalid views/selectors definition.
 
 ## How to properly implement a page object?
 
@@ -89,7 +89,7 @@ end
 
 ### Defining Elements
 
-The `view` DSL method will correspond to the rails View, partial, or Vue component that renders the elements.
+The `view` DSL method will correspond to the Rails view, partial, or Vue component that renders the elements.
 
 The `element` DSL method in turn declares an element for which a corresponding
 `data-qa-selector=element_name_snaked` data attribute will need to be added to the view file.
@@ -134,7 +134,7 @@ view 'app/views/my/view.html.haml' do
 end
 ```
 
-To add these elements to the view, you must change the rails View, partial, or Vue component by adding a `data-qa-selector` attribute
+To add these elements to the view, you must change the Rails view, partial, or Vue component by adding a `data-qa-selector` attribute
 for each element defined.
 
 In our case, `data-qa-selector="login_field"`, `data-qa-selector="password_field"` and `data-qa-selector="sign_in_button"`
@@ -228,7 +228,7 @@ expect(the_page).to have_element(:model, index: 1) #=> select on the first model
 
 ### Exceptions
 
-In some cases it might not be possible or worthwhile to add a selector.
+In some cases, it might not be possible or worthwhile to add a selector.
 
 Some UI components use external libraries, including some maintained by third parties.
 Even if a library is maintained by GitLab, the selector sanity test only runs

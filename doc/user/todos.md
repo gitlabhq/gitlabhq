@@ -50,7 +50,8 @@ A To Do appears on your To-Do List when:
   is removed from a [merge train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
   and you are the user that added it. **(PREMIUM)**
 
-When multiple trigger actions occur for the same user on the same object (for example, an issue) only the latest is displayed in a single to-do on their To-Do List.
+When multiple trigger actions occur for the same user on the same object (for example, an issue)
+only the first is displayed as a single to-do on their To-Do List.
 
 To-do triggers are not affected by [GitLab Notification Email settings](profile/notifications.md).
 

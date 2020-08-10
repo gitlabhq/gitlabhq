@@ -1,7 +1,7 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import Tracking from '~/tracking';
 import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
-import { GlModal, GlButton } from '@gitlab/ui';
+import { GlModal } from '@gitlab/ui';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
@@ -880,27 +880,6 @@ describe('Dashboard', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(document.title).toBe(originalTitle);
       });
-    });
-  });
-
-  describe('external dashboard link', () => {
-    beforeEach(() => {
-      createMountedWrapper({
-        hasMetrics: true,
-        showPanels: false,
-        showTimeWindowDropdown: false,
-        externalDashboardUrl: '/mockUrl',
-      });
-
-      return wrapper.vm.$nextTick();
-    });
-
-    it('shows the link', () => {
-      const externalDashboardButton = wrapper.find('.js-external-dashboard-link');
-
-      expect(externalDashboardButton.exists()).toBe(true);
-      expect(externalDashboardButton.is(GlButton)).toBe(true);
-      expect(externalDashboardButton.text()).toContain('View full dashboard');
     });
   });
 

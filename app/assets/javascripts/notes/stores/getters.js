@@ -194,7 +194,9 @@ export const findUnresolvedDiscussionIdNeighbor = (state, getters) => ({
   diffOrder,
   step,
 }) => {
-  const ids = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
+  const diffIds = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
+  const dateIds = getters.unresolvedDiscussionsIdsOrdered(false);
+  const ids = diffIds.length ? diffIds : dateIds;
   const index = ids.indexOf(discussionId) + step;
 
   if (index < 0 && step < 0) {

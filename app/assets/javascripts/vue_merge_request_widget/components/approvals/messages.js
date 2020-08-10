@@ -7,5 +7,3 @@ export const FETCH_ERROR = s__(
 export const APPROVE_ERROR = s__('mrWidget|An error occurred while submitting your approval.');
 export const UNAPPROVE_ERROR = s__('mrWidget|An error occurred while removing your approval.');
 export const APPROVED_MESSAGE = s__('mrWidget|Merge request approved.');
-export const OPTIONAL_CAN_APPROVE = s__('mrWidget|No approval required; you can still approve');
-export const OPTIONAL = s__('mrWidget|No approval required');

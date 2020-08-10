@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
-import { GlDeprecatedDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem, GlSearchBoxByType, GlLoadingIcon, GlButton } from '@gitlab/ui';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import RefreshButton from '~/monitoring/components/refresh_button.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
@@ -286,6 +286,23 @@ describe('Dashboard header', () => {
         expect(redirectTo).toHaveBeenCalled();
         expect(redirectTo).toHaveBeenCalledWith(newDashboardUrl);
       });
+    });
+  });
+
+  describe('external dashboard link', () => {
+    beforeEach(() => {
+      store.state.monitoringDashboard.externalDashboardUrl = '/mockUrl';
+      createShallowWrapper();
+
+      return wrapper.vm.$nextTick();
+    });
+
+    it('shows the link', () => {
+      const externalDashboardButton = wrapper.find('.js-external-dashboard-link');
+
+      expect(externalDashboardButton.exists()).toBe(true);
+      expect(externalDashboardButton.is(GlButton)).toBe(true);
+      expect(externalDashboardButton.text()).toContain('View full dashboard');
     });
   });
 

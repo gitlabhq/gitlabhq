@@ -628,3 +628,14 @@ describe('localTimeAgo', () => {
     expect(element.getAttribute('title')).toBe(title);
   });
 });
+
+describe('dateFromParams', () => {
+  it('returns the expected date object', () => {
+    const expectedDate = new Date('2019-07-17T00:00:00.000Z');
+    const date = datetimeUtility.dateFromParams(2019, 6, 17);
+
+    expect(date.getYear()).toBe(expectedDate.getYear());
+    expect(date.getMonth()).toBe(expectedDate.getMonth());
+    expect(date.getDate()).toBe(expectedDate.getDate());
+  });
+});

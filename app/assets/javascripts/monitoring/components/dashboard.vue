@@ -48,11 +48,6 @@ export default {
     TrackEvent: TrackEventDirective,
   },
   props: {
-    externalDashboardUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
     hasMetrics: {
       type: Boolean,
       required: false,
@@ -410,8 +405,6 @@ export default {
       :custom-metrics-available="customMetricsAvailable"
       :custom-metrics-path="customMetricsPath"
       :validate-query-path="validateQueryPath"
-      :external-dashboard-url="externalDashboardUrl"
-      :has-metrics="hasMetrics"
       :is-rearranging-panels="isRearrangingPanels"
       :selected-time-range="selectedTimeRange"
       @dateTimePickerInvalid="onDateTimePickerInvalid"

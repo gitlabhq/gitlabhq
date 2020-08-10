@@ -77,6 +77,7 @@ export default () => ({
   currentEnvironmentName: null,
 
   // GitLab paths to other pages
+  externalDashboardUrl: '',
   projectPath: null,
   operationsSettingsPath: '',
   logsPath: invalidUrl,

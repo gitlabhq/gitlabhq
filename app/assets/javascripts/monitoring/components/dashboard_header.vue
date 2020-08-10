@@ -85,16 +85,6 @@ export default {
       required: false,
       default: invalidUrl,
     },
-    externalDashboardUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    hasMetrics: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     isRearrangingPanels: {
       type: Boolean,
       required: true,
@@ -121,6 +111,7 @@ export default {
       'operationsSettingsPath',
       'currentDashboard',
       'addDashboardDocumentationPath',
+      'externalDashboardUrl',
     ]),
     ...mapGetters('monitoringDashboard', ['selectedDashboard', 'filteredEnvironments']),
     isOutOfTheBoxDashboard() {

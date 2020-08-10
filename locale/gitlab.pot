@@ -7554,7 +7554,19 @@ msgstr ""
 msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available for public projects, and private projects in groups with a Silver plan."
 msgstr ""
 
+msgid "DastProfiles|Are you sure you want to delete this profile?"
+msgstr ""
+
 msgid "DastProfiles|Could not create the site profile. Please try again."
+msgstr ""
+
+msgid "DastProfiles|Could not delete site profile. Please refresh the page, or try again later."
+msgstr ""
+
+msgid "DastProfiles|Could not delete site profiles:"
+msgstr ""
+
+msgid "DastProfiles|Could not fetch site profiles. Please refresh the page, or try again later."
 msgstr ""
 
 msgid "DastProfiles|Could not update the site profile. Please try again."
@@ -7572,7 +7584,7 @@ msgstr ""
 msgid "DastProfiles|Edit site profile"
 msgstr ""
 
-msgid "DastProfiles|Error fetching the profiles list. Please check your network connection and try again."
+msgid "DastProfiles|Error Details"
 msgstr ""
 
 msgid "DastProfiles|Manage Profiles"
@@ -10475,6 +10487,9 @@ msgid "FeatureFlags|There was an error fetching the feature flags."
 msgstr ""
 
 msgid "FeatureFlags|There was an error retrieving user lists"
+msgstr ""
+
+msgid "FeatureFlags|To prevent accidental actions we ask you to confirm your intention. Please type %{projectName} to proceed or close this modal to cancel."
 msgstr ""
 
 msgid "FeatureFlags|Try again in a few moments or contact your support team."
@@ -14202,10 +14217,10 @@ msgstr ""
 msgid "LicenseCompliance|Remove license?"
 msgstr ""
 
-msgid "LicenseCompliance|There are currently no approved or blacklisted licenses in this project."
+msgid "LicenseCompliance|There are currently no policies in this project."
 msgstr ""
 
-msgid "LicenseCompliance|There are currently no approved or blacklisted licenses that match in this project."
+msgid "LicenseCompliance|There are currently no policies that match in this project."
 msgstr ""
 
 msgid "LicenseCompliance|This license already exists in this project."
@@ -14879,13 +14894,13 @@ msgstr ""
 msgid "Merge Requests"
 msgstr ""
 
-msgid "Merge Requests closed"
-msgstr ""
-
 msgid "Merge Requests created"
 msgstr ""
 
 msgid "Merge Requests in Review"
+msgstr ""
+
+msgid "Merge Requests merged"
 msgstr ""
 
 msgid "Merge automatically (%{strategy})"
@@ -15655,6 +15670,9 @@ msgid "Monitor your errors by integrating with Sentry."
 msgstr ""
 
 msgid "Monitoring"
+msgstr ""
+
+msgid "Month"
 msgstr ""
 
 msgid "Months"
@@ -17374,7 +17392,7 @@ msgstr ""
 msgid "Password successfully changed"
 msgstr ""
 
-msgid "Password was successfully updated. Please login with it"
+msgid "Password was successfully updated. Please sign in again."
 msgstr ""
 
 msgid "Passwords should be unique and not used for any other sites or services."
@@ -24161,7 +24179,7 @@ msgstr ""
 msgid "The number of changes to be fetched from GitLab when cloning a repository. This can speed up Pipelines execution. Keep empty or set to 0 to disable shallow clone by default and make GitLab CI fetch all branches and tags each time."
 msgstr ""
 
-msgid "The number of merge requests merged to the master branch by month."
+msgid "The number of merge requests merged by month."
 msgstr ""
 
 msgid "The number of times an upload record could not find its file"
@@ -29030,6 +29048,9 @@ msgstr ""
 msgid "mrWidget|An error occurred while submitting your approval."
 msgstr ""
 
+msgid "mrWidget|Approval is optional"
+msgstr ""
+
 msgid "mrWidget|Approval password is invalid."
 msgstr ""
 
@@ -29136,12 +29157,6 @@ msgid "mrWidget|Merged by"
 msgstr ""
 
 msgid "mrWidget|More information"
-msgstr ""
-
-msgid "mrWidget|No approval required"
-msgstr ""
-
-msgid "mrWidget|No approval required; you can still approve"
 msgstr ""
 
 msgid "mrWidget|Open in Web IDE"

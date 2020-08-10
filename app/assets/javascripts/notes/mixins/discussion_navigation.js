@@ -78,7 +78,7 @@ function handleDiscussionJump(self, fn, discussionId = self.currentDiscussionId)
   const isDiffView = window.mrTabs.currentAction === 'diffs';
   const targetId = fn(discussionId, isDiffView);
   const discussion = self.getDiscussion(targetId);
-  const discussionFilePath = discussion.diff_file?.file_path;
+  const discussionFilePath = discussion?.diff_file?.file_path;
 
   if (discussionFilePath) {
     self.scrollToFile(discussionFilePath);
