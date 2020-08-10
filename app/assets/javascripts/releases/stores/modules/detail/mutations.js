@@ -7,6 +7,18 @@ const findReleaseLink = (release, id) => {
 };
 
 export default {
+  [types.INITIALIZE_EMPTY_RELEASE](state) {
+    state.release = {
+      tagName: null,
+      name: '',
+      description: '',
+      milestones: [],
+      assets: {
+        links: [],
+      },
+    };
+  },
+
   [types.REQUEST_RELEASE](state) {
     state.isFetchingRelease = true;
   },
@@ -39,14 +51,14 @@ export default {
     state.release.milestones = milestones;
   },
 
-  [types.REQUEST_UPDATE_RELEASE](state) {
+  [types.REQUEST_SAVE_RELEASE](state) {
     state.isUpdatingRelease = true;
   },
-  [types.RECEIVE_UPDATE_RELEASE_SUCCESS](state) {
+  [types.RECEIVE_SAVE_RELEASE_SUCCESS](state) {
     state.updateError = undefined;
     state.isUpdatingRelease = false;
   },
-  [types.RECEIVE_UPDATE_RELEASE_ERROR](state, error) {
+  [types.RECEIVE_SAVE_RELEASE_ERROR](state, error) {
     state.updateError = error;
     state.isUpdatingRelease = false;
   },

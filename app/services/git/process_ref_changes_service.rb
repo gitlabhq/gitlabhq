@@ -75,8 +75,6 @@ module Git
     end
 
     def merge_request_branches_for(changes)
-      return if Feature.disabled?(:refresh_only_existing_merge_requests_on_push, default_enabled: true)
-
       @merge_requests_branches ||= MergeRequests::PushedBranchesService.new(project, current_user, changes: changes).execute
     end
   end

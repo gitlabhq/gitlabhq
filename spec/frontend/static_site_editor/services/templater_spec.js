@@ -30,6 +30,15 @@ Below this line is a block of HTML.
   <h1>Heading</h1>
   <p>Some paragraph...</p>
 </div>
+
+Below this line is a codeblock of the same HTML that should be ignored and preserved.
+
+\`\`\` html
+<div>
+  <h1>Heading</h1>
+  <p>Some paragraph...</p>
+</div>
+\`\`\`
 `;
   const sourceTemplated = `Below this line is a simple ERB (single-line erb block) example.
 
@@ -64,6 +73,15 @@ Below this line is a non-erb (multi-line HTML block) markup example that also ha
 Below this line is a block of HTML.
 
 \`\`\` sse
+<div>
+  <h1>Heading</h1>
+  <p>Some paragraph...</p>
+</div>
+\`\`\`
+
+Below this line is a codeblock of the same HTML that should be ignored and preserved.
+
+\`\`\` html
 <div>
   <h1>Heading</h1>
   <p>Some paragraph...</p>

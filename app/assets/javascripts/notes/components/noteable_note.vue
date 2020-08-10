@@ -23,7 +23,6 @@ import {
   commentLineOptions,
   formatLineRange,
 } from './multiline_comment_utils';
-import MultilineCommentForm from './multiline_comment_form.vue';
 
 export default {
   name: 'NoteableNote',
@@ -34,7 +33,6 @@ export default {
     noteActions,
     NoteBody,
     TimelineEntryItem,
-    MultilineCommentForm,
   },
   mixins: [noteable, resolvable, glFeatureFlagsMixin()],
   props: {
@@ -147,13 +145,15 @@ export default {
       return getEndLineNumber(this.lineRange);
     },
     showMultiLineComment() {
-      if (!this.glFeatures.multilineComments || !this.discussionRoot) return false;
-      if (this.isEditing) return true;
+      if (
+        !this.glFeatures.multilineComments ||
+        !this.discussionRoot ||
+        this.startLineNumber.length === 0 ||
+        this.endLineNumber.length === 0
+      )
+        return false;
 
       return this.line && this.startLineNumber !== this.endLineNumber;
-    },
-    showMultilineCommentForm() {
-      return Boolean(this.isEditing && this.note.position && this.diffFile && this.line);
     },
     commentLineOptions() {
       const sideA = this.line.type === 'new' ? 'right' : 'left';
@@ -344,28 +344,19 @@ export default {
     :data-note-id="note.id"
     class="note note-wrapper qa-noteable-note-item"
   >
-    <div v-if="showMultiLineComment" data-testid="multiline-comment">
-      <multiline-comment-form
-        v-if="showMultilineCommentForm"
-        v-model="commentLineStart"
-        :line="line"
-        :comment-line-options="commentLineOptions"
-        :line-range="note.position.line_range"
-        class="gl-mb-3 gl-text-gray-700 gl-pb-3"
-      />
-      <div
-        v-else
-        class="gl-mb-3 gl-text-gray-700 gl-border-gray-200 gl-border-b-solid gl-border-b-1 gl-pb-3"
-      >
-        <gl-sprintf :message="__('Comment on lines %{startLine} to %{endLine}')">
-          <template #startLine>
-            <span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
-          </template>
-          <template #endLine>
-            <span :class="getLineClasses(endLineNumber)">{{ endLineNumber }}</span>
-          </template>
-        </gl-sprintf>
-      </div>
+    <div
+      v-if="showMultiLineComment"
+      data-testid="multiline-comment"
+      class="gl-mb-3 gl-text-gray-700 gl-border-gray-200 gl-border-b-solid gl-border-b-1 gl-pb-3"
+    >
+      <gl-sprintf :message="__('Comment on lines %{startLine} to %{endLine}')">
+        <template #startLine>
+          <span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
+        </template>
+        <template #endLine>
+          <span :class="getLineClasses(endLineNumber)">{{ endLineNumber }}</span>
+        </template>
+      </gl-sprintf>
     </div>
     <div v-once class="timeline-icon">
       <user-avatar-link

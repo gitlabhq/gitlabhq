@@ -9,14 +9,14 @@ describe('releases/components/tag_field', () => {
   let store;
   let wrapper;
 
-  const createComponent = ({ originalRelease }) => {
+  const createComponent = ({ tagName }) => {
     store = createStore({
       modules: {
         detail: createDetailModule({}),
       },
     });
 
-    store.state.detail.originalRelease = originalRelease;
+    store.state.detail.tagName = tagName;
 
     wrapper = shallowMount(TagField, { store });
   };
@@ -31,8 +31,7 @@ describe('releases/components/tag_field', () => {
 
   describe('when an existing release is being edited', () => {
     beforeEach(() => {
-      const originalRelease = { name: 'Version 1.0' };
-      createComponent({ originalRelease });
+      createComponent({ tagName: 'v1.0' });
     });
 
     it('renders the TagFieldExisting component', () => {
@@ -46,7 +45,7 @@ describe('releases/components/tag_field', () => {
 
   describe('when a new release is being created', () => {
     beforeEach(() => {
-      createComponent({ originalRelease: null });
+      createComponent({ tagName: null });
     });
 
     it('renders the TagFieldNew component', () => {

@@ -190,18 +190,6 @@ RSpec.describe Git::ProcessRefChangesService do
 
         subject.execute
       end
-
-      context 'refresh_only_existing_merge_requests_on_push disabled' do
-        before do
-          stub_feature_flags(refresh_only_existing_merge_requests_on_push: false)
-        end
-
-        it 'refreshes all merge requests' do
-          expect(UpdateMergeRequestsWorker).to receive(:perform_async).exactly(3).times
-
-          subject.execute
-        end
-      end
     end
   end
 

@@ -3,7 +3,6 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import AssetLinksForm from './asset_links_form.vue';
@@ -22,9 +21,6 @@ export default {
     MilestoneCombobox,
     TagField,
   },
-  directives: {
-    autofocusonshow,
-  },
   mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState('detail', [
@@ -40,9 +36,9 @@ export default {
       'manageMilestonesPath',
       'projectId',
     ]),
-    ...mapGetters('detail', ['isValid']),
+    ...mapGetters('detail', ['isValid', 'isExistingRelease']),
     showForm() {
-      return !this.isFetchingRelease && !this.fetchError;
+      return Boolean(!this.isFetchingRelease && !this.fetchError && this.release);
     },
     subtitleText() {
       return sprintf(
@@ -86,6 +82,9 @@ export default {
     showAssetLinksForm() {
       return this.glFeatures.releaseAssetLinkEditing;
     },
+    saveButtonLabel() {
+      return this.isExistingRelease ? __('Save changes') : __('Create release');
+    },
     isSaveChangesDisabled() {
       return this.isUpdatingRelease || !this.isValid;
     },
@@ -102,13 +101,17 @@ export default {
       ];
     },
   },
-  created() {
-    this.fetchRelease();
+  mounted() {
+    // eslint-disable-next-line promise/catch-or-return
+    this.initializeRelease().then(() => {
+      // Focus the first non-disabled input element
+      this.$el.querySelector('input:enabled').focus();
+    });
   },
   methods: {
     ...mapActions('detail', [
-      'fetchRelease',
-      'updateRelease',
+      'initializeRelease',
+      'saveRelease',
       'updateReleaseTitle',
       'updateReleaseNotes',
       'updateReleaseMilestones',
@@ -119,7 +122,7 @@ export default {
 <template>
   <div class="d-flex flex-column">
     <p class="pt-3 js-subtitle-text" v-html="subtitleText"></p>
-    <form v-if="showForm" @submit.prevent="updateRelease()">
+    <form v-if="showForm" @submit.prevent="saveRelease()">
       <tag-field />
       <gl-form-group>
         <label for="release-title">{{ __('Release title') }}</label>
@@ -127,8 +130,6 @@ export default {
           id="release-title"
           ref="releaseTitleInput"
           v-model="releaseTitle"
-          v-autofocusonshow
-          autofocus
           type="text"
           class="form-control"
         />
@@ -162,8 +163,8 @@ export default {
                 data-supports-quick-actions="false"
                 :aria-label="__('Release notes')"
                 :placeholder="__('Write your release notes or drag your files here…')"
-                @keydown.meta.enter="updateRelease()"
-                @keydown.ctrl.enter="updateRelease()"
+                @keydown.meta.enter="saveRelease()"
+                @keydown.ctrl.enter="saveRelease()"
               ></textarea>
             </template>
           </markdown-field>
@@ -178,10 +179,11 @@ export default {
           category="primary"
           variant="success"
           type="submit"
-          :aria-label="__('Save changes')"
           :disabled="isSaveChangesDisabled"
-          >{{ __('Save changes') }}</gl-button
+          data-testid="submit-button"
         >
+          {{ saveButtonLabel }}
+        </gl-button>
         <gl-button :href="cancelPath" class="js-cancel-button">{{ __('Cancel') }}</gl-button>
       </div>
     </form>

@@ -1,3 +1,10 @@
+---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+type: index, concepts, howto
+---
+
 # CI/CD development documentation
 
 Development guides that are specific to CI/CD are listed here.

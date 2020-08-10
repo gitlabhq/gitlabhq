@@ -7093,6 +7093,9 @@ msgstr ""
 msgid "Create project label"
 msgstr ""
 
+msgid "Create release"
+msgstr ""
+
 msgid "Create requirement"
 msgstr ""
 
@@ -20097,6 +20100,9 @@ msgid "Releases documentation"
 msgstr ""
 
 msgid "Releases|New Release"
+msgstr ""
+
+msgid "Release|Something went wrong while creating a new release"
 msgstr ""
 
 msgid "Release|Something went wrong while getting the release details"

@@ -6,7 +6,7 @@ import { hasContent } from '~/lib/utils/text_utility';
  * `false` if the app is creating a new release.
  */
 export const isExistingRelease = state => {
-  return Boolean(state.originalRelease);
+  return Boolean(state.tagName);
 };
 
 /**

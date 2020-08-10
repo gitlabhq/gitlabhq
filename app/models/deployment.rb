@@ -148,6 +148,7 @@ class Deployment < ApplicationRecord
 
   def execute_hooks
     deployment_data = Gitlab::DataBuilder::Deployment.build(self)
+    project.execute_hooks(deployment_data, :deployment_hooks) if Feature.enabled?(:deployment_webhooks, project)
     project.execute_services(deployment_data, :deployment_hooks)
   end
 

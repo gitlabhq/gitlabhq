@@ -1,0 +1,5 @@
+---
+title: Remove Internet Explorer 11 from babel transpilation
+merge_request: 36840
+author:
+type: removed
