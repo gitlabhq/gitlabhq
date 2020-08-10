@@ -343,6 +343,11 @@ export const mockNamespaces = [`${baseNamespace}/1`, `${baseNamespace}/2`];
 
 export const mockTimeRange = { duration: { seconds: 120 } };
 
+export const mockFixedTimeRange = {
+  start: '2020-06-17T19:59:08.659Z',
+  end: '2020-07-17T19:59:08.659Z',
+};
+
 export const mockNamespacedData = {
   mockDeploymentData: ['mockDeploymentData'],
   mockProjectPath: '/mockProjectPath',

@@ -2,10 +2,11 @@
 import { mapState } from 'vuex';
 import { uniqueId } from 'lodash';
 import { GlFormGroup, GlFormInput, GlLink, GlSprintf } from '@gitlab/ui';
+import FormFieldContainer from './form_field_container.vue';
 
 export default {
   name: 'TagFieldExisting',
-  components: { GlFormGroup, GlFormInput, GlSprintf, GlLink },
+  components: { GlFormGroup, GlFormInput, GlSprintf, GlLink, FormFieldContainer },
   computed: {
     ...mapState('detail', ['release', 'updateReleaseApiDocsPath']),
     inputId() {
@@ -19,18 +20,16 @@ export default {
 </script>
 <template>
   <gl-form-group :label="__('Tag name')" :label-for="inputId">
-    <div class="row">
-      <div class="col-md-6 col-lg-5 col-xl-4">
-        <gl-form-input
-          :id="inputId"
-          :value="release.tagName"
-          type="text"
-          class="form-control"
-          :aria-describedby="helpId"
-          disabled
-        />
-      </div>
-    </div>
+    <form-field-container>
+      <gl-form-input
+        :id="inputId"
+        :value="release.tagName"
+        type="text"
+        class="form-control"
+        :aria-describedby="helpId"
+        disabled
+      />
+    </form-field-container>
     <template #description>
       <div :id="helpId" data-testid="tag-name-help">
         <gl-sprintf

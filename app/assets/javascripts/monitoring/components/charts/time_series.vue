@@ -1,5 +1,5 @@
 <script>
-import { omit, throttle } from 'lodash';
+import { isEmpty, omit, throttle } from 'lodash';
 import { GlLink, GlDeprecatedButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { s__ } from '~/locale';
@@ -41,6 +41,11 @@ export default {
       validator: graphDataValidatorForValues.bind(null, false),
     },
     option: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    timeRange: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -174,10 +179,17 @@ export default {
     chartOptions() {
       const { yAxis, xAxis } = this.option;
       const option = omit(this.option, ['series', 'yAxis', 'xAxis']);
+      const xAxisBounds = isEmpty(this.timeRange)
+        ? {}
+        : {
+            min: this.timeRange.start,
+            max: this.timeRange.end,
+          };
 
       const timeXAxis = {
         ...getTimeAxisOptions({ timezone: this.timezone }),
         ...xAxis,
+        ...xAxisBounds,
       };
 
       const dataYAxis = {

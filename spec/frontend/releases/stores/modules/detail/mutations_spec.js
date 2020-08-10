@@ -56,6 +56,26 @@ describe('Release detail mutations', () => {
     });
   });
 
+  describe(`${types.UPDATE_RELEASE_TAG_NAME}`, () => {
+    it("updates the release's tag name", () => {
+      state.release = release;
+      const newTag = 'updated-tag-name';
+      mutations[types.UPDATE_RELEASE_TAG_NAME](state, newTag);
+
+      expect(state.release.tagName).toBe(newTag);
+    });
+  });
+
+  describe(`${types.UPDATE_CREATE_FROM}`, () => {
+    it('updates the ref that the ref will be created from', () => {
+      state.createFrom = 'main';
+      const newRef = 'my-feature-branch';
+      mutations[types.UPDATE_CREATE_FROM](state, newRef);
+
+      expect(state.createFrom).toBe(newRef);
+    });
+  });
+
   describe(`${types.UPDATE_RELEASE_TITLE}`, () => {
     it("updates the release's title", () => {
       state.release = release;

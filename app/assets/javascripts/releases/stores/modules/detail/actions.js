@@ -34,6 +34,10 @@ export const fetchRelease = ({ dispatch, state }) => {
     });
 };
 
+export const updateReleaseTagName = ({ commit }, tagName) =>
+  commit(types.UPDATE_RELEASE_TAG_NAME, tagName);
+export const updateCreateFrom = ({ commit }, createFrom) =>
+  commit(types.UPDATE_CREATE_FROM, createFrom);
 export const updateReleaseTitle = ({ commit }, title) => commit(types.UPDATE_RELEASE_TITLE, title);
 export const updateReleaseNotes = ({ commit }, notes) => commit(types.UPDATE_RELEASE_NOTES, notes);
 export const updateReleaseMilestones = ({ commit }, milestones) =>

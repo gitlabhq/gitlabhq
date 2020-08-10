@@ -254,6 +254,35 @@ describe('Dashboard Panel', () => {
         });
       });
     });
+
+    describe('computed', () => {
+      describe('fixedCurrentTimeRange', () => {
+        it('returns fixed time for valid time range', () => {
+          state.timeRange = mockTimeRange;
+          return wrapper.vm.$nextTick(() => {
+            expect(findTimeChart().props('timeRange')).toEqual(
+              expect.objectContaining({
+                start: expect.any(String),
+                end: expect.any(String),
+              }),
+            );
+          });
+        });
+
+        it.each`
+          input           | output
+          ${''}           | ${{}}
+          ${undefined}    | ${{}}
+          ${null}         | ${{}}
+          ${'2020-12-03'} | ${{}}
+        `('returns $output for invalid input like $input', ({ input, output }) => {
+          state.timeRange = input;
+          return wrapper.vm.$nextTick(() => {
+            expect(findTimeChart().props('timeRange')).toEqual(output);
+          });
+        });
+      });
+    });
   });
 
   describe('Edit custom metric dropdown item', () => {

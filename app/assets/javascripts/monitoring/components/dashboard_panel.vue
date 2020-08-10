@@ -2,6 +2,7 @@
 import { mapState } from 'vuex';
 import { pickBy } from 'lodash';
 import invalidUrl from '~/lib/utils/invalid_url';
+import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import {
   GlResizeObserverDirective,
@@ -130,6 +131,15 @@ export default {
         return getters[`${this.namespace}/selectedDashboard`];
       },
     }),
+    fixedCurrentTimeRange() {
+      // convertToFixedRange throws an error if the time range
+      // is not properly set.
+      try {
+        return convertToFixedRange(this.timeRange);
+      } catch {
+        return {};
+      }
+    },
     title() {
       return this.graphData?.title || '';
     },
@@ -468,6 +478,7 @@ export default {
       :thresholds="getGraphAlertValues(graphData.metrics)"
       :group-id="groupId"
       :timezone="dashboardTimezone"
+      :time-range="fixedCurrentTimeRange"
       v-bind="$attrs"
       v-on="$listeners"
       @datazoom="onDatazoom"

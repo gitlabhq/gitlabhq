@@ -113,6 +113,24 @@ describe('Release detail actions', () => {
     });
   });
 
+  describe('updateReleaseTagName', () => {
+    it(`commits ${types.UPDATE_RELEASE_TAG_NAME} with the updated tag name`, () => {
+      const newTag = 'updated-tag-name';
+      return testAction(actions.updateReleaseTagName, newTag, state, [
+        { type: types.UPDATE_RELEASE_TAG_NAME, payload: newTag },
+      ]);
+    });
+  });
+
+  describe('updateCreateFrom', () => {
+    it(`commits ${types.UPDATE_CREATE_FROM} with the updated ref`, () => {
+      const newRef = 'my-feature-branch';
+      return testAction(actions.updateCreateFrom, newRef, state, [
+        { type: types.UPDATE_CREATE_FROM, payload: newRef },
+      ]);
+    });
+  });
+
   describe('updateReleaseTitle', () => {
     it(`commits ${types.UPDATE_RELEASE_TITLE} with the updated release title`, () => {
       const newTitle = 'The new release title';

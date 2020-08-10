@@ -27,6 +27,7 @@ export default ({
 
   releasesPagePath,
   defaultBranch,
+  createFrom: defaultBranch,
 
   /** The Release object */
   release: null,

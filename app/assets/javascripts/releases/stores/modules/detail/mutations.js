@@ -22,6 +22,12 @@ export default {
     state.release = undefined;
   },
 
+  [types.UPDATE_RELEASE_TAG_NAME](state, tagName) {
+    state.release.tagName = tagName;
+  },
+  [types.UPDATE_CREATE_FROM](state, createFrom) {
+    state.createFrom = createFrom;
+  },
   [types.UPDATE_RELEASE_TITLE](state, title) {
     state.release.name = title;
   },
