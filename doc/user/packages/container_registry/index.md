@@ -201,10 +201,7 @@ Before diving into the details, some things you should be aware of:
 ### Authenticating to the Container Registry with GitLab CI/CD
 
 There are three ways to authenticate to the Container Registry via
-[GitLab CI/CD](../../../ci/yaml/README.md) which depend on the visibility of
-your project.
-
-Available for all projects, though more suitable for public ones:
+[GitLab CI/CD](../../../ci/yaml/README.md):
 
 - **Using the special `CI_REGISTRY_USER` variable**: The user specified by this variable is created for you in order to
   push to the Registry connected to your project. Its password is automatically
@@ -216,29 +213,27 @@ Available for all projects, though more suitable for public ones:
   docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   ```
 
-For private and internal projects:
+- **Using the GitLab Deploy Token**: You can create and use a
+  [special deploy token](../../project/deploy_tokens/index.md#gitlab-deploy-token)
+  with your projects.
+  Once created, you can use the special environment variables, and GitLab CI/CD
+  fills them in for you. You can use the following example as-is:
+
+  ```shell
+  docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+  ```
 
 - **Using a personal access token**: You can create and use a
   [personal access token](../../profile/personal_access_tokens.md)
   in case your project is private:
 
   - For read (pull) access, the scope should be `read_registry`.
-  - For read/write (pull/push) access, use `api`.
+  - For write (push) access, the scope should be `write_registry`.
 
   Replace the `<username>` and `<access_token>` in the following example:
 
   ```shell
   docker login -u <username> -p <access_token> $CI_REGISTRY
-  ```
-
-- **Using the GitLab Deploy Token**: You can create and use a
-  [special deploy token](../../project/deploy_tokens/index.md#gitlab-deploy-token)
-  with your private projects. It provides read-only (pull) access to the Registry.
-  Once created, you can use the special environment variables, and GitLab CI/CD
-  fills them in for you. You can use the following example as-is:
-
-  ```shell
-  docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
   ```
 
 ### Container Registry examples with GitLab CI/CD

@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
@@ -9,8 +9,17 @@ import FormFieldContainer from './form_field_container.vue';
 export default {
   name: 'TagFieldNew',
   components: { GlFormGroup, GlFormInput, RefSelector, FormFieldContainer },
+  data() {
+    return {
+      // Keeps track of whether or not the user has interacted with
+      // the input field. This is used to avoid showing validation
+      // errors immediately when the page loads.
+      isInputDirty: false,
+    };
+  },
   computed: {
     ...mapState('detail', ['projectId', 'release', 'createFrom']),
+    ...mapGetters('detail', ['validationErrors']),
     tagName: {
       get() {
         return this.release.tagName;
@@ -27,6 +36,9 @@ export default {
         this.updateCreateFrom(createFrom);
       },
     },
+    showTagNameValidationError() {
+      return this.isInputDirty && this.validationErrors.isTagNameEmpty;
+    },
     tagNameInputId() {
       return uniqueId('tag-name-input-');
     },
@@ -36,6 +48,9 @@ export default {
   },
   methods: {
     ...mapActions('detail', ['updateReleaseTagName', 'updateCreateFrom']),
+    markInputAsDirty() {
+      this.isInputDirty = true;
+    },
   },
   translations: {
     noRefSelected: __('No source selected'),
@@ -46,9 +61,22 @@ export default {
 </script>
 <template>
   <div>
-    <gl-form-group :label="__('Tag name')" :label-for="tagNameInputId" data-testid="tag-name-field">
+    <gl-form-group
+      :label="__('Tag name')"
+      :label-for="tagNameInputId"
+      data-testid="tag-name-field"
+      :state="!showTagNameValidationError"
+      :invalid-feedback="__('Tag name is required')"
+    >
       <form-field-container>
-        <gl-form-input :id="tagNameInputId" v-model="tagName" type="text" class="form-control" />
+        <gl-form-input
+          :id="tagNameInputId"
+          v-model="tagName"
+          :state="!showTagNameValidationError"
+          type="text"
+          class="form-control"
+          @blur.once="markInputAsDirty"
+        />
       </form-field-container>
     </gl-form-group>
     <gl-form-group

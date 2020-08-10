@@ -62,6 +62,9 @@ module Gitlab
       }
     }.freeze
 
+    GROUP_CONTROL = :control
+    GROUP_EXPERIMENTAL = :experimental
+
     # Controller concern that checks if an `experimentation_subject_id cookie` is present and sets it if absent.
     # Used for A/B testing of experimental features. Exposes the `experiment_enabled?(experiment_name)` method
     # to controllers and views. It returns true when the experiment is enabled and the user is selected as part
@@ -106,6 +109,12 @@ module Gitlab
         end
       end
 
+      def record_experiment_user(experiment_key)
+        return unless Experimentation.enabled?(experiment_key) && current_user
+
+        ::Experiment.add_user(experiment_key, tracking_group(experiment_key), current_user)
+      end
+
       private
 
       def dnt_enabled?
@@ -132,7 +141,7 @@ module Gitlab
         {
           category: tracking_category(experiment_key),
           action: action,
-          property: tracking_group(experiment_key),
+          property: "#{tracking_group(experiment_key)}_group",
           label: experimentation_subject_id,
           value: value
         }.compact
@@ -145,7 +154,7 @@ module Gitlab
       def tracking_group(experiment_key)
         return unless Experimentation.enabled?(experiment_key)
 
-        experiment_enabled?(experiment_key) ? 'experimental_group' : 'control_group'
+        experiment_enabled?(experiment_key) ? GROUP_EXPERIMENTAL : GROUP_CONTROL
       end
 
       def forced_enabled?(experiment_key)

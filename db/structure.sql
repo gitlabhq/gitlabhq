@@ -10058,6 +10058,7 @@ CREATE TABLE public.ci_pipeline_artifacts (
     file_type smallint NOT NULL,
     file_format smallint NOT NULL,
     file text,
+    expire_at timestamp with time zone,
     CONSTRAINT check_191b5850ec CHECK ((char_length(file) <= 255))
 );
 
@@ -11556,6 +11557,39 @@ CREATE SEQUENCE public.evidences_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.evidences_id_seq OWNED BY public.evidences.id;
+
+CREATE TABLE public.experiment_users (
+    id bigint NOT NULL,
+    experiment_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    group_type smallint DEFAULT 0 NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE public.experiment_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.experiment_users_id_seq OWNED BY public.experiment_users.id;
+
+CREATE TABLE public.experiments (
+    id bigint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_e2dda25ed0 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE public.experiments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.experiments_id_seq OWNED BY public.experiments.id;
 
 CREATE TABLE public.external_pull_requests (
     id bigint NOT NULL,
@@ -16874,6 +16908,10 @@ ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.event
 
 ALTER TABLE ONLY public.evidences ALTER COLUMN id SET DEFAULT nextval('public.evidences_id_seq'::regclass);
 
+ALTER TABLE ONLY public.experiment_users ALTER COLUMN id SET DEFAULT nextval('public.experiment_users_id_seq'::regclass);
+
+ALTER TABLE ONLY public.experiments ALTER COLUMN id SET DEFAULT nextval('public.experiments_id_seq'::regclass);
+
 ALTER TABLE ONLY public.external_pull_requests ALTER COLUMN id SET DEFAULT nextval('public.external_pull_requests_id_seq'::regclass);
 
 ALTER TABLE ONLY public.feature_gates ALTER COLUMN id SET DEFAULT nextval('public.feature_gates_id_seq'::regclass);
@@ -17891,6 +17929,12 @@ ALTER TABLE ONLY public.events
 
 ALTER TABLE ONLY public.evidences
     ADD CONSTRAINT evidences_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.experiment_users
+    ADD CONSTRAINT experiment_users_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.experiments
+    ADD CONSTRAINT experiments_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.external_pull_requests
     ADD CONSTRAINT external_pull_requests_pkey PRIMARY KEY (id);
@@ -19533,6 +19577,12 @@ CREATE INDEX index_events_on_target_type_and_target_id ON public.events USING bt
 CREATE UNIQUE INDEX index_events_on_target_type_and_target_id_and_fingerprint ON public.events USING btree (target_type, target_id, fingerprint);
 
 CREATE INDEX index_evidences_on_release_id ON public.evidences USING btree (release_id);
+
+CREATE INDEX index_experiment_users_on_experiment_id ON public.experiment_users USING btree (experiment_id);
+
+CREATE INDEX index_experiment_users_on_user_id ON public.experiment_users USING btree (user_id);
+
+CREATE UNIQUE INDEX index_experiments_on_name ON public.experiments USING btree (name);
 
 CREATE INDEX index_expired_and_not_notified_personal_access_tokens ON public.personal_access_tokens USING btree (id, expires_at) WHERE ((impersonation = false) AND (revoked = false) AND (expire_notification_delivered = false));
 
@@ -22249,6 +22299,9 @@ ALTER TABLE ONLY public.terraform_states
 ALTER TABLE ONLY public.group_deploy_keys
     ADD CONSTRAINT fk_rails_5682fc07f8 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE RESTRICT;
 
+ALTER TABLE ONLY public.experiment_users
+    ADD CONSTRAINT fk_rails_56d4708b4a FOREIGN KEY (experiment_id) REFERENCES public.experiments(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.issue_user_mentions
     ADD CONSTRAINT fk_rails_57581fda73 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
 
@@ -23010,6 +23063,9 @@ ALTER TABLE ONLY public.ci_job_variables
 
 ALTER TABLE ONLY public.packages_nuget_metadata
     ADD CONSTRAINT fk_rails_fc0c19f5b4 FOREIGN KEY (package_id) REFERENCES public.packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.experiment_users
+    ADD CONSTRAINT fk_rails_fd805f771a FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.cluster_groups
     ADD CONSTRAINT fk_rails_fdb8648a96 FOREIGN KEY (cluster_id) REFERENCES public.clusters(id) ON DELETE CASCADE;

@@ -53,7 +53,7 @@ the bottom-left corner of its pages:
 
 ![Edit this page button](img/edit_this_page_button_v12_10.png)
 
-When clicking it, GitLab will open up an editor window from which the content
+When you click it, GitLab opens up an editor window from which the content
 can be directly edited. When you're ready, you can submit your changes in a
 click of a button:
 

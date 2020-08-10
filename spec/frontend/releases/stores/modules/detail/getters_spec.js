@@ -76,6 +76,7 @@ describe('Release detail getters', () => {
       it('returns no validation errors', () => {
         const state = {
           release: {
+            tagName: 'test-tag-name',
             assets: {
               links: [
                 { id: 1, url: 'https://example.com/valid', name: 'Link 1' },
@@ -110,6 +111,9 @@ describe('Release detail getters', () => {
       beforeEach(() => {
         const state = {
           release: {
+            // empty tag name
+            tagName: '',
+
             assets: {
               links: [
                 // Duplicate URLs
@@ -138,7 +142,15 @@ describe('Release detail getters', () => {
         actualErrors = getters.validationErrors(state);
       });
 
-      it('returns a validation errors if links share a URL', () => {
+      it('returns a validation error if the tag name is empty', () => {
+        const expectedErrors = {
+          isTagNameEmpty: true,
+        };
+
+        expect(actualErrors).toMatchObject(expectedErrors);
+      });
+
+      it('returns a validation error if links share a URL', () => {
         const expectedErrors = {
           assets: {
             links: {
@@ -196,32 +208,53 @@ describe('Release detail getters', () => {
     // the value of state is not actually used by this getter
     const state = {};
 
-    it('returns true when the form is valid', () => {
-      const mockGetters = {
-        validationErrors: {
-          assets: {
-            links: {
-              1: {},
+    describe('when the form is valid', () => {
+      it('returns true', () => {
+        const mockGetters = {
+          validationErrors: {
+            assets: {
+              links: {
+                1: {},
+              },
             },
           },
-        },
-      };
+        };
 
-      expect(getters.isValid(state, mockGetters)).toBe(true);
+        expect(getters.isValid(state, mockGetters)).toBe(true);
+      });
     });
 
-    it('returns false when the form is invalid', () => {
-      const mockGetters = {
-        validationErrors: {
-          assets: {
-            links: {
-              1: { isNameEmpty: true },
+    describe('when an asset link contains a validation error', () => {
+      it('returns false', () => {
+        const mockGetters = {
+          validationErrors: {
+            assets: {
+              links: {
+                1: { isNameEmpty: true },
+              },
             },
           },
-        },
-      };
+        };
 
-      expect(getters.isValid(state, mockGetters)).toBe(false);
+        expect(getters.isValid(state, mockGetters)).toBe(false);
+      });
+    });
+
+    describe('when the tag name is empty', () => {
+      it('returns false', () => {
+        const mockGetters = {
+          validationErrors: {
+            isTagNameEmpty: true,
+            assets: {
+              links: {
+                1: {},
+              },
+            },
+          },
+        };
+
+        expect(getters.isValid(state, mockGetters)).toBe(false);
+      });
     });
   });
 });

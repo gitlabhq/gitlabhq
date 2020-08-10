@@ -233,6 +233,68 @@ RSpec.describe Gitlab::Experimentation do
         end
       end
     end
+
+    describe '#record_experiment_user' do
+      let(:user) { build(:user) }
+
+      context 'when the experiment is enabled' do
+        before do
+          stub_experiment(test_experiment: true)
+          allow(controller).to receive(:current_user).and_return(user)
+        end
+
+        context 'the user is part of the experimental group' do
+          before do
+            stub_experiment_for_user(test_experiment: true)
+          end
+
+          it 'calls add_user on the Experiment model' do
+            expect(::Experiment).to receive(:add_user).with(:test_experiment, :experimental, user)
+
+            controller.record_experiment_user(:test_experiment)
+          end
+        end
+
+        context 'the user is part of the control group' do
+          before do
+            allow_next_instance_of(described_class) do |instance|
+              allow(instance).to receive(:experiment_enabled?).with(:test_experiment).and_return(false)
+            end
+          end
+
+          it 'calls add_user on the Experiment model' do
+            expect(::Experiment).to receive(:add_user).with(:test_experiment, :control, user)
+
+            controller.record_experiment_user(:test_experiment)
+          end
+        end
+      end
+
+      context 'when the experiment is disabled' do
+        before do
+          stub_experiment(test_experiment: false)
+          allow(controller).to receive(:current_user).and_return(user)
+        end
+
+        it 'does not call add_user on the Experiment model' do
+          expect(::Experiment).not_to receive(:add_user)
+
+          controller.record_experiment_user(:test_experiment)
+        end
+      end
+
+      context 'when there is no current_user' do
+        before do
+          stub_experiment(test_experiment: true)
+        end
+
+        it 'does not call add_user on the Experiment model' do
+          expect(::Experiment).not_to receive(:add_user)
+
+          controller.record_experiment_user(:test_experiment)
+        end
+      end
+    end
   end
 
   describe '.enabled?' do

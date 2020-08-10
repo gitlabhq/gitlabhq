@@ -62,7 +62,11 @@ class RegistrationsController < Devise::RegistrationsController
     result = ::Users::SignupService.new(current_user, user_params).execute
 
     if result[:status] == :success
-      track_experiment_event(:onboarding_issues, 'signed_up') if ::Gitlab.com? && show_onboarding_issues_experiment?
+      if ::Gitlab.com? && show_onboarding_issues_experiment?
+        track_experiment_event(:onboarding_issues, 'signed_up')
+        record_experiment_user(:onboarding_issues)
+      end
+
       return redirect_to new_users_sign_up_group_path if experiment_enabled?(:onboarding_issues) && show_onboarding_issues_experiment?
 
       set_flash_message! :notice, :signed_up

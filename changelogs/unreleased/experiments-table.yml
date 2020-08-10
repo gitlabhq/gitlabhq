@@ -1,0 +1,5 @@
+---
+title: Add experiments and experiment_users tables for tracking which users are enrolled for which experiments.
+merge_request: 38397
+author:
+type: added

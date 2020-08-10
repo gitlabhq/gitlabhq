@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { GlFormInput } from '@gitlab/ui';
 import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import createStore from '~/releases/stores';
@@ -16,6 +16,9 @@ describe('releases/components/tag_field_new', () => {
   const createComponent = (mountFn = shallowMount) => {
     wrapper = mountFn(TagFieldNew, {
       store,
+      stubs: {
+        RefSelector: true,
+      },
     });
   };
 
@@ -32,6 +35,9 @@ describe('releases/components/tag_field_new', () => {
 
     store.state.detail.release = {
       tagName: TEST_TAG_NAME,
+      assets: {
+        links: [],
+      },
     };
   });
 
@@ -42,24 +48,76 @@ describe('releases/components/tag_field_new', () => {
 
   const findTagNameFormGroup = () => wrapper.find('[data-testid="tag-name-field"]');
   const findTagNameGlInput = () => findTagNameFormGroup().find(GlFormInput);
+  const findTagNameInput = () => findTagNameFormGroup().find('input');
 
   const findCreateFromFormGroup = () => wrapper.find('[data-testid="create-from-field"]');
   const findCreateFromDropdown = () => findCreateFromFormGroup().find(RefSelector);
 
   describe('"Tag name" field', () => {
-    beforeEach(createComponent);
+    describe('rendering and behavior', () => {
+      beforeEach(createComponent);
 
-    it('renders a label', () => {
-      expect(findTagNameFormGroup().attributes().label).toBe('Tag name');
+      it('renders a label', () => {
+        expect(findTagNameFormGroup().attributes().label).toBe('Tag name');
+      });
+
+      describe('when the user updates the field', () => {
+        it("updates the store's release.tagName property", () => {
+          const updatedTagName = 'updated-tag-name';
+          findTagNameGlInput().vm.$emit('input', updatedTagName);
+
+          return wrapper.vm.$nextTick().then(() => {
+            expect(store.state.detail.release.tagName).toBe(updatedTagName);
+          });
+        });
+      });
     });
 
-    describe('when the user updates the field', () => {
-      it("updates the store's release.tagName property", () => {
-        const updatedTagName = 'updated-tag-name';
-        findTagNameGlInput().vm.$emit('input', updatedTagName);
+    describe('validation', () => {
+      beforeEach(() => {
+        createComponent(mount);
+      });
 
+      /**
+       * Utility function to test the visibility of the validation message
+       * @param {'shown' | 'hidden'} state The expected state of the validation message.
+       * Should be passed either 'shown' or 'hidden'
+       */
+      const expectValidationMessageToBe = state => {
         return wrapper.vm.$nextTick().then(() => {
-          expect(store.state.detail.release.tagName).toBe(updatedTagName);
+          expect(findTagNameFormGroup().element).toHaveClass(
+            state === 'shown' ? 'is-invalid' : 'is-valid',
+          );
+          expect(findTagNameFormGroup().element).not.toHaveClass(
+            state === 'shown' ? 'is-valid' : 'is-invalid',
+          );
+        });
+      };
+
+      describe('when the user has not yet interacted with the component', () => {
+        it('does not display a validation error', () => {
+          findTagNameInput().setValue('');
+
+          return expectValidationMessageToBe('hidden');
+        });
+      });
+
+      describe('when the user has interacted with the component and the value is not empty', () => {
+        it('does not display validation error', () => {
+          findTagNameInput().trigger('blur');
+
+          return expectValidationMessageToBe('hidden');
+        });
+      });
+
+      describe('when the user has interacted with the component and the value is empty', () => {
+        it('displays a validation error', () => {
+          const tagNameInput = findTagNameInput();
+
+          tagNameInput.setValue('');
+          tagNameInput.trigger('blur');
+
+          return expectValidationMessageToBe('shown');
         });
       });
     });

@@ -5,7 +5,8 @@ almost everything to fit your needs. Auto DevOps offers everything from custom
 [buildpacks](#custom-buildpacks), to [Dockerfiles](#custom-dockerfile), and
 [Helm charts](#custom-helm-chart). You can even copy the complete
 [CI/CD configuration](#customizing-gitlab-ciyml) into your project to enable
-staging and canary deployments, and more.
+staging and canary deployments,
+[manage Auto DevOps with GitLab APIs](customize.md#extend-auto-devops-with-the-api), and more.
 
 ## Custom buildpacks
 
@@ -76,6 +77,16 @@ CAUTION: **Warning:**
 Avoid passing secrets as Docker build arguments if possible, as they may be
 persisted in your image. See
 [this discussion of best practices with secrets](https://github.com/moby/moby/issues/13490) for details.
+
+## Extend Auto DevOps with the API
+
+You can extend and manage your Auto DevOps configuration with GitLab APIs:
+
+- [Settings that can be accessed with API calls](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls),
+  which include `auto_devops_enabled`, to enable Auto DevOps on projects by default.
+- [Creating a new project](../../api/projects.md#create-project).
+- [Editing groups](../../api/groups.md#update-group).
+- [Editing projects](../../api/projects.md#edit-project).
 
 ## Forward CI variables to the build environment
 

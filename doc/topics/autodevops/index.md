@@ -104,8 +104,10 @@ knowledge of the following:
 - [GitLab Runner](https://docs.gitlab.com/runner/)
 - [Prometheus](https://prometheus.io/docs/introduction/overview/)
 
-Auto DevOps provides great defaults for all the stages and makes use of [CI templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates); you can, however,
-[customize](customize.md) almost everything to your needs.
+Auto DevOps provides great defaults for all the stages and makes use of
+[CI templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates). You can, however,
+[customize](customize.md) almost everything to your needs, and
+[manage Auto DevOps with GitLab APIs](customize.md#extend-auto-devops-with-the-api).
 
 For an overview on the creation of Auto DevOps, read more
 [in this blog post](https://about.gitlab.com/blog/2017/06/29/whats-next-for-gitlab-ci/).

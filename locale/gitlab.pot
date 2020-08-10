@@ -23629,6 +23629,9 @@ msgstr ""
 msgid "Switch to the source to copy the file contents"
 msgstr ""
 
+msgid "Symbolic link"
+msgstr ""
+
 msgid "Sync information"
 msgstr ""
 
@@ -23675,6 +23678,9 @@ msgid "Tag list:"
 msgstr ""
 
 msgid "Tag name"
+msgstr ""
+
+msgid "Tag name is required"
 msgstr ""
 
 msgid "Tag this commit."
