@@ -7495,6 +7495,9 @@ msgstr ""
 msgid "Decline and sign out"
 msgstr ""
 
+msgid "Decompressed archive size validation failed."
+msgstr ""
+
 msgid "Default Branch"
 msgstr ""
 
