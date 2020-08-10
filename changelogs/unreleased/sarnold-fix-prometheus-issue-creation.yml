@@ -1,0 +1,5 @@
+---
+title: Fix automatic issue creation via Prometheus alerts
+merge_request: 37884
+author:
+type: fixed

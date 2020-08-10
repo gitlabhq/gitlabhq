@@ -24,7 +24,7 @@ file path fragments to start seeing results.
 
 ## Syntax highlighting
 
-> Support for `.gitlab.ci.yml` validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218472) in GitLab 13.2.
+> Support for `.gitlab-ci.yml` validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218472) in GitLab 13.2.
 
 As expected from an IDE, syntax highlighting for many languages within
 the Web IDE will make your direct editing even easier.

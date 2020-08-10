@@ -29,7 +29,11 @@ module IncidentManagement
     end
 
     def parsed_payload(alert)
-      Gitlab::Alerting::NotificationPayloadParser.call(alert.payload.to_h, alert.project)
+      if alert.prometheus?
+        alert.payload
+      else
+        Gitlab::Alerting::NotificationPayloadParser.call(alert.payload.to_h, alert.project)
+      end
     end
 
     def create_issue_for(alert)
