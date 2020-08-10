@@ -357,10 +357,6 @@ module Clusters
       end
     end
 
-    def local_tiller_enabled?
-      Feature.enabled?(:managed_apps_local_tiller, clusterable, default_enabled: true)
-    end
-
     def prometheus_adapter
       application_prometheus
     end

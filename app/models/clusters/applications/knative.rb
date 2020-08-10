@@ -77,8 +77,7 @@ module Clusters
           chart: chart,
           files: files,
           repository: REPOSITORY,
-          postinstall: install_knative_metrics,
-          local_tiller_enabled: cluster.local_tiller_enabled?
+          postinstall: install_knative_metrics
         )
       end
 
@@ -100,8 +99,7 @@ module Clusters
           rbac: cluster.platform_kubernetes_rbac?,
           files: files,
           predelete: delete_knative_services_and_metrics,
-          postdelete: delete_knative_istio_leftovers,
-          local_tiller_enabled: cluster.local_tiller_enabled?
+          postdelete: delete_knative_istio_leftovers
         )
       end
 

@@ -21,7 +21,6 @@ module Gitlab
         def generate_script
           super + [
             init_command,
-            wait_for_tiller_command,
             repository_command,
             repository_update_command,
             preinstall,
@@ -39,7 +38,6 @@ module Gitlab
             install_flag +
             rollback_support_flag +
             reset_values_flag +
-            tls_flags_if_remote_tiller +
             optional_version_flag +
             rbac_create_flag +
             namespace_flag +

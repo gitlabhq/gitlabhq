@@ -1,8 +1,6 @@
 <script>
-import helmInstallIllustration from '@gitlab/svgs/dist/illustrations/kubernetes-installation.svg';
 import { GlLoadingIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import gitlabLogo from 'images/cluster_app_logos/gitlab.png';
-import helmLogo from 'images/cluster_app_logos/helm.png';
 import jupyterhubLogo from 'images/cluster_app_logos/jupyterhub.png';
 import kubernetesLogo from 'images/cluster_app_logos/kubernetes.png';
 import certManagerLogo from 'images/cluster_app_logos/cert_manager.png';
@@ -95,16 +93,6 @@ export default {
     },
   },
   computed: {
-    managedAppsLocalTillerEnabled() {
-      return Boolean(gon.features?.managedAppsLocalTiller);
-    },
-    helmInstalled() {
-      return (
-        this.managedAppsLocalTillerEnabled ||
-        this.applications.helm.status === APPLICATION_STATUS.INSTALLED ||
-        this.applications.helm.status === APPLICATION_STATUS.UPDATED
-      );
-    },
     ingressId() {
       return INGRESS;
     },
@@ -162,7 +150,6 @@ export default {
   },
   logos: {
     gitlabLogo,
-    helmLogo,
     jupyterhubLogo,
     kubernetesLogo,
     certManagerLogo,
@@ -172,7 +159,6 @@ export default {
     elasticStackLogo,
     fluentdLogo,
   },
-  helmInstallIllustration,
 };
 </script>
 
@@ -180,46 +166,12 @@ export default {
   <section id="cluster-applications">
     <p class="gl-mb-0">
       {{
-        s__(`ClusterIntegration|Choose which applications to install on your Kubernetes cluster.
-            Helm Tiller is required to install any of the following applications.`)
+        s__(`ClusterIntegration|Choose which applications to install on your Kubernetes cluster.`)
       }}
       <gl-link :href="helpPath">{{ __('More information') }}</gl-link>
     </p>
 
     <div class="cluster-application-list gl-mt-3">
-      <application-row
-        v-if="!managedAppsLocalTillerEnabled"
-        id="helm"
-        :logo-url="$options.logos.helmLogo"
-        :title="applications.helm.title"
-        :status="applications.helm.status"
-        :status-reason="applications.helm.statusReason"
-        :request-status="applications.helm.requestStatus"
-        :request-reason="applications.helm.requestReason"
-        :installed="applications.helm.installed"
-        :install-failed="applications.helm.installFailed"
-        :uninstallable="applications.helm.uninstallable"
-        :uninstall-successful="applications.helm.uninstallSuccessful"
-        :uninstall-failed="applications.helm.uninstallFailed"
-        class="rounded-top"
-        title-link="https://docs.helm.sh/"
-      >
-        <template #description>
-          {{
-            s__(`ClusterIntegration|Helm streamlines installing
-                    and managing Kubernetes applications.
-                    Tiller runs inside of your Kubernetes Cluster,
-                    and manages releases of your charts.`)
-          }}
-        </template>
-      </application-row>
-      <div v-show="!helmInstalled" class="cluster-application-warning">
-        <div class="svg-container" v-html="$options.helmInstallIllustration"></div>
-        {{
-          s__(`ClusterIntegration|You must first install Helm Tiller before
-                installing the applications below`)
-        }}
-      </div>
       <application-row
         :id="ingressId"
         :logo-url="$options.logos.kubernetesLogo"
@@ -237,7 +189,6 @@ export default {
         :uninstallable="applications.ingress.uninstallable"
         :uninstall-successful="applications.ingress.uninstallSuccessful"
         :uninstall-failed="applications.ingress.uninstallFailed"
-        :disabled="!helmInstalled"
         :updateable="false"
         title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
       >
@@ -340,7 +291,6 @@ export default {
         :uninstallable="applications.cert_manager.uninstallable"
         :uninstall-successful="applications.cert_manager.uninstallSuccessful"
         :uninstall-failed="applications.cert_manager.uninstallFailed"
-        :disabled="!helmInstalled"
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
       >
         <template #description>
@@ -398,7 +348,6 @@ export default {
         :uninstallable="applications.prometheus.uninstallable"
         :uninstall-successful="applications.prometheus.uninstallSuccessful"
         :uninstall-failed="applications.prometheus.uninstallFailed"
-        :disabled="!helmInstalled"
         title-link="https://prometheus.io/docs/introduction/overview/"
       >
         <template #description>
@@ -438,7 +387,6 @@ export default {
         :uninstallable="applications.runner.uninstallable"
         :uninstall-successful="applications.runner.uninstallSuccessful"
         :uninstall-failed="applications.runner.uninstallFailed"
-        :disabled="!helmInstalled"
         title-link="https://docs.gitlab.com/runner/"
       >
         <template #description>
@@ -464,7 +412,6 @@ export default {
         :uninstall-successful="applications.crossplane.uninstallSuccessful"
         :uninstall-failed="applications.crossplane.uninstallFailed"
         :install-application-request-params="{ stack: applications.crossplane.stack }"
-        :disabled="!helmInstalled"
         title-link="https://crossplane.io"
       >
         <template #description>
@@ -509,7 +456,6 @@ export default {
         :uninstall-successful="applications.jupyter.uninstallSuccessful"
         :uninstall-failed="applications.jupyter.uninstallFailed"
         :install-application-request-params="{ hostname: applications.jupyter.hostname }"
-        :disabled="!helmInstalled"
         title-link="https://jupyterhub.readthedocs.io/en/stable/"
       >
         <template #description>
@@ -575,7 +521,6 @@ export default {
         :uninstall-successful="applications.knative.uninstallSuccessful"
         :uninstall-failed="applications.knative.uninstallFailed"
         :updateable="false"
-        :disabled="!helmInstalled"
         v-bind="applications.knative"
         title-link="https://github.com/knative/docs"
       >
@@ -597,7 +542,7 @@ export default {
           </p>
 
           <knative-domain-editor
-            v-if="(knative.installed || (helmInstalled && rbac)) && !preInstalledKnative"
+            v-if="(knative.installed || rbac) && !preInstalledKnative"
             :knative="knative"
             :ingress-dns-help-path="ingressDnsHelpPath"
             @save="saveKnativeDomain"
@@ -634,7 +579,6 @@ export default {
         :uninstallable="applications.elastic_stack.uninstallable"
         :uninstall-successful="applications.elastic_stack.uninstallSuccessful"
         :uninstall-failed="applications.elastic_stack.uninstallFailed"
-        :disabled="!helmInstalled"
         title-link="https://gitlab.com/gitlab-org/charts/elastic-stack"
       >
         <template #description>
@@ -668,7 +612,6 @@ export default {
         :uninstallable="applications.fluentd.uninstallable"
         :uninstall-successful="applications.fluentd.uninstallSuccessful"
         :uninstall-failed="applications.fluentd.uninstallFailed"
-        :disabled="!helmInstalled"
         :updateable="false"
         title-link="https://github.com/helm/charts/tree/master/stable/fluentd"
       >
@@ -694,7 +637,7 @@ export default {
       </application-row>
 
       <div class="gl-mt-7 gl-border-1 gl-border-t-solid gl-border-gray-100">
-        <!-- This empty div serves as a separator between applications that have a dependency on Helm and those that can be enabled without Helm. -->
+        <!-- This empty div serves as a separator. The applications below can be externally installed using a cluster-management project. -->
       </div>
 
       <application-row

@@ -69,46 +69,22 @@ can lead to confusion during deployments.
 
 > - Introduced in GitLab 10.2 for project-level clusters.
 > - Introduced in GitLab 11.6 for group-level clusters.
-> - A local Tiller option was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2 behind a feature flag, enabled by default.
-> - The feature flag for local Tiller is enabled on GitLab.com.
+> - [Uses a local Tiller](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) since GitLab 13.2.
 
 [Helm](https://helm.sh/docs/) is a package manager for Kubernetes and is
 used to install the GitLab-managed apps. GitLab runs each `helm` command
 in a pod within the `gitlab-managed-apps` namespace inside the cluster.
 
-As of GitLab 13.2, the integration uses a local
-[Tiller](https://v2.helm.sh/docs/glossary/#tiller) by default. When using a
-local Tiller, the Helm application does not need to be installed and will not
-be shown in the list of applications.
+GitLab's integration uses Helm 2 with a local
+[Tiller](https://v2.helm.sh/docs/glossary/#tiller) server for managing
+applications. Prior to [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/209736),
+GitLab used an in-cluster Tiller server in the `gitlab-managed-apps`
+namespace. This server can now be safely removed.
 
 NOTE: **Note:**
 GitLab's Helm integration does not support installing applications behind a proxy,
 but a [workaround](../../topics/autodevops/index.md#install-applications-behind-a-proxy)
 is available.
-
-### Enable or disable local Tiller **(CORE ONLY)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.2
-> - The option to disable local Tiller is [planned for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/209736) in GitLab 13.3
-
-Local Tiller is under development, but is ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it for your instance.
-
-To enable it:
-
-```ruby
-# Instance-wide
-Feature.enable(:managed_apps_local_tiller)
-```
-
-To disable it:
-
-```ruby
-# Instance-wide
-Feature.disable(:managed_apps_local_tiller)
-```
 
 ### cert-manager
 

@@ -3,12 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Kubernetes::Helm::DeleteCommand do
-  subject(:delete_command) { described_class.new(name: app_name, rbac: rbac, files: files, local_tiller_enabled: local_tiller_enabled) }
+  subject(:delete_command) { described_class.new(name: app_name, rbac: rbac, files: files) }
 
   let(:app_name) { 'app-name' }
   let(:rbac) { true }
   let(:files) { {} }
-  let(:local_tiller_enabled) { true }
 
   it_behaves_like 'helm command generator' do
     let(:commands) do
@@ -18,50 +17,6 @@ RSpec.describe Gitlab::Kubernetes::Helm::DeleteCommand do
       helm init --client-only
       helm delete --purge app-name
       EOS
-    end
-  end
-
-  context 'tillerless feature disabled' do
-    let(:local_tiller_enabled) { false }
-
-    it_behaves_like 'helm command generator' do
-      let(:commands) do
-        <<~EOS
-        helm init --upgrade
-        for i in $(seq 1 30); do helm version && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
-        helm delete --purge app-name
-        EOS
-      end
-    end
-
-    context 'when there is a ca.pem file' do
-      let(:files) { { 'ca.pem': 'some file content' } }
-
-      let(:tls_flags) do
-        <<~EOS.squish
-        --tls
-        --tls-ca-cert /data/helm/app-name/config/ca.pem
-        --tls-cert /data/helm/app-name/config/cert.pem
-        --tls-key /data/helm/app-name/config/key.pem
-        EOS
-      end
-
-      it_behaves_like 'helm command generator' do
-        let(:commands) do
-          <<~EOS
-          helm init --upgrade
-          for i in $(seq 1 30); do helm version #{tls_flags} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
-          #{helm_delete_command}
-          EOS
-        end
-
-        let(:helm_delete_command) do
-          <<~EOS.squish
-          helm delete --purge app-name
-          #{tls_flags}
-          EOS
-        end
-      end
     end
   end
 

@@ -6,19 +6,14 @@ module Gitlab
       class BaseCommand
         attr_reader :name, :files
 
-        def initialize(rbac:, name:, files:, local_tiller_enabled:)
+        def initialize(rbac:, name:, files:)
           @rbac = rbac
           @name = name
           @files = files
-          @local_tiller_enabled = local_tiller_enabled
         end
 
         def rbac?
           @rbac
-        end
-
-        def local_tiller_enabled?
-          @local_tiller_enabled
         end
 
         def pod_resource

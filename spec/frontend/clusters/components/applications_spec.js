@@ -14,7 +14,6 @@ describe('Applications', () => {
 
   beforeEach(() => {
     gon.features = gon.features || {};
-    gon.features.managedAppsLocalTiller = false;
   });
 
   const createApp = ({ applications, type, props } = {}, isShallow) => {
@@ -39,10 +38,6 @@ describe('Applications', () => {
   describe('Project cluster applications', () => {
     beforeEach(() => {
       createApp({ type: CLUSTER_TYPE.PROJECT });
-    });
-
-    it('renders a row for Helm Tiller', () => {
-      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(true);
     });
 
     it('renders a row for Ingress', () => {
@@ -88,10 +83,6 @@ describe('Applications', () => {
   describe('Group cluster applications', () => {
     beforeEach(() => {
       createApp({ type: CLUSTER_TYPE.GROUP });
-    });
-
-    it('renders a row for Helm Tiller', () => {
-      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(true);
     });
 
     it('renders a row for Ingress', () => {
@@ -140,10 +131,6 @@ describe('Applications', () => {
       createApp({ type: CLUSTER_TYPE.INSTANCE });
     });
 
-    it('renders a row for Helm Tiller', () => {
-      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(true);
-    });
-
     it('renders a row for Ingress', () => {
       expect(wrapper.find('.js-cluster-application-row-ingress').exists()).toBe(true);
     });
@@ -186,15 +173,9 @@ describe('Applications', () => {
   });
 
   describe('Helm application', () => {
-    describe('when managedAppsLocalTiller enabled', () => {
-      beforeEach(() => {
-        gon.features.managedAppsLocalTiller = true;
-      });
-
-      it('does not render a row for Helm Tiller', () => {
-        createApp();
-        expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(false);
-      });
+    it('does not render a row for Helm Tiller', () => {
+      createApp();
+      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(false);
     });
   });
 
@@ -252,7 +233,6 @@ describe('Applications', () => {
                 externalHostname: 'localhost.localdomain',
                 modsecurity_enabled: false,
               },
-              helm: { title: 'Helm Tiller' },
               cert_manager: { title: 'Cert-Manager' },
               crossplane: { title: 'Crossplane', stack: '' },
               runner: { title: 'GitLab Runner' },
@@ -403,14 +383,6 @@ describe('Applications', () => {
           false,
         );
       });
-
-      it('renders disabled install button', () => {
-        expect(
-          wrapper
-            .find('.js-cluster-application-row-jupyter .js-cluster-application-install-button')
-            .attributes('disabled'),
-        ).toEqual('disabled');
-      });
     });
   });
 
@@ -530,7 +502,7 @@ describe('Applications', () => {
 
   describe('Elastic Stack application', () => {
     describe('with elastic stack installable', () => {
-      it('renders hostname active input', () => {
+      it('renders the install button enabled', () => {
         createApp();
 
         expect(
@@ -539,7 +511,7 @@ describe('Applications', () => {
               '.js-cluster-application-row-elastic_stack .js-cluster-application-install-button',
             )
             .attributes('disabled'),
-        ).toEqual('disabled');
+        ).toBeUndefined();
       });
     });
 

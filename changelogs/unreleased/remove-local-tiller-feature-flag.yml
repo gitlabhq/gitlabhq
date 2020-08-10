@@ -1,0 +1,5 @@
+---
+title: Remove feature flag managed_apps_local_tiller
+merge_request: 37641
+author:
+type: changed

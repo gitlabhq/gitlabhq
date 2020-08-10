@@ -6,10 +6,6 @@ class Clusters::BaseController < ApplicationController
   skip_before_action :authenticate_user!
   before_action :authorize_read_cluster!
 
-  before_action do
-    push_frontend_feature_flag(:managed_apps_local_tiller, clusterable, default_enabled: true)
-  end
-
   helper_method :clusterable
 
   private

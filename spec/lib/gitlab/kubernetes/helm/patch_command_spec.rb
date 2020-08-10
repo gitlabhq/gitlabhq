@@ -7,7 +7,6 @@ RSpec.describe Gitlab::Kubernetes::Helm::PatchCommand do
   let(:repository) { 'https://repository.example.com' }
   let(:rbac) { false }
   let(:version) { '1.2.3' }
-  let(:local_tiller_enabled) { true }
 
   subject(:patch_command) do
     described_class.new(
@@ -16,45 +15,8 @@ RSpec.describe Gitlab::Kubernetes::Helm::PatchCommand do
       rbac: rbac,
       files: files,
       version: version,
-      repository: repository,
-      local_tiller_enabled: local_tiller_enabled
+      repository: repository
     )
-  end
-
-  context 'when local tiller feature is disabled' do
-    let(:local_tiller_enabled) { false }
-
-    let(:tls_flags) do
-      <<~EOS.squish
-      --tls
-      --tls-ca-cert /data/helm/app-name/config/ca.pem
-      --tls-cert /data/helm/app-name/config/cert.pem
-      --tls-key /data/helm/app-name/config/key.pem
-      EOS
-    end
-
-    it_behaves_like 'helm command generator' do
-      let(:commands) do
-        <<~EOS
-        helm init --upgrade
-        for i in $(seq 1 30); do helm version #{tls_flags} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
-        helm repo add app-name https://repository.example.com
-        helm repo update
-        #{helm_upgrade_comand}
-        EOS
-      end
-
-      let(:helm_upgrade_comand) do
-        <<~EOS.squish
-        helm upgrade app-name chart-name
-          --reuse-values
-          #{tls_flags}
-          --version 1.2.3
-          --namespace gitlab-managed-apps
-          -f /data/helm/app-name/config/values.yaml
-        EOS
-      end
-    end
   end
 
   it_behaves_like 'helm command generator' do

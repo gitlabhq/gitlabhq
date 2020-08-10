@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "installing applications for a cluster" do |managed_apps_local_tiller|
+RSpec.shared_examples "installing applications for a cluster" do
   before do
     # Reduce interval from 10 seconds which is too long for an automated test
     stub_const("#{Clusters::ClustersController}::STATUS_POLLING_INTERVAL", 500)
-
-    stub_feature_flags(managed_apps_local_tiller: managed_apps_local_tiller)
 
     visit cluster_path
   end
@@ -31,12 +29,7 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
     it 'user can install applications' do
       wait_for_requests
 
-      application_row =
-        if managed_apps_local_tiller
-          '.js-cluster-application-row-ingress'
-        else
-          '.js-cluster-application-row-helm'
-        end
+      application_row = '.js-cluster-application-row-ingress'
 
       page.within(application_row) do
         expect(page).not_to have_css('.js-cluster-application-install-button[disabled]')
@@ -44,50 +37,11 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
       end
     end
 
-    if managed_apps_local_tiller
-      it 'does not show the Helm application' do
-        expect(page).not_to have_selector(:css, '.js-cluster-application-row-helm')
-      end
-    else
-      context 'when user installs Helm' do
-        before do
-          allow(ClusterInstallAppWorker).to receive(:perform_async)
-          wait_for_requests
-
-          page.within('.js-cluster-application-row-helm') do
-            page.find(:css, '.js-cluster-application-install-button').click
-          end
-
-          wait_for_requests
-        end
-
-        it 'shows the status transition' do
-          page.within('.js-cluster-application-row-helm') do
-            # FE sends request and gets the response, then the buttons is "Installing"
-            expect(page).to have_css('.js-cluster-application-install-button[disabled]', exact_text: 'Installing')
-
-            Clusters::Cluster.last.application_helm.make_installing!
-
-            # FE starts polling and update the buttons to "Installing"
-            expect(page).to have_css('.js-cluster-application-install-button[disabled]', exact_text: 'Installing')
-
-            Clusters::Cluster.last.application_helm.make_installed!
-
-            expect(page).not_to have_css('button', exact_text: 'Install', visible: :all)
-            expect(page).not_to have_css('button', exact_text: 'Installing', visible: :all)
-            expect(page).to have_css('.js-cluster-application-uninstall-button:not([disabled])', exact_text: 'Uninstall')
-          end
-
-          expect(page).to have_content('Helm Tiller was successfully installed on your Kubernetes cluster')
-        end
-      end
+    it 'does not show the Helm application' do
+      expect(page).not_to have_selector(:css, '.js-cluster-application-row-helm')
     end
 
     context 'when user installs Knative' do
-      before do
-        create(:clusters_applications_helm, :installed, cluster: cluster) unless managed_apps_local_tiller
-      end
-
       context 'on an abac cluster' do
         let(:cluster) { create(:cluster, :provided_by_gcp, :rbac_disabled, *cluster_factory_args) }
 
@@ -166,8 +120,6 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
         allow(ClusterInstallAppWorker).to receive(:perform_async)
         allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
         allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
-
-        create(:clusters_applications_helm, :installed, cluster: cluster) unless managed_apps_local_tiller
       end
 
       it 'shows status transition' do
@@ -223,8 +175,6 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
       before do
         allow(ClusterInstallAppWorker).to receive(:perform_async)
 
-        create(:clusters_applications_helm, :installed, cluster: cluster) unless managed_apps_local_tiller
-
         page.within('.js-cluster-application-row-elastic_stack') do
           click_button 'Install'
         end
@@ -254,8 +204,6 @@ RSpec.shared_examples "installing applications for a cluster" do |managed_apps_l
         allow(ClusterInstallAppWorker).to receive(:perform_async)
         allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
         allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
-
-        create(:clusters_applications_helm, :installed, cluster: cluster) unless managed_apps_local_tiller
 
         page.within('.js-cluster-application-row-ingress') do
           expect(page).to have_css('.js-cluster-application-install-button:not([disabled])')

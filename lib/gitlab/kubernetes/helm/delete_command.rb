@@ -17,7 +17,6 @@ module Gitlab
         def generate_script
           super + [
             init_command,
-            wait_for_tiller_command,
             predelete,
             delete_command,
             postdelete
@@ -29,9 +28,7 @@ module Gitlab
         end
 
         def delete_command
-          command = ['helm', 'delete', '--purge', name] + tls_flags_if_remote_tiller
-
-          command.shelljoin
+          ['helm', 'delete', '--purge', name].shelljoin
         end
       end
     end
