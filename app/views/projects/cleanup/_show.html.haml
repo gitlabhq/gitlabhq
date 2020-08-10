@@ -25,5 +25,7 @@
           = f.file_field :bfg_object_map, class: "hidden js-object-map-input", required: true
         .form-text.text-muted
           = _("The maximum file size allowed is %{size}.") % { size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes) }
-      = f.submit _('Start cleanup'), class: 'btn btn-success'
+
+      .gl-display-flex.gl-justify-content-end
+        = f.submit _('Start cleanup'), class: 'btn btn-success'
 

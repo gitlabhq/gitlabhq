@@ -1394,7 +1394,7 @@ the files changed by Git push events.
 
 `rules: changes` works exactly the same way as [`only: changes` and `except: changes`](#onlychangesexceptchanges),
 accepting an array of paths. Similarly, it always returns true if there is no
-Git push event. It should only be used for branch pipelines or merge request pipelines.
+Git push event, for example, when a new tag is created. It should only be used for branch pipelines or merge request pipelines.
 
 For example:
 

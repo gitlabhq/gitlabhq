@@ -173,43 +173,17 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
                              fallback_diff_refs: diffs.fallback_diff_refs)
     end
 
-    context "feature flag :gzip_diff_cache disabled" do
-      before do
-        stub_feature_flags(gzip_diff_cache: true)
-      end
+    it "uses ActiveSupport::Gzip when reading from the cache" do
+      expect(ActiveSupport::Gzip).to receive(:decompress).at_least(:once).and_call_original
 
-      it "uses ActiveSupport::Gzip when reading from the cache" do
-        expect(ActiveSupport::Gzip).to receive(:decompress).at_least(:once).and_call_original
-
-        cache.write_if_empty
-        cache.decorate(diff_file)
-      end
-
-      it "uses ActiveSupport::Gzip to compress data when writing to cache" do
-        expect(ActiveSupport::Gzip).to receive(:compress).and_call_original
-
-        cache.send(:write_to_redis_hash, diff_hash)
-      end
+      cache.write_if_empty
+      cache.decorate(diff_file)
     end
 
-    context "feature flag :gzip_diff_cache disabled" do
-      before do
-        stub_feature_flags(gzip_diff_cache: false)
-      end
+    it "uses ActiveSupport::Gzip to compress data when writing to cache" do
+      expect(ActiveSupport::Gzip).to receive(:compress).and_call_original
 
-      it "doesn't use ActiveSupport::Gzip when reading from the cache" do
-        expect(ActiveSupport::Gzip).not_to receive(:decompress)
-
-        cache.write_if_empty
-        cache.decorate(diff_file)
-      end
-
-      it "doesn't use ActiveSupport::Gzip to compress data when writing to cache" do
-        expect(ActiveSupport::Gzip).not_to receive(:compress)
-
-        expect { cache.send(:write_to_redis_hash, diff_hash) }
-          .to change { Gitlab::Redis::Cache.with { |r| r.hgetall(cache_key) } }
-      end
+      cache.send(:write_to_redis_hash, diff_hash)
     end
   end
 

@@ -55,6 +55,10 @@ NOTE: **Note:**
 Consolidated object storage configuration cannot be used for
 backups or Mattermost. See [the full table for a complete list](#storage-specific-configuration).
 
+NOTE: **Note:**
+Enabling consolidated object storage will enable object storage for all object types.
+If you wish to use local storage for specific object types, you can [selectively disable object storages](#selectively-disabling-object-storage).
+
 Most types of objects, such as CI artifacts, LFS files, upload
 attachments, and so on can be saved in object storage by specifying a single
 credential for object storage with multiple buckets. A [different bucket

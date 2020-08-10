@@ -1524,6 +1524,9 @@ msgstr ""
 msgid "Add italic text"
 msgstr ""
 
+msgid "Add key"
+msgstr ""
+
 msgid "Add label(s)"
 msgstr ""
 
@@ -4914,6 +4917,9 @@ msgid "Cleanup policy for tags"
 msgstr ""
 
 msgid "Clear"
+msgstr ""
+
+msgid "Clear all repository checks"
 msgstr ""
 
 msgid "Clear chart filters"
@@ -19555,6 +19561,9 @@ msgstr ""
 msgid "Prompt users to upload SSH keys"
 msgstr ""
 
+msgid "Protect"
+msgstr ""
+
 msgid "Protect variable"
 msgstr ""
 
@@ -20987,6 +20996,9 @@ msgid "Save"
 msgstr ""
 
 msgid "Save Changes"
+msgstr ""
+
+msgid "Save Push Rules"
 msgstr ""
 
 msgid "Save anyway"
@@ -25029,6 +25041,9 @@ msgid "This user will be the author of all events in the activity feed that are 
 msgstr ""
 
 msgid "This variable can not be masked."
+msgstr ""
+
+msgid "This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?"
 msgstr ""
 
 msgid "This will help us personalize your onboarding experience."

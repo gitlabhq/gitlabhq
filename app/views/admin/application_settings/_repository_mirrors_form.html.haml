@@ -14,4 +14,5 @@
 
     = render_if_exists 'admin/application_settings/mirror_settings', form: f
 
-  = f.submit _('Save changes'), class: "btn btn-success"
+  .gl-display-flex.gl-justify-content-end
+    = f.submit _('Save changes'), class: "btn btn-success"

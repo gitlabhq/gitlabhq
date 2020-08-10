@@ -213,6 +213,7 @@ $item-remove-button-space: 42px;
   margin-right: $gl-padding-4 / 2;
   line-height: 0;
   border-color: transparent;
+  background-color: transparent;
   color: $gl-text-color-secondary;
 
   .related-items-tree & {

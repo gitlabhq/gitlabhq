@@ -1,0 +1,5 @@
+---
+title: Remove duplicate authorized_projects entries during refresh
+merge_request: 38715
+author:
+type: fixed

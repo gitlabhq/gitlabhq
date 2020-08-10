@@ -12552,6 +12552,7 @@ CREATE TABLE public.issues (
     external_key character varying(255),
     sprint_id bigint,
     issue_type smallint DEFAULT 0 NOT NULL,
+    blocking_issues_count integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_fba63f706d CHECK ((lock_version IS NOT NULL))
 );
 
@@ -19736,6 +19737,8 @@ CREATE INDEX index_issue_links_on_target_id ON public.issue_links USING btree (t
 CREATE INDEX index_issue_metrics ON public.issue_metrics USING btree (issue_id);
 
 CREATE INDEX index_issue_metrics_on_issue_id_and_timestamps ON public.issue_metrics USING btree (issue_id, first_mentioned_in_commit_at, first_associated_with_milestone_at, first_added_to_board_at);
+
+CREATE INDEX index_issue_on_project_id_state_id_and_blocking_issues_count ON public.issues USING btree (project_id, state_id, blocking_issues_count);
 
 CREATE INDEX index_issue_tracker_data_on_service_id ON public.issue_tracker_data USING btree (service_id);
 
