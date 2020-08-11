@@ -3069,24 +3069,14 @@ RSpec.describe Ci::Pipeline, :mailer do
         create(:ci_build, :success, :report_results, name: 'java', pipeline: pipeline, project: project)
       end
 
-      it 'returns test report summary with collected data', :aggregate_failures do
-        expect(subject.total_time).to be(0.84)
-        expect(subject.total_count).to be(4)
-        expect(subject.success_count).to be(0)
-        expect(subject.failed_count).to be(0)
-        expect(subject.error_count).to be(4)
-        expect(subject.skipped_count).to be(0)
+      it 'returns test report summary with collected data' do
+        expect(subject.total).to include(time: 0.84, count: 4, success: 0, failed: 0, skipped: 0, error: 4)
       end
     end
 
     context 'when pipeline does not have any builds with report results' do
-      it 'returns empty test report sumary', :aggregate_failures do
-        expect(subject.total_time).to be(0)
-        expect(subject.total_count).to be(0)
-        expect(subject.success_count).to be(0)
-        expect(subject.failed_count).to be(0)
-        expect(subject.error_count).to be(0)
-        expect(subject.skipped_count).to be(0)
+      it 'returns empty test report summary' do
+        expect(subject.total).to include(time: 0, count: 0, success: 0, failed: 0, skipped: 0, error: 0)
       end
     end
   end

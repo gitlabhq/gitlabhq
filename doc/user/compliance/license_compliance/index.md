@@ -398,6 +398,30 @@ specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.
 [environment variable](../../../ci/variables/README.md#custom-environment-variables)
 in the job definition.
 
+### Configuring Cargo projects
+
+#### Using private Cargo registries
+
+If you have a private Cargo registry you can use the
+[`registries`](https://doc.rust-lang.org/cargo/reference/registries.html)
+setting to specify its location.
+
+For example:
+
+```toml
+[registries]
+my-registry = { index = "https://my-intranet:8080/git/index" }
+```
+
+#### Custom root certificates for Cargo
+
+To supply a custom root certificate to complete TLS verification, do one of the following:
+
+- Use the `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
+- Specify a [`CARGO_HTTP_CAINFO`](https://doc.rust-lang.org/cargo/reference/environment-variables.html)
+  [environment variable](../../../ci/variables/README.md#custom-environment-variables)
+  in the job definition.
+
 ### Configuring Composer projects
 
 #### Using private Composer registries

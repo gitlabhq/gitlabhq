@@ -1,0 +1,5 @@
+---
+title: Fix parallel jobs dropdown from cutting off in small pipeline graphs
+merge_request: 39108
+author:
+type: fixed

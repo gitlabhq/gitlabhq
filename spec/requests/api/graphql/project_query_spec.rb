@@ -76,16 +76,16 @@ RSpec.describe 'getting project information' do
 
     def run_query(number)
       q = <<~GQL
-      query {
-        project(fullPath: "#{project.full_path}") {
-          mergeRequests(first: #{number}) {
-            nodes {
-              assignees { nodes { username } }
-              headPipeline { status }
+        query {
+          project(fullPath: "#{project.full_path}") {
+            mergeRequests(first: #{number}) {
+              nodes {
+                assignees { nodes { username } }
+                headPipeline { status }
+              }
             }
           }
         }
-      }
       GQL
 
       post_graphql(q, current_user: current_user)

@@ -40,5 +40,5 @@
       %hr
       = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'btn btn-link'
 
-
-  = f.submit _('Save changes'), class: "btn btn-success mt-4 qa-save-naming-topics-avatar-button"
+  .gl-display-flex.gl-justify-content-end
+    = f.submit _('Save changes'), class: "btn btn-success mt-4 qa-save-naming-topics-avatar-button"

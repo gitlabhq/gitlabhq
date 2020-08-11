@@ -86,4 +86,14 @@ RSpec.describe Gitlab::Ci::Reports::TestSuiteSummary do
       end
     end
   end
+
+  describe '#to_h' do
+    subject { test_suite_summary.to_h }
+
+    context 'when test suite summary has several build report results' do
+      it 'returns the total as a hash' do
+        expect(subject).to include(:time, :count, :success, :failed, :skipped, :error)
+      end
+    end
+  end
 end

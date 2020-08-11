@@ -37,7 +37,8 @@ module ReleasesHelper
 
   def data_for_new_release_page
     new_edit_pages_shared_data.merge(
-      default_branch: @project.default_branch
+      default_branch: @project.default_branch,
+      releases_page_path: project_releases_path(@project)
     )
   end
 

@@ -107,7 +107,7 @@ RSpec.describe 'query Jira import data' do
         let(:query) do
           %(
             query {
-              project(fullPath:"#{project.full_path}") {
+              project(fullPath: "#{project.full_path}") {
                 jiraImports(first: 1) {
                   nodes {
                     jiraProjectKey
@@ -133,7 +133,7 @@ RSpec.describe 'query Jira import data' do
         let(:query) do
           %(
             query {
-              project(fullPath:"#{project.full_path}") {
+              project(fullPath: "#{project.full_path}") {
                 jiraImports(last: 1) {
                   nodes {
                     jiraProjectKey

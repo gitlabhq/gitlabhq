@@ -1,0 +1,5 @@
+---
+title: Add new target_type column on audit_events table
+merge_request: 36198
+author:
+type: changed

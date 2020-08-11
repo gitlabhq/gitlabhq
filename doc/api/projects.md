@@ -1985,6 +1985,7 @@ GET /projects/:id/hooks/:hook_id
   "job_events": true,
   "pipeline_events": true,
   "wiki_page_events": true,
+  "deployment_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -2013,6 +2014,7 @@ POST /projects/:id/hooks
 | `job_events` | boolean | no | Trigger hook on job events |
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
 | `wiki_page_events` | boolean | no | Trigger hook on wiki events |
+| `deployment_events` | boolean | no | Trigger hook on deployment events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 | `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
 
@@ -2040,6 +2042,7 @@ PUT /projects/:id/hooks/:hook_id
 | `job_events` | boolean | no | Trigger hook on job events |
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
 | `wiki_events` | boolean | no | Trigger hook on wiki events |
+| `deployment_events` | boolean | no | Trigger hook on deployment events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 | `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
 

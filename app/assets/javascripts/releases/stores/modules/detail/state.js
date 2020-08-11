@@ -6,9 +6,9 @@ export default ({
   releaseAssetsDocsPath,
   manageMilestonesPath,
   newMilestonePath,
+  releasesPagePath,
 
   tagName = null,
-  releasesPagePath = null,
   defaultBranch = null,
 }) => ({
   projectId,
@@ -18,6 +18,7 @@ export default ({
   releaseAssetsDocsPath,
   manageMilestonesPath,
   newMilestonePath,
+  releasesPagePath,
 
   /**
    * The name of the tag associated with the release, provided by the backend.
@@ -25,7 +26,6 @@ export default ({
    */
   tagName,
 
-  releasesPagePath,
   defaultBranch,
   createFrom: defaultBranch,
 

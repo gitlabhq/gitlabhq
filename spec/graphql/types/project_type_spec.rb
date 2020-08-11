@@ -148,47 +148,47 @@ RSpec.describe GitlabSchema.types['Project'] do
     let_it_be(:query) do
       %(
         query {
-            project(fullPath: "#{project.full_path}") {
-                sastCiConfiguration {
-                  global {
+          project(fullPath: "#{project.full_path}") {
+            sastCiConfiguration {
+              global {
+                nodes {
+                  type
+                  options {
                     nodes {
-                      type
-                      options {
-                        nodes {
-                          label
-                          value
-                        }
-                      }
-                      field
                       label
-                      defaultValue
                       value
                     }
                   }
-                  pipeline {
-                    nodes {
-                      type
-                      options {
-                        nodes {
-                          label
-                          value
-                        }
-                      }
-                      field
-                      label
-                      defaultValue
-                      value
-                    }
-                  }
-                  analyzers {
-                    nodes {
-                      name
-                      label
-                      enabled
-                    }
-                  }
+                  field
+                  label
+                  defaultValue
+                  value
                 }
               }
+              pipeline {
+                nodes {
+                  type
+                  options {
+                    nodes {
+                      label
+                      value
+                    }
+                  }
+                  field
+                  label
+                  defaultValue
+                  value
+                }
+              }
+              analyzers {
+                nodes {
+                  name
+                  label
+                  enabled
+                }
+              }
+            }
+          }
         }
       )
     end

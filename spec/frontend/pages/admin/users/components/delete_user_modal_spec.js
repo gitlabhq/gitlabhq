@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDeprecatedButton, GlFormInput } from '@gitlab/ui';
+import { GlButton, GlFormInput } from '@gitlab/ui';
 import DeleteUserModal from '~/pages/admin/users/components/delete_user_modal.vue';
 import ModalStub from './stubs/modal_stub';
 
@@ -13,7 +13,7 @@ describe('User Operation confirmation modal', () => {
 
   const findButton = variant =>
     wrapper
-      .findAll(GlDeprecatedButton)
+      .findAll(GlButton)
       .filter(w => w.attributes('variant') === variant)
       .at(0);
   const findForm = () => wrapper.find('form');

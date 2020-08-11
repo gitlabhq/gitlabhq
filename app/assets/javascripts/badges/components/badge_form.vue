@@ -184,7 +184,7 @@ export default {
         @input="debouncedPreview"
       />
       <div class="invalid-feedback">{{ s__('Badges|Please fill in a valid URL') }}</div>
-      <span class="form-text text-muted"> {{ badgeLinkUrlExample }} </span>
+      <span class="form-text text-muted">{{ badgeLinkUrlExample }}</span>
     </div>
 
     <div class="form-group">
@@ -199,7 +199,7 @@ export default {
         @input="debouncedPreview"
       />
       <div class="invalid-feedback">{{ s__('Badges|Please fill in a valid URL') }}</div>
-      <span class="form-text text-muted"> {{ badgeImageUrlExample }} </span>
+      <span class="form-text text-muted">{{ badgeImageUrlExample }}</span>
     </div>
 
     <div class="form-group">
@@ -210,22 +210,26 @@ export default {
         :image-url="renderedImageUrl"
         :link-url="renderedLinkUrl"
       />
-      <p v-show="isRendering"><gl-loading-icon :inline="true" /></p>
+      <p v-show="isRendering">
+        <gl-loading-icon :inline="true" />
+      </p>
       <p v-show="!renderedBadge && !isRendering" class="disabled-content">
         {{ s__('Badges|No image to preview') }}
       </p>
     </div>
 
-    <div v-if="isEditing" class="row-content-block">
+    <div v-if="isEditing" class="row-content-block gl-display-flex gl-justify-content-end">
+      <button class="btn btn-cancel gl-mr-4" type="button" @click="onCancel">
+        {{ __('Cancel') }}
+      </button>
       <loading-button
         :loading="isSaving"
         :label="s__('Badges|Save changes')"
         type="submit"
         container-class="btn btn-success"
       />
-      <button class="btn btn-cancel" type="button" @click="onCancel">{{ __('Cancel') }}</button>
     </div>
-    <div v-else class="form-group">
+    <div v-else class="gl-display-flex gl-justify-content-end form-group">
       <loading-button
         :loading="isSaving"
         :label="s__('Badges|Add badge')"

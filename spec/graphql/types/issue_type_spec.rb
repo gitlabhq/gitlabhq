@@ -132,14 +132,14 @@ RSpec.describe GitlabSchema.types['Issue'] do
     let(:query) do
       %(
         query {
-          project(fullPath:"#{project.full_path}"){
-            issue(iid:"#{issue.iid}"){
+          project(fullPath: "#{project.full_path}") {
+            issue(iid: "#{issue.iid}") {
               descriptionHtml
-              notes{
-                edges{
-                  node{
+              notes {
+                edges {
+                  node {
                     bodyHtml
-                    author{
+                    author {
                       username
                     }
                     body

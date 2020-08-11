@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe TestSuiteSummaryEntity do
   let(:pipeline) { create(:ci_pipeline, :with_report_results) }
-  let(:entity) { described_class.new(pipeline.test_report_summary.total) }
+  let(:entity) { described_class.new(pipeline.test_report_summary.test_suites.each_value.first) }
 
   describe '#as_json' do
     subject(:as_json) { entity.as_json }

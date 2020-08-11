@@ -1,0 +1,5 @@
+---
+title: Fix submit button tooltips for forms with quick submit behavior
+merge_request: 39225
+author:
+type: fixed

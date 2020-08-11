@@ -182,11 +182,11 @@ describe('BadgeForm component', () => {
       const buttons = vm.$el.querySelectorAll('.row-content-block button');
 
       expect(buttons.length).toBe(2);
-      const buttonSaveElement = buttons[0];
+      const buttonSaveElement = buttons[1];
 
       expect(buttonSaveElement).toBeVisible();
       expect(buttonSaveElement).toHaveText('Save changes');
-      const buttonCancelElement = buttons[1];
+      const buttonCancelElement = buttons[0];
 
       expect(buttonCancelElement).toBeVisible();
       expect(buttonCancelElement).toHaveText('Cancel');

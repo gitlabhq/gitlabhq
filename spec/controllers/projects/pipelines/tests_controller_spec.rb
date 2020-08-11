@@ -19,7 +19,7 @@ RSpec.describe Projects::Pipelines::TestsController do
         get_tests_summary_json
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['total_count']).to eq(2)
+        expect(json_response.dig('total', 'count')).to eq(2)
       end
     end
 
@@ -28,7 +28,7 @@ RSpec.describe Projects::Pipelines::TestsController do
         get_tests_summary_json
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['total_count']).to eq(0)
+        expect(json_response.dig('total', 'count')).to eq(0)
       end
     end
   end

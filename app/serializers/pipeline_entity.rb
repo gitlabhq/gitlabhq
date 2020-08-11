@@ -86,7 +86,7 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :tests_total_count do |pipeline|
-    pipeline.test_report_summary.total_count
+    pipeline.test_report_summary.total[:count]
   end
 
   private

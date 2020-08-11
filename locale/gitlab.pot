@@ -21399,6 +21399,9 @@ msgstr ""
 msgid "Security Dashboard"
 msgstr ""
 
+msgid "Security Dashboard - Settings"
+msgstr ""
+
 msgid "Security dashboard"
 msgstr ""
 

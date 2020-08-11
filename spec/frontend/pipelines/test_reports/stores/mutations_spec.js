@@ -44,10 +44,21 @@ describe('Mutations TestReports Store', () => {
 
   describe('set summary', () => {
     it('should set summary', () => {
-      const summary = { total_count: 1 };
+      const summary = {
+        total: { time: 0, count: 10, success: 1, failed: 2, skipped: 3, error: 4 },
+      };
+      const expectedSummary = {
+        ...summary,
+        total_time: 0,
+        total_count: 10,
+        success_count: 1,
+        failed_count: 2,
+        skipped_count: 3,
+        error_count: 4,
+      };
       mutations[types.SET_SUMMARY](mockState, summary);
 
-      expect(mockState.testReports).toEqual(summary);
+      expect(mockState.testReports).toEqual(expectedSummary);
     });
   });
 

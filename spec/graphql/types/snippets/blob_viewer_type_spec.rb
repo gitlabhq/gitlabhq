@@ -44,7 +44,7 @@ RSpec.describe GitlabSchema.types['SnippetBlobViewer'] do
       let(:query) do
         %(
           query {
-            snippets(ids:"#{snippet.to_global_id}"){
+            snippets(ids: "#{snippet.to_global_id}") {
               edges {
                 node {
                   blob {
@@ -70,7 +70,7 @@ RSpec.describe GitlabSchema.types['SnippetBlobViewer'] do
       let(:query) do
         %(
           query {
-            snippets(ids:"#{snippet.to_global_id}"){
+            snippets(ids: "#{snippet.to_global_id}") {
               edges {
                 node {
                   blob {

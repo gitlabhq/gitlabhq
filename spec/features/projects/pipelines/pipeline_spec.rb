@@ -371,7 +371,7 @@ RSpec.describe 'Pipeline', :js do
 
       context 'with test reports' do
         it 'shows badge counter in Tests tab' do
-          expect(page.find('.js-test-report-badge-counter').text).to eq(pipeline.test_report_summary.total_count.to_s)
+          expect(page.find('.js-test-report-badge-counter').text).to eq(pipeline.test_report_summary.total[:count].to_s)
         end
 
         it 'calls summary.json endpoint', :js do
