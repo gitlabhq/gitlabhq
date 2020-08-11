@@ -25,8 +25,12 @@
   }
 
   .form-control {
-    width: 100%;
     padding-right: 35px;
+  }
+
+  .search-control-wrap,
+  .form-control {
+    width: 100%;
 
     @include media-breakpoint-up(sm) {
       width: 250px;

@@ -25,7 +25,7 @@ describe('Identicon', () => {
   });
 
   describe('entity id is a number', () => {
-    beforeEach(createComponent);
+    beforeEach(() => createComponent());
 
     it('matches snapshot', () => {
       expect(wrapper.element).toMatchSnapshot();

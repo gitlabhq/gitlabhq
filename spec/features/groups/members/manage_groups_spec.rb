@@ -20,25 +20,27 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
 
     add_group(shared_with_group.id, 'Reporter')
 
+    click_groups_tab
+
     page.within(first_row) do
       expect(page).to have_content(shared_with_group.name)
       expect(page).to have_content('Reporter')
     end
   end
 
-  it 'remove user from group' do
+  it 'remove group from group' do
     create(:group_group_link, shared_group: shared_group,
       shared_with_group: shared_with_group, group_access: ::Gitlab::Access::DEVELOPER)
 
     visit group_group_members_path(shared_group)
 
+    click_groups_tab
+
     expect(page).to have_content(shared_with_group.name)
 
     accept_confirm do
-      find(:css, '#existing_shares li', text: shared_with_group.name).find(:css, 'a.btn-remove').click
+      find(:css, '#tab-groups li', text: shared_with_group.name).find(:css, 'a.btn-remove').click
     end
-
-    wait_for_requests
 
     expect(page).not_to have_content(shared_with_group.name)
   end
@@ -48,6 +50,8 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
       shared_with_group: shared_with_group, group_access: ::Gitlab::Access::DEVELOPER)
 
     visit group_group_members_path(shared_group)
+
+    click_groups_tab
 
     page.within(first_row) do
       click_button('Developer')
@@ -66,5 +70,9 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
       select(role, from: "shared_group_access")
       click_button "Invite"
     end
+  end
+
+  def click_groups_tab
+    click_link "Groups"
   end
 end

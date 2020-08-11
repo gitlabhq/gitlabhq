@@ -101,7 +101,7 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     add_user('test@example.com', 'Reporter')
 
-    click_link('Pending')
+    click_link('Invited')
 
     page.within('.content-list.members-list') do
       expect(page).to have_content('test@example.com')

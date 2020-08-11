@@ -25,6 +25,7 @@ module QA
 
         view 'app/views/groups/group_members/index.html.haml' do
           element :invite_group_tab
+          element :groups_list_tab
           element :groups_list
         end
 
@@ -71,6 +72,8 @@ module QA
         end
 
         def has_existing_group_share?(group_name)
+          click_element :groups_list_tab
+
           within_element(:groups_list) do
             has_element?(:group_row, text: group_name)
           end

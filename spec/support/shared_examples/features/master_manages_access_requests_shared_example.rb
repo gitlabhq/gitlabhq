@@ -8,17 +8,18 @@ RSpec.shared_examples 'Maintainer manages access requests' do
     entity.request_access(user)
     entity.respond_to?(:add_owner) ? entity.add_owner(maintainer) : entity.add_maintainer(maintainer)
     sign_in(maintainer)
-  end
-
-  it 'maintainer can see access requests' do
     visit members_page_path
 
+    if has_tabs
+      click_on 'Access requests'
+    end
+  end
+
+  it 'maintainer can see access requests', :js do
     expect_visible_access_request(entity, user)
   end
 
   it 'maintainer can grant access', :js do
-    visit members_page_path
-
     expect_visible_access_request(entity, user)
 
     click_on 'Grant access'
@@ -31,8 +32,6 @@ RSpec.shared_examples 'Maintainer manages access requests' do
   end
 
   it 'maintainer can deny access', :js do
-    visit members_page_path
-
     expect_visible_access_request(entity, user)
 
     # Open modal
@@ -47,7 +46,13 @@ RSpec.shared_examples 'Maintainer manages access requests' do
   end
 
   def expect_visible_access_request(entity, user)
-    expect(page).to have_content "Users requesting access to #{entity.name} 1"
+    if has_tabs
+      expect(page).to have_content "Access requests 1"
+      expect(page).to have_content "Users requesting access to #{entity.name}"
+    else
+      expect(page).to have_content "Users requesting access to #{entity.name} 1"
+    end
+
     expect(page).to have_content user.name
   end
 

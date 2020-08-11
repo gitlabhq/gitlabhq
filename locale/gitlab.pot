@@ -1237,6 +1237,9 @@ msgstr ""
 msgid "Access forbidden. Check your access level."
 msgstr ""
 
+msgid "Access requests"
+msgstr ""
+
 msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
@@ -9926,9 +9929,6 @@ msgstr ""
 msgid "Existing projects will be able to use expiration policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project."
 msgstr ""
 
-msgid "Existing shares"
-msgstr ""
-
 msgid "Existing sign in methods may be removed"
 msgstr ""
 
@@ -13264,6 +13264,9 @@ msgstr ""
 msgid "Invite teammates (optional)"
 msgstr ""
 
+msgid "Invited"
+msgstr ""
+
 msgid "Invited users will be added with developer level permissions. You can always change this later."
 msgstr ""
 
@@ -14864,6 +14867,9 @@ msgstr ""
 msgid "Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}"
 msgstr ""
 
+msgid "Members invited to %{strong_start}%{group_name}%{strong_end}"
+msgstr ""
+
 msgid "Members of %{strong_open}%{project_name}%{strong_close}"
 msgstr ""
 
@@ -14871,9 +14877,6 @@ msgid "Members of a group may only view projects they have permission to access"
 msgstr ""
 
 msgid "Members with access to %{strong_start}%{group_name}%{strong_end}"
-msgstr ""
-
-msgid "Members with pending access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
 msgid "Memory Usage"
@@ -26698,6 +26701,9 @@ msgid "Users over License:"
 msgstr ""
 
 msgid "Users requesting access to"
+msgstr ""
+
+msgid "Users requesting access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
 msgid "Users were successfully added."

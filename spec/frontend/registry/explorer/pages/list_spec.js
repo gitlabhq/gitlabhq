@@ -14,7 +14,7 @@ import {
   SET_IMAGES_LIST_SUCCESS,
   SET_PAGINATION,
   SET_INITIAL_STATE,
-} from '~/registry/explorer/stores/mutation_types/';
+} from '~/registry/explorer/stores/mutation_types';
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,

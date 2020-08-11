@@ -172,9 +172,13 @@ module Gitlab
         %r{\Atooling/} => :engineering_productivity,
         %r{(CODEOWNERS)} => :engineering_productivity,
 
+        %r{\A(ee/)?spec/features/} => :test,
+        %r{\A(ee/)?spec/support/shared_examples/features/} => :test,
+        %r{\A(ee/)?spec/support/shared_contexts/features/} => :test,
+        %r{\A(ee/)?spec/support/helpers/features/} => :test,
+
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|generator_templates|lib|rubocop)/} => :backend,
-        %r{\A(ee/)?spec/features/} => :test,
         %r{\A(ee/)?spec/} => :backend,
         %r{\A(ee/)?vendor/} => :backend,
         %r{\A(Gemfile|Gemfile.lock|Rakefile)\z} => :backend,

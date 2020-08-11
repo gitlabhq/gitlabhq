@@ -41,8 +41,7 @@ create SQL Databases, author websites, and perform lots of other cloud tasks.
 The [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/) is an online store for pre-configured applications and
 services which have been optimized for the cloud by software vendors like GitLab,
 available on the Azure Marketplace as pre-configured solutions. In this tutorial
-we will install GitLab Community Edition, but for GitLab Enterprise Edition you
-can follow the same process.
+we will install GitLab Community Edition.
 
 To begin creating a new GitLab VM, click on the **+ New** icon, type "GitLab" into the search
 box, and then click the **"GitLab Community Edition"** search result:

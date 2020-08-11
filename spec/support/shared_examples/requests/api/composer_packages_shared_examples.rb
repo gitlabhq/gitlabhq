@@ -7,13 +7,17 @@ RSpec.shared_context 'Composer user type' do |user_type, add_member|
   end
 end
 
-RSpec.shared_examples 'Composer package index' do |user_type, status, add_member = true|
+RSpec.shared_examples 'Composer package index' do |user_type, status, add_member, include_package|
   include_context 'Composer user type', user_type, add_member do
+    let(:expected_packages) { include_package == :include_package ? [package] : [] }
+    let(:presenter) { ::Packages::Composer::PackagesPresenter.new(group, expected_packages ) }
+
     it 'returns the package index' do
       subject
 
       expect(response).to have_gitlab_http_status(status)
       expect(response).to match_response_schema('public_api/v4/packages/composer/index')
+      expect(json_response).to eq presenter.root
     end
   end
 end
