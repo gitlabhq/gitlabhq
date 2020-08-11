@@ -647,6 +647,13 @@ module Ci
       !artifacts_expired? && artifacts_file&.exists?
     end
 
+    # This method is similar to #artifacts? but it includes the artifacts
+    # locking mechanics. A new method was created to prevent breaking existing
+    # behavior and avoid introducing N+1s.
+    def available_artifacts?
+      (!artifacts_expired? || pipeline.artifacts_locked?) && job_artifacts_archive&.exists?
+    end
+
     def artifacts_metadata?
       artifacts? && artifacts_metadata&.exists?
     end

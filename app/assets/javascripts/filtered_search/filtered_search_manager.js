@@ -29,6 +29,7 @@ export default class FilteredSearchManager {
     isGroup = false,
     isGroupAncestor = true,
     isGroupDecendent = false,
+    useDefaultState = false,
     filteredSearchTokenKeys = IssuableFilteredSearchTokenKeys,
     stateFiltersSelector = '.issues-state-filters',
     placeholder = __('Search or filter results...'),
@@ -37,6 +38,7 @@ export default class FilteredSearchManager {
     this.isGroup = isGroup;
     this.isGroupAncestor = isGroupAncestor;
     this.isGroupDecendent = isGroupDecendent;
+    this.useDefaultState = useDefaultState;
     this.states = ['opened', 'closed', 'merged', 'all'];
 
     this.page = page;
@@ -724,8 +726,13 @@ export default class FilteredSearchManager {
   search(state = null) {
     const paths = [];
     const { tokens, searchToken } = this.getSearchTokens();
-    const currentState = state || getParameterByName('state') || 'opened';
-    paths.push(`state=${currentState}`);
+    let currentState = state || getParameterByName('state');
+    if (!currentState && this.useDefaultState) {
+      currentState = 'opened';
+    }
+    if (this.states.includes(currentState)) {
+      paths.push(`state=${currentState}`);
+    }
 
     tokens.forEach(token => {
       const condition = this.filteredSearchTokenKeys.searchByConditionKeyValue(

@@ -39,9 +39,6 @@ module Projects
       end
 
       def filter_by_name(tags)
-        # Technical Debt: https://gitlab.com/gitlab-org/gitlab/issues/207267
-        # name_regex to be removed when container_expiration_policies is updated
-        # to have both regex columns
         regex_delete = ::Gitlab::UntrustedRegexp.new("\\A#{params['name_regex_delete'] || params['name_regex']}\\z")
         regex_retain = ::Gitlab::UntrustedRegexp.new("\\A#{params['name_regex_keep']}\\z")
 

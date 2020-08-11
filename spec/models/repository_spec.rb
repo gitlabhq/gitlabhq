@@ -587,15 +587,19 @@ RSpec.describe Repository do
       end
 
       it "is expired when the branches caches are expired" do
-        expect(cache).to receive(:delete).with(:merged_branch_names).at_least(:once)
+        expect(cache).to receive(:delete) do |*args|
+          expect(args).to include(:merged_branch_names)
+        end
 
-        repository.send(:expire_branches_cache)
+        repository.expire_branches_cache
       end
 
       it "is expired when the repository caches are expired" do
-        expect(cache).to receive(:delete).with(:merged_branch_names).at_least(:once)
+        expect(cache).to receive(:delete) do |*args|
+          expect(args).to include(:merged_branch_names)
+        end
 
-        repository.send(:expire_all_method_caches)
+        repository.expire_all_method_caches
       end
     end
 

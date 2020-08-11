@@ -89,7 +89,7 @@ export const panelTypes = {
   /**
    * Gauge
    */
-  GAUGE_CHART: 'gauge-chart',
+  GAUGE_CHART: 'gauge',
   /**
    * Heatmap
    */

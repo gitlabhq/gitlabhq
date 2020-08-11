@@ -4,29 +4,52 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::SchemaVersionFiles do
   describe '.touch_all' do
-    let(:versions) { %w[2020123 2020456 2020890] }
+    let(:version1) { '20200123' }
+    let(:version2) { '20200410' }
+    let(:version3) { '20200602' }
+    let(:version4) { '20200809' }
+    let(:relative_schema_directory) { 'db/schema_migrations' }
+    let(:relative_migrate_directory) { 'db/migrate' }
+    let(:relative_post_migrate_directory) { 'db/post_migrate' }
 
-    it 'creates a file containing a checksum for each version given' do
+    it 'creates a file containing a checksum for each version with a matching migration' do
       Dir.mktmpdir do |tmpdir|
-        schema_dirpath = Pathname.new(tmpdir).join("test")
-        FileUtils.mkdir_p(schema_dirpath)
+        schema_directory = Pathname.new(tmpdir).join(relative_schema_directory)
+        migrate_directory = Pathname.new(tmpdir).join(relative_migrate_directory)
+        post_migrate_directory = Pathname.new(tmpdir).join(relative_post_migrate_directory)
 
-        old_version_filepath = schema_dirpath.join("2020001")
+        FileUtils.mkdir_p(migrate_directory)
+        FileUtils.mkdir_p(post_migrate_directory)
+        FileUtils.mkdir_p(schema_directory)
+
+        migration1_filepath = migrate_directory.join("#{version1}_migration.rb")
+        FileUtils.touch(migration1_filepath)
+
+        migration2_filepath = post_migrate_directory.join("#{version2}_post_migration.rb")
+        FileUtils.touch(migration2_filepath)
+
+        old_version_filepath = schema_directory.join('20200101')
         FileUtils.touch(old_version_filepath)
 
         expect(File.exist?(old_version_filepath)).to be(true)
 
-        allow(described_class).to receive(:schema_dirpath).and_return(schema_dirpath)
+        allow(described_class).to receive(:schema_directory).and_return(schema_directory)
+        allow(described_class).to receive(:migration_directories).and_return([migrate_directory, post_migrate_directory])
 
-        described_class.touch_all(versions)
+        described_class.touch_all([version1, version2, version3, version4])
 
         expect(File.exist?(old_version_filepath)).to be(false)
-        versions.each do |version|
-          version_filepath = schema_dirpath.join(version)
+        [version1, version2].each do |version|
+          version_filepath = schema_directory.join(version)
           expect(File.exist?(version_filepath)).to be(true)
 
           hashed_value = Digest::SHA256.hexdigest(version)
           expect(File.read(version_filepath)).to eq(hashed_value)
+        end
+
+        [version3, version4].each do |version|
+          version_filepath = schema_directory.join(version)
+          expect(File.exist?(version_filepath)).to be(false)
         end
       end
     end

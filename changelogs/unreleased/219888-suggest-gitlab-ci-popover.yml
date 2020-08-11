@@ -1,0 +1,5 @@
+---
+title: Update suggest gitlab ci popover to gl-button
+merge_request: 37987
+author:
+type: changed

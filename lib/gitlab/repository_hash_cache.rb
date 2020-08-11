@@ -31,10 +31,18 @@ module Gitlab
       "#{type}:#{namespace}:hash"
     end
 
-    # @param key [String]
-    # @return [Integer] 0 or 1 depending on success
-    def delete(key)
-      with { |redis| redis.del(cache_key(key)) }
+    # @param keys [String] one or multiple keys to delete
+    # @return [Integer] the number of keys successfully deleted
+    def delete(*keys)
+      return 0 if keys.empty?
+
+      with do |redis|
+        keys = keys.map { |key| cache_key(key) }
+
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          redis.unlink(*keys)
+        end
+      end
     end
 
     # Check if the provided hash key exists in the hash.

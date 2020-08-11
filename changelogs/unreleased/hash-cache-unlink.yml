@@ -1,0 +1,5 @@
+---
+title: Swap RepositoryHashCache to UNLINK
+merge_request: 39105
+author:
+type: performance

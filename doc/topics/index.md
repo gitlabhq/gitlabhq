@@ -10,6 +10,7 @@ tutorials, technical overviews, blog posts) and videos.
 - [Auto DevOps](autodevops/index.md)
 - [Authentication](authentication/index.md)
 - [Continuous Integration (GitLab CI/CD)](../ci/README.md)
+- [Cron](cron/index.md)
 - [Git](git/index.md)
 - [GitLab Flow](gitlab_flow.md)
 - [GitLab Installation](../install/README.md)

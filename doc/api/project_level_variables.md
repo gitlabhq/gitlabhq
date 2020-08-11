@@ -155,8 +155,10 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34490) in GitLab 13.2.
 > - It's deployed behind a feature flag, disabled by default.
-> - It's disabled on GitLab.com.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to enable it.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39209) on GitLab 13.3.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable).
 
 This parameter is used for filtering by attributes, such as `environment_scope`.
 
@@ -168,17 +170,18 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ### Enable or disable
 
+It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can enable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_variables_api_filter_environment_scope)
-```
+can opt to disable it for your instance.
 
 To disable it:
 
 ```ruby
 Feature.disable(:ci_variables_api_filter_environment_scope)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_variables_api_filter_environment_scope)
 ```

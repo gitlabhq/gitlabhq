@@ -243,7 +243,7 @@ panel_groups:
   - group: 'Group Title'
     panels:
       - title: "Gauge"
-        type: "gauge-chart"
+        type: "gauge"
         min_value: 0
         max_value: 1000
         split: 5
@@ -261,7 +261,7 @@ Note the following properties:
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| type | string | yes | Type of panel to be rendered. For gauge panel types, set to `gauge-chart`. |
+| type | string | yes | Type of panel to be rendered. For gauge panel types, set to `gauge`. |
 | min_value | number | no, defaults to `0`  | The minimum value of the gauge chart axis. If either of `min_value` or `max_value` are not set, they both get their default values.  |
 | max_value | number | no, defaults to `100` | The maximum value of the gauge chart axis. If either of `min_value` or `max_value` are not set, they both get their default values. |
 | split | number | no, defaults to `10` | The amount of split segments on the gauge chart axis.  |
@@ -276,7 +276,7 @@ Note the following properties:
 | values | array | no, defaults to 95% of the range between `min_value` and `max_value`| An array of gauge chart axis threshold values. |
 | mode | string | no, defaults to `absolute` | The mode in which the thresholds are interpreted in relation to `min_value` and `max_value`. Can be either `percentage` or `absolute`. |
 
-![gauge chart panel type](img/prometheus_dashboard_gauge_panel_type_v13_3.png)
+![gauge panel type](img/prometheus_dashboard_gauge_panel_type_v13_3.png)
 
 ## Heatmaps
 

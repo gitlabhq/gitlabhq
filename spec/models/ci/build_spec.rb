@@ -612,6 +612,62 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#available_artifacts?' do
+    let(:build) { create(:ci_build) }
+
+    subject { build.available_artifacts? }
+
+    context 'when artifacts are not expired' do
+      before do
+        build.artifacts_expire_at = Date.tomorrow
+      end
+
+      context 'when artifacts exist' do
+        before do
+          create(:ci_job_artifact, :archive, job: build)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when artifacts do not exist' do
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when artifacts are expired' do
+      before do
+        build.artifacts_expire_at = Date.yesterday
+      end
+
+      context 'when artifacts are not locked' do
+        before do
+          build.pipeline.locked = :unlocked
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when artifacts are locked' do
+        before do
+          build.pipeline.locked = :artifacts_locked
+        end
+
+        context 'when artifacts exist' do
+          before do
+            create(:ci_job_artifact, :archive, job: build)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when artifacts do not exist' do
+          it { is_expected.to be_falsey }
+        end
+      end
+    end
+  end
+
   describe '#browsable_artifacts?' do
     subject { build.browsable_artifacts? }
 

@@ -247,6 +247,9 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
    1. For **Ping Port**, enter 80.
    1. For **Ping Path**, enter `/users/sign_in`. (We use `/users/sign_in` as it's a public endpoint that does
    not require authorization.)
+
+      NOTE: **Note:**
+      When booting a fresh GitLab instance for the first time, GitLab redirects you to `/users/password/` to change the admin password. Temporarily change the health check to this URL (or to the TCP protocol) and change it back to `/users/sign_in` after setting the admin password.
    1. Keep the default **Advanced Details** or adjust them according to your needs.
 1. Click **Add EC2 Instances** - don't add anything as we will create an Auto Scaling Group later to manage instances for us.
 1. Click **Add Tags** and add any tags you need.

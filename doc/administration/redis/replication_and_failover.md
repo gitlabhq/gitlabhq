@@ -637,47 +637,63 @@ lives easier. If you want to know what happens underneath keep reading.
 
 ### Running multiple Redis clusters
 
-GitLab supports running [separate Redis clusters for different persistent
-classes](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances):
-cache, queues, and shared_state. To make this work with Sentinel:
+Omnibus GitLab supports running separate Redis and Sentinel instances for different
+persistence classes.
 
-1. Set the appropriate variable in `/etc/gitlab/gitlab.rb` for each instance you are using:
+| Class          | Purpose                                          |
+| -------------- | ------------------------------------------------ |
+| `cache`        | Store cached data.                               |
+| `queues`       | Store Sidekiq background jobs.                   |
+| `shared_state` | Store session-related and other persistent data. |
+| `actioncable`  | Pub/Sub queue backend for ActionCable.           |
+
+To make this work with Sentinel:
+
+1. [Configure the different Redis/Sentinels](#configuring-redis) instances based on your needs.
+1. For each Rails application instance, edit its `/etc/gitlab/gitlab.rb` file:
 
    ```ruby
    gitlab_rails['redis_cache_instance'] = REDIS_CACHE_URL
    gitlab_rails['redis_queues_instance'] = REDIS_QUEUES_URL
    gitlab_rails['redis_shared_state_instance'] = REDIS_SHARED_STATE_URL
-   ```
+   gitlab_rails['redis_actioncable_instance'] = REDIS_ACTIONCABLE_URL
 
-    **Note**: Redis URLs should be in the format: `redis://:PASSWORD@SENTINEL_PRIMARY_NAME`
-
-   1. PASSWORD is the plaintext password for the Redis instance
-   1. SENTINEL_PRIMARY_NAME is the Sentinel primary name (e.g. `gitlab-redis-cache`)
-
-1. Include an array of hashes with host/port combinations, such as the following:
-
-   ```ruby
+   # Configure the Sentinels
    gitlab_rails['redis_cache_sentinels'] = [
-     { host: REDIS_CACHE_SENTINEL_HOST, port: PORT1 },
-     { host: REDIS_CACHE_SENTINEL_HOST2, port: PORT2 }
+     { host: REDIS_CACHE_SENTINEL_HOST, port: 26379 },
+     { host: REDIS_CACHE_SENTINEL_HOST2, port: 26379 }
    ]
    gitlab_rails['redis_queues_sentinels'] = [
-     { host: REDIS_QUEUES_SENTINEL_HOST, port: PORT1 },
-     { host: REDIS_QUEUES_SENTINEL_HOST2, port: PORT2 }
+     { host: REDIS_QUEUES_SENTINEL_HOST, port: 26379 },
+     { host: REDIS_QUEUES_SENTINEL_HOST2, port: 26379 }
    ]
    gitlab_rails['redis_shared_state_sentinels'] = [
-     { host: SHARED_STATE_SENTINEL_HOST, port: PORT1 },
-     { host: SHARED_STATE_SENTINEL_HOST2, port: PORT2 }
+     { host: SHARED_STATE_SENTINEL_HOST, port: 26379 },
+     { host: SHARED_STATE_SENTINEL_HOST2, port: 26379 }
+   ]
+   gitlab_rails['redis_actioncable_sentinels'] = [
+     { host: ACTIONCABLE_SENTINEL_HOST, port: 26379 },
+     { host: ACTIONCABLE_SENTINEL_HOST2, port: 26379 }
    ]
    ```
 
-1. Note that for each persistence class, GitLab will default to using the
-   configuration specified in `gitlab_rails['redis_sentinels']` unless
-   overridden by the settings above.
-1. Be sure to include BOTH configuration options for each persistent classes. For example,
-   if you choose to configure a cache instance, you must specify both `gitlab_rails['redis_cache_instance']`
-   and `gitlab_rails['redis_cache_sentinels']` for GitLab to generate the proper configuration files.
-1. Run `gitlab-ctl reconfigure`
+   Note that:
+
+   - Redis URLs should be in the format: `redis://:PASSWORD@SENTINEL_PRIMARY_NAME`, where:
+     - `PASSWORD` is the plaintext password for the Redis instance.
+     - `SENTINEL_PRIMARY_NAME` is the Sentinel primary name set with `redis['master_name']`,
+        for example `gitlab-redis-cache`.
+
+1. Save the file and reconfigure GitLab for the change to take effect:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+NOTE: **Note:**
+For each persistence class, GitLab will default to using the
+configuration specified in `gitlab_rails['redis_sentinels']` unless
+overridden by the previously described settings.
 
 ### Control running services
 

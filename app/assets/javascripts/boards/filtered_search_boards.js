@@ -10,6 +10,7 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
       isGroupDecendent: true,
       stateFiltersSelector: '.issues-state-filters',
       isGroup: IS_EE,
+      useDefaultState: false,
       filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
     });
 

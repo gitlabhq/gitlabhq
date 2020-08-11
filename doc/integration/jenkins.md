@@ -147,24 +147,6 @@ Configure the GitLab integration with Jenkins.
    authentication.
 1. Click **Test settings and save changes**. GitLab tests the connection to Jenkins.
 
-## Plugin functional overview
-
-GitLab does not contain a database table listing commits. Commits are always
-read from the repository directly. Therefore, it's not possible to retain the
-build status of a commit in GitLab. This is overcome by requesting build
-information from the integrated CI tool. The CI tool is responsible for creating
-and storing build status for Commits and Merge Requests.
-
-### Steps required to implement a similar integration
-
-NOTE: **Note:**
-All steps are implemented using AJAX requests on the merge request page.
-
-1. In order to display the build status in a merge request you must create a project service in GitLab.
-1. Your project service will do a (JSON) query to a URL of the CI tool with the SHA1 of the commit.
-1. The project service builds this URL and payload based on project service settings and knowledge of the CI tool.
-1. The response is parsed to give a response in GitLab (success/failed/pending).
-
 ## Troubleshooting
 
 ### Error in merge requests - "Could not connect to the CI server"

@@ -77,7 +77,7 @@ describe('Filtered Search Manager', () => {
     jest.spyOn(FilteredSearchDropdownManager.prototype, 'setDropdown').mockImplementation();
   });
 
-  const initializeManager = () => {
+  const initializeManager = ({ useDefaultState } = {}) => {
     jest.spyOn(FilteredSearchManager.prototype, 'loadSearchParamsFromURL').mockImplementation();
     jest.spyOn(FilteredSearchManager.prototype, 'tokenChange').mockImplementation();
     jest
@@ -88,7 +88,7 @@ describe('Filtered Search Manager', () => {
 
     input = document.querySelector('.filtered-search');
     tokensContainer = document.querySelector('.tokens-container');
-    manager = new FilteredSearchManager({ page });
+    manager = new FilteredSearchManager({ page, useDefaultState });
     manager.setup();
   };
 
@@ -184,13 +184,11 @@ describe('Filtered Search Manager', () => {
   });
 
   describe('search', () => {
-    const defaultParams = '?scope=all&utf8=%E2%9C%93&state=opened';
-
-    beforeEach(() => {
-      initializeManager();
-    });
+    const defaultParams = '?scope=all&utf8=%E2%9C%93';
+    const defaultState = '&state=opened';
 
     it('should search with a single word', done => {
+      initializeManager();
       input.value = 'searchTerm';
 
       visitUrl.mockImplementation(url => {
@@ -201,7 +199,20 @@ describe('Filtered Search Manager', () => {
       manager.search();
     });
 
+    it('sets default state', done => {
+      initializeManager({ useDefaultState: true });
+      input.value = 'searchTerm';
+
+      visitUrl.mockImplementation(url => {
+        expect(url).toEqual(`${defaultParams}${defaultState}&search=searchTerm`);
+        done();
+      });
+
+      manager.search();
+    });
+
     it('should search with multiple words', done => {
+      initializeManager();
       input.value = 'awesome search terms';
 
       visitUrl.mockImplementation(url => {
@@ -213,6 +224,7 @@ describe('Filtered Search Manager', () => {
     });
 
     it('should search with special characters', done => {
+      initializeManager();
       input.value = '~!@#$%^&*()_+{}:<>,.?/';
 
       visitUrl.mockImplementation(url => {
@@ -226,6 +238,7 @@ describe('Filtered Search Manager', () => {
     });
 
     it('should use replacement URL for condition', done => {
+      initializeManager();
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
         FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '=', '13', true),
       );
@@ -246,6 +259,7 @@ describe('Filtered Search Manager', () => {
     });
 
     it('removes duplicated tokens', done => {
+      initializeManager();
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
         ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug')}
         ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug')}

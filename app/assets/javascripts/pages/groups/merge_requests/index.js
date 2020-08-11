@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: FILTERED_SEARCH.MERGE_REQUESTS,
     isGroupDecendent: true,
+    useDefaultState: true,
     filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
   });
   projectSelect();

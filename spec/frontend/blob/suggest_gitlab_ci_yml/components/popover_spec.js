@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import Popover from '~/blob/suggest_gitlab_ci_yml/components/popover.vue';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
 import * as utils from '~/lib/utils/common_utils';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
@@ -96,7 +96,7 @@ describe('Suggest gitlab-ci.yml Popover', () => {
       const expectedAction = 'click_button';
       const expectedProperty = 'owner';
       const expectedValue = '10';
-      const dismissButton = wrapper.find(GlDeprecatedButton);
+      const dismissButton = wrapper.find(GlButton);
       trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
 
       triggerEvent(dismissButton.element);

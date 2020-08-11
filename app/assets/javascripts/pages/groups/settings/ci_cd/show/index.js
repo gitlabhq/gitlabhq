@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     page: FILTERED_SEARCH.ADMIN_RUNNERS,
     filteredSearchTokenKeys: GroupRunnersFilteredSearchTokenKeys,
     anchor: FILTERED_SEARCH.GROUP_RUNNERS_ANCHOR,
+    useDefaultState: false,
   });
 
   if (gon.features.newVariablesUi) {

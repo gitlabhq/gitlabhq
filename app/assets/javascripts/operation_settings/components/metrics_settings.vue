@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlDeprecatedButton as GlButton, GlLink } from '@gitlab/ui';
+import { GlButton, GlLink } from '@gitlab/ui';
 import ExternalDashboard from './form_group/external_dashboard.vue';
 import DashboardTimezone from './form_group/dashboard_timezone.vue';
 
@@ -45,7 +45,7 @@ export default {
         <dashboard-timezone />
         <external-dashboard />
         <div class="gl-display-flex gl-justify-content-end">
-          <gl-button variant="success" @click="saveChanges">
+          <gl-button variant="success" category="primary" @click="saveChanges">
             {{ __('Save Changes') }}
           </gl-button>
         </div>

@@ -6,5 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: FILTERED_SEARCH.ADMIN_RUNNERS,
     filteredSearchTokenKeys: AdminRunnersFilteredSearchTokenKeys,
+    useDefaultState: true,
   });
 });

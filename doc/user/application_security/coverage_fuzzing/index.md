@@ -161,6 +161,17 @@ The `gitlab-cov-fuzz` command passes all arguments it receives to the underlying
 can therefore use all the options available in that fuzzing engine. For more information on these
 options, see the underlying fuzzing engine's documentation.
 
+### Offline Environment
+
+To use coverage fuzzing in an offline environment, follow these steps:
+
+1. Clone [`gitlab-cov-fuzz`](https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz)
+   to a private repository that your offline GitLab instance can access.
+
+1. For each fuzzing step, set `COVFUZZ_URL_PREFIX` to `${NEW_URL_GITLAB_COV_FUZ}/-/raw`, where
+   `NEW_URL_GITLAB_COV_FUZ` is the URL of the private `gitlab-cov-fuzz` clone that you set up in the
+   first step.
+
 ### Glossary
 
 - Seed corpus: The set of test cases given as initial input to the fuzz target. This usually speeds

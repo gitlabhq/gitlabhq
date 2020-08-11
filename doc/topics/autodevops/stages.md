@@ -460,8 +460,9 @@ For example, in a Rails application in an image built with
 
 Unless your repository contains a `Dockerfile`, your image is built with
 Herokuish, and you must prefix commands run in these images with
-`/bin/herokuish procfile exec` to replicate the environment where your application
-will run.
+`/bin/herokuish procfile exec` (for Herokuish) or `/cnb/lifecycle/launcher`
+(for Cloud Native Buildpacks) to replicate the environment where your
+application runs.
 
 ### Upgrade auto-deploy-app Chart
 
@@ -620,6 +621,12 @@ For example, to start a Rails console from the application root directory, run:
 
 ```shell
 /bin/herokuish procfile exec bin/rails c
+```
+
+When using Cloud Native Buildpacks, instead of `/bin/herokuish procfile exec`, use
+
+```shell
+/cnb/lifecycle/launcher $COMMAND
 ```
 
 ## Auto Monitoring

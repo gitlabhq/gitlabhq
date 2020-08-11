@@ -41,13 +41,11 @@ module Gitlab
 
       # Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/227052
       def self.variables_api_filter_environment_scope?
-        ::Feature.enabled?(:ci_variables_api_filter_environment_scope, default_enabled: false)
+        ::Feature.enabled?(:ci_variables_api_filter_environment_scope, default_enabled: true)
       end
 
-      # This FF is only used for development purpose to test that warnings can be
-      # raised and propagated to the UI.
       def self.raise_job_rules_without_workflow_rules_warning?
-        ::Feature.enabled?(:ci_raise_job_rules_without_workflow_rules_warning)
+        ::Feature.enabled?(:ci_raise_job_rules_without_workflow_rules_warning, default_enabled: true)
       end
 
       def self.keep_latest_artifacts_for_ref_enabled?(project)

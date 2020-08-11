@@ -1,0 +1,5 @@
+---
+title: Change "gauge-chart" to "gauge" in YML panel configuration for gauge charts
+merge_request: 39184
+author:
+type: changed

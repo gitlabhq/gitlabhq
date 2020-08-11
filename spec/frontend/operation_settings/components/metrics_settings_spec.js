@@ -1,5 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlDeprecatedButton, GlLink, GlFormGroup, GlFormInput, GlFormSelect } from '@gitlab/ui';
+import { GlButton, GlLink, GlFormGroup, GlFormInput, GlFormSelect } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import MetricsSettings from '~/operation_settings/components/metrics_settings.vue';
 
@@ -61,7 +61,7 @@ describe('operation settings external dashboard component', () => {
 
   describe('expand/collapse button', () => {
     it('renders as an expand button by default', () => {
-      const button = wrapper.find(GlDeprecatedButton);
+      const button = wrapper.find(GlButton);
 
       expect(button.text()).toBe('Expand');
     });
@@ -160,8 +160,7 @@ describe('operation settings external dashboard component', () => {
     });
 
     describe('submit button', () => {
-      const findSubmitButton = () =>
-        wrapper.find('.settings-content form').find(GlDeprecatedButton);
+      const findSubmitButton = () => wrapper.find('.settings-content form').find(GlButton);
 
       const endpointRequest = [
         operationsSettingsEndpoint,
