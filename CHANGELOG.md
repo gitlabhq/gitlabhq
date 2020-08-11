@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.2.4 (2020-08-11)
+
+### Security (1 change)
+
+- Add decompressed archive size validation on Project/Group Import. !38736
+
+### Fixed (1 change)
+
+- Fix automatic issue creation via Prometheus alerts. !37884
+
+
 ## 13.2.3 (2020-08-05)
 
 ### Security (12 changes)
