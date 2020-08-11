@@ -8804,9 +8804,6 @@ msgstr ""
 msgid "Edit comment"
 msgstr ""
 
-msgid "Edit dashboard"
-msgstr ""
-
 msgid "Edit description"
 msgstr ""
 
@@ -15236,9 +15233,6 @@ msgstr ""
 msgid "Metrics|Create custom dashboard %{fileName}"
 msgstr ""
 
-msgid "Metrics|Create dashboard"
-msgstr ""
-
 msgid "Metrics|Create metric"
 msgstr ""
 
@@ -15272,7 +15266,13 @@ msgstr ""
 msgid "Metrics|Duplicate dashboard"
 msgstr ""
 
+msgid "Metrics|Duplicate this dashboard to edit dashboard YAML"
+msgstr ""
+
 msgid "Metrics|Duplicating..."
+msgstr ""
+
+msgid "Metrics|Edit dashboard YAML"
 msgstr ""
 
 msgid "Metrics|Edit metric"
@@ -15314,6 +15314,9 @@ msgid "Metrics|Metrics Settings"
 msgstr ""
 
 msgid "Metrics|Min"
+msgstr ""
+
+msgid "Metrics|More actions"
 msgstr ""
 
 msgid "Metrics|Must be a valid PromQL query."
@@ -15637,6 +15640,9 @@ msgid "Mirroring was successfully disabled."
 msgstr ""
 
 msgid "Mirroring will only be available if the feature is included in the plan of the selected group or user."
+msgstr ""
+
+msgid "Missing OAuth configuration for GitHub."
 msgstr ""
 
 msgid "Missing commit signatures endpoint!"
@@ -17122,6 +17128,12 @@ msgstr ""
 msgid "PackageRegistry|Copy npm setup command"
 msgstr ""
 
+msgid "PackageRegistry|Copy registry include"
+msgstr ""
+
+msgid "PackageRegistry|Copy require package include"
+msgstr ""
+
 msgid "PackageRegistry|Copy yarn command"
 msgstr ""
 
@@ -17135,6 +17147,9 @@ msgid "PackageRegistry|Delete package"
 msgstr ""
 
 msgid "PackageRegistry|Filter by name"
+msgstr ""
+
+msgid "PackageRegistry|For more information on Composer packages in GitLab, %{linkStart}see the documentation.%{linkEnd}"
 msgstr ""
 
 msgid "PackageRegistry|For more information on the Conan registry, %{linkStart}see the documentation%{linkEnd}."
@@ -17255,6 +17270,12 @@ msgid "PackageRegistry|You are about to delete version %{version} of %{name}. Ar
 msgstr ""
 
 msgid "PackageRegistry|You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more."
+msgstr ""
+
+msgid "PackageRegistry|composer.json registry include"
+msgstr ""
+
+msgid "PackageRegistry|composer.json require package include"
 msgstr ""
 
 msgid "PackageRegistry|npm"

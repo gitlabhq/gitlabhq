@@ -30,6 +30,10 @@ module PackagesHelper
     full_url.sub!('://', '://__token__:<your_personal_token>@')
   end
 
+  def composer_registry_url(group_id)
+    expose_url(api_v4_group___packages_composer_packages_path(id: group_id, format: '.json'))
+  end
+
   def packages_coming_soon_enabled?(resource)
     ::Feature.enabled?(:packages_coming_soon, resource) && ::Gitlab.dev_env_or_com?
   end

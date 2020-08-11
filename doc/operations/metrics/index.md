@@ -25,7 +25,7 @@ To view the metrics dashboard for an environment that has
 GitLab displays the default metrics dashboard for the environment, like the
 following example:
 
-![Example of metrics dashboard](img/example-dashboard_v13_1.png)
+![Example of metrics dashboard](img/example-dashboard_v13_3.png)
 
 The top of the dashboard contains a navigation bar. From left to right, the
 navigation bar contains:
@@ -37,15 +37,19 @@ navigation bar contains:
 - **Range** - The time period of data to display.
 - **Refresh dashboard** **{retry}** - Reload the dashboard with current data.
 - **Set refresh rate** - Set a time frame for refreshing the data displayed.
-- **Star dashboard** **{star-o}** - Click to mark a dashboard as a favorite.
+- **More actions** **{ellipsis_v}** - More dashboard actions
+  - **Add metric** - Adds a [custom metric](#adding-custom-metrics). Only available on GitLab-defined dashboards.
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34779) in GitLab 12.5.)
+  - **Edit dashboard YAML** - Edit the source YAML file of a custom dashboard. Only available on
+  [custom dashboards](dashboards/index.md).
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34779) in GitLab 12.5.)
+  - **Duplicate current dashboard** - Save a [complete copy of a dashboard](dashboards/index.md#duplicate-a-gitlab-defined-dashboard). Only available on GitLab-defined dashboards.
+  - **Star dashboard** **{star-o}** - Click to mark a dashboard as a favorite.
   Starred dashboards display a solid star **{star}** button, and display first
   in the **Dashboard** dropdown list.
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214582) in GitLab 13.0.)
-- **Edit dashboard** - Edit the source YAML file of a custom dashboard. Only available on
-  [custom dashboards](dashboards/index.md).
-  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34779) in GitLab 12.5.)
-- **Create dashboard** **{file-addition-solid}** - Create a
-  [new custom dashboard for your project](dashboards/index.md#add-a-new-dashboard-to-your-project).
+  - **Create new dashboard** - Create a [new custom dashboard for your project](dashboards/index.md#add-a-new-dashboard-to-your-project).
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228856) in GitLab 13.3.)
 - **Metrics settings** - Configure the
   [settings for this dashboard](dashboards/index.md#manage-the-metrics-dashboard-settings).
 
@@ -70,7 +74,7 @@ helps quickly create a deployment:
 1. When the pipeline has run successfully, graphs are available on the
    **Operations > Metrics** page.
 
-![Monitoring Dashboard](img/prometheus_monitoring_dashboard_v13_1.png)
+![Monitoring Dashboard](img/prometheus_monitoring_dashboard_v13_3.png)
 
 ## Customize your metrics dashboard
 

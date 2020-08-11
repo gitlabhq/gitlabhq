@@ -4,6 +4,7 @@ import MavenInstallation from './maven_installation.vue';
 import NpmInstallation from './npm_installation.vue';
 import NugetInstallation from './nuget_installation.vue';
 import PypiInstallation from './pypi_installation.vue';
+import ComposerInstallation from './composer_installation.vue';
 import { PackageType } from '../../shared/constants';
 
 export default {
@@ -14,6 +15,7 @@ export default {
     [PackageType.NPM]: NpmInstallation,
     [PackageType.NUGET]: NugetInstallation,
     [PackageType.PYPI]: PypiInstallation,
+    [PackageType.COMPOSER]: ComposerInstallation,
   },
   props: {
     packageEntity: {

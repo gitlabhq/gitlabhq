@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import { escape } from 'lodash';
 import { spriteIcon } from './lib/utils/common_utils';
 
@@ -109,8 +110,65 @@ const createFlash = function createFlash(
   return flashContainer;
 };
 
+/*
+ *  Flash banner supports different types of Flash configurations
+ *  along with ability to provide actionConfig which can be used to show
+ *  additional action or link on banner next to message
+ *
+ *  @param {Object} options                   Options to control the flash message
+ *  @param {String} options.message           Flash message text
+ *  @param {String} options.type              Type of Flash, it can be `notice`, `success`, `warning` or `alert` (default)
+ *  @param {Object} options.parent            Reference to parent element under which Flash needs to appear
+ *  @param {Object} options.actonConfig       Map of config to show action on banner
+ *    @param {String} href                    URL to which action config should point to (default: '#')
+ *    @param {String} title                   Title of action
+ *    @param {Function} clickHandler          Method to call when action is clicked on
+ *  @param {Boolean} options.fadeTransition   Boolean to determine whether to fade the alert out
+ *  @param {Boolean} options.captureError     Boolean to determine whether to send error to sentry
+ *  @param {Object} options.error              Error to be captured in sentry
+ */
+const newCreateFlash = function newCreateFlash({
+  message,
+  type = FLASH_TYPES.ALERT,
+  parent = document,
+  actionConfig = null,
+  fadeTransition = true,
+  addBodyClass = false,
+  captureError = false,
+  error = null,
+}) {
+  const flashContainer = parent.querySelector('.flash-container');
+
+  if (!flashContainer) return null;
+
+  flashContainer.innerHTML = createFlashEl(message, type);
+
+  const flashEl = flashContainer.querySelector(`.flash-${type}`);
+
+  if (actionConfig) {
+    flashEl.insertAdjacentHTML('beforeend', createAction(actionConfig));
+
+    if (actionConfig.clickHandler) {
+      flashEl
+        .querySelector('.flash-action')
+        .addEventListener('click', e => actionConfig.clickHandler(e));
+    }
+  }
+
+  removeFlashClickListener(flashEl, fadeTransition);
+
+  flashContainer.classList.add('gl-display-block');
+
+  if (addBodyClass) document.body.classList.add('flash-shown');
+
+  if (captureError && error) Sentry.captureException(error);
+
+  return flashContainer;
+};
+
 export {
   createFlash as default,
+  newCreateFlash,
   createFlashEl,
   createAction,
   hideFlash,

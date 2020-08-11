@@ -2391,7 +2391,7 @@ input DastOnDemandScanCreateInput {
   """
   ID of the site profile to be used for the scan.
   """
-  dastSiteProfileId: ID!
+  dastSiteProfileId: DastSiteProfileID!
 
   """
   The project the site profile belongs to.

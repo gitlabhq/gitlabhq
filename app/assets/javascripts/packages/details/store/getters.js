@@ -104,3 +104,12 @@ export const pypiSetupCommand = ({ pypiSetupPath }) => `[gitlab]
 repository = ${pypiSetupPath}
 username = __token__
 password = <your personal access token>`;
+
+export const composerRegistryInclude = ({ composerPath }) => {
+  const base = { type: 'composer', url: composerPath };
+  return JSON.stringify(base);
+};
+export const composerPackageInclude = ({ packageEntity }) => {
+  const base = { package_name: packageEntity.name };
+  return JSON.stringify(base);
+};

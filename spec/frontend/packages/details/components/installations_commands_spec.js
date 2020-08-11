@@ -6,8 +6,16 @@ import MavenInstallation from '~/packages/details/components/maven_installation.
 import ConanInstallation from '~/packages/details/components/conan_installation.vue';
 import NugetInstallation from '~/packages/details/components/nuget_installation.vue';
 import PypiInstallation from '~/packages/details/components/pypi_installation.vue';
+import ComposerInstallation from '~/packages/details/components/composer_installation.vue';
 
-import { conanPackage, mavenPackage, npmPackage, nugetPackage, pypiPackage } from '../../mock_data';
+import {
+  conanPackage,
+  mavenPackage,
+  npmPackage,
+  nugetPackage,
+  pypiPackage,
+  composerPackage,
+} from '../../mock_data';
 
 describe('InstallationCommands', () => {
   let wrapper;
@@ -23,6 +31,7 @@ describe('InstallationCommands', () => {
   const conanInstallation = () => wrapper.find(ConanInstallation);
   const nugetInstallation = () => wrapper.find(NugetInstallation);
   const pypiInstallation = () => wrapper.find(PypiInstallation);
+  const composerInstallation = () => wrapper.find(ComposerInstallation);
 
   afterEach(() => {
     wrapper.destroy();
@@ -30,12 +39,13 @@ describe('InstallationCommands', () => {
 
   describe('installation instructions', () => {
     describe.each`
-      packageEntity   | selector
-      ${conanPackage} | ${conanInstallation}
-      ${mavenPackage} | ${mavenInstallation}
-      ${npmPackage}   | ${npmInstallation}
-      ${nugetPackage} | ${nugetInstallation}
-      ${pypiPackage}  | ${pypiInstallation}
+      packageEntity      | selector
+      ${conanPackage}    | ${conanInstallation}
+      ${mavenPackage}    | ${mavenInstallation}
+      ${npmPackage}      | ${npmInstallation}
+      ${nugetPackage}    | ${nugetInstallation}
+      ${pypiPackage}     | ${pypiInstallation}
+      ${composerPackage} | ${composerInstallation}
     `('renders', ({ packageEntity, selector }) => {
       it(`${packageEntity.package_type} instructions exist`, () => {
         createComponent({ packageEntity });

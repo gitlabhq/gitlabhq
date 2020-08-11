@@ -5,38 +5,59 @@ require 'spec_helper'
 RSpec.describe PersonalAccessTokenPolicy do
   include AdminModeHelper
 
-  using RSpec::Parameterized::TableSyntax
+  subject { described_class.new(current_user, token) }
 
-  where(:user_type, :owned_by_same_user, :expected_permitted?) do
-    :user  | true  | true
-    :user  | false | false
-    :admin | false | true
+  context 'current_user is an administrator', :enable_admin_mode do
+    let_it_be(:current_user) { build(:admin) }
+
+    context 'not the owner of the token' do
+      let_it_be(:token) { build(:personal_access_token) }
+
+      it { is_expected.to be_allowed(:read_token) }
+      it { is_expected.to be_allowed(:revoke_token) }
+    end
+
+    context 'owner of the token' do
+      let_it_be(:token) { build(:personal_access_token, user: current_user) }
+
+      it { is_expected.to be_allowed(:read_token) }
+      it { is_expected.to be_allowed(:revoke_token) }
+    end
   end
 
-  with_them do
-    context 'determine if a token is readable or revocable by a user' do
-      let(:user) { build_stubbed(user_type) }
-      let(:token_owner) { owned_by_same_user ? user : build(:user) }
-      let(:token) { build(:personal_access_token, user: token_owner) }
+  context 'current_user is not an administrator' do
+    let_it_be(:current_user) { build(:user) }
 
-      subject { described_class.new(user, token) }
+    context 'not the owner of the token' do
+      let_it_be(:token) { build(:personal_access_token) }
 
-      before do
-        enable_admin_mode!(user) if user.admin?
-      end
+      it { is_expected.to be_disallowed(:read_token) }
+      it { is_expected.to be_disallowed(:revoke_token) }
+    end
 
-      it { is_expected.to(expected_permitted? ? be_allowed(:read_token) : be_disallowed(:read_token)) }
-      it { is_expected.to(expected_permitted? ? be_allowed(:revoke_token) : be_disallowed(:revoke_token)) }
+    context 'owner of the token' do
+      let_it_be(:token) { build(:personal_access_token, user: current_user) }
+
+      it { is_expected.to be_allowed(:read_token) }
+      it { is_expected.to be_allowed(:revoke_token) }
     end
   end
 
   context 'current_user is a blocked administrator', :enable_admin_mode do
-    subject { described_class.new(current_user, token) }
+    let_it_be(:current_user) { build(:admin, :blocked) }
 
-    let(:current_user) { create(:user, :admin, :blocked) }
-    let(:token) { create(:personal_access_token) }
+    context 'owner of the token' do
+      let_it_be(:token) { build(:personal_access_token, user: current_user) }
 
-    it { is_expected.to be_disallowed(:revoke_token) }
-    it { is_expected.to be_disallowed(:read_token) }
+      it { is_expected.to be_disallowed(:read_token) }
+      it { is_expected.to be_disallowed(:revoke_token) }
+    end
+
+    context 'not the owner of the token' do
+      let_it_be(:token) { build(:personal_access_token) }
+
+      it { is_expected.to be_disallowed(:read_token) }
+      it { is_expected.to be_disallowed(:revoke_token) }
+    end
   end
 end

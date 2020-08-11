@@ -99,34 +99,19 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     <div
       class="d-sm-flex"
     >
+      <!---->
+       
+      <!---->
+       
       <div
-        class="mb-2 mr-2 d-flex"
+        class="gl-mb-3 gl-mr-3 d-flex d-sm-block"
       >
-        <div
-          class="flex-grow-1"
-          title="Star dashboard"
-        >
-          <gl-button-stub
-            category="tertiary"
-            class="w-100"
-            icon="star-o"
-            size="medium"
-            variant="default"
-          />
-        </div>
+        <actions-menu-stub
+          custommetricspath="/monitoring/monitor-project/prometheus/metrics"
+          defaultbranch="master"
+          validatequerypath="/monitoring/monitor-project/prometheus/metrics/validate_query"
+        />
       </div>
-       
-      <!---->
-       
-      <!---->
-       
-      <!---->
-       
-      <!---->
-       
-      <!---->
-       
-      <!---->
        
       <!---->
     </div>

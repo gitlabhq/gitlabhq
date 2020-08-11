@@ -44,6 +44,14 @@ RSpec.describe PackagesHelper do
     end
   end
 
+  describe 'composer_registry_url' do
+    it 'return the composer registry url' do
+      url = helper.composer_registry_url(1)
+
+      expect(url).to eq("#{base_url}group/1/-/packages/composer/packages.json")
+    end
+  end
+
   describe 'packages_coming_soon_enabled?' do
     it 'returns false when the feature flag is disabled' do
       stub_feature_flags(packages_coming_soon: false)

@@ -622,3 +622,10 @@ export const dashboardHeaderProps = {
     end: '2020-01-01T01:00:00.000Z',
   },
 };
+
+export const dashboardActionsMenuProps = {
+  defaultBranch: 'master',
+  addingMetricsAvailable: true,
+  customMetricsPath: 'https://path/to/customMetrics',
+  validateQueryPath: 'https://path/to/validateQuery',
+};

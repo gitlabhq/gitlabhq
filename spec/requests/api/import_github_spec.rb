@@ -22,7 +22,7 @@ RSpec.describe API::ImportGithub do
 
     before do
       Grape::Endpoint.before_each do |endpoint|
-        allow(endpoint).to receive(:client).and_return(double('client', user: provider_user, repo: provider_repo).as_null_object)
+        allow(endpoint).to receive(:client).and_return(double('client', user: provider_user, repository: provider_repo).as_null_object)
       end
     end
 

@@ -20,7 +20,7 @@ The metrics as defined below do not support alerts, unlike
 
 ## Add a new dashboard to your project
 
-> UI option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223204) in GitLab 13.2.
+> UI option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228856) in GitLab 13.3.
 
 You can configure a custom dashboard by adding a new YAML file into your project's
 `.gitlab/dashboards/` directory. For the dashboard to display on your project's **Operations > Metrics** page, the files must have a `.yml`
@@ -31,9 +31,9 @@ To create a new dashboard from the GitLab user interface:
 1. Sign in to GitLab as a user with Maintainer or Owner
    [permissions](../../../user/permissions.md#project-members-permissions).
 1. Navigate to your dashboard at **Operations > Metrics**.
-1. In the top-right corner of your dashboard, click the **{file-addition-solid}** **Actions** menu,
+1. In the top-right corner of your dashboard, click the **{{ellipsis_v}}** **More actions** menu,
    and select **Create new**:
-   ![Monitoring Dashboard actions menu with create new item](img/actions_menu_create_new_dashboard_v13_2.png)
+   ![Monitoring Dashboard actions menu with create new item](img/actions_menu_create_new_dashboard_v13_3.png)
 1. In the modal window, click **Open Repository**, then follow the instructions
    for creating a new dashboard from the command line.
 
@@ -82,7 +82,7 @@ The resulting `.yml` file can be customized and adapted to your project.
 You can decide to save the dashboard `.yml` file in the project's **default** branch or in a
 new branch.
 
-1. Click **Duplicate dashboard** in the actions menu.
+1. Click **Duplicate current dashboard** in the **{{ellipsis_v}}** **More actions** menu.
 
    NOTE: **Note:**
    You can duplicate only GitLab-defined dashboards.
@@ -105,7 +105,7 @@ To manage the settings for your metrics dashboard:
 1. Navigate to your dashboard at **Operations > Metrics**.
 1. In the top-right corner of your dashboard, click **Metrics Settings**:
 
-   ![Monitoring Dashboard actions menu with create new item](img/metrics_settings_button_v13_2.png)
+   ![Monitoring Dashboard actions menu with create new item](img/metrics_settings_button_v13_3.png)
 
 ## Chart Context Menu
 

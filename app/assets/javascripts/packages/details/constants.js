@@ -7,6 +7,7 @@ export const TrackingLabels = {
   NPM_INSTALLATION: 'npm_installation',
   NUGET_INSTALLATION: 'nuget_installation',
   PYPI_INSTALLATION: 'pypi_installation',
+  COMPOSER_INSTALLATION: 'composer_installation',
 };
 
 export const TrackingActions = {
@@ -31,6 +32,9 @@ export const TrackingActions = {
 
   COPY_PIP_INSTALL_COMMAND: 'copy_pip_install_command',
   COPY_PYPI_SETUP_COMMAND: 'copy_pypi_setup_command',
+
+  COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND: 'copy_composer_registry_include_command',
+  COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND: 'copy_composer_package_include_command',
 };
 
 export const NpmManager = {

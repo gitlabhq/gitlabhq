@@ -1,7 +1,5 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import Tracking from '~/tracking';
 import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
-import { GlModal } from '@gitlab/ui';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
@@ -10,7 +8,6 @@ import { dashboardEmptyStates, metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
-import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import EmptyState from '~/monitoring/components/empty_state.vue';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
@@ -41,8 +38,6 @@ describe('Dashboard', () => {
   let store;
   let wrapper;
   let mock;
-
-  const findDashboardHeader = () => wrapper.find(DashboardHeader);
 
   const createShallowWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(Dashboard, {
@@ -446,84 +441,6 @@ describe('Dashboard', () => {
     });
   });
 
-  describe('star dashboards', () => {
-    const findToggleStar = () => findDashboardHeader().find({ ref: 'toggleStarBtn' });
-
-    beforeEach(() => {
-      createShallowWrapper();
-      setupAllDashboards(store);
-    });
-
-    it('toggle star button is shown', () => {
-      expect(findToggleStar().exists()).toBe(true);
-      expect(findToggleStar().props('disabled')).toBe(false);
-    });
-
-    it('toggle star button is disabled when starring is taking place', () => {
-      store.commit(`monitoringDashboard/${types.REQUEST_DASHBOARD_STARRING}`);
-
-      return wrapper.vm.$nextTick(() => {
-        expect(findToggleStar().exists()).toBe(true);
-        expect(findToggleStar().props('disabled')).toBe(true);
-      });
-    });
-
-    describe('when the dashboard list is loaded', () => {
-      // Tooltip element should wrap directly
-      const getToggleTooltip = () => findToggleStar().element.parentElement.getAttribute('title');
-
-      beforeEach(() => {
-        setupAllDashboards(store);
-        jest.spyOn(store, 'dispatch');
-      });
-
-      it('dispatches a toggle star action', () => {
-        findToggleStar().vm.$emit('click');
-
-        return wrapper.vm.$nextTick().then(() => {
-          expect(store.dispatch).toHaveBeenCalledWith(
-            'monitoringDashboard/toggleStarredValue',
-            undefined,
-          );
-        });
-      });
-
-      describe('when dashboard is not starred', () => {
-        beforeEach(() => {
-          store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
-            currentDashboard: dashboardGitResponse[0].path,
-          });
-          return wrapper.vm.$nextTick();
-        });
-
-        it('toggle star button shows "Star dashboard"', () => {
-          expect(getToggleTooltip()).toBe('Star dashboard');
-        });
-
-        it('toggle star button shows  an unstarred state', () => {
-          expect(findToggleStar().attributes('icon')).toBe('star-o');
-        });
-      });
-
-      describe('when dashboard is starred', () => {
-        beforeEach(() => {
-          store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
-            currentDashboard: dashboardGitResponse[1].path,
-          });
-          return wrapper.vm.$nextTick();
-        });
-
-        it('toggle star button shows "Star dashboard"', () => {
-          expect(getToggleTooltip()).toBe('Unstar dashboard');
-        });
-
-        it('toggle star button shows a starred state', () => {
-          expect(findToggleStar().attributes('icon')).toBe('star');
-        });
-      });
-    });
-  });
-
   describe('variables section', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
@@ -800,33 +717,6 @@ describe('Dashboard', () => {
     });
   });
 
-  describe('dashboard edit link', () => {
-    const findEditLink = () => wrapper.find('.js-edit-link');
-
-    beforeEach(() => {
-      createShallowWrapper({ hasMetrics: true });
-
-      setupAllDashboards(store);
-      return wrapper.vm.$nextTick();
-    });
-
-    it('is not present for the overview dashboard', () => {
-      expect(findEditLink().exists()).toBe(false);
-    });
-
-    it('is present for a custom dashboard, and links to its edit_path', () => {
-      const dashboard = dashboardGitResponse[1];
-      store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
-        currentDashboard: dashboard.path,
-      });
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findEditLink().exists()).toBe(true);
-        expect(findEditLink().attributes('href')).toBe(dashboard.project_blob_path);
-      });
-    });
-  });
-
   describe('document title', () => {
     const originalTitle = 'Original Title';
     const overviewDashboardName = dashboardGitResponse[0].display_name;
@@ -938,76 +828,6 @@ describe('Dashboard', () => {
       const dashboardPanel = getDashboardPanel();
 
       expect(dashboardPanel.exists()).toBe(true);
-    });
-  });
-
-  describe('add custom metrics', () => {
-    const findAddMetricButton = () => findDashboardHeader().find({ ref: 'addMetricBtn' });
-
-    describe('when not available', () => {
-      beforeEach(() => {
-        createShallowWrapper({
-          hasMetrics: true,
-          customMetricsPath: '/endpoint',
-        });
-      });
-      it('does not render add button on the dashboard', () => {
-        expect(findAddMetricButton().exists()).toBe(false);
-      });
-    });
-
-    describe('when available', () => {
-      let origPage;
-      beforeEach(done => {
-        jest.spyOn(Tracking, 'event').mockReturnValue();
-        createShallowWrapper({
-          hasMetrics: true,
-          customMetricsPath: '/endpoint',
-          customMetricsAvailable: true,
-        });
-        setupStoreWithData(store);
-
-        origPage = document.body.dataset.page;
-        document.body.dataset.page = 'projects:environments:metrics';
-
-        wrapper.vm.$nextTick(done);
-      });
-      afterEach(() => {
-        document.body.dataset.page = origPage;
-      });
-
-      it('renders add button on the dashboard', () => {
-        expect(findAddMetricButton()).toBeDefined();
-      });
-
-      it('uses modal for custom metrics form', () => {
-        expect(wrapper.find(GlModal).exists()).toBe(true);
-        expect(wrapper.find(GlModal).attributes().modalid).toBe('addMetric');
-      });
-      it('adding new metric is tracked', done => {
-        const submitButton = wrapper
-          .find(DashboardHeader)
-          .find({ ref: 'submitCustomMetricsFormBtn' }).vm;
-        wrapper.vm.$nextTick(() => {
-          submitButton.$el.click();
-          wrapper.vm.$nextTick(() => {
-            expect(Tracking.event).toHaveBeenCalledWith(
-              document.body.dataset.page,
-              'click_button',
-              {
-                label: 'add_new_metric',
-                property: 'modal',
-                value: undefined,
-              },
-            );
-            done();
-          });
-        });
-      });
-
-      it('renders custom metrics form fields', () => {
-        expect(wrapper.find(CustomMetricsFormFields).exists()).toBe(true);
-      });
     });
   });
 });
