@@ -43,7 +43,12 @@ const autoCompleteMap = {
       const fullText = this.$slots.default?.[0]?.elm?.value;
       const selectionStart = this.$slots.default?.[0]?.elm?.selectionStart;
 
-      if (!this.assignees) {
+      // Need to check whether sidebar store assignees has been updated
+      // in the case where the assignees AJAX response comes after the user does @ autocomplete
+      const isAssigneesLengthSame =
+        this.assignees?.length === SidebarMediator.singleton?.store?.assignees?.length;
+
+      if (!this.assignees || !isAssigneesLengthSame) {
         this.assignees =
           SidebarMediator.singleton?.store?.assignees?.map(assignee => assignee.username) || [];
       }

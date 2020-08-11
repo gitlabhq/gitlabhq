@@ -165,6 +165,9 @@ RSpec.describe 'Database schema' do
 
   context 'for enums' do
     ApplicationRecord.descendants.each do |model|
+      # skip model if it is an abstract class as it would not have an associated DB table
+      next if model.abstract_class?
+
       describe model do
         let(:ignored_enums) { ignored_limit_enums(model.name) }
         let(:enums) { model.defined_enums.keys - ignored_enums }

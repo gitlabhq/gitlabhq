@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class SubmitUsagePingService
-  URL = 'https://version.gitlab.com/usage_data'
+  PRODUCTION_URL = 'https://version.gitlab.com/usage_data'
+  STAGING_URL = 'https://gitlab-services-version-gitlab-com-staging.gs-staging.gitlab.org/usage_data'
 
   METRICS = %w[leader_issues instance_issues percentage_issues leader_notes instance_notes
                percentage_notes leader_milestones instance_milestones percentage_milestones
@@ -23,7 +24,7 @@ class SubmitUsagePingService
     raise SubmissionError.new('Usage data is blank') if payload.blank?
 
     response = Gitlab::HTTP.post(
-      URL,
+      url,
       body: payload,
       allow_local_requests: true,
       headers: { 'Content-type' => 'application/json' }
@@ -44,5 +45,14 @@ class SubmitUsagePingService
     DevOpsScore::Metric.create!(
       metrics.slice(*METRICS)
     )
+  end
+
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/233615 for details
+  def url
+    if Rails.env.production?
+      PRODUCTION_URL
+    else
+      STAGING_URL
+    end
   end
 end

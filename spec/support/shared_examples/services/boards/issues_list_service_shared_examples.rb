@@ -80,4 +80,17 @@ RSpec.shared_examples 'issues list service' do
       expect { service.execute }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
+
+  context 'when :all_lists is used' do
+    it 'returns issues from all lists' do
+      params = { board_id: board.id, all_lists: true }
+
+      issues = described_class.new(parent, user, params).execute
+
+      expected = [opened_issue2, reopened_issue1, opened_issue1, list1_issue1,
+                  list1_issue2, list1_issue3, list2_issue1, closed_issue1,
+                  closed_issue2, closed_issue3, closed_issue4, closed_issue5]
+      expect(issues).to match_array(expected)
+    end
+  end
 end

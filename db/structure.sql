@@ -15063,6 +15063,25 @@ CREATE SEQUENCE public.requirements_management_test_reports_id_seq
 
 ALTER SEQUENCE public.requirements_management_test_reports_id_seq OWNED BY public.requirements_management_test_reports.id;
 
+CREATE TABLE public.resource_iteration_events (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    issue_id bigint,
+    merge_request_id bigint,
+    iteration_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    action smallint NOT NULL
+);
+
+CREATE SEQUENCE public.resource_iteration_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.resource_iteration_events_id_seq OWNED BY public.resource_iteration_events.id;
+
 CREATE TABLE public.resource_label_events (
     id bigint NOT NULL,
     action integer NOT NULL,
@@ -17214,6 +17233,8 @@ ALTER TABLE ONLY public.requirements ALTER COLUMN id SET DEFAULT nextval('public
 
 ALTER TABLE ONLY public.requirements_management_test_reports ALTER COLUMN id SET DEFAULT nextval('public.requirements_management_test_reports_id_seq'::regclass);
 
+ALTER TABLE ONLY public.resource_iteration_events ALTER COLUMN id SET DEFAULT nextval('public.resource_iteration_events_id_seq'::regclass);
+
 ALTER TABLE ONLY public.resource_label_events ALTER COLUMN id SET DEFAULT nextval('public.resource_label_events_id_seq'::regclass);
 
 ALTER TABLE ONLY public.resource_milestone_events ALTER COLUMN id SET DEFAULT nextval('public.resource_milestone_events_id_seq'::regclass);
@@ -18439,6 +18460,9 @@ ALTER TABLE ONLY public.requirements_management_test_reports
 
 ALTER TABLE ONLY public.requirements
     ADD CONSTRAINT requirements_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.resource_iteration_events
+    ADD CONSTRAINT resource_iteration_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.resource_label_events
     ADD CONSTRAINT resource_label_events_pkey PRIMARY KEY (id);
@@ -20526,6 +20550,14 @@ CREATE INDEX index_requirements_on_title_trigram ON public.requirements USING gi
 
 CREATE INDEX index_requirements_on_updated_at ON public.requirements USING btree (updated_at);
 
+CREATE INDEX index_resource_iteration_events_on_issue_id ON public.resource_iteration_events USING btree (issue_id);
+
+CREATE INDEX index_resource_iteration_events_on_iteration_id ON public.resource_iteration_events USING btree (iteration_id);
+
+CREATE INDEX index_resource_iteration_events_on_merge_request_id ON public.resource_iteration_events USING btree (merge_request_id);
+
+CREATE INDEX index_resource_iteration_events_on_user_id ON public.resource_iteration_events USING btree (user_id);
+
 CREATE INDEX index_resource_label_events_issue_id_label_id_action ON public.resource_label_events USING btree (issue_id, label_id, action);
 
 CREATE INDEX index_resource_label_events_on_epic_id ON public.resource_label_events USING btree (epic_id);
@@ -22275,6 +22307,9 @@ ALTER TABLE ONLY public.security_scans
 ALTER TABLE ONLY public.merge_request_diff_files
     ADD CONSTRAINT fk_rails_501aa0a391 FOREIGN KEY (merge_request_diff_id) REFERENCES public.merge_request_diffs(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.resource_iteration_events
+    ADD CONSTRAINT fk_rails_501fa15d69 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.status_page_settings
     ADD CONSTRAINT fk_rails_506e5ba391 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -22415,6 +22450,9 @@ ALTER TABLE ONLY public.web_hook_logs
 
 ALTER TABLE ONLY public.jira_imports
     ADD CONSTRAINT fk_rails_675d38c03b FOREIGN KEY (label_id) REFERENCES public.labels(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.resource_iteration_events
+    ADD CONSTRAINT fk_rails_6830c13ac1 FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.geo_hashed_storage_migrated_events
     ADD CONSTRAINT fk_rails_687ed7d7c5 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
@@ -22713,6 +22751,9 @@ ALTER TABLE ONLY public.x509_commit_signatures
 ALTER TABLE ONLY public.ci_build_trace_sections
     ADD CONSTRAINT fk_rails_ab7c104e26 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.resource_iteration_events
+    ADD CONSTRAINT fk_rails_abf5d4affa FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.clusters
     ADD CONSTRAINT fk_rails_ac3a663d79 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
@@ -22868,6 +22909,9 @@ ALTER TABLE ONLY public.issue_tracker_data
 
 ALTER TABLE ONLY public.resource_milestone_events
     ADD CONSTRAINT fk_rails_cedf8cce4d FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.resource_iteration_events
+    ADD CONSTRAINT fk_rails_cee126f66c FOREIGN KEY (iteration_id) REFERENCES public.sprints(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.epic_metrics
     ADD CONSTRAINT fk_rails_d071904753 FOREIGN KEY (epic_id) REFERENCES public.epics(id) ON DELETE CASCADE;

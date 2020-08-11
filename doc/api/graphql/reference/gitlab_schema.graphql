@@ -998,6 +998,36 @@ type Board {
   assignee: User
 
   """
+  Epics associated with board issues.
+  """
+  epics(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Filters applied when selecting issues on the board
+    """
+    issueFilters: BoardEpicIssueInput
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): EpicConnection
+
+  """
   Whether or not backlog list is hidden.
   """
   hideBacklogList: Boolean
@@ -1091,6 +1121,48 @@ type BoardEdge {
   The item at the end of the edge.
   """
   node: Board
+}
+
+input BoardEpicIssueInput {
+  """
+  Username of a user assigned to issues
+  """
+  assigneeUsername: [String]
+
+  """
+  Username of the issues author
+  """
+  authorUsername: String
+
+  """
+  Epic ID applied to issues
+  """
+  epicId: String
+
+  """
+  Label applied to issues
+  """
+  labelName: [String]
+
+  """
+  Milestone applied to issues
+  """
+  milestoneTitle: String
+
+  """
+  Reaction emoji applied to issues
+  """
+  myReactionEmoji: String
+
+  """
+  Release applied to issues
+  """
+  releaseTag: String
+
+  """
+  Weight applied to issues
+  """
+  weight: String
 }
 
 """

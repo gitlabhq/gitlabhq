@@ -102,6 +102,10 @@ module QA
         git_lfs_track_result.to_s + git_add_result.to_s
       end
 
+      def add_tag(tag_name)
+        run("git tag #{tag_name}").to_s
+      end
+
       def delete_tag(tag_name)
         run(%Q{git push origin --delete #{tag_name}}, max_attempts: 3).to_s
       end
@@ -120,6 +124,10 @@ module QA
 
       def push_all_branches
         run("git push --all").to_s
+      end
+
+      def push_tags_and_branches(branches)
+        run("git push --tags origin #{branches.join(' ')}").to_s
       end
 
       def merge(branch)

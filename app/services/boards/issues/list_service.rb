@@ -45,6 +45,12 @@ module Boards
       # rubocop: enable CodeReuse/ActiveRecord
 
       def filter(issues)
+        # when grouping board issues by epics (used in board swimlanes)
+        # we need to get all issues in the board
+        # TODO: ignore hidden columns -
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/233870
+        return issues if params[:all_lists]
+
         issues = without_board_labels(issues) unless list&.movable? || list&.closed?
         issues = with_list_label(issues) if list&.label?
         issues
@@ -87,6 +93,8 @@ module Boards
       end
 
       def set_state
+        return if params[:all_lists]
+
         params[:state] = list && list.closed? ? 'closed' : 'opened'
       end
 
