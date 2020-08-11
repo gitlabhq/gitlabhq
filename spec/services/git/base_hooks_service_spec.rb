@@ -171,6 +171,7 @@ RSpec.describe Git::BaseHooksService do
           }
         }
       end
+
       let(:variables_attributes) { [] }
 
       before do
@@ -192,6 +193,7 @@ RSpec.describe Git::BaseHooksService do
           }
         }
       end
+
       let(:variables_attributes) do
         [
           { "key" => "FOO", "variable_type" => "env_var", "secret_value" => "123" },
@@ -219,6 +221,7 @@ RSpec.describe Git::BaseHooksService do
           }
         }
       end
+
       let(:variables_attributes) do
         [
           { "key" => "FOO", "variable_type" => "env_var", "secret_value" => "123" }

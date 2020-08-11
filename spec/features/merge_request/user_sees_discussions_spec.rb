@@ -24,6 +24,7 @@ RSpec.describe 'Merge request > User sees threads', :js do
         diff_refs: outdated_diff_refs
       )
     end
+
     let(:outdated_diff_refs) { project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e").diff_refs }
 
     before do

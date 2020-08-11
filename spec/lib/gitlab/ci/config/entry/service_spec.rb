@@ -95,6 +95,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
       let(:config) do
         { name: 'postgresql:9.5', alias: 'db', command: %w(cmd run), entrypoint: %w(/bin/sh run), ports: ports }
       end
+
       let(:entry) { described_class.new(config, { with_image_ports: image_ports }) }
       let(:image_ports) { false }
 

@@ -10,6 +10,7 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures do
       b: { example_id: 'spec/foo/baz_spec.rb:3', first_flaky_at: (Time.now - thirty_one_days).to_s, last_flaky_at: (Time.now - thirty_one_days).to_s }
     }
   end
+
   let(:suite_flaky_example_report) do
     {
       '6e869794f4cfd2badd93eb68719371d1': {
@@ -25,6 +26,7 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures do
       }
     }
   end
+
   let(:flaky_examples) { RspecFlaky::FlakyExamplesCollection.new(collection_hash) }
   let(:report) { described_class.new(flaky_examples) }
 

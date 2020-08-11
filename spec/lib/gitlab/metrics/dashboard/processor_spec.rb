@@ -98,6 +98,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
             Gitlab::Metrics::Dashboard::Stages::Sorter
           ]
         end
+
         let(:dashboard) { described_class.new(*process_params).process }
 
         it 'includes only dashboard metrics' do

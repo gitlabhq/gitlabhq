@@ -109,6 +109,7 @@ RSpec.describe Banzai::Pipeline::FullPipeline do
           # Header
       MARKDOWN
     end
+
     let(:invalid_markdown) do
       <<-MARKDOWN.strip_heredoc
           test [[_TOC_]]

@@ -12,6 +12,7 @@ RSpec.describe MergeRequests::FfMergeService do
            assignees: [user2],
            author: create(:user))
   end
+
   let(:project) { merge_request.project }
   let(:valid_merge_params) { { sha: merge_request.diff_head_sha } }
 

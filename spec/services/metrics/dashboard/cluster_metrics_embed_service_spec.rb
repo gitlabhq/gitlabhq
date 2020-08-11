@@ -52,6 +52,7 @@ RSpec.describe Metrics::Dashboard::ClusterMetricsEmbedService, :use_clean_rails_
         }
       ]
     end
+
     let(:service_call) { described_class.new(*service_params).get_dashboard }
     let(:panel_groups) { service_call[:dashboard][:panel_groups] }
     let(:panel) { panel_groups.first[:panels].first }

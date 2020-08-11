@@ -27,6 +27,7 @@ RSpec.describe RemoveDuplicateLabelsFromProject do
     projects_table.create!(id: 1, name: 'project', path: 'project',
                            visibility_level: 0, namespace_id: group_one.id)
   end
+
   let(:label_title) { 'bug' }
   let(:label_color) { 'red' }
   let(:label_description) { 'nice label' }

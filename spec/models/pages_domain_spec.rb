@@ -611,6 +611,7 @@ RSpec.describe PagesDomain do
     let!(:domain_with_expired_user_provided_certificate) do
       create(:pages_domain, :with_expired_certificate)
     end
+
     let!(:domain_with_user_provided_certificate_and_auto_ssl) do
       create(:pages_domain, auto_ssl_enabled: true)
     end

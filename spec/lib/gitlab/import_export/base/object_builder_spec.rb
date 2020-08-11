@@ -10,6 +10,7 @@ RSpec.describe Gitlab::ImportExport::Base::ObjectBuilder do
            name: 'project',
            path: 'project')
   end
+
   let(:klass) { Milestone }
   let(:attributes) { { 'title' => 'Test Base::ObjectBuilder Milestone', 'project' => project } }
 

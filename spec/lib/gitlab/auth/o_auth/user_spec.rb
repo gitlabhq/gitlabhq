@@ -22,6 +22,7 @@ RSpec.describe Gitlab::Auth::OAuth::User do
       }
     }
   end
+
   let(:ldap_user) { Gitlab::Auth::Ldap::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
 
   describe '#persisted?' do

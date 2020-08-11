@@ -130,6 +130,7 @@ RSpec.describe Gitlab::BackgroundMigration do
       let(:retry_queue) do
         [double(args: ['Object', [3]], queue: described_class.queue, delete: true)]
       end
+
       let(:dead_queue) do
         [double(args: ['Object', [4]], queue: described_class.queue, delete: true)]
       end

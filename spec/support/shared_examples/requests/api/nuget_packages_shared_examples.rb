@@ -180,6 +180,7 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
           body: 'content'
         )
       end
+
       let(:fog_file) { fog_to_uploaded_file(tmp_object) }
       let(:params) { { package: fog_file, 'package.remote_id' => file_name } }
 

@@ -89,12 +89,15 @@ RSpec.describe Gitlab::Git::Conflict::Parser do
       let(:lines) do
         described_class.parse(text, our_path: 'files/ruby/regex.rb', their_path: 'files/ruby/regex.rb')
       end
+
       let(:old_line_numbers) do
         lines.select { |line| line[:type] != 'new' }.map { |line| line[:line_old] }
       end
+
       let(:new_line_numbers) do
         lines.select { |line| line[:type] != 'old' }.map { |line| line[:line_new] }
       end
+
       let(:line_indexes) { lines.map { |line| line[:line_obj_index] } }
 
       it 'sets our lines as new lines' do

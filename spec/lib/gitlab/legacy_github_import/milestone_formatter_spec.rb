@@ -17,6 +17,7 @@ RSpec.describe Gitlab::LegacyGithubImport::MilestoneFormatter do
       closed_at: nil
     }
   end
+
   let(:iid_attr) { :number }
 
   subject(:formatter) { described_class.new(project, raw_data) }

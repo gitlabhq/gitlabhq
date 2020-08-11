@@ -48,6 +48,7 @@ RSpec.describe Gitlab::Kubernetes::NetworkPolicy do
         labels: labels
       )
     end
+
     let(:spec) { { podSelector: selector, policyTypes: ["Ingress"], ingress: ingress, egress: nil } }
   end
 
@@ -74,6 +75,7 @@ RSpec.describe Gitlab::Kubernetes::NetworkPolicy do
                   project: myproject
       POLICY
     end
+
     let(:resource) do
       ::Kubeclient::Resource.new(
         metadata: { name: name, namespace: namespace, labels: { app: 'foo' } },
@@ -170,6 +172,7 @@ RSpec.describe Gitlab::Kubernetes::NetworkPolicy do
         spec: { podSelector: pod_selector, policyTypes: %w(Ingress), ingress: ingress, egress: nil }
       )
     end
+
     let(:generated_resource) do
       ::Kubeclient::Resource.new(
         metadata: { name: name, namespace: namespace, labels: { app: 'foo' } },

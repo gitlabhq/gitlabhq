@@ -128,6 +128,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
           remote_file
         ]
       end
+
       let(:values) do
         {
           include: external_files,

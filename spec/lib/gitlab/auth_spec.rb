@@ -631,6 +631,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         password: password,
         password_confirmation: password)
     end
+
     let(:username) { 'John' } # username isn't lowercase, test this
     let(:password) { 'my-secret' }
 

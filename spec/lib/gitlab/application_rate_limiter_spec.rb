@@ -14,6 +14,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_cache do
       }
     }
   end
+
   let(:key) { rate_limits.keys[0] }
 
   subject { described_class }

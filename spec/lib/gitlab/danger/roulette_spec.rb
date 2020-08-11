@@ -22,6 +22,7 @@ RSpec.describe Gitlab::Danger::Roulette do
       'tz_offset_hours' => backend_tz_offset_hours
     )
   end
+
   let(:frontend_reviewer) do
     Gitlab::Danger::Teammate.new(
       'username' => 'frontend-reviewer',
@@ -32,6 +33,7 @@ RSpec.describe Gitlab::Danger::Roulette do
       'tz_offset_hours' => 2.0
     )
   end
+
   let(:frontend_maintainer) do
     Gitlab::Danger::Teammate.new(
       'username' => 'frontend-maintainer',
@@ -42,6 +44,7 @@ RSpec.describe Gitlab::Danger::Roulette do
       'tz_offset_hours' => 2.0
     )
   end
+
   let(:software_engineer_in_test) do
     Gitlab::Danger::Teammate.new(
       'username' => 'software-engineer-in-test',
@@ -52,6 +55,7 @@ RSpec.describe Gitlab::Danger::Roulette do
       'tz_offset_hours' => 2.0
     )
   end
+
   let(:engineering_productivity_reviewer) do
     Gitlab::Danger::Teammate.new(
       'username' => 'eng-prod-reviewer',
@@ -296,18 +300,21 @@ RSpec.describe Gitlab::Danger::Roulette do
         'tz_offset_hours' => person_tz_offset_hours
       )
     end
+
     let(:person2) do
       Gitlab::Danger::Teammate.new(
         'username' => 'user2',
         'available' => true,
         'tz_offset_hours' => person_tz_offset_hours)
     end
+
     let(:author) do
       Gitlab::Danger::Teammate.new(
         'username' => 'johndoe',
         'available' => true,
         'tz_offset_hours' => 0.0)
     end
+
     let(:unavailable) do
       Gitlab::Danger::Teammate.new(
         'username' => 'janedoe',

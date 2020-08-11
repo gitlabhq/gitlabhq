@@ -20,7 +20,9 @@ module DesignManagement
       return error(:not_adjacent) if any_in_gap?
       return error(:not_same_issue) unless all_same_issue?
 
+      move_nulls_to_end
       current_design.move_between(previous_design, next_design)
+      current_design.save!
       success
     end
 
@@ -36,6 +38,12 @@ module DesignManagement
 
     delegate :issue, :project, to: :current_design
 
+    def move_nulls_to_end
+      current_design.class.move_nulls_to_end(issue.designs)
+      next_design.reset if next_design && next_design.relative_position.nil?
+      previous_design.reset if previous_design && previous_design.relative_position.nil?
+    end
+
     def neighbors
       [previous_design, next_design].compact
     end
@@ -45,7 +53,7 @@ module DesignManagement
     end
 
     def any_in_gap?
-      return false unless previous_design && next_design
+      return false unless previous_design&.relative_position && next_design&.relative_position
 
       !previous_design.immediately_before?(next_design)
     end

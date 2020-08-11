@@ -14,6 +14,7 @@ RSpec.describe PaginatedDiffEntity do
       pagination_data: diff_batch.pagination_data
     }
   end
+
   let(:entity) { described_class.new(diff_batch, options) }
 
   subject { entity.as_json }

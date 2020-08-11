@@ -93,6 +93,7 @@ RSpec.describe Ci::CreatePipelineService do
         let(:merge_request_1) do
           create(:merge_request, source_branch: 'feature', target_branch: "master", source_project: project)
         end
+
         let(:merge_request_2) do
           create(:merge_request, source_branch: 'feature', target_branch: "v1.1.0", source_project: project)
         end

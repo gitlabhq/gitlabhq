@@ -8,6 +8,7 @@ RSpec.describe CommitEntity do
   let(:entity) do
     described_class.new(commit, request: request)
   end
+
   let(:request) { double('request') }
   let(:project) { create(:project, :repository) }
   let(:commit) { project.commit }

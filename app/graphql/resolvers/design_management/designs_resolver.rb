@@ -27,19 +27,20 @@ module Resolvers
           current_user,
           ids: design_ids(ids),
           filenames: filenames,
-          visible_at_version: version(at_version),
-          order: :id
+          visible_at_version: version(at_version)
         ).execute
       end
 
       private
 
       def version(at_version)
-        GitlabSchema.object_from_id(at_version)&.sync if at_version
+        return unless at_version
+
+        GitlabSchema.object_from_id(at_version, expected_type: ::DesignManagement::Version)&.sync
       end
 
       def design_ids(ids)
-        ids&.map { |id| GlobalID.parse(id).model_id }
+        ids&.map { |id| GlobalID.parse(id, expected_type: ::DesignManagement::Design).model_id }
       end
 
       def issue

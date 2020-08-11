@@ -198,6 +198,7 @@ RSpec.shared_examples "chat service" do |service_name|
           message: "user created page: Awesome wiki_page"
         }
       end
+
       let(:wiki_page) { create(:wiki_page, wiki: project.wiki, **opts) }
       let(:sample_data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, "create") }
 
@@ -250,6 +251,7 @@ RSpec.shared_examples "chat service" do |service_name|
                project: project, status: status,
                sha: project.commit.sha, ref: project.default_branch)
       end
+
       let(:sample_data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
 
       context "with failed pipeline" do

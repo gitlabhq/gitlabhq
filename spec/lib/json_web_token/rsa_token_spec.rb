@@ -14,6 +14,7 @@ RSpec.describe JSONWebToken::RSAToken do
       -----END RSA PRIVATE KEY-----
     eos
   end
+
   let(:rsa_token) { described_class.new(nil) }
   let(:rsa_encoded) { rsa_token.encoded }
 

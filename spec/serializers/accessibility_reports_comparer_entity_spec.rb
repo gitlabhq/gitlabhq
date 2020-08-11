@@ -22,6 +22,7 @@ RSpec.describe AccessibilityReportsComparerEntity do
       }
     ]
   end
+
   let(:different_error) do
     [
       {

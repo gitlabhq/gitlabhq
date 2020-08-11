@@ -1072,6 +1072,7 @@ RSpec.describe API::Groups do
     let!(:project4) do
       create(:project, namespace: group2, path: 'test_project', visibility_level: Gitlab::VisibilityLevel::PRIVATE)
     end
+
     let(:path) { "/groups/#{group1.id}/projects/shared" }
 
     before do

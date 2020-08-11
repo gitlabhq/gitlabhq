@@ -2797,6 +2797,7 @@ RSpec.describe Ci::Build do
       let(:ci_registry) do
         { key: 'CI_REGISTRY', value: 'registry.example.com', public: true, masked: false }
       end
+
       let(:ci_registry_image) do
         { key: 'CI_REGISTRY_IMAGE', value: project.container_registry_url, public: true, masked: false }
       end

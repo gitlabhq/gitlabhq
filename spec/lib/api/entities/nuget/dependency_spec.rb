@@ -20,6 +20,7 @@ RSpec.describe API::Entities::Nuget::Dependency do
       'range': '2.0.0'
     }
   end
+
   let(:entity) { described_class.new(dependency) }
 
   subject { entity.as_json }

@@ -83,6 +83,7 @@ RSpec.describe 'getting user information' do
         let(:user_fields) do
           query_graphql_field(:assigned_merge_requests, mr_args, 'nodes { id }')
         end
+
         let(:mr_args) { nil }
 
         it_behaves_like 'a working graphql query'
@@ -145,6 +146,7 @@ RSpec.describe 'getting user information' do
         let(:user_fields) do
           query_graphql_field(:authored_merge_requests, mr_args, 'nodes { id }')
         end
+
         let(:mr_args) { nil }
 
         it_behaves_like 'a working graphql query'

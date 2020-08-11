@@ -13,6 +13,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
         .gsub('1.0.1', version)).with_indifferent_access
       .merge!(override)
   end
+
   let(:override) { {} }
   let(:package_name) { "@#{namespace.path}/my-app".freeze }
 

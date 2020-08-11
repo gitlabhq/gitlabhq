@@ -16,6 +16,7 @@ RSpec.describe Clusters::Cleanup::ServiceAccountService do
         execution_count: 0
       }
     end
+
     let(:kubeclient_instance_double) do
       instance_double(Gitlab::Kubernetes::KubeClient, delete_namespace: nil, delete_service_account: nil)
     end

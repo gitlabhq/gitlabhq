@@ -159,6 +159,7 @@ RSpec.describe Suggestions::CreateService do
               ```
           MARKDOWN
         end
+
         let(:position) { build_position(new_line: 13) }
 
         it 'creates an appliable suggestion' do

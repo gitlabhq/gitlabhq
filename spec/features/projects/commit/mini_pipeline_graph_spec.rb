@@ -12,6 +12,7 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js do
               ref: project.default_branch,
               sha: project.commit.sha)
     end
+
     let(:build) { create(:ci_build, pipeline: pipeline) }
 
     it 'display icon with status' do

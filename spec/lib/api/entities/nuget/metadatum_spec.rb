@@ -10,6 +10,7 @@ RSpec.describe API::Entities::Nuget::Metadatum do
       icon_url: 'http://sandbox.com/icon'
     }
   end
+
   let(:expected) do
     {
       'projectUrl': 'http://sandbox.com/project',
@@ -17,6 +18,7 @@ RSpec.describe API::Entities::Nuget::Metadatum do
       'iconUrl': 'http://sandbox.com/icon'
     }
   end
+
   let(:entity) { described_class.new(metadatum) }
 
   subject { entity.as_json }

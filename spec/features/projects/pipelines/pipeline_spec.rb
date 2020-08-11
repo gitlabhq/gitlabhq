@@ -137,6 +137,7 @@ RSpec.describe 'Pipeline', :js do
             source_project: project,
             source_branch: pipeline.ref)
         end
+
         let!(:merge_request2) do
           create(:merge_request,
             source_project: project,

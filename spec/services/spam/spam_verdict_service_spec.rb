@@ -13,6 +13,7 @@ RSpec.describe Spam::SpamVerdictService do
       'HTTP_USER_AGENT' => fake_user_agent,
       'HTTP_REFERRER' => fake_referrer }
   end
+
   let(:request) { double(:request, env: env) }
 
   let(:check_for_spam) { true }

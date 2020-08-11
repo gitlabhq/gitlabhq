@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlDeprecatedButton as GlButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import ProjectDropdown from './project_dropdown.vue';
 import ErrorTrackingForm from './error_tracking_form.vue';
 

@@ -11,6 +11,7 @@ RSpec.describe BlobViewer::GoMod do
       module #{Settings.build_gitlab_go_url}/#{project.full_path}
     SPEC
   end
+
   let(:blob) { fake_blob(path: 'go.mod', data: data) }
 
   subject { described_class.new(blob) }

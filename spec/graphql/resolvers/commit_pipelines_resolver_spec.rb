@@ -18,6 +18,7 @@ RSpec.describe Resolvers::CommitPipelinesResolver do
       status: 'success'
     )
   end
+
   let!(:pipeline2) do
     create(
       :ci_pipeline,
@@ -27,6 +28,7 @@ RSpec.describe Resolvers::CommitPipelinesResolver do
       status: 'failed'
     )
   end
+
   let!(:pipeline3) do
     create(
       :ci_pipeline,

@@ -265,6 +265,7 @@ RSpec.describe Boards::IssuesController do
               hash[:ids] = [issue2.id]
             end
           end
+
           let(:requesting_user) { user }
           let(:expected_status) { 200 }
           let(:expected_issue_count) { 2 }
@@ -280,6 +281,7 @@ RSpec.describe Boards::IssuesController do
               hash[:ids] = [issue2.id]
             end
           end
+
           let(:requesting_user) { user }
           let(:expected_status) { 403 }
           let(:expected_issue_count) { 1 }
@@ -296,6 +298,7 @@ RSpec.describe Boards::IssuesController do
               hash[:move_before_id] = nil
             end
           end
+
           let(:requesting_user) { user }
           let(:expected_status) { 200 }
           let(:expected_issue_count) { 4 }
@@ -317,6 +320,7 @@ RSpec.describe Boards::IssuesController do
               hash[:move_before_id] = nil
             end
           end
+
           let(:requesting_user) { user }
           let(:expected_status) { 200 }
           let(:expected_issue_count) { 3 }
@@ -332,6 +336,7 @@ RSpec.describe Boards::IssuesController do
               hash[:move_before_id] = nil
             end
           end
+
           let(:requesting_user) { user }
           let(:expected_status) { 200 }
           let(:expected_issue_count) { 4 }
@@ -350,6 +355,7 @@ RSpec.describe Boards::IssuesController do
               hash[:move_after_id] = issue4.id
             end
           end
+
           let(:requesting_user) { user }
           let(:expected_status) { 200 }
           let(:expected_issue_count) { 5 }
@@ -365,6 +371,7 @@ RSpec.describe Boards::IssuesController do
               hash[:ids] = (0..51).to_a
             end
           end
+
           let(:requesting_user) { user }
           let(:expected_status) { 422 }
           let(:expected_issue_count) { 1 }
@@ -380,6 +387,7 @@ RSpec.describe Boards::IssuesController do
               hash[:ids] = 'foobar'
             end
           end
+
           let(:requesting_user) { user }
           let(:expected_status) { 400 }
           let(:expected_issue_count) { 1 }

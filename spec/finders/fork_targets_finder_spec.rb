@@ -10,15 +10,19 @@ RSpec.describe ForkTargetsFinder do
   let!(:maintained_group) do
     create(:group).tap { |g| g.add_maintainer(user) }
   end
+
   let!(:owned_group) do
     create(:group).tap { |g| g.add_owner(user) }
   end
+
   let!(:developer_group) do
     create(:group).tap { |g| g.add_developer(user) }
   end
+
   let!(:reporter_group) do
     create(:group).tap { |g| g.add_reporter(user) }
   end
+
   let!(:guest_group) do
     create(:group).tap { |g| g.add_guest(user) }
   end

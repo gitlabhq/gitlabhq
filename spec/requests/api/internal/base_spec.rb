@@ -683,6 +683,7 @@ RSpec.describe API::Internal::Base do
           }
         }
       end
+
       let(:console_messages) { ['informational message'] }
       let(:custom_action_result) { Gitlab::GitAccessResult::CustomAction.new(payload, console_messages) }
 

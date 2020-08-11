@@ -245,6 +245,7 @@ RSpec.describe Projects::ForksController do
             continue: continue_params
           }
         end
+
         let(:continue_params) do
           {
             to: '/-/ide/project/path',

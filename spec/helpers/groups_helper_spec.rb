@@ -114,12 +114,14 @@ RSpec.describe GroupsHelper do
         ancestor_locked_and_has_been_overridden: /This setting is applied on .+ and has been overridden on this subgroup/
       }
     end
+
     let(:possible_linked_ancestors) do
       {
         root_group: root_group,
         subgroup: subgroup
       }
     end
+
     let(:users) do
       {
         root_owner: root_owner,

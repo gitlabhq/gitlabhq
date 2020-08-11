@@ -13,6 +13,7 @@ RSpec.describe 'Merge request > User sees pipelines from forked project', :js do
                                       target_project: target_project,
                                       description: 'Test merge request')
   end
+
   let(:pipeline) do
     create(:ci_pipeline,
            project: forked_project,

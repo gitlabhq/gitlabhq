@@ -10,6 +10,7 @@ RSpec.describe NamespacesHelper do
            :private,
            project_creation_level: admin_project_creation_level)
   end
+
   let!(:user) { create(:user) }
   let!(:user_project_creation_level) { nil }
   let!(:user_group) do
@@ -17,18 +18,21 @@ RSpec.describe NamespacesHelper do
            :private,
            project_creation_level: user_project_creation_level)
   end
+
   let!(:subgroup1) do
     create(:group,
            :private,
            parent: admin_group,
            project_creation_level: nil)
   end
+
   let!(:subgroup2) do
     create(:group,
            :private,
            parent: admin_group,
            project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
   end
+
   let!(:subgroup3) do
     create(:group,
            :private,

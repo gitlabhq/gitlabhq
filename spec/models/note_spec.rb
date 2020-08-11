@@ -471,6 +471,7 @@ RSpec.describe Note do
           note: "added label #{private_label.to_reference(ext_proj)}",
           system: true
       end
+
       let!(:system_note_metadata) { create(:system_note_metadata, note: note, action: :label) }
 
       it_behaves_like "checks references"

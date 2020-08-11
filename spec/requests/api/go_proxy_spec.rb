@@ -108,6 +108,7 @@ RSpec.describe API::GoProxy do
 
       project.repository.commit_by(oid: sha)
     end
+
     let(:resource) { "#{version}.info" }
 
     it_behaves_like 'an unavailable resource'

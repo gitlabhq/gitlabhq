@@ -65,6 +65,7 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
         created_at: '2020-02-06 00:02:20'
       )
     end
+
     let!(:new_rspec_job) { create(:ci_build, pipeline: new_pipeline, name: '4/4 rspec', coverage: 84) }
     let!(:new_karma_job) { create(:ci_build, pipeline: new_pipeline, name: '3/3 karma', coverage: 92) }
 
@@ -104,6 +105,7 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
         created_at: '2020-02-06 00:02:20'
       )
     end
+
     let!(:new_rspec_job) { create(:ci_build, pipeline: new_pipeline, name: '4/4 rspec', coverage: 84) }
     let!(:new_karma_job) { create(:ci_build, pipeline: new_pipeline, name: '3/3 karma', coverage: 92) }
 
@@ -149,6 +151,7 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
         created_at: '2020-02-06 00:02:20'
       )
     end
+
     let!(:some_job) { create(:ci_build, pipeline: new_pipeline, name: 'foo') }
 
     it 'does nothing' do

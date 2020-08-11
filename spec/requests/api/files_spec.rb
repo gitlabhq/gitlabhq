@@ -17,6 +17,7 @@ RSpec.describe API::Files do
       ref: 'master'
     }
   end
+
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
@@ -773,6 +774,7 @@ RSpec.describe API::Files do
         Gitlab::Git::Commit
         .last_for_path(project.repository, 'master', URI.unescape(file_path))
       end
+
       let(:params_with_correct_id) { params.merge(last_commit_id: last_commit.id) }
 
       subject { put api(route(absolute_path), user), params: params_with_correct_id }
@@ -868,6 +870,7 @@ RSpec.describe API::Files do
         encoding: 'base64'
       }
     end
+
     let(:get_params) do
       {
         ref: 'master'

@@ -286,6 +286,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       let(:test_second_storage) do
         Gitlab::GitalyClient::StorageSettings.new(@default_storage_hash.merge('path' => 'tmp/tests/custom_storage'))
       end
+
       let(:storages) do
         {
           'default' => Gitlab.config.repositories.storages.default,

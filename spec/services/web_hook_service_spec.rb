@@ -13,9 +13,11 @@ RSpec.describe WebHookService do
       'X-Gitlab-Event' => 'Push Hook'
     }
   end
+
   let(:data) do
     { before: 'oldrev', after: 'newrev', ref: 'ref' }
   end
+
   let(:service_instance) { described_class.new(project_hook, data, :push_hooks) }
 
   describe '#initialize' do

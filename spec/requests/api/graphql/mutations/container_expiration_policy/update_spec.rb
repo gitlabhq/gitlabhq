@@ -18,6 +18,7 @@ RSpec.describe 'Updating the container expiration policy' do
       older_than: 'FOURTEEN_DAYS'
     }
   end
+
   let(:mutation) do
     graphql_mutation(:update_container_expiration_policy, params,
                      <<~QL
@@ -32,6 +33,7 @@ RSpec.describe 'Updating the container expiration policy' do
                      QL
     )
   end
+
   let(:mutation_response) { graphql_mutation_response(:update_container_expiration_policy) }
   let(:container_expiration_policy_response) { mutation_response['containerExpirationPolicy'] }
 

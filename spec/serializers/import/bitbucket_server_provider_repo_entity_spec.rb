@@ -19,6 +19,7 @@ RSpec.describe Import::BitbucketServerProviderRepoEntity do
       }
     }
   end
+
   let(:repo) { BitbucketServer::Representation::Repo.new(repo_data) }
 
   subject { described_class.new(repo).as_json }

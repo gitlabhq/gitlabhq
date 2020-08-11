@@ -18,6 +18,7 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Store, :clean_gitlab_redis_cache do
       end
     end
   end
+
   let(:storable) { storable_class.new }
   let(:cache_key) { "markdown_cache:#{storable.cache_key}" }
 

@@ -11,6 +11,7 @@ RSpec.describe Ci::DailyBuildGroupReportResultSerializer do
       double(date: '2020-05-19', group_name: 'karma', data: { 'coverage' => 89.1 })
     ]
   end
+
   let(:serializer) { described_class.new.represent(report_result, param_type: 'coverage') }
 
   describe '#to_json' do

@@ -243,6 +243,7 @@ RSpec.describe ::PodLogs::ElasticsearchService do
         cursor: cursor
       }
     end
+
     let(:expected_cursor) { '9999934,1572449784442' }
 
     before do

@@ -13,6 +13,7 @@ RSpec.describe Banzai::IssuableExtractor do
       "<a href='' data-issue='#{issue.id}' data-reference-type='issue' class='gfm'>text</a>"
     )
   end
+
   let(:merge_request_link) do
     html_to_node(
       "<a href='' data-merge-request='#{merge_request.id}' data-reference-type='merge_request' class='gfm'>text</a>"

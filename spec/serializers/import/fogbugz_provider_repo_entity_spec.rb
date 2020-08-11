@@ -10,6 +10,7 @@ RSpec.describe Import::FogbugzProviderRepoEntity do
       'sProject' => 'demo'
     }
   end
+
   let(:repo) { Gitlab::FogbugzImport::Repository.new(repo_data) }
 
   subject { described_class.represent(repo, { provider_url: provider_url }).as_json }

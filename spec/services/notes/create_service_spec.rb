@@ -117,6 +117,7 @@ RSpec.describe Notes::CreateService do
                source_project: project_with_repo,
                target_project: project_with_repo)
       end
+
       let(:line_number) { 14 }
       let(:position) do
         Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
@@ -125,6 +126,7 @@ RSpec.describe Notes::CreateService do
                                    new_line: line_number,
                                    diff_refs: merge_request.diff_refs)
       end
+
       let(:previous_note) do
         create(:diff_note_on_merge_request, noteable: merge_request, project: project_with_repo)
       end

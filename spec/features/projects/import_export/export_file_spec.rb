@@ -19,6 +19,7 @@ RSpec.describe 'Import/Export - project export integration test', :js do
       key: [Project, Ci::Variable, :yaml_variables]
     }
   end
+
   let(:safe_hashes) { { yaml_variables: %w[key value public] } }
 
   let(:project) { setup_project }

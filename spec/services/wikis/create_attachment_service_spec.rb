@@ -13,6 +13,7 @@ RSpec.describe Wikis::CreateAttachmentService do
       file_content: 'Content of attachment'
     }
   end
+
   let(:opts) { file_opts }
 
   subject(:service) { described_class.new(container: container, current_user: user, params: opts) }

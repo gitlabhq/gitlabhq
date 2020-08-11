@@ -16,6 +16,7 @@ RSpec.describe 'Merge request > User sees closing issues message', :js do
       title: merge_request_title
     )
   end
+
   let(:merge_request_description) { 'Merge Request Description' }
   let(:merge_request_title) { 'Merge Request Title' }
 

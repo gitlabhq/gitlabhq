@@ -177,6 +177,7 @@ RSpec.describe Gitlab::UsageData::Topology do
             }
           ]
         end
+
         let(:node_uname_info_response) do
           [
             {
@@ -195,6 +196,7 @@ RSpec.describe Gitlab::UsageData::Topology do
           ]
         end
         # The services in this response should all be mapped to localhost i.e. the same node
+
         let(:service_memory_response) do
           [
             {

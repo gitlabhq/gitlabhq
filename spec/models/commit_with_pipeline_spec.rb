@@ -13,6 +13,7 @@ RSpec.describe CommitWithPipeline do
         sha: commit.sha,
         status: 'success')
     end
+
     let!(:second_pipeline) do
       create(:ci_empty_pipeline,
         project: project,

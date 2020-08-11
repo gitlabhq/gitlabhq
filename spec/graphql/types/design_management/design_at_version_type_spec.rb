@@ -10,6 +10,7 @@ RSpec.describe GitlabSchema.types['DesignAtVersion'] do
       version = design.versions.first
       GitlabSchema.id_from_object(create(:design_at_version, design: design, version: version))
     end
+
     let_it_be(:object_id_b) { GitlabSchema.id_from_object(create(:design_at_version)) }
     let(:object_type) { ::Types::DesignManagement::DesignAtVersionType }
   end

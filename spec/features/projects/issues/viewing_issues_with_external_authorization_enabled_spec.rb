@@ -11,33 +11,39 @@ RSpec.describe 'viewing an issue with cross project references' do
     create(:project, :public,
           external_authorization_classification_label: 'other_label')
   end
+
   let(:other_issue) do
     create(:issue, :closed,
            title: 'I am in another project',
            project: other_project)
   end
+
   let(:other_confidential_issue) do
     create(:issue, :confidential, :closed,
            title: 'I am in another project and confidential',
            project: other_project)
   end
+
   let(:other_merge_request) do
     create(:merge_request, :closed,
            title: 'I am a merge request in another project',
            source_project: other_project)
   end
+
   let(:description_referencing_other_issue) do
     "Referencing: #{other_issue.to_reference(project)}, "\
     "a confidential issue #{confidential_issue.to_reference}, "\
     "a cross project confidential issue #{other_confidential_issue.to_reference(project)}, and "\
     "a cross project merge request #{other_merge_request.to_reference(project)}"
   end
+
   let(:project) { create(:project) }
   let(:issue) do
     create(:issue,
            project: project,
            description: description_referencing_other_issue )
   end
+
   let(:confidential_issue) do
     create(:issue, :confidential, :closed,
            title: "I am in the same project and confidential",

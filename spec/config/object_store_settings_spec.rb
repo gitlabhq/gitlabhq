@@ -18,6 +18,7 @@ RSpec.describe ObjectStoreSettings do
           'region' => 'us-east-1'
         }
       end
+
       let(:config) do
         {
           'lfs' => { 'enabled' => true },

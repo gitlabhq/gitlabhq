@@ -473,6 +473,7 @@ module Gitlab
           requested_path: requested_path
         }
       end
+
       let(:commit)         { project.commit(ref) }
       let(:project)        { create(:project, :repository) }
       let(:ref)            { 'asciidoc' }

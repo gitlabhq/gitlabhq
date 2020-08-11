@@ -20,6 +20,7 @@ RSpec.describe Gitlab::Danger::Teammate do
       'tz_offset_hours' => tz_offset_hours
     }
   end
+
   let(:capabilities) { ['reviewer backend'] }
   let(:projects) { { project => capabilities } }
   let(:role) { 'Engineer, Manage' }

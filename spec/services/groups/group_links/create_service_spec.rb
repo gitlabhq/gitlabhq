@@ -25,6 +25,7 @@ RSpec.describe Groups::GroupLinks::CreateService, '#execute' do
       expires_at: nil
     }
   end
+
   let(:user) { group_user }
 
   subject { described_class.new(group, user, opts) }

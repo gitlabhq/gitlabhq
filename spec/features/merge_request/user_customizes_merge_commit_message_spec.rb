@@ -15,6 +15,7 @@ RSpec.describe 'Merge request < User customizes merge commit message', :js do
       description: "Description\n\nclosing #{issue_1.to_reference}, #{issue_2.to_reference}"
     )
   end
+
   let(:textbox) { page.find(:css, '#merge-message-edit', visible: false) }
   let(:default_message) do
     [
@@ -24,6 +25,7 @@ RSpec.describe 'Merge request < User customizes merge commit message', :js do
       "See merge request #{merge_request.to_reference(full: true)}"
     ].join("\n\n")
   end
+
   let(:message_with_description) do
     [
       "Merge branch 'feature' into 'master'",

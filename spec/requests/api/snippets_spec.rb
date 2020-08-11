@@ -233,6 +233,7 @@ RSpec.describe API::Snippets do
         visibility: 'public'
       }
     end
+
     let(:file_path) { 'file_1.rb' }
     let(:file_content) { 'puts "hello world"' }
 

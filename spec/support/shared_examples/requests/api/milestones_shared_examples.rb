@@ -266,6 +266,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
       let!(:milestone) do
         context_group ? create(:milestone, group: context_group) : create(:milestone, project: public_project)
       end
+
       let!(:issue) { create(:issue, project: public_project) }
       let!(:confidential_issue) { create(:issue, confidential: true, project: public_project) }
       let!(:issues_route) do

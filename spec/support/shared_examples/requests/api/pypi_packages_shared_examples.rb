@@ -63,6 +63,7 @@ RSpec.shared_examples 'PyPi package creation' do |user_type, status, add_member 
           body: 'content'
         )
       end
+
       let(:fog_file) { fog_to_uploaded_file(tmp_object) }
       let(:params) { base_params.merge(content: fog_file, 'content.remote_id' => file_name) }
 

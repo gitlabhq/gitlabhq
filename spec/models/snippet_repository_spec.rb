@@ -102,6 +102,7 @@ RSpec.describe SnippetRepository do
          { action: :move }.merge(move_file),
          { action: :update }.merge(update_file)]
       end
+
       let(:repo) { double }
 
       before do

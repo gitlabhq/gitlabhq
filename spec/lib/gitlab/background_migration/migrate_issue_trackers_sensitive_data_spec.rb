@@ -286,9 +286,11 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
     let!(:jira_service_invalid) do
       services.create(id: 19, title: 'invalid - title', description: 'invalid - description', type: 'JiraService', properties: 'invalid data', category: 'issue_tracker')
     end
+
     let!(:jira_service_valid) do
       services.create(id: 20, type: 'JiraService', properties: jira_properties.to_json, category: 'issue_tracker')
     end
+
     let!(:bugzilla_service_valid) do
       services.create(id: 11, type: 'BugzillaService', title: nil, properties: tracker_properties.to_json, category: 'issue_tracker')
     end

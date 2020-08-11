@@ -329,6 +329,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_c_params) do
         {
           branch: 'master',
@@ -342,6 +343,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_utf8_c_params) do
         {
           branch: 'master',
@@ -621,6 +623,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_d_params) do
         {
           branch: 'markdown',
@@ -664,6 +667,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_m_params) do
         {
           branch: 'feature',
@@ -708,6 +712,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_u_params) do
         {
           branch: 'master',
@@ -819,6 +824,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_mo_params) do
         {
           branch: 'master',

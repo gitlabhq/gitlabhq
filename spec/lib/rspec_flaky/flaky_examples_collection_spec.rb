@@ -9,6 +9,7 @@ RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures do
       b: { example_id: 'spec/foo/baz_spec.rb:3' }
     }
   end
+
   let(:collection_report) do
     {
       a: {

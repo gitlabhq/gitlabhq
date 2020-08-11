@@ -61,6 +61,7 @@ RSpec.describe Mattermost::Session, type: :request do
             redirect_uri: "#{mattermost_url}/signup/gitlab/complete",
             state: state }
         end
+
         let(:location) do
           "#{gitlab_url}/oauth/authorize?#{URI.encode_www_form(params)}"
         end

@@ -59,6 +59,7 @@ RSpec.describe Projects::LogsController do
         container_name: container
       }
     end
+
     let(:service_result_json) { Gitlab::Json.parse(service_result.to_json) }
 
     let_it_be(:cluster) { create(:cluster, :provided_by_gcp, environment_scope: '*', projects: [project]) }

@@ -17,6 +17,7 @@ RSpec.describe Repositories::GitHttpController do
       repository_id: repository_id
     }
   end
+
   let(:params) { container_params }
 
   describe 'HEAD #info_refs' do

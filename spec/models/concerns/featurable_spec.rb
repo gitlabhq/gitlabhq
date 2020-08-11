@@ -42,6 +42,7 @@ RSpec.describe Featurable do
         end
       end
     end
+
     let!(:instance) { klass.new }
 
     it { expect(klass.available_features).to eq [:feature1, :feature2] }

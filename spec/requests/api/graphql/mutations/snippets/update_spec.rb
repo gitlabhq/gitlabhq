@@ -26,6 +26,7 @@ RSpec.describe 'Updating a Snippet' do
       title: updated_title
     }
   end
+
   let(:mutation) do
     graphql_mutation(:update_snippet, mutation_vars)
   end

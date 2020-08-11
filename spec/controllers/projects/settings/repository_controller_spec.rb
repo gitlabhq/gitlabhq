@@ -56,6 +56,7 @@ RSpec.describe Projects::Settings::RepositoryController do
           deploy_token_type: DeployToken.deploy_token_types[:project_type]
         }
       end
+
       let(:request_params) do
         {
           namespace_id: project.namespace.to_param,

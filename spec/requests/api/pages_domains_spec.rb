@@ -17,6 +17,7 @@ RSpec.describe API::PagesDomains do
     build(:pages_domain, :without_key, :without_certificate, domain: 'www.other-domain.test', auto_ssl_enabled: true)
       .slice(:domain, :auto_ssl_enabled)
   end
+
   let(:pages_domain_secure_params) { build(:pages_domain, domain: 'ssl.other-domain.test', project: project).slice(:domain, :certificate, :key) }
   let(:pages_domain_secure_key_missmatch_params) {build(:pages_domain, :with_trusted_chain, project: project).slice(:domain, :certificate, :key) }
   let(:pages_domain_secure_missing_chain_params) {build(:pages_domain, :with_missing_chain, project: project).slice(:certificate) }

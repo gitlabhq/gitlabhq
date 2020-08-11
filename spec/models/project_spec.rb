@@ -401,6 +401,7 @@ RSpec.describe Project do
         create(:project,
                pending_delete: true)
       end
+
       let(:new_project) do
         build(:project,
               name: project_pending_deletion.name,
@@ -2262,6 +2263,7 @@ RSpec.describe Project do
       create(:ci_empty_pipeline, project: project, sha: project.commit.id,
                                  ref: project.default_branch)
     end
+
     let!(:pipeline_for_second_branch) do
       create(:ci_empty_pipeline, project: project, sha: second_branch.target,
                                  ref: second_branch.name)
@@ -3529,6 +3531,7 @@ RSpec.describe Project do
           public: '\\1'
       MAP
     end
+
     let(:sha) { project.commit.id }
 
     context 'when there is a route map' do
@@ -5145,6 +5148,7 @@ RSpec.describe Project do
         allow_collaboration: true
       )
     end
+
     let!(:merge_request) do
       create(
         :merge_request,

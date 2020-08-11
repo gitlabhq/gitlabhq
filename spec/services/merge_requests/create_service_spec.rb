@@ -347,6 +347,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           target_branch: 'master'
         }
       end
+
       let(:issuable) { described_class.new(project, user, params).execute }
     end
 

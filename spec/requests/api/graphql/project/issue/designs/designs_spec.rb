@@ -24,12 +24,14 @@ RSpec.describe 'Getting designs related to an issue' do
     }
     NODE
   end
+
   let(:issue) { design.issue }
   let(:project) { issue.project }
   let(:query) { make_query }
   let(:design_collection) do
     graphql_data_at(:project, :issue, :design_collection)
   end
+
   let(:design_response) do
     design_collection.dig('designs', 'edges').first['node']
   end
@@ -185,6 +187,7 @@ RSpec.describe 'Getting designs related to an issue' do
         }
         NODE
       end
+
       let(:design_response) do
         design_collection['designs']['edges']
       end

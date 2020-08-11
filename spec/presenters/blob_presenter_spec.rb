@@ -12,6 +12,7 @@ RSpec.describe BlobPresenter, :seed_helper do
       'files/ruby/regex.rb'
     )
   end
+
   let(:blob) { Blob.new(git_blob) }
 
   describe '.web_url' do

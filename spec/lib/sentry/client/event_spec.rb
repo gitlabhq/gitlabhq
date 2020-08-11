@@ -13,6 +13,7 @@ RSpec.describe Sentry::Client do
       headers: { "Authorization" => "Bearer test-token" }
     }
   end
+
   let(:client) { described_class.new(sentry_url, token) }
 
   describe '#issue_latest_event' do
@@ -21,6 +22,7 @@ RSpec.describe Sentry::Client do
         Gitlab::Json.parse(fixture_file('sentry/issue_latest_event_sample_response.json'))
       )
     end
+
     let(:issue_id) { '1234' }
     let(:sentry_api_response) { sample_response }
     let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0' }

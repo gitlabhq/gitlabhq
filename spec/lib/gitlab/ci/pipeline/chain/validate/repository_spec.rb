@@ -68,6 +68,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Repository do
         proj.repository.add_tag(user, 'master', 'master')
       end
     end
+
     let(:command) do
       Gitlab::Ci::Pipeline::Chain::Command.new(
         project: project, current_user: user, origin_ref: 'master')

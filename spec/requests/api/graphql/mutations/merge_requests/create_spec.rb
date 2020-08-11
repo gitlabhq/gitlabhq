@@ -15,6 +15,7 @@ RSpec.describe 'Creation of a new merge request' do
       target_branch: target_branch
     }
   end
+
   let(:title) { 'MergeRequest' }
   let(:source_branch) { 'new_branch' }
   let(:target_branch) { 'master' }

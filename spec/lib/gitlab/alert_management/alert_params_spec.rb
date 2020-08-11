@@ -18,6 +18,7 @@ RSpec.describe Gitlab::AlertManagement::AlertParams do
         'some' => { 'extra' => { 'payload' => 'here' } }
       }
     end
+
     let(:payload) { default_payload }
 
     subject { described_class.from_generic_alert(project: project, payload: payload) }
@@ -75,6 +76,7 @@ RSpec.describe Gitlab::AlertManagement::AlertParams do
         'fingerprint' => 'b6ac4d42057c43c1'
       }
     end
+
     let(:parsed_alert) { Gitlab::Alerting::Alert.new(project: project, payload: payload) }
 
     subject { described_class.from_prometheus_alert(project: project, parsed_alert: parsed_alert) }

@@ -20,6 +20,7 @@ RSpec.describe RuboCop::Cop::Gitlab::FinderWithFindBy, type: :rubocop do
         .find_by!(1)
       SRC
     end
+
     let(:corrected_source) do
       <<~SRC
       DummyFinder.new(some_args)

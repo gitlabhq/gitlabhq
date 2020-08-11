@@ -800,6 +800,7 @@ RSpec.describe Gitlab::Diff::File do
     let(:project) do
       create(:project, :custom_repo, files: {})
     end
+
     let(:branch_name) { 'master' }
 
     context 'when empty file is created' do
@@ -842,6 +843,7 @@ RSpec.describe Gitlab::Diff::File do
     let(:project) do
       create(:project, :custom_repo, files: {})
     end
+
     let(:branch_name) { 'master' }
 
     context 'when empty file is created' do

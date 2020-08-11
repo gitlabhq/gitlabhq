@@ -53,6 +53,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       Ci::CreatePipelineService.new(project, user, ref: 'feature')
                                 .execute(:merge_request_event, merge_request: merge_request)
     end
+
     let(:enable_mr_tabs_position_flag) { false }
 
     before do

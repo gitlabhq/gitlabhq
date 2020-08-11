@@ -19,6 +19,7 @@ RSpec.describe Mutations::Issues::Update do
       milestone_id: milestone.id
     }
   end
+
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
   let(:mutated_issue) { subject[:issue] }
 

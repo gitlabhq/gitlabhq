@@ -105,6 +105,7 @@ RSpec.describe Projects::ForkService do
             group.add_owner(@to_user)
             group
           end
+
           let(:to_project) { fork_project(from_forked_project, @to_user, namespace: other_namespace) }
 
           it 'sets the root of the network to the root project' do

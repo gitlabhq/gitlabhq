@@ -70,12 +70,14 @@ RSpec.describe API::Projects do
     builds_enabled: false,
     snippets_enabled: false)
   end
+
   let(:project_member2) do
     create(:project_member,
     user: user4,
     project: project3,
     access_level: ProjectMember::MAINTAINER)
   end
+
   let(:project4) do
     create(:project,
     name: 'third_project',

@@ -325,6 +325,7 @@ RSpec.describe ProjectPolicy do
         allow_collaboration: true
       )
     end
+
     let(:maintainer_abilities) do
       %w(create_build create_pipeline)
     end

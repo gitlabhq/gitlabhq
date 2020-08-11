@@ -14,6 +14,7 @@ RSpec.describe BlobViewer::Podspec do
       end
     SPEC
   end
+
   let(:blob) { fake_blob(path: 'Reachability.podspec', data: data) }
 
   subject { described_class.new(blob) }

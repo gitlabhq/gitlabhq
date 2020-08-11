@@ -25,6 +25,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
     let(:parent_field) do
       { 'key' => 'FOO-2', 'id' => '1050', 'fields' => { 'summary' => 'parent issue FOO' } }
     end
+
     let(:priority_field) { { 'name' => 'Medium' } }
     let(:labels_field) { %w(bug dev backend frontend) }
 

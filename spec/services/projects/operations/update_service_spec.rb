@@ -384,6 +384,7 @@ RSpec.describe Projects::Operations::UpdateService do
             manual_configuration: "0"
           })
         end
+
         let(:params) do
           {
             prometheus_integration_attributes: {

@@ -15,6 +15,7 @@ RSpec.describe Packages::CreateDependencyService do
                 .gsub('1.0.1', version))
                 .with_indifferent_access
       end
+
       let(:package_version) { params[:versions].each_key.first }
       let(:dependencies) { params[:versions][package_version] }
       let(:package) { create(:npm_package) }

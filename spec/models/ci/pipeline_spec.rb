@@ -1935,6 +1935,7 @@ RSpec.describe Ci::Pipeline, :mailer do
         project: project
       )
     end
+
     let!(:commit_123_ref_develop) do
       create(
         :ci_empty_pipeline,
@@ -1944,6 +1945,7 @@ RSpec.describe Ci::Pipeline, :mailer do
         project: project
       )
     end
+
     let!(:commit_456_ref_test) do
       create(
         :ci_empty_pipeline,

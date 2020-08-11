@@ -11,6 +11,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
                                       title: 'Bug NS-04',
                                       merge_params: { force_remove_source_branch: '1' })
   end
+
   let(:pipeline) do
     create(:ci_pipeline, project: project,
                          sha: merge_request.diff_head_sha,
@@ -115,6 +116,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
         merge_user: user,
         title: 'MepMep')
     end
+
     let!(:build) do
       create(:ci_build, pipeline: pipeline)
     end

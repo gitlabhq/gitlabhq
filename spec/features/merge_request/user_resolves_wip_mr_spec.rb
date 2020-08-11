@@ -11,6 +11,7 @@ RSpec.describe 'Merge request > User resolves Work in Progress', :js do
                                       title: 'WIP: Bug NS-04',
                                       merge_params: { force_remove_source_branch: '1' })
   end
+
   let(:pipeline) do
     create(:ci_pipeline, project: project,
                          sha: merge_request.diff_head_sha,

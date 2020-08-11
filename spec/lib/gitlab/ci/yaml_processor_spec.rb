@@ -942,6 +942,7 @@ module Gitlab
           let(:variables) do
             { 'VAR1' => 'value1', 'VAR2' => 'value2' }
           end
+
           let(:config) do
             {
               variables: variables,
@@ -962,9 +963,11 @@ module Gitlab
           let(:global_variables) do
             { 'VAR1' => 'global1', 'VAR3' => 'global3', 'VAR4' => 'global4' }
           end
+
           let(:job_variables) do
             { 'VAR1' => 'value1', 'VAR2' => 'value2' }
           end
+
           let(:config) do
             {
               before_script: ['pwd'],
@@ -2073,6 +2076,7 @@ module Gitlab
               { job: "build2" }
             ]
           end
+
           let(:dependencies) { %w(build3) }
 
           it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies the build3 should be part of needs') }

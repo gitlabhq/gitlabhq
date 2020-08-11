@@ -28,6 +28,7 @@ RSpec.describe API::Issues do
       updated_at: 3.hours.ago,
       closed_at: 1.hour.ago
   end
+
   let!(:confidential_issue) do
     create :issue,
       :confidential,
@@ -37,6 +38,7 @@ RSpec.describe API::Issues do
       created_at: generate(:past_time),
       updated_at: 2.hours.ago
   end
+
   let!(:issue) do
     create :issue,
       author: user,
@@ -48,6 +50,7 @@ RSpec.describe API::Issues do
       title: issue_title,
       description: issue_description
   end
+
   let_it_be(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
@@ -69,6 +72,7 @@ RSpec.describe API::Issues do
            target_project: project,
            description: "closes #{issue.to_reference}")
   end
+
   let!(:merge_request2) do
     create(:merge_request,
            :simple,

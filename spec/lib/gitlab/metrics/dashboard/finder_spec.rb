@@ -191,6 +191,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
           out_of_the_box_dashboard: true
         }
       end
+
       let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
       let(:project) { project_with_dashboard(dashboard_path) }
 

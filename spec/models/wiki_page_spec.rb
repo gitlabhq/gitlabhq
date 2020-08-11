@@ -49,9 +49,11 @@ RSpec.describe WikiPage do
       let(:dir_1) do
         WikiDirectory.new('dir_1', [wiki.find_page('dir_1/page_2')])
       end
+
       let(:dir_1_1) do
         WikiDirectory.new('dir_1/dir_1_1', [wiki.find_page('dir_1/dir_1_1/page_3')])
       end
+
       let(:dir_2) do
         pages = [wiki.find_page('dir_2/page_5'),
                  wiki.find_page('dir_2/page_4')]

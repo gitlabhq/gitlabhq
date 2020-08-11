@@ -9,6 +9,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
   let(:rugged_repo) do
     Rugged::Repository.new(File.join(TestEnv.repos_path, TEST_REPO_PATH))
   end
+
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
   let(:rugged_commit) { rugged_repo.lookup(SeedRepo::Commit::ID) }
 

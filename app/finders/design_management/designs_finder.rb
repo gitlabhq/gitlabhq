@@ -37,7 +37,8 @@ module DesignManagement
       issue.designs
     end
 
-    # Returns all designs that existed at a particular design version
+    # Returns all designs that existed at a particular design version,
+    # where `nil` means `at-current-version`.
     def by_visible_at_version(items)
       items.visible_at_version(params[:visible_at_version])
     end

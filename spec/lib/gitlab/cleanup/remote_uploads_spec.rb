@@ -11,6 +11,7 @@ RSpec.describe Gitlab::Cleanup::RemoteUploads do
         create(:upload, path: 'dir/file2', store: ObjectStorage::Store::LOCAL)
       ]
     end
+
     let(:remote_files) do
       [
         double(key: 'dir/file1'),

@@ -35,6 +35,7 @@ RSpec.shared_examples 'a GraphQL type with design fields' do
       object = GitlabSchema.sync_lazy(GitlabSchema.object_from_id(object_id))
       object_type.authorized_new(object, query.context)
     end
+
     let(:instance_b) do
       object_b = GitlabSchema.sync_lazy(GitlabSchema.object_from_id(object_id_b))
       object_type.authorized_new(object_b, query.context)

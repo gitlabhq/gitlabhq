@@ -191,6 +191,7 @@ RSpec.describe Gitlab::PrometheusClient do
         }
       }
     end
+
     let(:query_url) { prometheus_query_with_time_url(query, Time.now.utc) }
 
     around do |example|

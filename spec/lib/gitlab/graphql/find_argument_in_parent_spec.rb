@@ -21,6 +21,7 @@ RSpec.describe Gitlab::Graphql::FindArgumentInParent do
         )
       )
     end
+
     let(:arg_name) { :my_arg }
 
     it 'searches parents and returns the argument' do

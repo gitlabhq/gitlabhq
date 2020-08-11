@@ -430,6 +430,7 @@ RSpec.describe Gitlab::ProjectSearchResults do
         private_project.add_maintainer(user)
         user
       end
+
       let(:team_reporter) do
         user = create(:user, username: 'private-project-reporter')
         private_project.add_reporter(user)

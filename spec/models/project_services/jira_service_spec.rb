@@ -121,6 +121,7 @@ RSpec.describe JiraService do
       { url: url, api_url: api_url, username: username, password: password,
         jira_issue_transition_id: transition_id }
     end
+
     let(:data_params) do
       {
         url: url, api_url: api_url,
@@ -562,6 +563,7 @@ RSpec.describe JiraService do
         password: password
       )
     end
+
     let(:jira_issue) { ExternalIssue.new('JIRA-123', project) }
 
     subject { jira_service.create_cross_reference_note(jira_issue, resource, user) }

@@ -66,6 +66,7 @@ RSpec.describe Projects::Alerting::NotifyService do
         fingerprint: fingerprint
       }.with_indifferent_access
     end
+
     let(:payload) { ActionController::Parameters.new(payload_raw).permit! }
 
     subject { service.execute(token) }

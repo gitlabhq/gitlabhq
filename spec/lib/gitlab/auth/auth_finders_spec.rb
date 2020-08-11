@@ -12,6 +12,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       'rack.input' => ''
     }
   end
+
   let(:request) { ActionDispatch::Request.new(env) }
 
   def set_param(key, value)

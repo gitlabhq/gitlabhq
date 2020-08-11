@@ -92,6 +92,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
             - bundle install --jobs $(nproc)  "${FLAGS[@]}"
         HEREDOC
       end
+
       let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
 
       before do

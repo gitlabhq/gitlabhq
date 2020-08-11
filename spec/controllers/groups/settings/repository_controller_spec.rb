@@ -36,6 +36,7 @@ RSpec.describe Groups::Settings::RepositoryController do
           deploy_token_type: DeployToken.deploy_token_types[:group_type]
         }
       end
+
       let(:request_params) do
         {
           group_id: group.to_param,

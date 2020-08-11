@@ -13,6 +13,7 @@ RSpec.describe 'getting a repository in a project' do
       #{all_graphql_fields_for('container_expiration_policy'.classify)}
     QUERY
   end
+
   let(:query) do
     graphql_query_for(
       'project',

@@ -10,6 +10,7 @@ RSpec.describe 'Merge request > User posts notes', :js do
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project)
   end
+
   let!(:note) do
     create(:note_on_merge_request, :with_attachment, noteable: merge_request,
                                                      project: project)

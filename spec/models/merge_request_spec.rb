@@ -63,6 +63,7 @@ RSpec.describe MergeRequest do
         subject.source_project.repository.path
       end
     end
+
     let(:squash_path) { File.join(repo_path, "gitlab-worktree", "squash-#{subject.id}") }
 
     before do
@@ -742,6 +743,7 @@ RSpec.describe MergeRequest do
     let!(:diff_note) do
       create(:diff_note_on_merge_request, project: project, noteable: merge_request)
     end
+
     let!(:draft_note) do
       create(:draft_note_on_text_diff, author: user, merge_request: merge_request)
     end
@@ -3713,6 +3715,7 @@ RSpec.describe MergeRequest do
              source_branch: 'fixes',
              target_project: target_project)
     end
+
     let(:user) { create(:user) }
 
     before do

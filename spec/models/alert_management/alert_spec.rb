@@ -335,6 +335,7 @@ RSpec.describe AlertManagement::Alert do
         }
       }
     end
+
     let(:alert) { build(:alert_management_alert, project: project, title: 'Details title', payload: payload) }
 
     subject { alert.details }

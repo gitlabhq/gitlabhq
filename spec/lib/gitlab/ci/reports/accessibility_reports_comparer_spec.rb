@@ -21,6 +21,7 @@ RSpec.describe Gitlab::Ci::Reports::AccessibilityReportsComparer do
       }
     ]
   end
+
   let(:different_error) do
     [
       {

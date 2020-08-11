@@ -93,6 +93,7 @@ RSpec.describe Issuable::Clone::ContentRewriter do
           create(:note, system: true, noteable: original_issue, project: project1)
         ]
       end
+
       let!(:system_note_metadata) { create(:system_note_metadata, note: notes.last) }
       let!(:award_emoji) { create(:award_emoji, awardable: notes.first, name: 'thumbsup')}
 
@@ -136,6 +137,7 @@ RSpec.describe Issuable::Clone::ContentRewriter do
       let(:text) do
         "See ##{other_issue.iid} and #{merge_request.project.full_path}!#{merge_request.iid}"
       end
+
       let!(:note) { create(:note, noteable: original_issue, note: text, project: project1) }
 
       it 'rewrites the references correctly' do

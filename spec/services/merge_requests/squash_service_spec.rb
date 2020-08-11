@@ -13,6 +13,7 @@ RSpec.describe MergeRequests::SquashService do
   let(:squash_dir_path) do
     File.join(Gitlab.config.shared.path, 'tmp/squash', repository.gl_repository, merge_request.id.to_s)
   end
+
   let(:merge_request_with_one_commit) do
     create(:merge_request,
            source_branch: 'feature', source_project: project,

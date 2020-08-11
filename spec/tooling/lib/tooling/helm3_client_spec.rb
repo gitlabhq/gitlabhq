@@ -15,6 +15,7 @@ RSpec.describe Tooling::Helm3Client do
     ]
     OUTPUT
   end
+
   let(:raw_helm_list_page2) do
     <<~OUTPUT
     [
@@ -22,6 +23,7 @@ RSpec.describe Tooling::Helm3Client do
     ]
     OUTPUT
   end
+
   let(:raw_helm_list_empty) do
     <<~OUTPUT
     []

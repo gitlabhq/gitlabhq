@@ -21,6 +21,7 @@ RSpec.describe UpdateHighestRoleWorker, :clean_gitlab_redis_shared_state do
           user_type: nil
         }
       end
+
       let(:user) { create(:user, active_attributes) }
 
       subject { worker.perform(user.id) }

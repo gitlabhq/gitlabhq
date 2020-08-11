@@ -13,6 +13,7 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::ForceDisconnectableMixin do
         end
       end
     end
+
     let(:config) { Rails.application.config_for(:database).merge(pool: 1) }
     let(:pool) { model.establish_connection(config) }
 

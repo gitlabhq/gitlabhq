@@ -185,6 +185,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         let(:nodes) do
           Project.order(Arel.sql('projects.last_repository_check_at IS NULL')).order(last_repository_check_at: :asc).order(id: :asc)
         end
+
         let(:ascending_nodes) { [project5, project1, project3, project2, project4] }
 
         it_behaves_like 'nodes are in ascending order'
@@ -210,6 +211,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         let(:nodes) do
           Project.order(Arel.sql('projects.last_repository_check_at IS NULL')).order(last_repository_check_at: :desc).order(id: :asc)
         end
+
         let(:descending_nodes) { [project3, project1, project5, project2, project4] }
 
         it_behaves_like 'nodes are in descending order'
@@ -243,6 +245,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         let(:nodes) do
           Project.order(Arel::Table.new(:projects)['name'].lower.asc).order(id: :asc)
         end
+
         let(:ascending_nodes) { [project1, project5, project3, project2, project4] }
 
         it_behaves_like 'nodes are in ascending order'
@@ -252,6 +255,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         let(:nodes) do
           Project.order(Arel::Table.new(:projects)['name'].lower.desc).order(id: :desc)
         end
+
         let(:descending_nodes) { [project4, project2, project3, project5, project1] }
 
         it_behaves_like 'nodes are in descending order'

@@ -28,6 +28,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
       fork_project(project1, user)
     end
   end
+
   let!(:project3) do
     allow_gitaly_n_plus_1 do
       fork_project(project1, user).tap do |project|
@@ -35,6 +36,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
       end
     end
   end
+
   let_it_be(:project4, reload: true) do
     allow_gitaly_n_plus_1 { create(:project, :repository, group: subgroup) }
   end
@@ -53,22 +55,26 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
            source_project: project2, target_project: project1,
            target_branch: 'merged-target')
   end
+
   let!(:merge_request2) do
     create(:merge_request, :conflict, assignees: [user], author: user,
            source_project: project2, target_project: project1,
            state: 'closed')
   end
+
   let!(:merge_request3) do
     create(:merge_request, :simple, author: user, assignees: [user2],
            source_project: project2, target_project: project2,
            state: 'locked',
            title: 'thing WIP thing')
   end
+
   let!(:merge_request4) do
     create(:merge_request, :simple, author: user,
            source_project: project3, target_project: project3,
            title: 'WIP thing')
   end
+
   let_it_be(:merge_request5) do
     create(:merge_request, :simple, author: user,
            source_project: project4, target_project: project4,

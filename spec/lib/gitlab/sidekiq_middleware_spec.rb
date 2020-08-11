@@ -63,6 +63,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
        Gitlab::SidekiqMiddleware::DuplicateJobs::Server
       ]
     end
+
     let(:enabled_sidekiq_middlewares) { all_sidekiq_middlewares - disabled_sidekiq_middlewares }
 
     shared_examples "a server middleware chain" do
