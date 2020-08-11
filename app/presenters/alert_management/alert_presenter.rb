@@ -47,6 +47,13 @@ module AlertManagement
 
     private
 
+    def details_url
+      ::Gitlab::Routing.url_helpers.details_project_alert_management_url(
+        project,
+        alert.iid
+      )
+    end
+
     attr_reader :alert, :project
 
     def alerting_alert
@@ -67,6 +74,7 @@ module AlertManagement
       metadata << list_item('Monitoring tool', monitoring_tool) if monitoring_tool
       metadata << list_item('Hosts', host_links) if hosts.any?
       metadata << list_item('Description', description) if description.present?
+      metadata << list_item('GitLab alert', details_url) if details_url.present?
 
       metadata.join(MARKDOWN_LINE_BREAK)
     end

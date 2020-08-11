@@ -24,6 +24,13 @@ NOTE: **Note:**
 If the latest pipeline used [Auto DevOps](../../../topics/autodevops/index.md),
 all security features will be configured by default.
 
+## SAST Configuration
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3659) in GitLab Ultimate 13.3.
+
+For projects that do not already have a `.gitlab-ci.yml` file,
+[configure SAST in the UI](../sast/index.md#configure-sast-in-the-ui).
+
 ## Limitations
 
 It is not yet possible to enable or disable most features using the

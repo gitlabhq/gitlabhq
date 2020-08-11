@@ -1347,6 +1347,212 @@ type Branch {
   name: String!
 }
 
+type CiGroup {
+  """
+  Jobs in group
+  """
+  jobs(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiJobConnection
+
+  """
+  Name of the job group
+  """
+  name: String
+
+  """
+  Size of the group
+  """
+  size: Int
+}
+
+"""
+The connection type for CiGroup.
+"""
+type CiGroupConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiGroupEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiGroup]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiGroupEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiGroup
+}
+
+type CiJob {
+  """
+  Name of the job
+  """
+  name: String
+
+  """
+  Builds that must complete before the jobs run
+  """
+  needs(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiJobConnection
+}
+
+"""
+The connection type for CiJob.
+"""
+type CiJobConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiJobEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiJob]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiJobEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiJob
+}
+
+type CiStage {
+  """
+  Group of jobs for the stage
+  """
+  groups(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiGroupConnection
+
+  """
+  Name of the stage
+  """
+  name: String
+}
+
+"""
+The connection type for CiStage.
+"""
+type CiStageConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiStageEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiStage]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiStageEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiStage
+}
+
 type Commit {
   """
   Author of the commit
@@ -9849,6 +10055,31 @@ type Pipeline {
   SHA of the pipeline's commit
   """
   sha: String!
+
+  """
+  Stages of the pipeline
+  """
+  stages(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiStageConnection
 
   """
   Timestamp when the pipeline was started

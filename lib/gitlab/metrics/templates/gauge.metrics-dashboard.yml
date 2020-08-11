@@ -1,6 +1,6 @@
 # Only one dashboard should be defined per file
 # More info: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html
-dashboard: 'Guage Panel Example'
+dashboard: 'Gauge Panel Example'
 
 # For more information about the required properties of panel_groups
 # please visit: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html#panel-group-panel_groups-properties

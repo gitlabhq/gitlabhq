@@ -333,6 +333,9 @@ msgstr ""
 msgid "%{cores} cores"
 msgstr ""
 
+msgid "%{count} %{scope} for term '%{term}'"
+msgstr ""
+
 msgid "%{count} LOC/commit"
 msgstr ""
 
@@ -21418,6 +21421,9 @@ msgid "SecurityConfiguration|Create Merge Request"
 msgstr ""
 
 msgid "SecurityConfiguration|Customize common SAST settings to suit your requirements. Configuration changes made here override those provided by GitLab and are excluded from updates. For details of more advanced configuration options, see the %{linkStart}GitLab SAST documentation%{linkEnd}."
+msgstr ""
+
+msgid "SecurityConfiguration|Enable"
 msgstr ""
 
 msgid "SecurityConfiguration|Enable via Merge Request"

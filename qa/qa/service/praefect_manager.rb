@@ -39,6 +39,7 @@ module QA
             break line if line.start_with?('gitaly_cluster')
             break nil if line.include?('Something went wrong when getting replicas')
           end
+          next false unless replicas
 
           # We want to know if the checksums are identical
           replicas&.split('|')&.map(&:strip)&.slice(1..3)&.uniq&.one?

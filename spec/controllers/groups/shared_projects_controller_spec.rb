@@ -17,9 +17,9 @@ RSpec.describe Groups::SharedProjectsController do
     ).execute(group)
   end
 
-  let_it_be(:group) { create(:group) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:shared_project) do
+  let!(:group) { create(:group) }
+  let!(:user) { create(:user) }
+  let!(:shared_project) do
     shared_project = create(:project, namespace: user.namespace)
     share_project(shared_project)
 

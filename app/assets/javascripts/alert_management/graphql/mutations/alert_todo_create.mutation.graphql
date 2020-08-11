@@ -1,0 +1,10 @@
+#import "../fragments/detail_item.fragment.graphql"
+
+mutation alertTodoCreate($projectPath: ID!, $iid: String!) {
+  alertTodoCreate(input: { iid: $iid, projectPath: $projectPath }) {
+    errors
+    alert {
+      ...AlertDetailItem
+    }
+  }
+}

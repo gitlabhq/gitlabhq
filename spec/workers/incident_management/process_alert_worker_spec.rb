@@ -19,14 +19,14 @@ RSpec.describe IncidentManagement::ProcessAlertWorker do
       allow(Gitlab::AppLogger).to receive(:warn).and_call_original
 
       allow(IncidentManagement::CreateIssueService)
-        .to receive(:new).with(alert.project, parsed_payload)
+        .to receive(:new).with(alert.project, alert)
         .and_call_original
     end
 
     shared_examples 'creates issue successfully' do
       it 'creates an issue' do
         expect(IncidentManagement::CreateIssueService)
-          .to receive(:new).with(alert.project, parsed_payload)
+          .to receive(:new).with(alert.project, alert)
 
         expect { subject }.to change { Issue.count }.by(1)
       end

@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 module StubFeatureFlags
+  def self.included(base)
+    # Extend Feature class with methods that can stub feature flags.
+    Feature.prepend(StubbedFeature)
+  end
+
   class StubFeatureGate
     attr_reader :flipper_id
 
@@ -9,28 +14,14 @@ module StubFeatureFlags
     end
   end
 
+  # Ensure feature flags are stubbed and reset.
   def stub_all_feature_flags
-    adapter = Flipper::Adapters::Memory.new
-    flipper = Flipper.new(adapter)
+    Feature.stub = true
+    Feature.reset_flipper
+  end
 
-    allow(Feature).to receive(:flipper).and_return(flipper)
-
-    # All new requested flags are enabled by default
-    allow(Feature).to receive(:enabled?).and_wrap_original do |m, *args|
-      feature_flag = m.call(*args)
-
-      # If feature flag is not persisted we mark the feature flag as enabled
-      # We do `m.call` as we want to validate the execution of method arguments
-      # and a feature flag state if it is not persisted
-      unless Feature.persisted_name?(args.first)
-        # TODO: this is hack to support `promo_feature_available?`
-        # We enable all feature flags by default unless they are `promo_`
-        # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/218667
-        feature_flag = true unless args.first.to_s.start_with?('promo_')
-      end
-
-      feature_flag
-    end
+  def unstub_all_feature_flags
+    Feature.stub = false
   end
 
   # Stub Feature flags with `flag_name: true/false`

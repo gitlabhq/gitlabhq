@@ -13,7 +13,7 @@ module Gitlab
         MAPPINGS = {
           Issue => {
             serializer_class: AnalyticsIssueSerializer,
-            includes_for_query: { project: [:namespace], author: [] },
+            includes_for_query: { project: { namespace: [:route] }, author: [] },
             columns_for_select: %I[title iid id created_at author_id project_id]
           },
           MergeRequest => {
@@ -41,7 +41,7 @@ module Gitlab
                 project = record.project
                 attributes = record.attributes.merge({
                   project_path: project.path,
-                  namespace_path: project.namespace.path,
+                  namespace_path: project.namespace.route.path,
                   author: record.author
                 })
                 serializer.represent(attributes)

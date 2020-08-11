@@ -848,10 +848,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.158.0.tgz#300d416184a2b0e05f15a96547f726e1825b08a1"
   integrity sha512-5OJl+7TsXN9PJhY6/uwi+mTwmDZa9n/6119rf77orQ/joFYUypaYhBmy/1TcKVPsy5Zs6KCxE1kmGsfoXc1TYA==
 
-"@gitlab/ui@18.3.0":
-  version "18.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-18.3.0.tgz#c582eca1a0a851823700dabc7f4456feef882d9a"
-  integrity sha512-H0I3ExZJIqDd9rFDzyZwUerS3ZHDxRf2wHmAzMzK9smq/kr8aL5Pvb2E0KPcgDsVhGQCt7coCBN5NI0p+kf8oQ==
+"@gitlab/ui@18.6.0":
+  version "18.6.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-18.6.0.tgz#b0009ddbd0c6a058b3648786c8dbc5e038dd78c9"
+  integrity sha512-kFrJIVeAyAjrEQuadReuFmSV4Lw1V9LkgnSzhE0TdIkjLtST9y0QLH1Z0REH3QQZe7GbJIRQfZ8ItXpVWJsrgw==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -1162,20 +1162,20 @@
     dom-accessibility-api "^0.4.5"
     pretty-format "^25.5.0"
 
-"@toast-ui/editor@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.3.0.tgz#47a0bb4f7cec8248dda64cbbd2edf63294debcd8"
-  integrity sha512-rCb35CMxYS6U2aiwWhdLZMzbgzoVHm2YxGrlmH4OdNQNfzAM03DHl4lTwq7EP7E4MG0FEMgMyn0Ovo5DI7G8+w==
+"@toast-ui/editor@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.3.1.tgz#add692840011efcdbd9b4b6de93dda2da12c36a0"
+  integrity sha512-0akQUnyCg24SBBb+weRX6VJ6ZjltxYEivBWOHft0birkrPF0YQgKjebPtFGPB9THBSUY+0qyr6k/KIN2rZqUog==
   dependencies:
     "@types/codemirror" "0.0.71"
     codemirror "^5.48.4"
 
-"@toast-ui/vue-editor@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@toast-ui/vue-editor/-/vue-editor-2.3.0.tgz#8b80896f1132ca229ab28167c78f607d06e4d3ef"
-  integrity sha512-oXuy4YqaF9RHBqYutNg8xI9XvcrWQv9xRKQJLSPtR3wh9/5AeTuXm/b8qkJdoccCsJl5lUq/Qh7l/+o8zcbvFA==
+"@toast-ui/vue-editor@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@toast-ui/vue-editor/-/vue-editor-2.3.1.tgz#ca8771a77513d1998123db717626a2ec4267b6f5"
+  integrity sha512-vEElTwJ3CwUL2da2y3gxKVK7bRWC+d6SrUyOQNeCDtN95vEs/7MUNK4cUAxAGDZuDYg1KB2ZpBtc/dV1LkO9XQ==
   dependencies:
-    "@toast-ui/editor" "^2.3.0"
+    "@toast-ui/editor" "^2.3.1"
 
 "@types/babel__core@^7.1.0":
   version "7.1.2"

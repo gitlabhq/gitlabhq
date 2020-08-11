@@ -9,7 +9,8 @@
     "endedAt": "2020-04-17T23:18:14.996Z",
     "status": "TRIGGERED",
     "assignees": { "nodes": [] },
-    "notes": { "nodes": [] }
+    "notes": { "nodes": [] },
+    "todos": { "nodes": [] }
   },
   {
     "iid": "1527543",
@@ -37,7 +38,8 @@
           "systemNoteIconName": "user"
         }
       ]
-    }
+    },
+    "todos": { "nodes": [] }
   },
   {
     "iid": "1527544",
@@ -63,6 +65,7 @@
           }
         }
       ]
-    }
+    },
+    "todos": { "nodes": [] }
   }
 ]

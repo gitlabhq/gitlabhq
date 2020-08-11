@@ -44,27 +44,27 @@ export default {
 
 <template>
   <div>
-    <gl-button-group class="flex-column flex-md-row ml-0 ml-md-n4">
+    <gl-button-group class="gl-flex-direction-column flex-md-row gl-ml-0 ml-md-n4">
       <gl-deprecated-button
         :key="ignoreBtn.status"
         :ref="`${ignoreBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
-        class="d-block mb-2 mb-md-0 w-100"
+        class="gl-display-block gl-mb-4 mb-md-0 gl-w-full"
         :title="ignoreBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: ignoreBtn.status })"
       >
-        <gl-icon class="d-none d-md-inline m-0" :name="ignoreBtn.icon" :size="12" />
+        <gl-icon class="gl-display-none d-md-inline gl-m-0" :name="ignoreBtn.icon" :size="12" />
         <span class="d-md-none">{{ ignoreBtn.title }}</span>
       </gl-deprecated-button>
       <gl-deprecated-button
         :key="resolveBtn.status"
         :ref="`${resolveBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
-        class="d-block mb-2 mb-md-0 w-100"
+        class="gl-display-block gl-mb-4 mb-md-0 gl-w-full"
         :title="resolveBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: resolveBtn.status })"
       >
-        <gl-icon class="d-none d-md-inline m-0" :name="resolveBtn.icon" :size="12" />
+        <gl-icon class="gl-display-none d-md-inline gl-m-0" :name="resolveBtn.icon" :size="12" />
         <span class="d-md-none">{{ resolveBtn.title }}</span>
       </gl-deprecated-button>
     </gl-button-group>
@@ -72,7 +72,7 @@ export default {
       :href="detailsLink"
       category="secondary"
       variant="info"
-      class="d-block d-md-none mb-2 mb-md-0"
+      class="gl-display-block d-md-none gl-mb-4 mb-md-0"
     >
       {{ __('More details') }}
     </gl-deprecated-button>

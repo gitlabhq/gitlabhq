@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe IncidentManagement::CreateIssueService do
   let(:project) { create(:project, :repository, :private) }
   let_it_be(:user) { User.alert_bot }
-  let(:service) { described_class.new(project, alert_payload) }
   let(:alert_starts_at) { Time.current }
   let(:alert_title) { 'TITLE' }
   let(:alert_annotations) { { title: alert_title } }
@@ -17,8 +16,11 @@ RSpec.describe IncidentManagement::CreateIssueService do
     )
   end
 
+  let(:alert) { create(:alert_management_alert, :prometheus, project: project, payload: alert_payload) }
+  let(:service) { described_class.new(project, alert) }
+
   let(:alert_presenter) do
-    Gitlab::Alerting::Alert.new(project: project, payload: alert_payload).present
+    Gitlab::Alerting::Alert.for_alert_management_alert(project: project, alert: alert).present
   end
 
   let!(:setting) do

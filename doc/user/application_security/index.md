@@ -45,6 +45,12 @@ To add Container Scanning, follow the steps listed in the [Container Scanning do
 
 To further configure any of the other scanners, refer to each scanner's documentation.
 
+### SAST configuration
+
+You can set up and configure Static Application Security Testing
+(SAST) for your project, without opening a text editor. For more details,
+see [configure SAST in the UI](sast/index.md#configure-sast-in-the-ui).
+
 ### Override the default registry base address
 
 By default, GitLab security scanners use `registry.gitlab.com/gitlab-org/security-products/analyzers` as the

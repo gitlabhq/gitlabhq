@@ -5,13 +5,16 @@ module IncidentManagement
     include Gitlab::Utils::StrongMemoize
     include IncidentManagement::Settings
 
-    def initialize(project, params)
-      super(project, User.alert_bot, params)
+    attr_reader :alert
+
+    def initialize(project, alert)
+      super(project, User.alert_bot)
+      @alert = alert
     end
 
     def execute
       return error('setting disabled') unless incident_management_setting.create_issue?
-      return error('invalid alert') unless alert.valid?
+      return error('invalid alert') unless alert_presenter.valid?
 
       result = create_incident
       return error(result.message, result.payload[:issue]) unless result.success?
@@ -31,7 +34,7 @@ module IncidentManagement
     end
 
     def issue_title
-      alert.full_title
+      alert_presenter.full_title
     end
 
     def issue_description
@@ -45,16 +48,16 @@ module IncidentManagement
     end
 
     def alert_summary
-      alert.issue_summary_markdown
+      alert_presenter.issue_summary_markdown
     end
 
     def alert_markdown
-      alert.alert_markdown
+      alert_presenter.alert_markdown
     end
 
-    def alert
-      strong_memoize(:alert) do
-        Gitlab::Alerting::Alert.new(project: project, payload: params).present
+    def alert_presenter
+      strong_memoize(:alert_presenter) do
+        Gitlab::Alerting::Alert.for_alert_management_alert(project: project, alert: alert).present
       end
     end
 

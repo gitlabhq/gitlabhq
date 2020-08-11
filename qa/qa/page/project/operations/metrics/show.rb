@@ -58,7 +58,9 @@ module QA
             end
 
             def has_edit_dashboard_enabled?
-              within_element :prometheus_graphs do
+              click_element :actions_menu_dropdown
+
+              within_element :actions_menu_dropdown do
                 has_element? :edit_dashboard_button_enabled
               end
             end

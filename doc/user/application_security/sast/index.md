@@ -24,6 +24,8 @@ You can take advantage of SAST by doing one of the following:
 - [Including the SAST template](#configuration) in your existing `.gitlab-ci.yml` file.
 - Implicitly using [Auto SAST](../../../topics/autodevops/stages.md#auto-sast-ultimate) provided by
   [Auto DevOps](../../../topics/autodevops/index.md).
+- Using the [SAST Configuration tool](#configure-sast-in-the-ui) to create the necessary
+  `.gitlab-ci.yml` file for you.
 
 GitLab checks the SAST report, compares the found vulnerabilities between the
 source and target branches.
@@ -150,6 +152,19 @@ The results will be saved as a
 [SAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportssast-ultimate)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest SAST artifact available.
+
+### Configure SAST in the UI
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3659) in GitLab Ultimate 13.3.
+
+For projects that do not already have a `.gitlab-ci.yml` file, the above
+configuration can also be achieved by using the **SAST Configuration** tool.
+
+1. Navigate to **Security & Compliance > Configuration**.
+1. Click **Enable** on the Static Application Security Testing (SAST)
+row.
+
+A merge request is created, containing the necessary changes for you to review and merge.
 
 ### Customizing the SAST settings
 

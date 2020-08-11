@@ -55,7 +55,6 @@ module QA
           praefect_manager.wait_for_health_check_current_primary_node
 
           # Confirm dataloss (i.e., inconsistent nodes)
-          expect(praefect_manager.dataloss?).to be true
           expect(praefect_manager.replicated?(project.id)).to be false
 
           # Reconcile nodes to recover from dataloss
