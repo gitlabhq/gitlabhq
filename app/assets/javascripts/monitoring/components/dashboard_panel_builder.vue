@@ -9,6 +9,8 @@ import {
   GlSprintf,
   GlAlert,
 } from '@gitlab/ui';
+import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
+import { timeRanges } from '~/vue_shared/constants';
 import DashboardPanel from './dashboard_panel.vue';
 
 const initialYml = `title: Go heap size
@@ -30,6 +32,7 @@ export default {
     GlSprintf,
     GlAlert,
     DashboardPanel,
+    DateTimePicker,
   },
   data() {
     return {
@@ -41,20 +44,35 @@ export default {
       'panelPreviewIsLoading',
       'panelPreviewError',
       'panelPreviewGraphData',
+      'panelPreviewTimeRange',
+      'panelPreviewIsShown',
       'projectPath',
       'addDashboardDocumentationPath',
     ]),
   },
   methods: {
-    ...mapActions('monitoringDashboard', ['fetchPanelPreview']),
+    ...mapActions('monitoringDashboard', [
+      'fetchPanelPreview',
+      'fetchPanelPreviewMetrics',
+      'setPanelPreviewTimeRange',
+    ]),
     onSubmit() {
       this.fetchPanelPreview(this.yml);
     },
+    onDateTimePickerInput(timeRange) {
+      this.setPanelPreviewTimeRange(timeRange);
+      // refetch data only if preview has been clicked
+      // and there are no errors
+      if (this.panelPreviewIsShown && !this.panelPreviewError) {
+        this.fetchPanelPreviewMetrics();
+      }
+    },
   },
+  timeRanges,
 };
 </script>
 <template>
-  <div>
+  <div class="prometheus-panel-builder">
     <div class="gl-xs-flex-direction-column gl-display-flex gl-mx-n3">
       <gl-card class="gl-flex-grow-1 gl-flex-basis-0 gl-mx-3">
         <template #header>
@@ -151,7 +169,13 @@ export default {
     <gl-alert v-if="panelPreviewError" variant="warning" :dismissible="false">
       {{ panelPreviewError }}
     </gl-alert>
-
+    <date-time-picker
+      ref="dateTimePicker"
+      class="gl-flex-grow-1 preview-date-time-picker"
+      :value="panelPreviewTimeRange"
+      :options="$options.timeRanges"
+      @input="onDateTimePickerInput"
+    />
     <dashboard-panel :graph-data="panelPreviewGraphData" />
   </div>
 </template>

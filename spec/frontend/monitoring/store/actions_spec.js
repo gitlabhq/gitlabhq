@@ -1183,6 +1183,7 @@ describe('Monitoring store actions', () => {
         mockYmlContent,
         state,
         [
+          { type: types.SET_PANEL_PREVIEW_IS_SHOWN, payload: true },
           { type: types.REQUEST_PANEL_PREVIEW, payload: mockYmlContent },
           { type: types.RECEIVE_PANEL_PREVIEW_SUCCESS, payload: mockPanel },
         ],
@@ -1200,6 +1201,7 @@ describe('Monitoring store actions', () => {
         });
 
       testAction(fetchPanelPreview, mockYmlContent, state, [
+        { type: types.SET_PANEL_PREVIEW_IS_SHOWN, payload: true },
         { type: types.REQUEST_PANEL_PREVIEW, payload: mockYmlContent },
         { type: types.RECEIVE_PANEL_PREVIEW_FAILURE, payload: mockErrorMsg },
       ]);
@@ -1209,6 +1211,7 @@ describe('Monitoring store actions', () => {
       mock.onPost(panelPreviewEndpoint, { panel_yaml: mockYmlContent }).reply(500);
 
       testAction(fetchPanelPreview, mockYmlContent, state, [
+        { type: types.SET_PANEL_PREVIEW_IS_SHOWN, payload: true },
         { type: types.REQUEST_PANEL_PREVIEW, payload: mockYmlContent },
         {
           type: types.RECEIVE_PANEL_PREVIEW_FAILURE,

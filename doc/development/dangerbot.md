@@ -136,7 +136,7 @@ at GitLab so far:
   - Their availability:
     - No "OOO"/"PTO"/"Parental Leave" in their GitLab or Slack status.
     - No `:red_circle:`/`:palm_tree:`/`:beach:`/`:beach_umbrella:`/`:beach_with_umbrella:` emojis in GitLab or Slack status.
-  - [Experimental] Their timezone: people for which the local hour is between
+  - (Experimental) Their timezone: people for which the local hour is between
     6 AM and 2 PM are eligible to be picked. This is to ensure they have a good
     chance to get to perform a review during their current work day. The experimentation is tracked in
     [this issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/563)

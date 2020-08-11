@@ -16,13 +16,11 @@ RSpec.describe 'Projects > Settings > Packages', :js do
       allow(Gitlab.config.packages).to receive(:enabled).and_return(true)
     end
 
-    context 'without the need for a license' do
-      it 'displays the packages toggle button' do
-        visit edit_project_path(project)
+    it 'displays the packages toggle button' do
+      visit edit_project_path(project)
 
-        expect(page).to have_content('Packages')
-        expect(page).to have_selector('input[name="project[packages_enabled]"] + button', visible: true)
-      end
+      expect(page).to have_content('Packages')
+      expect(page).to have_selector('input[name="project[packages_enabled]"] + button', visible: true)
     end
   end
 

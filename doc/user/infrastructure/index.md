@@ -194,6 +194,103 @@ The output from the above `terraform` commands should be viewable in the job log
 
 See [this reference project](https://gitlab.com/nicholasklick/gitlab-terraform-aws) using GitLab and Terraform to deploy a basic AWS EC2 within a custom VPC.
 
+## Copy Terraform state between backends
+
+Terraform supports copying the state when the backend is changed or
+reconfigured. This can be useful if you need to migrate from another backend to
+GitLab managed Terraform state. It's also useful if you need to change the state
+name as in the following example:
+
+```shell
+PROJECT_ID="<gitlab-project-id>"
+TF_USERNAME="<gitlab-username>"
+TF_PASSWORD="<gitlab-personal-access-token>"
+TF_ADDRESS="https://gitlab.com/api/v4/projects/${PROJECT_ID}/terraform/state/old-state-name"
+
+terraform init \
+  -backend-config=address=${TF_ADDRESS} \
+  -backend-config=lock_address=${TF_ADDRESS}/lock \
+  -backend-config=unlock_address=${TF_ADDRESS}/lock \
+  -backend-config=username=${TF_USERNAME} \
+  -backend-config=password=${TF_PASSWORD} \
+  -backend-config=lock_method=POST \
+  -backend-config=unlock_method=DELETE \
+  -backend-config=retry_wait_min=5
+```
+
+```plaintext
+Initializing the backend...
+
+Successfully configured the backend "http"! Terraform will automatically
+use this backend unless the backend configuration changes.
+
+Initializing provider plugins...
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+```
+
+Now that `terraform init` has created a `.terraform/` directory that knows where
+the old state is, you can tell it about the new location:
+
+```shell
+TF_ADDRESS="https://gitlab.com/api/v4/projects/${PROJECT_ID}/terraform/state/new-state-name"
+
+terraform init \
+  -backend-config=address=${TF_ADDRESS} \
+  -backend-config=lock_address=${TF_ADDRESS}/lock \
+  -backend-config=unlock_address=${TF_ADDRESS}/lock \
+  -backend-config=username=${TF_USERNAME} \
+  -backend-config=password=${TF_PASSWORD} \
+  -backend-config=lock_method=POST \
+  -backend-config=unlock_method=DELETE \
+  -backend-config=retry_wait_min=5
+```
+
+```plaintext
+Initializing the backend...
+Backend configuration changed!
+
+Terraform has detected that the configuration specified for the backend
+has changed. Terraform will now check for existing state in the backends.
+
+
+Acquiring state lock. This may take a few moments...
+Do you want to copy existing state to the new backend?
+  Pre-existing state was found while migrating the previous "http" backend to the
+  newly configured "http" backend. No existing state was found in the newly
+  configured "http" backend. Do you want to copy this state to the new "http"
+  backend? Enter "yes" to copy and "no" to start with an empty state.
+
+  Enter a value: yes
+
+
+Successfully configured the backend "http"! Terraform will automatically
+use this backend unless the backend configuration changes.
+
+Initializing provider plugins...
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+```
+
+If you type `yes`, it will copy your state from the old location to the new
+location. You can then go back to running it from within GitLab CI.
+
 ## Output Terraform Plan information into a merge request
 
 Using the [GitLab Terraform Report artifact](../../ci/pipelines/job_artifacts.md#artifactsreportsterraform),

@@ -79,7 +79,7 @@ POST /admin/ci/variables
 | Attribute       | Type    | required | Description           |
 |-----------------|---------|----------|-----------------------|
 | `key`           | string  | yes      | The `key` of a variable. Max 255 characters, only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
-| `value`         | string  | yes      | The `value` of a variable. 10,000 characters allowed. [Since GitLab 13.3] |
+| `value`         | string  | yes      | The `value` of a variable. 10,000 characters allowed. [Since GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/220028) |
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file`. |
 | `protected`     | boolean | no       | Whether the variable is protected. |
 | `masked`        | boolean | no       | Whether the variable is masked. |

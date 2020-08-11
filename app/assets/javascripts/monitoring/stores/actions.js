@@ -16,9 +16,11 @@ import getDashboardValidationWarnings from '../queries/getDashboardValidationWar
 import { convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
 import { getDashboard, getPrometheusQueryData } from '../requests';
-import { defaultTimeRange } from '~/vue_shared/constants';
 
 import { ENVIRONMENT_AVAILABLE_STATE, OVERVIEW_DASHBOARD_PATH, VARIABLE_TYPES } from '../constants';
+
+const axiosCancelToken = axios.CancelToken;
+let cancelTokenSource;
 
 function prometheusMetricQueryParams(timeRange) {
   const { start, end } = convertToFixedRange(timeRange);
@@ -491,12 +493,18 @@ export const fetchVariableMetricLabelValues = ({ state, commit }, { defaultQuery
 
 // Panel Builder
 
+export const setPanelPreviewTimeRange = ({ commit }, timeRange) => {
+  commit(types.SET_PANEL_PREVIEW_TIME_RANGE, timeRange);
+};
+
 export const fetchPanelPreview = ({ state, commit, dispatch }, panelPreviewYml) => {
   if (!panelPreviewYml) {
     return null;
   }
 
+  commit(types.SET_PANEL_PREVIEW_IS_SHOWN, true);
   commit(types.REQUEST_PANEL_PREVIEW, panelPreviewYml);
+
   return axios
     .post(state.panelPreviewEndpoint, { panel_yaml: panelPreviewYml })
     .then(({ data }) => {
@@ -510,7 +518,12 @@ export const fetchPanelPreview = ({ state, commit, dispatch }, panelPreviewYml) 
 };
 
 export const fetchPanelPreviewMetrics = ({ state, commit }) => {
-  const defaultQueryParams = prometheusMetricQueryParams(defaultTimeRange);
+  if (cancelTokenSource) {
+    cancelTokenSource.cancel();
+  }
+  cancelTokenSource = axiosCancelToken.source();
+
+  const defaultQueryParams = prometheusMetricQueryParams(state.panelPreviewTimeRange);
 
   state.panelPreviewGraphData.metrics.forEach((metric, index) => {
     commit(types.REQUEST_PANEL_PREVIEW_METRIC_RESULT, { index });
@@ -519,7 +532,9 @@ export const fetchPanelPreviewMetrics = ({ state, commit }) => {
     if (metric.step) {
       params.step = metric.step;
     }
-    return getPrometheusQueryData(metric.prometheusEndpointPath, params)
+    return getPrometheusQueryData(metric.prometheusEndpointPath, params, {
+      cancelToken: cancelTokenSource.token,
+    })
       .then(data => {
         commit(types.RECEIVE_PANEL_PREVIEW_METRIC_RESULT_SUCCESS, { index, data });
       })

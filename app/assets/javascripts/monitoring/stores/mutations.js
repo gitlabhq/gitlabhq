@@ -264,4 +264,10 @@ export default {
     metric.state = emptyStateFromError(error);
     metric.result = null;
   },
+  [types.SET_PANEL_PREVIEW_TIME_RANGE](state, timeRange) {
+    state.panelPreviewTimeRange = timeRange;
+  },
+  [types.SET_PANEL_PREVIEW_IS_SHOWN](state, isPreviewShown) {
+    state.panelPreviewIsShown = isPreviewShown;
+  },
 };

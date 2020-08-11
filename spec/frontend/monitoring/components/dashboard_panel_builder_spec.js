@@ -4,8 +4,10 @@ import { createStore } from '~/monitoring/stores';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import * as types from '~/monitoring/stores/mutation_types';
 import { metricsDashboardResponse } from '../fixture_data';
+import { mockTimeRange } from '../mock_data';
 
 import DashboardPanelBuilder from '~/monitoring/components/dashboard_panel_builder.vue';
+import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
 const mockPanel = metricsDashboardResponse.dashboard.panel_groups[0].panels[0];
 
@@ -37,6 +39,7 @@ describe('dashboard invalid url parameters', () => {
   const findViewDocumentationBtn = () => wrapper.find({ ref: 'viewDocumentationBtn' });
   const findOpenRepositoryBtn = () => wrapper.find({ ref: 'openRepositoryBtn' });
   const findPanel = () => wrapper.find(DashboardPanel);
+  const findTimeRangePicker = () => wrapper.find(DateTimePicker);
 
   beforeEach(() => {
     mockShowToast = jest.fn();
@@ -110,6 +113,31 @@ describe('dashboard invalid url parameters', () => {
     });
   });
 
+  describe('time range picker', () => {
+    it('is visible by default', () => {
+      expect(findTimeRangePicker().exists()).toBe(true);
+    });
+
+    it('when changed does not trigger data fetch unless preview panel button is clicked', () => {
+      // mimic initial state where SET_PANEL_PREVIEW_IS_SHOWN is set to false
+      store.commit(`monitoringDashboard/${types.SET_PANEL_PREVIEW_IS_SHOWN}`, false);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(store.dispatch).not.toHaveBeenCalled();
+      });
+    });
+
+    it('when changed triggers data fetch if preview panel button is clicked', () => {
+      findForm().vm.$emit('submit', new Event('submit'));
+
+      store.commit(`monitoringDashboard/${types.SET_PANEL_PREVIEW_TIME_RANGE}`, mockTimeRange);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(store.dispatch).toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('instructions card', () => {
     const mockDocsPath = '/docs-path';
     const mockProjectPath = '/project-path';
@@ -145,6 +173,14 @@ describe('dashboard invalid url parameters', () => {
 
     it('displays an empty dashboard panel', () => {
       expect(findPanel().props('graphData')).toBe(null);
+    });
+
+    it('changing time range should not refetch data', () => {
+      store.commit(`monitoringDashboard/${types.SET_PANEL_PREVIEW_TIME_RANGE}`, mockTimeRange);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(store.dispatch).not.toHaveBeenCalled();
+      });
     });
   });
 

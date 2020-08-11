@@ -8,8 +8,8 @@ guidance on getting started from the [command line](getting_started.md#command-l
 
 The [example users query](#set-up-the-graphiql-explorer) looks for a subset of users in
 a GitLab instance either by username or
-[global ID](../../development/api_graphql_styleguide.md#exposing-global-ids). The query
-includes:
+[Global ID](../../development/api_graphql_styleguide.md#global-ids).
+The query includes:
 
 - [`pageInfo`](#pageinfo)
 - [`nodes`](#nodes)

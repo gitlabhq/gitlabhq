@@ -3,7 +3,7 @@ import statusCodes from '~/lib/utils/http_status';
 import { backOff } from '~/lib/utils/common_utils';
 import { PROMETHEUS_TIMEOUT } from '../constants';
 
-const backOffRequest = makeRequestCallback =>
+const cancellableBackOffRequest = makeRequestCallback =>
   backOff((next, stop) => {
     makeRequestCallback()
       .then(resp => {
@@ -13,16 +13,19 @@ const backOffRequest = makeRequestCallback =>
           stop(resp);
         }
       })
-      .catch(stop);
+      // If the request is cancelled by axios
+      // then consider it as noop so that its not
+      // caught by subsequent catches
+      .catch(thrown => (axios.isCancel(thrown) ? undefined : stop(thrown)));
   }, PROMETHEUS_TIMEOUT);
 
 export const getDashboard = (dashboardEndpoint, params) =>
-  backOffRequest(() => axios.get(dashboardEndpoint, { params })).then(
+  cancellableBackOffRequest(() => axios.get(dashboardEndpoint, { params })).then(
     axiosResponse => axiosResponse.data,
   );
 
-export const getPrometheusQueryData = (prometheusEndpoint, params) =>
-  backOffRequest(() => axios.get(prometheusEndpoint, { params }))
+export const getPrometheusQueryData = (prometheusEndpoint, params, opts) =>
+  cancellableBackOffRequest(() => axios.get(prometheusEndpoint, { params, ...opts }))
     .then(axiosResponse => axiosResponse.data)
     .then(prometheusResponse => prometheusResponse.data)
     .catch(error => {

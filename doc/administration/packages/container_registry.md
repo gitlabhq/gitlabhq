@@ -449,8 +449,9 @@ you can pull from the Container Registry, but you cannot push.
 1. This example uses the `aws` CLI. If you haven't configured the
    CLI before, you have to configure your credentials by running `sudo aws configure`.
    Because a non-admin user likely can't access the Container Registry folder,
-   ensure you use `sudo`. To check your credential configuration, run [`ls`]
-   to list all buckets.
+   ensure you use `sudo`. To check your credential configuration, run
+   [`ls`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/ls.html) to list
+   all buckets.
 
    ```shell
    sudo aws --endpoint-url https://your-object-storage-backend.com s3 ls

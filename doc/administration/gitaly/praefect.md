@@ -59,6 +59,38 @@ Follow the [HA Gitaly epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
 for improvements including
 [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
 
+## Cluster or shard
+
+Gitaly supports multiple models of scaling:
+
+- Clustering using Gitaly Cluster, where each repository is stored on multiple Gitaly nodes in the
+  cluster. Read requests are distributed between repository replicas and write requests are
+  broadcast to repository replicas.
+- Sharding using [repository storage paths](../repository_storage_paths.md), where each repository
+  is stored on the assigned Gitaly node. All requests are routed to this node.
+
+| Cluster | Shard |
+|---|---|
+| ![Cluster example](img/cluster_example_v13_3.png) | ![Shard example](img/shard_example_v13_3.png) |
+
+Generally, Gitaly Cluster can replace sharded configurations, at the expense of additional storage
+needed to store each repository on multiple Gitaly nodes. The benefit of using Gitaly Cluster over
+sharding is:
+
+- Improved fault tolerance, because each Gitaly node has a copy of every repository.
+- Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
+  loads, because read loads are distributed across replicas.
+- Manual rebalancing for performance is not required, because read loads are distributed across
+  replicas.
+- Simpler management, because all Gitaly nodes are identical.
+
+Under some workloads, CPU and memory requirements may require a large fleet of Gitaly nodes and it
+can be uneconomical to have one to one replication factor.
+
+A hybrid approach can be used in these instances, where each shard is configured as a smaller
+cluster. [Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned
+to provide greater flexibility for extremely large GitLab instances.
+
 ## Requirements for configuring a Gitaly Cluster
 
 The minimum recommended configuration for a Gitaly Cluster requires:
@@ -141,6 +173,16 @@ Do not store the GitLab application database and the Praefect
 database on the same PostgreSQL server if using
 [Geo](../geo/replication/index.md). The replication state is internal to each instance
 of GitLab and should not be replicated.
+
+These instructions help set up a single PostgreSQL database, which creates a single point of
+failure. For greater fault tolerance, the following options are available:
+
+- For non-Geo installations, use one of the fault-tolerant
+  [PostgreSQL setups](../postgresql/index.md).
+- For Geo instances, either:
+  - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
+  - Use a cloud-managed PostgreSQL service. AWS
+     [Relational Database Service](https://aws.amazon.com/rds/)) is recommended.
 
 To complete this section you will need:
 
