@@ -31,18 +31,19 @@ export default {
 
 <template>
   <div>
-    <p class="gl-mt-3 gl-font-weight-bold" data-testid="registry-include-title">
+    <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
+    <h4 class="gl-font-base" data-testid="registry-include-title">
       {{ $options.i18n.registryInclude }}
-    </p>
+    </h4>
+
     <code-instruction
       :instruction="composerRegistryInclude"
       :copy-text="$options.i18n.copyRegistryInclude"
       :tracking-action="$options.trackingActions.COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND"
     />
-
-    <p class="gl-mt-3 gl-font-weight-bold" data-testid="package-include-title">
+    <h4 class="gl-font-base" data-testid="package-include-title">
       {{ $options.i18n.packageInclude }}
-    </p>
+    </h4>
     <code-instruction
       :instruction="composerPackageInclude"
       :copy-text="$options.i18n.copyPackageInclude"

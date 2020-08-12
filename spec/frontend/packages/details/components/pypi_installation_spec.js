@@ -1,9 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import PypiInstallation from '~/packages/details/components/pypi_installation.vue';
-import InstallationTabs from '~/packages/details/components/installation_tabs.vue';
-import { pypiPackage as packageEntity } from '../../mock_data';
-import { GlTabs } from '@gitlab/ui';
+import { pypiPackage as packageEntity } from 'jest/packages/mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -25,7 +23,6 @@ describe('PypiInstallation', () => {
     },
   });
 
-  const findTabs = () => wrapper.find(GlTabs);
   const pipCommand = () => wrapper.find('[data-testid="pip-command"]');
   const setupInstruction = () => wrapper.find('[data-testid="pypi-setup-content"]');
 
@@ -33,9 +30,6 @@ describe('PypiInstallation', () => {
     wrapper = shallowMount(PypiInstallation, {
       localVue,
       store,
-      stubs: {
-        InstallationTabs,
-      },
     });
   }
 
@@ -48,10 +42,8 @@ describe('PypiInstallation', () => {
     wrapper = null;
   });
 
-  describe('it renders', () => {
-    it('with GlTabs', () => {
-      expect(findTabs().exists()).toBe(true);
-    });
+  it('renders all the messages', () => {
+    expect(wrapper.element).toMatchSnapshot();
   });
 
   describe('installation commands', () => {

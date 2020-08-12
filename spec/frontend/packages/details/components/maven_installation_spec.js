@@ -1,9 +1,10 @@
 import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import MavenInstallation from '~/packages/details/components/maven_installation.vue';
-import { registryUrl as mavenPath } from '../mock_data';
-import { mavenPackage as packageEntity } from '../../mock_data';
-import { GlTabs } from '@gitlab/ui';
+import CodeInstructions from '~/packages/details/components/code_instruction.vue';
+import { registryUrl as mavenPath } from 'jest/packages/details/mock_data';
+import { mavenPackage as packageEntity } from 'jest/packages/mock_data';
+import { TrackingActions } from '~/packages/details/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -27,13 +28,10 @@ describe('MavenInstallation', () => {
     },
   });
 
-  const findTabs = () => wrapper.find(GlTabs);
-  const xmlCode = () => wrapper.find('.js-maven-xml > pre');
-  const mavenCommand = () => wrapper.find('.js-maven-command > input');
-  const xmlSetup = () => wrapper.find('.js-maven-setup-xml > pre');
+  const findCodeInstructions = () => wrapper.findAll(CodeInstructions);
 
   function createComponent() {
-    wrapper = mount(MavenInstallation, {
+    wrapper = shallowMount(MavenInstallation, {
       localVue,
       store,
     });
@@ -47,25 +45,47 @@ describe('MavenInstallation', () => {
     if (wrapper) wrapper.destroy();
   });
 
-  describe('it renders', () => {
-    it('with GlTabs', () => {
-      expect(findTabs().exists()).toBe(true);
-    });
+  it('renders all the messages', () => {
+    expect(wrapper.element).toMatchSnapshot();
   });
 
   describe('installation commands', () => {
     it('renders the correct xml block', () => {
-      expect(xmlCode().text()).toBe(xmlCodeBlock);
+      expect(
+        findCodeInstructions()
+          .at(0)
+          .props(),
+      ).toMatchObject({
+        instruction: xmlCodeBlock,
+        multiline: true,
+        trackingAction: TrackingActions.COPY_MAVEN_XML,
+      });
     });
 
     it('renders the correct maven command', () => {
-      expect(mavenCommand().element.value).toBe(mavenCommandStr);
+      expect(
+        findCodeInstructions()
+          .at(1)
+          .props(),
+      ).toMatchObject({
+        instruction: mavenCommandStr,
+        multiline: false,
+        trackingAction: TrackingActions.COPY_MAVEN_COMMAND,
+      });
     });
   });
 
   describe('setup commands', () => {
     it('renders the correct xml block', () => {
-      expect(xmlSetup().text()).toBe(mavenSetupXml);
+      expect(
+        findCodeInstructions()
+          .at(2)
+          .props(),
+      ).toMatchObject({
+        instruction: mavenSetupXml,
+        multiline: true,
+        trackingAction: TrackingActions.COPY_MAVEN_SETUP,
+      });
     });
   });
 });

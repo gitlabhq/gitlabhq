@@ -20,6 +20,15 @@ RSpec.describe 'profiles/preferences/show' do
     it 'has option for Render whitespace characters in the Web IDE' do
       expect(rendered).to have_unchecked_field('Render whitespace characters in the Web IDE')
     end
+
+    it 'has an id for anchoring on behavior' do
+      expect(rendered).to have_css('#behavior')
+    end
+
+    it 'has helpful homepage setup guidance' do
+      expect(rendered).to have_field('Homepage content')
+      expect(rendered).to have_content('Choose what content you want to see on your homepage.')
+    end
   end
 
   context 'sourcegraph' do

@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MavenInstallation renders all the messages 1`] = `
+<div>
+  <h3
+    class="gl-font-lg"
+  >
+    Installation
+  </h3>
+   
+  <h4
+    class="gl-font-base"
+  >
+    
+    Maven XML
+  
+  </h4>
+   
+  <p>
+    <gl-sprintf-stub
+      message="Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block."
+    />
+  </p>
+   
+  <code-instruction-stub
+    copytext="Copy Maven XML"
+    instruction="foo/xml"
+    multiline="true"
+    trackingaction="copy_maven_xml"
+  />
+   
+  <h4
+    class="gl-font-base"
+  >
+    
+    Maven Command
+  
+  </h4>
+   
+  <code-instruction-stub
+    copytext="Copy Maven command"
+    instruction="foo/command"
+    trackingaction="copy_maven_command"
+  />
+   
+  <h3
+    class="gl-font-lg"
+  >
+    Registry setup
+  </h3>
+   
+  <p>
+    <gl-sprintf-stub
+      message="If you haven't already done so, you will need to add the below to your %{codeStart}pom.xml%{codeEnd} file."
+    />
+  </p>
+   
+  <code-instruction-stub
+    copytext="Copy Maven registry XML"
+    instruction="foo/setup"
+    multiline="true"
+    trackingaction="copy_maven_setup_xml"
+  />
+   
+  <gl-sprintf-stub
+    message="For more information on the Maven registry, %{linkStart}see the documentation%{linkEnd}."
+  />
+</div>
+`;

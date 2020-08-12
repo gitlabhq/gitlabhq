@@ -2,9 +2,8 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import CodeInstruction from './code_instruction.vue';
-import { NpmManager, TrackingActions, TrackingLabels } from '../constants';
+import { NpmManager, TrackingActions } from '../constants';
 import { mapGetters, mapState } from 'vuex';
-import InstallationTabs from './installation_tabs.vue';
 
 export default {
   name: 'NpmInstallation',
@@ -12,7 +11,6 @@ export default {
     CodeInstruction,
     GlLink,
     GlSprintf,
-    InstallationTabs,
   },
   computed: {
     ...mapState(['npmHelpPath']),
@@ -36,52 +34,47 @@ export default {
     ),
   },
   trackingActions: { ...TrackingActions },
-  trackingLabel: TrackingLabels.NPM_INSTALLATION,
 };
 </script>
 
 <template>
-  <installation-tabs :tracking-label="$options.trackingLabel">
-    <template #installation>
-      <p class="gl-mt-3 font-weight-bold">{{ s__('PackageRegistry|npm') }}</p>
-      <code-instruction
-        :instruction="npmCommand"
-        :copy-text="s__('PackageRegistry|Copy npm command')"
-        class="js-npm-install"
-        :tracking-action="$options.trackingActions.COPY_NPM_INSTALL_COMMAND"
-      />
+  <div>
+    <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
+    <h4 class="gl-font-base">{{ s__('PackageRegistry|npm command') }}</h4>
 
-      <p class="gl-mt-3 font-weight-bold">{{ s__('PackageRegistry|yarn') }}</p>
-      <code-instruction
-        :instruction="yarnCommand"
-        :copy-text="s__('PackageRegistry|Copy yarn command')"
-        class="js-yarn-install"
-        :tracking-action="$options.trackingActions.COPY_YARN_INSTALL_COMMAND"
-      />
-    </template>
+    <code-instruction
+      :instruction="npmCommand"
+      :copy-text="s__('PackageRegistry|Copy npm command')"
+      :tracking-action="$options.trackingActions.COPY_NPM_INSTALL_COMMAND"
+    />
 
-    <template #setup>
-      <p class="gl-mt-3 font-weight-bold">{{ s__('PackageRegistry|npm') }}</p>
-      <code-instruction
-        :instruction="npmSetup"
-        :copy-text="s__('PackageRegistry|Copy npm setup command')"
-        class="js-npm-setup"
-        :tracking-action="$options.trackingActions.COPY_NPM_SETUP_COMMAND"
-      />
+    <h4 class="gl-font-base">{{ s__('PackageRegistry|yarn command') }}</h4>
+    <code-instruction
+      :instruction="yarnCommand"
+      :copy-text="s__('PackageRegistry|Copy yarn command')"
+      :tracking-action="$options.trackingActions.COPY_YARN_INSTALL_COMMAND"
+    />
 
-      <p class="gl-mt-3 font-weight-bold">{{ s__('PackageRegistry|yarn') }}</p>
-      <code-instruction
-        :instruction="yarnSetupCommand"
-        :copy-text="s__('PackageRegistry|Copy yarn setup command')"
-        class="js-yarn-setup"
-        :tracking-action="$options.trackingActions.COPY_YARN_SETUP_COMMAND"
-      />
+    <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
 
-      <gl-sprintf :message="$options.i18n.helpText">
-        <template #link="{ content }">
-          <gl-link :href="npmHelpPath" target="_blank">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </template>
-  </installation-tabs>
+    <h4 class="gl-font-base">{{ s__('PackageRegistry|npm command') }}</h4>
+    <code-instruction
+      :instruction="npmSetup"
+      :copy-text="s__('PackageRegistry|Copy npm setup command')"
+      :tracking-action="$options.trackingActions.COPY_NPM_SETUP_COMMAND"
+    />
+
+    <h4 class="gl-font-base">{{ s__('PackageRegistry|yarn command') }}</h4>
+    <code-instruction
+      :instruction="yarnSetupCommand"
+      :copy-text="s__('PackageRegistry|Copy yarn setup command')"
+      :tracking-action="$options.trackingActions.COPY_YARN_SETUP_COMMAND"
+    />
+
+    <gl-sprintf :message="$options.i18n.helpText">
+      <template #link="{ content }">
+        <gl-link :href="npmHelpPath" target="_blank">{{ content }}</gl-link>
+      </template>
+    </gl-sprintf>
+  </div>
 </template>

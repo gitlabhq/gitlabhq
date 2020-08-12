@@ -38,7 +38,7 @@ RSpec.shared_examples 'package details link' do |property|
 
     page.within('[data-qa-selector="package_information_content"]') do
       expect(page).to have_content('Installation')
-      expect(page).to have_content('Registry Setup')
+      expect(page).to have_content('Registry setup')
     end
   end
 end

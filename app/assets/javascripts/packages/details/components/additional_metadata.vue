@@ -42,7 +42,7 @@ export default {
 
 <template>
   <div v-if="showMetadata">
-    <h3 class="gl-font-lg gl-mt-5" data-testid="title">{{ __('Additional Metadata') }}</h3>
+    <h3 class="gl-font-lg" data-testid="title">{{ __('Additional Metadata') }}</h3>
 
     <div class="gl-bg-gray-50 gl-inset-border-1-gray-100 gl-rounded-base" data-testid="main">
       <template v-if="packageEntity.nuget_metadatum">

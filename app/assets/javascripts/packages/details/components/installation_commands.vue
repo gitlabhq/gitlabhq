@@ -43,7 +43,6 @@ export default {
 
 <template>
   <div v-if="installationComponent">
-    <h3 class="gl-font-lg gl-mt-5" data-testid="title">{{ __('Installation Commands') }}</h3>
     <component
       :is="installationComponent"
       :name="packageEntity.name"
