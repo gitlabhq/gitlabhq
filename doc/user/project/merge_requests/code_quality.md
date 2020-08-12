@@ -130,6 +130,67 @@ definition they will be able to execute privileged Docker commands on the Runner
 host. Having proper access control policies mitigates this attack vector by
 allowing access only to trusted actors.
 
+### Disabling the code quality job
+
+The `code_quality` job will not run if the `$CODE_QUALITY_DISABLED` environment
+variable is present. Please refer to the environment variables [documentation](../../../ci/variables/README.md)
+to learn more about how to define one.
+
+To disable the `code_quality` job, add `CODE_QUALITY_DISABLED` as a custom environment
+variable. This can be done:
+
+- For the whole project, [in the project settings](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui)
+  or [CI/CD configuration](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui).
+- For a single pipeline run:
+
+  1. Go to **CI/CD > Pipelines**
+  1. Click **Run Pipeline**
+  1. Add `CODE_QUALITY_DISABLED` as the variable key, with any value.
+
+### Using with merge request pipelines
+
+The configuration provided by the Code Quality template does not let the `code_quality` job
+run on [pipelines for merge requests](../../../ci/merge_request_pipelines/index.md).
+
+If pipelines for merge requests is enabled, the `code_quality:rules` must be redefined.
+
+The template has these [`rules`](../../../ci/yaml/README.md#rules) for the `code quality` job:
+
+```yaml
+code_quality:
+  rules:
+    - if: '$CODE_QUALITY_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+```
+
+If you are using merge request pipelines, your `rules` (or [`workflow: rules`](../../../ci/yaml/README.md#workflowrules))
+might look like this example:
+
+```yaml
+job1:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run job1 in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"'                # Run job1 in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_TAG'                               # Run job1 in pipelines for tags
+```
+
+To make these work together, you will need to overwrite the code quality `rules`
+so that they match your current `rules`. From the example above, it could look like:
+
+```yaml
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
+code_quality:
+  rules:
+    - if: '$CODE_QUALITY_DISABLED'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run code quality job in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'      # Run code quality job in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_TAG'                               # Run code quality job in pipelines for tags
+```
+
 ## Configuring jobs using variables
 
 The Code Quality job supports environment variables that users can set to

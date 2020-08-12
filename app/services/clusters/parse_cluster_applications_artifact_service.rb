@@ -14,8 +14,6 @@ module Clusters
     end
 
     def execute(artifact)
-      return success unless Feature.enabled?(:cluster_applications_artifact, project)
-
       raise ArgumentError, 'Artifact is not cluster_applications file type' unless artifact&.cluster_applications?
 
       return error(too_big_error_message, :bad_request) unless artifact.file.size < MAX_ACCEPTABLE_ARTIFACT_SIZE

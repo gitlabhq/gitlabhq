@@ -423,7 +423,10 @@ In the following example:
 
 #### Custom collapsible sections
 
-You can create collapsible sections in job logs by manually outputting special codes
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14664) in GitLab 12.0.
+
+You can create [collapsible sections in job logs](../pipelines/index.md#expand-and-collapse-job-log-sections)
+by manually outputting special codes
 that GitLab uses to determine what sections to collapse:
 
 - Section start marker: `section_start:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K` + `TEXT_OF_SECTION_HEADER`

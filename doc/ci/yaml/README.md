@@ -828,6 +828,10 @@ $ tr a-z A-Z << END_TEXT # collapsed multi-line command
   FOUR FIVE SIX
 ```
 
+#### Custom collapsible sections
+
+See [custom collapsible sections](../pipelines/index.md#custom-collapsible-sections).
+
 ### `stage`
 
 `stage` is defined per-job and relies on [`stages`](#stages) which is defined

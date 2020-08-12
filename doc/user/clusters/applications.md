@@ -946,6 +946,11 @@ management project. Refer to the
 [Cilium chart](https://github.com/cilium/cilium/tree/master/install/kubernetes/cilium)
 for the available configuration options.
 
+You can check Cilium's installation status on the cluster management page:
+
+- [Project-level cluster](../project/clusters/index.md): Navigate to your project's **Operations > Kubernetes** page.
+- [Group-level cluster](../group/clusters/index.md): Navigate to your group's **Kubernetes** page.
+
 CAUTION: **Caution:**
 Installation and removal of the Cilium requires a **manual**
 [restart](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-gke/#restart-unmanaged-pods)
