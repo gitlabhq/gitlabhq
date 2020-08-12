@@ -19198,8 +19198,6 @@ CREATE UNIQUE INDEX index_ci_instance_variables_on_key ON public.ci_instance_var
 
 CREATE INDEX index_ci_job_artifacts_for_terraform_reports ON public.ci_job_artifacts USING btree (project_id, id) WHERE (file_type = 18);
 
-CREATE INDEX index_ci_job_artifacts_id_for_terraform_reports ON public.ci_job_artifacts USING btree (id) WHERE (file_type = 18);
-
 CREATE INDEX index_ci_job_artifacts_on_expire_at_and_job_id ON public.ci_job_artifacts USING btree (expire_at, job_id);
 
 CREATE INDEX index_ci_job_artifacts_on_file_store ON public.ci_job_artifacts USING btree (file_store);
@@ -19601,6 +19599,8 @@ CREATE INDEX index_events_on_group_id_partial ON public.events USING btree (grou
 CREATE INDEX index_events_on_project_id_and_created_at ON public.events USING btree (project_id, created_at);
 
 CREATE INDEX index_events_on_project_id_and_id ON public.events USING btree (project_id, id);
+
+CREATE INDEX index_events_on_project_id_and_id_desc_on_merged_action ON public.events USING btree (project_id, id DESC) WHERE (action = 7);
 
 CREATE INDEX index_events_on_target_type_and_target_id ON public.events USING btree (target_type, target_id);
 

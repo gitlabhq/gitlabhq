@@ -16686,6 +16686,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "includeSubgroups",
+                  "description": "Include issues belonging to subgroups.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {

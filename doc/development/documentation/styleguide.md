@@ -251,7 +251,7 @@ GitLab documentation should be clear and easy to understand.
 
 - Be clear, concise, and stick to the goal of the documentation.
 - Write in US English with US grammar. (Tested in [`British.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/British.yml).)
-- Use inclusive language.
+- Use [inclusive language](#inclusive-language).
 
 ### Point of view
 
@@ -312,6 +312,60 @@ Capitalize names of:
 - Methods or methodologies. For example, Continuous Integration, Continuous Deployment, Scrum, and Agile. (Tested in [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json).)
 
 Follow the capitalization style listed at the [authoritative source](#links-to-external-documentation) for the entity, which may use non-standard case styles. For example: GitLab and npm.
+
+### Inclusive language
+
+We strive to create documentation that is inclusive. This section includes guidance and examples in the
+following categories:
+
+- [Gender-specific wording](#avoid-gender-specific-wording).
+- [Ableist language](#avoid-ableist-language).
+- [Cultural sensitivity](#culturally-sensitive-language).
+
+We write our developer documentation with inclusivity and diversity in mind. This page is not an exhaustive reference, but describes some general guidelines and examples that illustrate some best practices to follow.
+
+#### Avoid gender-specific wording
+
+When possible, use gender-neutral pronouns. For example, you can use a singular
+[they](https://developers.google.com/style/pronouns#gender-neutral-pronouns) as a gender-neutral
+pronoun.
+
+Avoid the use of gender-specific pronouns, unless referring to a specific person.
+
+| Use                               | Avoid           |
+|-----------------------------------|-----------------|
+| People, humanity                  | Mankind         |
+| GitLab Team Members               | Manpower        |
+| You can install; They can install | He can install; She can install |
+
+If you need to set up [Fake user information](#fake-user-information), use diverse or non-gendered
+names with common surnames.
+
+#### Avoid ableist language
+
+Avoid terms that are also used in negative stereotypes for different groups.
+
+| Use                    | Avoid                |
+|------------------------|----------------------|
+| Check for completeness | Sanity check         |
+| Uncertain outliers     | Crazy outliers       |
+| Slows the service      | Cripples the service |
+| Placeholder variable   | Dummy variable       |
+| Active/Inactive        | Enabled/Disabled     |
+| On/Off                 | Enabled/Disabled     |
+
+Credit: [Avoid ableist language](https://developers.google.com/style/inclusive-documentation#ableist-language) in the Google Developer Style Guide.
+
+#### Culturally sensitive language
+
+Avoid terms that reflect negative cultural stereotypes and history. In most cases, you can replace terms such as `master` and `slave` with terms that are more precise and functional, such as `primary` and `secondary`.
+
+| Use                   | Avoid                |
+|-----------------------|----------------------|
+| Primary / secondary   | Master / slave       |
+| Blacklist / whitelist | Allowlist / denylist |
+
+For more information see the following [Internet Draft specification](https://tools.ietf.org/html/draft-knodel-terminology-02).
 
 ### Language to avoid
 

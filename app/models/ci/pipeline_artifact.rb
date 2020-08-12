@@ -20,7 +20,7 @@ module Ci
     validates :pipeline, :project, :file_format, :file, presence: true
     validates :file_store, presence: true, inclusion: { in: FILE_STORE_SUPPORTED }
     validates :size, presence: true, numericality: { less_than_or_equal_to: FILE_SIZE_LIMIT }
-    validates :file_type, presence: true, uniqueness: { scope: [:pipeline_id] }
+    validates :file_type, presence: true
 
     enum file_type: {
       code_coverage: 1

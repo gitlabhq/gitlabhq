@@ -47,7 +47,7 @@ module Types
           Types::IssueType.connection_type,
           null: true,
           description: 'Issues of the group',
-          resolver: Resolvers::IssuesResolver
+          resolver: Resolvers::GroupIssuesResolver
 
     field :milestones, Types::MilestoneType.connection_type, null: true,
           description: 'Milestones of the group',

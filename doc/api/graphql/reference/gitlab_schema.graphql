@@ -5989,6 +5989,11 @@ type Group {
     iids: [String!]
 
     """
+    Include issues belonging to subgroups.
+    """
+    includeSubgroups: Boolean = false
+
+    """
     Iterations applied to the issue
     """
     iterationId: [ID]

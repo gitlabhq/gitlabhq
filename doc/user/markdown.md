@@ -348,10 +348,7 @@ The wrapping tags can be either curly braces or square brackets:
 - [- deletion 4 -]
 ```
 
-- {+ addition 1 +}
-- [+ addition 2 +]
-- {- deletion 3 -}
-- [- deletion 4 -]
+![Inline diff as rendered by GitLab's interface](img/inline_diff_01_v13_3.png)
 
 ---
 
@@ -373,9 +370,7 @@ backslash `\`, otherwise the diff highlight don't render correctly:
 - {+ Text with escaped \`backticks\` inside +}
 ```
 
-- {+ Just regular text +}
-- {+ Text with `backticks` inside +}
-- {+ Text with escaped \`backticks\` inside +}
+![Inline diff with mixed formatting, as rendered by GitLab's interface](img/inline_diff_02_v13_3.png)
 
 ### Math
 
@@ -475,16 +470,7 @@ unordered or ordered lists:
    1. [x] Sub-task 2
 ```
 
-- [x] Completed task
-- [ ] Incomplete task
-  - [ ] Sub-task 1
-  - [x] Sub-task 2
-  - [ ] Sub-task 3
-
-1. [x] Completed task
-1. [ ] Incomplete task
-   1. [ ] Sub-task 1
-   1. [x] Sub-task 2
+![A task list as rendered by GitLab's interface](img/completed_tasks_v13_3.png)
 
 ### Table of contents
 

@@ -53,7 +53,5 @@
 }
 
 /* Rules for overriding cloaking in startup-general.scss */
-.container-limited,
-.modal-dialog {
-  display: block;
-}
+@import 'startup/cloaking';
+@include cloak-startup-scss(block);

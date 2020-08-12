@@ -45,15 +45,6 @@ module Gitlab
             Gitlab::Metrics.counter(name, comment)
           end
         end
-
-        def pipelines_created_counter
-          strong_memoize(:pipelines_created_count) do
-            name = :pipelines_created_total
-            comment = 'Counter of pipelines created'
-
-            Gitlab::Metrics.counter(name, comment)
-          end
-        end
       end
     end
   end
