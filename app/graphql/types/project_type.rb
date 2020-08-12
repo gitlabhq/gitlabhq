@@ -148,6 +148,12 @@ module Types
           description: 'Issues of the project',
           resolver: Resolvers::IssuesResolver
 
+    field :issue_status_counts,
+          Types::IssueStatusCountsType,
+          null: true,
+          description: 'Counts of issues by status for the project',
+          resolver: Resolvers::IssueStatusCountsResolver
+
     field :milestones, Types::MilestoneType.connection_type, null: true,
           description: 'Milestones of the project',
           resolver: Resolvers::ProjectMilestonesResolver
@@ -164,8 +170,8 @@ module Types
           resolver: Resolvers::EnvironmentsResolver
 
     field :sast_ci_configuration, ::Types::CiConfiguration::Sast::Type, null: true,
-      description: 'SAST CI configuration for the project',
-      resolver: ::Resolvers::CiConfiguration::SastResolver
+          description: 'SAST CI configuration for the project',
+          resolver: ::Resolvers::CiConfiguration::SastResolver
 
     field :issue,
           Types::IssueType,

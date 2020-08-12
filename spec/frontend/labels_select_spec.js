@@ -29,7 +29,7 @@ const mockScopedLabels2 = [
     title: 'Foo::Bar2',
     description: 'Foobar2',
     color: '#FFFFFF',
-    text_color: '#000000',
+    text_color: '#333333',
   },
 ];
 
@@ -61,10 +61,11 @@ describe('LabelsSelect', () => {
         expect($labelEl.find('a').attr('title')).toBe(label.description);
       });
 
-      it('generated label item template has correct label styles', () => {
+      it('generated label item template has correct label styles and classes', () => {
         expect($labelEl.find('span.gl-label-text').attr('style')).toBe(
-          `background-color: ${label.color}; color: ${label.text_color};`,
+          `background-color: ${label.color};`,
         );
+        expect($labelEl.find('span.gl-label-text')).toHaveClass('gl-label-text-light');
       });
 
       it('generated label item has a gl-label-text class', () => {
@@ -100,16 +101,12 @@ describe('LabelsSelect', () => {
         expect($labelEl.find('a').attr('data-html')).toBe('true');
       });
 
-      it('generated label item template has correct label styles', () => {
+      it('generated label item template has correct label styles and classes', () => {
         expect($labelEl.find('span.gl-label-text').attr('style')).toBe(
-          `background-color: ${label.color}; color: ${label.text_color};`,
+          `background-color: ${label.color};`,
         );
-        expect(
-          $labelEl
-            .find('span.gl-label-text')
-            .last()
-            .attr('style'),
-        ).toBe(`color: ${label.color};`);
+        expect($labelEl.find('span.gl-label-text')).toHaveClass('gl-label-text-light');
+        expect($labelEl.find('span.gl-label-text').last()).not.toHaveClass('gl-label-text-light');
       });
 
       it('generated label item has a badge class', () => {
@@ -131,16 +128,12 @@ describe('LabelsSelect', () => {
         );
       });
 
-      it('generated label item template has correct label styles', () => {
+      it('generated label item template has correct label styles and classes', () => {
         expect($labelEl.find('span.gl-label-text').attr('style')).toBe(
-          `background-color: ${label.color}; color: ${label.text_color};`,
+          `background-color: ${label.color};`,
         );
-        expect(
-          $labelEl
-            .find('span.gl-label-text')
-            .last()
-            .attr('style'),
-        ).toBe(`color: ${label.text_color};`);
+        expect($labelEl.find('span.gl-label-text')).toHaveClass('gl-label-text-dark');
+        expect($labelEl.find('span.gl-label-text').last()).toHaveClass('gl-label-text-dark');
       });
     });
   });

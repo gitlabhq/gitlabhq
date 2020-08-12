@@ -20,6 +20,13 @@ export default {
       required: false,
       default: '',
     },
+    // This is used to help uniquely create a monaco model
+    // even if two blob's share a file path.
+    fileGlobalId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -36,7 +43,11 @@ export default {
       el: this.$refs.editor,
       blobPath: this.fileName,
       blobContent: this.value,
+      blobGlobalId: this.fileGlobalId,
     });
+
+    this.editor.onChangeContent(debounce(this.onFileChange.bind(this), 250));
+
     window.requestAnimationFrame(() => {
       if (!performance.getEntriesByName(SNIPPET_MARK_BLOBS_CONTENT).length) {
         performance.mark(SNIPPET_MARK_BLOBS_CONTENT);
@@ -45,16 +56,19 @@ export default {
       }
     });
   },
+  beforeDestroy() {
+    this.editor.dispose();
+  },
   methods: {
-    triggerFileChange: debounce(function debouncedFileChange() {
+    onFileChange() {
       this.$emit('input', this.editor.getValue());
-    }, 250),
+    },
   },
 };
 </script>
 <template>
   <div class="file-content code">
-    <div id="editor" ref="editor" data-editor-loading @keyup="triggerFileChange">
+    <div id="editor" ref="editor" data-editor-loading>
       <pre class="editor-loading-content">{{ value }}</pre>
     </div>
   </div>

@@ -3,6 +3,7 @@ import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import languages from '~/ide/lib/languages';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import { registerLanguages } from '~/ide/utils';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { clearDomElement } from './utils';
 
 export default class Editor {
@@ -30,7 +31,16 @@ export default class Editor {
     monacoEditor.setTheme(theme ? themeName : DEFAULT_THEME);
   }
 
-  createInstance({ el = undefined, blobPath = '', blobContent = '' } = {}) {
+  /**
+   * Creates a monaco instance with the given options.
+   *
+   * @param {Object} options Options used to initialize monaco.
+   * @param {Element} options.el The element which will be used to create the monacoEditor.
+   * @param {string} options.blobPath The path used as the URI of the model. Monaco uses the extension of this path to determine the language.
+   * @param {string} options.blobContent The content to initialize the monacoEditor.
+   * @param {string} options.blobGlobalId This is used to help globally identify monaco instances that are created with the same blobPath.
+   */
+  createInstance({ el = undefined, blobPath = '', blobContent = '', blobGlobalId = '' } = {}) {
     if (!el) return;
     this.editorEl = el;
     this.blobContent = blobContent;
@@ -38,11 +48,9 @@ export default class Editor {
 
     clearDomElement(this.editorEl);
 
-    this.model = monacoEditor.createModel(
-      this.blobContent,
-      undefined,
-      new Uri('gitlab', false, this.blobPath),
-    );
+    const uriFilePath = joinPaths('gitlab', blobGlobalId, blobPath);
+
+    this.model = monacoEditor.createModel(this.blobContent, undefined, Uri.file(uriFilePath));
 
     monacoEditor.onDidCreateEditor(this.renderEditor.bind(this));
 
@@ -51,11 +59,20 @@ export default class Editor {
   }
 
   dispose() {
+    if (this.model) {
+      this.model.dispose();
+      this.model = null;
+    }
+
     return this.instance && this.instance.dispose();
   }
 
   renderEditor() {
     delete this.editorEl.dataset.editorLoading;
+  }
+
+  onChangeContent(fn) {
+    return this.model.onDidChangeContent(fn);
   }
 
   updateModelLanguage(path) {

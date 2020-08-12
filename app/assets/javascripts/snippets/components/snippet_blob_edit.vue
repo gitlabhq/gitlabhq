@@ -101,7 +101,7 @@ export default {
         size="lg"
         class="loading-animation prepend-top-20 append-bottom-20"
       />
-      <blob-content-edit v-else v-model="content" :file-name="filePath" />
+      <blob-content-edit v-else v-model="content" :file-global-id="id" :file-name="filePath" />
     </div>
   </div>
 </template>

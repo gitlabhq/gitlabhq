@@ -33,13 +33,24 @@ RSpec.describe API::Internal::Kubernetes do
 
         expect(response).to have_gitlab_http_status(:success)
 
-        expect(json_response['project_id']).to eq(project.id)
-        expect(json_response['agent_id']).to eq(agent.id)
-        expect(json_response['agent_name']).to eq(agent.name)
-        expect(json_response['storage_name']).to eq(project.repository_storage)
-        expect(json_response['relative_path']).to eq(project.disk_path + '.git')
-        expect(json_response['gl_repository']).to eq("project-#{project.id}")
-        expect(json_response['gl_project_path']).to eq(project.full_path)
+        expect(json_response).to match(
+          a_hash_including(
+            'project_id' => project.id,
+            'agent_id' => agent.id,
+            'agent_name' => agent.name,
+            'gitaly_info' => a_hash_including(
+              'address' => match(/\.socket$/),
+              'token' => 'secret',
+              'features' => {}
+            ),
+            'gitaly_repository' => a_hash_including(
+              'storage_name' => project.repository_storage,
+              'relative_path' => project.disk_path + '.git',
+              'gl_repository' => "project-#{project.id}",
+              'gl_project_path' => project.full_path
+            )
+          )
+        )
       end
     end
 
@@ -92,11 +103,22 @@ RSpec.describe API::Internal::Kubernetes do
 
           expect(response).to have_gitlab_http_status(:success)
 
-          expect(json_response['project_id']).to eq(project.id)
-          expect(json_response['storage_name']).to eq(project.repository_storage)
-          expect(json_response['relative_path']).to eq(project.disk_path + '.git')
-          expect(json_response['gl_repository']).to eq("project-#{project.id}")
-          expect(json_response['gl_project_path']).to eq(project.full_path)
+          expect(json_response).to match(
+            a_hash_including(
+              'project_id' => project.id,
+              'gitaly_info' => a_hash_including(
+                'address' => match(/\.socket$/),
+                'token' => 'secret',
+                'features' => {}
+              ),
+              'gitaly_repository' => a_hash_including(
+                'storage_name' => project.repository_storage,
+                'relative_path' => project.disk_path + '.git',
+                'gl_repository' => "project-#{project.id}",
+                'gl_project_path' => project.full_path
+              )
+            )
+          )
         end
       end
 

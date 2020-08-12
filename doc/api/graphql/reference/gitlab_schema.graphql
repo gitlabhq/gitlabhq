@@ -5889,7 +5889,7 @@ type Group {
     assigneeId: String
 
     """
-    Username of a user assigned to the issues
+    Username of a user assigned to the issue
     """
     assigneeUsername: String
 
@@ -5949,7 +5949,7 @@ type Group {
     last: Int
 
     """
-    Milestones applied to this issue
+    Milestone applied to this issue
     """
     milestoneTitle: [String]
 
@@ -7533,6 +7533,26 @@ enum IssueState {
   closed
   locked
   opened
+}
+
+"""
+Represents total number of issues for the represented statuses.
+"""
+type IssueStatusCountsType {
+  """
+  Number of issues with status ALL for the project
+  """
+  all: Int
+
+  """
+  Number of issues with status CLOSED for the project
+  """
+  closed: Int
+
+  """
+  Number of issues with status OPENED for the project
+  """
+  opened: Int
 }
 
 """
@@ -10501,7 +10521,7 @@ type Project {
     assigneeId: String
 
     """
-    Username of a user assigned to the issues
+    Username of a user assigned to the issue
     """
     assigneeUsername: String
 
@@ -10546,7 +10566,7 @@ type Project {
     labelName: [String]
 
     """
-    Milestones applied to this issue
+    Milestone applied to this issue
     """
     milestoneTitle: [String]
 
@@ -10582,6 +10602,81 @@ type Project {
   ): Issue
 
   """
+  Counts of issues by status for the project
+  """
+  issueStatusCounts(
+    """
+    ID of a user assigned to the issues, "none" and "any" values supported
+    """
+    assigneeId: String
+
+    """
+    Username of a user assigned to the issue
+    """
+    assigneeUsername: String
+
+    """
+    Issues closed after this date
+    """
+    closedAfter: Time
+
+    """
+    Issues closed before this date
+    """
+    closedBefore: Time
+
+    """
+    Issues created after this date
+    """
+    createdAfter: Time
+
+    """
+    Issues created before this date
+    """
+    createdBefore: Time
+
+    """
+    IID of the issue. For example, "1"
+    """
+    iid: String
+
+    """
+    List of IIDs of issues. For example, [1, 2]
+    """
+    iids: [String!]
+
+    """
+    Labels applied to this issue
+    """
+    labelName: [String]
+
+    """
+    Milestone applied to this issue
+    """
+    milestoneTitle: [String]
+
+    """
+    Search query for issue title or description
+    """
+    search: String
+
+    """
+    Filter issues by the given issue types
+    """
+    types: [IssueType!]
+
+    """
+    Issues updated after this date
+    """
+    updatedAfter: Time
+
+    """
+    Issues updated before this date
+    """
+    updatedBefore: Time
+  ): IssueStatusCountsType
+
+  """
   Issues of the project
   """
   issues(
@@ -10596,7 +10691,7 @@ type Project {
     assigneeId: String
 
     """
-    Username of a user assigned to the issues
+    Username of a user assigned to the issue
     """
     assigneeUsername: String
 
@@ -10656,7 +10751,7 @@ type Project {
     last: Int
 
     """
-    Milestones applied to this issue
+    Milestone applied to this issue
     """
     milestoneTitle: [String]
 

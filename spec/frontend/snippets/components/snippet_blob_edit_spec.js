@@ -51,6 +51,10 @@ describe('Snippet Blob Edit component', () => {
   }
 
   beforeEach(() => {
+    // This component generates a random id. Soon this will be abstracted away, but for now let's make this deterministic.
+    // see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38855
+    jest.spyOn(Math, 'random').mockReturnValue(0.04);
+
     axiosMock = new AxiosMockAdapter(axios);
     createComponent();
   });
@@ -68,7 +72,11 @@ describe('Snippet Blob Edit component', () => {
 
     it('renders required components', () => {
       expect(findComponent(BlobHeaderEdit).exists()).toBe(true);
-      expect(findComponent(BlobContentEdit).exists()).toBe(true);
+      expect(findComponent(BlobContentEdit).props()).toEqual({
+        fileGlobalId: expect.any(String),
+        fileName: '',
+        value: '',
+      });
     });
 
     it('renders loader if existing blob is supplied but no content is fetched yet', () => {

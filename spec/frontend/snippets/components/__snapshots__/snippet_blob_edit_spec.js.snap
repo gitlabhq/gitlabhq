@@ -17,6 +17,7 @@ exports[`Snippet Blob Edit component rendering matches the snapshot 1`] = `
     />
      
     <blob-content-edit-stub
+      fileglobalid="0a3d"
       filename="lorem.txt"
       value="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
     />
