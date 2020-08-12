@@ -49,14 +49,5 @@ RSpec.describe Ci::CreatePipelineService do
         end
       end
     end
-
-    context 'when source is not a dangling build' do
-      subject { service.execute(:web, content: content) }
-
-      it 'raises an exception' do
-        klass = Gitlab::Ci::Pipeline::Chain::Config::Content::Parameter::UnsupportedSourceError
-        expect { subject }.to raise_error(klass)
-      end
-    end
   end
 end

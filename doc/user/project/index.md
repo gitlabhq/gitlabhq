@@ -193,7 +193,7 @@ To remove a project, first navigate to the home page for that project.
 ### Delayed removal **(PREMIUM)**
 
 By default, clicking to remove a project is followed by a seven day delay. Admins can restore the project during this period of time.
-This delay [may be changed by an admin](../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+This delay [may be changed by an admin](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
 
 Admins can view all projects pending deletion. If you're an administrator, go to the top navigation bar, click **Projects > Your projects**, and then select the **Removed projects** tab.
 From this tab an admin can restore any project.

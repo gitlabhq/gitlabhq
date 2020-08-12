@@ -497,6 +497,7 @@ If we need to test how our component renders when results from the GraphQL API a
         designs: {
           loading,
         },
+      },
     };
 
     wrapper = shallowMount(Index, {

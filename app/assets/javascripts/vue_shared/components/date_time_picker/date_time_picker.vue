@@ -221,7 +221,9 @@ export default {
     >
       <template #button-content>
         <span class="gl-flex-grow-1 text-truncate">{{ timeWindowText }}</span>
-        <span v-if="utc" class="text-muted gl-font-weight-bold gl-font-sm">{{ __('UTC') }}</span>
+        <span v-if="utc" class="gl-text-gray-500 gl-font-weight-bold gl-font-sm">{{
+          __('UTC')
+        }}</span>
         <gl-icon class="gl-dropdown-caret" name="chevron-down" aria-hidden="true" />
       </template>
 

@@ -196,7 +196,7 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   // => 'This is &lt;strong&gt;&lt;script&gt;alert(&#x27;evil&#x27;)&lt;/script&gt;&lt;/strong&gt;'
 
   // OK:
-  sprintf(__('This is %{value}'), { value: `<strong>${escape(someDynamicValue)}</strong>`, false);
+  sprintf(__('This is %{value}'), { value: `<strong>${escape(someDynamicValue)}</strong>` }, false);
   // => 'This is <strong>&lt;script&gt;alert(&#x27;evil&#x27;)&lt;/script&gt;</strong>'
   ```
 

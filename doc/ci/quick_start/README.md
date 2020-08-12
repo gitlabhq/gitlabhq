@@ -114,9 +114,7 @@ Jobs are used to create jobs, which are then picked by
 What is important is that each job is run independently from each other.
 
 If you want to check whether the `.gitlab-ci.yml` of your project is valid, there is a
-Lint tool under the page `/-/ci/lint` of your project namespace. You can also find
-a "CI Lint" button to go to this page under **CI/CD ➔ Pipelines** and
-**Pipelines ➔ Jobs** in your project.
+[CI Lint tool](../lint.md) available in every project.
 
 For more information and a complete `.gitlab-ci.yml` syntax, please read
 [the reference documentation on `.gitlab-ci.yml`](../yaml/README.md).

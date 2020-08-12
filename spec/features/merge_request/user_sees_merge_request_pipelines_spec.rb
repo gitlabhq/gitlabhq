@@ -36,7 +36,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
   end
 
   context 'when a user created a merge request in the parent project' do
-    let(:merge_request) do
+    let!(:merge_request) do
       create(:merge_request,
               source_project: project,
               target_project: project,

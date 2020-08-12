@@ -3111,6 +3111,14 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#simple_variables_without_dependencies' do
+    it 'does not load dependencies' do
+      expect(build).not_to receive(:dependency_variables)
+
+      build.simple_variables_without_dependencies
+    end
+  end
+
   shared_examples "secret CI variables" do
     context 'when ref is branch' do
       let(:build) { create(:ci_build, ref: 'master', tag: false, project: project) }

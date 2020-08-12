@@ -13,6 +13,7 @@ import { __ } from '~/locale';
 
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
+import { stripQuotes } from '../filtered_search_utils';
 import { NO_LABEL, DEBOUNCE_DELAY } from '../constants';
 
 export default {
@@ -45,12 +46,9 @@ export default {
       return this.value.data.toLowerCase();
     },
     activeLabel() {
-      // Strip double quotes
-      const strippedCurrentValue = this.currentValue.includes(' ')
-        ? this.currentValue.substring(1, this.currentValue.length - 1)
-        : this.currentValue;
-
-      return this.labels.find(label => label.title.toLowerCase() === strippedCurrentValue);
+      return this.labels.find(
+        label => label.title.toLowerCase() === stripQuotes(this.currentValue),
+      );
     },
     containerStyle() {
       if (this.activeLabel) {

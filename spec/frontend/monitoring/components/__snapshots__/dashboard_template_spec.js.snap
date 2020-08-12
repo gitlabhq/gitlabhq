@@ -32,26 +32,24 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     <div
       class="mb-2 pr-2 d-flex d-sm-block"
     >
-      <gl-deprecated-dropdown-stub
+      <gl-new-dropdown-stub
+        category="tertiary"
         class="flex-grow-1"
         data-qa-selector="environments_dropdown"
+        headertext=""
         id="monitor-environments-dropdown"
         menu-class="monitor-environment-dropdown-menu"
+        size="medium"
         text="production"
-        toggle-class="dropdown-menu-toggle"
+        toggleclass="dropdown-menu-toggle"
+        variant="default"
       >
         <div
           class="d-flex flex-column overflow-hidden"
         >
-          <gl-deprecated-dropdown-header-stub
-            class="monitor-environment-dropdown-header text-center"
-          >
-            
-          Environment
-        
-          </gl-deprecated-dropdown-header-stub>
-           
-          <gl-deprecated-dropdown-divider-stub />
+          <gl-new-dropdown-header-stub>
+            Environment
+          </gl-new-dropdown-header-stub>
            
           <gl-search-box-by-type-stub
             class="m-2"
@@ -71,7 +69,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
         
           </div>
         </div>
-      </gl-deprecated-dropdown-stub>
+      </gl-new-dropdown-stub>
     </div>
      
     <div

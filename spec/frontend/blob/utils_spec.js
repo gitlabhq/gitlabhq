@@ -17,7 +17,11 @@ describe('Blob utilities', () => {
     describe('Monaco editor', () => {
       it('initializes the Editor Lite', () => {
         utils.initEditorLite({ el: editorEl });
-        expect(Editor).toHaveBeenCalled();
+        expect(Editor).toHaveBeenCalledWith({
+          scrollbar: {
+            alwaysConsumeMouseWheel: false,
+          },
+        });
       });
 
       it.each([[{}], [{ blobPath, blobContent, blobGlobalId }]])(

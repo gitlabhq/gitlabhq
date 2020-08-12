@@ -160,7 +160,7 @@ There is a limit when embedding metrics in GFM for performance reasons.
 
 ## Number of webhooks
 
-On GitLab.com, the [maximum number of webhooks](../user/gitlab_com/index.md#maximum-number-of-webhooks) per project, and per group, is limited.
+On GitLab.com, the [maximum number of webhooks and their size](../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
 
 To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):

@@ -220,5 +220,33 @@ module Gitlab
         end
       end
     end
+
+    class LimitedEncoder
+      LimitExceeded = Class.new(StandardError)
+
+      # Generates JSON for an object or raise an error if the resulting json string is too big
+      #
+      # @param object [Hash, Array, Object] must be hash, array, or an object that responds to .to_h or .to_json
+      # @param limit [Integer] max size of the resulting json string
+      # @return [String]
+      # @raise [LimitExceeded] if the resulting json string is bigger than the specified limit
+      def self.encode(object, limit: 25.megabytes)
+        return ::Gitlab::Json.dump(object) unless Feature.enabled?(:json_limited_encoder)
+
+        buffer = []
+        buffer_size = 0
+
+        ::Yajl::Encoder.encode(object) do |data_chunk|
+          chunk_size = data_chunk.bytesize
+
+          raise LimitExceeded if buffer_size + chunk_size > limit
+
+          buffer << data_chunk
+          buffer_size += chunk_size
+        end
+
+        buffer.join('')
+      end
+    end
   end
 end

@@ -171,6 +171,46 @@ describe('FilteredSearchBarRoot', () => {
       });
     });
 
+    describe('removeQuotesEnclosure', () => {
+      const mockFilters = [
+        {
+          type: 'author_username',
+          value: {
+            data: 'root',
+            operator: '=',
+          },
+        },
+        {
+          type: 'label_name',
+          value: {
+            data: '"Documentation Update"',
+            operator: '=',
+          },
+        },
+        'foo',
+      ];
+
+      it('returns filter array with unescaped strings for values which have spaces', () => {
+        expect(wrapper.vm.removeQuotesEnclosure(mockFilters)).toEqual([
+          {
+            type: 'author_username',
+            value: {
+              data: 'root',
+              operator: '=',
+            },
+          },
+          {
+            type: 'label_name',
+            value: {
+              data: 'Documentation Update',
+              operator: '=',
+            },
+          },
+          'foo',
+        ]);
+      });
+    });
+
     describe('handleSortOptionClick', () => {
       it('emits component event `onSort` with selected sort by value', () => {
         wrapper.vm.handleSortOptionClick(mockSortOptions[1]);
@@ -204,9 +244,12 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('handleHistoryItemSelected', () => {
       it('emits `onFilter` event with provided filters param', () => {
+        jest.spyOn(wrapper.vm, 'removeQuotesEnclosure');
+
         wrapper.vm.handleHistoryItemSelected(mockHistoryItems[0]);
 
         expect(wrapper.emitted('onFilter')[0]).toEqual([mockHistoryItems[0]]);
+        expect(wrapper.vm.removeQuotesEnclosure).toHaveBeenCalledWith(mockHistoryItems[0]);
       });
     });
 
@@ -274,9 +317,12 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('emits component event `onFilter` with provided filters param', () => {
+        jest.spyOn(wrapper.vm, 'removeQuotesEnclosure');
+
         wrapper.vm.handleFilterSubmit(mockFilters);
 
         expect(wrapper.emitted('onFilter')[0]).toEqual([mockFilters]);
+        expect(wrapper.vm.removeQuotesEnclosure).toHaveBeenCalledWith(mockFilters);
       });
     });
   });

@@ -9,7 +9,7 @@ module Ci
     ##
     # Variables in the environment name scope.
     #
-    def scoped_variables(environment: expanded_environment_name)
+    def scoped_variables(environment: expanded_environment_name, dependencies: true)
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.concat(predefined_variables)
         variables.concat(project.predefined_variables)
@@ -18,7 +18,7 @@ module Ci
         variables.concat(deployment_variables(environment: environment))
         variables.concat(yaml_variables)
         variables.concat(user_variables)
-        variables.concat(dependency_variables)
+        variables.concat(dependency_variables) if dependencies
         variables.concat(secret_instance_variables)
         variables.concat(secret_group_variables)
         variables.concat(secret_project_variables(environment: environment))
@@ -42,6 +42,12 @@ module Ci
     def simple_variables
       strong_memoize(:simple_variables) do
         scoped_variables(environment: nil).to_runner_variables
+      end
+    end
+
+    def simple_variables_without_dependencies
+      strong_memoize(:variables_without_dependencies) do
+        scoped_variables(environment: nil, dependencies: false).to_runner_variables
       end
     end
 

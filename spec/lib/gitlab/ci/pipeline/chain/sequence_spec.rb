@@ -23,9 +23,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Sequence do
     end
 
     it 'does not process the second step' do
-      subject.build! do |pipeline, sequence|
-        expect(sequence).not_to be_complete
-      end
+      subject.build!
 
       expect(second_step).not_to have_received(:perform!)
     end
@@ -43,9 +41,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Sequence do
     end
 
     it 'iterates through entire sequence' do
-      subject.build! do |pipeline, sequence|
-        expect(sequence).to be_complete
-      end
+      subject.build!
 
       expect(first_step).to have_received(:perform!)
       expect(second_step).to have_received(:perform!)

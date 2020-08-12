@@ -3,11 +3,10 @@ import { debounce } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   GlButton,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownItem,
-  GlDeprecatedDropdownHeader,
-  GlDeprecatedDropdownDivider,
+  GlNewDropdown,
   GlLoadingIcon,
+  GlNewDropdownItem,
+  GlNewDropdownHeader,
   GlSearchBoxByType,
   GlModalDirective,
   GlTooltipDirective,
@@ -29,11 +28,11 @@ export default {
   components: {
     Icon,
     GlButton,
-    GlDeprecatedDropdown,
+    GlNewDropdown,
     GlLoadingIcon,
-    GlDeprecatedDropdownItem,
-    GlDeprecatedDropdownHeader,
-    GlDeprecatedDropdownDivider,
+    GlNewDropdownItem,
+    GlNewDropdownHeader,
+
     GlSearchBoxByType,
 
     DateTimePicker,
@@ -112,6 +111,9 @@ export default {
     showRearrangePanelsBtn() {
       return !this.shouldShowEmptyState && this.rearrangePanelsAvailable;
     },
+    environmentDropdownText() {
+      return this.currentEnvironmentName ?? '';
+    },
     displayUtc() {
       return this.dashboardTimezone === timezones.UTC;
     },
@@ -179,31 +181,30 @@ export default {
     <span aria-hidden="true" class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"></span>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">
-      <gl-deprecated-dropdown
+      <gl-new-dropdown
         id="monitor-environments-dropdown"
         ref="monitorEnvironmentsDropdown"
         class="flex-grow-1"
         data-qa-selector="environments_dropdown"
         toggle-class="dropdown-menu-toggle"
         menu-class="monitor-environment-dropdown-menu"
-        :text="currentEnvironmentName"
+        :text="environmentDropdownText"
       >
         <div class="d-flex flex-column overflow-hidden">
-          <gl-deprecated-dropdown-header class="monitor-environment-dropdown-header text-center">
-            {{ __('Environment') }}
-          </gl-deprecated-dropdown-header>
-          <gl-deprecated-dropdown-divider />
+          <gl-new-dropdown-header>{{ __('Environment') }}</gl-new-dropdown-header>
           <gl-search-box-by-type class="m-2" @input="debouncedEnvironmentsSearch" />
+
           <gl-loading-icon v-if="environmentsLoading" :inline="true" />
           <div v-else class="flex-fill overflow-auto">
-            <gl-deprecated-dropdown-item
+            <gl-new-dropdown-item
               v-for="environment in filteredEnvironments"
               :key="environment.id"
-              :active="environment.name === currentEnvironmentName"
-              active-class="is-active"
+              :is-check-item="true"
+              :is-checked="environment.name === currentEnvironmentName"
               :href="getEnvironmentPath(environment.id)"
-              >{{ environment.name }}</gl-deprecated-dropdown-item
             >
+              {{ environment.name }}
+            </gl-new-dropdown-item>
           </div>
           <div
             v-show="shouldShowEnvironmentsDropdownNoMatchedMsg"
@@ -213,7 +214,7 @@ export default {
             {{ __('No matching results') }}
           </div>
         </div>
-      </gl-deprecated-dropdown>
+      </gl-new-dropdown>
     </div>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">

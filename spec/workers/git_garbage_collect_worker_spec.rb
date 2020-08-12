@@ -7,7 +7,7 @@ require 'spec_helper'
 RSpec.describe GitGarbageCollectWorker do
   include GitHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:shell) { Gitlab::Shell.new }
   let!(:lease_uuid) { SecureRandom.uuid }
   let!(:lease_key) { "project_housekeeping:#{project.id}" }
@@ -112,6 +112,56 @@ RSpec.describe GitGarbageCollectWorker do
             expect_any_instance_of(PoolRepository).to receive(:link_repository).once
 
             subject.perform(*params)
+          end
+        end
+
+        context 'LFS object garbage collection' do
+          before do
+            stub_lfs_setting(enabled: true)
+          end
+
+          let_it_be(:lfs_reference) { create(:lfs_objects_project, project: project) }
+          let(:lfs_object) { lfs_reference.lfs_object }
+
+          context 'with cleanup_lfs_during_gc feature flag enabled' do
+            before do
+              stub_feature_flags(cleanup_lfs_during_gc: true)
+            end
+
+            it 'cleans up unreferenced LFS objects' do
+              expect_next_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences) do |svc|
+                expect(svc.project).to eq(project)
+                expect(svc.dry_run).to be_falsy
+                expect(svc).to receive(:run!).and_call_original
+              end
+
+              subject.perform(*params)
+
+              expect(project.lfs_objects.reload).not_to include(lfs_object)
+            end
+
+            it 'does nothing if the database is read-only' do
+              expect(Gitlab::Database).to receive(:read_only?) { true }
+              expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:run!)
+
+              subject.perform(*params)
+
+              expect(project.lfs_objects.reload).to include(lfs_object)
+            end
+          end
+
+          context 'with cleanup_lfs_during_gc feature flag disabled' do
+            before do
+              stub_feature_flags(cleanup_lfs_during_gc: false)
+            end
+
+            it 'does not clean up unreferenced LFS objects' do
+              expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:run!)
+
+              subject.perform(*params)
+
+              expect(project.lfs_objects.reload).to include(lfs_object)
+            end
           end
         end
       end

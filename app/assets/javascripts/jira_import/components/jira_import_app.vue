@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { last } from 'lodash';
 import { __ } from '~/locale';
 import getJiraImportDetailsQuery from '../queries/get_jira_import_details.query.graphql';
@@ -16,7 +16,6 @@ export default {
   components: {
     GlAlert,
     GlLoadingIcon,
-    GlSprintf,
     JiraImportForm,
     JiraImportProgress,
     JiraImportSetup,
@@ -55,7 +54,6 @@ export default {
     return {
       isSubmitting: false,
       jiraImportDetails: {},
-      selectedProject: undefined,
       userMappings: [],
       errorMessage: '',
       showAlert: false,
@@ -78,22 +76,6 @@ export default {
       skip() {
         return !this.isJiraConfigured;
       },
-    },
-  },
-  computed: {
-    numberOfPreviousImports() {
-      return this.jiraImportDetails.imports?.reduce?.(
-        (acc, jiraProject) => (jiraProject.jiraProjectKey === this.selectedProject ? acc + 1 : acc),
-        0,
-      );
-    },
-    hasPreviousImports() {
-      return this.numberOfPreviousImports > 0;
-    },
-    importLabel() {
-      return this.selectedProject
-        ? `jira-import::${this.selectedProject}-${this.numberOfPreviousImports + 1}`
-        : 'jira-import::KEY-1';
     },
   },
   mounted() {
@@ -168,9 +150,6 @@ export default {
       this.showAlert = false;
     },
   },
-  previousImportsMessage: __(
-    'You have imported from this project %{numberOfPreviousImports} times before. Each new import will create duplicate issues.',
-  ),
 };
 </script>
 
@@ -178,11 +157,6 @@ export default {
   <div>
     <gl-alert v-if="showAlert" variant="danger" @dismiss="dismissAlert">
       {{ errorMessage }}
-    </gl-alert>
-    <gl-alert v-if="hasPreviousImports" variant="warning" :dismissible="false">
-      <gl-sprintf :message="$options.previousImportsMessage">
-        <template #numberOfPreviousImports>{{ numberOfPreviousImports }}</template>
-      </gl-sprintf>
     </gl-alert>
 
     <jira-import-setup
@@ -201,10 +175,9 @@ export default {
     />
     <jira-import-form
       v-else
-      v-model="selectedProject"
-      :import-label="importLabel"
       :is-submitting="isSubmitting"
       :issues-path="issuesPath"
+      :jira-imports="jiraImportDetails.imports"
       :jira-projects="jiraImportDetails.projects"
       :project-id="projectId"
       :user-mappings="userMappings"

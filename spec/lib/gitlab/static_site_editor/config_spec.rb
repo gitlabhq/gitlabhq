@@ -46,8 +46,6 @@ RSpec.describe Gitlab::StaticSiteEditor::Config do
     end
 
     context 'when file has .md.erb extension' do
-      let(:file_path) { 'README.md.erb' }
-
       before do
         repository.create_file(
           project.creator,
@@ -58,7 +56,25 @@ RSpec.describe Gitlab::StaticSiteEditor::Config do
         )
       end
 
-      it { is_expected.to include(is_supported_content: 'true') }
+      context 'when feature flag is enabled' do
+        let(:file_path) { 'FEATURE_ON.md.erb' }
+
+        before do
+          stub_feature_flags(sse_erb_support: project)
+        end
+
+        it { is_expected.to include(is_supported_content: 'true') }
+      end
+
+      context 'when feature flag is disabled' do
+        let(:file_path) { 'FEATURE_OFF.md.erb' }
+
+        before do
+          stub_feature_flags(sse_erb_support: false)
+        end
+
+        it { is_expected.to include(is_supported_content: 'false') }
+      end
     end
 
     context 'when file path is nested' do

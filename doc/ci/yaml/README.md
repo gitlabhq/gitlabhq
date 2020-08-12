@@ -304,6 +304,18 @@ To define your own `workflow: rules`, the configuration options currently availa
 
 If a pipeline attempts to run but matches no rule, it's dropped and doesn't run.
 
+Use the example rules below exactly as written to allow pipelines that match the rule
+to run. Add `when: never` to prevent pipelines that match the rule from running. See
+the [common `if` clauses for `rules`](#common-if-clauses-for-rules) for more examples.
+
+| Example rules                                        | Details                                                   |
+|------------------------------------------------------|-----------------------------------------------------------|
+| `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'` | Control when merge request pipelines run.                 |
+| `if: '$CI_PIPELINE_SOURCE == "push"'`                | Control when both branch pipelines and tag pipelines run. |
+| `if: $CI_COMMIT_TAG`                                 | Control when tag pipelines run.                           |
+| `if: $CI_COMMIT_BRANCH`                              | Control when branch pipelines run.                        |
+| `if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BEFORE_SHA != "0000000000000000000000000000000000000000"'` | Control when pipelines run for new branches that are created or pushed with no commits. See the [skip job if branch is empty](#skip-job-if-branch-is-empty) example for more details. |
+
 For example, with the following configuration, pipelines run for all `push` events (changes to
 branches and new tags) as long as they *don't* have `-wip` in the commit message. Scheduled
 pipelines and merge request pipelines don't run, as there's no rule allowing them.
@@ -338,14 +350,6 @@ but does allow pipelines in **all** other cases, *including* merge request pipel
 As with `rules` defined in jobs, be careful not to use a configuration that allows
 merge request pipelines and branch pipelines to run at the same time, or you could
 have [duplicate pipelines](#differences-between-rules-and-onlyexcept).
-
-Useful workflow rules clauses:
-
-| Clause                                                                     | Details                                                 |
-|----------------------------------------------------------------------------|---------------------------------------------------------|
-| `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'`                       | Allow or block merge request pipelines.                 |
-| `if: '$CI_PIPELINE_SOURCE == "push"'`                                      | Allow or block both branch pipelines and tag pipelines. |
-| `if: '$CI_COMMIT_BEFORE_SHA == '0000000000000000000000000000000000000000'` | Allow or block pipeline creation when new branches are created or pushed with no commits. This will also skip tag and scheduled pipelines. See [common `rules:if` clauses](#common-if-clauses-for-rules) for examples on how to define these rules more strictly. |
 
 #### `workflow:rules` templates
 
@@ -1365,27 +1369,17 @@ Other commonly used variables for `if` clauses:
 - `if: '$CUSTOM_VARIABLE == "value1"'`: If the custom variable `CUSTOM_VARIABLE` is
   exactly `value1`.
 
-To avoid running pipelines when a branch is created without any changes,
-check the value of `$CI_COMMIT_BEFORE_SHA`. It has a value of
-`0000000000000000000000000000000000000000`:
+##### Skip job if branch is empty
 
-- In branches with no commits.
-- In tag pipelines and scheduled pipelines. You should define rules very
-  narrowly if you don't want to skip these.
+A branch has no commits if the value of`$CI_COMMIT_BEFORE_SHA` is
+`0000000000000000000000000000000000000000`. You can use this value to
+avoid running a job on branches with no commits.
 
-To skip pipelines on all empty branches, but also tags and schedules:
+To run a job only on branches with commits:
 
 ```yaml
 rules:
-  - if: $CI_COMMIT_BEFORE_SHA == '0000000000000000000000000000000000000000'
-    when: never
-```
-
-To skip branch pipelines when the branch is empty:
-
-```yaml
-rules:
-  - if: $CI_COMMIT_BRANCH && $CI_COMMIT_BEFORE_SHA != '0000000000000000000000000000000000000000'
+  - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BEFORE_SHA != "0000000000000000000000000000000000000000"'
 ```
 
 #### `rules:changes`
@@ -2131,6 +2125,26 @@ build_job:
     - project: group/same-project-name
       job: build-1
       ref: other-ref
+      artifacts: true
+```
+
+Environment variables support for `project:`, `job:`, and `ref` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202093)
+in GitLab 13.3. This is under development, but it is ready for production use. It is deployed
+behind the `ci_expand_names_for_cross_pipeline_artifacts` feature flag, which is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it for your instance.
+
+For example:
+
+```yaml
+build_job:
+  stage: build
+  script:
+    - ls -lhR
+  needs:
+    - project: $CI_PROJECT_PATH
+      job: $DEPENDENCY_JOB_NAME
+      ref: $CI_COMMIT_BRANCH
       artifacts: true
 ```
 

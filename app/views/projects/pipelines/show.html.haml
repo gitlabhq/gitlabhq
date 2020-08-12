@@ -1,6 +1,7 @@
 - add_to_breadcrumbs _('Pipelines'), project_pipelines_path(@project)
 - breadcrumb_title "##{@pipeline.id}"
 - page_title _('Pipeline')
+- pipeline_has_errors = @pipeline.builds.empty? && @pipeline.yaml_errors.present?
 
 .js-pipeline-container{ data: { controller_action: "#{controller.action_name}" } }
   #js-pipeline-header-vue.pipeline-header-container
@@ -8,7 +9,7 @@
   - if @pipeline.commit.present?
     = render "projects/pipelines/info", commit: @pipeline.commit
 
-  - if @pipeline.builds.empty? && @pipeline.yaml_errors.present?
+  - if pipeline_has_errors
     .bs-callout.bs-callout-danger
       %h4= _('Found errors in your %{gitlab_ci_yml}:') % { gitlab_ci_yml: '.gitlab-ci.yml' }
       %ul
@@ -17,7 +18,8 @@
       - lint_link_url = project_ci_lint_path(@project)
       - lint_link_start = '<a href="%{url}">'.html_safe % { url: lint_link_url }
       = s_('You can also test your %{gitlab_ci_yml} in %{lint_link_start}CI Lint%{lint_link_end}').html_safe % { gitlab_ci_yml: '.gitlab-ci.yml', lint_link_start: lint_link_start, lint_link_end: '</a>'.html_safe }
-  - else
-    = render "projects/pipelines/with_tabs", pipeline: @pipeline
+
+  = render "projects/pipelines/pipeline_warnings", warnings: @pipeline.warning_messages
+  = render "projects/pipelines/with_tabs", pipeline: @pipeline, pipeline_has_errors: pipeline_has_errors
 
 .js-pipeline-details-vue{ data: { endpoint: project_pipeline_path(@project, @pipeline, format: :json) } }

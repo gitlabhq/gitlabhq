@@ -12,6 +12,7 @@
 - else
   = form_for @pipeline, as: :pipeline, url: project_pipelines_path(@project), html: { id: "new-pipeline-form", class: "js-new-pipeline-form js-requires-input" } do |f|
     = form_errors(@pipeline)
+    = pipeline_warnings(@pipeline)
     .form-group.row
       .col-sm-12
         = f.label :ref, s_('Pipeline|Run for'), class: 'col-form-label'

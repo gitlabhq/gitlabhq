@@ -1,0 +1,5 @@
+---
+title: Fix scroll stuck on editor in snippets
+merge_request: 39251
+author:
+type: fixed

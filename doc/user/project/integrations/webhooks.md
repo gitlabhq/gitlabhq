@@ -35,7 +35,7 @@ Navigate to the webhooks page by going to your project's
 **Settings ➔ Webhooks**.
 
 NOTE: **Note:**
-On GitLab.com, the [maximum number of webhooks](../../../user/gitlab_com/index.md#maximum-number-of-webhooks) per project, and per group, is limited.
+On GitLab.com, the [maximum number of webhooks and their size](../../../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
 
 ## Version history
 

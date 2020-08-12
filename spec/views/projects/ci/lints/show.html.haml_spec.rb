@@ -82,6 +82,20 @@ RSpec.describe 'projects/ci/lints/show' do
       expect(rendered).to have_content('Environment: testing')
       expect(rendered).to have_content('When: on_success')
     end
+
+    context 'when content has warnings' do
+      before do
+        assign(:warnings, ['Warning 1', 'Warning 2'])
+      end
+
+      it 'shows warning messages' do
+        render
+
+        expect(rendered).to have_content('Warning:')
+        expect(rendered).to have_content('Warning 1')
+        expect(rendered).to have_content('Warning 2')
+      end
+    end
   end
 
   context 'when the content is invalid' do
@@ -89,6 +103,7 @@ RSpec.describe 'projects/ci/lints/show' do
       assign(:project, project)
       assign(:status, false)
       assign(:errors, ['Undefined error'])
+      assign(:warnings, ['Warning 1', 'Warning 2'])
     end
 
     it 'shows error message' do
@@ -97,6 +112,14 @@ RSpec.describe 'projects/ci/lints/show' do
       expect(rendered).to have_content('Status: syntax is incorrect')
       expect(rendered).to have_content('Undefined error')
       expect(rendered).not_to have_content('Tag list:')
+    end
+
+    it 'shows warning messages' do
+      render
+
+      expect(rendered).to have_content('Warning:')
+      expect(rendered).to have_content('Warning 1')
+      expect(rendered).to have_content('Warning 2')
     end
   end
 end

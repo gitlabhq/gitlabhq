@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
@@ -7,7 +8,7 @@ import ActionComponent from '~/pipelines/components/graph/action_component.vue';
 describe('pipeline graph action component', () => {
   let wrapper;
   let mock;
-  const findButton = () => wrapper.find('button');
+  const findButton = () => wrapper.find(GlButton);
 
   beforeEach(() => {
     mock = new MockAdapter(axios);

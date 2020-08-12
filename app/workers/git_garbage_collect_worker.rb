@@ -27,7 +27,10 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
 
     task = task.to_sym
 
-    ::Projects::GitDeduplicationService.new(project).execute if task == :gc
+    if task == :gc
+      ::Projects::GitDeduplicationService.new(project).execute
+      cleanup_orphan_lfs_file_references(project)
+    end
 
     gitaly_call(task, project.repository.raw_repository)
 
@@ -88,6 +91,13 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
   rescue GRPC::BadStatus => e
     Gitlab::GitLogger.error("#{__method__} failed:\n#{e}")
     raise Gitlab::Git::CommandError.new(e)
+  end
+
+  def cleanup_orphan_lfs_file_references(project)
+    return unless Feature.enabled?(:cleanup_lfs_during_gc, project)
+    return if Gitlab::Database.read_only? # GitGarbageCollectWorker may be run on a Geo secondary
+
+    ::Gitlab::Cleanup::OrphanLfsFileReferences.new(project, dry_run: false, logger: logger).run!
   end
 
   def flush_ref_caches(project)

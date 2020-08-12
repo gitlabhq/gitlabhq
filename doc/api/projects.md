@@ -1841,7 +1841,7 @@ This endpoint:
 group admins can [configure](../user/group/index.md#enabling-delayed-project-removal-premium) projects within a group
 to be deleted after a delayed period.
 When enabled, actual deletion happens after the number of days
-specified in the [default deletion period](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+specified in the [default deletion delay](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
 
 CAUTION: **Warning:**
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6

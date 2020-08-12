@@ -480,7 +480,7 @@ To remove a group and its contents:
 This action either:
 
 - Removes the group, and also queues a background job to delete all projects in that group.
-- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/premium/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/premium/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
 
 ### Restore a group **(PREMIUM)**
 
@@ -660,7 +660,7 @@ Optionally, on [Premium or Silver](https://about.gitlab.com/pricing/) or higher 
 you can configure the projects within a group to be deleted after a delayed interval.
 
 During this interval period, the projects will be in a read-only state and can be restored, if required.
-The interval period defaults to 7 days, and can be modified by an admin in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+The interval period defaults to 7 days, and can be modified by an admin in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
 
 To enable delayed deletion of projects:
 

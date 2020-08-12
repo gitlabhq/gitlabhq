@@ -116,12 +116,13 @@ All our runners are deployed into Google Cloud Platform (GCP) - any IP based
 firewall can be configured by looking up all
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
 
-## Maximum number of webhooks
+## Webhooks
 
 A limit of:
 
 - 100 webhooks applies to projects.
 - 50 webhooks applies to groups. **(BRONZE ONLY)**
+- Payload is limited to 25MB
 
 ## Shared Runners
 

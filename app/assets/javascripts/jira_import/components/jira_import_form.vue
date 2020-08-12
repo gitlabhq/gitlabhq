@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlButton,
   GlNewDropdown,
   GlNewDropdownItem,
@@ -10,15 +11,23 @@ import {
   GlLabel,
   GlLoadingIcon,
   GlSearchBoxByType,
+  GlSprintf,
   GlTable,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
+import {
+  debounceWait,
+  dropdownLabel,
+  previousImportsMessage,
+  tableConfig,
+  userMappingMessage,
+} from '../utils/constants';
 
 export default {
   name: 'JiraImportForm',
   components: {
+    GlAlert,
     GlButton,
     GlNewDropdown,
     GlNewDropdownItem,
@@ -29,35 +38,25 @@ export default {
     GlLabel,
     GlLoadingIcon,
     GlSearchBoxByType,
+    GlSprintf,
     GlTable,
   },
   currentUsername: gon.current_username,
-  dropdownLabel: __('The GitLab user to which the Jira user %{jiraDisplayName} will be mapped'),
-  tableConfig: [
-    {
-      key: 'jiraDisplayName',
-      label: __('Jira display name'),
-    },
-    {
-      key: 'arrow',
-      label: '',
-    },
-    {
-      key: 'gitlabUsername',
-      label: __('GitLab username'),
-    },
-  ],
+  dropdownLabel,
+  previousImportsMessage,
+  tableConfig,
+  userMappingMessage,
   props: {
-    importLabel: {
-      type: String,
-      required: true,
-    },
     isSubmitting: {
       type: Boolean,
       required: true,
     },
     issuesPath: {
       type: String,
+      required: true,
+    },
+    jiraImports: {
+      type: Array,
       required: true,
     },
     jiraProjects: {
@@ -72,16 +71,12 @@ export default {
       type: Array,
       required: true,
     },
-    value: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
   },
   data() {
     return {
       isFetching: false,
       searchTerm: '',
+      selectedProject: undefined,
       selectState: null,
       users: [],
     };
@@ -90,11 +85,25 @@ export default {
     shouldShowNoMatchesFoundText() {
       return !this.isFetching && this.users.length === 0;
     },
+    numberOfPreviousImports() {
+      return this.jiraImports?.reduce?.(
+        (acc, jiraProject) => (jiraProject.jiraProjectKey === this.selectedProject ? acc + 1 : acc),
+        0,
+      );
+    },
+    hasPreviousImports() {
+      return this.numberOfPreviousImports > 0;
+    },
+    importLabel() {
+      return this.selectedProject
+        ? `jira-import::${this.selectedProject}-${this.numberOfPreviousImports + 1}`
+        : 'jira-import::KEY-1';
+    },
   },
   watch: {
     searchTerm: debounce(function debouncedUserSearch() {
       this.searchUsers();
-    }, 500),
+    }, debounceWait),
   },
   mounted() {
     this.searchUsers()
@@ -129,9 +138,9 @@ export default {
     },
     initiateJiraImport(event) {
       event.preventDefault();
-      if (this.value) {
+      if (this.selectedProject) {
         this.hideValidationError();
-        this.$emit('initiateJiraImport', this.value);
+        this.$emit('initiateJiraImport', this.selectedProject);
       } else {
         this.showValidationError();
       }
@@ -148,8 +157,16 @@ export default {
 
 <template>
   <div>
+    <gl-alert v-if="hasPreviousImports" variant="warning" :dismissible="false">
+      <gl-sprintf :message="$options.previousImportsMessage">
+        <template #numberOfPreviousImports>{{ numberOfPreviousImports }}</template>
+      </gl-sprintf>
+    </gl-alert>
+
     <h3 class="page-title">{{ __('New Jira import') }}</h3>
+
     <hr />
+
     <form @submit="initiateJiraImport">
       <gl-form-group
         class="row align-items-center"
@@ -160,12 +177,11 @@ export default {
       >
         <gl-form-select
           id="jira-project-select"
+          v-model="selectedProject"
           data-qa-selector="jira_project_dropdown"
           class="mb-2"
           :options="jiraProjects"
           :state="selectState"
-          :value="value"
-          @change="$emit('input', $event)"
         />
       </gl-form-group>
 
@@ -186,16 +202,7 @@ export default {
 
       <h4 class="gl-mb-4">{{ __('Jira-GitLab user mapping template') }}</h4>
 
-      <p>
-        {{
-          __(
-            `Jira users have been imported from the configured Jira instance.
-            They can be mapped by selecting a GitLab user from the dropdown in the "GitLab
-            username" column.
-            When the form appears, the dropdown defaults to the user conducting the import.`,
-          )
-        }}
-      </p>
+      <p>{{ $options.userMappingMessage }}</p>
 
       <gl-table :fields="$options.tableConfig" :items="userMappings" fixed>
         <template #cell(arrow)>

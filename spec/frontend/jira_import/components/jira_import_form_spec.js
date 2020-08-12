@@ -1,24 +1,31 @@
-import { GlButton, GlNewDropdown, GlFormSelect, GlLabel, GlTable } from '@gitlab/ui';
+import { GlAlert, GlButton, GlNewDropdown, GlFormSelect, GlLabel, GlTable } from '@gitlab/ui';
 import { getByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
-import { issuesPath, jiraProjects, userMappings as defaultUserMappings } from '../mock_data';
+import {
+  imports,
+  issuesPath,
+  jiraProjects,
+  userMappings as defaultUserMappings,
+} from '../mock_data';
 
 describe('JiraImportForm', () => {
   let axiosMock;
   let wrapper;
 
   const currentUsername = 'mrgitlab';
-  const importLabel = 'jira-import::MTG-1';
-  const value = 'MTG';
+
+  const getAlert = () => wrapper.find(GlAlert);
 
   const getSelectDropdown = () => wrapper.find(GlFormSelect);
 
   const getContinueButton = () => wrapper.find(GlButton);
 
   const getCancelButton = () => wrapper.findAll(GlButton).at(1);
+
+  const getLabel = () => wrapper.find(GlLabel);
 
   const getTable = () => wrapper.find(GlTable);
 
@@ -28,22 +35,23 @@ describe('JiraImportForm', () => {
 
   const mountComponent = ({
     isSubmitting = false,
+    selectedProject = 'MTG',
     userMappings = defaultUserMappings,
     mountFunction = shallowMount,
   } = {}) =>
     mountFunction(JiraImportForm, {
       propsData: {
-        importLabel,
         isSubmitting,
         issuesPath,
+        jiraImports: imports,
         jiraProjects,
         projectId: '5',
         userMappings,
-        value,
       },
       data: () => ({
         isFetching: false,
         searchTerm: '',
+        selectedProject,
         selectState: null,
         users: [],
       }),
@@ -60,7 +68,7 @@ describe('JiraImportForm', () => {
     wrapper = null;
   });
 
-  describe('select dropdown', () => {
+  describe('select dropdown project selection', () => {
     it('is shown', () => {
       wrapper = mountComponent();
 
@@ -77,22 +85,40 @@ describe('JiraImportForm', () => {
         });
     });
 
-    it('emits an "input" event when the input select value changes', () => {
-      wrapper = mountComponent();
+    describe('when selected project has been imported before', () => {
+      it('shows jira-import::MTG-3 label since project MTG has been imported 2 time before', () => {
+        wrapper = mountComponent();
 
-      getSelectDropdown().vm.$emit('change', value);
+        expect(getLabel().props('title')).toBe('jira-import::MTG-3');
+      });
 
-      expect(wrapper.emitted('input')[0]).toEqual([value]);
+      it('shows warning alert to explain project MTG has been imported 2 times before', () => {
+        wrapper = mountComponent({ mountFunction: mount });
+
+        expect(getAlert().text()).toBe(
+          'You have imported from this project 2 times before. Each new import will create duplicate issues.',
+        );
+      });
+    });
+
+    describe('when selected project has not been imported before', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({ selectedProject: 'MJP' });
+      });
+
+      it('shows jira-import::MJP-1 label since project MJP has not been imported before', () => {
+        expect(getLabel().props('title')).toBe('jira-import::MJP-1');
+      });
+
+      it('does not show warning alert since project MJP has not been imported before', () => {
+        expect(getAlert().exists()).toBe(false);
+      });
     });
   });
 
   describe('form information', () => {
     beforeEach(() => {
       wrapper = mountComponent();
-    });
-
-    it('shows a label which will be applied to imported Jira projects', () => {
-      expect(wrapper.find(GlLabel).props('title')).toBe(importLabel);
     });
 
     it('shows a heading for the user mapping section', () => {
@@ -214,11 +240,13 @@ describe('JiraImportForm', () => {
 
   describe('form', () => {
     it('emits an "initiateJiraImport" event with the selected dropdown value when submitted', () => {
-      wrapper = mountComponent();
+      const selectedProject = 'MTG';
+
+      wrapper = mountComponent({ selectedProject });
 
       wrapper.find('form').trigger('submit');
 
-      expect(wrapper.emitted('initiateJiraImport')[0]).toEqual([value]);
+      expect(wrapper.emitted('initiateJiraImport')[0]).toEqual([selectedProject]);
     });
   });
 });

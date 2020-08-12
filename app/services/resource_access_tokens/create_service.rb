@@ -32,7 +32,7 @@ module ResourceAccessTokens
     attr_reader :resource_type, :resource
 
     def feature_enabled?
-      ::Feature.enabled?(:resource_access_token, resource)
+      ::Feature.enabled?(:resource_access_token, resource, default_enabled: true)
     end
 
     def has_permission_to_create?
