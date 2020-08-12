@@ -18,7 +18,7 @@ import {
   SNIPPET_BLOB_ACTION_UPDATE,
   SNIPPET_BLOB_ACTION_MOVE,
 } from '../constants';
-import SnippetBlobEdit from './snippet_blob_edit.vue';
+import SnippetBlobActionsEdit from './snippet_blob_actions_edit.vue';
 import SnippetVisibilityEdit from './snippet_visibility_edit.vue';
 import SnippetDescriptionEdit from './snippet_description_edit.vue';
 import { SNIPPET_MARK_EDIT_APP_START } from '~/performance_constants';
@@ -27,7 +27,7 @@ export default {
   components: {
     SnippetDescriptionEdit,
     SnippetVisibilityEdit,
-    SnippetBlobEdit,
+    SnippetBlobActionsEdit,
     TitleField,
     FormFooterActions,
     GlButton,
@@ -261,15 +261,7 @@ export default {
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
       />
-      <template v-if="blobs.length">
-        <snippet-blob-edit
-          v-for="blob in blobs"
-          :key="blob.name"
-          :blob="blob"
-          @blob-updated="updateBlobActions"
-        />
-      </template>
-      <snippet-blob-edit v-else @blob-updated="updateBlobActions" />
+      <snippet-blob-actions-edit :blobs="blobs" @blob-updated="updateBlobActions" />
 
       <snippet-visibility-edit
         v-model="snippet.visibilityLevel"

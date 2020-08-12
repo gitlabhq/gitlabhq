@@ -167,7 +167,7 @@ user = User.find_by_username('root')
 # Find the project, update the xxx-changeme values from above
 project = Project.find_by_full_path('group-changeme/project-changeme')
 
-# Delete the project
+# Immediately delete the project
 ::Projects::DestroyService.new(project, user, {}).execute
 ```
 

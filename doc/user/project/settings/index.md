@@ -219,20 +219,20 @@ NOTE: **Note:**
 GitLab administrators can use the admin interface to move any project to any
 namespace if needed.
 
-#### Remove a project
+#### Delete a project
 
 NOTE: **Note:**
-Only project owners and admins have [permissions](../../permissions.md#project-members-permissions) to remove a project.
+Only project owners and admins have [permissions](../../permissions.md#project-members-permissions) to delete a project.
 
-To remove a project:
+To delete a project:
 
 1. Navigate to your project, and select **Settings > General > Advanced**.
-1. In the Remove project section, click the **Remove project** button.
+1. In the "Delete project" section, click the **Delete project** button.
 1. Confirm the action when asked to.
 
 This action:
 
-- Removes a project including all associated resources (issues, merge requests etc).
+- Deletes a project including all associated resources (issues, merge requests etc).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
 group admins can [configure](../../group/index.md#enabling-delayed-project-removal-premium) projects within a group
 to be deleted after a delayed period.

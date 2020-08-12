@@ -7884,13 +7884,25 @@ msgstr ""
 msgid "Deleted"
 msgstr ""
 
+msgid "Deleted Projects"
+msgstr ""
+
 msgid "Deleted chat nickname: %{chat_name}!"
 msgstr ""
 
 msgid "Deleted in this version"
 msgstr ""
 
+msgid "Deleted projects"
+msgstr ""
+
+msgid "Deleted projects cannot be restored!"
+msgstr ""
+
 msgid "Deleting"
+msgstr ""
+
+msgid "Deleting a project places it into a read-only state until %{date}, at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "Deleting the license failed."
@@ -7900,6 +7912,9 @@ msgid "Deleting the license failed. The license was not found."
 msgstr ""
 
 msgid "Deleting the license failed. You are not permitted to perform this action."
+msgstr ""
+
+msgid "Deleting the project will delete its repository and all related resources including issues, merge requests etc."
 msgstr ""
 
 msgid "Deletion pending. This project will be removed on %{date}. Repository and other project resources are read-only."
@@ -20240,9 +20255,6 @@ msgstr ""
 msgid "Remove priority"
 msgstr ""
 
-msgid "Remove project"
-msgstr ""
-
 msgid "Remove secondary node"
 msgstr ""
 
@@ -20276,9 +20288,6 @@ msgstr ""
 msgid "Removed %{type} with id %{id}"
 msgstr ""
 
-msgid "Removed Projects"
-msgstr ""
-
 msgid "Removed all labels."
 msgstr ""
 
@@ -20289,12 +20298,6 @@ msgid "Removed group can not be restored!"
 msgstr ""
 
 msgid "Removed parent epic %{epic_ref}."
-msgstr ""
-
-msgid "Removed projects"
-msgstr ""
-
-msgid "Removed projects cannot be restored!"
 msgstr ""
 
 msgid "Removed spent time."
@@ -20345,13 +20348,7 @@ msgstr ""
 msgid "Removes time estimate."
 msgstr ""
 
-msgid "Removing a project places it into a read-only state until %{date}, at which point the project will be permanently removed. Are you ABSOLUTELY sure?"
-msgstr ""
-
 msgid "Removing license…"
-msgstr ""
-
-msgid "Removing the project will delete its repository and all related resources including issues, merge requests etc."
 msgstr ""
 
 msgid "Removing this group also removes all child projects, including archived projects, and their resources."
@@ -22552,6 +22549,9 @@ msgstr ""
 msgid "SnippetsEmptyState|There are no snippets to show."
 msgstr ""
 
+msgid "Snippets|Delete file"
+msgstr ""
+
 msgid "Snippets|Description (optional)"
 msgstr ""
 
@@ -22744,10 +22744,10 @@ msgstr ""
 msgid "Something went wrong, unable to add projects to dashboard"
 msgstr ""
 
-msgid "Something went wrong, unable to get projects"
+msgid "Something went wrong, unable to delete project"
 msgstr ""
 
-msgid "Something went wrong, unable to remove project"
+msgid "Something went wrong, unable to get projects"
 msgstr ""
 
 msgid "Something went wrong, unable to search projects"
@@ -27657,10 +27657,10 @@ msgstr ""
 msgid "You are connected to the Prometheus server, but there is currently no data to display."
 msgstr ""
 
-msgid "You are going to remove %{group_name}, this will also remove all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
+msgid "You are going to delete %{project_full_name}. Deleted projects CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
-msgid "You are going to remove %{project_full_name}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
+msgid "You are going to remove %{group_name}, this will also delete all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "You are going to remove the fork relationship from %{project_full_name}. Are you ABSOLUTELY sure?"

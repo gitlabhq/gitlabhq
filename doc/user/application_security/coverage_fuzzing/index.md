@@ -7,8 +7,6 @@ type: reference, howto
 
 # Coverage Guided Fuzz Testing **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3226) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2 as an [Alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
-
 GitLab allows you to add coverage-guided fuzz testing to your pipelines. This helps you discover
 bugs and potential security issues that other QA processes may miss. Coverage-guided fuzzing sends
 random inputs to an instrumented version of your application in an effort to cause unexpected

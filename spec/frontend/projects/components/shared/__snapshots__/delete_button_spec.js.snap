@@ -25,7 +25,7 @@ exports[`Project remove modal intialized matches the snapshot 1`] = `
     tabindex="0"
     variant="danger"
   >
-    Remove project
+    Delete project
   </gl-button-stub>
    
   <b-modal-stub

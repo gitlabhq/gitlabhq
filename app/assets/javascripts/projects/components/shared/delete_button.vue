@@ -54,7 +54,7 @@ export default {
     },
   },
   strings: {
-    deleteProject: __('Remove project'),
+    deleteProject: __('Delete project'),
     title: __('Delete project. Are you ABSOLUTELY SURE?'),
     confirmText: __('Please type the following to confirm:'),
   },

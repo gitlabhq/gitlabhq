@@ -2,25 +2,18 @@
 
 exports[`Snippet Blob Edit component rendering matches the snapshot 1`] = `
 <div
-  class="form-group file-editor"
+  class="file-holder snippet"
 >
-  <label>
-    File
-  </label>
+  <blob-header-edit-stub
+    data-qa-selector="file_name_field"
+    id="snippet_file_path"
+    value="lorem.txt"
+  />
    
-  <div
-    class="file-holder snippet"
-  >
-    <blob-header-edit-stub
-      data-qa-selector="file_name_field"
-      value="lorem.txt"
-    />
-     
-    <blob-content-edit-stub
-      fileglobalid="0a3d"
-      filename="lorem.txt"
-      value="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-    />
-  </div>
+  <blob-content-edit-stub
+    fileglobalid="0a3d"
+    filename="lorem.txt"
+    value="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  />
 </div>
 `;

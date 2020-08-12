@@ -1450,16 +1450,69 @@ RSpec.describe Project do
   end
 
   describe '#service_desk_address' do
-    let_it_be(:project) { create(:project, service_desk_enabled: true) }
+    let_it_be(:project, reload: true) { create(:project, service_desk_enabled: true) }
 
-    before do
-      allow(Gitlab::ServiceDesk).to receive(:enabled?).and_return(true)
-      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
-      allow(Gitlab.config.incoming_email).to receive(:address).and_return("test+%{key}@mail.com")
+    subject { project.service_desk_address }
+
+    shared_examples 'with incoming email address' do
+      context 'when incoming email is enabled' do
+        before do
+          config = double(enabled: true, address: 'test+%{key}@mail.com')
+          allow(::Gitlab.config).to receive(:incoming_email).and_return(config)
+        end
+
+        it 'uses project full path as service desk address key' do
+          expect(project.service_desk_address).to eq("test+#{project.full_path_slug}-#{project.project_id}-issue-@mail.com")
+        end
+      end
+
+      context 'when incoming email is disabled' do
+        before do
+          config = double(enabled: false)
+          allow(::Gitlab.config).to receive(:incoming_email).and_return(config)
+        end
+
+        it 'uses project full path as service desk address key' do
+          expect(project.service_desk_address).to be_nil
+        end
+      end
     end
 
-    it 'uses project full path as service desk address key' do
-      expect(project.service_desk_address).to eq("test+#{project.full_path_slug}-#{project.project_id}-issue-@mail.com")
+    context 'when service_desk_email is disabled' do
+      before do
+        allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(false)
+      end
+
+      it_behaves_like 'with incoming email address'
+    end
+
+    context 'when service_desk_email is enabled' do
+      before do
+        config = double(enabled: true, address: 'foo+%{key}@bar.com')
+        allow(::Gitlab::ServiceDeskEmail).to receive(:config).and_return(config)
+      end
+
+      context 'when service_desk_custom_address flag is enabled' do
+        before do
+          stub_feature_flags(service_desk_custom_address: true)
+        end
+
+        it 'returns custom address when project_key is set' do
+          create(:service_desk_setting, project: project, project_key: 'key1')
+
+          expect(subject).to eq("foo+#{project.full_path_slug}-key1@bar.com")
+        end
+
+        it_behaves_like 'with incoming email address'
+      end
+
+      context 'when service_desk_custom_address flag is disabled' do
+        before do
+          stub_feature_flags(service_desk_custom_address: false)
+        end
+
+        it_behaves_like 'with incoming email address'
+      end
     end
   end
 

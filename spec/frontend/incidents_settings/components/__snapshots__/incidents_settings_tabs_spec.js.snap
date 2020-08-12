@@ -9,13 +9,13 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
   <div
     class="settings-header"
   >
-    <h3
-      class="h4"
+    <h4
+      class="gl-my-3! gl-py-1"
     >
       
       Incidents
     
-    </h3>
+    </h4>
      
     <gl-button-stub
       category="tertiary"

@@ -187,7 +187,10 @@ a rule is already defined.
 When an [eligible approver](#eligible-approvers) approves a merge request, it will
 reduce the number of approvals left for all rules that the approver belongs to.
 
-![Approvals premium merge request widget](img/approvals_premium_mr_widget_v12_7.png)
+When an [eligible approver](#eligible-approvers) comments on a merge request, it
+appears in the **Commented by** column. This feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10294) in GitLab 13.3.
+
+![Approvals premium merge request widget](img/approvals_premium_mr_widget_v13_3.png)
 
 #### Scoped to Protected Branch **(PREMIUM)**
 

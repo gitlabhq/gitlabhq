@@ -180,22 +180,22 @@ Read through the documentation on [project settings](settings/index.md).
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
-## Remove a project
+## Delete a project
 
-To remove a project, first navigate to the home page for that project.
+To delete a project, first navigate to the home page for that project.
 
 1. Navigate to **Settings > General**.
 1. Expand the **Advanced** section.
-1. Scroll down to the **Remove project** section.
-1. Click **Remove project**
+1. Scroll down to the **Delete project** section.
+1. Click **Delete project**
 1. Confirm this action by typing in the expected text.
 
-### Delayed removal **(PREMIUM)**
+### Delayed deletion **(PREMIUM)**
 
-By default, clicking to remove a project is followed by a seven day delay. Admins can restore the project during this period of time.
+By default, clicking to delete a project is followed by a seven day delay. Admins can restore the project during this period of time.
 This delay [may be changed by an admin](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
 
-Admins can view all projects pending deletion. If you're an administrator, go to the top navigation bar, click **Projects > Your projects**, and then select the **Removed projects** tab.
+Admins can view all projects pending deletion. If you're an administrator, go to the top navigation bar, click **Projects > Your projects**, and then select the **Deleted projects** tab.
 From this tab an admin can restore any project.
 
 ## CI/CD for external repositories **(PREMIUM)**

@@ -24,9 +24,9 @@ export default {
     class="settings no-animate qa-incident-management-settings"
   >
     <div class="settings-header">
-      <h3 ref="sectionHeader" class="h4">
+      <h4 ref="sectionHeader" class="gl-my-3! gl-py-1">
         {{ $options.i18n.headerText }}
-      </h3>
+      </h4>
       <gl-button ref="toggleBtn" class="js-settings-toggle">{{
         $options.i18n.expandBtnLabel
       }}</gl-button>

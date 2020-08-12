@@ -1,18 +1,21 @@
 import { shallowMount } from '@vue/test-utils';
 import BlobEditHeader from '~/blob/components/blob_edit_header.vue';
-import { GlFormInput } from '@gitlab/ui';
+import { GlFormInput, GlButton } from '@gitlab/ui';
 
 describe('Blob Header Editing', () => {
   let wrapper;
   const value = 'foo.md';
 
-  function createComponent() {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(BlobEditHeader, {
       propsData: {
         value,
+        ...props,
       },
     });
-  }
+  };
+  const findDeleteButton = () =>
+    wrapper.findAll(GlButton).wrappers.find(x => x.text() === 'Delete file');
 
   beforeEach(() => {
     createComponent();
@@ -30,6 +33,10 @@ describe('Blob Header Editing', () => {
     it('contains a form input field', () => {
       expect(wrapper.contains(GlFormInput)).toBe(true);
     });
+
+    it('does not show delete button', () => {
+      expect(findDeleteButton()).toBeUndefined();
+    });
   });
 
   describe('functionality', () => {
@@ -45,6 +52,37 @@ describe('Blob Header Editing', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.emitted().input[0]).toEqual([newValue]);
       });
+    });
+  });
+
+  describe.each`
+    props                                    | expectedDisabled
+    ${{ showDelete: true }}                  | ${true}
+    ${{ showDelete: true, canDelete: true }} | ${false}
+  `('with $props', ({ props, expectedDisabled }) => {
+    beforeEach(() => {
+      createComponent(props);
+    });
+
+    it(`shows delete button (disabled=${expectedDisabled})`, () => {
+      const deleteButton = findDeleteButton();
+
+      expect(deleteButton.exists()).toBe(true);
+      expect(deleteButton.props('disabled')).toBe(expectedDisabled);
+    });
+  });
+
+  describe('with delete button', () => {
+    beforeEach(() => {
+      createComponent({ showDelete: true, canDelete: true });
+    });
+
+    it('emits delete when clicked', () => {
+      expect(wrapper.emitted().delete).toBeUndefined();
+
+      findDeleteButton().vm.$emit('click');
+
+      expect(wrapper.emitted().delete).toEqual([[]]);
     });
   });
 });

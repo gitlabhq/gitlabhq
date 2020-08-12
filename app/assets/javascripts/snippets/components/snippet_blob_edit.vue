@@ -91,17 +91,18 @@ export default {
 };
 </script>
 <template>
-  <div class="form-group file-editor">
-    <label>{{ s__('Snippets|File') }}</label>
-    <div class="file-holder snippet">
-      <blob-header-edit v-model="filePath" data-qa-selector="file_name_field" />
-      <gl-loading-icon
-        v-if="isContentLoading"
-        :label="__('Loading snippet')"
-        size="lg"
-        class="loading-animation prepend-top-20 append-bottom-20"
-      />
-      <blob-content-edit v-else v-model="content" :file-global-id="id" :file-name="filePath" />
-    </div>
+  <div class="file-holder snippet">
+    <blob-header-edit
+      id="snippet_file_path"
+      v-model="filePath"
+      data-qa-selector="file_name_field"
+    />
+    <gl-loading-icon
+      v-if="isContentLoading"
+      :label="__('Loading snippet')"
+      size="lg"
+      class="loading-animation prepend-top-20 append-bottom-20"
+    />
+    <blob-content-edit v-else v-model="content" :file-global-id="id" :file-name="filePath" />
   </div>
 </template>

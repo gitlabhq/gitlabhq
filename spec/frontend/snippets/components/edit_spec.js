@@ -7,7 +7,7 @@ import { redirectTo } from '~/lib/utils/url_utility';
 import SnippetEditApp from '~/snippets/components/edit.vue';
 import SnippetDescriptionEdit from '~/snippets/components/snippet_description_edit.vue';
 import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit.vue';
-import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
+import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
 import TitleField from '~/vue_shared/components/form/title.vue';
 import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
 import { SNIPPET_CREATE_MUTATION_ERROR, SNIPPET_UPDATE_MUTATION_ERROR } from '~/snippets/constants';
@@ -141,7 +141,7 @@ describe('Snippet Edit app', () => {
 
       expect(wrapper.contains(TitleField)).toBe(true);
       expect(wrapper.contains(SnippetDescriptionEdit)).toBe(true);
-      expect(wrapper.contains(SnippetBlobEdit)).toBe(true);
+      expect(wrapper.contains(SnippetBlobActionsEdit)).toBe(true);
       expect(wrapper.contains(SnippetVisibilityEdit)).toBe(true);
       expect(wrapper.contains(FormFooterActions)).toBe(true);
     });

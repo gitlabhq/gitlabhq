@@ -2468,12 +2468,26 @@ class Project < ApplicationRecord
   alias_method :service_desk_enabled?, :service_desk_enabled
 
   def service_desk_address
+    service_desk_custom_address || service_desk_incoming_address
+  end
+
+  def service_desk_incoming_address
     return unless service_desk_enabled?
 
     config = Gitlab.config.incoming_email
     wildcard = Gitlab::IncomingEmail::WILDCARD_PLACEHOLDER
 
     config.address&.gsub(wildcard, "#{full_path_slug}-#{id}-issue-")
+  end
+
+  def service_desk_custom_address
+    return unless ::Gitlab::ServiceDeskEmail.enabled?
+    return unless ::Feature.enabled?(:service_desk_custom_address, self)
+
+    key = service_desk_setting&.project_key
+    return unless key.present?
+
+    ::Gitlab::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
   end
 
   def root_namespace

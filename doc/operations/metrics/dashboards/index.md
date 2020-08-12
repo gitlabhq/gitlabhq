@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59974) in GitLab 12.1.
 
-By default, all projects include a GitLab-defined Prometheus dashboard, which
+By default, all projects include a [GitLab-defined Prometheus dashboard](default.md), which
 includes a few key metrics, but you can also define your own custom dashboards.
 
 You may create a [new dashboard from scratch](#add-a-new-dashboard-to-your-project)
@@ -23,7 +23,8 @@ The metrics as defined below do not support alerts, unlike
 > UI option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228856) in GitLab 13.3.
 
 You can configure a custom dashboard by adding a new YAML file into your project's
-`.gitlab/dashboards/` directory. For the dashboard to display on your project's **Operations > Metrics** page, the files must have a `.yml`
+`.gitlab/dashboards/` directory. For the dashboard to display on your project's
+**Operations > Metrics** page, the files must have a `.yml`
 extension and be present in your project's **default** branch.
 
 To create a new dashboard from the GitLab user interface:
@@ -145,7 +146,7 @@ Your custom dashboard is available at `https://example.com/project/-/metrics/cus
 
 To manage the settings for your metrics dashboard:
 
-1. Sign in as a user with project Maintainer or Admin
+1. Sign in as a user with project Maintainer or Administrator
    [permissions](../../../user/permissions.md#project-members-permissions).
 1. Navigate to your dashboard at **Operations > Metrics**.
 1. In the top-right corner of your dashboard, click **Metrics Settings**:

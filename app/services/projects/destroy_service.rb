@@ -31,7 +31,7 @@ module Projects
       attempt_destroy_transaction(project)
 
       system_hook_service.execute_hooks_for(project, :destroy)
-      log_info("Project \"#{project.full_path}\" was removed")
+      log_info("Project \"#{project.full_path}\" was deleted")
 
       current_user.invalidate_personal_projects_count
 

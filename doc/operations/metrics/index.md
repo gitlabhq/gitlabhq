@@ -72,16 +72,15 @@ and NGINX, and attempts to identify individual environments. To learn more about
 the supported metrics and scan processes, see the
 [Prometheus Metrics Library documentation](../../user/project/integrations/prometheus_library/index.md).
 
-To view the metrics dashboard for an environment that has
-To view the metrics dashboard for an environment that is
+To view the [default metrics dashboard](dashboards/default.md) for an environment that is
 [configured to gather metrics](#configure-prometheus-to-gather-metrics):
 
 1. *If the metrics dashboard is only visible to project members,* sign in to
    GitLab as a member of a project. Learn more about [metrics dashboard visibility](#metrics-dashboard-visibility).
 1. In your project, navigate to **Operations > Metrics**.
 
-GitLab displays the default metrics dashboard for the environment, like the
-following example:
+GitLab displays the [default metrics dashboard](dashboards/default.md) for the environment,
+like the following example:
 
 ![Example of metrics dashboard](img/example-dashboard_v13_3.png)
 

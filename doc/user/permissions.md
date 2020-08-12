@@ -156,7 +156,7 @@ The following table depicts the various user permission levels in a project.
 | Transfer project to another namespace             |         |            |             |          | ✓      |
 | Rename project                                    |         |            |             |          | ✓      |
 | Remove fork relationship                          |         |            |             |          | ✓      |
-| Remove project                                    |         |            |             |          | ✓      |
+| Delete project                                    |         |            |             |          | ✓      |
 | Archive project                                   |         |            |             |          | ✓      |
 | Delete issues                                     |         |            |             |          | ✓      |
 | Delete pipelines                                  |         |            |             |          | ✓      |
@@ -416,7 +416,7 @@ instance and project. In addition, all admins can use the admin interface under
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
 | Erase job artifacts and trace         |                 | ✓ (*1*)     | ✓        | ✓      |
-| Remove project                        |                 |             | ✓        | ✓      |
+| Delete project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
 | Add specific runners                  |                 |             | ✓        | ✓      |

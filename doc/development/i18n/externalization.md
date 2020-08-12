@@ -636,7 +636,7 @@ Errors in `locale/zh_HK/gitlab.po`:
     Syntax error in msgstr
     Syntax error in message_line
     There should be only whitespace until the end of line after the double quote character of a message text.
-    Parsing result before error: '{:msgid=>["", "You are going to remove %{project_name_with_namespace}.\\n", "Removed project CANNOT be restored!\\n", "Are you ABSOLUTELY sure?"]}'
+    Parsing result before error: '{:msgid=>["", "You are going to delete %{project_name_with_namespace}.\\n", "Deleted projects CANNOT be restored!\\n", "Are you ABSOLUTELY sure?"]}'
     SimplePoParser filtered backtrace: SimplePoParser::ParserError
 Errors in `locale/zh_TW/gitlab.po`:
   1 pipeline

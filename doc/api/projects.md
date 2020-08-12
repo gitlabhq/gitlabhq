@@ -1832,11 +1832,11 @@ Example response:
 }
 ```
 
-## Remove project
+## Delete project
 
 This endpoint:
 
-- Removes a project including all associated resources (issues, merge requests etc).
+- Deletes a project including all associated resources (issues, merge requests etc).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
 group admins can [configure](../user/group/index.md#enabling-delayed-project-removal-premium) projects within a group
 to be deleted after a delayed period.
