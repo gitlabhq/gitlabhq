@@ -21,8 +21,8 @@ module Packages
         @search_term = search_term
         @options = DEFAULT_OPTIONS.merge(options)
 
-        raise ArgumentError, 'negative per_page' if per_page.negative?
-        raise ArgumentError, 'negative padding' if padding.negative?
+        raise ArgumentError, 'negative per_page' if per_page < 0
+        raise ArgumentError, 'negative padding' if padding < 0
       end
 
       def execute

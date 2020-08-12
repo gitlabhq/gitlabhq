@@ -136,7 +136,7 @@ module Projects
     def max_size
       max_pages_size = max_size_from_settings
 
-      return ::Gitlab::Pages::MAX_SIZE if max_pages_size.zero?
+      return ::Gitlab::Pages::MAX_SIZE if max_pages_size == 0
 
       max_pages_size
     end

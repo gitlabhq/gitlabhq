@@ -113,7 +113,7 @@ module Ci
     end
 
     def has_warnings?
-      number_of_warnings.positive?
+      number_of_warnings > 0
     end
 
     def number_of_warnings

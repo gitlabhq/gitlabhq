@@ -1,28 +1,39 @@
 import axios from '~/lib/utils/axios_utils';
 
+const mapAlert = ({ runbook_url, ...alert }) => {
+  return { runbookUrl: runbook_url, ...alert };
+};
+
 export default class AlertsService {
   constructor({ alertsEndpoint }) {
     this.alertsEndpoint = alertsEndpoint;
   }
 
   getAlerts() {
-    return axios.get(this.alertsEndpoint).then(resp => resp.data);
+    return axios.get(this.alertsEndpoint).then(resp => mapAlert(resp.data));
   }
 
-  createAlert({ prometheus_metric_id, operator, threshold }) {
+  createAlert({ prometheus_metric_id, operator, threshold, runbookUrl }) {
     return axios
-      .post(this.alertsEndpoint, { prometheus_metric_id, operator, threshold })
-      .then(resp => resp.data);
+      .post(this.alertsEndpoint, {
+        prometheus_metric_id,
+        operator,
+        threshold,
+        runbook_url: runbookUrl,
+      })
+      .then(resp => mapAlert(resp.data));
   }
 
   // eslint-disable-next-line class-methods-use-this
   readAlert(alertPath) {
-    return axios.get(alertPath).then(resp => resp.data);
+    return axios.get(alertPath).then(resp => mapAlert(resp.data));
   }
 
   // eslint-disable-next-line class-methods-use-this
-  updateAlert(alertPath, { operator, threshold }) {
-    return axios.put(alertPath, { operator, threshold }).then(resp => resp.data);
+  updateAlert(alertPath, { operator, threshold, runbookUrl }) {
+    return axios
+      .put(alertPath, { operator, threshold, runbook_url: runbookUrl })
+      .then(resp => mapAlert(resp.data));
   }
 
   // eslint-disable-next-line class-methods-use-this

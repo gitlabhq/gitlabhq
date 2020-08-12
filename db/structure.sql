@@ -29,7 +29,6 @@ ELSIF (TG_OP = 'UPDATE') THEN
     author_name = NEW.author_name,
     entity_path = NEW.entity_path,
     target_details = NEW.target_details,
-    target_type = NEW.target_type,
     created_at = NEW.created_at
   WHERE audit_events_part_5fc467ac26.id = NEW.id;
 ELSIF (TG_OP = 'INSERT') THEN
@@ -43,7 +42,6 @@ ELSIF (TG_OP = 'INSERT') THEN
     author_name,
     entity_path,
     target_details,
-    target_type,
     created_at)
   VALUES (NEW.id,
     NEW.author_id,
@@ -55,7 +53,6 @@ ELSIF (TG_OP = 'INSERT') THEN
     NEW.author_name,
     NEW.entity_path,
     NEW.target_details,
-    NEW.target_type,
     NEW.created_at);
 END IF;
 RETURN NULL;
@@ -77,10 +74,8 @@ CREATE TABLE public.audit_events_part_5fc467ac26 (
     entity_path text,
     target_details text,
     created_at timestamp without time zone NOT NULL,
-    target_type text,
     CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
     CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),
-    CONSTRAINT check_97a8c868e7 CHECK ((char_length(target_type) <= 255)),
     CONSTRAINT check_d493ec90b5 CHECK ((char_length(target_details) <= 5500))
 )
 PARTITION BY RANGE (created_at);
@@ -9475,9 +9470,7 @@ CREATE TABLE public.audit_events (
     author_name text,
     entity_path text,
     target_details text,
-    target_type text,
     CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
-    CONSTRAINT check_82294106dd CHECK ((char_length(target_type) <= 255)),
     CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),
     CONSTRAINT check_d493ec90b5 CHECK ((char_length(target_details) <= 5500))
 );
@@ -20949,6 +20942,8 @@ CREATE INDEX index_vulnerability_occurrence_identifiers_on_identifier_id ON publ
 CREATE UNIQUE INDEX index_vulnerability_occurrence_identifiers_on_unique_keys ON public.vulnerability_occurrence_identifiers USING btree (occurrence_id, identifier_id);
 
 CREATE INDEX index_vulnerability_occurrence_pipelines_on_pipeline_id ON public.vulnerability_occurrence_pipelines USING btree (pipeline_id);
+
+CREATE INDEX index_vulnerability_occurrences_for_issue_links_migration ON public.vulnerability_occurrences USING btree (project_id, report_type, encode(project_fingerprint, 'hex'::text));
 
 CREATE INDEX index_vulnerability_occurrences_on_primary_identifier_id ON public.vulnerability_occurrences USING btree (primary_identifier_id);
 

@@ -149,8 +149,4 @@ RSpec.describe Projects::Ci::DailyBuildGroupReportResultsController do
       date: date
     )
   end
-
-  def csv_response
-    CSV.parse(response.body)
-  end
 end

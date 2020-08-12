@@ -211,7 +211,7 @@ module Network
 
       # Visit branching chains
       leaves.each do |l|
-        parents = l.parents(@map).select {|p| p.space.zero?}
+        parents = l.parents(@map).select {|p| p.space == 0}
         parents.each do |p|
           place_chain(p, l.time)
         end
@@ -266,14 +266,14 @@ module Network
     def take_left_leaves(raw_commit)
       commit = @map[raw_commit.id]
       leaves = []
-      leaves.push(commit) if commit.space.zero?
+      leaves.push(commit) if commit.space == 0
 
       loop do
-        return leaves if commit.parents(@map).count.zero?
+        return leaves if commit.parents(@map).count == 0
 
         commit = commit.parents(@map).first
 
-        return leaves unless commit.space.zero?
+        return leaves unless commit.space == 0
 
         leaves.push(commit)
       end

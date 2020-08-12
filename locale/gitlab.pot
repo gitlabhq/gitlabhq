@@ -527,6 +527,9 @@ msgstr ""
 msgid "%{loadingIcon} Started"
 msgstr ""
 
+msgid "%{location} is missing required keys: %{keys}"
+msgstr ""
+
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr ""
 
@@ -806,7 +809,22 @@ msgstr ""
 msgid "&lt;project name&gt;"
 msgstr ""
 
-msgid "'%{data}' is invalid at '%{data_pointer}'. Should be '%{schema}' due to schema definition at '%{schema_pointer}'"
+msgid "'%{data}' at %{location} does not match format: %{format}"
+msgstr ""
+
+msgid "'%{data}' at %{location} does not match pattern: %{pattern}"
+msgstr ""
+
+msgid "'%{data}' at %{location} is invalid: error_type=%{type}"
+msgstr ""
+
+msgid "'%{data}' at %{location} is not of type: %{type}"
+msgstr ""
+
+msgid "'%{data}' at %{location} is not one of: %{enum}"
+msgstr ""
+
+msgid "'%{data}' at %{location} is not: %{const}"
 msgstr ""
 
 msgid "'%{level}' is not a valid visibility level"
@@ -7593,9 +7611,6 @@ msgstr ""
 msgid "DastProfiles|Do you want to discard your changes?"
 msgstr ""
 
-msgid "DastProfiles|Edit feature will come soon. Please create a new profile if changes needed"
-msgstr ""
-
 msgid "DastProfiles|Edit site profile"
 msgstr ""
 
@@ -10948,28 +10963,13 @@ msgstr ""
 msgid "GeoNodeSyncStatus|Node is slow, overloaded, or it just recovered after an outage."
 msgstr ""
 
-msgid "GeoNodes|Attachments"
-msgstr ""
-
-msgid "GeoNodes|Checksummed"
-msgstr ""
-
 msgid "GeoNodes|Consult Geo troubleshooting information"
-msgstr ""
-
-msgid "GeoNodes|Container repositories"
 msgstr ""
 
 msgid "GeoNodes|Data replication lag"
 msgstr ""
 
-msgid "GeoNodes|Design repositories"
-msgstr ""
-
 msgid "GeoNodes|Does not match the primary storage configuration"
-msgstr ""
-
-msgid "GeoNodes|Failed"
 msgstr ""
 
 msgid "GeoNodes|Full"
@@ -10985,12 +10985,6 @@ msgid "GeoNodes|Health status"
 msgstr ""
 
 msgid "GeoNodes|Internal URL"
-msgstr ""
-
-msgid "GeoNodes|Job artifacts"
-msgstr ""
-
-msgid "GeoNodes|LFS objects"
 msgstr ""
 
 msgid "GeoNodes|Last event ID processed by cursor"
@@ -11020,12 +11014,6 @@ msgstr ""
 msgid "GeoNodes|Node's status was updated %{timeAgo}."
 msgstr ""
 
-msgid "GeoNodes|Not checksummed"
-msgstr ""
-
-msgid "GeoNodes|Package files"
-msgstr ""
-
 msgid "GeoNodes|Pausing replication stops the sync process. Are you sure?"
 msgstr ""
 
@@ -11045,15 +11033,6 @@ msgid "GeoNodes|Replication slots"
 msgstr ""
 
 msgid "GeoNodes|Replication status"
-msgstr ""
-
-msgid "GeoNodes|Repositories"
-msgstr ""
-
-msgid "GeoNodes|Repository checksum progress"
-msgstr ""
-
-msgid "GeoNodes|Repository verification progress"
 msgstr ""
 
 msgid "GeoNodes|Selective (%{syncLabel})"
@@ -11083,25 +11062,10 @@ msgstr ""
 msgid "GeoNodes|Unused slots"
 msgstr ""
 
-msgid "GeoNodes|Unverified"
-msgstr ""
-
 msgid "GeoNodes|Updated %{timeAgo}"
 msgstr ""
 
 msgid "GeoNodes|Used slots"
-msgstr ""
-
-msgid "GeoNodes|Verified"
-msgstr ""
-
-msgid "GeoNodes|Wiki checksum progress"
-msgstr ""
-
-msgid "GeoNodes|Wiki verification progress"
-msgstr ""
-
-msgid "GeoNodes|Wikis"
 msgstr ""
 
 msgid "GeoNodes|With %{geo} you can install a special read-only and replicated instance anywhere. Before you add nodes, follow the %{instructions} in the exact order they appear."
@@ -11114,6 +11078,12 @@ msgid "GeoNodes|primary node"
 msgstr ""
 
 msgid "GeoNodes|secondary nodes"
+msgstr ""
+
+msgid "Geo|%{itemTitle} checksum progress"
+msgstr ""
+
+msgid "Geo|%{itemTitle} verification progress"
 msgstr ""
 
 msgid "Geo|%{label} can't be blank"
@@ -19414,7 +19384,7 @@ msgstr ""
 msgid "PrometheusAlerts|Operator"
 msgstr ""
 
-msgid "PrometheusAlerts|Runbook"
+msgid "PrometheusAlerts|Runbook URL (optional)"
 msgstr ""
 
 msgid "PrometheusAlerts|Select query"

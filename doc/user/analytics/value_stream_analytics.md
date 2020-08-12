@@ -48,7 +48,30 @@ There are seven stages that are tracked as part of the Value Stream Analytics ca
 - **Total** (Total)
   - Total lifecycle time. That is, the velocity of the project or team. [Previously known](https://gitlab.com/gitlab-org/gitlab/-/issues/38317) as **Production**.
 
-## Date ranges
+## Filter the analytics data
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 13.3
+
+GitLab provides the ability to filter analytics based on the following parameters:
+
+- Milestones (Group level)
+- Labels (Group level)
+- Author
+- Assignees
+
+To filter results:
+
+1. Select a group.
+1. Click on the filter bar.
+1. Select a parameter to filter by.
+1. Select a value from the autocompleted results, or type to refine the results.
+
+![Value stream analytics filter bar](img/vsa_filter_bar_v13.3.png "Active filter bar for value stream analytics")
+
+NOTE: **Note:**
+Filtering is available only for group-level Value Stream Analytics.
+
+### Date ranges
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 12.4.
 

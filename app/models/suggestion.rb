@@ -61,7 +61,7 @@ class Suggestion < ApplicationRecord
   end
 
   def single_line?
-    lines_above.zero? && lines_below.zero?
+    lines_above == 0 && lines_below == 0
   end
 
   def target_line

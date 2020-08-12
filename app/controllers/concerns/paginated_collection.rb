@@ -6,7 +6,7 @@ module PaginatedCollection
   private
 
   def redirect_out_of_range(collection, total_pages = collection.total_pages)
-    return false if total_pages.zero?
+    return false if total_pages == 0
 
     out_of_range = collection.current_page > total_pages
 

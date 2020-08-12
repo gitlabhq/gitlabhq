@@ -88,6 +88,7 @@ export default {
       operator: null,
       threshold: null,
       prometheusMetricId: null,
+      runbookUrl: null,
       selectedAlert: {},
       alertQuery: '',
     };
@@ -116,7 +117,8 @@ export default {
         this.operator &&
         this.threshold === Number(this.threshold) &&
         (this.operator !== this.selectedAlert.operator ||
-          this.threshold !== this.selectedAlert.threshold)
+          this.threshold !== this.selectedAlert.threshold ||
+          this.runbookUrl !== this.selectedAlert.runbookUrl)
       );
     },
     submitAction() {
@@ -153,13 +155,17 @@ export default {
       const existingAlert = this.alertsToManage[existingAlertPath];
 
       if (existingAlert) {
+        const { operator, threshold, runbookUrl } = existingAlert;
+
         this.selectedAlert = existingAlert;
-        this.operator = existingAlert.operator;
-        this.threshold = existingAlert.threshold;
+        this.operator = operator;
+        this.threshold = threshold;
+        this.runbookUrl = runbookUrl;
       } else {
         this.selectedAlert = {};
         this.operator = this.operators.greaterThan;
         this.threshold = null;
+        this.runbookUrl = null;
       }
 
       this.prometheusMetricId = queryId;
@@ -168,13 +174,13 @@ export default {
       this.resetAlertData();
       this.$emit('cancel');
     },
-    handleSubmit(e) {
-      e.preventDefault();
+    handleSubmit() {
       this.$emit(this.submitAction, {
         alert: this.selectedAlert.alert_path,
         operator: this.operator,
         threshold: this.threshold,
         prometheus_metric_id: this.prometheusMetricId,
+        runbookUrl: this.runbookUrl,
       });
     },
     handleShown() {
@@ -189,6 +195,7 @@ export default {
       this.threshold = null;
       this.prometheusMetricId = null;
       this.selectedAlert = {};
+      this.runbookUrl = null;
     },
     getAlertFormActionTrackingOption() {
       const label = `${this.submitAction}_alert`;
@@ -217,7 +224,7 @@ export default {
     :modal-id="modalId"
     :ok-variant="submitAction === 'delete' ? 'danger' : 'success'"
     :ok-disabled="formDisabled"
-    @ok="handleSubmit"
+    @ok.prevent="handleSubmit"
     @hidden="handleHidden"
     @shown="handleShown"
   >
@@ -259,7 +266,7 @@ export default {
           </gl-deprecated-dropdown-item>
         </gl-deprecated-dropdown>
       </gl-form-group>
-      <gl-button-group class="mb-2" :label="s__('PrometheusAlerts|Operator')">
+      <gl-button-group class="mb-3" :label="s__('PrometheusAlerts|Operator')">
         <gl-deprecated-button
           :class="{ active: operator === operators.greaterThan }"
           :disabled="formDisabled"
@@ -296,11 +303,16 @@ export default {
       </gl-form-group>
       <gl-form-group
         v-if="glFeatures.alertRunbooks"
-        :label="s__('PrometheusAlerts|Runbook')"
+        :label="s__('PrometheusAlerts|Runbook URL (optional)')"
         label-for="alert-runbook"
-        data-testid="alertRunbookField"
       >
-        <gl-form-input id="alert-runbook" :disabled="formDisabled" type="text" />
+        <gl-form-input
+          id="alert-runbook"
+          v-model="runbookUrl"
+          :disabled="formDisabled"
+          data-testid="alertRunbookField"
+          type="text"
+        />
       </gl-form-group>
     </div>
     <template #modal-ok>

@@ -1,0 +1,5 @@
+---
+title: Add migration helper index for Vulnerabilities::Finding table
+merge_request: 38898
+author:
+type: changed

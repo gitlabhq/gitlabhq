@@ -1121,7 +1121,7 @@ class Project < ApplicationRecord
 
     limit = creator.projects_limit
     error =
-      if limit.zero?
+      if limit == 0
         _('Personal project creation is not allowed. Please contact your administrator with questions')
       else
         _('Your project limit is %{limit} projects! Please contact your administrator to increase it')

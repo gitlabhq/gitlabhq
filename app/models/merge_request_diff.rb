@@ -631,7 +631,7 @@ class MergeRequestDiff < ApplicationRecord
   def save_diffs
     new_attributes = {}
 
-    if compare.commits.size.zero?
+    if compare.commits.empty?
       new_attributes[:state] = :empty
     else
       diff_collection = compare.diffs(Commit.max_diff_options)

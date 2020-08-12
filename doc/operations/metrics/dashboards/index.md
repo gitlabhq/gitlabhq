@@ -72,6 +72,51 @@ NOTE: **Note:**
 Configuration files nested under subdirectories of `.gitlab/dashboards` are not
 supported and won't be available in the UI.
 
+## Add a new metrics panel to a dashboard
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228761) in GitLab 13.3 behind a disabled [feature flag](../../../administration/feature_flags.md): `metrics_dashboard_new_panel_page`.
+
+The metrics dashboard supports various [multiple panel types](../../../operations/metrics/dashboards/panel_types.md).
+You can quickly test how a panel configuration would display in your metrics dashboard
+with the **Add Panel** page:
+
+1. Sign in to GitLab as a user with Maintainer or Owner
+   [permissions](../../../user/permissions.md#project-members-permissions) on a
+   project that has the [feature flag enabled](#enable-or-disable-testing-metrics-panels).
+1. Open the URL `https://example.com/PROJECT/-/metrics/panel/new`, replacing
+   `example.com` with your domain name, and `PROJECT` with the name of your project,
+   to display the panel configuration page.
+1. In the **Define and preview panel** section, paste in the YAML you want to
+   preview in the **Panel YAML** field.
+1. Click **Preview panel**, and GitLab displays a preview of the chart below the
+   `Define and preview panel` section:
+   ![Monitoring Dashboard Add Panel page](img/metrics_dashboard_panel_preview_v13_3.png)
+
+### Enable or disable testing metrics panels
+
+Testing metrics panels in the UI is under development and not ready for production use. It's
+deployed behind a feature flag that's **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance. Testing metrics panels in the UI can be enabled or disabled per-project.
+
+To enable it:
+
+```ruby
+# Instance-wide
+Feature.enable(:metrics_dashboard_new_panel_page)
+# or by project
+Feature.enable(:metrics_dashboard_new_panel_page, Project.find(metrics_dashboard_new_panel_page))
+```
+
+To disable it:
+
+```ruby
+# Instance-wide
+Feature.disable(:metrics_dashboard_new_panel_page)
+# or by project
+Feature.disable(:metrics_dashboard_new_panel_page, Project.find(metrics_dashboard_new_panel_page))
+```
+
 ## Duplicate a GitLab-defined dashboard
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37238) in GitLab 12.7.

@@ -1,3 +1,12 @@
+import { isSafeURL } from '~/lib/utils/url_utility';
+
+const isRunbookUrlValid = runbookUrl => {
+  if (!runbookUrl) {
+    return true;
+  }
+  return isSafeURL(runbookUrl);
+};
+
 // Prop validator for alert information, expecting an object like the example below.
 //
 // {
@@ -8,6 +17,7 @@
 //     query: "rate(http_requests_total[5m])[30m:1m]",
 //     threshold: 0.002,
 //     title: "Core Usage (Total)",
+//     runbookUrl: "https://www.gitlab.com/my-project/-/wikis/runbook"
 //   }
 // }
 export function alertsValidator(value) {
@@ -19,7 +29,8 @@ export function alertsValidator(value) {
       alert.metricId &&
       typeof alert.metricId === 'string' &&
       alert.operator &&
-      typeof alert.threshold === 'number'
+      typeof alert.threshold === 'number' &&
+      isRunbookUrlValid(alert.runbookUrl)
     );
   });
 }

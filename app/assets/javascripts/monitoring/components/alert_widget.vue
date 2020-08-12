@@ -174,8 +174,8 @@ export default {
     handleSetApiAction(apiAction) {
       this.apiAction = apiAction;
     },
-    handleCreate({ operator, threshold, prometheus_metric_id }) {
-      const newAlert = { operator, threshold, prometheus_metric_id };
+    handleCreate({ operator, threshold, prometheus_metric_id, runbookUrl }) {
+      const newAlert = { operator, threshold, prometheus_metric_id, runbookUrl };
       this.isLoading = true;
       this.service
         .createAlert(newAlert)
@@ -189,8 +189,8 @@ export default {
           this.isLoading = false;
         });
     },
-    handleUpdate({ alert, operator, threshold }) {
-      const updatedAlert = { operator, threshold };
+    handleUpdate({ alert, operator, threshold, runbookUrl }) {
+      const updatedAlert = { operator, threshold, runbookUrl };
       this.isLoading = true;
       this.service
         .updateAlert(alert, updatedAlert)

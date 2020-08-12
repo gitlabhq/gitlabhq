@@ -1,5 +1,5 @@
 <script>
-import { GlTable, GlDeprecatedButton, GlModalDirective, GlIcon } from '@gitlab/ui';
+import { GlTable, GlButton, GlModalDirective, GlIcon } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { mapState, mapActions } from 'vuex';
 import { ADD_CI_VARIABLE_MODAL_ID } from '../constants';
@@ -51,7 +51,7 @@ export default {
   ],
   components: {
     GlTable,
-    GlDeprecatedButton,
+    GlButton,
     GlIcon,
     CiVariablePopover,
   },
@@ -147,14 +147,14 @@ export default {
         </div>
       </template>
       <template #cell(actions)="{ item }">
-        <gl-deprecated-button
+        <gl-button
           ref="edit-ci-variable"
           v-gl-modal-directive="$options.modalId"
+          icon="pencil"
+          :aria-label="__('Edit')"
           data-qa-selector="edit_ci_variable_button"
           @click="editVariable(item)"
-        >
-          <gl-icon :size="$options.iconSize" name="pencil" />
-        </gl-deprecated-button>
+        />
       </template>
       <template #empty>
         <p ref="empty-variables" class="text-center empty-variables text-plain">
@@ -166,20 +166,21 @@ export default {
       class="ci-variable-actions d-flex justify-content-end"
       :class="{ 'justify-content-center': !tableIsNotEmpty }"
     >
-      <gl-deprecated-button
+      <gl-button
         v-if="tableIsNotEmpty"
         ref="secret-value-reveal-button"
         data-qa-selector="reveal_ci_variable_value_button"
         class="gl-mr-3"
         @click="toggleValues(!valuesHidden)"
-        >{{ valuesButtonText }}</gl-deprecated-button
+        >{{ valuesButtonText }}</gl-button
       >
-      <gl-deprecated-button
+      <gl-button
         ref="add-ci-variable"
         v-gl-modal-directive="$options.modalId"
         data-qa-selector="add_ci_variable_button"
         variant="success"
-        >{{ __('Add Variable') }}</gl-deprecated-button
+        category="primary"
+        >{{ __('Add Variable') }}</gl-button
       >
     </div>
   </div>

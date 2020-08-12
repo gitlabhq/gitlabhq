@@ -70,7 +70,7 @@ class SearchService
   def per_page
     per_page_param = params[:per_page].to_i
 
-    return DEFAULT_PER_PAGE unless per_page_param.positive?
+    return DEFAULT_PER_PAGE unless per_page_param > 0
 
     [MAX_PER_PAGE, per_page_param].min
   end

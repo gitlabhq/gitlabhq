@@ -34,6 +34,15 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator do
   end
 
   describe '#validate!' do
+    shared_examples 'validation failed' do |errors_message|
+      it 'raises error with corresponding messages', :aggregate_failures do
+        expect { subject }.to raise_error do |error|
+          expect(error).to be_kind_of(Gitlab::Metrics::Dashboard::Validator::Errors::InvalidDashboardError)
+          expect(error.message).to eq(errors_message)
+        end
+      end
+    end
+
     context 'valid dashboard' do
       it 'returns true' do
         expect(described_class.validate!(valid_dashboard)).to be true
@@ -41,22 +50,37 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator do
     end
 
     context 'invalid dashboard' do
+      subject { described_class.validate!(invalid_dashboard) }
+
       context 'invalid schema' do
-        it 'raises error' do
-          expect { described_class.validate!(invalid_dashboard) }
-            .to raise_error(Gitlab::Metrics::Dashboard::Validator::Errors::InvalidDashboardError,
-              "'this_should_be_a_int' is invalid at '/panel_groups/0/panels/0/weight'."\
-              " Should be '{\"type\"=>\"number\"}' due to schema definition at '/properties/weight'")
+        context 'wrong property type' do
+          it_behaves_like 'validation failed', "'this_should_be_a_int' at /panel_groups/0/panels/0/weight is not of type: number"
+        end
+
+        context 'panel groups missing' do
+          let_it_be(:invalid_dashboard) { load_dashboard_yaml(fixture_file('lib/gitlab/metrics/dashboard/dashboard_missing_panel_groups.yml')) }
+
+          it_behaves_like 'validation failed', 'root is missing required keys: panel_groups'
+        end
+
+        context 'groups are missing panels and group keys' do
+          let_it_be(:invalid_dashboard) { load_dashboard_yaml(fixture_file('lib/gitlab/metrics/dashboard/dashboard_groups_missing_panels_and_group.yml')) }
+
+          it_behaves_like 'validation failed', '/panel_groups/0 is missing required keys: group'
+        end
+
+        context 'panel is missing metrics key' do
+          let_it_be(:invalid_dashboard) { load_dashboard_yaml(fixture_file('lib/gitlab/metrics/dashboard/dashboard_panel_is_missing_metrics.yml')) }
+
+          it_behaves_like 'validation failed', '/panel_groups/0/panels/0 is missing required keys: metrics'
         end
       end
 
       context 'duplicate metric ids' do
         context 'with no project given' do
-          it 'checks against given dashboard and returns false' do
-            expect { described_class.validate!(duplicate_id_dashboard) }
-              .to raise_error(Gitlab::Metrics::Dashboard::Validator::Errors::InvalidDashboardError,
-                "metric_id must be unique across a project")
-          end
+          subject { described_class.validate!(duplicate_id_dashboard) }
+
+          it_behaves_like 'validation failed', 'metric_id must be unique across a project'
         end
       end
     end

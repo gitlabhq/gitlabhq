@@ -63,7 +63,7 @@ class CohortsService
     overall_total = month_totals.first
 
     month_totals.map do |total|
-      { total: total, percentage: total.zero? ? 0 : 100 * total / overall_total }
+      { total: total, percentage: total == 0 ? 0 : 100 * total / overall_total }
     end
   end
 

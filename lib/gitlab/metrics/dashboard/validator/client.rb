@@ -34,7 +34,7 @@ module Gitlab
           end
 
           def schemer
-            @schemer ||= JSONSchemer.schema(Pathname.new(schema_path), formats: custom_formats.format_handlers)
+            @schemer ||= ::JSONSchemer.schema(Pathname.new(schema_path), formats: custom_formats.format_handlers)
           end
 
           def validate_against_schema

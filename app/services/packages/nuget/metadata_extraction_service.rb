@@ -42,7 +42,7 @@ module Packages
       def valid_package_file?
         package_file &&
           package_file.package&.nuget? &&
-          package_file.file.size.positive?
+          package_file.file.size > 0 # rubocop:disable Style/ZeroLengthPredicate
       end
 
       def extract_metadata(file)

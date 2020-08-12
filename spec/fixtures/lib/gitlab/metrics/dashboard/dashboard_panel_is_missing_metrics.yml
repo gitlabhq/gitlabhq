@@ -1,0 +1,15 @@
+dashboard: 'Test Dashboard'
+panel_groups:
+- group: Group A
+  priority: 1
+  panels:
+  - title: "Super Chart A1"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 1
+    max_value: 1
+  - title: "Super Chart A2"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 2
+    metrics:

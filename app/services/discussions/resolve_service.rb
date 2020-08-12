@@ -56,7 +56,7 @@ module Discussions
 
     def process_auto_merge
       return unless merge_request
-      return unless @resolved_count.positive?
+      return unless @resolved_count > 0
       return unless discussions_ready_to_merge?
 
       AutoMergeProcessWorker.perform_async(merge_request.id)
