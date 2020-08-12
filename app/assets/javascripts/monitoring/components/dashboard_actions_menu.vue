@@ -11,6 +11,8 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { PANEL_NEW_PAGE } from '../router/constants';
 import DuplicateDashboardModal from './duplicate_dashboard_modal.vue';
 import CreateDashboardModal from './create_dashboard_modal.vue';
 import { s__ } from '~/locale';
@@ -36,6 +38,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     TrackEvent: TrackEventDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     addingMetricsAvailable: {
       type: Boolean,
@@ -56,6 +59,10 @@ export default {
       type: String,
       required: true,
     },
+    isOotbDashboard: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return { customMetricsFormIsValid: null };
@@ -72,14 +79,21 @@ export default {
     },
     isMenuItemEnabled() {
       return {
+        addPanel: !this.isOotbDashboard,
         createDashboard: Boolean(this.projectPath),
         editDashboard: this.selectedDashboard?.can_edit,
       };
     },
     isMenuItemShown() {
       return {
+        addPanel: this.glFeatures.metricsDashboardNewPanelPage,
         duplicateDashboard: this.isOutOfTheBoxDashboard,
       };
+    },
+    newPanelPageLocation() {
+      // Retains params/query if any
+      const { params, query } = this.$route ?? {};
+      return { name: PANEL_NEW_PAGE, params, query };
     },
   },
   methods: {
@@ -117,7 +131,9 @@ export default {
     starDashboard: s__('Metrics|Star dashboard'),
     unstarDashboard: s__('Metrics|Unstar dashboard'),
     addMetric: s__('Metrics|Add metric'),
-    editDashboardInfo: s__('Metrics|Duplicate this dashboard to edit dashboard YAML'),
+    addPanel: s__('Metrics|Add panel'),
+    addPanelInfo: s__('Metrics|Duplicate this dashboard to add panel or edit dashboard YAML.'),
+    editDashboardInfo: s__('Metrics|Duplicate this dashboard to add panel or edit dashboard YAML.'),
     editDashboard: s__('Metrics|Edit dashboard YAML'),
     createDashboard: s__('Metrics|Create new dashboard'),
   },
@@ -174,6 +190,32 @@ export default {
           </gl-deprecated-button>
         </div>
       </gl-modal>
+    </template>
+
+    <template v-if="isMenuItemShown.addPanel">
+      <gl-new-dropdown-item
+        v-if="isMenuItemEnabled.addPanel"
+        data-testid="add-panel-item-enabled"
+        :to="newPanelPageLocation"
+      >
+        {{ $options.i18n.addPanel }}
+      </gl-new-dropdown-item>
+
+      <!--
+        wrapper for tooltip as button can be `disabled`
+        https://bootstrap-vue.org/docs/components/tooltip#disabled-elements
+        -->
+      <div v-else v-gl-tooltip :title="$options.i18n.addPanelInfo">
+        <gl-new-dropdown-item
+          :alt="$options.i18n.addPanelInfo"
+          :to="newPanelPageLocation"
+          data-testid="add-panel-item-disabled"
+          disabled
+          class="gl-cursor-not-allowed"
+        >
+          <span class="gl-text-gray-400">{{ $options.i18n.addPanel }}</span>
+        </gl-new-dropdown-item>
+      </div>
     </template>
 
     <gl-new-dropdown-item

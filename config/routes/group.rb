@@ -69,6 +69,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       end
     end
 
+    resources :releases, only: [:index]
+
     resources :deploy_tokens, constraints: { id: /\d+/ }, only: [] do
       member do
         put :revoke

@@ -4313,6 +4313,11 @@ type DismissVulnerabilityPayload {
   vulnerability: Vulnerability
 }
 
+"""
+Identifier of EE::Iteration
+"""
+scalar EEIterationID
+
 interface Entry {
   """
   Flat path of the entry
@@ -12095,6 +12100,16 @@ type Query {
   Fields related to Instance Security Dashboard
   """
   instanceSecurityDashboard: InstanceSecurityDashboard
+
+  """
+  Find an iteration
+  """
+  iteration(
+    """
+    Find an iteration by its ID
+    """
+    id: EEIterationID!
+  ): Iteration
 
   """
   Metadata about GitLab

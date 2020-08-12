@@ -75,7 +75,6 @@ module Metrics
       def panels
         [{
           type: DEFAULT_PANEL_TYPE,
-          weight: DEFAULT_PANEL_WEIGHT,
           title: title,
           y_label: y_label,
           metrics: metrics.map(&:to_metric_hash)

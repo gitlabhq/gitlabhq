@@ -768,7 +768,8 @@ RSpec.describe 'GFM autocomplete', :js do
       def start_comment_with_emoji(note)
         note.native.send_keys('Hello :10')
 
-        # Wait for emoji popup
+        wait_for_requests
+
         find('.atwho-view li', text: '100')
       end
 

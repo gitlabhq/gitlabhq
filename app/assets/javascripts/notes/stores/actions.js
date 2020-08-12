@@ -21,29 +21,6 @@ import Api from '~/api';
 
 let eTagPoll;
 
-export const updateConfidentialityOnIssue = ({ commit, getters }, { confidential, fullPath }) => {
-  const { iid } = getters.getNoteableData;
-
-  return utils.gqClient
-    .mutate({
-      mutation: updateIssueConfidentialMutation,
-      variables: {
-        input: {
-          projectPath: fullPath,
-          iid: String(iid),
-          confidential,
-        },
-      },
-    })
-    .then(({ data }) => {
-      const {
-        issueSetConfidential: { issue },
-      } = data;
-
-      commit(types.SET_ISSUE_CONFIDENTIAL, issue.confidential);
-    });
-};
-
 export const updateLockedAttribute = ({ commit, getters }, { locked, fullPath }) => {
   const { iid, targetType } = getters.getNoteableData;
 
@@ -711,4 +688,30 @@ export const updateAssignees = ({ commit }, assignees) => {
 
 export const updateDiscussionPosition = ({ commit }, updatedPosition) => {
   commit(types.UPDATE_DISCUSSION_POSITION, updatedPosition);
+};
+
+export const updateConfidentialityOnIssuable = (
+  { getters, commit },
+  { confidential, fullPath },
+) => {
+  const { iid } = getters.getNoteableData;
+
+  return utils.gqClient
+    .mutate({
+      mutation: updateIssueConfidentialMutation,
+      variables: {
+        input: {
+          projectPath: fullPath,
+          iid: String(iid),
+          confidential,
+        },
+      },
+    })
+    .then(({ data }) => {
+      const {
+        issueSetConfidential: { issue },
+      } = data;
+
+      setConfidentiality({ commit }, issue.confidential);
+    });
 };

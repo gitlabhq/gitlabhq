@@ -8,5 +8,10 @@ FactoryBot.define do
     file_format { :raw }
     file_store { Ci::PipelineArtifact::FILE_STORE_SUPPORTED.first }
     size { 1.megabytes }
+
+    after(:build) do |artifact, _evaluator|
+      artifact.file = fixture_file_upload(
+        Rails.root.join('spec/fixtures/pipeline_artifacts/code_coverage.json'), 'application/json')
+    end
   end
 end

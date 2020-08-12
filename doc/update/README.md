@@ -224,8 +224,8 @@ possible.
 
 ### 13.3.0
 
-In 13.3.0, you must upgrade to at least Git v2.28. Previously, the minimum
-required version was Git v2.24.
+The recommended Git version is Git v2.28. The minimum required version of Git
+v2.24 remains the same.
 
 ### 13.2.0
 

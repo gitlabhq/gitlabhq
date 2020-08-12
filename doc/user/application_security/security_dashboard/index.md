@@ -93,25 +93,14 @@ NOTE: **Note:**
 The Security Dashboard only shows projects with [security reports](#supported-reports) enabled in a
 group.
 
-![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_2_noNav.png)
+![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_3.png)
 
-You can filter which vulnerabilities the Security Dashboard displays by:
-
-- Status
-- Severity
-- Scanner
-- Project
-
-A table lists the vulnerabilities, sorted by severity. The table shows each vulnerability's status,
-severity, and description. Clicking a vulnerability takes you to its [Vulnerability Details](../vulnerabilities)
-page to view more information about that vulnerability.
-
-Next to the list is a timeline chart that shows how many open
+There is a timeline chart that shows how many open
 vulnerabilities your projects had at various points in time. You can filter among 30, 60, and
 90 days, with the default being 90. Hover over the chart to get more details about
 the open vulnerabilities at a specific time.
 
-Below the timeline chart is a list of projects, grouped and sorted by the severity of the vulnerability found:
+Next to the timeline chart is a list of projects, grouped and sorted by the severity of the vulnerability found:
 
 - F: 1 or more "critical"
 - D: 1 or more "high" or "unknown"
@@ -122,7 +111,7 @@ Below the timeline chart is a list of projects, grouped and sorted by the severi
 Projects with no vulnerability tests configured will not appear in the list. Additionally, dismissed
 vulnerabilities are not included either.
 
-Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+Navigate to the group's [Vulnerability Report](#vulnerability-list) to view the vulnerabilities found.
 
 ## Instance Security Dashboard
 
@@ -200,8 +189,19 @@ to configure daily security scans.
 
 Each dashboard's vulnerability list contains vulnerabilities from the latest scans that were merged
 into the default branch.
-Click any vulnerability in the table to see more information on that vulnerability. To create an
-issue associated with the vulnerability, click the **Create Issue** button.
+
+![Vulnerability Report](img/group_vulnerability_report_v13_3.png)
+
+You can filter which vulnerabilities the Security Dashboard displays by:
+
+- Status
+- Severity
+- Scanner
+- Project
+
+Clicking any vulnerability in the table takes you to its
+[Vulnerability Details](../vulnerabilities) page to see more information on that vulnerability.
+To create an issue associated with the vulnerability, click the **Create Issue** button.
 
 ![Create an issue for the vulnerability](img/standalone_vulnerability_page_v13_1.png)
 
@@ -221,3 +221,5 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
+
+Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).

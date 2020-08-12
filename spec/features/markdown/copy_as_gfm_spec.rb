@@ -737,6 +737,7 @@ RSpec.describe 'Copy as GFM', :js do
       context 'inline diff' do
         before do
           visit project_commit_path(project, sample_commit.id, view: 'inline')
+          wait_for_requests
         end
 
         it_behaves_like 'copying code from a diff'
@@ -745,6 +746,7 @@ RSpec.describe 'Copy as GFM', :js do
       context 'parallel diff' do
         before do
           visit project_commit_path(project, sample_commit.id, view: 'parallel')
+          wait_for_requests
         end
 
         it_behaves_like 'copying code from a diff'

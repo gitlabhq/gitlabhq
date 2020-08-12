@@ -65,7 +65,7 @@ RSpec.describe 'Project members list' do
     visit_members_page
 
     # Open modal
-    find(:css, 'li.project_member', text: other_user.name).find(:css, 'button.btn-remove').click
+    find(:css, 'li.project_member', text: other_user.name).find(:css, 'button.btn-danger').click
 
     expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
 

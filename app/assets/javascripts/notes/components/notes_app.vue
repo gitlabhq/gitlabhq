@@ -136,6 +136,8 @@ export default {
     }
 
     window.addEventListener('hashchange', this.handleHashChanged);
+
+    eventHub.$on('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
   },
   updated() {
     this.$nextTick(() => {
@@ -146,6 +148,7 @@ export default {
   beforeDestroy() {
     this.stopPolling();
     window.removeEventListener('hashchange', this.handleHashChanged);
+    eventHub.$off('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
   },
   methods: {
     ...mapActions([
@@ -164,6 +167,7 @@ export default {
       'startTaskList',
       'convertToDiscussion',
       'stopPolling',
+      'setConfidentiality',
     ]),
     discussionIsIndividualNoteAndNotConverted(discussion) {
       return discussion.individual_note && !this.convertedDisscussionIds.includes(discussion.id);

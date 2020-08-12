@@ -1,5 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlNewDropdownItem } from '@gitlab/ui';
 import { createStore } from '~/monitoring/stores';
+import { DASHBOARD_PAGE, PANEL_NEW_PAGE } from '~/monitoring/router/constants';
 import { setupAllDashboards, setupStoreWithData } from '../store_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
@@ -21,6 +23,8 @@ describe('Actions menu', () => {
   let wrapper;
 
   const findAddMetricItem = () => wrapper.find('[data-testid="add-metric-item"]');
+  const findAddPanelItemEnabled = () => wrapper.find('[data-testid="add-panel-item-enabled"]');
+  const findAddPanelItemDisabled = () => wrapper.find('[data-testid="add-panel-item-disabled"]');
   const findAddMetricModal = () => wrapper.find('[data-testid="add-metric-modal"]');
   const findAddMetricModalSubmitButton = () =>
     wrapper.find('[data-testid="add-metric-modal-submit-button"]');
@@ -38,6 +42,9 @@ describe('Actions menu', () => {
   const createShallowWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(ActionsMenu, {
       propsData: { ...dashboardActionsMenuProps, ...props },
+      provide: {
+        glFeatures: { metricsDashboardNewPanelPage: true },
+      },
       store,
       ...options,
     });
@@ -137,6 +144,54 @@ describe('Actions menu', () => {
             done();
           });
         });
+      });
+    });
+  });
+
+  describe('add panel item', () => {
+    const GlNewDropdownItemStub = {
+      extends: GlNewDropdownItem,
+      props: {
+        to: [String, Object],
+      },
+    };
+
+    let $route;
+
+    beforeEach(() => {
+      $route = { name: DASHBOARD_PAGE, params: { dashboard: 'my_dashboard.yml' } };
+
+      createShallowWrapper(
+        {
+          isOotbDashboard: false,
+        },
+        {
+          mocks: { $route },
+          stubs: { GlNewDropdownItem: GlNewDropdownItemStub },
+        },
+      );
+    });
+
+    it('is disabled for ootb dashboards', () => {
+      createShallowWrapper({
+        isOotbDashboard: true,
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findAddPanelItemDisabled().exists()).toBe(true);
+      });
+    });
+
+    it('is visible for custom dashboards', () => {
+      expect(findAddPanelItemEnabled().exists()).toBe(true);
+    });
+
+    it('renders a link to the new panel page for custom dashboards', () => {
+      expect(findAddPanelItemEnabled().props('to')).toEqual({
+        name: PANEL_NEW_PAGE,
+        params: {
+          dashboard: 'my_dashboard.yml',
+        },
       });
     });
   });

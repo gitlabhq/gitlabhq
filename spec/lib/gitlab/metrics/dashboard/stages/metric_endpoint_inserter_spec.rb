@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Stages::MetricEndpointInserter do
 
       transform!
 
-      expect(all_metrics[0][:prometheus_endpoint_path]).to eq(prometheus_path(query))
+      expect(all_metrics[2][:prometheus_endpoint_path]).to eq(prometheus_path(query))
     end
 
     it 'includes a path for the prometheus endpoint with each metric' do

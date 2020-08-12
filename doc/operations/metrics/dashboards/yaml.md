@@ -43,15 +43,26 @@ Read the documentation on [links](index.md#add-related-links-to-custom-dashboard
 
 ## **Panel group (`panel_groups`) properties**
 
+Dashboards display panel groups in the order they are listed in the dashboard YAML file.
+
+NOTE: **Note:**
+In GitLab versions 13.3 and below, panel groups were ordered by a `priority` key, which
+is no longer used.
+
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
 | `group` | string | required | Heading for the panel group. |
-| `priority` | number | optional, defaults to order in file | Order to appear on the dashboard. Higher number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
 | `panels` | array | required | The panels which should be in the panel group. |
 
 Panels in a panel group are laid out in rows consisting of two panels per row. An exception to this rule are single panels on a row: these panels will take the full width of their containing row.
 
 ## **Panel (`panels`) properties**
+
+Dashboards display panels in the order they are listed in the dashboard YAML file.
+
+NOTE: **Note:**
+In GitLab versions 13.3 and below, panels were ordered by a `weight` key, which
+is no longer used.
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------- |
@@ -60,7 +71,6 @@ Panels in a panel group are laid out in rows consisting of two panels per row. A
 | `y_label` | string | no, but highly encouraged | Y-Axis label for the panel. |
 | `y_axis` | string | no | Y-Axis configuration for the panel. |
 | `max_value` | number | no | Denominator value used for calculating [percentile based results](panel_types.md#percentile-based-results) |
-| `weight` | number | no, defaults to order in file | Order to appear within the grouping. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
 | `metrics` | array | yes | The metrics which should be displayed in the panel. Any number of metrics can be displayed when `type` is `area-chart` or `line-chart`, whereas only 3 can be displayed when `type` is `anomaly-chart`. |
 | `links` | array | no | Add links to display on the chart's [context menu](index.md#chart-context-menu). |
 

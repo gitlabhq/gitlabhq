@@ -18,7 +18,6 @@ module Metrics
         STAGES::MetricEndpointInserter,
         STAGES::VariableEndpointInserter,
         STAGES::PanelIdsInserter,
-        STAGES::Sorter,
         STAGES::AlertsInserter
       ].freeze
 

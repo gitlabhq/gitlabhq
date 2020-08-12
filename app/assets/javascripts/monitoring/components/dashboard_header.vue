@@ -118,6 +118,9 @@ export default {
     shouldShowSettingsButton() {
       return this.canAccessOperationsSettings && this.operationsSettingsPath;
     },
+    isOOTBDashboard() {
+      return this.selectedDashboard?.out_of_the_box_dashboard ?? false;
+    },
   },
   methods: {
     ...mapActions('monitoringDashboard', ['filterEnvironments']),
@@ -266,6 +269,7 @@ export default {
           :custom-metrics-path="customMetricsPath"
           :validate-query-path="validateQueryPath"
           :default-branch="defaultBranch"
+          :is-ootb-dashboard="isOOTBDashboard"
         />
       </div>
 

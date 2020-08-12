@@ -13,12 +13,12 @@ import { DASHBOARD_PAGE, PANEL_NEW_PAGE } from './constants';
 export default [
   {
     name: PANEL_NEW_PAGE,
-    path: '/:dashboard(.*)?/panel/new',
+    path: '/:dashboard(.+)?/panel/new',
     component: PanelNewPage,
   },
   {
     name: DASHBOARD_PAGE,
-    path: '/:dashboard(.*)?',
+    path: '/:dashboard(.+)?',
     component: DashboardPage,
   },
 ];

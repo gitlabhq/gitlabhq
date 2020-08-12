@@ -41,7 +41,7 @@ RSpec.describe 'User browses commits' do
       .and have_selector('ul.breadcrumb a', count: 4)
   end
 
-  it 'renders diff links to both the previous and current image' do
+  it 'renders diff links to both the previous and current image', :js do
     visit project_commit_path(project, sample_image_commit.id)
 
     links = page.all('.file-actions a')

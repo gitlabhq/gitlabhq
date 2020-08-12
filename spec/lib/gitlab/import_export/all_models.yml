@@ -47,6 +47,7 @@ issues:
 - alert_management_alert
 - status_page_published_incident
 - namespace
+- note_authors
 events:
 - author
 - project
@@ -167,6 +168,7 @@ merge_requests:
 - deployments
 - user_mentions
 - system_note_metadata
+- note_authors
 external_pull_requests:
 - project
 merge_request_diff:
@@ -671,6 +673,7 @@ epic:
 - events
 - resource_label_events
 - user_mentions
+- note_authors
 epic_issue:
 - epic
 - issue

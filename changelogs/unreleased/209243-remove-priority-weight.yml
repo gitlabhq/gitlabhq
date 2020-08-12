@@ -1,0 +1,5 @@
+---
+title: Stop using priority and weight keys in metrics dashboards
+merge_request: 38572
+author:
+type: changed

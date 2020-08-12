@@ -10059,7 +10059,8 @@ CREATE TABLE public.ci_pipeline_artifacts (
     file_format smallint NOT NULL,
     file text,
     expire_at timestamp with time zone,
-    CONSTRAINT check_191b5850ec CHECK ((char_length(file) <= 255))
+    CONSTRAINT check_191b5850ec CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_abeeb71caf CHECK ((file IS NOT NULL))
 );
 
 CREATE SEQUENCE public.ci_pipeline_artifacts_id_seq

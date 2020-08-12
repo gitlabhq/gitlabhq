@@ -12,6 +12,7 @@ describe('Edit Form Dropdown', () => {
         ...props,
         isLoading: false,
         fullPath: '',
+        issuableType: 'issue',
       },
     });
   };
@@ -24,7 +25,7 @@ describe('Edit Form Dropdown', () => {
   describe('when not confidential', () => {
     it('renders "You are going to turn off the confidentiality." in the ', () => {
       createComponent({
-        isConfidential: false,
+        confidential: false,
         toggleForm,
         updateConfidentialAttribute,
       });
@@ -36,7 +37,7 @@ describe('Edit Form Dropdown', () => {
   describe('when confidential', () => {
     it('renders on or off text based on confidentiality', () => {
       createComponent({
-        isConfidential: true,
+        confidential: true,
         toggleForm,
         updateConfidentialAttribute,
       });

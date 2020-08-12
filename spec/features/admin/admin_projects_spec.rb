@@ -126,7 +126,7 @@ RSpec.describe "Admin::Projects" do
         expect(page).to have_content('Developer')
       end
 
-      find(:css, '.content-list li', text: current_user.name).find(:css, 'a.btn-remove').click
+      find(:css, '.content-list li', text: current_user.name).find(:css, 'a.btn-danger').click
 
       expect(page).not_to have_selector(:css, '.content-list')
     end

@@ -30,7 +30,7 @@ RSpec.describe 'Project > Commit > View user status' do
     end
   end
 
-  describe 'status for a diff note on the commit' do
+  describe 'status for a diff note on the commit', :js do
     let(:note) { create(:diff_note_on_commit, project: project) }
 
     it_behaves_like 'showing user status' do

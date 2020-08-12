@@ -18,6 +18,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
     it { is_expected.to validate_presence_of(:file_type) }
     it { is_expected.to validate_presence_of(:file_format) }
     it { is_expected.to validate_presence_of(:size) }
+    it { is_expected.to validate_presence_of(:file) }
     it { is_expected.to validate_uniqueness_of(:file_type).scoped_to([:pipeline_id]).ignoring_case_sensitivity }
 
     context 'when attributes are valid' do

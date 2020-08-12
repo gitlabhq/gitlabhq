@@ -628,4 +628,5 @@ export const dashboardActionsMenuProps = {
   addingMetricsAvailable: true,
   customMetricsPath: 'https://path/to/customMetrics',
   validateQueryPath: 'https://path/to/validateQuery',
+  isOotbDashboard: true,
 };

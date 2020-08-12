@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import TreeContent from '~/repository/components/tree_content.vue';
+import { GlButton } from '@gitlab/ui';
+import TreeContent, { INITIAL_FETCH_COUNT } from '~/repository/components/tree_content.vue';
 import FilePreview from '~/repository/components/preview/index.vue';
 
 let vm;
@@ -25,14 +26,24 @@ describe('Repository table component', () => {
     vm.destroy();
   });
 
-  it('renders file preview', () => {
+  it('renders file preview', async () => {
     factory('/');
 
     vm.setData({ entries: { blobs: [{ name: 'README.md' }] } });
 
-    return vm.vm.$nextTick().then(() => {
-      expect(vm.find(FilePreview).exists()).toBe(true);
-    });
+    await vm.vm.$nextTick();
+
+    expect(vm.find(FilePreview).exists()).toBe(true);
+  });
+
+  it('trigger fetchFiles when mounted', async () => {
+    factory('/');
+
+    jest.spyOn(vm.vm, 'fetchFiles').mockImplementation(() => {});
+
+    await vm.vm.$nextTick();
+
+    expect(vm.vm.fetchFiles).toHaveBeenCalled();
   });
 
   describe('normalizeData', () => {
@@ -68,6 +79,61 @@ describe('Repository table component', () => {
       });
 
       expect(output).toEqual({ hasNextPage: true, nextCursor: 'test' });
+    });
+  });
+
+  describe('Show more button', () => {
+    const showMoreButton = () => vm.find(GlButton);
+
+    describe('when is present', () => {
+      beforeEach(async () => {
+        factory('/');
+
+        vm.setData({ fetchCounter: 10, clickedShowMore: false });
+
+        await vm.vm.$nextTick();
+      });
+
+      it('is not rendered once it is clicked', async () => {
+        showMoreButton().vm.$emit('click');
+        await vm.vm.$nextTick();
+
+        expect(showMoreButton().exists()).toBe(false);
+      });
+
+      it('is rendered', async () => {
+        expect(showMoreButton().exists()).toBe(true);
+      });
+
+      it('changes clickedShowMore when show more button is clicked', async () => {
+        showMoreButton().vm.$emit('click');
+
+        expect(vm.vm.clickedShowMore).toBe(true);
+      });
+
+      it('triggers fetchFiles when show more button is clicked', async () => {
+        jest.spyOn(vm.vm, 'fetchFiles');
+
+        showMoreButton().vm.$emit('click');
+
+        expect(vm.vm.fetchFiles).toBeCalled();
+      });
+    });
+
+    it('is not rendered if less than 1000 files', async () => {
+      factory('/');
+
+      vm.setData({ fetchCounter: 5, clickedShowMore: false });
+
+      await vm.vm.$nextTick();
+
+      expect(showMoreButton().exists()).toBe(false);
+    });
+
+    it('has limit of 1000 files on initial load', () => {
+      factory('/');
+
+      expect(INITIAL_FETCH_COUNT * vm.vm.pageSize).toBe(1000);
     });
   });
 });

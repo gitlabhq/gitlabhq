@@ -109,6 +109,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
         <actions-menu-stub
           custommetricspath="/monitoring/monitor-project/prometheus/metrics"
           defaultbranch="master"
+          isootbdashboard="true"
           validatequerypath="/monitoring/monitor-project/prometheus/metrics/validate_query"
         />
       </div>

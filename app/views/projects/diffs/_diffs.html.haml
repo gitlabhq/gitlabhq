@@ -3,6 +3,7 @@
 - can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - diff_files = diffs.diff_files
 - diff_page_context = local_assigns.fetch(:diff_page_context, nil)
+- load_diff_files_async = Feature.enabled?(:async_commit_diff_files, @project) && diff_page_context == "is-commit"
 
 .content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed
   .files-changed-inner
@@ -26,5 +27,12 @@
 - if render_overflow_warning?(diffs)
   = render 'projects/diffs/warning', diff_files: diffs
 
+
 .files{ data: { can_create_note: can_create_note } }
-  = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: diff_page_context }
+  - if load_diff_files_async
+    - url = url_for(safe_params.merge(action: 'diff_files'))
+    .js-diffs-batch{ data: { diff_files_path: url } }
+      .text-center
+        %span.spinner.spinner-md
+  - else
+    = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment, diff_page_context: diff_page_context }

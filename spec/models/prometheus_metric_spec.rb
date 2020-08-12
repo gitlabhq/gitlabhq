@@ -138,10 +138,6 @@ RSpec.describe PrometheusMetric do
       expect(subject.to_query_metric.required_metrics).to eq([])
     end
 
-    it 'queryable metric has weight 0' do
-      expect(subject.to_query_metric.weight).to eq(0)
-    end
-
     it 'queryable metrics has query description' do
       queries = [
         {

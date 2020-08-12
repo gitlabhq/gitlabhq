@@ -165,9 +165,8 @@
   vertical-align: top;
 
   @media(max-width: map-get($grid-breakpoints, lg)-1) {
-    display: block;
+    display: inline-block;
     width: 100%;
-    margin: 5px 0;
     padding: 0;
     border-left: 0;
   }

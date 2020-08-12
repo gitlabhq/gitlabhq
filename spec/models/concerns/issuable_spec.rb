@@ -17,6 +17,7 @@ RSpec.describe Issuable do
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
     it { is_expected.to have_many(:labels) }
+    it { is_expected.to have_many(:note_authors).through(:notes) }
 
     context 'Notes' do
       let!(:note) { create(:note, noteable: issue, project: issue.project) }

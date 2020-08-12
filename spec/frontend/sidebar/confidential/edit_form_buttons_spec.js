@@ -44,9 +44,11 @@ describe('Edit Form Buttons', () => {
 
   describe('when isLoading', () => {
     beforeEach(() => {
-      createComponent({});
-
-      wrapper.vm.$store.state.noteableData.confidential = false;
+      createComponent({
+        props: {
+          confidential: false,
+        },
+      });
     });
 
     it('renders "Applying" in the toggle button', () => {
@@ -68,6 +70,9 @@ describe('Edit Form Buttons', () => {
         data: {
           isLoading: false,
         },
+        props: {
+          confidential: false,
+        },
       });
 
       expect(findConfidentialToggle().text()).toBe('Turn On');
@@ -80,9 +85,10 @@ describe('Edit Form Buttons', () => {
         data: {
           isLoading: false,
         },
+        props: {
+          confidential: true,
+        },
       });
-
-      wrapper.vm.$store.state.noteableData.confidential = true;
     });
 
     it('renders on or off text based on confidentiality', () => {
@@ -92,13 +98,12 @@ describe('Edit Form Buttons', () => {
 
   describe('when succeeds', () => {
     beforeEach(() => {
-      createComponent({ data: { isLoading: false } });
-      wrapper.vm.$store.state.noteableData.confidential = true;
+      createComponent({ data: { isLoading: false }, props: { confidential: true } });
       findConfidentialToggle().trigger('click');
     });
 
     it('dispatches the correct action', () => {
-      expect(store.dispatch).toHaveBeenCalledWith('updateConfidentialityOnIssue', {
+      expect(store.dispatch).toHaveBeenCalledWith('updateConfidentialityOnIssuable', {
         confidential: false,
         fullPath: '',
       });
@@ -115,15 +120,21 @@ describe('Edit Form Buttons', () => {
         expect(eventHub.$emit).toHaveBeenCalledWith('closeConfidentialityForm');
       });
     });
+
+    it('emits updateOnConfidentiality event', () => {
+      return waitForPromises().then(() => {
+        expect(eventHub.$emit).toHaveBeenCalledWith('updateIssuableConfidentiality', false);
+      });
+    });
   });
 
   describe('when fails', () => {
     beforeEach(() => {
       createComponent({
         data: { isLoading: false },
+        props: { confidential: true },
         resolved: false,
       });
-      wrapper.vm.$store.state.noteableData.confidential = true;
       findConfidentialToggle().trigger('click');
     });
 

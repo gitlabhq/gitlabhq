@@ -12010,6 +12010,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "EEIterationID",
+          "description": "Identifier of EE::Iteration",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INTERFACE",
           "name": "Entry",
           "description": null,
@@ -35593,6 +35603,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "InstanceSecurityDashboard",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "iteration",
+              "description": "Find an iteration",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "Find an iteration by its ID",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "EEIterationID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Iteration",
                 "ofType": null
               },
               "isDeprecated": false,

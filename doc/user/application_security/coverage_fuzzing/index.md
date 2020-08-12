@@ -92,7 +92,7 @@ There are two types of jobs:
 
 Here's our current suggestion for configuring your fuzz target's timeout:
 
-- Set `COVERAGE_FUZZING_BRANCH` to the branch where you want to run long-running (async) fuzzing
+- Set `COVFUZZ_BRANCH` to the branch where you want to run long-running (async) fuzzing
   jobs. This is `master` by default.
 - Use regression or short-running fuzzing jobs for other branches or merge requests.
 
@@ -107,10 +107,11 @@ any option available in the underlying fuzzing engine.
 
 | Environment variable      | Description                                                        |
 |---------------------------|--------------------------------------------------------------------|
-| `COVERAGE_FUZZING_BRANCH` | The branch for long-running fuzzing jobs. The default is `master`. |
-| `CI_SEED_CORPUS`          | Path to a seed corpus directory. The default is empty.             |
+| `COVFUZZ_BRANCH`          | The branch for long-running fuzzing jobs. The default is `master`. |
+| `COVFUZZ_SEED_CORPUS`     | Path to a seed corpus directory. The default is empty.             |
+| `COVFUZZ_URL_PREFIX`      | Path to the `gitlab-cov-fuzz` repository cloned for use with an offline environment. You should only change this when using an offline environment. The default value is `https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw`.  |
 
-The files in the seed corpus (`CI_SEED_CORPUS`), if provided, aren't updated unless you commit new
+The files in the seed corpus (`COVFUZZ_SEED_CORPUS`), if provided, aren't updated unless you commit new
 files to your Git repository. There's usually no need to frequently update the seed corpus. As part
 of the GitLab artifacts system, GitLab saves in a corpus directory the new test cases that every run
 generates. In any subsequent runs, GitLab also reuses the generated corpus together with the seed

@@ -1221,7 +1221,7 @@ describe('Actions Notes Store', () => {
     });
   });
 
-  describe('updateConfidentialityOnIssue', () => {
+  describe('updateConfidentialityOnIssuable', () => {
     state = { noteableData: { confidential: false } };
     const iid = '1';
     const projectPath = 'full/path';
@@ -1236,13 +1236,13 @@ describe('Actions Notes Store', () => {
     });
 
     it('calls gqClient mutation one time', () => {
-      actions.updateConfidentialityOnIssue({ commit: () => {}, state, getters }, actionArgs);
+      actions.updateConfidentialityOnIssuable({ commit: () => {}, state, getters }, actionArgs);
 
       expect(utils.gqClient.mutate).toHaveBeenCalledTimes(1);
     });
 
     it('calls gqClient mutation with the correct values', () => {
-      actions.updateConfidentialityOnIssue({ commit: () => {}, state, getters }, actionArgs);
+      actions.updateConfidentialityOnIssuable({ commit: () => {}, state, getters }, actionArgs);
 
       expect(utils.gqClient.mutate).toHaveBeenCalledWith({
         mutation: updateIssueConfidentialMutation,
@@ -1255,7 +1255,7 @@ describe('Actions Notes Store', () => {
         const commitSpy = jest.fn();
 
         return actions
-          .updateConfidentialityOnIssue({ commit: commitSpy, state, getters }, actionArgs)
+          .updateConfidentialityOnIssuable({ commit: commitSpy, state, getters }, actionArgs)
           .then(() => {
             expect(commitSpy).toHaveBeenCalledWith(
               mutationTypes.SET_ISSUE_CONFIDENTIAL,

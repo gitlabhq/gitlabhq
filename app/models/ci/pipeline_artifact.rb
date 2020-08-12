@@ -17,7 +17,7 @@ module Ci
     belongs_to :project, class_name: "Project", inverse_of: :pipeline_artifacts
     belongs_to :pipeline, class_name: "Ci::Pipeline", inverse_of: :pipeline_artifacts
 
-    validates :pipeline, :project, :file_format, presence: true
+    validates :pipeline, :project, :file_format, :file, presence: true
     validates :file_store, presence: true, inclusion: { in: FILE_STORE_SUPPORTED }
     validates :size, presence: true, numericality: { less_than_or_equal_to: FILE_SIZE_LIMIT }
     validates :file_type, presence: true, uniqueness: { scope: [:pipeline_id] }

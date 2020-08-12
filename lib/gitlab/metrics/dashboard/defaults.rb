@@ -7,7 +7,6 @@ module Gitlab
     module Dashboard
       module Defaults
         DEFAULT_PANEL_TYPE = 'area-chart'
-        DEFAULT_PANEL_WEIGHT = 0
       end
     end
   end

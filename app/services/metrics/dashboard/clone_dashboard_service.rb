@@ -13,8 +13,7 @@ module Metrics
       SEQUENCES = {
         ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH => [
           ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-          ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
-          ::Gitlab::Metrics::Dashboard::Stages::Sorter
+          ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter
         ].freeze,
 
         ::Metrics::Dashboard::SelfMonitoringDashboardService::DASHBOARD_PATH => [
@@ -22,8 +21,7 @@ module Metrics
         ].freeze,
 
         ::Metrics::Dashboard::ClusterDashboardService::DASHBOARD_PATH => [
-          ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-          ::Gitlab::Metrics::Dashboard::Stages::Sorter
+          ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter
         ].freeze
       }.freeze
 

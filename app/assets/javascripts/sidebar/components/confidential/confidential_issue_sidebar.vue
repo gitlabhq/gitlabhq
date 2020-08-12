@@ -1,6 +1,6 @@
 <script>
-import { mapState, mapActions } from 'vuex';
-import { __ } from '~/locale';
+import { mapState } from 'vuex';
+import { __, sprintf } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '~/sidebar/event_hub';
@@ -23,9 +23,10 @@ export default {
       required: true,
       type: Boolean,
     },
-    service: {
-      required: true,
-      type: Object,
+    issuableType: {
+      required: false,
+      type: String,
+      default: 'issue',
     },
   },
   data() {
@@ -34,12 +35,24 @@ export default {
     };
   },
   computed: {
-    ...mapState({ confidential: ({ noteableData }) => noteableData.confidential }),
+    ...mapState({
+      confidential: ({ noteableData, confidential }) => {
+        if (noteableData) {
+          return noteableData.confidential;
+        }
+        return Boolean(confidential);
+      },
+    }),
     confidentialityIcon() {
       return this.confidential ? 'eye-slash' : 'eye';
     },
     tooltipLabel() {
       return this.confidential ? __('Confidential') : __('Not confidential');
+    },
+    confidentialText() {
+      return sprintf(__('This %{issuableType} is confidential'), {
+        issuableType: this.issuableType,
+      });
     },
   },
   created() {
@@ -49,7 +62,6 @@ export default {
     eventHub.$off('closeConfidentialityForm', this.toggleForm);
   },
   methods: {
-    ...mapActions(['setConfidentiality']),
     toggleForm() {
       this.edit = !this.edit;
     },
@@ -86,7 +98,12 @@ export default {
       >
     </div>
     <div class="value sidebar-item-value hide-collapsed">
-      <edit-form v-if="edit" :is-confidential="confidential" :full-path="fullPath" />
+      <edit-form
+        v-if="edit"
+        :confidential="confidential"
+        :full-path="fullPath"
+        :issuable-type="issuableType"
+      />
       <div v-if="!confidential" class="no-value sidebar-item-value" data-testid="not-confidential">
         <icon :size="16" name="eye" aria-hidden="true" class="sidebar-item-icon inline" />
         {{ __('Not confidential') }}
@@ -98,7 +115,7 @@ export default {
           aria-hidden="true"
           class="sidebar-item-icon inline is-active"
         />
-        {{ __('This issue is confidential') }}
+        {{ confidentialText }}
       </div>
     </div>
   </div>

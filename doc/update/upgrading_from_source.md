@@ -124,7 +124,7 @@ rm go1.13.5.linux-amd64.tar.gz
 
 CAUTION: **Caution:**
 From GitLab 13.1, you must use at least Git v2.24 (previous minimum version was v2.22).
-From GitLab 13.3, you must use at least Git v2.28.
+Git v2.28 is recommended.
 
 To check you are running the minimum required Git version, see
 [Git versions](../install/requirements.md#git-versions).
@@ -132,7 +132,7 @@ To check you are running the minimum required Git version, see
 In Debian or Ubuntu:
 
 ```shell
-# Make sure Git is version 2.28.0 or higher
+# Make sure Git is version 2.24.0 or higher
 git --version
 
 # Remove packaged Git

@@ -2786,6 +2786,9 @@ msgstr ""
 msgid "An error occurred while retrieving diff"
 msgstr ""
 
+msgid "An error occurred while retrieving diff files"
+msgstr ""
+
 msgid "An error occurred while saving LDAP override status. Please try again."
 msgstr ""
 
@@ -9584,6 +9587,9 @@ msgstr ""
 msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic."
 msgstr ""
 
+msgid "Epics|Unable to perform this action"
+msgstr ""
+
 msgid "Epics|Unable to save epic. Please try again"
 msgstr ""
 
@@ -15095,6 +15101,12 @@ msgstr ""
 msgid "MetricChart|Selected"
 msgstr ""
 
+msgid "MetricChart|There is no data available. Please change your selection."
+msgstr ""
+
+msgid "MetricChart|There is too much data to calculate. Please change your selection."
+msgstr ""
+
 msgid "Metrics"
 msgstr ""
 
@@ -15239,7 +15251,7 @@ msgstr ""
 msgid "Metrics|Duplicate dashboard"
 msgstr ""
 
-msgid "Metrics|Duplicate this dashboard to edit dashboard YAML"
+msgid "Metrics|Duplicate this dashboard to add panel or edit dashboard YAML."
 msgstr ""
 
 msgid "Metrics|Duplicating..."
@@ -18793,6 +18805,9 @@ msgstr ""
 msgid "ProjectFileTree|Name"
 msgstr ""
 
+msgid "ProjectFileTree|Show more"
+msgstr ""
+
 msgid "ProjectLastActivity|Never"
 msgstr ""
 
@@ -20156,6 +20171,9 @@ msgstr ""
 msgid "Remove all or specific label(s)"
 msgstr ""
 
+msgid "Remove approver"
+msgstr ""
+
 msgid "Remove approvers"
 msgstr ""
 
@@ -21486,9 +21504,6 @@ msgstr ""
 msgid "SecurityReports|Download Report"
 msgstr ""
 
-msgid "SecurityReports|Each vulnerability now has a unique page that can be directly linked to, shared, referenced, and tracked as the single source of truth. Vulnerability occurrences also persist across scanner runs, which improves tracking and visibility and reduces duplicates between scans."
-msgstr ""
-
 msgid "SecurityReports|Edit dashboard"
 msgstr ""
 
@@ -21507,19 +21522,10 @@ msgstr ""
 msgid "SecurityReports|Fuzzing artifacts"
 msgstr ""
 
-msgid "SecurityReports|Group Security Dashboard"
-msgstr ""
-
 msgid "SecurityReports|Hide dismissed"
 msgstr ""
 
-msgid "SecurityReports|Introducing standalone vulnerabilities"
-msgstr ""
-
 msgid "SecurityReports|Issue Created"
-msgstr ""
-
-msgid "SecurityReports|Learn more"
 msgstr ""
 
 msgid "SecurityReports|Learn more about setting up your dashboard"
@@ -21634,6 +21640,9 @@ msgid "SecurityReports|Unable to add %{invalidProjects}"
 msgstr ""
 
 msgid "SecurityReports|Undo dismiss"
+msgstr ""
+
+msgid "SecurityReports|Vulnerability Report"
 msgstr ""
 
 msgid "SecurityReports|While it's rare to have no vulnerabilities for your pipeline, it can happen. In any event, we ask that you double check your settings to make sure all security scanning jobs have passed successfully."
@@ -24647,6 +24656,9 @@ msgstr ""
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."
 msgstr ""
 
+msgid "This %{issuableType} is confidential"
+msgstr ""
+
 msgid "This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment."
 msgstr ""
 
@@ -24849,9 +24861,6 @@ msgid "This is the number of currently active users on your installation, and th
 msgstr ""
 
 msgid "This is your current session"
-msgstr ""
-
-msgid "This issue is confidential"
 msgstr ""
 
 msgid "This issue is currently blocked by the following issues: %{issues}."
@@ -27025,6 +27034,9 @@ msgstr ""
 msgid "Vulnerabilities over time"
 msgstr ""
 
+msgid "Vulnerability Report"
+msgstr ""
+
 msgid "Vulnerability remediated. Review before resolving."
 msgstr ""
 
@@ -27649,6 +27661,12 @@ msgid "You are going to remove the fork relationship from %{project_full_name}. 
 msgstr ""
 
 msgid "You are going to transfer %{project_full_name} to another owner. Are you ABSOLUTELY sure?"
+msgstr ""
+
+msgid "You are going to turn off the confidentiality. This means %{accessLevel} will be able to see and leave a comment on this %{issuableType}."
+msgstr ""
+
+msgid "You are going to turn on the confidentiality. This means that only team members with %{accessLevel} are able to see and leave comments on the %{issuableType}."
 msgstr ""
 
 msgid "You are not allowed to push into this branch. Create another branch or open a merge request."
@@ -28379,6 +28397,9 @@ msgstr ""
 msgid "assign yourself"
 msgstr ""
 
+msgid "at least Reporter access"
+msgstr ""
+
 msgid "at risk"
 msgstr ""
 
@@ -28660,12 +28681,6 @@ msgstr ""
 msgid "committed"
 msgstr ""
 
-msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
-msgstr ""
-
-msgid "confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue."
-msgstr ""
-
 msgid "connecting"
 msgstr ""
 
@@ -28773,6 +28788,9 @@ msgid "error code:"
 msgstr ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
+msgstr ""
+
+msgid "everyone"
 msgstr ""
 
 msgid "exceeds the limit of %{bytes} bytes"

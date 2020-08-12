@@ -1,4 +1,5 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __ } from '../../locale';
 import FileTable from './table/index.vue';
@@ -8,12 +9,15 @@ import projectPathQuery from '../queries/project_path.query.graphql';
 import FilePreview from './preview/index.vue';
 import { readmeFile } from '../utils/readme';
 
+const LIMIT = 1000;
 const PAGE_SIZE = 100;
+export const INITIAL_FETCH_COUNT = LIMIT / PAGE_SIZE;
 
 export default {
   components: {
     FileTable,
     FilePreview,
+    GlButton,
   },
   mixins: [getRefMixin],
   apollo: {
@@ -43,11 +47,18 @@ export default {
         blobs: [],
       },
       isLoadingFiles: false,
+      isOverLimit: false,
+      clickedShowMore: false,
+      pageSize: PAGE_SIZE,
+      fetchCounter: 0,
     };
   },
   computed: {
     readme() {
       return readmeFile(this.entries.blobs);
+    },
+    hasShowMore() {
+      return !this.clickedShowMore && this.fetchCounter === INITIAL_FETCH_COUNT;
     },
   },
 
@@ -76,7 +87,7 @@ export default {
             ref: this.ref,
             path: this.path || '/',
             nextPageCursor: this.nextPageCursor,
-            pageSize: PAGE_SIZE,
+            pageSize: this.pageSize,
           },
         })
         .then(({ data }) => {
@@ -96,7 +107,11 @@ export default {
 
           if (pageInfo?.hasNextPage) {
             this.nextPageCursor = pageInfo.endCursor;
-            this.fetchFiles();
+            this.fetchCounter += 1;
+            if (this.fetchCounter < INITIAL_FETCH_COUNT || this.clickedShowMore) {
+              this.fetchFiles();
+              this.clickedShowMore = false;
+            }
           }
         })
         .catch(error => {
@@ -112,6 +127,10 @@ export default {
         .concat(data.trees.pageInfo, data.submodules.pageInfo, data.blobs.pageInfo)
         .find(({ hasNextPage }) => hasNextPage);
     },
+    showMore() {
+      this.clickedShowMore = true;
+      this.fetchFiles();
+    },
   },
 };
 </script>
@@ -124,6 +143,19 @@ export default {
       :is-loading="isLoadingFiles"
       :loading-path="loadingPath"
     />
+    <div
+      v-if="hasShowMore"
+      class="gl-border-1 gl-border-gray-100 gl-rounded-base gl-border-t-none gl-border-b-solid gl-border-l-solid gl-border-r-solid gl-rounded-top-right-none gl-rounded-top-left-none gl-mt-n1"
+    >
+      <gl-button
+        variant="link"
+        class="gl-display-flex gl-w-full gl-py-4!"
+        :loading="isLoadingFiles"
+        @click="showMore"
+      >
+        {{ s__('ProjectFileTree|Show more') }}
+      </gl-button>
+    </div>
     <file-preview v-if="readme" :blob="readme" />
   </div>
 </template>

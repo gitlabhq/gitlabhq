@@ -593,7 +593,9 @@ The following is example content of the Usage Ping payload.
     "nodes": [
       {
         "node_memory_total_bytes": 33269903360,
+        "node_memory_utilization": 0.35,
         "node_cpus": 16,
+        "node_cpu_utilization": 0.2,
         "node_uname_info": {
           "machine": "x86_64",
           "sysname": "Linux",

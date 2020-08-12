@@ -1,5 +1,6 @@
 query getEnvironments($projectPath: ID!, $search: String, $states: [String!]) {
   project(fullPath: $projectPath) {
+    id
     data: environments(search: $search, states: $states) {
       environments: nodes {
         name

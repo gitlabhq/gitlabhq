@@ -134,7 +134,7 @@ Example response:
       "merge_requests_count": 0,
       "user_notes_count": 1,
       "due_date": "2016-07-22",
-      "web_url": "http://example.com/my-group/my-project/issues/6",
+      "web_url": "http://gitlab.example.com/my-group/my-project/issues/6",
       "references": {
         "short": "#6",
         "relative": "my-group/my-project#6",
@@ -151,10 +151,10 @@ Example response:
       "confidential": false,
       "discussion_locked": false,
       "_links":{
-         "self":"http://example.com/api/v4/projects/1/issues/76",
-         "notes":"`http://example.com/`api/v4/projects/1/issues/76/notes",
-         "award_emoji":"http://example.com/api/v4/projects/1/issues/76/award_emoji",
-         "project":"http://example.com/api/v4/projects/1"
+         "self":"http://gitlab.example.com/api/v4/projects/1/issues/76",
+         "notes":"http://gitlab.example.com/api/v4/projects/1/issues/76/notes",
+         "award_emoji":"http://gitlab.example.com/api/v4/projects/1/issues/76/award_emoji",
+         "project":"http://gitlab.example.com/api/v4/projects/1"
       },
       "task_completion_status":{
          "count":0,
@@ -292,7 +292,7 @@ Example response:
       "closed_by" : null,
       "user_notes_count": 1,
       "due_date": null,
-      "web_url": "http://example.com/my-group/my-project/issues/1",
+      "web_url": "http://gitlab.example.com/my-group/my-project/issues/1",
       "references": {
         "short": "#1",
         "relative": "my-project#1",
@@ -309,10 +309,10 @@ Example response:
       "confidential": false,
       "discussion_locked": false,
       "_links":{
-         "self":"http://example.com/api/v4/projects/4/issues/41",
-         "notes":"`http://example.com/`api/v4/projects/4/issues/41/notes",
-         "award_emoji":"http://example.com/api/v4/projects/4/issues/41/award_emoji",
-         "project":"http://example.com/api/v4/projects/4"
+         "self":"http://gitlab.example.com/api/v4/projects/4/issues/41",
+         "notes":"http://gitlab.example.com/api/v4/projects/4/issues/41/notes",
+         "award_emoji":"http://gitlab.example.com/api/v4/projects/4/issues/41/award_emoji",
+         "project":"http://gitlab.example.com/api/v4/projects/4"
       },
       "task_completion_status":{
          "count":0,
@@ -456,7 +456,7 @@ Example response:
       },
       "user_notes_count": 1,
       "due_date": "2016-07-22",
-      "web_url": "http://example.com/my-group/my-project/issues/1",
+      "web_url": "http://gitlab.example.com/my-group/my-project/issues/1",
       "references": {
         "short": "#1",
         "relative": "#1",
@@ -473,10 +473,10 @@ Example response:
       "confidential": false,
       "discussion_locked": false,
       "_links":{
-         "self":"http://example.com/api/v4/projects/4/issues/41",
-         "notes":"`http://example.com/`api/v4/projects/4/issues/41/notes",
-         "award_emoji":"http://example.com/api/v4/projects/4/issues/41/award_emoji",
-         "project":"http://example.com/api/v4/projects/4"
+         "self":"http://gitlab.example.com/api/v4/projects/4/issues/41",
+         "notes":"http://gitlab.example.com/api/v4/projects/4/issues/41/notes",
+         "award_emoji":"http://gitlab.example.com/api/v4/projects/4/issues/41/award_emoji",
+         "project":"http://gitlab.example.com/api/v4/projects/4"
       },
       "task_completion_status":{
          "count":0,
@@ -581,7 +581,7 @@ Example response:
    "subscribed": false,
    "user_notes_count": 1,
    "due_date": null,
-   "web_url": "http://example.com/my-group/my-project/issues/1",
+   "web_url": "http://gitlab.example.com/my-group/my-project/issues/1",
    "references": {
      "short": "#1",
      "relative": "#1",
@@ -596,10 +596,10 @@ Example response:
    "confidential": false,
    "discussion_locked": false,
    "_links": {
-      "self": "http://example.com/api/v4/projects/1/issues/2",
-      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
-      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
-      "project": "http://example.com/api/v4/projects/1"
+      "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
+      "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://gitlab.example.com/api/v4/projects/1"
    },
    "task_completion_status":{
       "count":0,
@@ -710,7 +710,7 @@ Example response:
    "subscribed" : true,
    "user_notes_count": 0,
    "due_date": null,
-   "web_url": "http://example.com/my-group/my-project/issues/14",
+   "web_url": "http://gitlab.example.com/my-group/my-project/issues/14",
    "references": {
      "short": "#14",
      "relative": "#14",
@@ -725,10 +725,10 @@ Example response:
    "confidential": false,
    "discussion_locked": false,
    "_links": {
-      "self": "http://example.com/api/v4/projects/1/issues/2",
-      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
-      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
-      "project": "http://example.com/api/v4/projects/1"
+      "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
+      "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://gitlab.example.com/api/v4/projects/1"
    },
    "task_completion_status":{
       "count":0,
@@ -832,7 +832,7 @@ Example response:
    "subscribed" : true,
    "user_notes_count": 0,
    "due_date": "2016-07-22",
-   "web_url": "http://example.com/my-group/my-project/issues/15",
+   "web_url": "http://gitlab.example.com/my-group/my-project/issues/15",
    "references": {
      "short": "#15",
      "relative": "#15",
@@ -847,10 +847,10 @@ Example response:
    "confidential": false,
    "discussion_locked": false,
    "_links": {
-      "self": "http://example.com/api/v4/projects/1/issues/2",
-      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
-      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
-      "project": "http://example.com/api/v4/projects/1"
+      "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
+      "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://gitlab.example.com/api/v4/projects/1"
    },
    "task_completion_status":{
       "count":0,
@@ -985,7 +985,7 @@ Example response:
     "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
-  "web_url": "http://example.com/my-group/my-project/issues/11",
+  "web_url": "http://gitlab.example.com/my-group/my-project/issues/11",
   "references": {
     "short": "#11",
     "relative": "#11",
@@ -1000,10 +1000,10 @@ Example response:
   "confidential": false,
   "discussion_locked": false,
   "_links": {
-    "self": "http://example.com/api/v4/projects/1/issues/2",
-    "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
-    "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
-    "project": "http://example.com/api/v4/projects/1"
+    "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
+    "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
+    "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
+    "project": "http://gitlab.example.com/api/v4/projects/1"
   },
   "task_completion_status":{
      "count":0,
@@ -1091,7 +1091,7 @@ Example response:
     "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
-  "web_url": "http://example.com/my-group/my-project/issues/11",
+  "web_url": "http://gitlab.example.com/my-group/my-project/issues/11",
   "references": {
     "short": "#11",
     "relative": "#11",
@@ -1106,10 +1106,10 @@ Example response:
   "confidential": false,
   "discussion_locked": false,
   "_links": {
-    "self": "http://example.com/api/v4/projects/1/issues/2",
-    "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
-    "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
-    "project": "http://example.com/api/v4/projects/1"
+    "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
+    "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
+    "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
+    "project": "http://gitlab.example.com/api/v4/projects/1"
   },
   "task_completion_status":{
      "count":0,
@@ -1190,7 +1190,7 @@ Example response:
   },
   "subscribed": false,
   "due_date": null,
-  "web_url": "http://example.com/my-group/my-project/issues/12",
+  "web_url": "http://gitlab.example.com/my-group/my-project/issues/12",
   "references": {
     "short": "#12",
     "relative": "#12",
@@ -1297,7 +1297,7 @@ Example response:
     "downvotes": 0,
     "merge_requests_count": 0,
     "due_date": null,
-    "web_url": "http://example.com/my-group/my-project/issues/10",
+    "web_url": "http://gitlab.example.com/my-group/my-project/issues/10",
     "references": {
       "short": "#10",
       "relative": "#10",
@@ -1729,7 +1729,7 @@ Example response:
     "username": "user1",
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
-    "web_url": "http://localhost/user1"
+    "web_url": "http://gitlab.example.com/user1"
   },
   {
     "id": 5,
@@ -1737,7 +1737,7 @@ Example response:
     "username": "user5",
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/4aea8cf834ed91844a2da4ff7ae6b491?s=80&d=identicon",
-    "web_url": "http://localhost/user5"
+    "web_url": "http://gitlab.example.com/user5"
   }
 ]
 ```

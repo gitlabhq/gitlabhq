@@ -12,8 +12,7 @@ module Metrics
       SEQUENCE = [
         STAGES::MetricEndpointInserter,
         STAGES::VariableEndpointInserter,
-        STAGES::PanelIdsInserter,
-        STAGES::Sorter
+        STAGES::PanelIdsInserter
       ].freeze
 
       class << self
