@@ -40,6 +40,7 @@ describe('dashboard invalid url parameters', () => {
   const findOpenRepositoryBtn = () => wrapper.find({ ref: 'openRepositoryBtn' });
   const findPanel = () => wrapper.find(DashboardPanel);
   const findTimeRangePicker = () => wrapper.find(DateTimePicker);
+  const findRefreshButton = () => wrapper.find('[data-testid="previewRefreshButton"]');
 
   beforeEach(() => {
     mockShowToast = jest.fn();
@@ -134,6 +135,35 @@ describe('dashboard invalid url parameters', () => {
 
       return wrapper.vm.$nextTick(() => {
         expect(store.dispatch).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('refresh', () => {
+    it('is visible by default', () => {
+      expect(findRefreshButton().exists()).toBe(true);
+    });
+
+    it('when clicked does not trigger data fetch unless preview panel button is clicked', () => {
+      // mimic initial state where SET_PANEL_PREVIEW_IS_SHOWN is set to false
+      store.commit(`monitoringDashboard/${types.SET_PANEL_PREVIEW_IS_SHOWN}`, false);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(store.dispatch).not.toHaveBeenCalled();
+      });
+    });
+
+    it('when clicked triggers data fetch if preview panel button is clicked', () => {
+      // mimic state where preview is visible. SET_PANEL_PREVIEW_IS_SHOWN is set to true
+      store.commit(`monitoringDashboard/${types.SET_PANEL_PREVIEW_IS_SHOWN}`, true);
+
+      findRefreshButton().vm.$emit('click');
+
+      return wrapper.vm.$nextTick(() => {
+        expect(store.dispatch).toHaveBeenCalledWith(
+          'monitoringDashboard/fetchPanelPreviewMetrics',
+          undefined,
+        );
       });
     });
   });

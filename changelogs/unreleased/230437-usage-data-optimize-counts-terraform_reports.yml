@@ -1,0 +1,5 @@
+---
+title: Optimize counts.terraform_reports usage ping counter
+merge_request: 37498
+author:
+type: performance

@@ -8,6 +8,7 @@ module Ci
     include UsageStatistics
     include Sortable
     include IgnorableColumns
+    include Artifactable
     extend Gitlab::Ci::Model
 
     NotSupportedAdapterError = Class.new(StandardError)
@@ -200,12 +201,6 @@ module Ci
       load_performance: 25 ## EE-specific
     }
 
-    enum file_format: {
-      raw: 1,
-      zip: 2,
-      gzip: 3
-    }, _suffix: true
-
     # `file_location` indicates where actual files are stored.
     # Ideally, actual files should be stored in the same directory, and use the same
     # convention to generate its path. However, sometimes we can't do so due to backward-compatibility.
@@ -219,11 +214,6 @@ module Ci
       legacy_path: 1,
       hashed_path: 2
     }
-
-    FILE_FORMAT_ADAPTERS = {
-      gzip: Gitlab::Ci::Build::Artifacts::Adapters::GzipStream,
-      raw: Gitlab::Ci::Build::Artifacts::Adapters::RawStream
-    }.freeze
 
     def validate_supported_file_format!
       return if Feature.disabled?(:drop_license_management_artifact, project, default_enabled: true)

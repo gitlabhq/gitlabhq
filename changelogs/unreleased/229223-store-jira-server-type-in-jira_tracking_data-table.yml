@@ -1,0 +1,5 @@
+---
+title: Add migration for deployment_type of Jira server in jira_tracker_data table
+merge_request: 36992
+author:
+type: added

@@ -15346,6 +15346,9 @@ msgstr ""
 msgid "Metrics|Prometheus Query Documentation"
 msgstr ""
 
+msgid "Metrics|Refresh Prometheus data"
+msgstr ""
+
 msgid "Metrics|Refresh dashboard"
 msgstr ""
 

@@ -12700,6 +12700,7 @@ CREATE TABLE public.jira_tracker_data (
     jira_issue_transition_id character varying,
     project_key text,
     issues_enabled boolean DEFAULT false NOT NULL,
+    deployment_type smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255))
 );
 
@@ -19202,6 +19203,8 @@ CREATE UNIQUE INDEX index_ci_group_variables_on_group_id_and_key ON public.ci_gr
 CREATE UNIQUE INDEX index_ci_instance_variables_on_key ON public.ci_instance_variables USING btree (key);
 
 CREATE INDEX index_ci_job_artifacts_for_terraform_reports ON public.ci_job_artifacts USING btree (project_id, id) WHERE (file_type = 18);
+
+CREATE INDEX index_ci_job_artifacts_id_for_terraform_reports ON public.ci_job_artifacts USING btree (id) WHERE (file_type = 18);
 
 CREATE INDEX index_ci_job_artifacts_on_expire_at_and_job_id ON public.ci_job_artifacts USING btree (expire_at, job_id);
 

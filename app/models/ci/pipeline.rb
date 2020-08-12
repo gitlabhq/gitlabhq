@@ -915,12 +915,6 @@ module Ci
       end
     end
 
-    def test_reports_count
-      Rails.cache.fetch(['project', project.id, 'pipeline', id, 'test_reports_count'], force: false) do
-        test_reports.total_count
-      end
-    end
-
     def accessibility_reports
       Gitlab::Ci::Reports::AccessibilityReports.new.tap do |accessibility_reports|
         builds.latest.with_reports(Ci::JobArtifact.accessibility_reports).each do |build|

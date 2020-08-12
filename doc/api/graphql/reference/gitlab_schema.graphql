@@ -2747,6 +2747,11 @@ Represents a DAST Site Profile.
 """
 type DastSiteProfile {
   """
+  Relative web path to the edit page of a site profile
+  """
+  editPath: String
+
+  """
   ID of the site profile
   """
   id: DastSiteProfileID!

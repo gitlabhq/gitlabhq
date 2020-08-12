@@ -166,7 +166,7 @@ Read the [documentation on Pipelines for Merged Results](pipelines_for_merged_re
 
 Read the [documentation on Merge Trains](pipelines_for_merged_results/merge_trains/index.md).
 
-## Create pipelines in the parent project for merge requests from a forked project
+## Run pipelines in the parent project for merge requests from a forked project **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217451) in GitLab 13.3.
 

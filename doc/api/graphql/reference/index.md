@@ -453,6 +453,7 @@ Represents a DAST Site Profile.
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
+| `editPath` | String | Relative web path to the edit page of a site profile |
 | `id` | DastSiteProfileID! | ID of the site profile |
 | `profileName` | String | The name of the site profile |
 | `targetUrl` | String | The URL of the target to be scanned |

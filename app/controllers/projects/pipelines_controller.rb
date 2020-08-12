@@ -192,12 +192,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     end
   end
 
-  def test_reports_count
-    return unless Feature.enabled?(:junit_pipeline_view, project)
-
-    render json: { total_count: pipeline.test_reports_count }.to_json
-  end
-
   private
 
   def serialize_pipelines

@@ -5,6 +5,7 @@
 module Ci
   class PipelineArtifact < ApplicationRecord
     extend Gitlab::Ci::Model
+    include Artifactable
 
     FILE_STORE_SUPPORTED = [
       ObjectStorage::Store::LOCAL,
@@ -24,11 +25,5 @@ module Ci
     enum file_type: {
       code_coverage: 1
     }
-
-    enum file_format: {
-      raw: 1,
-      zip: 2,
-      gzip: 3
-    }, _suffix: true
   end
 end

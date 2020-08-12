@@ -331,6 +331,9 @@ The different supported drivers are:
 | swift      | OpenStack Swift Object Storage      |
 | oss        | Aliyun OSS                          |
 
+NOTE: **Note:**
+Although most S3 compatible services (like [MinIO](https://min.io/)) should work with the registry, we only guarantee support for AWS S3. Because we cannot assert the correctness of third-party S3 implementations, we can debug issues, but we cannot patch the registry unless an issue is reproducible against an AWS S3 bucket.
+
 Read more about the individual driver's configuration options in the
 [Docker Registry docs](https://docs.docker.com/registry/configuration/#storage).
 

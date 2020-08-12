@@ -8,6 +8,7 @@ import {
   GlButton,
   GlSprintf,
   GlAlert,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import { timeRanges } from '~/vue_shared/constants';
@@ -33,6 +34,9 @@ export default {
     GlAlert,
     DashboardPanel,
     DateTimePicker,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   data() {
     return {
@@ -61,6 +65,13 @@ export default {
     },
     onDateTimePickerInput(timeRange) {
       this.setPanelPreviewTimeRange(timeRange);
+      // refetch data only if preview has been clicked
+      // and there are no errors
+      if (this.panelPreviewIsShown && !this.panelPreviewError) {
+        this.fetchPanelPreviewMetrics();
+      }
+    },
+    onRefresh() {
       // refetch data only if preview has been clicked
       // and there are no errors
       if (this.panelPreviewIsShown && !this.panelPreviewError) {
@@ -171,10 +182,17 @@ export default {
     </gl-alert>
     <date-time-picker
       ref="dateTimePicker"
-      class="gl-flex-grow-1 preview-date-time-picker"
+      class="gl-flex-grow-1 preview-date-time-picker gl-xs-mb-3"
       :value="panelPreviewTimeRange"
       :options="$options.timeRanges"
       @input="onDateTimePickerInput"
+    />
+    <gl-button
+      v-gl-tooltip
+      data-testid="previewRefreshButton"
+      icon="retry"
+      :title="s__('Metrics|Refresh Prometheus data')"
+      @click="onRefresh"
     />
     <dashboard-panel :graph-data="panelPreviewGraphData" />
   </div>
