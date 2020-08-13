@@ -748,6 +748,7 @@ module ProjectsHelper
       gcp
       logs
       product_analytics
+      metrics_dashboard
     ]
   end
 

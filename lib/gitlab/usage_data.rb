@@ -37,6 +37,7 @@ module Gitlab
             .merge(usage_activity_by_stage)
             .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, last_28_days_time_period))
             .merge(analytics_unique_visits_data)
+            .merge(compliance_unique_visits_data)
         end
       end
 
@@ -581,13 +582,23 @@ module Gitlab
       end
 
       def analytics_unique_visits_data
-        results = ::Gitlab::Analytics::UniqueVisits::TARGET_IDS.each_with_object({}) do |target_id, hash|
+        results = ::Gitlab::Analytics::UniqueVisits::ANALYTICS_IDS.each_with_object({}) do |target_id, hash|
           hash[target_id] = redis_usage_data { unique_visit_service.unique_visits_for(targets: target_id) }
         end
-        results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :any) }
-        results['analytics_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :any, weeks: 4) }
+        results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics) }
+        results['analytics_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics, weeks: 4) }
 
         { analytics_unique_visits: results }
+      end
+
+      def compliance_unique_visits_data
+        results = ::Gitlab::Analytics::UniqueVisits::COMPLIANCE_IDS.each_with_object({}) do |target_id, hash|
+          hash[target_id] = redis_usage_data { unique_visit_service.unique_visits_for(targets: target_id) }
+        end
+        results['compliance_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :compliance) }
+        results['compliance_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :compliance, weeks: 4) }
+
+        { compliance_unique_visits: results }
       end
 
       def action_monthly_active_users(time_period)

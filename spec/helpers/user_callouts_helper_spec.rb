@@ -25,7 +25,21 @@ RSpec.describe UserCalloutsHelper do
           allow(helper).to receive(:user_dismissed?).and_return(false)
         end
 
-        it { is_expected.to be true }
+        context 'when active_nav_link is in the operations section' do
+          before do
+            allow(helper).to receive(:active_nav_link?).and_return(true)
+          end
+
+          it { is_expected.to be true }
+        end
+
+        context 'when active_nav_link is not in the operations section' do
+          before do
+            allow(helper).to receive(:active_nav_link?).and_return(false)
+          end
+
+          it { is_expected.to be false }
+        end
       end
 
       context 'when user dismissed' do

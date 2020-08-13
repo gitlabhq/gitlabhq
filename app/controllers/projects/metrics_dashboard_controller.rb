@@ -22,7 +22,7 @@ module Projects
       if environment
         render 'projects/environments/metrics'
       else
-        render_404
+        render 'projects/environments/empty_metrics'
       end
     end
 

@@ -417,7 +417,7 @@ class Note < ApplicationRecord
   end
 
   def can_create_todo?
-    # Skip system notes, and notes on project snippet
+    # Skip system notes, and notes on snippets
     !system? && !for_snippet?
   end
 

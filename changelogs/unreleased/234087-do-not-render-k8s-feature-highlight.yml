@@ -1,0 +1,5 @@
+---
+title: Increase sidebar performance by not rendering k8s highlight when not needed
+merge_request: 39228
+author:
+type: performance

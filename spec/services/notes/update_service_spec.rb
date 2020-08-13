@@ -13,6 +13,17 @@ RSpec.describe Notes::UpdateService do
   let(:issue) { create(:issue, project: project) }
   let(:issue2) { create(:issue, project: private_project) }
   let(:note) { create(:note, project: project, noteable: issue, author: user, note: "Old note #{user2.to_reference}") }
+  let(:markdown) do
+    <<-MARKDOWN.strip_heredoc
+      ```suggestion
+        foo
+      ```
+
+      ```suggestion
+        bar
+      ```
+    MARKDOWN
+  end
 
   before do
     project.add_maintainer(user)
@@ -48,16 +59,6 @@ RSpec.describe Notes::UpdateService do
 
     context 'suggestions' do
       it 'refreshes note suggestions' do
-        markdown = <<-MARKDOWN.strip_heredoc
-          ```suggestion
-            foo
-          ```
-
-          ```suggestion
-            bar
-          ```
-        MARKDOWN
-
         suggestion = create(:suggestion)
         note = suggestion.note
 
@@ -199,6 +200,25 @@ RSpec.describe Notes::UpdateService do
             it_behaves_like 'creates one todo'
           end
         end
+      end
+    end
+
+    context 'for a personal snippet' do
+      let_it_be(:snippet) { create(:personal_snippet, :public) }
+      let(:note) { create(:note, project: nil, noteable: snippet, author: user, note: "Note on a snippet with reference #{issue.to_reference}" ) }
+
+      it 'does not create todos' do
+        expect { update_note({ note: "Mentioning user #{user2}" }) }.not_to change { note.todos.count }
+      end
+
+      it 'does not create suggestions' do
+        expect { update_note({ note: "Updated snippet with markdown suggestion #{markdown}" }) }
+          .not_to change { note.suggestions.count }
+      end
+
+      it 'does not create mentions' do
+        expect(note).not_to receive(:create_new_cross_references!)
+        update_note({ note: "Updated with new reference: #{issue.to_reference}" })
       end
     end
   end

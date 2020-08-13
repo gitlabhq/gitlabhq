@@ -13,7 +13,8 @@ module UserCalloutsHelper
   end
 
   def show_gke_cluster_integration_callout?(project)
-    can?(current_user, :create_cluster, project) &&
+    active_nav_link?(controller: sidebar_operations_paths) &&
+      can?(current_user, :create_cluster, project) &&
       !user_dismissed?(GKE_CLUSTER_INTEGRATION)
   end
 

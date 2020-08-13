@@ -23,6 +23,22 @@ RSpec.describe 'metrics dashboard page' do
       send_request
       expect(assigns(:environment).id).to eq(environment.id)
     end
+
+    context 'with anonymous user and public dashboard visibility' do
+      let(:anonymous_user) { create(:user) }
+      let(:project) do
+        create(:project, :public, metrics_dashboard_access_level: 'enabled')
+      end
+
+      before do
+        login_as(anonymous_user)
+      end
+
+      it 'returns 200' do
+        send_request
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
   end
 
   describe 'GET /:namespace/:project/-/metrics?environment=:environment.id' do
