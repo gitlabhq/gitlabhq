@@ -868,6 +868,9 @@ msgstr ""
 msgid "(line: %{startLine})"
 msgstr ""
 
+msgid "(max size 15 MB)"
+msgstr ""
+
 msgid "(removed)"
 msgstr ""
 
@@ -1154,6 +1157,9 @@ msgid "A new branch will be created in your fork and a new merge request will be
 msgstr ""
 
 msgid "A new impersonation token has been created."
+msgstr ""
+
+msgid "A non-confidential epic cannot be assigned to a confidential parent epic"
 msgstr ""
 
 msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
@@ -4343,10 +4349,10 @@ msgstr ""
 msgid "Cannot import because issues are not available in this project."
 msgstr ""
 
-msgid "Cannot make epic confidential if it contains not-confidential issues"
+msgid "Cannot make the epic confidential if it contains non-confidential child epics"
 msgstr ""
 
-msgid "Cannot make epic confidential if it contains not-confidential sub-epics"
+msgid "Cannot make the epic confidential if it contains non-confidential issues"
 msgstr ""
 
 msgid "Cannot merge"
@@ -4367,7 +4373,7 @@ msgstr ""
 msgid "Cannot refer to a group %{timebox_type} by an internal id!"
 msgstr ""
 
-msgid "Cannot set confidential epic for not-confidential issue"
+msgid "Cannot set confidential epic for a non-confidential issue"
 msgstr ""
 
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
@@ -14387,6 +14393,9 @@ msgstr ""
 msgid "List available repositories"
 msgstr ""
 
+msgid "List of all merge commits"
+msgstr ""
+
 msgid "List settings"
 msgstr ""
 
@@ -16497,9 +16506,6 @@ msgid "Not ready yet. Try again later."
 msgstr ""
 
 msgid "Not started"
-msgstr ""
-
-msgid "Not-confidential epic cannot be assigned to a confidential parent epic"
 msgstr ""
 
 msgid "Note"
@@ -27373,6 +27379,12 @@ msgstr ""
 msgid "Webhooks have moved. They can now be found under the Settings menu."
 msgstr ""
 
+msgid "Webhooks|Deployment events"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when a deployment is finished/failed/canceled"
+msgstr ""
+
 msgid "Wednesday"
 msgstr ""
 
@@ -27416,6 +27428,9 @@ msgid "What are you searching for?"
 msgstr ""
 
 msgid "What describes you best?"
+msgstr ""
+
+msgid "What's new at GitLab"
 msgstr ""
 
 msgid "What’s your experience level?"

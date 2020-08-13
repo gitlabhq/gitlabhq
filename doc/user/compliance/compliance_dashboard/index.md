@@ -17,7 +17,7 @@ for merging into production.
 
 To access the Compliance Dashboard for a group, navigate to **{shield}** **Security & Compliance > Compliance** on the group's menu.
 
-![Compliance Dashboard](img/compliance_dashboard_v13_3.png)
+![Compliance Dashboard](img/compliance_dashboard_v13_3_1.png)
 
 NOTE: **Note:**
 The Compliance Dashboard shows only the latest MR on each project.
@@ -62,3 +62,15 @@ This column has four states:
 
 If you do not see the success icon in your Compliance dashboard; please review the above criteria for the Merge Requests
 project to make sure it complies with the separation of duties described above.
+
+## Chain of Custody report
+
+The Chain of Custody report allows customers to export a list of merge commits within the group.
+The data provides a comprehensive view with respect to merge commits. It includes the merge commit SHA,
+merge request author, merge request ID, merge user, pipeline ID, group name, project name, and merge request approvers.
+
+To download the Chain of Custody report, navigate to **{shield}** **Security & Compliance > Compliance** on the group's menu and click **List of all merge commits**
+
+NOTE: **Note:**
+The Chain of Custody report download is a CSV file, with a maximum size of 15 MB.
+The remaining records are truncated when this limit is reached.

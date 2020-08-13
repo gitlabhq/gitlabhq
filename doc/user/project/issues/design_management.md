@@ -276,21 +276,21 @@ This will be rendered as:
 
 ### Enable or disable design references **(CORE ONLY)**
 
-Design reference parsing is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+Design reference parsing is
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:design_management_reference_filter_gfm_pipeline)
-```
+can disable it for your instance.
 
 To disable it:
 
 ```ruby
 Feature.disable(:design_management_reference_filter_gfm_pipeline)
+```
+
+To re-enable it:
+
+```ruby
+Feature.enable(:design_management_reference_filter_gfm_pipeline)
 ```
 
 ## Design activity records

@@ -397,8 +397,18 @@ RSpec.describe Projects::UpdateService do
     end
 
     shared_examples 'updating pages configuration' do
-      it 'schedules the `PagesUpdateConfigurationWorker`' do
+      it 'schedules the `PagesUpdateConfigurationWorker` when pages are deployed' do
+        project.mark_pages_as_deployed
+
         expect(PagesUpdateConfigurationWorker).to receive(:perform_async).with(project.id)
+
+        subject
+      end
+
+      it "does not schedule a job when pages aren't deployed" do
+        project.mark_pages_as_not_deployed
+
+        expect(PagesUpdateConfigurationWorker).not_to receive(:perform_async).with(project.id)
 
         subject
       end
@@ -408,11 +418,22 @@ RSpec.describe Projects::UpdateService do
           stub_feature_flags(async_update_pages_config: false)
         end
 
-        it 'calls Projects::UpdatePagesConfigurationService' do
+        it 'calls Projects::UpdatePagesConfigurationService when pages are deployed' do
+          project.mark_pages_as_deployed
+
           expect(Projects::UpdatePagesConfigurationService)
             .to receive(:new)
                   .with(project)
                   .and_call_original
+
+          subject
+        end
+
+        it "does not update pages config when pages aren't deployed" do
+          project.mark_pages_as_not_deployed
+
+          expect(Projects::UpdatePagesConfigurationService)
+            .not_to receive(:new)
 
           subject
         end

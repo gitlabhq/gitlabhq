@@ -142,6 +142,8 @@ module Projects
     end
 
     def update_pages_config
+      return unless project.pages_deployed?
+
       if Feature.enabled?(:async_update_pages_config, project)
         PagesUpdateConfigurationWorker.perform_async(project.id)
       else

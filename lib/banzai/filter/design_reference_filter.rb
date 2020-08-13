@@ -114,7 +114,7 @@ module Banzai
       end
 
       def enabled?
-        Feature.enabled?(FEATURE_FLAG, parent)
+        Feature.enabled?(FEATURE_FLAG, parent, default_enabled: true)
       end
     end
   end

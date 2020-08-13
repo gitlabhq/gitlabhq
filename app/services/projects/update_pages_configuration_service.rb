@@ -11,6 +11,11 @@ module Projects
     end
 
     def execute
+      # If the pages were never deployed, we can't write out the config, as the
+      # directory would not exist.
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/235139
+      return success unless project.pages_deployed?
+
       unless file_equals?(pages_config_file, pages_config_json)
         update_file(pages_config_file, pages_config_json)
         reload_daemon

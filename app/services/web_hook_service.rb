@@ -55,16 +55,17 @@ class WebHookService
       message: response.to_s
     }
   rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep, Gitlab::Json::LimitedEncoder::LimitExceeded => e
+    execution_duration = Gitlab::Metrics::System.monotonic_time - start_time
     log_execution(
       trigger: hook_name,
       url: hook.url,
       request_data: data,
       response: InternalErrorResponse.new,
-      execution_duration: Gitlab::Metrics::System.monotonic_time - start_time,
+      execution_duration: execution_duration,
       error_message: e.to_s
     )
 
-    Gitlab::AppLogger.error("WebHook Error => #{e}")
+    Gitlab::AppLogger.error("WebHook Error after #{execution_duration.to_i.seconds}s => #{e}")
 
     {
       status: :error,
