@@ -42,13 +42,19 @@ module QA
           end
 
           def transfer_project!(project_name, namespace)
-            expand_select_list
-            # Workaround for a failure to search when there are no spaces around the /
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/218965
-            select_transfer_option(namespace.gsub(/([^\s])\/([^\s])/, '\1 / \2'))
+            # Retry added here due to seldom seen inconsistent UI state issue:
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/231242
+            retry_on_exception do
+              click_body
+              expand_select_list
+              # Workaround for a failure to search when there are no spaces around the /
+              # https://gitlab.com/gitlab-org/gitlab/-/issues/218965
+              select_transfer_option(namespace.gsub(/([^\s])\/([^\s])/, '\1 / \2'))
+            end
+
             click_element(:transfer_button)
             fill_confirmation_text(project_name)
-            click_confirm_button
+            confirm_transfer
           end
 
           def click_export_project_link

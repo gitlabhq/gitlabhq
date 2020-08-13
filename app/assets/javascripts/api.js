@@ -9,6 +9,7 @@ const Api = {
   groupsPath: '/api/:version/groups.json',
   groupPath: '/api/:version/groups/:id',
   groupMembersPath: '/api/:version/groups/:id/members',
+  groupMilestonesPath: '/api/:version/groups/:id/milestones',
   subgroupsPath: '/api/:version/groups/:id/subgroups',
   namespacesPath: '/api/:version/namespaces.json',
   groupPackagesPath: '/api/:version/groups/:id/packages',
@@ -101,6 +102,17 @@ const Api = {
 
   groupMembers(id, options) {
     const url = Api.buildUrl(this.groupMembersPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url, {
+      params: {
+        per_page: DEFAULT_PER_PAGE,
+        ...options,
+      },
+    });
+  },
+
+  groupMilestones(id, options) {
+    const url = Api.buildUrl(this.groupMilestonesPath).replace(':id', encodeURIComponent(id));
 
     return axios.get(url, {
       params: {

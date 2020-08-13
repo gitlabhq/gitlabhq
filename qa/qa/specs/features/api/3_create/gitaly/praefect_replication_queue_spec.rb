@@ -4,7 +4,7 @@ require 'parallel'
 
 module QA
   RSpec.describe 'Create' do
-    context 'Gitaly Cluster replication queue', :orchestrated, :gitaly_ha, :skip_live_env, quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues/39#note_388590227', type: :stale } do
+    context 'Gitaly Cluster replication queue', :orchestrated, :gitaly_cluster, :skip_live_env do
       let(:praefect_manager) { Service::PraefectManager.new }
       let(:project) do
         Resource::Project.fabricate! do |project|
@@ -14,7 +14,8 @@ module QA
       end
 
       after do
-        praefect_manager.reset_cluster
+        praefect_manager.start_praefect
+        praefect_manager.wait_for_reliable_connection
         praefect_manager.clear_replication_queue
       end
 

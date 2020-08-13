@@ -3,12 +3,11 @@
 exports[`Design management design version dropdown component renders design version dropdown button 1`] = `
 <gl-new-dropdown-stub
   category="tertiary"
-  class="design-version-dropdown"
   headertext=""
   issueiid=""
   projectpath=""
   size="small"
-  text="Showing Latest Version"
+  text="Showing latest version"
   variant="default"
 >
   <gl-new-dropdown-item-stub
@@ -16,56 +15,25 @@ exports[`Design management design version dropdown component renders design vers
     iconcolor=""
     iconname=""
     iconrightname=""
+    ischecked="true"
+    ischeckitem="true"
     secondarytext=""
   >
-    <router-link-stub
-      class="d-flex js-version-link"
-      to="[object Object]"
-    >
-      <div
-        class="flex-grow-1 ml-2"
-      >
-        <div>
-          <strong>
-            Version 2
-            
-            <span>
-              (latest)
-            </span>
-          </strong>
-        </div>
-      </div>
-       
-      <i
-        class="fa fa-check float-right gl-mr-2"
-      />
-    </router-link-stub>
+    Version 
+        2
+       (latest)
   </gl-new-dropdown-item-stub>
   <gl-new-dropdown-item-stub
     avatarurl=""
     iconcolor=""
     iconname=""
     iconrightname=""
+    ischeckitem="true"
     secondarytext=""
   >
-    <router-link-stub
-      class="d-flex js-version-link"
-      to="[object Object]"
-    >
-      <div
-        class="flex-grow-1 ml-2"
-      >
-        <div>
-          <strong>
-            Version 1
-            
-            <!---->
-          </strong>
-        </div>
-      </div>
-       
-      <!---->
-    </router-link-stub>
+    Version 
+        1
+      
   </gl-new-dropdown-item-stub>
 </gl-new-dropdown-stub>
 `;
@@ -73,12 +41,11 @@ exports[`Design management design version dropdown component renders design vers
 exports[`Design management design version dropdown component renders design version list 1`] = `
 <gl-new-dropdown-stub
   category="tertiary"
-  class="design-version-dropdown"
   headertext=""
   issueiid=""
   projectpath=""
   size="small"
-  text="Showing Latest Version"
+  text="Showing latest version"
   variant="default"
 >
   <gl-new-dropdown-item-stub
@@ -86,56 +53,25 @@ exports[`Design management design version dropdown component renders design vers
     iconcolor=""
     iconname=""
     iconrightname=""
+    ischecked="true"
+    ischeckitem="true"
     secondarytext=""
   >
-    <router-link-stub
-      class="d-flex js-version-link"
-      to="[object Object]"
-    >
-      <div
-        class="flex-grow-1 ml-2"
-      >
-        <div>
-          <strong>
-            Version 2
-            
-            <span>
-              (latest)
-            </span>
-          </strong>
-        </div>
-      </div>
-       
-      <i
-        class="fa fa-check float-right gl-mr-2"
-      />
-    </router-link-stub>
+    Version 
+        2
+       (latest)
   </gl-new-dropdown-item-stub>
   <gl-new-dropdown-item-stub
     avatarurl=""
     iconcolor=""
     iconname=""
     iconrightname=""
+    ischeckitem="true"
     secondarytext=""
   >
-    <router-link-stub
-      class="d-flex js-version-link"
-      to="[object Object]"
-    >
-      <div
-        class="flex-grow-1 ml-2"
-      >
-        <div>
-          <strong>
-            Version 1
-            
-            <!---->
-          </strong>
-        </div>
-      </div>
-       
-      <!---->
-    </router-link-stub>
+    Version 
+        1
+      
   </gl-new-dropdown-item-stub>
 </gl-new-dropdown-stub>
 `;

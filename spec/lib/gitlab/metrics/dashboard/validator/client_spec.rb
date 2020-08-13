@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator::Client do
       let(:dashboard) { load_dashboard_yaml(fixture_file('lib/gitlab/metrics/dashboard/invalid_dashboard.yml')) }
 
       it 'returns array of error objects' do
-        expect(subject.execute).to all(be_a(Gitlab::Metrics::Dashboard::Validator::Errors::SchemaValidationError))
+        expect(subject.execute).to include(Gitlab::Metrics::Dashboard::Validator::Errors::SchemaValidationError)
       end
     end
   end

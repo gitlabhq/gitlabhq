@@ -142,11 +142,11 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
       {
         panel_groups: [{
           panels: [{
-            type: "line-graph",
+            type: 'area-chart',
             title: title,
-            y_label: "metric",
+            y_label: 'metric',
             metrics: [{
-              query_range: "metric * 0.5 < 1"
+              query_range: 'metric * 0.5 < 1'
             }]
           }]
         }]

@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     context 'Gitaly' do
-      describe 'Backend node recovery', :orchestrated, :gitaly_ha, :skip_live_env do
+      describe 'Backend node recovery', :orchestrated, :gitaly_cluster, :skip_live_env do
         let(:praefect_manager) { Service::PraefectManager.new }
         let(:project) do
           Resource::Project.fabricate! do |project|

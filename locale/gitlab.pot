@@ -3932,6 +3932,9 @@ msgstr ""
 msgid "Boards|View scope"
 msgstr ""
 
+msgid "Both project and dashboard_path are required"
+msgstr ""
+
 msgid "Branch"
 msgstr ""
 
@@ -14522,6 +14525,9 @@ msgstr ""
 msgid "MRApprovals|Approvers"
 msgstr ""
 
+msgid "MRApprovals|Commented by"
+msgstr ""
+
 msgid "MRDiff|Show changes only"
 msgstr ""
 
@@ -22366,6 +22372,12 @@ msgstr ""
 msgid "Showing last %{size} of log -"
 msgstr ""
 
+msgid "Showing latest version"
+msgstr ""
+
+msgid "Showing version #%{versionNumber}"
+msgstr ""
+
 msgid "Side-by-side"
 msgstr ""
 
@@ -26848,6 +26860,12 @@ msgid "Verify configuration"
 msgstr ""
 
 msgid "Version"
+msgstr ""
+
+msgid "Version %{versionNumber}"
+msgstr ""
+
+msgid "Version %{versionNumber} (latest)"
 msgstr ""
 
 msgid "View Documentation"

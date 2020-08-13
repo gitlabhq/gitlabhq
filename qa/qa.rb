@@ -151,7 +151,6 @@ module QA
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
         autoload :SMTP, 'qa/scenario/test/integration/smtp'
-        autoload :GitalyHA, 'qa/scenario/test/integration/gitaly_ha'
       end
 
       module Sanity

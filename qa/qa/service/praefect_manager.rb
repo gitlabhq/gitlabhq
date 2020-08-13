@@ -10,7 +10,7 @@ module QA
       PrometheusQueryError = Class.new(StandardError)
 
       def initialize
-        @gitlab = 'gitlab-gitaly-ha'
+        @gitlab = 'gitlab-gitaly-cluster'
         @praefect = 'praefect'
         @postgres = 'postgres'
         @primary_node = 'gitaly1'
@@ -28,7 +28,7 @@ module QA
 
       def replicated?(project_id)
         Support::Retrier.retry_until(raise_on_failure: false) do
-          replicas = wait_until_shell_command(%(docker exec gitlab-gitaly-ha bash -c 'gitlab-rake "gitlab:praefect:replicas[#{project_id}]"')) do |line|
+          replicas = wait_until_shell_command(%(docker exec #{@gitlab} bash -c 'gitlab-rake "gitlab:praefect:replicas[#{project_id}]"')) do |line|
             QA::Runtime::Logger.debug(line.chomp)
             # The output of the rake task looks something like this:
             #
@@ -77,6 +77,7 @@ module QA
       def trigger_failover_by_stopping_primary_node
         QA::Runtime::Logger.info("Stopping node #{@primary_node} to trigger failover")
         stop_node(@primary_node)
+        wait_for_new_primary
       end
 
       def clear_replication_queue
@@ -121,7 +122,7 @@ module QA
       end
 
       def query_read_distribution
-        output = shell "docker exec gitlab-gitaly-ha bash -c 'curl -s http://localhost:9090/api/v1/query?query=gitaly_praefect_read_distribution'" do |line|
+        output = shell "docker exec #{@gitlab} bash -c 'curl -s http://localhost:9090/api/v1/query?query=gitaly_praefect_read_distribution'" do |line|
           QA::Runtime::Logger.debug(line)
           break line
         end
@@ -177,15 +178,6 @@ module QA
 
         wait_for_health_check_all_nodes
         wait_for_reliable_connection
-      end
-
-      def reset_cluster
-        QA::Runtime::Logger.info('Reset Gitaly Cluster by starting all nodes and enabling writes')
-        start_node(@praefect)
-        start_node(@primary_node)
-        start_node(@secondary_node)
-        start_node(@tertiary_node)
-        wait_for_health_check_all_nodes
       end
 
       def verify_storage_move(source_storage, destination_storage)
@@ -346,7 +338,7 @@ module QA
       end
 
       def value_for_node(data, node)
-        data.find(-> {0}) { |item| item[:node] == node }[:value]
+        data.find(-> {{ value: 0 }}) { |item| item[:node] == node }[:value]
       end
 
       def wait_for_reliable_connection

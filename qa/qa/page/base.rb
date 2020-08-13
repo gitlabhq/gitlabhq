@@ -44,6 +44,10 @@ module QA
         wait_for_requests
       end
 
+      def click_body
+        page.find("body").click
+      end
+
       def wait_until(max_duration: 60, sleep_interval: 0.1, reload: true, raise_on_failure: true)
         Support::Waiter.wait_until(max_duration: max_duration, sleep_interval: sleep_interval, raise_on_failure: raise_on_failure) do
           yield || (reload && refresh && false)

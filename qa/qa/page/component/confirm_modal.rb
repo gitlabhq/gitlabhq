@@ -20,7 +20,14 @@ module QA
           fill_element :confirm_input, text
         end
 
-        def click_confirm_button
+        def wait_for_confirm_button_enabled
+          wait_until(reload: false) do
+            !find_element(:confirm_button).disabled?
+          end
+        end
+
+        def confirm_transfer
+          wait_for_confirm_button_enabled
           click_element :confirm_button
         end
       end

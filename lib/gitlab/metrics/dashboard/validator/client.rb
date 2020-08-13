@@ -8,9 +8,12 @@ module Gitlab
           # @param content [Hash] Representing a raw, unprocessed
           # dashboard object
           # @param schema_path [String] Representing path to dashboard schema file
-          def initialize(content, schema_path, project: nil)
+          # @param dashboard_path[String] Representing path to dashboard content file
+          # @param project [Project] Project to validate dashboard against
+          def initialize(content, schema_path, dashboard_path: nil, project: nil)
             @content = content
             @schema_path = schema_path
+            @dashboard_path = dashboard_path
             @project = project
           end
 
@@ -23,14 +26,18 @@ module Gitlab
 
           private
 
-          attr_reader :content, :schema_path, :project
+          attr_reader :content, :schema_path, :project, :dashboard_path
 
           def custom_formats
             @custom_formats ||= CustomFormats.new
           end
 
           def post_schema_validator
-            @post_schema_validator ||= PostSchemaValidator.new(project: project, metric_ids: custom_formats.metric_ids_cache)
+            PostSchemaValidator.new(
+              project:        project,
+              metric_ids:     custom_formats.metric_ids_cache,
+              dashboard_path: dashboard_path
+            )
           end
 
           def schemer

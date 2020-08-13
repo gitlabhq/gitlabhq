@@ -183,7 +183,7 @@ module Projects
         {
           panel_groups: [{
             panels: [{
-              type: 'line-graph',
+              type: 'area-chart',
               title: title,
               y_label: y_label,
               metrics: [{

@@ -904,7 +904,7 @@ export default {
 
 - Please do not use mixins unless ABSOLUTELY NECESSARY. Please try to find an alternative pattern.
 
-##### Reccomended alternative approach (named/scoped slots)
+##### Recommended alternative approach (named/scoped slots)
 
 - We can use slots and/or scoped slots to achieve the same thing as we did with mixins. If you only need an EE component there is no need to create the CE component.
 
