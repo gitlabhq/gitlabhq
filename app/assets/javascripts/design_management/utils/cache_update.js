@@ -203,6 +203,15 @@ const addNewDesignToStore = (store, designManagementUpload, query) => {
   });
 };
 
+const moveDesignInStore = (store, designManagementMove, query) => {
+  const data = store.readQuery(query);
+  data.project.issue.designCollection.designs = designManagementMove.designCollection.designs;
+  store.writeQuery({
+    ...query,
+    data,
+  });
+};
+
 const onError = (data, message) => {
   createFlash(message);
   throw new Error(data.errors);
@@ -262,5 +271,13 @@ export const updateStoreAfterUploadDesign = (store, data, query) => {
     onError(data, data.errors[0]);
   } else {
     addNewDesignToStore(store, data, query);
+  }
+};
+
+export const updateDesignsOnStoreAfterReorder = (store, data, query) => {
+  if (hasErrors(data)) {
+    createFlash(data.errors[0]);
+  } else {
+    moveDesignInStore(store, data, query);
   }
 };

@@ -88,6 +88,12 @@ RSpec.describe Labels::AvailableLabelsService do
         expect(result).to match_array([group_label.id])
       end
     end
+
+    it 'accepts a single id parameter' do
+      result = described_class.new(user, project, label_id: project_label.id).filter_labels_ids_in_param(:label_id)
+
+      expect(result).to match_array([project_label.id])
+    end
   end
 
   describe '#available_labels' do

@@ -42,7 +42,7 @@ RSpec.shared_context 'Pipeline Processing Service Tests With Yaml' do
 
       {
         pipeline: pipeline.status,
-        stages: pipeline.ordered_stages.pluck(:name, :status).to_h,
+        stages: pipeline.stages.pluck(:name, :status).to_h,
         jobs: pipeline.statuses.latest.pluck(:name, :status).to_h
       }
     end

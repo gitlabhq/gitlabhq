@@ -12,17 +12,6 @@ RSpec.describe PipelineProcessWorker do
 
         described_class.new.perform(pipeline.id)
       end
-
-      context 'when build_ids are passed' do
-        let(:build) { create(:ci_build, pipeline: pipeline, name: 'my-build') }
-
-        it 'processes pipeline with a list of builds' do
-          expect_any_instance_of(Ci::ProcessPipelineService).to receive(:execute)
-            .with([build.id])
-
-          described_class.new.perform(pipeline.id, [build.id])
-        end
-      end
     end
 
     context 'when pipeline does not exist' do

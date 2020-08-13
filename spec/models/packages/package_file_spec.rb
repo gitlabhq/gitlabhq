@@ -58,7 +58,7 @@ RSpec.describe Packages::PackageFile, type: :model do
   end
 
   describe '#update_file_metadata callback' do
-    let_it_be(:package_file) { build(:package_file, :nuget, file_store: nil, size: nil) }
+    let_it_be(:package_file) { build(:package_file, :nuget, size: nil) }
 
     subject { package_file.save! }
 
@@ -67,9 +67,14 @@ RSpec.describe Packages::PackageFile, type: :model do
         .to receive(:update_file_metadata)
         .and_call_original
 
-      expect { subject }
-        .to change { package_file.file_store }.from(nil).to(::Packages::PackageFileUploader::Store::LOCAL)
-        .and change { package_file.size }.from(nil).to(3513)
+      # This expectation uses a stub because we can no longer test a change from
+      # `nil` to `1`, because the field is no longer nullable, and it defaults
+      # to `1`.
+      expect(package_file)
+        .to receive(:update_column)
+        .with(:file_store, ::Packages::PackageFileUploader::Store::LOCAL)
+
+      expect { subject }.to change { package_file.size }.from(nil).to(3513)
     end
   end
 end

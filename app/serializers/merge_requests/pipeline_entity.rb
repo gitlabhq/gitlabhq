@@ -25,7 +25,7 @@ class MergeRequests::PipelineEntity < Grape::Entity
       pipeline.detailed_status(request.current_user)
     end
 
-    expose :ordered_stages, as: :stages, using: StageEntity
+    expose :stages, using: StageEntity
   end
 
   # Coverage isn't always necessary (e.g. when displaying project pipelines in

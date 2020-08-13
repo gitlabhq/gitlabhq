@@ -162,19 +162,9 @@ RSpec.describe Projects::UpdatePagesService do
       end
 
       context 'with background jobs running', :sidekiq_inline do
-        where(:ci_atomic_processing) do
-          [true, false]
-        end
-
-        with_them do
-          before do
-            stub_feature_flags(ci_atomic_processing: ci_atomic_processing)
-          end
-
-          it 'succeeds' do
-            expect(project.pages_deployed?).to be_falsey
-            expect(execute).to eq(:success)
-          end
+        it 'succeeds' do
+          expect(project.pages_deployed?).to be_falsey
+          expect(execute).to eq(:success)
         end
       end
     end

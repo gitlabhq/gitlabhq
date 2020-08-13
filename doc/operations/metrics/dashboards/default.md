@@ -34,3 +34,5 @@ This dashboard displays CPU, memory, network and disk metrics for the pods in yo
 [connected K8s cluster](../../../user/project/clusters/index.md). It provides a
 [variable selector](templating_variables.md#metric_label_values-variable-type)
 at the top of the dashboard to select which pod's metrics to display.
+
+![K8s pod health dashboard](img/k8s_pod_health_dashboard_v13_3.png)

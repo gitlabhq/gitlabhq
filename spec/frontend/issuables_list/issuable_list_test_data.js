@@ -30,6 +30,7 @@ export const simpleIssue = {
   references: {
     relative: 'html-boilerplate#45',
   },
+  health_status: 'on_track',
 };
 
 export const testLabels = [

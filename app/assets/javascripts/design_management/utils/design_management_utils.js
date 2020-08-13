@@ -85,7 +85,8 @@ export const designUploadOptimisticResponse = files => {
 
 /**
  * Generates optimistic response for a design upload mutation
- * @param {Array<File>} files
+ *  @param {Object} note
+ *  @param {Object} position
  */
 export const updateImageDiffNoteOptimisticResponse = (note, { position }) => ({
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
@@ -98,6 +99,27 @@ export const updateImageDiffNoteOptimisticResponse = (note, { position }) => ({
       position: {
         ...note.position,
         ...position,
+      },
+    },
+    errors: [],
+  },
+});
+
+/**
+ * Generates optimistic response for a design upload mutation
+ * @param {Array} designs
+ */
+export const moveDesignOptimisticResponse = designs => ({
+  // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  __typename: 'Mutation',
+  designManagementMove: {
+    __typename: 'DesignManagementMovePayload',
+    designCollection: {
+      __typename: 'DesignCollection',
+      designs: {
+        __typename: 'DesignConnection',
+        nodes: designs,
       },
     },
     errors: [],

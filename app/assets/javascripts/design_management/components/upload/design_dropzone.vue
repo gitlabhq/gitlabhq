@@ -17,6 +17,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isDraggingDesign: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -121,7 +126,7 @@ export default {
     </slot>
     <transition name="design-dropzone-fade">
       <div
-        v-show="dragging"
+        v-show="dragging && !isDraggingDesign"
         class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
       >
         <div v-show="!isDragDataValid" class="mw-50 text-center">

@@ -804,6 +804,10 @@
           }
         }
       }
+
+      .milestone {
+        color: $gray-700;
+      }
     }
 
     @media(max-width: map-get($grid-breakpoints, lg)-1) {

@@ -47,9 +47,9 @@ module StubObjectStorage
     end
   end
 
-  def stub_artifacts_object_storage(**params)
+  def stub_artifacts_object_storage(uploader = JobArtifactUploader, **params)
     stub_object_storage_uploader(config: Gitlab.config.artifacts.object_store,
-                                 uploader: JobArtifactUploader,
+                                 uploader: uploader,
                                  remote_directory: 'artifacts',
                                  **params)
   end

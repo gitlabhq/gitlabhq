@@ -22,14 +22,14 @@ exports[`Design management index page designs does not render toolbar when there
           hasdesigns="true"
         />
       </li>
-       
       <li
-        class="col-md-6 col-lg-3 gl-mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3 gl-bg-transparent gl-shadow-none js-design-tile"
       >
         <design-dropzone-stub
           hasdesigns="true"
         >
           <design-stub
+            class="gl-bg-white"
             event="NONE"
             filename="design-1-name"
             id="design-1"
@@ -41,12 +41,13 @@ exports[`Design management index page designs does not render toolbar when there
         <!---->
       </li>
       <li
-        class="col-md-6 col-lg-3 gl-mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3 gl-bg-transparent gl-shadow-none js-design-tile"
       >
         <design-dropzone-stub
           hasdesigns="true"
         >
           <design-stub
+            class="gl-bg-white"
             event="NONE"
             filename="design-2-name"
             id="design-2"
@@ -58,12 +59,13 @@ exports[`Design management index page designs does not render toolbar when there
         <!---->
       </li>
       <li
-        class="col-md-6 col-lg-3 gl-mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3 gl-bg-transparent gl-shadow-none js-design-tile"
       >
         <design-dropzone-stub
           hasdesigns="true"
         >
           <design-stub
+            class="gl-bg-white"
             event="NONE"
             filename="design-3-name"
             id="design-3"
@@ -151,14 +153,14 @@ exports[`Design management index page designs renders designs list and header wi
           hasdesigns="true"
         />
       </li>
-       
       <li
-        class="col-md-6 col-lg-3 gl-mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3 gl-bg-transparent gl-shadow-none js-design-tile"
       >
         <design-dropzone-stub
           hasdesigns="true"
         >
           <design-stub
+            class="gl-bg-white"
             event="NONE"
             filename="design-1-name"
             id="design-1"
@@ -173,12 +175,13 @@ exports[`Design management index page designs renders designs list and header wi
         />
       </li>
       <li
-        class="col-md-6 col-lg-3 gl-mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3 gl-bg-transparent gl-shadow-none js-design-tile"
       >
         <design-dropzone-stub
           hasdesigns="true"
         >
           <design-stub
+            class="gl-bg-white"
             event="NONE"
             filename="design-2-name"
             id="design-2"
@@ -193,12 +196,13 @@ exports[`Design management index page designs renders designs list and header wi
         />
       </li>
       <li
-        class="col-md-6 col-lg-3 gl-mb-3"
+        class="col-md-6 col-lg-3 gl-mb-3 gl-bg-transparent gl-shadow-none js-design-tile"
       >
         <design-dropzone-stub
           hasdesigns="true"
         >
           <design-stub
+            class="gl-bg-white"
             event="NONE"
             filename="design-3-name"
             id="design-3"
@@ -296,7 +300,6 @@ exports[`Design management index page when has no designs renders design dropzon
           class=""
         />
       </li>
-       
     </ol>
   </div>
    

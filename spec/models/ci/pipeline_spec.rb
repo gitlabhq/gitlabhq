@@ -1047,19 +1047,6 @@ RSpec.describe Ci::Pipeline, :mailer do
       before do
         create(:ci_stage_entity, project: project,
                                  pipeline: pipeline,
-                                 name: 'build')
-      end
-
-      it 'returns persisted stages' do
-        expect(pipeline.stages).not_to be_empty
-        expect(pipeline.stages).to all(be_persisted)
-      end
-    end
-
-    describe '#ordered_stages' do
-      before do
-        create(:ci_stage_entity, project: project,
-                                 pipeline: pipeline,
                                  position: 4,
                                  name: 'deploy')
 
@@ -1086,60 +1073,25 @@ RSpec.describe Ci::Pipeline, :mailer do
                                  name: 'cleanup')
       end
 
-      subject { pipeline.ordered_stages }
+      subject { pipeline.stages }
 
-      context 'when using atomic processing' do
-        before do
-          stub_feature_flags(
-            ci_atomic_processing: true
-          )
-        end
-
-        context 'when pipelines is not complete' do
-          it 'returns stages in valid order' do
-            expect(subject).to all(be_a Ci::Stage)
-            expect(subject.map(&:name))
-              .to eq %w[sanity build test deploy cleanup]
-          end
-        end
-
-        context 'when pipeline is complete' do
-          before do
-            pipeline.succeed!
-          end
-
-          it 'returns stages in valid order' do
-            expect(subject).to all(be_a Ci::Stage)
-            expect(subject.map(&:name))
-              .to eq %w[sanity build test deploy cleanup]
-          end
+      context 'when pipelines is not complete' do
+        it 'returns stages in valid order' do
+          expect(subject).to all(be_a Ci::Stage)
+          expect(subject.map(&:name))
+            .to eq %w[sanity build test deploy cleanup]
         end
       end
 
-      context 'when using persisted stages' do
+      context 'when pipeline is complete' do
         before do
-          stub_feature_flags(
-            ci_atomic_processing: false
-          )
+          pipeline.succeed!
         end
 
-        context 'when pipelines is not complete' do
-          it 'still returns legacy stages' do
-            expect(subject).to all(be_a Ci::LegacyStage)
-            expect(subject.map(&:name)).to eq %w[build test]
-          end
-        end
-
-        context 'when pipeline is complete' do
-          before do
-            pipeline.succeed!
-          end
-
-          it 'returns stages in valid order' do
-            expect(subject).to all(be_a Ci::Stage)
-            expect(subject.map(&:name))
-              .to eq %w[sanity build test deploy cleanup]
-          end
+        it 'returns stages in valid order' do
+          expect(subject).to all(be_a Ci::Stage)
+          expect(subject.map(&:name))
+            .to eq %w[sanity build test deploy cleanup]
         end
       end
     end

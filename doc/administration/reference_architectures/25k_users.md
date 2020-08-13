@@ -5,7 +5,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Reference architecture: up to 25,000 users
+# Reference architecture: up to 25,000 users **(PREMIUM ONLY)**
 
 This page describes GitLab reference architecture for up to 25,000 users. For a
 full list of reference architectures, see

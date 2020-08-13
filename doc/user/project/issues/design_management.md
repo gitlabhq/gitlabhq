@@ -202,6 +202,17 @@ Only the latest version of the designs can be deleted.
 Deleted designs are not permanently lost; they can be
 viewed by browsing previous versions.
 
+## Reordering designs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34382) in GitLab 13.3.
+
+You can change designs order with dragging design to the new position:
+
+![Reorder designs](img/designs_reordering_v13_3.gif)
+
+NOTE: **Note:**
+You can reorder designs only on the latest version.
+
 ## Starting discussions on designs
 
 When a design is uploaded, you can start a discussion by clicking on

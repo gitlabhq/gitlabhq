@@ -10,7 +10,7 @@ module Gitlab
             def perform!
               ::Ci::ProcessPipelineService
                 .new(@pipeline)
-                .execute(nil, initial_process: true)
+                .execute
             end
 
             def break?

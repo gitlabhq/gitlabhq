@@ -23,6 +23,8 @@ import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
+import { convertToCamelCase } from '~/lib/utils/text_utility';
+
 export default {
   i18n: {
     openedAgo: __('opened %{timeAgoString} by %{user}'),
@@ -34,6 +36,8 @@ export default {
     GlLabel,
     GlIcon,
     GlSprintf,
+    IssueHealthStatus: () =>
+      import('ee_component/related_items_tree/components/issue_health_status.vue'),
   },
   directives: {
     GlTooltip,
@@ -195,6 +199,9 @@ export default {
         },
       ];
     },
+    healthStatus() {
+      return convertToCamelCase(this.issuable.health_status);
+    },
   },
   mounted() {
     // TODO: Refactor user popover to use its own component instead of
@@ -288,7 +295,7 @@ export default {
         </div>
 
         <div class="issuable-info">
-          <span class="js-ref-path">
+          <span class="js-ref-path gl-mr-4 mr-sm-0">
             <span
               v-if="isJiraIssue"
               class="svg-container jira-logo-container"
@@ -298,7 +305,7 @@ export default {
             {{ referencePath }}
           </span>
 
-          <span data-testid="openedByMessage" class="gl-display-none d-sm-inline-block gl-mr-2">
+          <span data-testid="openedByMessage" class="gl-display-none d-sm-inline-block gl-mr-4">
             &middot;
             <gl-sprintf
               :message="isJiraIssue ? $options.i18n.openedAgoJira : $options.i18n.openedAgo"
@@ -321,7 +328,7 @@ export default {
           <gl-link
             v-if="issuable.milestone"
             v-gl-tooltip
-            class="gl-display-none d-sm-inline-block gl-mr-2 js-milestone"
+            class="gl-display-none d-sm-inline-block gl-mr-4 js-milestone milestone"
             :href="milestoneLink"
             :title="milestoneTooltipText"
           >
@@ -332,13 +339,31 @@ export default {
           <span
             v-if="dueDate"
             v-gl-tooltip
-            class="gl-display-none d-sm-inline-block gl-mr-2 js-due-date"
+            class="gl-display-none d-sm-inline-block gl-mr-4 js-due-date"
             :class="{ cred: isOverdue }"
             :title="__('Due date')"
           >
             <i class="fa fa-calendar"></i>
             {{ dueDateWords }}
           </span>
+
+          <span
+            v-if="hasWeight"
+            v-gl-tooltip
+            :title="__('Weight')"
+            class="gl-display-none d-sm-inline-block gl-mr-4"
+            data-testid="weight"
+            data-qa-selector="issuable_weight_content"
+          >
+            <gl-icon name="weight" class="align-text-bottom" />
+            {{ issuable.weight }}
+          </span>
+
+          <issue-health-status
+            v-if="issuable.health_status"
+            :health-status="healthStatus"
+            class="gl-mr-4 issuable-tag-valign"
+          />
 
           <gl-label
             v-for="label in issuable.labels"
@@ -351,21 +376,9 @@ export default {
             :title="label.name"
             :scoped="isScoped(label)"
             size="sm"
-            class="gl-mr-2"
+            class="gl-mr-2 issuable-tag-valign"
             >{{ label.name }}</gl-label
           >
-
-          <span
-            v-if="hasWeight"
-            v-gl-tooltip
-            :title="__('Weight')"
-            class="gl-display-none d-sm-inline-block"
-            data-testid="weight"
-            data-qa-selector="issuable_weight_content"
-          >
-            <gl-icon name="weight" class="align-text-bottom" />
-            {{ issuable.weight }}
-          </span>
         </div>
       </div>
 

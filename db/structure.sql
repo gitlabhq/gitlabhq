@@ -13068,7 +13068,8 @@ CREATE TABLE public.merge_request_diffs (
     commits_count integer,
     external_diff character varying,
     external_diff_store integer DEFAULT 1,
-    stored_externally boolean
+    stored_externally boolean,
+    files_count smallint
 );
 
 CREATE SEQUENCE public.merge_request_diffs_id_seq
@@ -13873,7 +13874,7 @@ CREATE TABLE public.packages_package_files (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     size bigint,
-    file_store integer,
+    file_store integer DEFAULT 1,
     file_md5 bytea,
     file_sha1 bytea,
     file_name character varying NOT NULL,
@@ -17698,6 +17699,9 @@ ALTER TABLE public.design_management_designs
 ALTER TABLE public.vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
+ALTER TABLE public.packages_package_files
+    ADD CONSTRAINT check_4c5e6bb0b3 CHECK ((file_store IS NOT NULL)) NOT VALID;
+
 ALTER TABLE public.merge_request_diffs
     ADD CONSTRAINT check_93ee616ac9 CHECK ((external_diff_store IS NOT NULL)) NOT VALID;
 
@@ -20203,6 +20207,8 @@ CREATE INDEX index_packages_dependency_links_on_dependency_id ON public.packages
 CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON public.packages_maven_metadata USING btree (package_id, path);
 
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON public.packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
+
+CREATE INDEX index_packages_package_files_file_store_is_null ON public.packages_package_files USING btree (id) WHERE (file_store IS NULL);
 
 CREATE INDEX index_packages_package_files_on_file_store ON public.packages_package_files USING btree (file_store);
 

@@ -17,6 +17,7 @@ module QA
                 element :operations_link
                 element :operations_environments_link
                 element :operations_metrics_link
+                element :operations_incidents_link
               end
             end
           end
@@ -41,6 +42,14 @@ module QA
             hover_operations do
               within_submenu do
                 click_link('Kubernetes')
+              end
+            end
+          end
+
+          def go_to_operations_incidents
+            hover_operations do
+              within_submenu do
+                click_element(:operations_incidents_link)
               end
             end
           end

@@ -40,6 +40,10 @@ export const EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE = __(
   'You must upload a file with the same file name when dropping onto an existing design.',
 );
 
+export const MOVE_DESIGN_ERROR = __(
+  'Something went wrong when reordering designs. Please try again',
+);
+
 const MAX_SKIPPED_FILES_LISTINGS = 5;
 
 const oneDesignSkippedMessage = filename =>

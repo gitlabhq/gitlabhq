@@ -672,6 +672,12 @@ RSpec.describe MergeRequestDiff do
     end
   end
 
+  describe '#files_count' do
+    it 'returns number of diff files' do
+      expect(diff_with_commits.files_count).to eq(diff_with_commits.merge_request_diff_files.count)
+    end
+  end
+
   describe '#first_commit' do
     it 'returns first commit' do
       expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
@@ -721,10 +727,12 @@ RSpec.describe MergeRequestDiff do
 
   describe '#modified_paths' do
     subject do
-      diff = create(:merge_request_diff)
-      create(:merge_request_diff_file, :new_file, merge_request_diff: diff)
-      create(:merge_request_diff_file, :renamed_file, merge_request_diff: diff)
-      diff
+      create(:merge_request_diff).tap do |diff|
+        create(:merge_request_diff_file, :new_file, merge_request_diff: diff)
+        create(:merge_request_diff_file, :renamed_file, merge_request_diff: diff)
+
+        diff.merge_request_diff_files.reset
+      end
     end
 
     it 'returns affected file paths' do

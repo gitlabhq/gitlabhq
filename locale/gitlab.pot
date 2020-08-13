@@ -22639,6 +22639,9 @@ msgstr ""
 msgid "Something went wrong trying to change the locked state of this %{issuableDisplayName}"
 msgstr ""
 
+msgid "Something went wrong when reordering designs. Please try again"
+msgstr ""
+
 msgid "Something went wrong when toggling the button"
 msgstr ""
 

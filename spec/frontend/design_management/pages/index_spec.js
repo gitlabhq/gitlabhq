@@ -1,5 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
+import VueDraggable from 'vuedraggable';
 import VueRouter from 'vue-router';
 import { GlEmptyState } from '@gitlab/ui';
 import Index from '~/design_management/pages/index.vue';
@@ -108,7 +109,7 @@ describe('Design management index page', () => {
       mocks: { $apollo },
       localVue,
       router,
-      stubs: { DesignDestroyer, ApolloMutation, ...stubs },
+      stubs: { DesignDestroyer, ApolloMutation, VueDraggable, ...stubs },
       attachToDocument: true,
       provide: {
         projectPath: 'project-path',

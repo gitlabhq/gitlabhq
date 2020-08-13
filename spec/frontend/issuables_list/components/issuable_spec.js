@@ -99,6 +99,7 @@ describe('Issuable component', () => {
   const findIssuableTitle = () => wrapper.find('[data-testid="issuable-title"]');
   const findIssuableStatus = () => wrapper.find('[data-testid="issuable-status"]');
   const containsJiraLogo = () => wrapper.contains('[data-testid="jira-logo"]');
+  const findHealthStatus = () => wrapper.find('.health-status');
 
   describe('when mounted', () => {
     it('initializes user popovers', () => {
@@ -474,4 +475,19 @@ describe('Issuable component', () => {
       });
     });
   });
+
+  if (IS_EE) {
+    describe('with health status', () => {
+      it('renders health status tag', () => {
+        factory({ issuable });
+        expect(findHealthStatus().exists()).toBe(true);
+      });
+
+      it('does not render when health status is absent', () => {
+        issuable.health_status = null;
+        factory({ issuable });
+        expect(findHealthStatus().exists()).toBe(false);
+      });
+    });
+  }
 });

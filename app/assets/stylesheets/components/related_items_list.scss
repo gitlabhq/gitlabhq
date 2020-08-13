@@ -81,27 +81,6 @@ $item-remove-button-space: 42px;
     max-width: 0;
   }
 
-  .status {
-    &-at-risk {
-      color: $red-500;
-      background-color: $red-100;
-    }
-
-    &-needs-attention {
-      color: $orange-700;
-      background-color: $orange-100;
-    }
-
-    &-on-track {
-      color: $green-600;
-      background-color: $green-100;
-    }
-  }
-
-  .gl-label-text {
-    font-weight: $gl-font-weight-bold;
-  }
-
   .bullet-separator {
     font-size: 9px;
     color: $gray-200;

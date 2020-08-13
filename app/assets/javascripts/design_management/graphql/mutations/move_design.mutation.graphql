@@ -1,0 +1,18 @@
+#import "../fragments/design_list.fragment.graphql"
+
+mutation DesignManagementMove(
+  $id: DesignManagementDesignID!
+  $previous: DesignManagementDesignID
+  $next: DesignManagementDesignID
+) {
+  designManagementMove(input: { id: $id, previous: $previous, next: $next }) {
+    designCollection {
+      designs {
+        nodes {
+          ...DesignListItem
+        }
+      }
+    }
+    errors
+  }
+}

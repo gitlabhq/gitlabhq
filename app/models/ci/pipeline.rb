@@ -418,22 +418,6 @@ module Ci
       false
     end
 
-    def ordered_stages
-      if ::Gitlab::Ci::Features.atomic_processing?(project)
-        # The `Ci::Stage` contains all up-to date data
-        # as atomic processing updates all data in-bulk
-        stages
-      elsif complete?
-        # The `Ci::Stage` contains up-to date data only for `completed` pipelines
-        # this is due to asynchronous processing of pipeline, and stages possibly
-        # not updated inline with processing of pipeline
-        stages
-      else
-        # In other cases, we need to calculate stages dynamically
-        legacy_stages
-      end
-    end
-
     def legacy_stages_using_sql
       # TODO, this needs refactoring, see gitlab-foss#26481.
       stages_query = statuses
@@ -470,6 +454,7 @@ module Ci
       triggered_pipelines.preload(:source_job)
     end
 
+    # TODO: Remove usage of this method in templates
     def legacy_stages
       if ::Gitlab::Ci::Features.composite_status?(project)
         legacy_stages_using_composite_status
@@ -1046,10 +1031,6 @@ module Ci
 
     def persistent_ref
       @persistent_ref ||= PersistentRef.new(pipeline: self)
-    end
-
-    def find_successful_build_ids_by_names(names)
-      statuses.latest.success.where(name: names).pluck(:id)
     end
 
     def cacheable?

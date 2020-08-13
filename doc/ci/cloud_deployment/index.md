@@ -168,6 +168,9 @@ After you have these prerequisites ready, follow these steps:
 1. Commit and push your updated `.gitlab-ci.yml` to your project's repository, and you're done!
 
    Your application Docker image will be rebuilt and pushed to the GitLab registry.
+   If your image is located in a private registry, make sure your task definition is
+   [configured with a `repositoryCredentials` attribute](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/private-auth.html).
+
    Then the targeted task definition will be updated with the location of the new
    Docker image, and a new revision will be created in ECS as result.
 

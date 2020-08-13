@@ -788,8 +788,7 @@ RSpec.shared_examples 'Pipeline Processing Service' do
       let!(:deploy_pages) { create_build('deploy_pages', stage: 'deploy', stage_idx: 2, scheduling_type: :dag) }
 
       it 'runs deploy_pages without waiting prior stages' do
-        # Ci::PipelineProcessing::LegacyProcessingService requires :initial_process parameter
-        expect(process_pipeline(initial_process: true)).to be_truthy
+        expect(process_pipeline).to be_truthy
 
         expect(stages).to eq(%w(pending created pending))
         expect(builds.pending).to contain_exactly(linux_build, mac_build, deploy_pages)

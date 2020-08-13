@@ -149,6 +149,7 @@ class MergeRequestDiff < ApplicationRecord
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
+  after_create :set_count_columns
   after_create_commit :set_as_latest_diff, unless: :importing?
 
   after_save :update_external_diff_store
@@ -642,6 +643,7 @@ class MergeRequestDiff < ApplicationRecord
 
         rows = build_merge_request_diff_files(diff_collection)
         create_merge_request_diff_files(rows)
+        self.class.uncached { merge_request_diff_files.reset }
       end
 
       # Set our state to 'overflow' to make the #empty? and #collected?
@@ -657,12 +659,14 @@ class MergeRequestDiff < ApplicationRecord
 
   def save_commits
     MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse)
+    self.class.uncached { merge_request_diff_commits.reset }
+  end
 
-    # merge_request_diff_commits.reset is preferred way to reload associated
-    # objects but it returns cached result for some reason in this case
-    # we can circumvent that by specifying that we need an uncached reload
-    commits = self.class.uncached { merge_request_diff_commits.reset }
-    self.commits_count = commits.size
+  def set_count_columns
+    update_columns(
+      commits_count: merge_request_diff_commits.size,
+      files_count: merge_request_diff_files.size
+    )
   end
 
   def repository

@@ -242,6 +242,7 @@ export default {
       <gl-button
         class="gl-my-3 gl-mr-5 create-incident-button"
         data-testid="createIncidentBtn"
+        data-qa-selector="create_incident_button"
         :loading="redirecting"
         :disabled="redirecting"
         category="primary"

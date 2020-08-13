@@ -236,7 +236,7 @@
 
               - if project_nav_tab?(:incidents)
                 = nav_link(controller: :incidents) do
-                  = link_to project_incidents_path(@project), title: _('Incidents') do
+                  = link_to project_incidents_path(@project), title: _('Incidents'), data: { qa_selector: 'operations_incidents_link' } do
                     %span
                       = _('Incidents')
 

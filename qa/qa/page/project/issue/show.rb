@@ -80,6 +80,10 @@ module QA
             select_filter_with_text('Show history only')
           end
 
+          def has_metrics_unfurled?
+            has_element?(:prometheus_graph_widgets, wait: 30)
+          end
+
           private
 
           def select_filter_with_text(text)

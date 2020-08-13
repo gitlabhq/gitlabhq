@@ -354,6 +354,10 @@ module QA
         module Metrics
           autoload :Show, 'qa/page/project/operations/metrics/show'
         end
+
+        module Incidents
+          autoload :Index, 'qa/page/project/operations/incidents/index'
+        end
       end
 
       module Wiki
