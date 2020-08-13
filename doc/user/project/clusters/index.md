@@ -74,10 +74,10 @@ project. That way you can have different clusters for different environments,
 like dev, staging, production, and so on.
 
 Simply add another cluster, like you did the first time, and make sure to
-[set an environment scope](#setting-the-environment-scope-premium) that will
+[set an environment scope](#setting-the-environment-scope) that will
 differentiate the new cluster with the rest.
 
-#### Setting the environment scope **(PREMIUM)**
+#### Setting the environment scope
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the

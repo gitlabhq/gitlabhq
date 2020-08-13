@@ -27,4 +27,9 @@ module ProtectedBranchHelpers
     set_allowed_to('merge')
     set_allowed_to('push')
   end
+
+  def click_on_protect
+    click_on "Protect"
+    wait_for_requests
+  end
 end

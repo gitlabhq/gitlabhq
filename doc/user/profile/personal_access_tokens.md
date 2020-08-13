@@ -9,6 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3749) in GitLab 8.8.
 > - [Notifications about expiring tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) added in GitLab 12.6.
+> - [Notifications about expired tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/214721) added in GitLab 13.3.
 > - [Token lifetime limits](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) added in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
 
 If you're unable to use [OAuth2](../../api/oauth2.md), you can use a personal access token to authenticate with the [GitLab API](../../api/README.md#personalproject-access-tokens).
@@ -18,12 +19,31 @@ You can also use personal access tokens with Git to authenticate over HTTP or SS
 Personal access tokens expire on the date you define, at midnight UTC.
 
 - GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that expire in under seven days. The owners of these tokens are notified by email.
+- GitLab runs a check at 02:00 AM UTC every day to identify personal access tokens that expired on the current date. The owners of these tokens are notified by email.
+To turn on the notification for expired personal access tokens in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-notification-for-expired-personal-access-token-core-only). **(CORE ONLY)**
 - In GitLab Ultimate, administrators may [limit the lifetime of personal access tokens](../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens-ultimate-only).
 - In GitLab Ultimate, administrators may [toggle enforcement of personal access token expiry](../admin_area/settings/account_and_limit_settings.md#optional-enforcement-of-personal-access-token-expiry-ultimate-only).
 
 For examples of how you can use a personal access token to authenticate with the API, see the following section from our [API Docs](../../api/README.md#personalproject-access-tokens).
 
 GitLab also offers [impersonation tokens](../../api/README.md#impersonation-tokens) which are created by administrators via the API. They're a great fit for automated authentication as a specific user.
+
+## Enable or disable notification for Expired personal access token **(CORE ONLY)**
+
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:expired_pat_email_notification)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:expired_pat_email_notification)
+```
 
 ## Creating a personal access token
 

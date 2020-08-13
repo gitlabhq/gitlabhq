@@ -4,6 +4,8 @@ module API
   module Helpers
     module Packages
       module BasicAuthHelpers
+        extend ::Gitlab::Utils::Override
+
         module Constants
           AUTHENTICATE_REALM_HEADER = 'Www-Authenticate: Basic realm'
           AUTHENTICATE_REALM_NAME = 'GitLab Packages Registry'
@@ -44,12 +46,13 @@ module API
         end
 
         def unauthorized_or!
-          current_user ? yield : unauthorized_with_header!
+          current_user ? yield : unauthorized!
         end
 
-        def unauthorized_with_header!
+        override :unauthorized!
+        def unauthorized!
           header(AUTHENTICATE_REALM_HEADER, AUTHENTICATE_REALM_NAME)
-          unauthorized!
+          super
         end
       end
     end

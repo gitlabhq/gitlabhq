@@ -76,7 +76,7 @@ Every occupied seat, whether by person, job, or bot is counted in the subscripti
 renewal of a subscription won't be counted as active users for the renewal subscription. They may
 count as active users in the subscription period in which they were originally added.
 - Members with Guest permissions on an Ultimate subscription.
-- GitLab-created service accounts: `Ghost User` and `Support Bot`.
+- GitLab-created service accounts: `Ghost User`, `Support Bot` and [`Project bot users`](../user/project/settings/project_access_tokens.md#project-bot-users).
 
 ##### Users statistics
 

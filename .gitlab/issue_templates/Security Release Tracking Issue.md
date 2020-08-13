@@ -22,6 +22,13 @@ in the "Linked issues" section below this issue description.
 tracking issue, their merge requests will not be included in the security
 release.
 
+### Branches to target in GitLab Security
+
+Your Security Implementation Issue should have `4` merge requests associated:
+
+- [master and 3 backports](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/developer.md#backports)
+- Backports should target the stable branches for the versions mentioned included in this Security Release
+
 ## Blog post
 
 Dev: {https://dev.gitlab.org/gitlab/www-gitlab-com/merge_requests/ link}<br/>

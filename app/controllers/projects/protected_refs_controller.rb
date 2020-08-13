@@ -62,7 +62,7 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
   end
 
   def access_level_attributes
-    %i[access_level id]
+    %i[access_level id _destroy]
   end
 end
 

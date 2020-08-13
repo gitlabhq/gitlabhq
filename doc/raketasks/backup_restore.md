@@ -295,6 +295,30 @@ For installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=production
 ```
 
+#### Back up Git repositories concurrently
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37158) in GitLab 13.3.
+
+Repositories can be backed up concurrently to help fully utilise CPU time. The following variables
+are available to modify the default behavior of the Rake task:
+
+- `GITLAB_BACKUP_MAX_CONCURRENCY` sets the maximum number of projects to backup at the same time.
+  Defaults to 1.
+- `GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY` sets the maximum number of projects to backup at the same time on each storage. This allows the repository backups to be spread across storages.
+  Defaults to 1.
+
+For example, for Omnibus GitLab installations:
+
+```shell
+sudo gitlab-backup create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY=1
+```
+
+For example, for installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY=1
+```
+
 #### Uploading backups to a remote (cloud) storage
 
 Starting with GitLab 7.4 you can let the backup script upload the `.tar` file it creates.

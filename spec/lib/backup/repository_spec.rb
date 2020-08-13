@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Backup::Repository do
+  let_it_be(:project) { create(:project, :wiki_repo) }
+
   let(:progress) { StringIO.new }
-  let!(:project) { create(:project, :wiki_repo) }
 
   subject { described_class.new(progress) }
 
@@ -19,13 +20,88 @@ RSpec.describe Backup::Repository do
   end
 
   describe '#dump' do
-    describe 'repo failure' do
-      before do
-        allow(Gitlab::Popen).to receive(:popen).and_return(['normal output', 0])
+    before do
+      allow(Gitlab.config.repositories.storages).to receive(:keys).and_return(storage_keys)
+    end
+
+    let_it_be(:projects) { create_list(:project, 5, :wiki_repo) + [project] }
+
+    let(:storage_keys) { %w[default test_second_storage] }
+
+    context 'no concurrency' do
+      it 'creates the expected number of threads' do
+        expect(Thread).not_to receive(:new)
+
+        projects.each do |project|
+          expect(subject).to receive(:dump_project).with(project).and_call_original
+        end
+
+        subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
       end
 
-      it 'does not raise error' do
-        expect { subject.dump }.not_to raise_error
+      describe 'command failure' do
+        it 'dump_project raises an error' do
+          allow(subject).to receive(:dump_project).and_raise(IOError)
+
+          expect { subject.dump(max_concurrency: 1, max_storage_concurrency: 1) }.to raise_error(IOError)
+        end
+
+        it 'project query raises an error' do
+          allow(Project).to receive(:find_each).and_raise(ActiveRecord::StatementTimeout)
+
+          expect { subject.dump(max_concurrency: 1, max_storage_concurrency: 1) }.to raise_error(ActiveRecord::StatementTimeout)
+        end
+      end
+    end
+
+    [4, 10].each do |max_storage_concurrency|
+      context "max_storage_concurrency #{max_storage_concurrency}" do
+        it 'creates the expected number of threads' do
+          expect(Thread).to receive(:new)
+            .exactly(storage_keys.length * (max_storage_concurrency + 1)).times
+            .and_call_original
+
+          projects.each do |project|
+            expect(subject).to receive(:dump_project).with(project).and_call_original
+          end
+
+          subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency)
+        end
+
+        it 'creates the expected number of threads with extra max concurrency' do
+          expect(Thread).to receive(:new)
+            .exactly(storage_keys.length * (max_storage_concurrency + 1)).times
+            .and_call_original
+
+          projects.each do |project|
+            expect(subject).to receive(:dump_project).with(project).and_call_original
+          end
+
+          subject.dump(max_concurrency: 3, max_storage_concurrency: max_storage_concurrency)
+        end
+
+        describe 'command failure' do
+          it 'dump_project raises an error' do
+            allow(subject).to receive(:dump_project)
+              .and_raise(IOError)
+
+            expect { subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency) }.to raise_error(IOError)
+          end
+
+          it 'project query raises an error' do
+            allow(Project).to receive_message_chain('for_repository_storage.find_each').and_raise(ActiveRecord::StatementTimeout)
+
+            expect { subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency) }.to raise_error(ActiveRecord::StatementTimeout)
+          end
+
+          context 'misconfigured storages' do
+            let(:storage_keys) { %w[test_second_storage] }
+
+            it 'raises an error' do
+              expect { subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency) }.to raise_error(Backup::Error, 'repositories.storages in gitlab.yml is misconfigured')
+            end
+          end
+        end
       end
     end
   end

@@ -38,8 +38,14 @@ For examples of how you can use a project access token to authenticate with the 
 ## Project bot users
 
 For each project access token created, a bot user will also be created and added to the project with
-["Maintainer" level permissions](../../permissions.md#project-members-permissions). API calls made with a
-project access token will be associated to the corresponding bot user.
+["Maintainer" level permissions](../../permissions.md#project-members-permissions).
+
+For the bot:
+
+- The name is set to the name of the token.
+- The username is set to `project_{project_id}_bot`, such as `project_123_bot`.
+
+API calls made with a project access token are associated with the corresponding bot user.
 
 These users will appear in **Members** but can not be modified.
 Furthermore, the bot user can not be added to any other project.
@@ -47,6 +53,8 @@ Furthermore, the bot user can not be added to any other project.
 When the project access token is [revoked](#revoking-a-project-access-token) the bot user will be deleted and all
 records will be moved to a system-wide user with the username "Ghost User". For more information,
 see [Associated Records](../../profile/account/delete_account.md#associated-records).
+
+Project bot users are a [GitLab-created service account](../../../subscriptions/index.md#self-managed) and do not count as a licensed seat.
 
 ## Revoking a project access token
 

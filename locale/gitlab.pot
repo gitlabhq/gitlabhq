@@ -14858,6 +14858,12 @@ msgstr ""
 msgid "Members invited to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
+msgid "Members of %{group} can also merge into this branch: %{branch}"
+msgstr ""
+
+msgid "Members of %{group} can also push to this branch: %{branch}"
+msgstr ""
+
 msgid "Members of %{strong_open}%{project_name}%{strong_close}"
 msgstr ""
 
@@ -24112,6 +24118,12 @@ msgid "The file has been successfully deleted."
 msgstr ""
 
 msgid "The file name should have a .yml extension"
+msgstr ""
+
+msgid "The following %{user} can also merge into this branch: %{branch}"
+msgstr ""
+
+msgid "The following %{user} can also push to this branch: %{branch}"
 msgstr ""
 
 msgid "The following items will NOT be exported:"

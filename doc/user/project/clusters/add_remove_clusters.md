@@ -169,7 +169,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 1. Click the **Add existing cluster** tab and fill in the details:
    1. **Kubernetes cluster name** (required) - The name you wish to give the cluster.
    1. **Environment scope** (required) - The
-      [associated environment](index.md#setting-the-environment-scope-premium) to this cluster.
+      [associated environment](index.md#setting-the-environment-scope) to this cluster.
    1. **API URL** (required) -
       It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
       exposes several APIs, we want the "base" URL that is common to all of them.

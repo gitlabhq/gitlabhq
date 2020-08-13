@@ -37,7 +37,7 @@ class MigrateLicenseManagementArtifactsToLicenseScanning < ActiveRecord::Migrati
       SQL
     end
 
-    JobArtifact.where(file_type: LICENSE_MANAGEMENT_FILE_TYPE).each_batch(of: 1000) do |relation|
+    JobArtifact.where(file_type: LICENSE_MANAGEMENT_FILE_TYPE).each_batch(column: :job_id, of: 1000) do |relation|
       relation.update_all(file_type: LICENSE_SCANNING_FILE_TYPE)
     end
   end
