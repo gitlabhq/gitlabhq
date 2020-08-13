@@ -36,7 +36,7 @@ describe('AlertWidgetForm', () => {
     configuredAlert: metricId,
   };
 
-  function createComponent(props = {}, featureFlags = {}) {
+  function createComponent(props = {}) {
     const propsData = {
       ...defaultProps,
       ...props,
@@ -44,9 +44,6 @@ describe('AlertWidgetForm', () => {
 
     wrapper = shallowMount(AlertWidgetForm, {
       propsData,
-      provide: {
-        glFeatures: featureFlags,
-      },
       stubs: {
         GlModal: ModalStub,
       },
@@ -88,7 +85,7 @@ describe('AlertWidgetForm', () => {
   });
 
   it('emits a "create" event when form submitted without existing alert', async () => {
-    createComponent(defaultProps, { alertRunbooks: true });
+    createComponent(defaultProps);
 
     modal().vm.$emit('shown');
 
@@ -109,7 +106,7 @@ describe('AlertWidgetForm', () => {
   });
 
   it('resets form when modal is dismissed (hidden)', () => {
-    createComponent(defaultProps, { alertRunbooks: true });
+    createComponent(defaultProps);
 
     modal().vm.$emit('shown');
 
@@ -199,7 +196,7 @@ describe('AlertWidgetForm', () => {
   it('emits "update" event when form changed', () => {
     const updatedRunbookUrl = `${INVALID_URL}/test`;
 
-    createComponent(propsWithAlertData, { alertRunbooks: true });
+    createComponent(propsWithAlertData);
 
     modal().vm.$emit('shown');
 
@@ -231,15 +228,9 @@ describe('AlertWidgetForm', () => {
     expect(submitButtonTrackingOpts()).toEqual(dataTrackingOptions.update);
   });
 
-  describe('alert runbooks feature flag', () => {
-    it('hides the runbook field when the flag is disabled', () => {
-      createComponent(undefined, { alertRunbooks: false });
-
-      expect(findRunbookField().exists()).toBe(false);
-    });
-
-    it('shows the runbook field when the flag is enabled', () => {
-      createComponent(undefined, { alertRunbooks: true });
+  describe('alert runbooks', () => {
+    it('shows the runbook field', () => {
+      createComponent();
 
       expect(findRunbookField().exists()).toBe(true);
     });

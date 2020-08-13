@@ -92,6 +92,29 @@ export const mockMilestone = {
   due_date: '2019-12-31',
 };
 
+export const mockIssue = {
+  title: 'Testing',
+  id: 1,
+  iid: 1,
+  confidential: false,
+  labels: [
+    {
+      id: 1,
+      title: 'test',
+      color: 'red',
+      description: 'testing',
+    },
+  ],
+  assignees: [
+    {
+      id: 1,
+      name: 'name',
+      username: 'username',
+      avatar_url: 'http://avatar_url',
+    },
+  ],
+};
+
 export const BoardsMockData = {
   GET: {
     '/test/-/boards/1/lists/300/issues?id=300&page=1': {

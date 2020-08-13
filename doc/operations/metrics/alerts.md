@@ -13,7 +13,8 @@ your team when environment performance falls outside of the boundaries you set.
 
 ## Managed Prometheus instances
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and 11.3 for [library metrics](../../user/project/integrations/prometheus_library/metrics.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and GitLab 11.3 for [library metrics](../../user/project/integrations/prometheus_library/metrics.md).
+> - Runbook URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
 
 For managed Prometheus instances using auto configuration, you can
 [configure alerts for metrics](index.md#adding-custom-metrics) directly in the
@@ -24,6 +25,7 @@ For managed Prometheus instances using auto configuration, you can
    **ellipsis** **{ellipsis_v}** icon in the top right corner of the metric.
 1. Choose **Alerts**.
 1. Set threshold and operator.
+1. (Optional) Add a Runbook URL.
 1. Click **Add** to save and activate the alert.
 
 ![Adding an alert](img/prometheus_alert.png)

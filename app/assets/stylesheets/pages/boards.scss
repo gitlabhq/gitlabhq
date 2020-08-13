@@ -598,17 +598,17 @@
 $epic-icons-spacing: 40px;
 
 .board-epic-lane {
-  max-width: calc(100vw - #{$contextual-sidebar-width} - $epic-icons-spacing);
+  max-width: calc(100vw - #{$contextual-sidebar-width} - #{$epic-icons-spacing});
 
   .page-with-icon-sidebar & {
-    max-width: calc(100vw - #{$contextual-sidebar-collapsed-width} - $epic-icons-spacing);
+    max-width: calc(100vw - #{$contextual-sidebar-collapsed-width} - #{$epic-icons-spacing});
   }
 
   .page-with-icon-sidebar .is-compact & {
-    max-width: calc(100vw - #{$contextual-sidebar-collapsed-width} - #{$gutter-width} - $epic-icons-spacing);
+    max-width: calc(100vw - #{$contextual-sidebar-collapsed-width} - #{$gutter-width} - #{$epic-icons-spacing});
   }
 
   .is-compact & {
-    max-width: calc(100vw - #{$contextual-sidebar-width} - #{$gutter-width} - $epic-icons-spacing);
+    max-width: calc(100vw - #{$contextual-sidebar-width} - #{$gutter-width} - #{$epic-icons-spacing});
   }
 }

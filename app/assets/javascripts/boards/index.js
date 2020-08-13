@@ -117,7 +117,7 @@ export default () => {
         boardId: this.boardId,
         fullPath: $boardApp.dataset.fullPath,
       };
-      this.setEndpoints(endpoints);
+      this.setInitialBoardData({ ...endpoints, boardType: this.parent });
       boardsStore.setEndpoints(endpoints);
       boardsStore.rootPath = this.boardsEndpoint;
 
@@ -189,7 +189,7 @@ export default () => {
       }
     },
     methods: {
-      ...mapActions(['setEndpoints']),
+      ...mapActions(['setInitialBoardData']),
       updateTokens() {
         this.filterManager.updateTokens();
       },

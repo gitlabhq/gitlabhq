@@ -60,7 +60,9 @@ class List {
       this.title = this.milestone.title;
     }
 
-    if (!typeInfo.isBlank && this.id) {
+    // doNotFetchIssues is a temporary workaround until issues are fetched using GraphQL on issue boards
+    // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/229416
+    if (!typeInfo.isBlank && this.id && !obj.doNotFetchIssues) {
       this.getIssues().catch(() => {
         // TODO: handle request error
       });

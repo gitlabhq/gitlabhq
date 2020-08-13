@@ -420,7 +420,7 @@ It's possible to generate diagrams and flowcharts from text in GitLab using
 
 #### Mermaid
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31818) as a [community contribution](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36127) in GitLab 13.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31818) in GitLab 13.3.
 
 Visit the [official page](https://mermaidjs.github.io/) for more details.
 If you're new to using Mermaid or need help identifying issues in your Mermaid code,

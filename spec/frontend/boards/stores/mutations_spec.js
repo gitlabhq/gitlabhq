@@ -1,6 +1,6 @@
 import mutations from '~/boards/stores/mutations';
-import * as types from '~/boards/stores/mutation_types';
 import defaultState from '~/boards/stores/state';
+import { mockIssue } from '../mock_data';
 
 const expectNotImplemented = action => {
   it('is not implemented', () => {
@@ -15,7 +15,7 @@ describe('Board Store Mutations', () => {
     state = defaultState();
   });
 
-  describe('SET_ENDPOINTS', () => {
+  describe('SET_INITIAL_BOARD_DATA', () => {
     it('Should set initial Boards data to state', () => {
       const endpoints = {
         boardsEndpoint: '/boards/',
@@ -25,15 +25,17 @@ describe('Board Store Mutations', () => {
         boardId: 1,
         fullPath: 'gitlab-org',
       };
+      const boardType = 'group';
 
-      mutations[types.SET_ENDPOINTS](state, endpoints);
+      mutations.SET_INITIAL_BOARD_DATA(state, { ...endpoints, boardType });
 
       expect(state.endpoints).toEqual(endpoints);
+      expect(state.boardType).toEqual(boardType);
     });
   });
 
   describe('SET_ACTIVE_ID', () => {
-    it('updates aciveListId to be the value that is passed', () => {
+    it('updates activeListId to be the value that is passed', () => {
       const expectedId = 1;
 
       mutations.SET_ACTIVE_ID(state, expectedId);
@@ -76,6 +78,35 @@ describe('Board Store Mutations', () => {
 
   describe('RECEIVE_REMOVE_LIST_ERROR', () => {
     expectNotImplemented(mutations.RECEIVE_REMOVE_LIST_ERROR);
+  });
+
+  describe('REQUEST_ISSUES_FOR_ALL_LISTS', () => {
+    it('sets isLoadingIssues to true', () => {
+      expect(state.isLoadingIssues).toBe(false);
+
+      mutations.REQUEST_ISSUES_FOR_ALL_LISTS(state);
+
+      expect(state.isLoadingIssues).toBe(true);
+    });
+  });
+
+  describe('RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS', () => {
+    it('sets isLoadingIssues to false and updates issuesByListId object', () => {
+      const listIssues = {
+        '1': [mockIssue],
+      };
+
+      state = {
+        ...state,
+        isLoadingIssues: true,
+        issuesByListId: {},
+      };
+
+      mutations.RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS(state, listIssues);
+
+      expect(state.isLoadingIssues).toBe(false);
+      expect(state.issuesByListId).toEqual(listIssues);
+    });
   });
 
   describe('REQUEST_ADD_ISSUE', () => {

@@ -9,6 +9,7 @@ import AlertWidget from '~/monitoring/components/alert_widget.vue';
 
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import {
+  mockAlert,
   mockLogsHref,
   mockLogsPath,
   mockNamespace,
@@ -55,9 +56,10 @@ describe('Dashboard Panel', () => {
   const findCtxMenu = () => wrapper.find({ ref: 'contextualMenu' });
   const findMenuItems = () => wrapper.findAll(GlDropdownItem);
   const findMenuItemByText = text => findMenuItems().filter(i => i.text() === text);
+  const findAlertsWidget = () => wrapper.find(AlertWidget);
 
-  const createWrapper = (props, options) => {
-    wrapper = shallowMount(DashboardPanel, {
+  const createWrapper = (props, { mountFn = shallowMount, ...options } = {}) => {
+    wrapper = mountFn(DashboardPanel, {
       propsData: {
         graphData,
         settingsPath: dashboardProps.settingsPath,
@@ -77,6 +79,9 @@ describe('Dashboard Panel', () => {
       },
     });
   };
+
+  const setMetricsSavedToDb = val =>
+    monitoringDashboard.getters.metricsSavedToDb.mockReturnValue(val);
 
   beforeEach(() => {
     setTestTimeout(1000);
@@ -601,10 +606,6 @@ describe('Dashboard Panel', () => {
   });
 
   describe('panel alerts', () => {
-    const setMetricsSavedToDb = val =>
-      monitoringDashboard.getters.metricsSavedToDb.mockReturnValue(val);
-    const findAlertsWidget = () => wrapper.find(AlertWidget);
-
     beforeEach(() => {
       mockGetterReturnValue('metricsSavedToDb', []);
 
@@ -728,6 +729,62 @@ describe('Dashboard Panel', () => {
       createWrapperWithLinks();
 
       expect(findManageLinksItem().exists()).toBe(false);
+    });
+  });
+
+  describe('Runbook url', () => {
+    const findRunbookLinks = () => wrapper.findAll('[data-testid="runbookLink"]');
+    const { metricId } = graphData.metrics[0];
+    const { alert_path: alertPath } = mockAlert;
+
+    const mockRunbookAlert = {
+      ...mockAlert,
+      metricId,
+    };
+
+    beforeEach(() => {
+      mockGetterReturnValue('metricsSavedToDb', []);
+    });
+
+    it('does not show a runbook link when alerts are not present', () => {
+      createWrapper();
+
+      expect(findRunbookLinks().length).toBe(0);
+    });
+
+    describe('when alerts are present', () => {
+      beforeEach(() => {
+        setMetricsSavedToDb([metricId]);
+
+        createWrapper({
+          alertsEndpoint: '/endpoint',
+          prometheusAlertsAvailable: true,
+        });
+      });
+
+      it('does not show a runbook link when a runbook is not set', async () => {
+        findAlertsWidget().vm.$emit('setAlerts', alertPath, {
+          ...mockRunbookAlert,
+          runbookUrl: '',
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(findRunbookLinks().length).toBe(0);
+      });
+
+      it('shows a runbook link when a runbook is set', async () => {
+        findAlertsWidget().vm.$emit('setAlerts', alertPath, mockRunbookAlert);
+
+        await wrapper.vm.$nextTick();
+
+        expect(findRunbookLinks().length).toBe(1);
+        expect(
+          findRunbookLinks()
+            .at(0)
+            .attributes('href'),
+        ).toBe(invalidUrl);
+      });
     });
   });
 });

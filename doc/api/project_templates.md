@@ -14,8 +14,7 @@ This API is a project-specific version of these endpoints:
 - [GitLab CI/CD Configuration templates](templates/gitlab_ci_ymls.md)
 - [Open source license templates](templates/licenses.md)
 - [Issue and merge request templates](../user/project/description_templates.md)
-  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37890) in GitLab 13.3 as a
-  community contribution)
+  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37890) in GitLab 13.3)
 
 It deprecates these endpoints, which will be removed for API version 5.
 

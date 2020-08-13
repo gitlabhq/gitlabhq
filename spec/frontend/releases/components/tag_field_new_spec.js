@@ -55,7 +55,7 @@ describe('releases/components/tag_field_new', () => {
 
   describe('"Tag name" field', () => {
     describe('rendering and behavior', () => {
-      beforeEach(createComponent);
+      beforeEach(() => createComponent());
 
       it('renders a label', () => {
         expect(findTagNameFormGroup().attributes().label).toBe('Tag name');
@@ -124,7 +124,7 @@ describe('releases/components/tag_field_new', () => {
   });
 
   describe('"Create from" field', () => {
-    beforeEach(createComponent);
+    beforeEach(() => createComponent());
 
     it('renders a label', () => {
       expect(findCreateFromFormGroup().attributes().label).toBe('Create from');

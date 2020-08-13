@@ -631,6 +631,35 @@ or `gitlab-ctl promote-to-primary-node`, either:
   bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
   fixed.
 
+If the above does not work, another possible reason is that you have paused replication
+from the original primary node before attempting to promote this node.
+
+To double check this, you can do the following:
+
+- Get the current secondary node's ID using:
+
+  ```shell
+  sudo gitlab-rails runner 'puts GeoNode.current_node.id'
+  ```
+
+- Double check that the node is active through the database by running the following
+  on the secondary node, replacing `ID_FROM_ABOVE`:
+
+  ```shell
+  sudo gitlab-rails dbconsole
+
+  SELECT enabled FROM geo_nodes WHERE id = ID_FROM_ABOVE;
+  ```
+
+- If the above returned `f` it means that the replication was paused.
+  You can re-enable it through an `UPDATE` statement in the database:
+
+  ```shell
+  sudo gitlab-rails dbconsole
+
+  UPDATE geo_nodes SET enabled = 't' WHERE id = ID_FROM_ABOVE;
+  ```
+
 ### Message: ``NoMethodError: undefined method `secondary?' for nil:NilClass``
 
 When [promoting a **secondary** node](../disaster_recovery/index.md#step-3-promoting-a-secondary-node),

@@ -1,3 +1,4 @@
+import invalidUrl from '~/lib/utils/invalid_url';
 // This import path needs to be relative for now because this mock data is used in
 // Karma specs too, where the helpers/test_constants alias can not be resolved
 import { TEST_HOST } from '../helpers/test_constants';
@@ -629,4 +630,15 @@ export const dashboardActionsMenuProps = {
   customMetricsPath: 'https://path/to/customMetrics',
   validateQueryPath: 'https://path/to/validateQuery',
   isOotbDashboard: true,
+};
+
+export const mockAlert = {
+  alert_path: 'alert_path',
+  id: 8,
+  metricId: 'mock_metric_id',
+  operator: '>',
+  query: 'testQuery',
+  runbookUrl: invalidUrl,
+  threshold: 5,
+  title: 'alert title',
 };

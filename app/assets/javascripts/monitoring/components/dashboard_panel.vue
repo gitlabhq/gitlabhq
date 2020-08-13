@@ -1,18 +1,20 @@
 <script>
 import { mapState } from 'vuex';
-import { pickBy } from 'lodash';
+import { mapValues, pickBy } from 'lodash';
 import invalidUrl from '~/lib/utils/invalid_url';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import {
   GlResizeObserverDirective,
   GlIcon,
+  GlLink,
   GlLoadingIcon,
   GlNewDropdown as GlDropdown,
   GlNewDropdownItem as GlDropdownItem,
   GlNewDropdownDivider as GlDropdownDivider,
   GlModal,
   GlModalDirective,
+  GlSprintf,
   GlTooltip,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -44,12 +46,14 @@ export default {
     MonitorEmptyChart,
     AlertWidget,
     GlIcon,
+    GlLink,
     GlLoadingIcon,
     GlTooltip,
     GlDropdown,
     GlDropdownItem,
     GlDropdownDivider,
     GlModal,
+    GlSprintf,
   },
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
@@ -341,6 +345,19 @@ export default {
         this.$refs.copyChartLink.$el.firstChild.click();
       }
     },
+    getAlertRunbooks(queries) {
+      const hasRunbook = alert => Boolean(alert.runbookUrl);
+      const graphAlertsWithRunbooks = pickBy(this.getGraphAlerts(queries), hasRunbook);
+      const alertToRunbookTransform = alert => {
+        const alertQuery = queries.find(query => query.metricId === alert.metricId);
+        return {
+          key: alert.metricId,
+          href: alert.runbookUrl,
+          label: alertQuery.label,
+        };
+      };
+      return mapValues(graphAlertsWithRunbooks, alertToRunbookTransform);
+    },
   },
   panelTypes,
 };
@@ -435,6 +452,25 @@ export default {
               data-qa-selector="alert_widget_menu_item"
             >
               {{ __('Alerts') }}
+            </gl-dropdown-item>
+            <gl-dropdown-item
+              v-for="runbook in getAlertRunbooks(graphData.metrics)"
+              :key="runbook.key"
+              :href="safeUrl(runbook.href)"
+              data-testid="runbookLink"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
+                <span>
+                  <gl-sprintf :message="s__('Metrics|View runbook - %{label}')">
+                    <template #label>
+                      {{ runbook.label }}
+                    </template>
+                  </gl-sprintf>
+                </span>
+                <gl-icon name="external-link" />
+              </span>
             </gl-dropdown-item>
 
             <template v-if="graphData.links && graphData.links.length">
