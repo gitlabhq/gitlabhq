@@ -42,9 +42,6 @@ describe('Actions menu', () => {
   const createShallowWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(ActionsMenu, {
       propsData: { ...dashboardActionsMenuProps, ...props },
-      provide: {
-        glFeatures: { metricsDashboardNewPanelPage: true },
-      },
       store,
       ...options,
     });

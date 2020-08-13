@@ -1,5 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { GlIcon } from '@gitlab/ui';
 import Select2Select from '~/vue_shared/components/select2_select.vue';
 import { __ } from '~/locale';
 import eventHub from '../event_hub';
@@ -11,6 +12,7 @@ export default {
   components: {
     Select2Select,
     ImportStatus,
+    GlIcon,
   },
   props: {
     repo: {
@@ -84,6 +86,7 @@ export default {
         class="js-provider-link"
       >
         {{ repo.fullName }}
+        <gl-icon v-if="repo.providerLink" name="external-link" />
       </a>
     </td>
     <td class="d-flex flex-wrap flex-lg-nowrap">

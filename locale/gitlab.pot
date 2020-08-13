@@ -29333,6 +29333,12 @@ msgstr ""
 msgid "mrWidget|There are merge conflicts"
 msgstr ""
 
+msgid "mrWidget|This action will add the merge request to the merge train when pipeline %{pipelineLink} succeeds."
+msgstr ""
+
+msgid "mrWidget|This action will start a merge train when pipeline %{pipelineLink} succeeds."
+msgstr ""
+
 msgid "mrWidget|This feature merges changes from the target branch to the source branch. You cannot use this feature since the source branch is protected."
 msgstr ""
 
@@ -29340,12 +29346,6 @@ msgid "mrWidget|This merge request failed to be merged automatically"
 msgstr ""
 
 msgid "mrWidget|This merge request is in the process of being merged"
-msgstr ""
-
-msgid "mrWidget|This merge request will be added to the merge train when pipeline %{linkStart}#%{pipelineId}%{linkEnd} succeeds."
-msgstr ""
-
-msgid "mrWidget|This merge request will start a merge train when pipeline %{linkStart}#%{pipelineId}%{linkEnd} succeeds."
 msgstr ""
 
 msgid "mrWidget|This project is archived, write access has been disabled"

@@ -4,7 +4,6 @@ module Projects
   module Metrics
     module Dashboards
       class BuilderController < Projects::ApplicationController
-        before_action :ensure_feature_flags
         before_action :authorize_metrics_dashboard!
 
         def panel_preview
@@ -20,10 +19,6 @@ module Projects
         end
 
         private
-
-        def ensure_feature_flags
-          render_404 unless Feature.enabled?(:metrics_dashboard_new_panel_page, project)
-        end
 
         def rendered_panel
           @panel_preview ||= ::Metrics::Dashboard::PanelPreviewService.new(project, panel_yaml, environment).execute

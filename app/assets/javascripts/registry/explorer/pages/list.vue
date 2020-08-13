@@ -130,7 +130,7 @@ export default {
 </script>
 
 <template>
-  <div class="w-100 slide-enter-from-element">
+  <div>
     <gl-alert
       v-if="showDeleteAlert"
       :variant="deleteAlertType"

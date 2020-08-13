@@ -15,12 +15,15 @@ module HttpBasicAuthHelpers
     basic_auth_header(client.uid, client.secret)
   end
 
+  def build_auth_headers(value)
+    { 'HTTP_AUTHORIZATION' => value }
+  end
+
+  def build_token_auth_header(token)
+    build_auth_headers("Bearer #{token}")
+  end
+
   def basic_auth_header(username, password)
-    {
-      'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials(
-        username,
-        password
-      )
-    }
+    build_auth_headers(ActionController::HttpAuthentication::Basic.encode_credentials(username, password))
   end
 end

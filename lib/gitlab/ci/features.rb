@@ -77,7 +77,7 @@ module Gitlab
       end
 
       def self.lint_creates_pipeline_with_dry_run?(project)
-        ::Feature.enabled?(:ci_lint_creates_pipeline_with_dry_run, project)
+        ::Feature.enabled?(:ci_lint_creates_pipeline_with_dry_run, project, default_enabled: true)
       end
 
       def self.reset_ci_minutes_for_all_namespaces?

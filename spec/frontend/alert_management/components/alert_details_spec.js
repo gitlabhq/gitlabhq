@@ -20,6 +20,7 @@ describe('AlertDetails', () => {
   const projectPath = 'root/alerts';
   const projectIssuesPath = 'root/alerts/-/issues';
   const projectId = '1';
+  const $router = { replace: jest.fn() };
 
   const findDetailsTable = () => wrapper.find(GlTable);
 
@@ -44,6 +45,8 @@ describe('AlertDetails', () => {
             sidebarStatus: {},
           },
         },
+        $router,
+        $route: { params: {} },
       },
       stubs,
     });
@@ -81,11 +84,11 @@ describe('AlertDetails', () => {
       });
 
       it('renders a tab with overview information', () => {
-        expect(wrapper.find('[data-testid="overviewTab"]').exists()).toBe(true);
+        expect(wrapper.find('[data-testid="overview"]').exists()).toBe(true);
       });
 
       it('renders a tab with full alert information', () => {
-        expect(wrapper.find('[data-testid="fullDetailsTab"]').exists()).toBe(true);
+        expect(wrapper.find('[data-testid="fullDetails"]').exists()).toBe(true);
       });
 
       it('renders severity', () => {
@@ -191,7 +194,7 @@ describe('AlertDetails', () => {
         mountComponent({ data: { alert: mockAlert } });
       });
       it('should display a table of raw alert details data', () => {
-        wrapper.find('[data-testid="fullDetailsTab"]').trigger('click');
+        wrapper.find('[data-testid="fullDetails"]').trigger('click');
         expect(findDetailsTable().exists()).toBe(true);
       });
     });
@@ -250,6 +253,22 @@ describe('AlertDetails', () => {
             });
           },
         );
+      });
+    });
+
+    describe('tab navigation', () => {
+      beforeEach(() => {
+        mountComponent({ data: { alert: mockAlert } });
+      });
+
+      it.each`
+        index | tabId
+        ${0}  | ${'overview'}
+        ${1}  | ${'fullDetails'}
+        ${2}  | ${'metrics'}
+      `('will navigate to the correct tab via $tabId', ({ index, tabId }) => {
+        wrapper.setData({ currentTabIndex: index });
+        expect($router.replace).toHaveBeenCalledWith({ name: 'tab', params: { tabId } });
       });
     });
   });

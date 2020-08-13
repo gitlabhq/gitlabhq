@@ -35,13 +35,24 @@ export default {
     errorMsg: s__(
       'AlertManagement|There was an error displaying the alert. Please refresh the page to try again.',
     ),
-    fullAlertDetailsTitle: s__('AlertManagement|Alert details'),
-    overviewTitle: s__('AlertManagement|Overview'),
-    metricsTitle: s__('AlertManagement|Metrics'),
     reportedAt: s__('AlertManagement|Reported %{when}'),
     reportedAtWithTool: s__('AlertManagement|Reported %{when} by %{tool}'),
   },
   severityLabels: ALERTS_SEVERITY_LABELS,
+  tabsConfig: [
+    {
+      id: 'overview',
+      title: s__('AlertManagement|Overview'),
+    },
+    {
+      id: 'fullDetails',
+      title: s__('AlertManagement|Alert details'),
+    },
+    {
+      id: 'metrics',
+      title: s__('AlertManagement|Metrics'),
+    },
+  ],
   components: {
     GlBadge,
     GlAlert,
@@ -118,6 +129,18 @@ export default {
     },
     showErrorMsg() {
       return this.errored && !this.isErrorDismissed;
+    },
+    activeTab() {
+      return this.$route.params.tabId || this.$options.tabsConfig[0].id;
+    },
+    currentTabIndex: {
+      get() {
+        return this.$options.tabsConfig.findIndex(tab => tab.id === this.activeTab);
+      },
+      set(tabIdx) {
+        const tabId = this.$options.tabsConfig[tabIdx].id;
+        this.$router.replace({ name: 'tab', params: { tabId } });
+      },
     },
   },
   mounted() {
@@ -257,8 +280,8 @@ export default {
       >
         <h2 data-testid="title">{{ alert.title }}</h2>
       </div>
-      <gl-tabs v-if="alert" data-testid="alertDetailsTabs">
-        <gl-tab data-testid="overviewTab" :title="$options.i18n.overviewTitle">
+      <gl-tabs v-if="alert" v-model="currentTabIndex" data-testid="alertDetailsTabs">
+        <gl-tab :data-testid="$options.tabsConfig[0].id" :title="$options.tabsConfig[0].title">
           <div v-if="alert.severity" class="gl-mt-3 gl-mb-5 gl-display-flex">
             <div class="gl-font-weight-bold gl-w-13 gl-text-right gl-pr-3">
               {{ s__('AlertManagement|Severity') }}:
@@ -309,7 +332,7 @@ export default {
             </div>
           </template>
         </gl-tab>
-        <gl-tab data-testid="fullDetailsTab" :title="$options.i18n.fullAlertDetailsTitle">
+        <gl-tab :data-testid="$options.tabsConfig[1].id" :title="$options.tabsConfig[1].title">
           <gl-table
             class="alert-management-details-table"
             :items="[{ key: 'Value', ...alert }]"
@@ -325,7 +348,7 @@ export default {
             </template>
           </gl-table>
         </gl-tab>
-        <gl-tab data-testId="metricsTab" :title="$options.i18n.metricsTitle">
+        <gl-tab :data-testid="$options.tabsConfig[2].id" :title="$options.tabsConfig[2].title">
           <alert-metrics :dashboard-url="alert.metricsDashboardUrl" />
         </gl-tab>
       </gl-tabs>

@@ -1,18 +1,6 @@
 # frozen_string_literal: true
 
 module PackagesManagerApiSpecHelpers
-  def build_auth_headers(value)
-    { 'HTTP_AUTHORIZATION' => value }
-  end
-
-  def build_basic_auth_header(username, password)
-    build_auth_headers(ActionController::HttpAuthentication::Basic.encode_credentials(username, password))
-  end
-
-  def build_token_auth_header(token)
-    build_auth_headers("Bearer #{token}")
-  end
-
   def build_jwt(personal_access_token, secret: jwt_secret, user_id: nil)
     JSONWebToken::HMACToken.new(secret).tap do |jwt|
       jwt['access_token'] = personal_access_token.id

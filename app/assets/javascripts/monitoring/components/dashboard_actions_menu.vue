@@ -11,7 +11,6 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { PANEL_NEW_PAGE } from '../router/constants';
 import DuplicateDashboardModal from './duplicate_dashboard_modal.vue';
 import CreateDashboardModal from './create_dashboard_modal.vue';
@@ -38,7 +37,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     TrackEvent: TrackEventDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     addingMetricsAvailable: {
       type: Boolean,
@@ -86,7 +84,6 @@ export default {
     },
     isMenuItemShown() {
       return {
-        addPanel: this.glFeatures.metricsDashboardNewPanelPage,
         duplicateDashboard: this.isOutOfTheBoxDashboard,
       };
     },
@@ -192,31 +189,29 @@ export default {
       </gl-modal>
     </template>
 
-    <template v-if="isMenuItemShown.addPanel">
-      <gl-new-dropdown-item
-        v-if="isMenuItemEnabled.addPanel"
-        data-testid="add-panel-item-enabled"
-        :to="newPanelPageLocation"
-      >
-        {{ $options.i18n.addPanel }}
-      </gl-new-dropdown-item>
+    <gl-new-dropdown-item
+      v-if="isMenuItemEnabled.addPanel"
+      data-testid="add-panel-item-enabled"
+      :to="newPanelPageLocation"
+    >
+      {{ $options.i18n.addPanel }}
+    </gl-new-dropdown-item>
 
-      <!--
-        wrapper for tooltip as button can be `disabled`
-        https://bootstrap-vue.org/docs/components/tooltip#disabled-elements
-        -->
-      <div v-else v-gl-tooltip :title="$options.i18n.addPanelInfo">
-        <gl-new-dropdown-item
-          :alt="$options.i18n.addPanelInfo"
-          :to="newPanelPageLocation"
-          data-testid="add-panel-item-disabled"
-          disabled
-          class="gl-cursor-not-allowed"
-        >
-          <span class="gl-text-gray-400">{{ $options.i18n.addPanel }}</span>
-        </gl-new-dropdown-item>
-      </div>
-    </template>
+    <!--
+      wrapper for tooltip as button can be `disabled`
+      https://bootstrap-vue.org/docs/components/tooltip#disabled-elements
+    -->
+    <div v-else v-gl-tooltip :title="$options.i18n.addPanelInfo">
+      <gl-new-dropdown-item
+        :alt="$options.i18n.addPanelInfo"
+        :to="newPanelPageLocation"
+        data-testid="add-panel-item-disabled"
+        disabled
+        class="gl-cursor-not-allowed"
+      >
+        <span class="gl-text-gray-400">{{ $options.i18n.addPanel }}</span>
+      </gl-new-dropdown-item>
+    </div>
 
     <gl-new-dropdown-item
       v-if="isMenuItemEnabled.editDashboard"
@@ -230,7 +225,7 @@ export default {
     <!--
       wrapper for tooltip as button can be `disabled`
       https://bootstrap-vue.org/docs/components/tooltip#disabled-elements
-      -->
+    -->
     <div v-else v-gl-tooltip :title="$options.i18n.editDashboardInfo">
       <gl-new-dropdown-item
         :alt="$options.i18n.editDashboardInfo"

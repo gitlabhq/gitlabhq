@@ -1,9 +1,10 @@
 <script>
-import { GlBadge } from '@gitlab/ui';
+import { GlIcon, GlBadge } from '@gitlab/ui';
 
 export default {
   components: {
     GlBadge,
+    GlIcon,
   },
   props: {
     repo: {
@@ -19,6 +20,7 @@ export default {
     <td>
       <a :href="repo.providerLink" rel="noreferrer noopener" target="_blank">
         {{ repo.fullName }}
+        <gl-icon v-if="repo.providerLink" name="external-link" />
       </a>
     </td>
     <td></td>

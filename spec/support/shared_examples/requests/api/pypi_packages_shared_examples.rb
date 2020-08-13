@@ -159,7 +159,7 @@ RSpec.shared_examples 'rejects PyPI access with unknown project id' do
     end
 
     context 'as authenticated user' do
-      subject { get api(url), headers: build_basic_auth_header(user.username, personal_access_token.token) }
+      subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
 
       it_behaves_like 'process PyPi api request', :anonymous, :not_found
     end

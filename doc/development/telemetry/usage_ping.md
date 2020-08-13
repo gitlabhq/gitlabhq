@@ -379,6 +379,10 @@ Ensure you comply with the [Changelog entries guide](../changelog.md).
 
 On GitLab.com, we have DangerBot setup to monitor Telemetry related files and DangerBot will recommend a Telemetry review. Mention `@gitlab-org/growth/telemetry/engineers` in your MR for a review.
 
+### 9. Verify your metric
+
+On GitLab.com, the Product Analytics team regularly monitors Usage Ping. They may alert you that your metrics need further optimization to run quicker and with greater success. You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "Saas" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
+
 ### Optional: Test Prometheus based Usage Ping
 
 If the data submitted includes metrics [queried from Prometheus](#prometheus-queries) that you would like to inspect and verify,

@@ -49,10 +49,6 @@ RSpec.describe 'Projects::Metrics::Dashboards::BuilderController' do
 
   describe 'POST /:namespace/:project/-/metrics/dashboards/builder' do
     context 'as anonymous user' do
-      before do
-        stub_feature_flags(metrics_dashboard_new_panel_page: true)
-      end
-
       it 'redirects user to sign in page' do
         send_request
 
@@ -62,7 +58,6 @@ RSpec.describe 'Projects::Metrics::Dashboards::BuilderController' do
 
     context 'as user with guest access' do
       before do
-        stub_feature_flags(metrics_dashboard_new_panel_page: true)
         project.add_guest(user)
         login_as(user)
       end
@@ -80,48 +75,30 @@ RSpec.describe 'Projects::Metrics::Dashboards::BuilderController' do
         login_as(user)
       end
 
-      context 'metrics_dashboard_new_panel_page is enabled' do
-        before do
-          stub_feature_flags(metrics_dashboard_new_panel_page: true)
-        end
+      context 'valid yaml panel is supplied' do
+        it 'returns success' do
+          send_request(panel_yaml: valid_panel_yml)
 
-        context 'valid yaml panel is supplied' do
-          it 'returns success' do
-            send_request(panel_yaml: valid_panel_yml)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response).to include('title' => 'Super Chart A1', 'type' => 'area-chart')
-          end
-        end
-
-        context 'invalid yaml panel is supplied' do
-          it 'returns unprocessable entity' do
-            send_request(panel_yaml: invalid_panel_yml)
-
-            expect(response).to have_gitlab_http_status(:unprocessable_entity)
-            expect(json_response['message']).to eq('Each "panel" must define an array :metrics')
-          end
-        end
-
-        context 'invalid panel_yaml is not a yaml string' do
-          it 'returns unprocessable entity' do
-            send_request(panel_yaml: 1)
-
-            expect(response).to have_gitlab_http_status(:unprocessable_entity)
-            expect(json_response['message']).to eq('Invalid configuration format')
-          end
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('title' => 'Super Chart A1', 'type' => 'area-chart')
         end
       end
 
-      context 'metrics_dashboard_new_panel_page is disabled' do
-        before do
-          stub_feature_flags(metrics_dashboard_new_panel_page: false)
+      context 'invalid yaml panel is supplied' do
+        it 'returns unprocessable entity' do
+          send_request(panel_yaml: invalid_panel_yml)
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Each "panel" must define an array :metrics')
         end
+      end
 
-        it 'returns not found' do
-          send_request
+      context 'invalid panel_yaml is not a yaml string' do
+        it 'returns unprocessable entity' do
+          send_request(panel_yaml: 1)
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Invalid configuration format')
         end
       end
     end

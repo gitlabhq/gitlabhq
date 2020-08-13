@@ -1,4 +1,5 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import ImportStatus from './import_status.vue';
 import { STATUSES } from '../constants';
 
@@ -6,6 +7,7 @@ export default {
   name: 'ImportedProjectTableRow',
   components: {
     ImportStatus,
+    GlIcon,
   },
   props: {
     project: {
@@ -36,6 +38,7 @@ export default {
         class="js-provider-link"
       >
         {{ project.importSource }}
+        <gl-icon v-if="project.providerLink" name="external-link" />
       </a>
     </td>
     <td class="js-full-path">{{ displayFullPath }}</td>

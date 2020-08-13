@@ -4,6 +4,7 @@ require 'spec_helper'
 RSpec.describe API::PypiPackages do
   include WorkhorseHelpers
   include PackagesManagerApiSpecHelpers
+  include HttpBasicAuthHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public) }
@@ -43,7 +44,7 @@ RSpec.describe API::PypiPackages do
 
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
-        let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+        let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
         subject { get api(url), headers: headers }
 
@@ -94,7 +95,7 @@ RSpec.describe API::PypiPackages do
 
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
-        let(:user_headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+        let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
         let(:headers) { user_headers.merge(workhorse_header) }
 
         before do
@@ -157,7 +158,7 @@ RSpec.describe API::PypiPackages do
 
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
-        let(:user_headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+        let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
         let(:headers) { user_headers.merge(workhorse_header) }
 
         before do
@@ -170,7 +171,7 @@ RSpec.describe API::PypiPackages do
 
     context 'with an invalid package' do
       let(:token) { personal_access_token.token }
-      let(:user_headers) { build_basic_auth_header(user.username, token) }
+      let(:user_headers) { basic_auth_header(user.username, token) }
       let(:headers) { user_headers.merge(workhorse_header) }
 
       before do
@@ -220,7 +221,7 @@ RSpec.describe API::PypiPackages do
 
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
-        let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+        let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
         subject { get api(url), headers: headers }
 
@@ -233,14 +234,14 @@ RSpec.describe API::PypiPackages do
     end
 
     context 'with deploy token headers' do
-      let(:headers) { build_basic_auth_header(deploy_token.username, deploy_token.token) }
+      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token) }
 
       context 'valid token' do
         it_behaves_like 'returning response status', :success
       end
 
       context 'invalid token' do
-        let(:headers) { build_basic_auth_header('foo', 'bar') }
+        let(:headers) { basic_auth_header('foo', 'bar') }
 
         it_behaves_like 'returning response status', :success
       end

@@ -89,7 +89,7 @@ end
 
 RSpec.shared_context 'Composer auth headers' do |user_role, user_token|
   let(:token) { user_token ? personal_access_token.token : 'wrong' }
-  let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+  let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 end
 
 RSpec.shared_context 'Composer api project access' do |project_visibility_level, user_role, user_token|
@@ -118,7 +118,7 @@ RSpec.shared_examples 'rejects Composer access with unknown group id' do
     end
 
     context 'as authenticated user' do
-      subject { get api(url), headers: build_basic_auth_header(user.username, personal_access_token.token) }
+      subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
 
       it_behaves_like 'process Composer api request', :anonymous, :not_found
     end
@@ -134,7 +134,7 @@ RSpec.shared_examples 'rejects Composer access with unknown project id' do
     end
 
     context 'as authenticated user' do
-      subject { get api(url), headers: build_basic_auth_header(user.username, personal_access_token.token) }
+      subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
 
       it_behaves_like 'process Composer api request', :anonymous, :not_found
     end

@@ -74,9 +74,9 @@ RSpec.describe ProjectRepositoryStorageMove, type: :model do
     context 'when started' do
       subject(:storage_move) { create(:project_repository_storage_move, :started, project: project, destination_storage_name: 'test_second_storage') }
 
-      context 'and transits to finished' do
+      context 'and transits to replicated' do
         it 'sets the repository storage and marks the project as writable' do
-          storage_move.finish!
+          storage_move.finish_replication!
 
           expect(project.repository_storage).to eq('test_second_storage')
           expect(project).not_to be_repository_read_only

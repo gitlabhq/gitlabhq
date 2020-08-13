@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe API::ComposerPackages do
-  include PackagesManagerApiSpecHelpers
+  include HttpBasicAuthHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group, reload: true) { create(:group, :public) }
@@ -224,7 +224,7 @@ RSpec.describe API::ComposerPackages do
     end
 
     context 'with no tag or branch params' do
-      let(:headers) { build_basic_auth_header(user.username, personal_access_token.token) }
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
 
       it_behaves_like 'process Composer api request', :developer, :bad_request
     end
@@ -238,7 +238,7 @@ RSpec.describe API::ComposerPackages do
 
       context 'with a non existing tag' do
         let(:params) { { tag: 'non-existing-tag' } }
-        let(:headers) { build_basic_auth_header(user.username, personal_access_token.token) }
+        let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
 
         it_behaves_like 'process Composer api request', :developer, :not_found
       end
@@ -253,7 +253,7 @@ RSpec.describe API::ComposerPackages do
 
       context 'with a non existing branch' do
         let(:params) { { branch: 'non-existing-branch' } }
-        let(:headers) { build_basic_auth_header(user.username, personal_access_token.token) }
+        let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
 
         it_behaves_like 'process Composer api request', :developer, :not_found
       end
@@ -311,7 +311,7 @@ RSpec.describe API::ComposerPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           before do
             project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))

@@ -45,7 +45,7 @@ RSpec.describe API::NugetPackages do
 
           with_them do
             let(:token) { user_token ? personal_access_token.token : 'wrong' }
-            let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+            let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
             subject { get api(url), headers: headers }
 
@@ -137,7 +137,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:user_headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
           let(:headers) { user_headers.merge(workhorse_header) }
 
           before do
@@ -204,7 +204,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:user_headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
           let(:headers) { user_headers.merge(workhorse_header) }
 
           before do
@@ -264,7 +264,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           subject { get api(url), headers: headers }
 
@@ -325,7 +325,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           subject { get api(url), headers: headers }
 
@@ -381,7 +381,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           subject { get api(url), headers: headers }
 
@@ -436,7 +436,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           subject { get api(url), headers: headers }
 
@@ -499,7 +499,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           subject { get api(url), headers: headers }
 

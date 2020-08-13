@@ -235,15 +235,18 @@ RSpec.describe TodosFinder do
 
         context 'when filtering by target id' do
           it 'returns the expected todos for the target' do
-            todos = finder.new(user, { target_id: issue.id }).execute
+            todos = finder.new(user, { type: 'Issue', target_id: issue.id }).execute
 
             expect(todos).to match_array([todo1])
           end
 
           it 'returns the expected todos for multiple target ids' do
-            todos = finder.new(user, { target_id: [issue.id, merge_request.id] }).execute
+            another_issue = create(:issue, project: project)
+            todo3 = create(:todo, user: user, project: project, target: another_issue)
 
-            expect(todos).to match_array([todo1, todo2])
+            todos = finder.new(user, { type: 'Issue', target_id: [issue.id, another_issue.id] }).execute
+
+            expect(todos).to match_array([todo1, todo3])
           end
 
           it 'returns the expected todos for empty target id collection' do

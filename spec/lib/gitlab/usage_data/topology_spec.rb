@@ -402,28 +402,61 @@ RSpec.describe Gitlab::UsageData::Topology do
       end
 
       context 'and an error is raised when querying Prometheus' do
-        it 'returns empty result with failures' do
-          expect_prometheus_api_to receive(:query)
-            .at_least(:once)
-            .and_raise(Gitlab::PrometheusClient::ConnectionError)
+        context 'without timeout failures' do
+          it 'returns empty result and executes subsequent queries as usual' do
+            expect_prometheus_api_to receive(:query)
+              .at_least(:once)
+              .and_raise(Gitlab::PrometheusClient::ConnectionError)
 
-          expect(subject[:topology]).to eq({
-            duration_s: 0,
-            failures: [
-              { 'app_requests' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'node_memory' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'node_memory_utilization' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'node_cpus' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'node_cpu_utilization' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'node_uname_info' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_rss' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_uss' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_pss' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_process_count' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_workers' => 'Gitlab::PrometheusClient::ConnectionError' }
-            ],
-            nodes: []
-          })
+            expect(subject[:topology]).to eq({
+              duration_s: 0,
+              failures: [
+                { 'app_requests' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'node_memory' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'node_memory_utilization' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'node_cpus' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'node_cpu_utilization' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'node_uname_info' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'service_rss' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'service_uss' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'service_pss' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'service_process_count' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'service_workers' => 'Gitlab::PrometheusClient::ConnectionError' }
+              ],
+              nodes: []
+            })
+          end
+        end
+
+        context 'with timeout failures' do
+          where(:exception) do
+            described_class::TIMEOUT_ERRORS
+          end
+
+          with_them do
+            it 'returns empty result and cancelled subsequent queries' do
+              expect_prometheus_api_to receive(:query)
+                .and_raise(exception)
+
+              expect(subject[:topology]).to eq({
+                duration_s: 0,
+                failures: [
+                  { 'app_requests' => exception.to_s },
+                  { 'node_memory' => 'timeout_cancellation' },
+                  { 'node_memory_utilization' => 'timeout_cancellation' },
+                  { 'node_cpus' => 'timeout_cancellation' },
+                  { 'node_cpu_utilization' => 'timeout_cancellation' },
+                  { 'node_uname_info' => 'timeout_cancellation' },
+                  { 'service_rss' => 'timeout_cancellation' },
+                  { 'service_uss' => 'timeout_cancellation' },
+                  { 'service_pss' => 'timeout_cancellation' },
+                  { 'service_process_count' => 'timeout_cancellation' },
+                  { 'service_workers' => 'timeout_cancellation' }
+                ],
+                nodes: []
+              })
+            end
+          end
         end
       end
     end

@@ -17,6 +17,9 @@ module Gitlab
         'registry' => 'registry'
       }.freeze
 
+      # If these errors occur, all subsequent queries are likely to fail for the same error
+      TIMEOUT_ERRORS = [Errno::ETIMEDOUT, Net::OpenTimeout, Net::ReadTimeout].freeze
+
       CollectionFailure = Struct.new(:query, :error) do
         def to_h
           { query => error }
@@ -158,6 +161,11 @@ module Gitlab
       end
 
       def query_safely(query, query_name, fallback:)
+        if timeout_error_exists?
+          @failures << CollectionFailure.new(query_name, 'timeout_cancellation')
+          return fallback
+        end
+
         result = yield query
 
         return result if result.present?
@@ -167,6 +175,14 @@ module Gitlab
       rescue => e
         @failures << CollectionFailure.new(query_name, e.class.to_s)
         fallback
+      end
+
+      def timeout_error_exists?
+        timeout_error_names = TIMEOUT_ERRORS.map(&:to_s).to_set
+
+        @failures.any? do |failure|
+          timeout_error_names.include?(failure.error)
+        end
       end
 
       def topology_node_services(instance, all_process_counts, all_process_memory, all_server_types)

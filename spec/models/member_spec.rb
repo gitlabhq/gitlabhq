@@ -113,9 +113,10 @@ RSpec.describe Member do
   end
 
   describe 'Scopes & finders' do
-    before do
-      project = create(:project, :public)
-      group = create(:group)
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:group) { create(:group) }
+
+    before_all do
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
 
@@ -252,9 +253,9 @@ RSpec.describe Member do
   describe '.add_user' do
     %w[project group].each do |source_type|
       context "when source is a #{source_type}" do
-        let!(:source) { create(source_type, :public) }
-        let!(:user) { create(:user) }
-        let!(:admin) { create(:admin) }
+        let_it_be(:source, reload: true) { create(source_type, :public) }
+        let_it_be(:user) { create(:user) }
+        let_it_be(:admin) { create(:admin) }
 
         it 'returns a <Source>Member object' do
           member = described_class.add_user(source, user, :maintainer)
@@ -322,7 +323,7 @@ RSpec.describe Member do
             it 'adds the user as a member' do
               expect(source.users).not_to include(user)
 
-              described_class.add_user(source, 42, :maintainer)
+              described_class.add_user(source, non_existing_record_id, :maintainer)
 
               expect(source.users.reload).not_to include(user)
             end
@@ -482,10 +483,10 @@ RSpec.describe Member do
   describe '.add_users' do
     %w[project group].each do |source_type|
       context "when source is a #{source_type}" do
-        let!(:source) { create(source_type, :public) }
-        let!(:admin) { create(:admin) }
-        let(:user1) { create(:user) }
-        let(:user2) { create(:user) }
+        let_it_be(:source) { create(source_type, :public) }
+        let_it_be(:admin) { create(:admin) }
+        let_it_be(:user1) { create(:user) }
+        let_it_be(:user2) { create(:user) }
 
         it 'returns a <Source>Member objects' do
           members = described_class.add_users(source, [user1, user2], :maintainer)

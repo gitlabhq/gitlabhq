@@ -246,10 +246,7 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
    1. For **Ping Protocol**, select HTTP.
    1. For **Ping Port**, enter 80.
    1. For **Ping Path**, enter `/users/sign_in`. (We use `/users/sign_in` as it's a public endpoint that does
-   not require authorization.)
-
-      NOTE: **Note:**
-      When booting a fresh GitLab instance for the first time, GitLab redirects you to `/users/password/` to change the admin password. Temporarily change the health check to this URL (or to the TCP protocol) and change it back to `/users/sign_in` after setting the admin password.
+   not require authentication.)
    1. Keep the default **Advanced Details** or adjust them according to your needs.
 1. Click **Add EC2 Instances** - don't add anything as we will create an Auto Scaling Group later to manage instances for us.
 1. Click **Add Tags** and add any tags you need.
@@ -646,6 +643,13 @@ to eliminate the need for NFS to support GitLab Pages.
 
 That concludes the configuration changes for our GitLab instance. Next, we'll create a custom AMI based on this instance to use for our launch configuration and auto scaling group.
 
+### Log in for the first time
+
+Using the domain name you used when setting up [DNS for the load balancer](#configure-dns-for-load-balancer), you should now be able to visit GitLab in your browser. You will be asked to set up a password
+for the `root` user which has admin privileges on the GitLab instance. This password will be stored in the database.
+
+When our [auto scaling group](#create-an-auto-scaling-group) spins up new instances, we'll be able to log in with username `root` and the newly created password.
+
 ### Create custom AMI
 
 On the EC2 dashboard:
@@ -699,13 +703,6 @@ auto scaling group.
 As the auto scaling group is created, you'll see your new instances spinning up in your EC2 dashboard. You'll also see the new instances added to your load balancer. Once the instances pass the heath check, they are ready to start receiving traffic from the load balancer.
 
 Since our instances are created by the auto scaling group, go back to your instances and terminate the [instance we created manually above](#install-gitlab). We only needed this instance to create our custom AMI.
-
-### Log in for the first time
-
-Using the domain name you used when setting up [DNS for the load balancer](#configure-dns-for-load-balancer), you should now be able to visit GitLab in your browser. The very first time you will be asked to set up a password
-for the `root` user which has admin privileges on the GitLab instance.
-
-After you set it up, login with username `root` and the newly created password.
 
 ## Health check and monitoring with Prometheus
 

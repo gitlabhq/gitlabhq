@@ -29,12 +29,17 @@ class ProjectRepositoryStorageMove < ApplicationRecord
       transition scheduled: :started
     end
 
-    event :finish do
-      transition started: :finished
+    event :finish_replication do
+      transition started: :replicated
+    end
+
+    event :finish_cleanup do
+      transition replicated: :finished
     end
 
     event :do_fail do
       transition [:initial, :scheduled, :started] => :failed
+      transition replicated: :cleanup_failed
     end
 
     after_transition initial: :scheduled do |storage_move|
@@ -49,7 +54,7 @@ class ProjectRepositoryStorageMove < ApplicationRecord
       end
     end
 
-    after_transition started: :finished do |storage_move|
+    after_transition started: :replicated do |storage_move|
       storage_move.project.update_columns(
         repository_read_only: false,
         repository_storage: storage_move.destination_storage_name
@@ -65,6 +70,8 @@ class ProjectRepositoryStorageMove < ApplicationRecord
     state :started, value: 3
     state :finished, value: 4
     state :failed, value: 5
+    state :replicated, value: 6
+    state :cleanup_failed, value: 7
   end
 
   scope :order_created_at_desc, -> { order(created_at: :desc) }

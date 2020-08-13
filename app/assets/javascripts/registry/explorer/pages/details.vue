@@ -112,7 +112,7 @@ export default {
 </script>
 
 <template>
-  <div v-gl-resize-observer="handleResize" class="gl-my-3 gl-w-full slide-enter-to-element">
+  <div v-gl-resize-observer="handleResize" class="gl-my-3">
     <delete-alert
       v-model="deleteAlertType"
       :garbage-collection-help-page-path="config.garbageCollectionHelpPagePath"

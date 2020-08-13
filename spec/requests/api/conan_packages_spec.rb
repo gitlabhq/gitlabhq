@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe API::ConanPackages do
   include WorkhorseHelpers
+  include HttpBasicAuthHelpers
   include PackagesManagerApiSpecHelpers
 
   let(:package) { create(:conan_package) }
