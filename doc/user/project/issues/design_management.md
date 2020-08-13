@@ -206,12 +206,9 @@ viewed by browsing previous versions.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34382) in GitLab 13.3.
 
-You can change designs order with dragging design to the new position:
+You can change the order of designs by dragging them to a new position:
 
 ![Reorder designs](img/designs_reordering_v13_3.gif)
-
-NOTE: **Note:**
-You can reorder designs only on the latest version.
 
 ## Starting discussions on designs
 

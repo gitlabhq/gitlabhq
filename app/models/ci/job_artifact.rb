@@ -9,6 +9,7 @@ module Ci
     include Sortable
     include IgnorableColumns
     include Artifactable
+    include FileStoreMounter
     extend Gitlab::Ci::Model
 
     NotSupportedAdapterError = Class.new(StandardError)
@@ -115,7 +116,7 @@ module Ci
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
-    mount_uploader :file, JobArtifactUploader
+    mount_file_store_uploader JobArtifactUploader
 
     validates :file_format, presence: true, unless: :trace?, on: :create
     validate :validate_supported_file_format!, on: :create
@@ -123,8 +124,6 @@ module Ci
     before_save :set_size, if: :file_changed?
 
     update_project_statistics project_statistics_name: :build_artifacts_size
-
-    after_save :update_file_store, if: :saved_change_to_file?
 
     scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
     scope :with_files_stored_locally, -> { where(file_store: ::JobArtifactUploader::Store::LOCAL) }
@@ -227,12 +226,6 @@ module Ci
       unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym
         errors.add(:base, _('Invalid file format with specified file type'))
       end
-    end
-
-    def update_file_store
-      # The file.object_store is set during `uploader.store!`
-      # which happens after object is inserted/updated
-      self.update_column(:file_store, file.object_store)
     end
 
     def self.associated_file_types_for(file_type)

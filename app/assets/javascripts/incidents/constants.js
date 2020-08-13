@@ -9,20 +9,20 @@ export const I18N = {
   searchPlaceholder: __('Search results…'),
 };
 
-export const INCIDENT_STATE_TABS = [
+export const INCIDENT_STATUS_TABS = [
   {
     title: s__('IncidentManagement|Open'),
-    state: 'OPENED',
+    status: 'OPENED',
     filters: 'opened',
   },
   {
     title: s__('IncidentManagement|Closed'),
-    state: 'CLOSED',
+    status: 'CLOSED',
     filters: 'closed',
   },
   {
     title: s__('IncidentManagement|All'),
-    state: 'ALL',
+    status: 'ALL',
     filters: 'all',
   },
 ];

@@ -107,6 +107,16 @@ module Types
             description: 'Todos of the current user for the alert',
             resolver: Resolvers::TodoResolver
 
+      field :details_url,
+            GraphQL::STRING_TYPE,
+            null: false,
+            description: 'The URL of the alert detail page'
+
+      field :prometheus_alert,
+            Types::PrometheusAlertType,
+            null: true,
+            description: 'The alert condition for Prometheus'
+
       def notes
         object.ordered_notes
       end

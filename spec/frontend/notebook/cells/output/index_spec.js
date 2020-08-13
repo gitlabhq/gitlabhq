@@ -34,7 +34,7 @@ describe('Output component', () => {
       expect(vm.$el.querySelector('pre')).not.toBeNull();
     });
 
-    it('renders promot', () => {
+    it('renders prompt', () => {
       expect(vm.$el.querySelector('.prompt span')).not.toBeNull();
     });
   });

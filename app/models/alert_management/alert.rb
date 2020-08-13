@@ -118,7 +118,7 @@ module AlertManagement
     end
 
     delegate :iid, to: :issue, prefix: true, allow_nil: true
-    delegate :metrics_dashboard_url, :runbook, to: :present
+    delegate :metrics_dashboard_url, :runbook, :details_url, to: :present
 
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_status, -> (status) { where(status: status) }
@@ -137,6 +137,7 @@ module AlertManagement
     # Descending sort order sorts severity from more critical to less critical.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/221242#what-is-the-expected-correct-behavior
     scope :order_severity,      -> (sort_order) { order(severity: sort_order == :asc ? :desc : :asc) }
+    scope :order_severity_with_open_prometheus_alert, -> { open.with_prometheus_alert.order(severity: :asc, started_at: :desc) }
 
     # Ascending sort order sorts statuses: Ignored > Resolved > Acknowledged > Triggered
     # Descending sort order sorts statuses: Triggered > Acknowledged > Resolved > Ignored

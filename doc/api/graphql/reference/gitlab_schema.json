@@ -578,6 +578,24 @@
               "deprecationReason": null
             },
             {
+              "name": "detailsUrl",
+              "description": "The URL of the alert detail page",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "discussions",
               "description": "All discussions on this noteable",
               "args": [
@@ -797,6 +815,20 @@
                   "name": "NoteConnection",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "prometheusAlert",
+              "description": "The alert condition for Prometheus",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "PrometheusAlert",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -12339,6 +12371,20 @@
               "deprecationReason": null
             },
             {
+              "name": "latestOpenedMostSevereAlert",
+              "description": "The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AlertManagementAlert",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "metricsDashboard",
               "description": "Metrics dashboard schema for the environment",
               "args": [
@@ -22903,6 +22949,59 @@
               "deprecationReason": null
             },
             {
+              "name": "approvedBy",
+              "description": "Users who approved the merge request",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "assignees",
               "description": "Assignees of the merge request",
               "args": [
@@ -22964,6 +23063,20 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "User",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "commitCount",
+              "description": "Number of commits in the merge request",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -30646,6 +30759,24 @@
           "description": "The connection type for Pipeline.",
           "fields": [
             {
+              "name": "count",
+              "description": "Total count of collection",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "edges",
               "description": "A list of edges.",
               "args": [
@@ -31452,6 +31583,57 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "environment",
+              "description": "A single environment of the project",
+              "args": [
+                {
+                  "name": "name",
+                  "description": "Name of the environment",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "search",
+                  "description": "Search query for environment name",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "states",
+                  "description": "States of environments that should be included in result",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Environment",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -35643,6 +35825,55 @@
                 "kind": "SCALAR",
                 "name": "Float",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "PrometheusAlert",
+          "description": "The alert condition for Prometheus",
+          "fields": [
+            {
+              "name": "humanizedText",
+              "description": "The human-readable text of the alert condition",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "ID of the alert condition",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null

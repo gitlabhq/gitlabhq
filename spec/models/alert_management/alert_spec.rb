@@ -230,6 +230,17 @@ RSpec.describe AlertManagement::Alert do
       it { is_expected.to match_array(env_alert) }
     end
 
+    describe '.order_severity_with_open_prometheus_alert' do
+      subject { described_class.where(project: alert_project).order_severity_with_open_prometheus_alert }
+
+      let_it_be(:alert_project) { create(:project) }
+      let_it_be(:resolved_critical_alert) { create(:alert_management_alert, :resolved, :critical, project: alert_project) }
+      let_it_be(:triggered_critical_alert) { create(:alert_management_alert, :triggered, :critical, project: alert_project) }
+      let_it_be(:triggered_high_alert) { create(:alert_management_alert, :triggered, :high, project: alert_project) }
+
+      it { is_expected.to eq([triggered_critical_alert, triggered_high_alert]) }
+    end
+
     describe '.counts_by_status' do
       subject { described_class.counts_by_status }
 

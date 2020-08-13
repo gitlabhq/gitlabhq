@@ -24,7 +24,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       namespace group statistics repository merge_requests merge_request issues
       issue milestones pipelines removeSourceBranchAfterMerge sentryDetailedError snippets
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
-      boards jira_import_status jira_imports services releases release
+      environment boards jira_import_status jira_imports services releases release
       alert_management_alerts alert_management_alert alert_management_alert_status_counts
       container_expiration_policy sast_ci_configuration service_desk_enabled service_desk_address
       issue_status_counts
@@ -96,6 +96,13 @@ RSpec.describe GitlabSchema.types['Project'] do
 
     it { is_expected.to have_graphql_type(Types::EnvironmentType.connection_type) }
     it { is_expected.to have_graphql_resolver(Resolvers::EnvironmentsResolver) }
+  end
+
+  describe 'environment field' do
+    subject { described_class.fields['environment'] }
+
+    it { is_expected.to have_graphql_type(Types::EnvironmentType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::EnvironmentsResolver.single) }
   end
 
   describe 'members field' do

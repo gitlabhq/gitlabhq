@@ -4,7 +4,7 @@ You can read more about [personal access tokens](../user/profile/personal_access
 
 ## List personal access tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22726) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227264) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
 
 Get a list of personal access tokens.
 
@@ -60,3 +60,29 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     }
 ]
 ```
+
+## Revoke a personal access token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216004) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
+
+Revoke a personal access token.
+
+```plaintext
+DELETE /personal_access_tokens/:id
+```
+
+| Attribute | Type    | required | Description         |
+|-----------|---------|----------|---------------------|
+| `id` | integer/string | yes | ID of personal access token |
+
+NOTE: **Note:**
+Non-administrators can revoke their own tokens. Administrators can revoke tokens of any user.
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens/<personal_access_token_id>"
+```
+
+### Responses
+
+- `204: No Content` if successfully revoked.
+- `400 Bad Request` if not revoked successfully.

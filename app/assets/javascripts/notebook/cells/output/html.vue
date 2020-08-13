@@ -1,5 +1,5 @@
 <script>
-import sanitize from 'sanitize-html';
+import { sanitize } from 'dompurify';
 import Prompt from '../prompt.vue';
 
 export default {
@@ -23,10 +23,7 @@ export default {
   computed: {
     sanitizedOutput() {
       return sanitize(this.rawCode, {
-        allowedTags: sanitize.defaults.allowedTags.concat(['img', 'svg']),
-        allowedAttributes: {
-          img: ['src'],
-        },
+        ALLOWED_ATTR: ['src'],
       });
     },
     showOutput() {

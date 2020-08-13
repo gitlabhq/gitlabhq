@@ -710,3 +710,16 @@ export const dateFromParams = (year, month, day) => {
 
   return date;
 };
+
+/**
+ * A utility function which computes the difference in seconds
+ * between 2 dates.
+ *
+ * @param {Date} startDate the start sate
+ * @param {Date} endDate the end date
+ *
+ * @return {Int} the difference in seconds
+ */
+export const differenceInSeconds = (startDate, endDate) => {
+  return (endDate.getTime() - startDate.getTime()) / 1000;
+};

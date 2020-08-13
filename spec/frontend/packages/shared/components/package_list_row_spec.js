@@ -67,10 +67,6 @@ describe('packages_list_row', () => {
     it('has project field', () => {
       expect(findProjectLink().exists()).toBe(true);
     });
-
-    it('does not show the delete button', () => {
-      expect(findDeleteButton().exists()).toBe(false);
-    });
   });
 
   describe('showPackageType', () => {
@@ -96,9 +92,7 @@ describe('packages_list_row', () => {
   });
 
   describe('delete event', () => {
-    beforeEach(() =>
-      mountComponent({ isGroup: false, packageEntity: packageWithoutTags, shallow: false }),
-    );
+    beforeEach(() => mountComponent({ packageEntity: packageWithoutTags, shallow: false }));
 
     it('emits the packageToDelete event when the delete button is clicked', () => {
       findDeleteButton().trigger('click');

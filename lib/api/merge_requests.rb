@@ -352,16 +352,16 @@ module API
       end
 
       desc 'Get the merge request pipelines' do
-        success Entities::PipelineBasic
+        success Entities::Ci::PipelineBasic
       end
       get ':id/merge_requests/:merge_request_iid/pipelines' do
         pipelines = merge_request_pipelines_with_access
 
-        present paginate(pipelines), with: Entities::PipelineBasic
+        present paginate(pipelines), with: Entities::Ci::PipelineBasic
       end
 
       desc 'Create a pipeline for merge request' do
-        success Entities::Pipeline
+        success ::API::Entities::Ci::Pipeline
       end
       post ':id/merge_requests/:merge_request_iid/pipelines' do
         pipeline = ::MergeRequests::CreatePipelineService
@@ -372,7 +372,7 @@ module API
           not_allowed!
         elsif pipeline.persisted?
           status :ok
-          present pipeline, with: Entities::Pipeline
+          present pipeline, with: ::API::Entities::Ci::Pipeline
         else
           render_validation_error!(pipeline)
         end

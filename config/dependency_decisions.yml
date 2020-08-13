@@ -639,3 +639,10 @@
     :why: MIT license
     :versions: []
     :when: 2020-07-28 20:35:27.574875000 Z
+- - :license
+  - dompurify
+  - Apache-2.0
+  - :who: Lukas Eipert
+    :why: "https://github.com/cure53/DOMPurify/blob/main/LICENSE and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31928#note_346604841"
+    :versions: []
+    :when: 2020-08-13 13:42:46.508082000 Z

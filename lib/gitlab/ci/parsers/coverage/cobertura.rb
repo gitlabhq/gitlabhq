@@ -28,6 +28,8 @@ module Gitlab
           end
 
           def parse_node(key, value, coverage_report)
+            return if key == 'sources'
+
             if key == 'class'
               Array.wrap(value).each do |item|
                 parse_class(item, coverage_report)

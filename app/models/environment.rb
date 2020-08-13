@@ -29,6 +29,7 @@ class Environment < ApplicationRecord
   has_one :last_visible_deployment, -> { visible.distinct_on_environment }, inverse_of: :environment, class_name: 'Deployment'
   has_one :last_visible_deployable, through: :last_visible_deployment, source: 'deployable', source_type: 'CommitStatus'
   has_one :last_visible_pipeline, through: :last_visible_deployable, source: 'pipeline'
+  has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   before_validation :nullify_external_url
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
@@ -289,6 +290,10 @@ class Environment < ApplicationRecord
 
   def has_sample_metrics?
     !!ENV['USE_SAMPLE_METRICS']
+  end
+
+  def has_opened_alert?
+    latest_opened_most_severe_alert.present?
   end
 
   def metrics

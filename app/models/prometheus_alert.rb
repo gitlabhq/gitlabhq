@@ -3,6 +3,7 @@
 class PrometheusAlert < ApplicationRecord
   include Sortable
   include UsageStatistics
+  include Presentable
 
   OPERATORS_MAP = {
     lt: "<",

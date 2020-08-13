@@ -13,6 +13,8 @@ import {
   nugetSetupCommand,
   pypiPipCommand,
   pypiSetupCommand,
+  composerRegistryInclude,
+  composerPackageInclude,
 } from '~/packages/details/store/getters';
 import {
   conanPackage,
@@ -68,6 +70,10 @@ describe('Getters PackageDetails Store', () => {
   const nugetSetupCommandStr = `nuget source Add -Name "GitLab" -Source "${registryUrl}" -UserName <your_username> -Password <your_token>`;
 
   const pypiPipCommandStr = `pip install ${pypiPackage.name} --index-url ${registryUrl}`;
+  const composerRegistryIncludeStr = '{"type":"composer","url":"foo"}';
+  const composerPackageIncludeStr = JSON.stringify({
+    [packageWithoutBuildInfo.name]: packageWithoutBuildInfo.version,
+  });
 
   describe('packagePipeline', () => {
     it('should return the pipeline info when pipeline exists', () => {
@@ -212,6 +218,20 @@ describe('Getters PackageDetails Store', () => {
       setupState({ pypiSetupPath: 'foo' });
 
       expect(pypiSetupCommand(state)).toBe(pypiSetupCommandStr);
+    });
+  });
+
+  describe('composer string getters', () => {
+    it('gets the correct composerRegistryInclude command', () => {
+      setupState({ composerPath: 'foo' });
+
+      expect(composerRegistryInclude(state)).toBe(composerRegistryIncludeStr);
+    });
+
+    it('gets the correct composerPackageInclude command', () => {
+      setupState();
+
+      expect(composerPackageInclude(state)).toBe(composerPackageIncludeStr);
     });
   });
 });

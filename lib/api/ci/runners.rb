@@ -111,7 +111,7 @@ module API
         end
 
         desc 'List jobs running on a runner' do
-          success Entities::JobBasicWithProject
+          success Entities::Ci::JobBasicWithProject
         end
         params do
           requires :id, type: Integer, desc: 'The ID of the runner'
@@ -126,7 +126,7 @@ module API
 
           jobs = ::Ci::RunnerJobsFinder.new(runner, params).execute
 
-          present paginate(jobs), with: Entities::JobBasicWithProject
+          present paginate(jobs), with: Entities::Ci::JobBasicWithProject
         end
       end
 

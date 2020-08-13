@@ -1,5 +1,5 @@
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import sanitize from 'sanitize-html';
+import { sanitize } from 'dompurify';
 
 /**
  * Wraps substring matches with HTML `<span>` elements.
@@ -24,7 +24,7 @@ export default function highlight(string, match = '', matchPrefix = '<b>', match
     return string;
   }
 
-  const sanitizedValue = sanitize(string.toString(), { allowedTags: [] });
+  const sanitizedValue = sanitize(string.toString(), { ALLOWED_TAGS: [] });
 
   // occurrences is an array of character indices that should be
   // highlighted in the original string, i.e. [3, 4, 5, 7]

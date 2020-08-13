@@ -30,18 +30,18 @@ module API
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get project variables' do
-        success Entities::Variable
+        success Entities::Ci::Variable
       end
       params do
         use :pagination
       end
       get ':id/variables' do
         variables = user_project.variables
-        present paginate(variables), with: Entities::Variable
+        present paginate(variables), with: Entities::Ci::Variable
       end
 
       desc 'Get a specific variable from a project' do
-        success Entities::Variable
+        success Entities::Ci::Variable
       end
       params do
         requires :key, type: String, desc: 'The key of the variable'
@@ -51,12 +51,12 @@ module API
         variable = find_variable(params)
         not_found!('Variable') unless variable
 
-        present variable, with: Entities::Variable
+        present variable, with: Entities::Ci::Variable
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Create a new variable in a project' do
-        success Entities::Variable
+        success Entities::Ci::Variable
       end
       params do
         requires :key, type: String, desc: 'The key of the variable'
@@ -73,14 +73,14 @@ module API
         variable = user_project.variables.create(variable_params)
 
         if variable.valid?
-          present variable, with: Entities::Variable
+          present variable, with: Entities::Ci::Variable
         else
           render_validation_error!(variable)
         end
       end
 
       desc 'Update an existing variable from a project' do
-        success Entities::Variable
+        success Entities::Ci::Variable
       end
       params do
         optional :key, type: String, desc: 'The key of the variable'
@@ -100,7 +100,7 @@ module API
         variable_params = filter_variable_parameters(variable_params)
 
         if variable.update(variable_params)
-          present variable, with: Entities::Variable
+          present variable, with: Entities::Ci::Variable
         else
           render_validation_error!(variable)
         end
@@ -108,7 +108,7 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete an existing variable from a project' do
-        success Entities::Variable
+        success Entities::Ci::Variable
       end
       params do
         requires :key, type: String, desc: 'The key of the variable'

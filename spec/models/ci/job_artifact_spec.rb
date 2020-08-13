@@ -483,11 +483,7 @@ RSpec.describe Ci::JobArtifact do
     subject { create(:ci_job_artifact, :archive) }
 
     context 'when existing object has local store' do
-      it 'is stored locally' do
-        expect(subject.file_store).to be(ObjectStorage::Store::LOCAL)
-        expect(subject.file).to be_file_storage
-        expect(subject.file.object_store).to eq(ObjectStorage::Store::LOCAL)
-      end
+      it_behaves_like 'mounted file in local store'
     end
 
     context 'when direct upload is enabled' do
@@ -496,11 +492,7 @@ RSpec.describe Ci::JobArtifact do
       end
 
       context 'when file is stored' do
-        it 'is stored remotely' do
-          expect(subject.file_store).to eq(ObjectStorage::Store::REMOTE)
-          expect(subject.file).not_to be_file_storage
-          expect(subject.file.object_store).to eq(ObjectStorage::Store::REMOTE)
-        end
+        it_behaves_like 'mounted file in object store'
       end
     end
   end

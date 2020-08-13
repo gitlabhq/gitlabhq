@@ -3,22 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe TodoService do
-  let(:author) { create(:user) }
-  let(:assignee) { create(:user) }
-  let(:non_member) { create(:user) }
-  let(:member) { create(:user) }
-  let(:guest) { create(:user) }
-  let(:admin) { create(:admin) }
-  let(:john_doe) { create(:user) }
-  let(:skipped) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:author) { create(:user) }
+  let_it_be(:assignee) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
+  let_it_be(:member) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:john_doe) { create(:user) }
+  let_it_be(:skipped) { create(:user) }
+
   let(:skip_users) { [skipped] }
-  let(:project) { create(:project, :repository) }
   let(:mentions) { 'FYI: ' + [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed) { [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed_and_mentioned) { member.to_reference + ", what do you think? cc: " + [guest, admin, skipped].map(&:to_reference).join(' ') }
   let(:service) { described_class.new }
 
-  before do
+  before_all do
     project.add_guest(guest)
     project.add_developer(author)
     project.add_developer(assignee)
@@ -456,7 +457,16 @@ RSpec.describe TodoService do
         end
 
         context 'leaving a note on a commit in a public project with private code' do
-          let(:project) { create(:project, :repository, :public, :repository_private) }
+          let_it_be(:project) { create(:project, :repository, :public, :repository_private) }
+
+          before_all do
+            project.add_guest(guest)
+            project.add_developer(author)
+            project.add_developer(assignee)
+            project.add_developer(member)
+            project.add_developer(john_doe)
+            project.add_developer(skipped)
+          end
 
           it 'creates a todo for each valid mentioned user' do
             expected_todo = base_commit_todo_attrs.merge(
@@ -492,7 +502,16 @@ RSpec.describe TodoService do
         end
 
         context 'leaving a note on a commit in a private project' do
-          let(:project) { create(:project, :repository, :private) }
+          let_it_be(:project) { create(:project, :repository, :private) }
+
+          before_all do
+            project.add_guest(guest)
+            project.add_developer(author)
+            project.add_developer(assignee)
+            project.add_developer(member)
+            project.add_developer(john_doe)
+            project.add_developer(skipped)
+          end
 
           it 'creates a todo for each valid mentioned user' do
             expected_todo = base_commit_todo_attrs.merge(
@@ -822,7 +841,17 @@ RSpec.describe TodoService do
     end
 
     describe '#new_note' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
+
+      before_all do
+        project.add_guest(guest)
+        project.add_developer(author)
+        project.add_developer(assignee)
+        project.add_developer(member)
+        project.add_developer(john_doe)
+        project.add_developer(skipped)
+      end
+
       let(:mention) { john_doe.to_reference }
       let(:diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "Hey #{mention}") }
       let(:addressed_diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "#{mention}, hey!") }

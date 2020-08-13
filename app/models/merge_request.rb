@@ -264,10 +264,14 @@ class MergeRequest < ApplicationRecord
   end
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
   scope :preload_source_project, -> { preload(:source_project) }
+  scope :preload_target_project, -> { preload(:target_project) }
   scope :preload_routables, -> do
     preload(target_project: [:route, { namespace: :route }],
             source_project: [:route, { namespace: :route }])
   end
+  scope :preload_author, -> { preload(:author) }
+  scope :preload_approved_by_users, -> { preload(:approved_by_users) }
+  scope :preload_metrics, -> (relation) { preload(metrics: relation) }
 
   scope :with_auto_merge_enabled, -> do
     with_state(:opened).where(auto_merge_enabled: true)

@@ -458,6 +458,23 @@
 }
 
 .vue-filtered-search-bar-container {
+  .gl-search-box-by-click {
+    // Absolute width is needed to prevent flex to grow
+    // beyond the available width.
+    .gl-filtered-search-scrollable {
+      width: 1px;
+    }
+
+    // There are several styling issues happening while using
+    // `GlFilteredSearch` in roadmap due to some of our global
+    // styles which we need to override until those are fixed
+    // at framework level.
+    // See https://gitlab.com/gitlab-org/gitlab-ui/-/issues/908
+    .input-group-prepend + .gl-filtered-search-scrollable {
+      border-radius: 0;
+    }
+  }
+
   @include media-breakpoint-up(md) {
     .sort-dropdown-container {
       margin-left: 10px;

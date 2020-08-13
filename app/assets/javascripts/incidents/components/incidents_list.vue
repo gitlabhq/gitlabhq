@@ -13,6 +13,7 @@ import {
   GlPagination,
   GlTabs,
   GlTab,
+  GlBadge,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -20,7 +21,8 @@ import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import { mergeUrlParams, joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
-import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_SEARCH_DELAY, INCIDENT_STATE_TABS } from '../constants';
+import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
+import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_SEARCH_DELAY, INCIDENT_STATUS_TABS } from '../constants';
 
 const TH_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };
 const tdClass =
@@ -39,7 +41,7 @@ const initialPaginationState = {
 
 export default {
   i18n: I18N,
-  stateTabs: INCIDENT_STATE_TABS,
+  statusTabs: INCIDENT_STATUS_TABS,
   fields: [
     {
       key: 'title',
@@ -77,6 +79,7 @@ export default {
     GlTabs,
     GlTab,
     PublishedCell: () => import('ee_component/incidents/components/published_cell.vue'),
+    GlBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -94,7 +97,7 @@ export default {
       variables() {
         return {
           searchTerm: this.searchTerm,
-          state: this.stateFilter,
+          status: this.statusFilter,
           projectPath: this.projectPath,
           issueTypes: ['INCIDENT'],
           sort: this.sort,
@@ -114,6 +117,19 @@ export default {
         this.errored = true;
       },
     },
+    incidentsCount: {
+      query: getIncidentsCountByStatus,
+      variables() {
+        return {
+          searchTerm: this.searchTerm,
+          projectPath: this.projectPath,
+          issueTypes: ['INCIDENT'],
+        };
+      },
+      update(data) {
+        return data.project?.issueStatusCounts;
+      },
+    },
   },
   data() {
     return {
@@ -123,21 +139,25 @@ export default {
       searchTerm: '',
       pagination: initialPaginationState,
       incidents: {},
-      stateFilter: '',
       sort: 'created_desc',
       sortBy: 'createdAt',
       sortDesc: true,
+      statusFilter: '',
+      filteredByStatus: '',
     };
   },
   computed: {
     showErrorMsg() {
-      return this.errored && !this.isErrorAlertDismissed && !this.searchTerm;
+      return this.errored && !this.isErrorAlertDismissed && this.incidentsCount?.all === 0;
     },
     loading() {
       return this.$apollo.queries.incidents.loading;
     },
     hasIncidents() {
       return this.incidents?.list?.length;
+    },
+    incidentsForCurrentTab() {
+      return this.incidentsCount?.[this.filteredByStatus.toLowerCase()] ?? 0;
     },
     showPaginationControls() {
       return Boolean(
@@ -149,7 +169,9 @@ export default {
     },
     nextPage() {
       const nextPage = this.pagination.currentPage + 1;
-      return this.incidents?.list?.length < DEFAULT_PAGE_SIZE ? null : nextPage;
+      return nextPage > Math.ceil(this.incidentsForCurrentTab / DEFAULT_PAGE_SIZE)
+        ? null
+        : nextPage;
     },
     tbodyTrClass() {
       return {
@@ -181,9 +203,10 @@ export default {
         this.searchTerm = trimmedInput;
       }
     }, INCIDENT_SEARCH_DELAY),
-    filterIncidentsByState(tabIndex) {
-      const { filters } = this.$options.stateTabs[tabIndex];
-      this.stateFilter = filters;
+    filterIncidentsByStatus(tabIndex) {
+      const { filters, status } = this.$options.statusTabs[tabIndex];
+      this.statusFilter = filters;
+      this.filteredByStatus = status;
     },
     hasAssignees(assignees) {
       return Boolean(assignees.nodes?.length);
@@ -231,10 +254,13 @@ export default {
     <div
       class="incident-management-list-header gl-display-flex gl-justify-content-space-between gl-border-b-solid gl-border-b-1 gl-border-gray-100"
     >
-      <gl-tabs content-class="gl-p-0" @input="filterIncidentsByState">
-        <gl-tab v-for="tab in $options.stateTabs" :key="tab.state" :data-testid="tab.state">
+      <gl-tabs content-class="gl-p-0" @input="filterIncidentsByStatus">
+        <gl-tab v-for="tab in $options.statusTabs" :key="tab.status" :data-testid="tab.status">
           <template #title>
             <span>{{ tab.title }}</span>
+            <gl-badge v-if="incidentsCount" pill size="sm" class="gl-tab-counter-badge">
+              {{ incidentsCount[tab.status.toLowerCase()] }}
+            </gl-badge>
           </template>
         </gl-tab>
       </gl-tabs>

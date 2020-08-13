@@ -45,8 +45,9 @@ This template requires:
   - Use [Pipelines for Merge Requests](../../../ci/merge_request_pipelines/index.md#configuring-pipelines-for-merge-requests)
 - [Pipelines for Merged Results](../../../ci/merge_request_pipelines/pipelines_for_merged_results/index.md#enable-pipelines-for-merged-results)
   enabled in the project settings.
+- A Docker image with Ruby available. The template uses `image: ruby:2.6` by default, but you [can override](../../../ci/yaml/includes.md#overriding-external-template-values) this.
 
-## Configure Fast RSpec Failure
+## Configuring Fast RSpec Failure
 
 We'll use the following plain RSpec configuration as a starting point. It installs all the
 project gems and executes `rspec`, on merge request pipelines only.
@@ -67,6 +68,16 @@ the template by adding the following to your CI/CD configuration:
 ```yaml
 include:
   - template: Verify/FailFast.gitlab-ci.yml
+```
+
+To customize the job, specific options may be set to override the template. For example, to override the default Docker image:
+
+```yaml
+include:
+  - template: Verify/FailFast.gitlab-ci.yml
+
+rspec-rails-modified-path-specs:
+  image: custom-docker-image-with-ruby
 ```
 
 ### Example test loads

@@ -13,7 +13,7 @@ module API
       resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Get all Pipelines of the project' do
           detail 'This feature was introduced in GitLab 8.11.'
-          success Entities::PipelineBasic
+          success Entities::Ci::PipelineBasic
         end
         params do
           use :pagination
@@ -38,12 +38,12 @@ module API
           authorize! :read_build, user_project
 
           pipelines = ::Ci::PipelinesFinder.new(user_project, current_user, params).execute
-          present paginate(pipelines), with: Entities::PipelineBasic
+          present paginate(pipelines), with: Entities::Ci::PipelineBasic
         end
 
         desc 'Create a new pipeline' do
           detail 'This feature was introduced in GitLab 8.14'
-          success Entities::Pipeline
+          success Entities::Ci::Pipeline
         end
         params do
           requires :ref, type: String, desc: 'Reference'
@@ -64,7 +64,7 @@ module API
                              .execute(:api, ignore_skip_ci: true, save_on_errors: false)
 
           if new_pipeline.persisted?
-            present new_pipeline, with: Entities::Pipeline
+            present new_pipeline, with: Entities::Ci::Pipeline
           else
             render_validation_error!(new_pipeline)
           end
@@ -72,7 +72,7 @@ module API
 
         desc 'Gets a the latest pipeline for the project branch' do
           detail 'This feature was introduced in GitLab 12.3'
-          success Entities::Pipeline
+          success Entities::Ci::Pipeline
         end
         params do
           optional :ref, type: String, desc: 'branch ref of pipeline'
@@ -80,12 +80,12 @@ module API
         get ':id/pipelines/latest' do
           authorize! :read_pipeline, latest_pipeline
 
-          present latest_pipeline, with: Entities::Pipeline
+          present latest_pipeline, with: Entities::Ci::Pipeline
         end
 
         desc 'Gets a specific pipeline for the project' do
           detail 'This feature was introduced in GitLab 8.11'
-          success Entities::Pipeline
+          success Entities::Ci::Pipeline
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
@@ -93,12 +93,12 @@ module API
         get ':id/pipelines/:pipeline_id' do
           authorize! :read_pipeline, pipeline
 
-          present pipeline, with: Entities::Pipeline
+          present pipeline, with: Entities::Ci::Pipeline
         end
 
         desc 'Gets the variables for a given pipeline' do
           detail 'This feature was introduced in GitLab 11.11'
-          success Entities::Variable
+          success Entities::Ci::Variable
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
@@ -106,7 +106,7 @@ module API
         get ':id/pipelines/:pipeline_id/variables' do
           authorize! :read_pipeline_variable, pipeline
 
-          present pipeline.variables, with: Entities::Variable
+          present pipeline.variables, with: Entities::Ci::Variable
         end
 
         desc 'Gets the test report for a given pipeline' do
@@ -141,7 +141,7 @@ module API
 
         desc 'Retry builds in the pipeline' do
           detail 'This feature was introduced in GitLab 8.11.'
-          success Entities::Pipeline
+          success Entities::Ci::Pipeline
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
@@ -151,12 +151,12 @@ module API
 
           pipeline.retry_failed(current_user)
 
-          present pipeline, with: Entities::Pipeline
+          present pipeline, with: Entities::Ci::Pipeline
         end
 
         desc 'Cancel all builds in the pipeline' do
           detail 'This feature was introduced in GitLab 8.11.'
-          success Entities::Pipeline
+          success Entities::Ci::Pipeline
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
@@ -167,7 +167,7 @@ module API
           pipeline.cancel_running
 
           status 200
-          present pipeline.reset, with: Entities::Pipeline
+          present pipeline.reset, with: Entities::Ci::Pipeline
         end
       end
 

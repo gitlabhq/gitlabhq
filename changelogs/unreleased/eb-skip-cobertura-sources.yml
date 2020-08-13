@@ -1,0 +1,5 @@
+---
+title: Ignore the sources node from the cobertura XML
+merge_request: 39385
+author:
+type: fixed

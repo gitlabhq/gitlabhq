@@ -360,10 +360,10 @@ Credit: [Avoid ableist language](https://developers.google.com/style/inclusive-d
 
 Avoid terms that reflect negative cultural stereotypes and history. In most cases, you can replace terms such as `master` and `slave` with terms that are more precise and functional, such as `primary` and `secondary`.
 
-| Use                   | Avoid                |
-|-----------------------|----------------------|
-| Primary / secondary   | Master / slave       |
-| Blacklist / whitelist | Allowlist / denylist |
+| Use                  | Avoid                 |
+|----------------------|-----------------------|
+| Primary / secondary  | Master / slave        |
+| Allowlist / denylist | Blacklist / whitelist |
 
 For more information see the following [Internet Draft specification](https://tools.ietf.org/html/draft-knodel-terminology-02).
 

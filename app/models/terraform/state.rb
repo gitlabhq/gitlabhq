@@ -3,6 +3,7 @@
 module Terraform
   class State < ApplicationRecord
     include UsageStatistics
+    include FileStoreMounter
 
     DEFAULT = '{"version":1}'.freeze
     HEX_REGEXP = %r{\A\h+\z}.freeze
@@ -17,17 +18,9 @@ module Terraform
 
     default_value_for(:uuid, allows_nil: false) { SecureRandom.hex(UUID_LENGTH / 2) }
 
-    after_save :update_file_store, if: :saved_change_to_file?
-
-    mount_uploader :file, StateUploader
+    mount_file_store_uploader StateUploader
 
     default_value_for(:file) { CarrierWaveStringFile.new(DEFAULT) }
-
-    def update_file_store
-      # The file.object_store is set during `uploader.store!`
-      # which happens after object is inserted/updated
-      self.update_column(:file_store, file.object_store)
-    end
 
     def file_store
       super || StateUploader.default_store

@@ -30,6 +30,8 @@ RSpec.describe GitlabSchema.types['AlertManagementAlert'] do
       metrics_dashboard_url
       runbook
       todos
+      details_url
+      prometheus_alert
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

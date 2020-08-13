@@ -3,7 +3,7 @@
 module API
   module Entities
     class Package < Grape::Entity
-      class Pipeline < ::API::Entities::PipelineBasic
+      class Pipeline < ::API::Entities::Ci::PipelineBasic
         expose :user, using: ::API::Entities::UserBasic
       end
     end

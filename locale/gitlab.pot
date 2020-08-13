@@ -14993,6 +14993,27 @@ msgstr ""
 msgid "MergeConflict|origin//their changes"
 msgstr ""
 
+msgid "MergeRequestAnalytics|Assignees"
+msgstr ""
+
+msgid "MergeRequestAnalytics|Date Merged"
+msgstr ""
+
+msgid "MergeRequestAnalytics|Line changes"
+msgstr ""
+
+msgid "MergeRequestAnalytics|Merge Request"
+msgstr ""
+
+msgid "MergeRequestAnalytics|Milestone"
+msgstr ""
+
+msgid "MergeRequestAnalytics|Pipelines"
+msgstr ""
+
+msgid "MergeRequestAnalytics|Time to merge"
+msgstr ""
+
 msgid "MergeRequestDiffs|Commenting on lines %{selectStart}start%{selectEnd} to %{end}"
 msgstr ""
 
@@ -19432,7 +19453,16 @@ msgstr ""
 msgid "PrometheusAlerts|Threshold"
 msgstr ""
 
+msgid "PrometheusAlerts|exceeded"
+msgstr ""
+
 msgid "PrometheusAlerts|https://gitlab.com/gitlab-com/runbooks"
+msgstr ""
+
+msgid "PrometheusAlerts|is equal to"
+msgstr ""
+
+msgid "PrometheusAlerts|is less than"
 msgstr ""
 
 msgid "PrometheusService|%{exporters} with %{metrics} were found"
@@ -24491,6 +24521,9 @@ msgstr ""
 msgid "There is no data available. Please change your selection."
 msgstr ""
 
+msgid "There is no table data available."
+msgstr ""
+
 msgid "There is too much data to calculate. Please change your selection."
 msgstr ""
 
@@ -24657,6 +24690,9 @@ msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
 msgid "There was an error while fetching the chart data."
+msgstr ""
+
+msgid "There was an error while fetching the table data."
 msgstr ""
 
 msgid "There was an error while fetching value stream analytics data."

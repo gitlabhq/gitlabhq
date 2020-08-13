@@ -12,7 +12,7 @@ module API
       end
       resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Get all pipeline schedules' do
-          success Entities::PipelineSchedule
+          success Entities::Ci::PipelineSchedule
         end
         params do
           use :pagination
@@ -25,22 +25,22 @@ module API
 
           schedules = ::Ci::PipelineSchedulesFinder.new(user_project).execute(scope: params[:scope])
             .preload([:owner, :last_pipeline])
-          present paginate(schedules), with: Entities::PipelineSchedule
+          present paginate(schedules), with: Entities::Ci::PipelineSchedule
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
         desc 'Get a single pipeline schedule' do
-          success Entities::PipelineScheduleDetails
+          success Entities::Ci::PipelineScheduleDetails
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
         end
         get ':id/pipeline_schedules/:pipeline_schedule_id' do
-          present pipeline_schedule, with: Entities::PipelineScheduleDetails
+          present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
         end
 
         desc 'Create a new pipeline schedule' do
-          success Entities::PipelineScheduleDetails
+          success Entities::Ci::PipelineScheduleDetails
         end
         params do
           requires :description, type: String, desc: 'The description of pipeline schedule'
@@ -57,14 +57,14 @@ module API
             .execute
 
           if pipeline_schedule.persisted?
-            present pipeline_schedule, with: Entities::PipelineScheduleDetails
+            present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
           else
             render_validation_error!(pipeline_schedule)
           end
         end
 
         desc 'Edit a pipeline schedule' do
-          success Entities::PipelineScheduleDetails
+          success Entities::Ci::PipelineScheduleDetails
         end
         params do
           requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
@@ -78,14 +78,14 @@ module API
           authorize! :update_pipeline_schedule, pipeline_schedule
 
           if pipeline_schedule.update(declared_params(include_missing: false))
-            present pipeline_schedule, with: Entities::PipelineScheduleDetails
+            present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
           else
             render_validation_error!(pipeline_schedule)
           end
         end
 
         desc 'Take ownership of a pipeline schedule' do
-          success Entities::PipelineScheduleDetails
+          success Entities::Ci::PipelineScheduleDetails
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
@@ -94,14 +94,14 @@ module API
           authorize! :update_pipeline_schedule, pipeline_schedule
 
           if pipeline_schedule.own!(current_user)
-            present pipeline_schedule, with: Entities::PipelineScheduleDetails
+            present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
           else
             render_validation_error!(pipeline_schedule)
           end
         end
 
         desc 'Delete a pipeline schedule' do
-          success Entities::PipelineScheduleDetails
+          success Entities::Ci::PipelineScheduleDetails
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
@@ -132,7 +132,7 @@ module API
         end
 
         desc 'Create a new pipeline schedule variable' do
-          success Entities::Variable
+          success Entities::Ci::Variable
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
@@ -146,14 +146,14 @@ module API
           variable_params = declared_params(include_missing: false)
           variable = pipeline_schedule.variables.create(variable_params)
           if variable.persisted?
-            present variable, with: Entities::Variable
+            present variable, with: Entities::Ci::Variable
           else
             render_validation_error!(variable)
           end
         end
 
         desc 'Edit a pipeline schedule variable' do
-          success Entities::Variable
+          success Entities::Ci::Variable
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
@@ -165,14 +165,14 @@ module API
           authorize! :update_pipeline_schedule, pipeline_schedule
 
           if pipeline_schedule_variable.update(declared_params(include_missing: false))
-            present pipeline_schedule_variable, with: Entities::Variable
+            present pipeline_schedule_variable, with: Entities::Ci::Variable
           else
             render_validation_error!(pipeline_schedule_variable)
           end
         end
 
         desc 'Delete a pipeline schedule variable' do
-          success Entities::Variable
+          success Entities::Ci::Variable
         end
         params do
           requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
@@ -182,7 +182,7 @@ module API
           authorize! :admin_pipeline_schedule, pipeline_schedule
 
           status :accepted
-          present pipeline_schedule_variable.destroy, with: Entities::Variable
+          present pipeline_schedule_variable.destroy, with: Entities::Ci::Variable
         end
       end
 

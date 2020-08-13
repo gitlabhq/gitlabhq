@@ -5,6 +5,8 @@ module Types
     class PipelineType < BaseObject
       graphql_name 'Pipeline'
 
+      connection_type_class(Types::CountableConnectionType)
+
       authorize :read_pipeline
 
       expose_permissions Types::PermissionTypes::Ci::Pipeline

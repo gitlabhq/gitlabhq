@@ -43,8 +43,8 @@ Child pipelines work well with other GitLab CI/CD features:
 - Since the parent pipeline in `.gitlab-ci.yml` and the child pipeline run as normal
   pipelines, they can have their own behaviors and sequencing in relation to triggers.
 
-All of this will work with the [`include:`](yaml/README.md#include) feature so you can compose
-the child pipeline configuration.
+See the [`trigger:`](yaml/README.md#trigger) keyword documentation for full details on how to
+include the child pipeline configuration.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Parent-Child Pipelines feature demo](https://youtu.be/n8KpBSqZNbk).

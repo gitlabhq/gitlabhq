@@ -9,7 +9,7 @@ module API
 
       expose :last_pipeline do |commit, options|
         pipeline = commit.last_pipeline if can_read_pipeline?
-        ::API::Entities::PipelineBasic.represent(pipeline, options)
+        ::API::Entities::Ci::PipelineBasic.represent(pipeline, options)
       end
 
       private

@@ -3,7 +3,6 @@ import {
   GlAlert,
   GlButton,
   GlCollapse,
-  GlDeprecatedButton,
   GlFormCheckbox,
   GlFormCombobox,
   GlFormGroup,
@@ -39,7 +38,6 @@ export default {
     GlAlert,
     GlButton,
     GlCollapse,
-    GlDeprecatedButton,
     GlFormCheckbox,
     GlFormCombobox,
     GlFormGroup,
@@ -340,24 +338,25 @@ export default {
       </gl-alert>
     </gl-collapse>
     <template #modal-footer>
-      <gl-deprecated-button @click="hideModal">{{ __('Cancel') }}</gl-deprecated-button>
-      <gl-deprecated-button
+      <gl-button @click="hideModal">{{ __('Cancel') }}</gl-button>
+      <gl-button
         v-if="variableBeingEdited"
         ref="deleteCiVariable"
-        category="secondary"
         variant="danger"
+        category="secondary"
         data-qa-selector="ci_variable_delete_button"
         @click="deleteVarAndClose"
-        >{{ __('Delete variable') }}</gl-deprecated-button
+        >{{ __('Delete variable') }}</gl-button
       >
-      <gl-deprecated-button
+      <gl-button
         ref="updateOrAddVariable"
         :disabled="!canSubmit"
         variant="success"
+        category="primary"
         data-qa-selector="ci_variable_save_button"
         @click="updateOrAddVariable"
         >{{ modalActionText }}
-      </gl-deprecated-button>
+      </gl-button>
     </template>
   </gl-modal>
 </template>

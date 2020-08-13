@@ -58,4 +58,10 @@ RSpec.describe AlertManagement::AlertPresenter do
       expect(presenter.runbook).to eq('https://runbook.com')
     end
   end
+
+  describe '#details_url' do
+    it 'returns the details URL' do
+      expect(presenter.details_url).to match(%r{#{project.web_url}/-/alert_management/#{alert.iid}/details})
+    end
+  end
 end

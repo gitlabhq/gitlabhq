@@ -14,7 +14,6 @@ your team when environment performance falls outside of the boundaries you set.
 ## Managed Prometheus instances
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and GitLab 11.3 for [library metrics](../../user/project/integrations/prometheus_library/metrics.md).
-> - Runbook URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
 
 For managed Prometheus instances using auto configuration, you can
 [configure alerts for metrics](index.md#adding-custom-metrics) directly in the
@@ -31,6 +30,18 @@ For managed Prometheus instances using auto configuration, you can
 ![Adding an alert](img/prometheus_alert.png)
 
 To remove the alert, click back on the alert icon for the desired metric, and click **Delete**.
+
+### Link runbooks to alerts
+
+> - Runbook URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
+
+When creating alerts from the metrics dashboard for [managed Prometheus instances](#managed-prometheus-instances),
+you can also link a runbook. When the alert triggers, the
+[chart context menu](dashboards/index.md#chart-context-menu) on the metrics chart
+links to the runbook, making it easy for you to locate and access the correct runbook
+as soon as the alert fires:
+
+![Linked Runbook in charts](img/linked_runbooks_on_charts.png)
 
 ## External Prometheus instances
 

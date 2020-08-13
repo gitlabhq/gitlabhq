@@ -54,9 +54,6 @@ export default {
     hasProjectLink() {
       return Boolean(this.packageEntity.project_path);
     },
-    deleteAvailable() {
-      return !this.disableDelete && !this.isGroup;
-    },
   },
 };
 </script>
@@ -111,7 +108,7 @@ export default {
 
     <div
       class="table-section d-flex flex-md-column justify-content-between align-items-md-end"
-      :class="!deleteAvailable ? 'section-50' : 'section-40'"
+      :class="disableDelete ? 'section-50' : 'section-40'"
     >
       <publish-method :package-entity="packageEntity" :is-group="isGroup" />
 
@@ -126,7 +123,7 @@ export default {
       </div>
     </div>
 
-    <div v-if="deleteAvailable" class="table-section section-10 d-flex justify-content-end">
+    <div v-if="!disableDelete" class="table-section section-10 d-flex justify-content-end">
       <gl-button
         data-testid="action-delete"
         icon="remove"

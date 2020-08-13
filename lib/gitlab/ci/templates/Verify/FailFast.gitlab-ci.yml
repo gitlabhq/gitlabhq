@@ -1,4 +1,5 @@
 rspec-rails-modified-path-specs:
+  image: ruby:2.6
   stage: .pre
   rules:
     - if: $CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train"

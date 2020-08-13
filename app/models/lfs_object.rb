@@ -5,6 +5,7 @@ class LfsObject < ApplicationRecord
   include Checksummable
   include EachBatch
   include ObjectStorage::BackgroundMove
+  include FileStoreMounter
 
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, -> { distinct }, through: :lfs_objects_projects
@@ -15,19 +16,11 @@ class LfsObject < ApplicationRecord
 
   validates :oid, presence: true, uniqueness: true
 
-  mount_uploader :file, LfsObjectUploader
-
-  after_save :update_file_store, if: :saved_change_to_file?
+  mount_file_store_uploader LfsObjectUploader
 
   def self.not_linked_to_project(project)
     where('NOT EXISTS (?)',
           project.lfs_objects_projects.select(1).where('lfs_objects_projects.lfs_object_id = lfs_objects.id'))
-  end
-
-  def update_file_store
-    # The file.object_store is set during `uploader.store!`
-    # which happens after object is inserted/updated
-    self.update_column(:file_store, file.object_store)
   end
 
   def project_allowed_access?(project)

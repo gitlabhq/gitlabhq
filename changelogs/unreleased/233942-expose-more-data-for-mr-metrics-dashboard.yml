@@ -1,0 +1,5 @@
+---
+title: Expose counts (pipeline, commits) and approvers for a merge request in GraphQL
+merge_request: 39086
+author:
+type: added

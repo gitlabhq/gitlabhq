@@ -4,7 +4,7 @@ module Types
   class MergeRequestType < BaseObject
     graphql_name 'MergeRequest'
 
-    connection_type_class(Types::IssuableConnectionType)
+    connection_type_class(Types::CountableConnectionType)
 
     implements(Types::Notes::NoteableType)
 
@@ -143,6 +143,8 @@ module Types
     end
     field :task_completion_status, Types::TaskCompletionStatus, null: false,
           description: Types::TaskCompletionStatus.description
+    field :commit_count, GraphQL::INT_TYPE, null: true,
+          description: 'Number of commits in the merge request'
 
     def diff_stats(path: nil)
       stats = Array.wrap(object.diff_stats&.to_a)
@@ -162,5 +164,14 @@ module Types
         hash.merge!(additions: status.additions, deletions: status.deletions, file_count: 1) { |_, x, y| x + y }
       end
     end
+
+    def commit_count
+      object&.metrics&.commits_count
+    end
+
+    def approvers
+      object.approver_users
+    end
   end
 end
+Types::MergeRequestType.prepend_if_ee('::EE::Types::MergeRequestType')

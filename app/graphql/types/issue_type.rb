@@ -4,7 +4,7 @@ module Types
   class IssueType < BaseObject
     graphql_name 'Issue'
 
-    connection_type_class(Types::IssuableConnectionType)
+    connection_type_class(Types::CountableConnectionType)
 
     implements(Types::Notes::NoteableType)
 

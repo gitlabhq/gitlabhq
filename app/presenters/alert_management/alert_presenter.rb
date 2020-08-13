@@ -4,6 +4,7 @@ module AlertManagement
   class AlertPresenter < Gitlab::View::Presenter::Delegated
     include Gitlab::Utils::StrongMemoize
     include IncidentManagement::Settings
+    include ActionView::Helpers::UrlHelper
 
     MARKDOWN_LINE_BREAK = "  \n".freeze
 
@@ -45,14 +46,11 @@ module AlertManagement
 
     def metrics_dashboard_url; end
 
-    private
-
     def details_url
-      ::Gitlab::Routing.url_helpers.details_project_alert_management_url(
-        project,
-        alert.iid
-      )
+      details_project_alert_management_url(project, alert.iid)
     end
+
+    private
 
     attr_reader :alert, :project
 

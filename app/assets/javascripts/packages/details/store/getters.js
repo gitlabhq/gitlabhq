@@ -110,6 +110,6 @@ export const composerRegistryInclude = ({ composerPath }) => {
   return JSON.stringify(base);
 };
 export const composerPackageInclude = ({ packageEntity }) => {
-  const base = { package_name: packageEntity.name };
+  const base = { [packageEntity.name]: packageEntity.version };
   return JSON.stringify(base);
 };
