@@ -64,6 +64,8 @@ class Group < Namespace
 
   has_one :import_state, class_name: 'GroupImportState', inverse_of: :group
 
+  has_many :group_deploy_keys_groups, inverse_of: :group
+  has_many :group_deploy_keys, through: :group_deploy_keys_groups
   has_many :group_deploy_tokens
   has_many :deploy_tokens, through: :group_deploy_tokens
 

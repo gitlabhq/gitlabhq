@@ -26,6 +26,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:container_repositories) }
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:iterations) }
+    it { is_expected.to have_many(:group_deploy_keys) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }

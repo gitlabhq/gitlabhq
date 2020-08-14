@@ -104,6 +104,7 @@ class User < ApplicationRecord
   # Profile
   has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :group_deploy_keys
   has_many :gpg_keys
 
   has_many :emails, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

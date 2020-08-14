@@ -12202,16 +12202,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "SCALAR",
-          "name": "EEIterationID",
-          "description": "Identifier of EE::Iteration",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "INTERFACE",
           "name": "Entry",
           "description": null,
@@ -21529,6 +21519,16 @@
           "interfaces": [
 
           ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "IterationID",
+          "description": "Identifier of Iteration",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -36095,7 +36095,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "EEIterationID",
+                      "name": "IterationID",
                       "ofType": null
                     }
                   },

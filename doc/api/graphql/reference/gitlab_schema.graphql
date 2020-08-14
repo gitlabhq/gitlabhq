@@ -4383,11 +4383,6 @@ type DismissVulnerabilityPayload {
   vulnerability: Vulnerability
 }
 
-"""
-Identifier of EE::Iteration
-"""
-scalar EEIterationID
-
 interface Entry {
   """
   Flat path of the entry
@@ -7804,6 +7799,11 @@ type IterationEdge {
   """
   node: Iteration
 }
+
+"""
+Identifier of Iteration
+"""
+scalar IterationID
 
 """
 State of a GitLab iteration
@@ -12270,7 +12270,7 @@ type Query {
     """
     Find an iteration by its ID
     """
-    id: EEIterationID!
+    id: IterationID!
   ): Iteration
 
   """
