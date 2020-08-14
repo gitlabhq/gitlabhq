@@ -3,6 +3,10 @@
 class PersonalSnippet < Snippet
   include WithUploads
 
+  def parent_user
+    author
+  end
+
   def skip_project_check?
     true
   end

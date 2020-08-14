@@ -2596,6 +2596,8 @@ class Project < ApplicationRecord
       namespace != from.namespace
     when Namespace
       namespace != from
+    when User
+      true
     end
   end
 

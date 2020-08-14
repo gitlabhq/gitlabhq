@@ -24,4 +24,12 @@ RSpec.describe PersonalSnippet do
     let(:expected_web_url_path) { "-/snippets/#{container.id}" }
     let(:expected_repo_url_path) { "snippets/#{container.id}" }
   end
+
+  describe '#parent_user' do
+    it 'returns the snippet author' do
+      snippet = build(:personal_snippet)
+
+      expect(snippet.parent_user).to eq(snippet.author)
+    end
+  end
 end

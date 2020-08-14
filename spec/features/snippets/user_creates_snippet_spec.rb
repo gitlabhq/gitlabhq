@@ -144,4 +144,17 @@ RSpec.describe 'User creates snippet', :js do
       expect(created_snippet.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
   end
+
+  it_behaves_like 'personal snippet with references' do
+    let(:container) { '.snippet-header .description' }
+    let(:md_description) { references }
+
+    subject do
+      visit new_snippet_path
+      fill_form
+      click_button('Create snippet')
+
+      wait_for_requests
+    end
+  end
 end

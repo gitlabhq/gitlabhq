@@ -680,6 +680,12 @@ RSpec.describe Project do
           end
         end
       end
+
+      context 'when argument is a user' do
+        it 'returns full path to the project' do
+          expect(project.to_reference_base(owner)).to eq 'sample-namespace/sample-project'
+        end
+      end
     end
 
     describe '#to_human_reference' do

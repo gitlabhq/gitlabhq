@@ -120,6 +120,17 @@ RSpec.describe 'Comments on personal snippets', :js do
       # but we want to make sure
       expect(page).not_to have_selector('.atwho-view')
     end
+
+    it_behaves_like 'personal snippet with references' do
+      let(:container) { 'div#notes' }
+
+      subject do
+        fill_in 'note[note]', with: references
+        click_button 'Comment'
+
+        wait_for_requests
+      end
+    end
   end
 
   context 'when editing a note' do

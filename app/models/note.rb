@@ -559,6 +559,10 @@ class Note < ApplicationRecord
     (!system_note_with_references? || all_referenced_mentionables_allowed?(user)) && system_note_viewable_by?(user)
   end
 
+  def parent_user
+    noteable.author if for_personal_snippet?
+  end
+
   private
 
   # Using this method followed by a call to `save` may result in ActiveRecord::RecordNotUnique exception

@@ -192,3 +192,83 @@ RSpec.shared_examples 'show and render proper snippet blob' do
     end
   end
 end
+
+RSpec.shared_examples 'personal snippet with references' do
+  let_it_be(:project)         { create(:project, :repository) }
+  let_it_be(:merge_request)   { create(:merge_request, source_project: project) }
+  let_it_be(:project_snippet) { create(:project_snippet, :repository, project: project)}
+  let_it_be(:issue)           { create(:issue, project: project) }
+  let_it_be(:commit)          { project.commit }
+
+  let(:mr_reference)          { merge_request.to_reference(full: true) }
+  let(:issue_reference)       { issue.to_reference(full: true) }
+  let(:snippet_reference)     { project_snippet.to_reference(full: true) }
+  let(:commit_reference)      { commit.reference_link_text(full: true) }
+
+  RSpec.shared_examples 'handles resource links' do
+    context 'with access to the resource' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'converts the reference to a link' do
+        subject
+
+        page.within(container) do
+          aggregate_failures do
+            expect(page).to have_link(mr_reference)
+            expect(page).to have_link(issue_reference)
+            expect(page).to have_link(snippet_reference)
+            expect(page).to have_link(commit_reference)
+          end
+        end
+      end
+    end
+
+    context 'without access to the resource' do
+      it 'does not convert the reference to a link' do
+        subject
+
+        page.within(container) do
+          expect(page).not_to have_link(mr_reference)
+          expect(page).not_to have_link(issue_reference)
+          expect(page).not_to have_link(snippet_reference)
+          expect(page).not_to have_link(commit_reference)
+        end
+      end
+    end
+  end
+
+  context 'when using references to resources' do
+    let(:references) do
+      <<~REFERENCES
+        MR: #{mr_reference}
+
+        Commit: #{commit_reference}
+
+        Issue: #{issue_reference}
+
+        ProjectSnippet: #{snippet_reference}
+      REFERENCES
+    end
+
+    it_behaves_like 'handles resource links'
+  end
+
+  context 'when using links to resources' do
+    let(:args) { { host: Gitlab.config.gitlab.url, port: nil } }
+    let(:references) do
+      <<~REFERENCES
+        MR: #{merge_request_url(merge_request, args)}
+
+        Commit: #{project_commit_url(project, commit, args)}
+
+        Issue: #{issue_url(issue, args)}
+
+        ProjectSnippet: #{project_snippet_url(project, project_snippet, args)}
+      REFERENCES
+    end
+
+    it_behaves_like 'handles resource links'
+  end
+end

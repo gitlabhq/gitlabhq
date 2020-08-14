@@ -1,0 +1,7 @@
+---
+name: personal_snippet_reference_filters
+introduced_by_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/235155
+group: group::editor
+type: development
+default_enabled: false

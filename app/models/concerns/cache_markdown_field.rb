@@ -39,6 +39,10 @@ module CacheMarkdownField
 
     context[:markdown_engine] = :common_mark
 
+    if Feature.enabled?(:personal_snippet_reference_filters, context[:author])
+      context[:user] = self.parent_user
+    end
+
     context
   end
 
@@ -130,6 +134,10 @@ module CacheMarkdownField
     else
       0
     end
+  end
+
+  def parent_user
+    nil
   end
 
   included do
