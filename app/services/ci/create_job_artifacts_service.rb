@@ -25,7 +25,7 @@ module Ci
 
       if lsif?(artifact_type)
         headers[:ProcessLsif] = true
-        headers[:ProcessLsifReferences] = Feature.enabled?(:code_navigation_references, project, default_enabled: false)
+        headers[:ProcessLsifReferences] = Feature.enabled?(:code_navigation_references, project, default_enabled: true)
       end
 
       success(headers: headers)

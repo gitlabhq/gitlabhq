@@ -42,6 +42,36 @@ After the job succeeds, code intelligence data can be viewed while browsing the 
 
 ![Code intelligence](img/code_intelligence_v13_1.png)
 
+## Find references
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217392) in GitLab 13.2.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/225621) on GitLab 13.3.
+> - It's enabled on GitLab.com.
+
+To find where a particular object is being used, you can see links to specific lines of code
+under the **References** tab:
+
+![Find references](img/code_intelligence_find_references_v13_3.png)
+
+### Enable or disable find references
+
+Find references is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to disable it for your instance.
+
+To disable it:
+
+```ruby
+Feature.disable(:code_navigation_references)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:code_navigation_references)
+```
+
 ## Language support
 
 Generating an LSIF file requires a language server indexer implementation for the
