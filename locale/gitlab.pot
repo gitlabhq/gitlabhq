@@ -3139,6 +3139,9 @@ msgstr ""
 msgid "Archived"
 msgstr ""
 
+msgid "Archived in this version"
+msgstr ""
+
 msgid "Archived project! Repository and other project resources are read only"
 msgstr ""
 
@@ -6901,6 +6904,9 @@ msgstr ""
 msgid "Could not add admins as members"
 msgstr ""
 
+msgid "Could not archive %{design}. Please try again."
+msgstr ""
+
 msgid "Could not authorize chat nickname. Try again!"
 msgstr ""
 
@@ -8320,6 +8326,18 @@ msgid "DesignManagement|%{filename} did not change."
 msgstr ""
 
 msgid "DesignManagement|Adding a design with the same filename replaces the file in a new version."
+msgstr ""
+
+msgid "DesignManagement|Archive designs"
+msgstr ""
+
+msgid "DesignManagement|Archive selected"
+msgstr ""
+
+msgid "DesignManagement|Archived designs will still be available in previous versions of the design collection."
+msgstr ""
+
+msgid "DesignManagement|Are you sure you want to archive the selected designs?"
 msgstr ""
 
 msgid "DesignManagement|Are you sure you want to cancel changes to this comment?"
@@ -13102,6 +13120,9 @@ msgstr ""
 msgid "Integrations|Comment settings:"
 msgstr ""
 
+msgid "Integrations|Default settings are inherited from the instance level."
+msgstr ""
+
 msgid "Integrations|Enable comments"
 msgstr ""
 
@@ -13114,13 +13135,10 @@ msgstr ""
 msgid "Integrations|Standard"
 msgstr ""
 
-msgid "Integrations|This integration has multiple settings available."
-msgstr ""
-
 msgid "Integrations|Use custom settings"
 msgstr ""
 
-msgid "Integrations|Use instance level settings"
+msgid "Integrations|Use default settings"
 msgstr ""
 
 msgid "Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) will be created."

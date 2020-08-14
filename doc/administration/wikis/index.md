@@ -30,8 +30,8 @@ This setting is not available through the [Admin Area settings](../../user/admin
 In order to configure this setting, use either the Rails console
 or the [Application settings API](../../api/settings.md).
 
-NOTE: **IMPORTANT:**
-The value of the limit **must** be in bytes.
+NOTE: **Note:**
+The value of the limit **must** be in bytes. The minimum value is 1024 bytes.
 
 #### Through the Rails console
 

@@ -1,0 +1,5 @@
+---
+title: Added minimum value of 1KB to wiki_page_max_content_bytes
+merge_request: 38554
+author: Uday Aggarwal (uday.agg97)
+type: changed

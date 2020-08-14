@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 export default {
   name: 'DeleteButton',
@@ -28,6 +28,16 @@ export default {
       required: false,
       default: 'info',
     },
+    buttonCategory: {
+      type: String,
+      required: false,
+      default: 'primary',
+    },
+    buttonIcon: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
     buttonSize: {
       type: String,
       required: false,
@@ -38,6 +48,11 @@ export default {
       required: false,
       default: true,
     },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -45,13 +60,13 @@ export default {
     };
   },
   modal: {
-    title: s__('DesignManagement|Delete designs confirmation'),
+    title: s__('DesignManagement|Are you sure you want to archive the selected designs?'),
     actionPrimary: {
-      text: s__('Delete'),
-      attributes: { variant: 'danger' },
+      text: s__('DesignManagement|Archive designs'),
+      attributes: { variant: 'warning' },
     },
     actionCancel: {
-      text: s__('Cancel'),
+      text: __('Cancel'),
     },
   },
 };
@@ -66,14 +81,23 @@ export default {
       :action-cancel="$options.modal.actionCancel"
       @ok="$emit('deleteSelectedDesigns')"
     >
-      <p>{{ s__('DesignManagement|Are you sure you want to delete the selected designs?') }}</p>
+      <p>
+        {{
+          s__(
+            'DesignManagement|Archived designs will still be available in previous versions of the design collection.',
+          )
+        }}
+      </p>
     </gl-modal>
     <gl-button
       v-gl-modal-directive="modalId"
       :variant="buttonVariant"
+      :category="buttonCategory"
       :size="buttonSize"
       :class="buttonClass"
       :disabled="isDeleting || !hasSelectedDesigns"
+      :loading="loading"
+      :icon="buttonIcon"
     >
       <slot></slot>
     </gl-button>

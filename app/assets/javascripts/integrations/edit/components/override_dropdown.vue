@@ -5,7 +5,7 @@ import { GlNewDropdown, GlNewDropdownItem } from '@gitlab/ui';
 const dropdownOptions = [
   {
     value: false,
-    text: s__('Integrations|Use instance level settings'),
+    text: s__('Integrations|Use default settings'),
   },
   {
     value: true,
@@ -48,7 +48,7 @@ export default {
   <div
     class="gl-display-flex gl-justify-content-space-between gl-align-items-baseline gl-py-4 gl-mt-5 gl-mb-6 gl-border-t-1 gl-border-t-solid gl-border-b-1 gl-border-b-solid gl-border-gray-100"
   >
-    <span>{{ s__('Integrations|This integration has multiple settings available.') }}</span>
+    <span>{{ s__('Integrations|Default settings are inherited from the instance level.') }}</span>
     <input name="service[inherit_from_id]" :value="override ? '' : inheritFromId" type="hidden" />
     <gl-new-dropdown :text="selected.text">
       <gl-new-dropdown-item

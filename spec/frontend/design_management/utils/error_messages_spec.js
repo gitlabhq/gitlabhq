@@ -10,8 +10,8 @@ const mockFilenames = n =>
 
 describe('Error message', () => {
   describe('designDeletionError', () => {
-    const singularMsg = 'Could not delete a design. Please try again.';
-    const pluralMsg = 'Could not delete designs. Please try again.';
+    const singularMsg = 'Could not archive a design. Please try again.';
+    const pluralMsg = 'Could not archive designs. Please try again.';
 
     describe('when [singular=true]', () => {
       it.each([[undefined], [true]])('uses singular grammar', singularOption => {

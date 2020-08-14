@@ -327,7 +327,7 @@ export default {
             v-if="isLatestVersion"
             variant="link"
             size="small"
-            class="gl-mr-2 js-select-all"
+            class="gl-mr-3 js-select-all"
             @click="toggleDesignsSelection"
             >{{ selectAllButtonText }}
           </gl-button>
@@ -340,14 +340,15 @@ export default {
             <delete-button
               v-if="isLatestVersion"
               :is-deleting="loading"
-              button-variant="danger"
-              button-class="gl-mr-4"
+              button-variant="warning"
+              button-category="secondary"
+              button-class="gl-mr-3"
               button-size="small"
+              :loading="loading"
               :has-selected-designs="hasSelectedDesigns"
               @deleteSelectedDesigns="mutate()"
             >
-              {{ s__('DesignManagement|Delete selected') }}
-              <gl-loading-icon v-if="loading" inline class="ml-1" />
+              {{ s__('DesignManagement|Archive selected') }}
             </delete-button>
           </design-destroyer>
           <upload-button v-if="canCreateDesign" :is-saving="isSaving" @upload="onUploadDesign" />

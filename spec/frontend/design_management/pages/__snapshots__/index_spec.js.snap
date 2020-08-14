@@ -111,7 +111,7 @@ exports[`Design management index page designs renders designs list and header wi
       >
         <gl-button-stub
           category="tertiary"
-          class="gl-mr-2 js-select-all"
+          class="gl-mr-3 js-select-all"
           icon=""
           size="small"
           variant="link"
@@ -122,14 +122,14 @@ exports[`Design management index page designs renders designs list and header wi
          
         <div>
           <delete-button-stub
-            buttonclass="gl-mr-4"
+            buttoncategory="secondary"
+            buttonclass="gl-mr-3"
             buttonsize="small"
-            buttonvariant="danger"
+            buttonvariant="warning"
           >
             
-            Delete selected
-            
-            <!---->
+            Archive selected
+          
           </delete-button-stub>
         </div>
          

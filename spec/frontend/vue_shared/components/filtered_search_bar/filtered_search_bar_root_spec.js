@@ -130,6 +130,16 @@ describe('FilteredSearchBarRoot', () => {
         expect(wrapper.vm.filteredRecentSearches).toHaveLength(1);
         expect(wrapper.vm.filteredRecentSearches[0]).toEqual({ foo: 'bar' });
       });
+
+      it('returns undefined when recentSearchesStorageKey prop is not set on component', async () => {
+        wrapper.setProps({
+          recentSearchesStorageKey: '',
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.filteredRecentSearches).not.toBeDefined();
+      });
     });
   });
 

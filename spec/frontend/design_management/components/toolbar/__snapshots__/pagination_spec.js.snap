@@ -10,7 +10,7 @@ exports[`Design management pagination component renders pagination buttons 1`] =
   0 of 2
   
   <div
-    class="btn-group ml-3 mr-3"
+    class="btn-group gl-ml-3"
   >
     <pagination-button-stub
       class="js-previous-design"

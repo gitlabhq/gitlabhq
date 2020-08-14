@@ -74,7 +74,7 @@ export default {
         deletion: {
           name: 'file-deletion-solid',
           classes: 'text-danger-500',
-          tooltip: __('Deleted in this version'),
+          tooltip: __('Archived in this version'),
         },
       };
 

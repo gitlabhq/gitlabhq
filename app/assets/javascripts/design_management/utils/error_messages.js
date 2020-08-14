@@ -73,7 +73,7 @@ const someDesignsSkippedMessage = skippedFiles => {
 
 export const designDeletionError = ({ singular = true } = {}) => {
   const design = singular ? __('a design') : __('designs');
-  return sprintf(s__('Could not delete %{design}. Please try again.'), {
+  return sprintf(s__('Could not archive %{design}. Please try again.'), {
     design,
   });
 };

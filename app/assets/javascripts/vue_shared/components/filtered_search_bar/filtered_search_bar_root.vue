@@ -121,7 +121,9 @@ export default {
         : __('Sort direction: Descending');
     },
     filteredRecentSearches() {
-      return this.recentSearches.filter(item => typeof item !== 'string');
+      return this.recentSearchesStorageKey
+        ? this.recentSearches.filter(item => typeof item !== 'string')
+        : undefined;
     },
   },
   watch: {
@@ -280,7 +282,7 @@ export default {
       <template #history-item="{ historyItem }">
         <template v-for="(token, index) in historyItem">
           <span v-if="typeof token === 'string'" :key="index" class="gl-px-1">"{{ token }}"</span>
-          <span v-else :key="`${token.type}-${token.value.data}`" class="gl-px-1">
+          <span v-else :key="`${index}-${token.type}-${token.value.data}`" class="gl-px-1">
             <span v-if="tokenTitles[token.type]"
               >{{ tokenTitles[token.type] }} :{{ token.value.operator }}</span
             >
