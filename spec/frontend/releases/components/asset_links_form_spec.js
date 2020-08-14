@@ -3,6 +3,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 import { release as originalRelease } from '../mock_data';
 import * as commonUtils from '~/lib/utils/common_utils';
+import { ENTER_KEY } from '~/lib/utils/keys';
 import { ASSET_LINK_TYPE, DEFAULT_ASSET_LINK_TYPE } from '~/releases/constants';
 
 const localVue = createLocalVue();
@@ -91,42 +92,128 @@ describe('Release edit component', () => {
       expect(actions.removeAssetLink).toHaveBeenCalledTimes(1);
     });
 
-    it('calls the "updateAssetLinkUrl" store method when text is entered into the "URL" input field', () => {
-      const linkIdToUpdate = release.assets.links[0].id;
-      const newUrl = 'updated url';
+    describe('URL input field', () => {
+      let input;
+      let linkIdToUpdate;
+      let newUrl;
 
-      expect(actions.updateAssetLinkUrl).not.toHaveBeenCalled();
+      beforeEach(() => {
+        input = wrapper.find({ ref: 'urlInput' }).element;
+        linkIdToUpdate = release.assets.links[0].id;
+        newUrl = 'updated url';
+      });
 
-      wrapper.find({ ref: 'urlInput' }).vm.$emit('change', newUrl);
+      const expectStoreMethodNotToBeCalled = () => {
+        expect(actions.updateAssetLinkUrl).not.toHaveBeenCalled();
+      };
 
-      expect(actions.updateAssetLinkUrl).toHaveBeenCalledTimes(1);
-      expect(actions.updateAssetLinkUrl).toHaveBeenCalledWith(
-        expect.anything(),
-        {
-          linkIdToUpdate,
-          newUrl,
-        },
-        undefined,
-      );
+      const dispatchKeydowEvent = eventParams => {
+        const event = new KeyboardEvent('keydown', eventParams);
+
+        input.dispatchEvent(event);
+      };
+
+      const expectStoreMethodToBeCalled = () => {
+        expect(actions.updateAssetLinkUrl).toHaveBeenCalledTimes(1);
+        expect(actions.updateAssetLinkUrl).toHaveBeenCalledWith(
+          expect.anything(),
+          {
+            linkIdToUpdate,
+            newUrl,
+          },
+          undefined,
+        );
+      };
+
+      it('calls the "updateAssetLinkUrl" store method when text is entered into the "URL" input field', () => {
+        expectStoreMethodNotToBeCalled();
+
+        wrapper.find({ ref: 'urlInput' }).vm.$emit('change', newUrl);
+
+        expectStoreMethodToBeCalled();
+      });
+
+      it('calls the "updateAssetLinkUrl" store method when Ctrl+Enter is pressed inside the "URL" input field', () => {
+        expectStoreMethodNotToBeCalled();
+
+        input.value = newUrl;
+
+        dispatchKeydowEvent({ key: ENTER_KEY, ctrlKey: true });
+
+        expectStoreMethodToBeCalled();
+      });
+
+      it('calls the "updateAssetLinkUrl" store method when Cmd+Enter is pressed inside the "URL" input field', () => {
+        expectStoreMethodNotToBeCalled();
+
+        input.value = newUrl;
+
+        dispatchKeydowEvent({ key: ENTER_KEY, metaKey: true });
+
+        expectStoreMethodToBeCalled();
+      });
     });
 
-    it('calls the "updateAssetLinkName" store method when text is entered into the "Link title" input field', () => {
-      const linkIdToUpdate = release.assets.links[0].id;
-      const newName = 'updated name';
+    describe('Link title field', () => {
+      let input;
+      let linkIdToUpdate;
+      let newName;
 
-      expect(actions.updateAssetLinkName).not.toHaveBeenCalled();
+      beforeEach(() => {
+        input = wrapper.find({ ref: 'nameInput' }).element;
+        linkIdToUpdate = release.assets.links[0].id;
+        newName = 'updated name';
+      });
 
-      wrapper.find({ ref: 'nameInput' }).vm.$emit('change', newName);
+      const expectStoreMethodNotToBeCalled = () => {
+        expect(actions.updateAssetLinkUrl).not.toHaveBeenCalled();
+      };
 
-      expect(actions.updateAssetLinkName).toHaveBeenCalledTimes(1);
-      expect(actions.updateAssetLinkName).toHaveBeenCalledWith(
-        expect.anything(),
-        {
-          linkIdToUpdate,
-          newName,
-        },
-        undefined,
-      );
+      const dispatchKeydowEvent = eventParams => {
+        const event = new KeyboardEvent('keydown', eventParams);
+
+        input.dispatchEvent(event);
+      };
+
+      const expectStoreMethodToBeCalled = () => {
+        expect(actions.updateAssetLinkName).toHaveBeenCalledTimes(1);
+        expect(actions.updateAssetLinkName).toHaveBeenCalledWith(
+          expect.anything(),
+          {
+            linkIdToUpdate,
+            newName,
+          },
+          undefined,
+        );
+      };
+
+      it('calls the "updateAssetLinkName" store method when text is entered into the "Link title" input field', () => {
+        expectStoreMethodNotToBeCalled();
+
+        wrapper.find({ ref: 'nameInput' }).vm.$emit('change', newName);
+
+        expectStoreMethodToBeCalled();
+      });
+
+      it('calls the "updateAssetLinkName" store method when Ctrl+Enter is pressed inside the "Link title" input field', () => {
+        expectStoreMethodNotToBeCalled();
+
+        input.value = newName;
+
+        dispatchKeydowEvent({ key: ENTER_KEY, ctrlKey: true });
+
+        expectStoreMethodToBeCalled();
+      });
+
+      it('calls the "updateAssetLinkName" store method when Cmd+Enter is pressed inside the "Link title" input field', () => {
+        expectStoreMethodNotToBeCalled();
+
+        input.value = newName;
+
+        dispatchKeydowEvent({ key: ENTER_KEY, metaKey: true });
+
+        expectStoreMethodToBeCalled();
+      });
     });
 
     it('calls the "updateAssetLinkType" store method when an option is selected from the "Type" dropdown', () => {

@@ -1,7 +1,7 @@
 ---
-# Suggestion: gitlab.Contractions
+# Suggestion: gitlab.ContractionsDiscard
 #
-# Checks for use of common and uncommon contractions.
+# Suggests a list of agreed-upon contractions to discard.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: substitution
@@ -11,18 +11,6 @@ level: suggestion
 nonword: false
 ignorecase: true
 swap:
-
-  # Common contractions are ok
-  it is: it's
-  can not: can't
-  cannot: can't
-  do not: don't
-  have not: haven't
-  that is: that's
-  we are: we're
-  would not: wouldn't
-  you are: you're
-  you have: you've
 
   # Uncommon contractions are not ok
   aren't: are not

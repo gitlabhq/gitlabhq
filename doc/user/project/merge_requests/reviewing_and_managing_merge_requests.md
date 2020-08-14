@@ -151,11 +151,12 @@ in a Merge Request. To do so, click the **{comment}** **comment** icon in the gu
 ### Commenting on multiple lines
 
 > - [Introduced](https://gitlab.com/gitlab-org/ux-research/-/issues/870) in GitLab 13.2.
-> - It's deployed behind a feature flag, disabled by default.
+> - It's deployed behind a feature flag, enabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/221268) on GitLab 13.3.
 > - It's enabled on GitLab.com.
-> - It can be enabled or disabled per-project.
+> - It can be disabled or enabled per-project.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [enable it](#enable-or-disable-multiline-comments-core-only). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-multiline-comments-core-only). **(CORE ONLY)**
 
 GitLab provides a way to select which lines of code a comment refers to. After starting a comment
 a dropdown selector is shown to select the first line that this comment refers to.
@@ -178,16 +179,16 @@ It is deployed behind a feature flag that is **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can opt to enable it for your instance.
 
-To enable it:
-
-```ruby
-Feature.enable(:multiline_comments)
-```
-
 To disable it:
 
 ```ruby
 Feature.disable(:multiline_comments)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:multiline_comments)
 ```
 
 ## Pipeline status in merge requests widgets

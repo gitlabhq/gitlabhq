@@ -85,7 +85,7 @@ export default {
     saveButtonLabel() {
       return this.isExistingRelease ? __('Save changes') : __('Create release');
     },
-    isSaveChangesDisabled() {
+    isFormSubmissionDisabled() {
       return this.isUpdatingRelease || !this.isValid;
     },
     milestoneComboboxExtraLinks() {
@@ -116,13 +116,18 @@ export default {
       'updateReleaseNotes',
       'updateReleaseMilestones',
     ]),
+    submitForm() {
+      if (!this.isFormSubmissionDisabled) {
+        this.saveRelease();
+      }
+    },
   },
 };
 </script>
 <template>
   <div class="d-flex flex-column">
     <p class="pt-3 js-subtitle-text" v-html="subtitleText"></p>
-    <form v-if="showForm" @submit.prevent="saveRelease()">
+    <form v-if="showForm" class="js-quick-submit" @submit.prevent="submitForm">
       <tag-field />
       <gl-form-group>
         <label for="release-title">{{ __('Release title') }}</label>
@@ -134,7 +139,7 @@ export default {
           class="form-control"
         />
       </gl-form-group>
-      <gl-form-group class="w-50">
+      <gl-form-group class="w-50" @keydown.enter.prevent.capture>
         <label>{{ __('Milestones') }}</label>
         <div class="d-flex flex-column col-md-6 col-sm-10 pl-0">
           <milestone-combobox
@@ -163,8 +168,6 @@ export default {
                 data-supports-quick-actions="false"
                 :aria-label="__('Release notes')"
                 :placeholder="__('Write your release notes or drag your files here…')"
-                @keydown.meta.enter="saveRelease()"
-                @keydown.ctrl.enter="saveRelease()"
               ></textarea>
             </template>
           </markdown-field>
@@ -179,7 +182,7 @@ export default {
           category="primary"
           variant="success"
           type="submit"
-          :disabled="isSaveChangesDisabled"
+          :disabled="isFormSubmissionDisabled"
           data-testid="submit-button"
         >
           {{ saveButtonLabel }}

@@ -83,11 +83,10 @@ describe('Release edit/new component', () => {
   });
 
   const findSubmitButton = () => wrapper.find('button[type=submit]');
+  const findForm = () => wrapper.find('form');
 
   describe(`basic functionality tests: all tests unrelated to the "${BACK_URL_PARAM}" parameter`, () => {
-    beforeEach(() => {
-      factory();
-    });
+    beforeEach(factory);
 
     it('calls initializeRelease when the component is created', () => {
       expect(actions.initializeRelease).toHaveBeenCalledTimes(1);
@@ -122,15 +121,14 @@ describe('Release edit/new component', () => {
     });
 
     it('calls saveRelease when the form is submitted', () => {
-      wrapper.find('form').trigger('submit');
+      findForm().trigger('submit');
+
       expect(actions.saveRelease).toHaveBeenCalledTimes(1);
     });
   });
 
   describe(`when the URL does not contain a "${BACK_URL_PARAM}" parameter`, () => {
-    beforeEach(() => {
-      factory();
-    });
+    beforeEach(factory);
 
     it(`renders a "Cancel" button with an href pointing to "${BACK_URL_PARAM}"`, () => {
       const cancelButton = wrapper.find('.js-cancel-button');
@@ -245,6 +243,12 @@ describe('Release edit/new component', () => {
 
       it('renders the submit button as disabled', () => {
         expect(findSubmitButton().attributes('disabled')).toBe('disabled');
+      });
+
+      it('does not allow the form to be submitted', () => {
+        findForm().trigger('submit');
+
+        expect(actions.saveRelease).not.toHaveBeenCalled();
       });
     });
   });
