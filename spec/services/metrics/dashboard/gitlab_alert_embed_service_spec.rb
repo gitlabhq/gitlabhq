@@ -72,12 +72,18 @@ RSpec.describe Metrics::Dashboard::GitlabAlertEmbedService do
       it_behaves_like 'valid embedded dashboard service response'
       it_behaves_like 'raises error for users with insufficient permissions'
 
-      it 'uses the metric info corresponding to the alert' do
+      it 'generates an panel based on the alert' do
         result = service_call
-        metrics = result[:dashboard][:panel_groups][0][:panels][0][:metrics]
+        panel = result[:dashboard][:panel_groups][0][:panels][0]
+        metric = panel[:metrics].first
 
-        expect(metrics.length).to eq 1
-        expect(metrics.first[:metric_id]).to eq alert.prometheus_metric_id
+        expect(panel[:metrics].length).to eq 1
+        expect(panel).to include(
+          title: alert.prometheus_metric.title,
+          y_label: alert.prometheus_metric.y_label,
+          type: 'area-chart'
+        )
+        expect(metric[:metric_id]).to eq alert.prometheus_metric_id
       end
 
       context 'when the metric does not exist' do

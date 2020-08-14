@@ -303,6 +303,21 @@ for information on how to appropriately configure your alerting rules. See
 [External Prometheus instances](../metrics/alerts.md#external-prometheus-instances)
 for information on setting up alerts for your self-managed Prometheus instance.
 
+### View an Alert's logs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.3.
+
+To view the logs for an alert:
+
+   1. Sign in as a user with Developer or higher [permissions](../../user/permissions.md).
+   1. Navigate to **{cloud-gear}** **Operations > Alerts**.
+   1. Click the alert you want to view.
+   1. Below the title of the alert, click the **Metrics** tab.
+   1. Click the [menu](../metrics/dashboards/index.md#chart-context-menu) of the metric chart to view options.
+   1. Click **View logs**.
+
+Read [View logs from metrics panel](#view-logs-from-metrics-panel) for additional information.
+
 ## Use cases for assigning alerts
 
 Consider a team formed by different sections of monitoring, collaborating on a
