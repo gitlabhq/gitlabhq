@@ -1,9 +1,13 @@
 import Visibility from 'visibilityjs';
 import * as types from './mutation_types';
 import { isProjectImportable } from '../utils';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import {
+  convertObjectPropsToCamelCase,
+  normalizeHeaders,
+  parseIntPagination,
+} from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
@@ -12,7 +16,13 @@ let eTagPoll;
 
 const hasRedirectInError = e => e?.response?.data?.error?.redirect;
 const redirectToUrlInError = e => visitUrl(e.response.data.error.redirect);
-const pathWithFilter = ({ path, filter = '' }) => (filter ? `${path}?filter=${filter}` : path);
+const pathWithParams = ({ path, ...params }) => {
+  const filteredParams = Object.fromEntries(
+    Object.entries(params).filter(([, value]) => value !== ''),
+  );
+  const queryString = objectToQuery(filteredParams);
+  return queryString ? `${path}?${queryString}` : path;
+};
 
 const isRequired = () => {
   // eslint-disable-next-line @gitlab/require-i18n-strings
@@ -44,17 +54,33 @@ const importAll = ({ state, dispatch }) => {
   );
 };
 
-const fetchReposFactory = (reposPath = isRequired()) => ({ state, dispatch, commit }) => {
+const fetchReposFactory = ({ reposPath = isRequired(), hasPagination }) => ({
+  state,
+  dispatch,
+  commit,
+}) => {
   dispatch('stopJobsPolling');
   commit(types.REQUEST_REPOS);
 
   const { provider, filter } = state;
 
   return axios
-    .get(pathWithFilter({ path: reposPath, filter }))
-    .then(({ data }) =>
-      commit(types.RECEIVE_REPOS_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true })),
+    .get(
+      pathWithParams({
+        path: reposPath,
+        filter,
+        page: hasPagination ? state.pageInfo.page.toString() : '',
+      }),
     )
+    .then(({ data, headers }) => {
+      const normalizedHeaders = normalizeHeaders(headers);
+
+      if ('X-PAGE' in normalizedHeaders) {
+        commit(types.SET_PAGE_INFO, parseIntPagination(normalizedHeaders));
+      }
+
+      commit(types.RECEIVE_REPOS_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true }));
+    })
     .then(() => dispatch('fetchJobs'))
     .catch(e => {
       if (hasRedirectInError(e)) {
@@ -85,12 +111,12 @@ const fetchImportFactory = (importPath = isRequired()) => ({ state, commit, gett
       new_name: newName,
       target_namespace: targetNamespace,
     })
-    .then(({ data }) =>
+    .then(({ data }) => {
       commit(types.RECEIVE_IMPORT_SUCCESS, {
         importedProject: convertObjectPropsToCamelCase(data, { deep: true }),
         repoId,
-      }),
-    )
+      });
+    })
     .catch(e => {
       const serverErrorMessage = e?.response?.data?.errors;
       const flashMessage = serverErrorMessage
@@ -119,7 +145,7 @@ export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, d
 
   eTagPoll = new Poll({
     resource: {
-      fetchJobs: () => axios.get(pathWithFilter({ path: jobsPath, filter })),
+      fetchJobs: () => axios.get(pathWithParams({ path: jobsPath, filter })),
     },
     method: 'fetchJobs',
     successCallback: ({ data }) =>
@@ -161,14 +187,24 @@ const fetchNamespacesFactory = (namespacesPath = isRequired()) => ({ commit }) =
     });
 };
 
-export default ({ endpoints = isRequired() }) => ({
+const setPage = ({ state, commit, dispatch }, page) => {
+  if (page === state.pageInfo.page) {
+    return null;
+  }
+
+  commit(types.SET_PAGE, page);
+  return dispatch('fetchRepos');
+};
+
+export default ({ endpoints = isRequired(), hasPagination }) => ({
   clearJobsEtagPoll,
   stopJobsPolling,
   restartJobsPolling,
   setFilter,
   setImportTarget,
   importAll,
-  fetchRepos: fetchReposFactory(endpoints.reposPath),
+  setPage,
+  fetchRepos: fetchReposFactory({ reposPath: endpoints.reposPath, hasPagination }),
   fetchImport: fetchImportFactory(endpoints.importPath),
   fetchJobs: fetchJobsFactory(endpoints.jobsPath),
   fetchNamespaces: fetchNamespacesFactory(endpoints.namespacesPath),

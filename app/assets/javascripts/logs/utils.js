@@ -1,5 +1,5 @@
-import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import dateFormat from 'dateformat';
+import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import { dateFormatMask } from './constants';
 
 /**

@@ -1,8 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
+import { GlTooltipDirective, GlFriendlyWrap } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
-import { GlTooltipDirective, GlFriendlyWrap } from '@gitlab/ui';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 export default {

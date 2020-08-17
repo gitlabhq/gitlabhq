@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobContentError from '~/blob/components/blob_content_error.vue';
 import {
@@ -13,7 +14,6 @@ import {
   RichBlobContentMock,
   SimpleBlobContentMock,
 } from './mock_data';
-import { GlLoadingIcon } from '@gitlab/ui';
 import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
 
 describe('Blob Content component', () => {

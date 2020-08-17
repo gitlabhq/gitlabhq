@@ -1,6 +1,6 @@
-import { createStore } from '~/serverless/store';
 import { GlDeprecatedButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { createStore } from '~/serverless/store';
 import missingPrometheusComponent from '~/serverless/components/missing_prometheus.vue';
 
 describe('missingPrometheusComponent', () => {

@@ -6,9 +6,9 @@ import {
   GlDeprecatedDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import Api from '~/api';
 import createFlash from '~/flash';
-import { debounce } from 'lodash';
 import {
   ANY_TRIGGER_AUTHOR,
   FETCH_AUTHOR_ERROR_MESSAGE,

@@ -16,7 +16,7 @@
       .description
         = markdown_field(group, :description)
 
-  .stats.gl-text-gray-700.gl-flex-shrink-0
+  .stats.gl-text-gray-500.gl-flex-shrink-0
     %span.gl-ml-5
       = sprite_icon('bookmark', css_class: 'gl-vertical-align-text-bottom')
       = number_with_delimiter(group.projects.non_archived.count)

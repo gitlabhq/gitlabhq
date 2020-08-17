@@ -1,7 +1,7 @@
 import $ from 'jquery';
+import { escape } from 'lodash';
 import axios from './lib/utils/axios_utils';
 import Api from './api';
-import { escape } from 'lodash';
 import { normalizeHeaders } from './lib/utils/common_utils';
 import { __ } from '~/locale';
 

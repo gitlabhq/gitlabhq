@@ -1,10 +1,10 @@
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
+import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequest from '~/merge_request';
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import IssuablesHelper from '~/helpers/issuables_helper';
-import { TEST_HOST } from 'spec/test_constants';
 
 describe('MergeRequest', () => {
   const test = {};

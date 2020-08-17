@@ -1,9 +1,5 @@
 <script>
 import Vue from 'vue';
-import { s__, __ } from '~/locale';
-import Api from '~/api';
-import { redirectTo } from '~/lib/utils/url_utility';
-import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
 import { uniqueId } from 'lodash';
 import {
   GlAlert,
@@ -18,6 +14,10 @@ import {
   GlSearchBoxByType,
   GlSprintf,
 } from '@gitlab/ui';
+import { s__, __ } from '~/locale';
+import Api from '~/api';
+import { redirectTo } from '~/lib/utils/url_utility';
+import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
 
 export default {
   typeOptions: [

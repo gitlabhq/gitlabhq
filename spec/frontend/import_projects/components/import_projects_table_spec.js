@@ -9,6 +9,7 @@ import ImportProjectsTable from '~/import_projects/components/import_projects_ta
 import ImportedProjectTableRow from '~/import_projects/components/imported_project_table_row.vue';
 import ProviderRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
 import IncompatibleRepoTableRow from '~/import_projects/components/incompatible_repo_table_row.vue';
+import PageQueryParamSync from '~/import_projects/components/page_query_param_sync.vue';
 
 describe('ImportProjectsTable', () => {
   let wrapper;
@@ -26,11 +27,14 @@ describe('ImportProjectsTable', () => {
       .at(0);
 
   const importAllFn = jest.fn();
+  const setPageFn = jest.fn();
+
   function createComponent({
     state: initialState,
     getters: customGetters,
     slots,
     filterable,
+    paginatable,
   } = {}) {
     const localVue = createLocalVue();
     localVue.use(Vuex);
@@ -49,6 +53,7 @@ describe('ImportProjectsTable', () => {
         stopJobsPolling: jest.fn(),
         clearJobsEtagPoll: jest.fn(),
         setFilter: jest.fn(),
+        setPage: setPageFn,
       },
     });
 
@@ -58,6 +63,7 @@ describe('ImportProjectsTable', () => {
       propsData: {
         providerTitle,
         filterable,
+        paginatable,
       },
       slots,
     });
@@ -165,6 +171,37 @@ describe('ImportProjectsTable', () => {
     createComponent({ filterable: false });
 
     expect(findFilterField().exists()).toBe(false);
+  });
+
+  describe('when paginatable is set to true', () => {
+    const pageInfo = { page: 1 };
+
+    beforeEach(() => {
+      createComponent({
+        state: {
+          namespaces: [{ fullPath: 'path' }],
+          pageInfo,
+          repositories: [
+            { importSource: { id: 1 }, importedProject: null, importStatus: STATUSES.NONE },
+          ],
+        },
+        paginatable: true,
+      });
+    });
+
+    it('passes current page to page-query-param-sync component', () => {
+      expect(wrapper.find(PageQueryParamSync).props().page).toBe(pageInfo.page);
+    });
+
+    it('dispatches setPage when page-query-param-sync emits popstate', () => {
+      const NEW_PAGE = 2;
+      wrapper.find(PageQueryParamSync).vm.$emit('popstate', NEW_PAGE);
+
+      const { calls } = setPageFn.mock;
+
+      expect(calls).toHaveLength(1);
+      expect(calls[0][1]).toBe(NEW_PAGE);
+    });
   });
 
   it.each`

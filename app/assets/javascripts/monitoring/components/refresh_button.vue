@@ -1,8 +1,6 @@
 <script>
 import Visibility from 'visibilityjs';
 import { mapActions } from 'vuex';
-import { n__, __ } from '~/locale';
-
 import {
   GlButtonGroup,
   GlButton,
@@ -11,6 +9,8 @@ import {
   GlNewDropdownDivider,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { n__, __ } from '~/locale';
+
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const makeInterval = (length = 0, unit = 's') => {

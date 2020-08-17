@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
 import { GlEmptyState, GlModal } from '@gitlab/ui';
+import stubChildren from 'helpers/stub_children';
 import Tracking from '~/tracking';
 import * as getters from '~/packages/details/store/getters';
 import PackagesApp from '~/packages/details/components/app.vue';
@@ -25,7 +26,6 @@ import {
   npmFiles,
   nugetPackage,
 } from '../../mock_data';
-import stubChildren from 'helpers/stub_children';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

@@ -1,10 +1,10 @@
 <script>
+import { mapGetters } from 'vuex';
 import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
-import { mapGetters } from 'vuex';
 
 export default {
   issue: 'issue',

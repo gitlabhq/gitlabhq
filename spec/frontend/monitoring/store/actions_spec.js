@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import { backoffMockImplementation } from 'jest/helpers/backoff_helper';
 import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
@@ -8,7 +9,6 @@ import createFlash from '~/flash';
 import { defaultTimeRange } from '~/vue_shared/constants';
 import * as getters from '~/monitoring/stores/getters';
 import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
-import { backoffMockImplementation } from 'jest/helpers/backoff_helper';
 
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';

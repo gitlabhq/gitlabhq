@@ -1,7 +1,7 @@
 <script>
+import { GlButton, GlIcon, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import PackageTags from './package_tags.vue';
 import PublishMethod from './publish_method.vue';
-import { GlButton, GlIcon, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { getPackageTypeLabel } from '../utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 

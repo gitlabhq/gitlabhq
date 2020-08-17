@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import blobBundle from '~/blob_edit/blob_bundle';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import blobBundle from '~/blob_edit/blob_bundle';
 
 jest.mock('~/blob_edit/edit_blob');
 

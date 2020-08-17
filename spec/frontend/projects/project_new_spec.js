@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import projectNew from '~/projects/project_new';
 import { TEST_HOST } from 'jest/helpers/test_constants';
+import projectNew from '~/projects/project_new';
 
 describe('New Project', () => {
   let $projectImportUrl;

@@ -1,11 +1,11 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlSprintf, GlLink } from '@gitlab/ui';
+import { registryUrl as composerHelpPath } from 'jest/packages/details/mock_data';
+import { composerPackage as packageEntity } from 'jest/packages/mock_data';
 import ComposerInstallation from '~/packages/details/components/composer_installation.vue';
 import CodeInstructions from '~/packages/details/components/code_instruction.vue';
 import { TrackingActions } from '~/packages/details/constants';
-import { registryUrl as composerHelpPath } from 'jest/packages/details/mock_data';
-import { composerPackage as packageEntity } from 'jest/packages/mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

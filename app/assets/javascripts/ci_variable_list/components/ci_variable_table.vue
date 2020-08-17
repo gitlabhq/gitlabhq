@@ -1,7 +1,7 @@
 <script>
 import { GlTable, GlButton, GlModalDirective, GlIcon } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
 import { mapState, mapActions } from 'vuex';
+import { s__, __ } from '~/locale';
 import { ADD_CI_VARIABLE_MODAL_ID } from '../constants';
 import CiVariablePopover from './ci_variable_popover.vue';
 

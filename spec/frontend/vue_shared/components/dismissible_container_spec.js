@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import { shallowMount } from '@vue/test-utils';
+import axios from '~/lib/utils/axios_utils';
 import dismissibleContainer from '~/vue_shared/components/dismissible_container.vue';
 
 describe('DismissibleContainer', () => {

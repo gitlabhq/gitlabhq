@@ -12,8 +12,8 @@ import {
   GlPagination,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-import { visitUrl } from '~/lib/utils/url_utility';
 import waitForPromises from 'helpers/wait_for_promises';
+import { visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import AlertManagementTable from '~/alert_management/components/alert_management_table.vue';
 import { ALERTS_STATUS_TABS, trackAlertStatusUpdateOptions } from '~/alert_management/constants';

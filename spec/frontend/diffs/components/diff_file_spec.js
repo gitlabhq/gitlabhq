@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import { createStore } from '~/mr_notes/stores';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
+import { createStore } from '~/mr_notes/stores';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import diffFileMockDataReadable from '../mock_data/diff_file';

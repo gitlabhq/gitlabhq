@@ -1,6 +1,4 @@
 <script>
-import { __ } from '~/locale';
-import { APPLICATION_STATUS, FLUENTD } from '~/clusters/constants';
 import {
   GlAlert,
   GlDeprecatedButton,
@@ -8,8 +6,10 @@ import {
   GlDeprecatedDropdownItem,
   GlFormCheckbox,
 } from '@gitlab/ui';
-import eventHub from '~/clusters/event_hub';
 import { mapValues } from 'lodash';
+import { __ } from '~/locale';
+import { APPLICATION_STATUS, FLUENTD } from '~/clusters/constants';
+import eventHub from '~/clusters/event_hub';
 
 const { UPDATING, UNINSTALLING, INSTALLING, INSTALLED, UPDATED } = APPLICATION_STATUS;
 

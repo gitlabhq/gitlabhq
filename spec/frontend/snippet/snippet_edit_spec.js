@@ -1,8 +1,7 @@
 import '~/snippet/snippet_edit';
+import { triggerDOMEvent } from 'jest/helpers/dom_events_helper';
 import { SnippetEditInit } from '~/snippets';
 import initSnippet from '~/snippet/snippet_bundle';
-
-import { triggerDOMEvent } from 'jest/helpers/dom_events_helper';
 
 jest.mock('~/snippet/snippet_bundle');
 jest.mock('~/snippets');

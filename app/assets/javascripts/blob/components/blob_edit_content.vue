@@ -1,6 +1,6 @@
 <script>
-import { initEditorLite } from '~/blob/utils';
 import { debounce } from 'lodash';
+import { initEditorLite } from '~/blob/utils';
 import {
   SNIPPET_MARK_BLOBS_CONTENT,
   SNIPPET_MARK_EDIT_APP_START,

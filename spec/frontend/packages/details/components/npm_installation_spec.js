@@ -1,9 +1,9 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import NpmInstallation from '~/packages/details/components/npm_installation.vue';
-import CodeInstructions from '~/packages/details/components/code_instruction.vue';
 import { npmPackage as packageEntity } from 'jest/packages/mock_data';
 import { registryUrl as nugetPath } from 'jest/packages/details/mock_data';
+import NpmInstallation from '~/packages/details/components/npm_installation.vue';
+import CodeInstructions from '~/packages/details/components/code_instruction.vue';
 import { TrackingActions } from '~/packages/details/constants';
 import { npmInstallationCommand, npmSetupCommand } from '~/packages/details/store/getters';
 

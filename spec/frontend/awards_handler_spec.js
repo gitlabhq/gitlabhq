@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import MockAdapter from 'axios-mock-adapter';
+import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import axios from '~/lib/utils/axios_utils';
 import loadAwardsHandler from '~/awards_handler';
 import { setTestTimeout } from './helpers/timeout';
 import { EMOJI_VERSION } from '~/emoji';
-import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 
 window.gl = window.gl || {};
 window.gon = window.gon || {};

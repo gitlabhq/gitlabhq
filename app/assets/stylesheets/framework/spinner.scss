@@ -42,7 +42,7 @@
   }
 
   &.spinner-dark {
-    @include spinner-color($gray-700);
+    @include spinner-color($gray-500);
   }
 
   &.spinner-light {

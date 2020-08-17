@@ -1,6 +1,6 @@
 <script>
-import { __, sprintf } from '~/locale';
 import { GlIcon } from '@gitlab/ui';
+import { __, sprintf } from '~/locale';
 
 export default {
   name: 'DesignNotePin',

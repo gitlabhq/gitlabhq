@@ -1,8 +1,8 @@
-import createEventHub from '~/helpers/event_hub_factory';
 import Vuex from 'vuex';
-
 import { createLocalVue, mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { TEST_HOST } from 'jest/helpers/test_constants';
+import createEventHub from '~/helpers/event_hub_factory';
 
 import axios from '~/lib/utils/axios_utils';
 import notesModule from '~/notes/stores/modules';
@@ -10,7 +10,6 @@ import DiscussionFilter from '~/notes/components/discussion_filter.vue';
 import { DISCUSSION_FILTERS_DEFAULT_VALUE, DISCUSSION_FILTER_TYPES } from '~/notes/constants';
 
 import { discussionFiltersMock, discussionMock } from '../mock_data';
-import { TEST_HOST } from 'jest/helpers/test_constants';
 
 const localVue = createLocalVue();
 

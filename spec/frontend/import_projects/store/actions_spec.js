@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
-import createFlash from '~/flash';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import {
@@ -15,6 +15,7 @@ import {
   REQUEST_NAMESPACES,
   RECEIVE_NAMESPACES_SUCCESS,
   RECEIVE_NAMESPACES_ERROR,
+  SET_PAGE,
 } from '~/import_projects/store/mutation_types';
 import actionsFactory from '~/import_projects/store/actions';
 import { getImportTarget } from '~/import_projects/store/getters';
@@ -24,6 +25,12 @@ import { STATUSES } from '~/import_projects/constants';
 jest.mock('~/flash');
 
 const MOCK_ENDPOINT = `${TEST_HOST}/endpoint.json`;
+const endpoints = {
+  reposPath: MOCK_ENDPOINT,
+  importPath: MOCK_ENDPOINT,
+  jobsPath: MOCK_ENDPOINT,
+  namespacesPath: MOCK_ENDPOINT,
+};
 
 const {
   clearJobsEtagPoll,
@@ -33,13 +40,9 @@ const {
   fetchImport,
   fetchJobs,
   fetchNamespaces,
+  setPage,
 } = actionsFactory({
-  endpoints: {
-    reposPath: MOCK_ENDPOINT,
-    importPath: MOCK_ENDPOINT,
-    jobsPath: MOCK_ENDPOINT,
-    namespacesPath: MOCK_ENDPOINT,
-  },
+  endpoints,
 });
 
 describe('import_projects store actions', () => {
@@ -110,18 +113,39 @@ describe('import_projects store actions', () => {
       );
     });
 
-    describe('when filtered', () => {
-      beforeEach(() => {
-        localState.filter = 'filter';
-      });
+    describe('when pagination is enabled', () => {
+      it('includes page in url query params', async () => {
+        const { fetchRepos: fetchReposWithPagination } = actionsFactory({
+          endpoints,
+          hasPagination: true,
+        });
 
+        let requestedUrl;
+        mock.onGet().reply(config => {
+          requestedUrl = config.url;
+          return [200, payload];
+        });
+
+        await testAction(
+          fetchReposWithPagination,
+          null,
+          localState,
+          expect.any(Array),
+          expect.any(Array),
+        );
+
+        expect(requestedUrl).toBe(`${MOCK_ENDPOINT}?page=${localState.pageInfo.page}`);
+      });
+    });
+
+    describe('when filtered', () => {
       it('fetches repos with filter applied', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(200, payload);
 
         return testAction(
           fetchRepos,
           null,
-          localState,
+          { ...localState, filter: 'filter' },
           [
             { type: REQUEST_REPOS },
             {
@@ -322,6 +346,22 @@ describe('import_projects store actions', () => {
           { type: 'fetchImport', payload: otherImportRepoId },
         ],
       );
+    });
+
+    describe('setPage', () => {
+      it('dispatches fetchRepos and commits setPage when page number differs from current one', async () => {
+        await testAction(
+          setPage,
+          2,
+          { ...localState, pageInfo: { page: 1 } },
+          [{ type: SET_PAGE, payload: 2 }],
+          [{ type: 'fetchRepos' }],
+        );
+      });
+
+      it('does not perform any action if page equals to current one', async () => {
+        await testAction(setPage, 2, { ...localState, pageInfo: { page: 2 } }, [], []);
+      });
     });
   });
 });

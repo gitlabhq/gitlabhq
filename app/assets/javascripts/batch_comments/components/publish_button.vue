@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import { __ } from '~/locale';
 import { GlButton } from '@gitlab/ui';
+import { __ } from '~/locale';
 import DraftsCount from './drafts_count.vue';
 
 export default {

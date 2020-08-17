@@ -46,6 +46,13 @@ RSpec.describe ApplicationRecord do
         Suggestion.safe_find_or_create_by(attributes, &block)
       end.to yield_with_args(an_object_having_attributes(attributes))
     end
+
+    it 'does not create a record when is not valid' do
+      raw_usage_data = RawUsageData.safe_find_or_create_by({ recorded_at: nil })
+
+      expect(raw_usage_data.id).to be_nil
+      expect(raw_usage_data).not_to be_valid
+    end
   end
 
   describe '.safe_find_or_create_by!' do

@@ -16,12 +16,12 @@
 
         &:not(:first-child) {
           &::before {
-            color: $gray-700;
+            color: $gray-500;
             font-weight: normal !important;
           }
 
           div {
-            color: $gray-700;
+            color: $gray-500;
           }
         }
 

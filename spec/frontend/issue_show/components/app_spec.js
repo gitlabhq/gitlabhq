@@ -2,13 +2,13 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
+import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import '~/behaviors/markdown/render_gfm';
 import IssuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
 import { initialRequest, secondRequest } from '../mock_data';
-import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');

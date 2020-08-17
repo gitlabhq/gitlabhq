@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import initTodoToggle, { initNavUserDropdownTracking } from '~/header';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import initTodoToggle, { initNavUserDropdownTracking } from '~/header';
 
 describe('Header', () => {
   describe('Todos notification', () => {

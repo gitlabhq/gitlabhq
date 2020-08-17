@@ -1,10 +1,10 @@
 <script>
 import { GlFormGroup, GlFormInput, GlModal, GlSprintf, GlLink } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
+import { isValidCron } from 'cron-validator';
 import { mapComputed } from '~/vuex_shared/bindings';
 import { __ } from '~/locale';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
-import { isValidCron } from 'cron-validator';
 
 export default {
   components: {

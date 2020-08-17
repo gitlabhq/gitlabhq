@@ -1,6 +1,6 @@
 <script>
-import { s__ } from '~/locale';
 import { GlNewDropdown, GlNewDropdownItem } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 const dropdownOptions = [
   {

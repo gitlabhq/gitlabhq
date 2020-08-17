@@ -1,8 +1,8 @@
 <script>
 import { GlLoadingIcon, GlButton, GlAlert } from '@gitlab/ui';
+import VueDraggable from 'vuedraggable';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
-import VueDraggable from 'vuedraggable';
 import UploadButton from '../components/upload/button.vue';
 import DeleteButton from '../components/delete_button.vue';
 import Design from '../components/list/item.vue';

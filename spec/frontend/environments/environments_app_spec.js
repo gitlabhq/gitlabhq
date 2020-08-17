@@ -1,6 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import Container from '~/environments/components/container.vue';
 import EmptyState from '~/environments/components/empty_state.vue';
 import EnvironmentsApp from '~/environments/components/environments_app.vue';

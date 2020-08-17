@@ -8,12 +8,12 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 
+import RecentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 
 import RecentSearchesStore from '~/filtered_search/stores/recent_searches_store';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
-import RecentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 
 import { stripQuotes } from './filtered_search_utils';
 import { SortDirection } from './constants';

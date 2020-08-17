@@ -296,7 +296,7 @@ body {
     @include gitlab-theme(
       $gray-200,
       $gray-300,
-      $gray-700,
+      $gray-500,
       $gray-800,
       $gray-900,
       $white
@@ -305,12 +305,12 @@ body {
 
   &.ui-light {
     @include gitlab-theme(
-      $gray-700,
+      $gray-500,
       $gray-800,
-      $gray-700,
-      $gray-700,
+      $gray-500,
+      $gray-500,
       $gray-50,
-      $gray-700
+      $gray-500
     );
 
     .navbar-gitlab {
@@ -341,7 +341,7 @@ body {
       .container-fluid {
         .navbar-toggler,
         .navbar-toggler:hover {
-          color: $gray-700;
+          color: $gray-500;
           border-left: 1px solid $gray-100;
         }
       }

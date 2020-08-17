@@ -10,11 +10,11 @@ import {
   GlButton,
   GlSprintf,
 } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __ } from '~/locale';
 import alertSetAssignees from '../../graphql/mutations/alert_set_assignees.mutation.graphql';
 import SidebarAssignee from './sidebar_assignee.vue';
-import { debounce } from 'lodash';
 
 const DATA_REFETCH_DELAY = 250;
 
@@ -273,7 +273,7 @@ export default {
 
       <gl-loading-icon v-if="isUpdating" :inline="true" />
       <p v-else-if="!isDropdownShowing" class="value gl-m-0" :class="{ 'no-value': !userName }">
-        <span v-if="userName" class="gl-text-gray-700" data-testid="assigned-users">{{
+        <span v-if="userName" class="gl-text-gray-500" data-testid="assigned-users">{{
           assignedUser
         }}</span>
         <span v-else class="gl-display-flex gl-align-items-center">

@@ -29,6 +29,7 @@ ELSIF (TG_OP = 'UPDATE') THEN
     author_name = NEW.author_name,
     entity_path = NEW.entity_path,
     target_details = NEW.target_details,
+    target_type = NEW.target_type,
     created_at = NEW.created_at
   WHERE audit_events_part_5fc467ac26.id = NEW.id;
 ELSIF (TG_OP = 'INSERT') THEN
@@ -42,6 +43,7 @@ ELSIF (TG_OP = 'INSERT') THEN
     author_name,
     entity_path,
     target_details,
+    target_type,
     created_at)
   VALUES (NEW.id,
     NEW.author_id,
@@ -53,6 +55,7 @@ ELSIF (TG_OP = 'INSERT') THEN
     NEW.author_name,
     NEW.entity_path,
     NEW.target_details,
+    NEW.target_type,
     NEW.created_at);
 END IF;
 RETURN NULL;
@@ -74,8 +77,10 @@ CREATE TABLE public.audit_events_part_5fc467ac26 (
     entity_path text,
     target_details text,
     created_at timestamp without time zone NOT NULL,
+    target_type text,
     CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
     CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT check_97a8c868e7 CHECK ((char_length(target_type) <= 255)),
     CONSTRAINT check_d493ec90b5 CHECK ((char_length(target_details) <= 5500))
 )
 PARTITION BY RANGE (created_at);
@@ -9470,7 +9475,9 @@ CREATE TABLE public.audit_events (
     author_name text,
     entity_path text,
     target_details text,
+    target_type text,
     CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT check_82294106dd CHECK ((char_length(target_type) <= 255)),
     CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),
     CONSTRAINT check_d493ec90b5 CHECK ((char_length(target_details) <= 5500))
 );
@@ -14928,6 +14935,24 @@ CREATE SEQUENCE public.push_rules_id_seq
 
 ALTER SEQUENCE public.push_rules_id_seq OWNED BY public.push_rules.id;
 
+CREATE TABLE public.raw_usage_data (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    recorded_at timestamp with time zone NOT NULL,
+    sent_at timestamp with time zone,
+    payload jsonb NOT NULL
+);
+
+CREATE SEQUENCE public.raw_usage_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.raw_usage_data_id_seq OWNED BY public.raw_usage_data.id;
+
 CREATE TABLE public.redirect_routes (
     id integer NOT NULL,
     source_id integer NOT NULL,
@@ -17225,6 +17250,8 @@ ALTER TABLE ONLY public.protected_tags ALTER COLUMN id SET DEFAULT nextval('publ
 
 ALTER TABLE ONLY public.push_rules ALTER COLUMN id SET DEFAULT nextval('public.push_rules_id_seq'::regclass);
 
+ALTER TABLE ONLY public.raw_usage_data ALTER COLUMN id SET DEFAULT nextval('public.raw_usage_data_id_seq'::regclass);
+
 ALTER TABLE ONLY public.redirect_routes ALTER COLUMN id SET DEFAULT nextval('public.redirect_routes_id_seq'::regclass);
 
 ALTER TABLE ONLY public.release_links ALTER COLUMN id SET DEFAULT nextval('public.release_links_id_seq'::regclass);
@@ -18449,6 +18476,9 @@ ALTER TABLE ONLY public.protected_tags
 
 ALTER TABLE ONLY public.push_rules
     ADD CONSTRAINT push_rules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.raw_usage_data
+    ADD CONSTRAINT raw_usage_data_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.redirect_routes
     ADD CONSTRAINT redirect_routes_pkey PRIMARY KEY (id);
@@ -20525,6 +20555,8 @@ CREATE INDEX index_push_rules_on_is_sample ON public.push_rules USING btree (is_
 
 CREATE INDEX index_push_rules_on_project_id ON public.push_rules USING btree (project_id);
 
+CREATE UNIQUE INDEX index_raw_usage_data_on_recorded_at ON public.raw_usage_data USING btree (recorded_at);
+
 CREATE UNIQUE INDEX index_redirect_routes_on_path ON public.redirect_routes USING btree (path);
 
 CREATE UNIQUE INDEX index_redirect_routes_on_path_unique_text_pattern_ops ON public.redirect_routes USING btree (lower((path)::text) varchar_pattern_ops);
@@ -20637,7 +20669,7 @@ CREATE UNIQUE INDEX index_scim_identities_on_user_id_and_group_id ON public.scim
 
 CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypted ON public.scim_oauth_access_tokens USING btree (group_id, token_encrypted);
 
-CREATE INDEX index_secure_ci_builds_on_user_id_created_at ON public.ci_builds USING btree (user_id, created_at) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text])));
+CREATE INDEX index_secure_ci_builds_on_user_id_created_at_parser_features ON public.ci_builds USING btree (user_id, created_at) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('secret_detection'::character varying)::text])));
 
 CREATE INDEX index_security_ci_builds_on_name_and_id_parser_features ON public.ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 

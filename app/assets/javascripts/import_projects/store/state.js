@@ -7,4 +7,7 @@ export default () => ({
   isLoadingNamespaces: false,
   ciCdOnly: false,
   filter: '',
+  pageInfo: {
+    page: 1,
+  },
 });

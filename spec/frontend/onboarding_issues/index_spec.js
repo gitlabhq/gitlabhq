@@ -1,7 +1,7 @@
 import $ from 'jquery';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { showLearnGitLabIssuesPopover } from '~/onboarding_issues';
 import { getCookie, setCookie, removeCookie } from '~/lib/utils/common_utils';
-import setWindowLocation from 'helpers/set_window_location_helper';
 import Tracking from '~/tracking';
 
 describe('Onboarding Issues Popovers', () => {

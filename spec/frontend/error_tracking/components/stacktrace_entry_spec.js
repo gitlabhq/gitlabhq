@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import { trimText } from 'helpers/text_helper';
 import StackTraceEntry from '~/error_tracking/components/stacktrace_entry.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
-import { trimText } from 'helpers/text_helper';
 
 describe('Stacktrace Entry', () => {
   let wrapper;

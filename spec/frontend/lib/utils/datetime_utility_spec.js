@@ -1,6 +1,6 @@
-import { __, s__ } from '~/locale';
 import $ from 'jquery';
 import timezoneMock from 'timezone-mock';
+import { __, s__ } from '~/locale';
 import '~/commons/bootstrap';
 import * as datetimeUtility from '~/lib/utils/datetime_utility';
 

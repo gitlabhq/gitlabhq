@@ -1,10 +1,10 @@
-import SnippetHeader from '~/snippets/components/snippet_header.vue';
-import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.graphql';
 import { ApolloMutation } from 'vue-apollo';
 import { GlButton, GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
+import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.graphql';
+import SnippetHeader from '~/snippets/components/snippet_header.vue';
 
 describe('Snippet header component', () => {
   let wrapper;

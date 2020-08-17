@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { shallowMount } from '@vue/test-utils';
-import StopComponent from '~/environments/components/environment_stop.vue';
 import { GlButton } from '@gitlab/ui';
+import StopComponent from '~/environments/components/environment_stop.vue';
 import eventHub from '~/environments/event_hub';
 
 $.fn.tooltip = () => {};

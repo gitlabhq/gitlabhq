@@ -1,6 +1,6 @@
-import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 import createFlash from '~/flash';
 import * as actions from '~/error_tracking/store/list/actions';

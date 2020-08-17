@@ -70,7 +70,7 @@ export default {
 <template>
   <div class="gl-display-flex gl-align-items-center">
     <div v-if="!hideLabel" data-testid="tagLabel" class="gl-display-flex gl-align-items-center">
-      <gl-icon name="labels" class="gl-text-gray-700 gl-mr-3" />
+      <gl-icon name="labels" class="gl-text-gray-500 gl-mr-3" />
       <span class="gl-font-weight-bold">{{ tagsDisplay }}</span>
     </div>
 

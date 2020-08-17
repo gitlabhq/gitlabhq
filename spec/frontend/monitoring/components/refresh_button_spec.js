@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Visibility from 'visibilityjs';
-import { createStore } from '~/monitoring/stores';
 import { GlNewDropdown, GlNewDropdownItem, GlButton } from '@gitlab/ui';
+import { createStore } from '~/monitoring/stores';
 import RefreshButton from '~/monitoring/components/refresh_button.vue';
 
 describe('RefreshButton', () => {

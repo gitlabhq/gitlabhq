@@ -1,8 +1,8 @@
 <script>
 import { mapState } from 'vuex';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BoardColumn from 'ee_else_ce/boards/components/board_column.vue';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {

@@ -1,5 +1,5 @@
-import WebIdeLink from '~/repository/components/web_ide_link.vue';
 import { mount } from '@vue/test-utils';
+import WebIdeLink from '~/repository/components/web_ide_link.vue';
 
 describe('Web IDE link component', () => {
   let wrapper;

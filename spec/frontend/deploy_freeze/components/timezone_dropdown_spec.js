@@ -1,9 +1,8 @@
 import Vuex from 'vuex';
-import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import createStore from '~/deploy_freeze/store';
-
 import { GlDeprecatedDropdownItem, GlNewDropdown } from '@gitlab/ui';
+import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
+import createStore from '~/deploy_freeze/store';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

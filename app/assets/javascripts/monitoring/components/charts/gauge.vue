@@ -1,11 +1,10 @@
 <script>
 import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlGaugeChart } from '@gitlab/ui/dist/charts';
+import { isFinite, isArray, isInteger } from 'lodash';
 import { graphDataValidatorForValues } from '../../utils';
 import { getValidThresholds } from './options';
 import { getFormatter, SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
-
-import { isFinite, isArray, isInteger } from 'lodash';
 
 export default {
   components: {

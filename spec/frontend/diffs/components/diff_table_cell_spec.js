@@ -1,10 +1,10 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { TEST_HOST } from 'helpers/test_constants';
 import DiffTableCell from '~/diffs/components/diff_table_cell.vue';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import { LINE_POSITION_RIGHT } from '~/diffs/constants';
 import { createStore } from '~/mr_notes/stores';
-import { TEST_HOST } from 'helpers/test_constants';
 import discussionsMockData from '../mock_data/diff_discussions';
 import diffFileMockData from '../mock_data/diff_file';
 

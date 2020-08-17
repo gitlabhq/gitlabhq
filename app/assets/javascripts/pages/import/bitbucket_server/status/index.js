@@ -7,14 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!mountElement) return undefined;
 
   const store = initStoreFromElement(mountElement);
-  const props = initPropsFromElement(mountElement);
+  const attrs = initPropsFromElement(mountElement);
   const { reconfigurePath } = mountElement.dataset;
 
   return new Vue({
     el: mountElement,
     store,
     render(createElement) {
-      return createElement(BitbucketServerStatusTable, { props: { ...props, reconfigurePath } });
+      return createElement(BitbucketServerStatusTable, {
+        attrs: { ...attrs, reconfigurePath },
+      });
     },
   });
 });

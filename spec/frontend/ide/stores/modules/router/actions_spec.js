@@ -1,6 +1,6 @@
+import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/ide/stores/modules/router/actions';
 import * as types from '~/ide/stores/modules/router/mutation_types';
-import testAction from 'helpers/vuex_action_helper';
 
 const TEST_PATH = 'test/path/abc';
 

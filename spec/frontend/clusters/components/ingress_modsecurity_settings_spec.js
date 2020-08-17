@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlAlert, GlToggle, GlDeprecatedDropdown } from '@gitlab/ui';
 import IngressModsecuritySettings from '~/clusters/components/ingress_modsecurity_settings.vue';
 import { APPLICATION_STATUS, INGRESS } from '~/clusters/constants';
-import { GlAlert, GlToggle, GlDeprecatedDropdown } from '@gitlab/ui';
 import eventHub from '~/clusters/event_hub';
 
 const { UPDATING } = APPLICATION_STATUS;

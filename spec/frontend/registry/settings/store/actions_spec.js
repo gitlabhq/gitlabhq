@@ -1,5 +1,5 @@
-import Api from '~/api';
 import testAction from 'helpers/vuex_action_helper';
+import Api from '~/api';
 import * as actions from '~/registry/settings/store/actions';
 import * as types from '~/registry/settings/store/mutation_types';
 

@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import BlobEditContent from '~/blob/components/blob_edit_content.vue';
 import * as utils from '~/blob/utils';
 import Editor from '~/editor/editor_lite';
-import { nextTick } from 'vue';
 
 jest.mock('~/editor/editor_lite');
 

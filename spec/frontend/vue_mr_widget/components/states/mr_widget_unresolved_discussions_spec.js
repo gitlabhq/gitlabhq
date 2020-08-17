@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
+import { TEST_HOST } from 'helpers/test_constants';
 import UnresolvedDiscussions from '~/vue_merge_request_widget/components/states/unresolved_discussions.vue';
 import notesEventHub from '~/notes/event_hub';
-import { TEST_HOST } from 'helpers/test_constants';
 
 function createComponent({ path = '' } = {}) {
   return mount(UnresolvedDiscussions, {

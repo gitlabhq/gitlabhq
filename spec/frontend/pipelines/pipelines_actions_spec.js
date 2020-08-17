@@ -1,11 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'spec/test_constants';
+import { GlDeprecatedButton } from '@gitlab/ui';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesActions from '~/pipelines/components/pipelines_list/pipelines_actions.vue';
-import { GlDeprecatedButton } from '@gitlab/ui';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
-import waitForPromises from 'helpers/wait_for_promises';
 
 describe('Pipelines Actions dropdown', () => {
   let wrapper;

@@ -1,8 +1,8 @@
 <script>
-import { s__ } from '~/locale';
 import Cookies from 'js-cookie';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { GlCollapse, GlButton, GlPopover } from '@gitlab/ui';
+import { s__ } from '~/locale';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
 import { extractDiscussions, extractParticipants } from '../utils/design_management_utils';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';

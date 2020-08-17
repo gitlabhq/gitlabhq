@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import GraphGroup from '~/monitoring/components/graph_group.vue';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import GraphGroup from '~/monitoring/components/graph_group.vue';
 
 describe('Graph group component', () => {
   let wrapper;

@@ -1,7 +1,7 @@
 <script>
 import { mapActions } from 'vuex';
-import { sprintf, __ } from '~/locale';
 import { GlModal } from '@gitlab/ui';
+import { sprintf, __ } from '~/locale';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 

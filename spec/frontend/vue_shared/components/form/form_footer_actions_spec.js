@@ -1,5 +1,5 @@
-import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
 import { shallowMount } from '@vue/test-utils';
+import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
 
 describe('Form Footer Actions', () => {
   let wrapper;

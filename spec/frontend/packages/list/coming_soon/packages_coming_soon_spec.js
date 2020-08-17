@@ -1,10 +1,10 @@
 import { GlEmptyState, GlSkeletonLoader, GlLabel } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
+import VueApollo, { ApolloQuery } from 'vue-apollo';
 import ComingSoon from '~/packages/list/coming_soon/packages_coming_soon.vue';
 import { TrackingActions } from '~/packages/shared/constants';
 import { asViewModel } from './mock_data';
 import Tracking from '~/tracking';
-import VueApollo, { ApolloQuery } from 'vue-apollo';
 
 jest.mock('~/packages/list/coming_soon/helpers.js');
 

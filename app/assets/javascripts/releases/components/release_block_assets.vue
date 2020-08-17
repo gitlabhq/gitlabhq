@@ -1,10 +1,10 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton, GlCollapse, GlIcon, GlBadge } from '@gitlab/ui';
+import { difference, get } from 'lodash';
 import Icon from '~/vue_shared/components/icon.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ASSET_LINK_TYPE } from '../constants';
 import { __, s__, sprintf } from '~/locale';
-import { difference, get } from 'lodash';
 
 export default {
   name: 'ReleaseBlockAssets',

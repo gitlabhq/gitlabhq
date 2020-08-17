@@ -1,9 +1,9 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 import limitWarning from './limit_warning_component.vue';
 import totalTime from './total_time_component.vue';
 import icon from '../../vue_shared/components/icon.vue';
-import { GlIcon } from '@gitlab/ui';
 
 export default {
   components: {

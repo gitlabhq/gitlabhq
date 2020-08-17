@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import eventHub from '../event_hub';
 import { GlFormGroup, GlToggle } from '@gitlab/ui';
+import eventHub from '../event_hub';
 
 export default {
   name: 'ActiveToggle',

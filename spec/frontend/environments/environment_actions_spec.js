@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
+import { GlLoadingIcon } from '@gitlab/ui';
 import eventHub from '~/environments/event_hub';
 import EnvironmentActions from '~/environments/components/environment_actions.vue';
 import Icon from '~/vue_shared/components/icon.vue';
-import { GlLoadingIcon } from '@gitlab/ui';
 
 describe('EnvironmentActions Component', () => {
   let vm;

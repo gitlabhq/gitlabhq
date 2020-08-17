@@ -1,7 +1,7 @@
-import flash from '~/flash';
 import $ from 'jquery';
-import { __, sprintf } from '~/locale';
 import { once } from 'lodash';
+import flash from '~/flash';
+import { __, sprintf } from '~/locale';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
 // `js-render-mermaid` class.

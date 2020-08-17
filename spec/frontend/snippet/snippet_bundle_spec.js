@@ -1,6 +1,6 @@
+import { setHTMLFixture } from 'helpers/fixtures';
 import Editor from '~/editor/editor_lite';
 import initEditor from '~/snippet/snippet_bundle';
-import { setHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('~/editor/editor_lite', () => jest.fn());
 

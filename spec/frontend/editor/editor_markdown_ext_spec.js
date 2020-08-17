@@ -1,5 +1,5 @@
-import EditorLite from '~/editor/editor_lite';
 import { Range, Position } from 'monaco-editor';
+import EditorLite from '~/editor/editor_lite';
 import EditorMarkdownExtension from '~/editor/editor_markdown_ext';
 
 describe('Markdown Extension for Editor Lite', () => {

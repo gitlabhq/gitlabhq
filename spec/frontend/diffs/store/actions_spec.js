@@ -1,6 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import Cookies from 'js-cookie';
 import mockDiffFile from 'jest/diffs/mock_data/diff_file';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
@@ -56,10 +58,8 @@ import testAction from '../../helpers/vuex_action_helper';
 import * as utils from '~/diffs/store/utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { diffMetadata } from '../mock_data/diff_metadata';
 import createFlash from '~/flash';
-import { TEST_HOST } from 'jest/helpers/test_constants';
 
 jest.mock('~/flash', () => jest.fn());
 

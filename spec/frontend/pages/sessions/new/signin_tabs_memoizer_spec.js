@@ -1,6 +1,6 @@
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 useLocalStorageSpy();
 

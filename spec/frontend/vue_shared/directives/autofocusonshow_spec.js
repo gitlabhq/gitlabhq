@@ -1,5 +1,5 @@
-import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
+import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 
 /**
  * We're testing this directive's hooks as pure functions

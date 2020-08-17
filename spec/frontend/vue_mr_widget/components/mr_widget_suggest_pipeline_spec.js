@@ -1,12 +1,12 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import { GlLink, GlSprintf } from '@gitlab/ui';
+import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
+import MockAdapter from 'axios-mock-adapter';
 import suggestPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
 import MrWidgetIcon from '~/vue_merge_request_widget/components/mr_widget_icon.vue';
 import dismissibleContainer from '~/vue_shared/components/dismissible_container.vue';
-import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
 import { suggestProps, iconName } from './pipeline_tour_mock_data';
 import axios from '~/lib/utils/axios_utils';
-import MockAdapter from 'axios-mock-adapter';
 import {
   SP_TRACK_LABEL,
   SP_LINK_TRACK_EVENT,

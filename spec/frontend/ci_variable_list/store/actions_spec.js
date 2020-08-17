@@ -1,6 +1,6 @@
-import Api from '~/api';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import getInitialState from '~/ci_variable_list/store/state';

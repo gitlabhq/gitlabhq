@@ -1,7 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
-import Component from '~/vue_shared/components/dismissible_feedback_alert.vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import Component from '~/vue_shared/components/dismissible_feedback_alert.vue';
 
 describe('Dismissible Feedback Alert', () => {
   useLocalStorageSpy();

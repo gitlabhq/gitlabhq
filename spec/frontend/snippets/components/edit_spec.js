@@ -1,7 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
+import waitForPromises from 'helpers/wait_for_promises';
+import { ApolloMutation } from 'vue-apollo';
 import Flash from '~/flash';
 
-import { GlLoadingIcon } from '@gitlab/ui';
 import { redirectTo } from '~/lib/utils/url_utility';
 
 import SnippetEditApp from '~/snippets/components/edit.vue';
@@ -14,9 +16,6 @@ import { SNIPPET_CREATE_MUTATION_ERROR, SNIPPET_UPDATE_MUTATION_ERROR } from '~/
 
 import UpdateSnippetMutation from '~/snippets/mutations/updateSnippet.mutation.graphql';
 import CreateSnippetMutation from '~/snippets/mutations/createSnippet.mutation.graphql';
-
-import waitForPromises from 'helpers/wait_for_promises';
-import { ApolloMutation } from 'vue-apollo';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn().mockName('redirectTo'),

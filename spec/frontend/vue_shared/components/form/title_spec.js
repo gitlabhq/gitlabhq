@@ -1,5 +1,5 @@
-import TitleField from '~/vue_shared/components/form/title.vue';
 import { shallowMount } from '@vue/test-utils';
+import TitleField from '~/vue_shared/components/form/title.vue';
 
 describe('Title edit field', () => {
   let wrapper;

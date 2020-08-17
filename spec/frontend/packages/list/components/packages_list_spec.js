@@ -1,14 +1,14 @@
 import Vuex from 'vuex';
 import { last } from 'lodash';
 import { GlTable, GlPagination, GlModal } from '@gitlab/ui';
-import Tracking from '~/tracking';
 import { mount, createLocalVue } from '@vue/test-utils';
+import stubChildren from 'helpers/stub_children';
+import Tracking from '~/tracking';
 import PackagesList from '~/packages/list/components/packages_list.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import PackagesListRow from '~/packages/shared/components/package_list_row.vue';
 import * as SharedUtils from '~/packages/shared/utils';
 import { TrackingActions } from '~/packages/shared/constants';
-import stubChildren from 'helpers/stub_children';
 import { packageList } from '../../mock_data';
 
 const localVue = createLocalVue();

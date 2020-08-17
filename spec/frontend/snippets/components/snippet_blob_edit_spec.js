@@ -1,13 +1,13 @@
-import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
-import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
-import BlobContentEdit from '~/blob/components/blob_edit_content.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import waitForPromises from 'helpers/wait_for_promises';
+import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
+import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
+import BlobContentEdit from '~/blob/components/blob_edit_content.vue';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
-import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/blob/utils', () => jest.fn());
 

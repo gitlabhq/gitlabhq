@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import BlobEmbeddable from '~/blob/components/blob_embeddable.vue';
 import { GlFormInputGroup } from '@gitlab/ui';
+import BlobEmbeddable from '~/blob/components/blob_embeddable.vue';
 
 describe('Blob Embeddable', () => {
   let wrapper;

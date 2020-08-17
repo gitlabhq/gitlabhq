@@ -1,5 +1,5 @@
-import { isSticky } from '~/lib/utils/sticky';
 import { setHTMLFixture } from 'helpers/fixtures';
+import { isSticky } from '~/lib/utils/sticky';
 
 const TEST_OFFSET_TOP = 500;
 

@@ -1,6 +1,6 @@
+import waitForPromises from 'helpers/wait_for_promises';
 import Poll from '~/lib/utils/poll';
 import { successCodes } from '~/lib/utils/http_status';
-import waitForPromises from 'helpers/wait_for_promises';
 
 describe('Poll', () => {
   let callbacks;

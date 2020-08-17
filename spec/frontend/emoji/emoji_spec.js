@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { trimText } from 'helpers/text_helper';
 import axios from '~/lib/utils/axios_utils';
 import { initEmojiMap, glEmojiTag, EMOJI_VERSION } from '~/emoji';
 import isEmojiUnicodeSupported, {
@@ -9,7 +10,6 @@ import isEmojiUnicodeSupported, {
   isHorceRacingSkinToneComboEmoji,
   isPersonZwjEmoji,
 } from '~/emoji/support/is_emoji_unicode_supported';
-import { trimText } from 'helpers/text_helper';
 
 const emptySupportMap = {
   personZwj: false,

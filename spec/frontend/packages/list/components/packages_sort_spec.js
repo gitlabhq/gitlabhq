@@ -1,8 +1,8 @@
 import Vuex from 'vuex';
 import { GlSorting } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
-import PackagesSort from '~/packages/list/components/packages_sort.vue';
 import stubChildren from 'helpers/stub_children';
+import PackagesSort from '~/packages/list/components/packages_sort.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

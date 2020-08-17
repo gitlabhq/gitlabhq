@@ -1,7 +1,7 @@
 <script>
 import { GlTable, GlButton, GlModalDirective, GlSprintf } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
 import { mapState, mapActions } from 'vuex';
+import { s__, __ } from '~/locale';
 
 export default {
   fields: [

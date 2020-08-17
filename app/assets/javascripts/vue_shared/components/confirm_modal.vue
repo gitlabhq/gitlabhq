@@ -1,7 +1,7 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import csrf from '~/lib/utils/csrf';
 import { uniqueId } from 'lodash';
+import csrf from '~/lib/utils/csrf';
 
 export default {
   components: {

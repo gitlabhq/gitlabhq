@@ -52,7 +52,7 @@ RSpec.describe SubmitUsagePingService do
   shared_examples 'does not run' do
     it do
       expect(Gitlab::HTTP).not_to receive(:post)
-      expect(Gitlab::UsageData).not_to receive(:to_json)
+      expect(Gitlab::UsageData).not_to receive(:data)
 
       subject.execute
     end
@@ -113,7 +113,7 @@ RSpec.describe SubmitUsagePingService do
     it 'forces a refresh of usage data statistics before submitting' do
       stub_response(body: without_dev_ops_score_params)
 
-      expect(Gitlab::UsageData).to receive(:to_json).with(force_refresh: true).and_call_original
+      expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_call_original
 
       subject.execute
     end
@@ -134,6 +134,43 @@ RSpec.describe SubmitUsagePingService do
       it_behaves_like 'saves DevOps score data from the response'
     end
 
+    context 'with save_raw_usage_data feature enabled' do
+      before do
+        stub_response(body: with_dev_ops_score_params)
+        stub_feature_flags(save_raw_usage_data: true)
+      end
+
+      it 'creates a raw_usage_data record' do
+        expect { subject.execute }.to change(RawUsageData, :count).by(1)
+      end
+
+      it 'saves the correct payload' do
+        recorded_at = Time.current
+        usage_data = { uuid: 'uuid', recorded_at: recorded_at }
+
+        expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_return(usage_data)
+
+        subject.execute
+
+        raw_usage_data = RawUsageData.find_by(recorded_at: recorded_at)
+
+        expect(raw_usage_data.recorded_at).to be_like_time(recorded_at)
+        expect(raw_usage_data.payload.to_json).to eq(usage_data.to_json)
+      end
+    end
+
+    context 'with save_raw_usage_data feature disabled' do
+      before do
+        stub_response(body: with_dev_ops_score_params)
+      end
+
+      it 'does not create a raw_usage_data record' do
+        stub_feature_flags(save_raw_usage_data: false)
+
+        expect { subject.execute }.to change(RawUsageData, :count).by(0)
+      end
+    end
+
     context 'and usage ping response has unsuccessful status' do
       before do
         stub_response(body: nil, status: 504)
@@ -148,7 +185,7 @@ RSpec.describe SubmitUsagePingService do
 
     context 'and usage data is empty string' do
       before do
-        allow(Gitlab::UsageData).to receive(:to_json).and_return("")
+        allow(Gitlab::UsageData).to receive(:data).and_return({})
       end
 
       it_behaves_like 'does not send a blank usage ping payload'
@@ -156,7 +193,7 @@ RSpec.describe SubmitUsagePingService do
 
     context 'and usage data is nil' do
       before do
-        allow(Gitlab::UsageData).to receive(:to_json).and_return(nil)
+        allow(Gitlab::UsageData).to receive(:data).and_return(nil)
       end
 
       it_behaves_like 'does not send a blank usage ping payload'

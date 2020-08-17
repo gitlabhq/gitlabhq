@@ -674,7 +674,7 @@ $note-form-margin-left: 72px;
 
 .note-headline-meta {
   .system-note-separator {
-    color: $gray-700;
+    color: $gray-500;
   }
 
   .note-timestamp {
@@ -867,7 +867,7 @@ $note-form-margin-left: 72px;
     line-height: $gl-line-height;
 
     svg {
-      fill: $gray-700;
+      fill: $gray-500;
     }
 
     &.discussion-create-issue-btn {
@@ -904,7 +904,7 @@ $note-form-margin-left: 72px;
   border-right: 0;
 
   .line-resolve-btn {
-    color: $gray-700;
+    color: $gray-500;
 
     svg {
       vertical-align: text-top;

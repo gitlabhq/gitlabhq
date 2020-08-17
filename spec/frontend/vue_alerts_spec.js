@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import initVueAlerts from '~/vue_alerts';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
+import initVueAlerts from '~/vue_alerts';
 
 describe('VueAlerts', () => {
   const alerts = [

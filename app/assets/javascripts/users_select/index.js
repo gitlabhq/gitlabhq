@@ -4,14 +4,14 @@
 
 import $ from 'jquery';
 import { escape, template, uniqBy } from 'lodash';
-import axios from '../lib/utils/axios_utils';
-import { s__, __, sprintf } from '../locale';
-import ModalStore from '../boards/stores/modal_store';
-import { parseBoolean } from '../lib/utils/common_utils';
 import {
   AJAX_USERS_SELECT_OPTIONS_MAP,
   AJAX_USERS_SELECT_PARAMS_MAP,
 } from 'ee_else_ce/users_select/constants';
+import axios from '../lib/utils/axios_utils';
+import { s__, __, sprintf } from '../locale';
+import ModalStore from '../boards/stores/modal_store';
+import { parseBoolean } from '../lib/utils/common_utils';
 import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
 
 // TODO: remove eventHub hack after code splitting refactor

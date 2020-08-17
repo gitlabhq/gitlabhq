@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { GlButtonGroup, GlButton } from '@gitlab/ui';
 import BlobHeaderActions from '~/blob/components/blob_header_default_actions.vue';
 import {
   BTN_COPY_CONTENTS_TITLE,
@@ -6,7 +7,6 @@ import {
   BTN_RAW_TITLE,
   RICH_BLOB_VIEWER,
 } from '~/blob/components/constants';
-import { GlButtonGroup, GlButton } from '@gitlab/ui';
 import { Blob } from './mock_data';
 
 describe('Blob Header Default Actions', () => {

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import PreviewItem from '~/batch_comments/components/preview_item.vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import PreviewItem from '~/batch_comments/components/preview_item.vue';
 import { createStore } from '~/batch_comments/stores';
 import diffsModule from '~/diffs/store/modules';
 import notesModule from '~/notes/stores/modules';

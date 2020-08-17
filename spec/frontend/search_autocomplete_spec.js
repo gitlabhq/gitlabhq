@@ -2,10 +2,10 @@
 
 import $ from 'jquery';
 import '~/gl_dropdown';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import initSearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
-import AxiosMockAdapter from 'axios-mock-adapter';
 
 describe('Search autocomplete dropdown', () => {
   let widget = null;

@@ -1,5 +1,5 @@
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ListIssue from 'ee_else_ce/boards/models/issue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 export function getMilestone() {
   return null;

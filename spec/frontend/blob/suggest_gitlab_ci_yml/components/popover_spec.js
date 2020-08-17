@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
-import Popover from '~/blob/suggest_gitlab_ci_yml/components/popover.vue';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
-import * as utils from '~/lib/utils/common_utils';
 import { GlButton } from '@gitlab/ui';
+import Popover from '~/blob/suggest_gitlab_ci_yml/components/popover.vue';
+import * as utils from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),

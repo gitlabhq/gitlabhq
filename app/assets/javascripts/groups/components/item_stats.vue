@@ -1,5 +1,6 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
+import isProjectPendingRemoval from 'ee_else_ce/groups/mixins/is_project_pending_removal';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
   ITEM_TYPE,
@@ -8,7 +9,6 @@ import {
   PROJECT_VISIBILITY_TYPE,
 } from '../constants';
 import itemStatsValue from './item_stats_value.vue';
-import isProjectPendingRemoval from 'ee_else_ce/groups/mixins/is_project_pending_removal';
 
 export default {
   components: {
@@ -44,7 +44,7 @@ export default {
 </script>
 
 <template>
-  <div class="stats gl-text-gray-700">
+  <div class="stats gl-text-gray-500">
     <item-stats-value
       v-if="isGroup"
       :title="__('Subgroups')"

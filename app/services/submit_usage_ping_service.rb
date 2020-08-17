@@ -20,22 +20,35 @@ class SubmitUsagePingService
     return unless Gitlab::CurrentSettings.usage_ping_enabled?
     return if User.single_user&.requires_usage_stats_consent?
 
-    payload = Gitlab::UsageData.to_json(force_refresh: true)
-    raise SubmissionError.new('Usage data is blank') if payload.blank?
+    usage_data = Gitlab::UsageData.data(force_refresh: true)
+
+    raise SubmissionError.new('Usage data is blank') if usage_data.blank?
+
+    raw_usage_data = save_raw_usage_data(usage_data)
 
     response = Gitlab::HTTP.post(
       url,
-      body: payload,
+      body: usage_data.to_json,
       allow_local_requests: true,
       headers: { 'Content-type' => 'application/json' }
     )
 
     raise SubmissionError.new("Unsuccessful response code: #{response.code}") unless response.success?
 
+    raw_usage_data.update_sent_at! if raw_usage_data
+
     store_metrics(response)
   end
 
   private
+
+  def save_raw_usage_data(usage_data)
+    return unless Feature.enabled?(:save_raw_usage_data)
+
+    RawUsageData.safe_find_or_create_by(recorded_at: usage_data[:recorded_at]) do |record|
+      record.payload = usage_data
+    end
+  end
 
   def store_metrics(response)
     metrics = response['conv_index'] || response['dev_ops_score']

@@ -3,9 +3,11 @@ import { throttle } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
+import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 import ImportedProjectTableRow from './imported_project_table_row.vue';
 import ProviderRepoTableRow from './provider_repo_table_row.vue';
 import IncompatibleRepoTableRow from './incompatible_repo_table_row.vue';
+import PageQueryParamSync from './page_query_param_sync.vue';
 import { isProjectImportable } from '../utils';
 
 const reposFetchThrottleDelay = 1000;
@@ -16,8 +18,10 @@ export default {
     ImportedProjectTableRow,
     ProviderRepoTableRow,
     IncompatibleRepoTableRow,
+    PageQueryParamSync,
     GlLoadingIcon,
     GlButton,
+    PaginationLinks,
   },
   props: {
     providerTitle: {
@@ -29,10 +33,15 @@ export default {
       required: false,
       default: true,
     },
+    paginatable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   computed: {
-    ...mapState(['filter', 'repositories', 'namespaces', 'defaultTargetNamespace']),
+    ...mapState(['filter', 'repositories', 'namespaces', 'defaultTargetNamespace', 'pageInfo']),
     ...mapGetters([
       'isLoading',
       'isImportingAnyRepo',
@@ -90,6 +99,7 @@ export default {
       'clearJobsEtagPoll',
       'setFilter',
       'importAll',
+      'setPage',
     ]),
 
     handleFilterInput({ target }) {
@@ -107,69 +117,82 @@ export default {
 
 <template>
   <div>
+    <page-query-param-sync :page="pageInfo.page" @popstate="setPage" />
+
     <p class="light text-nowrap mt-2">
       {{ s__('ImportProjects|Select the projects you want to import') }}
     </p>
     <template v-if="hasIncompatibleRepos">
       <slot name="incompatible-repos-warning"></slot>
     </template>
-    <div v-if="!isLoading" class="d-flex justify-content-between align-items-end flex-wrap mb-3">
-      <gl-button
-        variant="success"
-        :loading="isImportingAnyRepo"
-        :disabled="!hasImportableRepos"
-        type="button"
-        @click="importAll"
-        >{{ importAllButtonText }}</gl-button
-      >
-      <slot name="actions"></slot>
-      <form v-if="filterable" class="gl-ml-auto" novalidate @submit.prevent>
-        <input
-          :value="filter"
-          data-qa-selector="githubish_import_filter_field"
-          class="form-control"
-          name="filter"
-          :placeholder="__('Filter your projects by name')"
-          autofocus
-          size="40"
-          @input="handleFilterInput($event)"
-          @keyup.enter="throttledFetchRepos"
-        />
-      </form>
-    </div>
     <gl-loading-icon
       v-if="isLoading"
       class="js-loading-button-icon import-projects-loading-icon"
       size="md"
     />
-    <div v-else-if="repositories.length" class="table-responsive">
-      <table class="table import-table">
-        <thead>
-          <th class="import-jobs-from-col">{{ fromHeaderText }}</th>
-          <th class="import-jobs-to-col">{{ __('To GitLab') }}</th>
-          <th class="import-jobs-status-col">{{ __('Status') }}</th>
-          <th class="import-jobs-cta-col"></th>
-        </thead>
-        <tbody>
-          <template v-for="repo in repositories">
-            <incompatible-repo-table-row
-              v-if="repo.importSource.incompatible"
-              :key="repo.importSource.id"
-              :repo="repo"
-            />
-            <provider-repo-table-row
-              v-else-if="isProjectImportable(repo)"
-              :key="repo.importSource.id"
-              :repo="repo"
-              :available-namespaces="availableNamespaces"
-            />
-            <imported-project-table-row v-else :key="repo.importSource.id" :project="repo" />
-          </template>
-        </tbody>
-      </table>
-    </div>
-    <div v-else class="text-center">
-      <strong>{{ emptyStateText }}</strong>
-    </div>
+    <template v-if="!isLoading">
+      <div class="d-flex justify-content-between align-items-end flex-wrap mb-3">
+        <gl-button
+          variant="success"
+          :loading="isImportingAnyRepo"
+          :disabled="!hasImportableRepos"
+          type="button"
+          @click="importAll"
+          >{{ importAllButtonText }}</gl-button
+        >
+        <slot name="actions"></slot>
+        <form v-if="filterable" class="gl-ml-auto" novalidate @submit.prevent>
+          <input
+            :value="filter"
+            data-qa-selector="githubish_import_filter_field"
+            class="form-control"
+            name="filter"
+            :placeholder="__('Filter your projects by name')"
+            autofocus
+            size="40"
+            @input="handleFilterInput($event)"
+            @keyup.enter="throttledFetchRepos"
+          />
+        </form>
+      </div>
+      <div v-if="repositories.length" class="table-responsive">
+        <table class="table import-table">
+          <thead>
+            <th class="import-jobs-from-col">{{ fromHeaderText }}</th>
+            <th class="import-jobs-to-col">{{ __('To GitLab') }}</th>
+            <th class="import-jobs-status-col">{{ __('Status') }}</th>
+            <th class="import-jobs-cta-col"></th>
+          </thead>
+          <tbody>
+            <template v-for="repo in repositories">
+              <incompatible-repo-table-row
+                v-if="repo.importSource.incompatible"
+                :key="repo.importSource.id"
+                :repo="repo"
+              />
+              <provider-repo-table-row
+                v-else-if="isProjectImportable(repo)"
+                :key="repo.importSource.id"
+                :repo="repo"
+                :available-namespaces="availableNamespaces"
+              />
+              <imported-project-table-row v-else :key="repo.importSource.id" :project="repo" />
+            </template>
+          </tbody>
+        </table>
+      </div>
+      <div v-else class="text-center">
+        <strong>{{ emptyStateText }}</strong>
+      </div>
+      <pagination-links
+        v-if="paginatable"
+        align="center"
+        class="gl-mt-3"
+        :page-info="pageInfo"
+        :prev-page="pageInfo.page - 1"
+        :next-page="repositories.length && pageInfo.page + 1"
+        :change="setPage"
+      />
+    </template>
   </div>
 </template>

@@ -1,9 +1,9 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueRouter from 'vue-router';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import Toolbar from '~/design_management_legacy/components/toolbar/index.vue';
 import DeleteButton from '~/design_management_legacy/components/delete_button.vue';
 import { DESIGNS_ROUTE_NAME } from '~/design_management_legacy/router/constants';
-import { GlDeprecatedButton } from '@gitlab/ui';
 
 const localVue = createLocalVue();
 localVue.use(VueRouter);

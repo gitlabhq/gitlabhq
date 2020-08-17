@@ -189,6 +189,7 @@ RSpec.describe 'Database schema' do
     "Operations::FeatureFlagScope" => %w[strategies],
     "Operations::FeatureFlags::Strategy" => %w[parameters],
     "Packages::Composer::Metadatum" => %w[composer_json],
+    "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
     "Releases::Evidence" => %w[summary]
   }.freeze
 

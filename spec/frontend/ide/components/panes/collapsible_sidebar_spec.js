@@ -1,9 +1,9 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { createStore } from '~/ide/stores';
 import paneModule from '~/ide/stores/modules/pane';
 import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
 import IdeSidebarNav from '~/ide/components/ide_sidebar_nav.vue';
-import Vuex from 'vuex';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

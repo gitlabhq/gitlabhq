@@ -1,7 +1,7 @@
-import AncestorNotice from '~/clusters_list/components/ancestor_notice.vue';
-import ClusterStore from '~/clusters_list/store';
 import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlSprintf } from '@gitlab/ui';
+import AncestorNotice from '~/clusters_list/components/ancestor_notice.vue';
+import ClusterStore from '~/clusters_list/store';
 
 describe('ClustersAncestorNotice', () => {
   let store;

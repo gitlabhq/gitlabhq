@@ -1,7 +1,7 @@
 <script>
 import { escape } from 'lodash';
-import SplitButton from '~/vue_shared/components/split_button.vue';
 import { GlModal, GlButton, GlDeprecatedButton, GlFormInput } from '@gitlab/ui';
+import SplitButton from '~/vue_shared/components/split_button.vue';
 import { s__, sprintf } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 

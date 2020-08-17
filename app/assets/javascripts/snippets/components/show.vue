@@ -1,10 +1,10 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import BlobEmbeddable from '~/blob/components/blob_embeddable.vue';
 import SnippetHeader from './snippet_header.vue';
 import SnippetTitle from './snippet_title.vue';
 import SnippetBlob from './snippet_blob_view.vue';
 import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
-import { GlLoadingIcon } from '@gitlab/ui';
 
 import { getSnippetMixin } from '../mixins/snippets';
 import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';

@@ -9,6 +9,8 @@ import './commons';
 import './behaviors';
 
 // lib/utils
+import applyGitLabUIConfig from '@gitlab/ui/dist/config';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import {
   handleLocationHash,
   addSelectOnFocusBehaviour,
@@ -19,8 +21,6 @@ import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
 import loadAwardsHandler from './awards_handler';
-import applyGitLabUIConfig from '@gitlab/ui/dist/config';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import initTodoToggle from './header';

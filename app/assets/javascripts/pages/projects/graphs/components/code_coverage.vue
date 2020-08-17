@@ -8,8 +8,8 @@ import {
 } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
-import axios from '~/lib/utils/axios_utils';
 import { get } from 'lodash';
+import axios from '~/lib/utils/axios_utils';
 
 import { __ } from '~/locale';
 

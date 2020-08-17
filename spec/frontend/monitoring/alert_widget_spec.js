@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlTooltip, GlSprintf, GlBadge } from '@gitlab/ui';
-import AlertWidget from '~/monitoring/components/alert_widget.vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import AlertWidget from '~/monitoring/components/alert_widget.vue';
 import createFlash from '~/flash';
 
 const mockReadAlert = jest.fn();

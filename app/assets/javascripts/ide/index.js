@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { mapActions } from 'vuex';
-import Translate from '~/vue_shared/translate';
 import { identity } from 'lodash';
+import Translate from '~/vue_shared/translate';
 import ide from './components/ide.vue';
 import { createStore } from './stores';
 import { createRouter } from './ide_router';

@@ -1,6 +1,6 @@
+import waitForPromises from 'helpers/wait_for_promises';
 import { createRouter } from '~/ide/ide_router';
 import { createStore } from '~/ide/stores';
-import waitForPromises from 'helpers/wait_for_promises';
 
 describe('IDE router', () => {
   const PROJECT_NAMESPACE = 'my-group/sub-group';

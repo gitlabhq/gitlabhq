@@ -1,5 +1,4 @@
 <script>
-import { __ } from '~/locale';
 import {
   GlAvatar,
   GlIcon,
@@ -12,6 +11,7 @@ import {
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import DeleteSnippetMutation from '../mutations/deleteSnippet.mutation.graphql';

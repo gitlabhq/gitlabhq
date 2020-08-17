@@ -1,9 +1,6 @@
 <script>
 import { mapState } from 'vuex';
 import { mapValues, pickBy } from 'lodash';
-import invalidUrl from '~/lib/utils/invalid_url';
-import { convertToFixedRange } from '~/lib/utils/datetime_range';
-import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import {
   GlResizeObserverDirective,
   GlIcon,
@@ -18,6 +15,9 @@ import {
   GlTooltip,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import invalidUrl from '~/lib/utils/invalid_url';
+import { convertToFixedRange } from '~/lib/utils/datetime_range';
+import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
 import { panelTypes } from '../constants';
 

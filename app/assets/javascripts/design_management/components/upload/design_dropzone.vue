@@ -36,7 +36,7 @@ export default {
     iconStyles() {
       return {
         size: this.hasDesigns ? 24 : 16,
-        class: this.hasDesigns ? 'gl-mb-2' : 'gl-mr-3 gl-text-gray-700',
+        class: this.hasDesigns ? 'gl-mb-2' : 'gl-mr-3 gl-text-gray-500',
       };
     },
   },

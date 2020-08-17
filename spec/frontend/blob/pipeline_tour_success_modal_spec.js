@@ -1,8 +1,8 @@
-import pipelineTourSuccess from '~/blob/pipeline_tour_success_modal.vue';
 import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
 import { GlSprintf, GlModal, GlLink } from '@gitlab/ui';
 import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
+import pipelineTourSuccess from '~/blob/pipeline_tour_success_modal.vue';
 import modalProps from './pipeline_tour_success_mock_data';
 
 describe('PipelineTourSuccessModal', () => {

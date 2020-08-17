@@ -1,7 +1,7 @@
 import VueRouter from 'vue-router';
+import waitForPromises from 'helpers/wait_for_promises';
 import { createStore } from '~/ide/stores';
 import { syncRouterAndStore } from '~/ide/sync_router_and_store';
-import waitForPromises from 'helpers/wait_for_promises';
 
 const TEST_ROUTE = '/test/lorem/ipsum';
 

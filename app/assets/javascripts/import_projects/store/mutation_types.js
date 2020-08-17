@@ -15,3 +15,7 @@ export const RECEIVE_JOBS_SUCCESS = 'RECEIVE_JOBS_SUCCESS';
 export const SET_FILTER = 'SET_FILTER';
 
 export const SET_IMPORT_TARGET = 'SET_IMPORT_TARGET';
+
+export const SET_PAGE = 'SET_PAGE';
+
+export const SET_PAGE_INFO = 'SET_PAGE_INFO';

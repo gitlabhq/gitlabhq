@@ -1,6 +1,6 @@
+import { isFinite, uniq, sortBy, includes } from 'lodash';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { __, s__ } from '~/locale';
-import { isFinite, uniq, sortBy, includes } from 'lodash';
 import { formatDate, timezones, formats } from '../../format_date';
 import { thresholdModeTypes } from '../../constants';
 

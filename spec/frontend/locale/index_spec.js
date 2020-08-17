@@ -1,6 +1,5 @@
-import { createDateTimeFormat, languageCode } from '~/locale';
-
 import { setLanguage } from 'helpers/locale_helper';
+import { createDateTimeFormat, languageCode } from '~/locale';
 
 describe('locale', () => {
   afterEach(() => setLanguage(null));

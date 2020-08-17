@@ -1,6 +1,6 @@
 <script>
-import { n__ } from '~/locale';
 import { GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
+import { n__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import MrWidgetExpanableSection from '../mr_widget_expandable_section.vue';
 import Poll from '~/lib/utils/poll';

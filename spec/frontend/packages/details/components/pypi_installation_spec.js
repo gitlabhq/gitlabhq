@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import PypiInstallation from '~/packages/details/components/pypi_installation.vue';
 import { pypiPackage as packageEntity } from 'jest/packages/mock_data';
+import PypiInstallation from '~/packages/details/components/pypi_installation.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

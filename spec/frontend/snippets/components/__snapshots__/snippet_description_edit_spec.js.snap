@@ -60,7 +60,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
            
           <a
             aria-label="Leave zen mode"
-            class="zen-control zen-control-leave js-zen-leave gl-text-gray-700"
+            class="zen-control zen-control-leave js-zen-leave gl-text-gray-500"
             href="#"
           >
             <icon-stub

@@ -8,10 +8,10 @@
  *
  * See https://gitlab.com/gitlab-org/gitlab/-/issues/208800 for more information.
  */
-import { initIde } from '~/ide';
-import extendStore from '~/ide/stores/extend';
 import { TEST_HOST } from 'helpers/test_constants';
 import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
+import { initIde } from '~/ide';
+import extendStore from '~/ide/stores/extend';
 
 const TEST_DATASET = {
   emptyStateSvgPath: '/test/empty_state.svg',

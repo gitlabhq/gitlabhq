@@ -1,7 +1,7 @@
 <script>
 import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
-import { sprintf, s__, __ } from '~/locale';
 import Cookies from 'js-cookie';
+import { sprintf, s__, __ } from '~/locale';
 import { glEmojiTag } from '~/emoji';
 import Tracking from '~/tracking';
 

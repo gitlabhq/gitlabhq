@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import Tracking from '~/tracking';
 import component from '~/registry/settings/components/settings_form.vue';
 import expirationPolicyFields from '~/registry/shared/components/expiration_policy_fields.vue';
@@ -7,7 +8,6 @@ import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
 } from '~/registry/shared/constants';
-import waitForPromises from 'helpers/wait_for_promises';
 import { stringifiedFormOptions } from '../../shared/mock_data';
 
 describe('Settings Form', () => {

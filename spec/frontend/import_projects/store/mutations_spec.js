@@ -279,4 +279,25 @@ describe('import_projects store mutations', () => {
       expect(state.customImportTargets[SOURCE_PROJECT.id]).toBeUndefined();
     });
   });
+
+  describe(`${types.SET_PAGE_INFO}`, () => {
+    it('sets passed page info', () => {
+      state = {};
+      const pageInfo = { page: 1, total: 10 };
+
+      mutations[types.SET_PAGE_INFO](state, pageInfo);
+
+      expect(state.pageInfo).toBe(pageInfo);
+    });
+  });
+
+  describe(`${types.SET_PAGE}`, () => {
+    it('sets page number', () => {
+      const NEW_PAGE = 4;
+      state = { pageInfo: { page: 5 } };
+
+      mutations[types.SET_PAGE](state, NEW_PAGE);
+      expect(state.pageInfo.page).toBe(NEW_PAGE);
+    });
+  });
 });

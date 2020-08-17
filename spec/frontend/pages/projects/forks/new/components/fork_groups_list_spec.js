@@ -1,12 +1,12 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
+import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import ForkGroupsList from '~/pages/projects/forks/new/components/fork_groups_list.vue';
 import ForkGroupsListItem from '~/pages/projects/forks/new/components/fork_groups_list_item.vue';
-import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/flash', () => jest.fn());
 

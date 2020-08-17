@@ -1,9 +1,9 @@
 import Vue from 'vue';
+import { TEST_HOST } from 'helpers/test_constants';
 import JobDetail from '~/ide/components/jobs/detail.vue';
 import { createStore } from '~/ide/stores';
 import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
 import { jobs } from '../../mock_data';
-import { TEST_HOST } from 'helpers/test_constants';
 
 describe('IDE jobs detail view', () => {
   let vm;

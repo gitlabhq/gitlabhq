@@ -250,7 +250,7 @@ export default {
         </gl-mentions>
         <slot v-else name="textarea"></slot>
         <a
-          class="zen-control zen-control-leave js-zen-leave gl-text-gray-700"
+          class="zen-control zen-control-leave js-zen-leave gl-text-gray-500"
           href="#"
           :aria-label="__('Leave zen mode')"
         >

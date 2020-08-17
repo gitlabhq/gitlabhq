@@ -8,10 +8,10 @@ import {
   GlSkeletonLoader,
   GlSprintf,
 } from '@gitlab/ui';
+import { ApolloQuery } from 'vue-apollo';
 import Tracking from '~/tracking';
 import { TrackingActions } from '../../shared/constants';
 import { s__ } from '~/locale';
-import { ApolloQuery } from 'vue-apollo';
 import comingSoonIssuesQuery from './queries/issues.graphql';
 import { toViewModel, LABEL_NAMES } from './helpers';
 

@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import mock from 'xhr-mock';
 import { TEST_HOST } from 'spec/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import dropzoneInput from '~/dropzone_input';
 import PasteMarkdownTable from '~/behaviors/markdown/paste_markdown_table';
-import waitForPromises from 'helpers/wait_for_promises';
 
 const TEST_FILE = new File([], 'somefile.jpg');
 TEST_FILE.upload = {};

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import MrWidgetOptions from 'ee_else_ce/vue_merge_request_widget/mr_widget_options.vue';
-import Translate from '../vue_shared/translate';
 import VueApollo from 'vue-apollo';
+import Translate from '../vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 
 Vue.use(Translate);

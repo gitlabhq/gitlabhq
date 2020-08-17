@@ -1,5 +1,5 @@
-import csrf from '~/lib/utils/csrf';
 import { setHTMLFixture } from 'helpers/fixtures';
+import csrf from '~/lib/utils/csrf';
 
 describe('csrf', () => {
   let testContext;

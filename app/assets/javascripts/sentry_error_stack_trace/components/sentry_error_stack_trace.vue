@@ -1,7 +1,7 @@
 <script>
-import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 
 export default {
   name: 'SentryErrorStackTrace',

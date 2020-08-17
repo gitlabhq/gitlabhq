@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { mount } from '@vue/test-utils';
+import { setHTMLFixture } from 'helpers/fixtures';
 import PipelineStore from '~/pipelines/stores/pipeline_store';
 import graphComponent from '~/pipelines/components/graph/graph_component.vue';
 import stageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
@@ -7,7 +8,6 @@ import linkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines
 import graphJSON from './mock_data';
 import linkedPipelineJSON from './linked_pipelines_mock_data';
 import PipelinesMediator from '~/pipelines/pipeline_details_mediator';
-import { setHTMLFixture } from 'helpers/fixtures';
 
 describe('graph component', () => {
   const store = new PipelineStore();

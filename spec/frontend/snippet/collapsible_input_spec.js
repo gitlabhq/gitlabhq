@@ -1,5 +1,5 @@
-import setupCollapsibleInputs from '~/snippet/collapsible_input';
 import { setHTMLFixture } from 'helpers/fixtures';
+import setupCollapsibleInputs from '~/snippet/collapsible_input';
 
 describe('~/snippet/collapsible_input', () => {
   let formEl;

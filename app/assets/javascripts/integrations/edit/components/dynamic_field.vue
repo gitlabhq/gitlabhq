@@ -1,9 +1,9 @@
 <script>
 import { mapGetters } from 'vuex';
-import eventHub from '../event_hub';
 import { capitalize, lowerCase, isEmpty } from 'lodash';
-import { __, sprintf } from '~/locale';
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
+import eventHub from '../event_hub';
+import { __, sprintf } from '~/locale';
 
 export default {
   name: 'DynamicField',

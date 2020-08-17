@@ -1,5 +1,12 @@
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
+import {
+  Blob as BlobMock,
+  SimpleViewerMock,
+  RichViewerMock,
+  RichBlobContentMock,
+  SimpleBlobContentMock,
+} from 'jest/blob/components/mock_data';
 import SnippetBlobView from '~/snippets/components/snippet_blob_view.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobContent from '~/blob/components/blob_content.vue';
@@ -10,14 +17,6 @@ import {
 } from '~/blob/components/constants';
 import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
 import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
-
-import {
-  Blob as BlobMock,
-  SimpleViewerMock,
-  RichViewerMock,
-  RichBlobContentMock,
-  SimpleBlobContentMock,
-} from 'jest/blob/components/mock_data';
 
 describe('Blob Embeddable', () => {
   let wrapper;

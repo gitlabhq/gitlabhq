@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
 import { GlButton, GlCollapse, GlIcon } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 /**
  * Renders header section with icon and expand button

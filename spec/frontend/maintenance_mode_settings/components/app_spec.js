@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import MaintenanceModeSettingsApp from '~/maintenance_mode_settings/components/app.vue';
 import { GlToggle, GlFormTextarea, GlButton } from '@gitlab/ui';
+import MaintenanceModeSettingsApp from '~/maintenance_mode_settings/components/app.vue';
 
 describe('MaintenanceModeSettingsApp', () => {
   let wrapper;

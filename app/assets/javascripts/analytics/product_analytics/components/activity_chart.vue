@@ -1,6 +1,6 @@
 <script>
-import { s__ } from '~/locale';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
+import { s__ } from '~/locale';
 
 export default {
   i18n: {

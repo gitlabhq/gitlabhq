@@ -1,7 +1,7 @@
-import axios from '~/lib/utils/axios_utils';
-import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import sidebarDetailsQuery from 'ee_else_ce/sidebar/queries/sidebarDetails.query.graphql';
 import sidebarDetailsForHealthStatusFeatureFlagQuery from 'ee_else_ce/sidebar/queries/sidebarDetailsForHealthStatusFeatureFlag.query.graphql';
+import axios from '~/lib/utils/axios_utils';
+import createGqClient, { fetchPolicies } from '~/lib/graphql';
 
 export const gqClient = createGqClient(
   {},

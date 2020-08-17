@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import { GlLoadingIcon } from '@gitlab/ui';
-import ClientsideNavigator from '~/ide/components/preview/navigator.vue';
 import { listen } from 'codesandbox-api';
+import ClientsideNavigator from '~/ide/components/preview/navigator.vue';
 
 jest.mock('codesandbox-api', () => ({
   listen: jest.fn().mockReturnValue(jest.fn()),

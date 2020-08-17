@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
+import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 
 describe('TriggerFields', () => {
   let wrapper;

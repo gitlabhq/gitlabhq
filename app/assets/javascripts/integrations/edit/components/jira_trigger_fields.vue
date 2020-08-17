@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import { s__ } from '~/locale';
 import { GlFormGroup, GlFormCheckbox, GlFormRadio } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 const commentDetailOptions = [
   {

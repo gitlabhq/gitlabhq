@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlAlert, GlDeprecatedDropdown, GlFormCheckbox } from '@gitlab/ui';
 import FluentdOutputSettings from '~/clusters/components/fluentd_output_settings.vue';
 import { APPLICATION_STATUS, FLUENTD } from '~/clusters/constants';
-import { GlAlert, GlDeprecatedDropdown, GlFormCheckbox } from '@gitlab/ui';
 import eventHub from '~/clusters/event_hub';
 
 const { UPDATING } = APPLICATION_STATUS;

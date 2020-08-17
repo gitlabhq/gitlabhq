@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { mockIntegrationProps } from 'jest/integrations/edit/mock_data';
 import { createStore } from '~/integrations/edit/store';
 import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
@@ -7,7 +8,6 @@ import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_field
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
-import { mockIntegrationProps } from 'jest/integrations/edit/mock_data';
 
 describe('IntegrationForm', () => {
   let wrapper;

@@ -1,6 +1,6 @@
 <script>
-import axios from '~/lib/utils/axios_utils';
 import { GlIcon } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
 
 export default {
   components: {
@@ -45,7 +45,7 @@ export default {
           data-testid="close"
           @click="dismiss"
         >
-          <gl-icon name="close" aria-hidden="true" class="gl-text-gray-700" />
+          <gl-icon name="close" aria-hidden="true" class="gl-text-gray-500" />
         </button>
       </div>
     </div>

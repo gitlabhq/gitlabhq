@@ -1,5 +1,4 @@
 <script>
-import { s__ } from '~/locale';
 import { mapActions, mapState } from 'vuex';
 import {
   GlIcon,
@@ -7,6 +6,7 @@ import {
   GlDeprecatedDropdownHeader,
   GlDeprecatedDropdownItem,
 } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 export default {
   components: {

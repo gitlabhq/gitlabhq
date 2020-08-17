@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import NoteableNote from '~/notes/components/noteable_note.vue';
 import { GlButton } from '@gitlab/ui';
+import NoteableNote from '~/notes/components/noteable_note.vue';
 import PublishButton from './publish_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 

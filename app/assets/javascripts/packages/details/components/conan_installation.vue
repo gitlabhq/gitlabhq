@@ -1,9 +1,9 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
+import { mapGetters, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import CodeInstruction from './code_instruction.vue';
 import { TrackingActions } from '../constants';
-import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'ConanInstallation',

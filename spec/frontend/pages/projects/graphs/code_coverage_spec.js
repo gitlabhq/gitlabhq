@@ -3,10 +3,10 @@ import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlIcon, GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import CodeCoverage from '~/pages/projects/graphs/components/code_coverage.vue';
 import { codeCoverageMockData, sortedDataByDates } from './mock_data';
-import waitForPromises from 'helpers/wait_for_promises';
 import httpStatusCodes from '~/lib/utils/http_status';
 
 describe('Code Coverage', () => {

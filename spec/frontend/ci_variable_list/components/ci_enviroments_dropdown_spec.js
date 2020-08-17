@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
-import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlDeprecatedDropdownItem, GlIcon } from '@gitlab/ui';
+import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

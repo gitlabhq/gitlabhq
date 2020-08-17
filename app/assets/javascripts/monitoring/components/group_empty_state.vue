@@ -1,6 +1,6 @@
 <script>
-import { __, sprintf } from '~/locale';
 import { GlEmptyState } from '@gitlab/ui';
+import { __, sprintf } from '~/locale';
 import { metricStates } from '../constants';
 
 export default {

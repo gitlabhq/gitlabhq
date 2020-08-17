@@ -796,12 +796,12 @@
   &.ci-status-icon-disabled,
   &.ci-status-icon-not-found,
   &.ci-status-icon-manual {
-    @include mini-pipeline-graph-color($white, $gray-700, $gray-800, $gray-900, $gray-950, $black);
+    @include mini-pipeline-graph-color($white, $gray-500, $gray-800, $gray-900, $gray-950, $black);
   }
 
   &.ci-status-icon-created,
   &.ci-status-icon-skipped {
-    @include mini-pipeline-graph-color($white, $gray-100, $gray-200, $gray-300, $gray-400, $gray-700);
+    @include mini-pipeline-graph-color($white, $gray-100, $gray-200, $gray-300, $gray-400, $gray-500);
   }
 }
 

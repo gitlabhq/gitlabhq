@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlModal } from '@gitlab/ui';
 import HeaderComponent from '~/pipelines/components/header_component.vue';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import eventHub from '~/pipelines/event_hub';
-import { GlModal } from '@gitlab/ui';
 
 describe('Pipeline details header', () => {
   let wrapper;

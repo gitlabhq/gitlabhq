@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import DesignDropzone from '~/design_management/components/upload/design_dropzone.vue';
 import createFlash from '~/flash';
-import { GlIcon } from '@gitlab/ui';
 
 jest.mock('~/flash');
 
@@ -140,7 +140,7 @@ describe('Design management dropzone component', () => {
   it('applies correct classes when there are no designs or no design saving loader', () => {
     createComponent({ props: { hasDesigns: false } });
     expect(findDropzoneArea().classes()).not.toContain('gl-flex-direction-column');
-    expect(findIcon().classes()).toEqual(['gl-mr-3', 'gl-text-gray-700']);
+    expect(findIcon().classes()).toEqual(['gl-mr-3', 'gl-text-gray-500']);
     expect(findIcon().props('size')).toBe(16);
   });
 

@@ -1,7 +1,7 @@
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 useLocalStorageSpy();
 

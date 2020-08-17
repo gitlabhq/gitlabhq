@@ -1,7 +1,7 @@
-import Api from '~/api';
 import { mount, shallowMount } from '@vue/test-utils';
-import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
 import { GlNewDropdown, GlNewDropdownItem, GlForm } from '@gitlab/ui';
+import Api from '~/api';
+import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
 import { mockRefs, mockParams, mockPostParams, mockProjectId } from '../mock_data';
 
 describe('Pipeline New Form', () => {

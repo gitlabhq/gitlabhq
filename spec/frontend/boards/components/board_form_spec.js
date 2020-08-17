@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
 
+import { TEST_HOST } from 'jest/helpers/test_constants';
 import boardsStore from '~/boards/stores/boards_store';
 import boardForm from '~/boards/components/board_form.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
-import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('board_form.vue', () => {
   let wrapper;

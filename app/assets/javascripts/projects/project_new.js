@@ -1,7 +1,7 @@
 import $ from 'jquery';
+import DEFAULT_PROJECT_TEMPLATES from 'ee_else_ce/projects/default_project_templates';
 import { addSelectOnFocusBehaviour } from '../lib/utils/common_utils';
 import { convertToTitleCase, humanize, slugify } from '../lib/utils/text_utility';
-import DEFAULT_PROJECT_TEMPLATES from 'ee_else_ce/projects/default_project_templates';
 
 let hasUserDefinedProjectPath = false;
 let hasUserDefinedProjectName = false;

@@ -104,4 +104,12 @@ export default {
       Vue.set(state.customImportTargets, repoId, importTarget);
     }
   },
+
+  [types.SET_PAGE_INFO](state, pageInfo) {
+    state.pageInfo = pageInfo;
+  },
+
+  [types.SET_PAGE](state, page) {
+    state.pageInfo.page = page;
+  },
 };

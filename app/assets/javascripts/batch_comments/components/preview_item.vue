@@ -1,10 +1,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { GlSprintf } from '@gitlab/ui';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import resolvedStatusMixin from '../mixins/resolved_status';
-import { GlSprintf } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   getStartLineNumber,

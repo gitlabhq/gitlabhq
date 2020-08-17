@@ -22,7 +22,7 @@ export default {
     />
     <gl-icon
       name="close"
-      class="dropdown-input-clear js-dropdown-input-clear gl-absolute gl-top-3 gl-right-5 gl-text-gray-700"
+      class="dropdown-input-clear js-dropdown-input-clear gl-absolute gl-top-3 gl-right-5 gl-text-gray-500"
     />
   </div>
 </template>

@@ -1,9 +1,8 @@
+import { mockLabels } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 import Api from '~/api';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
-
-import { mockLabels } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 
 export const mockAuthor1 = {
   id: 1,

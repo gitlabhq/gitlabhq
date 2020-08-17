@@ -1,8 +1,8 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GlAlert, GlEmptyState } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
 import Dag from '~/pipelines/components/dag/dag.vue';
 import DagGraph from '~/pipelines/components/dag/dag_graph.vue';
 import DagAnnotations from '~/pipelines/components/dag/dag_annotations.vue';

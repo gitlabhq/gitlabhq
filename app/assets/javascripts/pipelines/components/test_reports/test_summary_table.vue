@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import { s__ } from '~/locale';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 export default {

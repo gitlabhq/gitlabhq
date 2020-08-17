@@ -2,13 +2,12 @@ import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
+import { TEST_HOST } from 'helpers/test_constants';
+import { listObj } from 'jest/boards/mock_data';
 import BoardListHeader from '~/boards/components/board_list_header.vue';
 import List from '~/boards/models/list';
 import { ListType } from '~/boards/constants';
 import axios from '~/lib/utils/axios_utils';
-
-import { TEST_HOST } from 'helpers/test_constants';
-import { listObj } from 'jest/boards/mock_data';
 
 describe('Board List Header Component', () => {
   let wrapper;

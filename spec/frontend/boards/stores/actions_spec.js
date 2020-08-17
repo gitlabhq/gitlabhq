@@ -1,6 +1,6 @@
+import testAction from 'helpers/vuex_action_helper';
 import actions from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
-import testAction from 'helpers/vuex_action_helper';
 import { inactiveId } from '~/boards/constants';
 
 const expectNotImplemented = action => {

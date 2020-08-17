@@ -1,9 +1,9 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import MavenInstallation from '~/packages/details/components/maven_installation.vue';
-import CodeInstructions from '~/packages/details/components/code_instruction.vue';
 import { registryUrl as mavenPath } from 'jest/packages/details/mock_data';
 import { mavenPackage as packageEntity } from 'jest/packages/mock_data';
+import MavenInstallation from '~/packages/details/components/maven_installation.vue';
+import CodeInstructions from '~/packages/details/components/code_instruction.vue';
 import { TrackingActions } from '~/packages/details/constants';
 
 const localVue = createLocalVue();

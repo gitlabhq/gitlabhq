@@ -51,7 +51,7 @@ export default {
           {{ packageEntity.name }}
         </h1>
 
-        <div class="gl-display-flex gl-align-items-center gl-text-gray-700">
+        <div class="gl-display-flex gl-align-items-center gl-text-gray-500">
           <gl-icon name="eye" class="gl-mr-3" />
           <gl-sprintf :message="$options.i18n.packageInfo">
             <template #version>
@@ -70,7 +70,7 @@ export default {
 
     <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mb-3">
       <div v-if="packageTypeDisplay" class="gl-display-flex gl-align-items-center gl-mr-5">
-        <gl-icon name="package" class="gl-text-gray-700 gl-mr-3" />
+        <gl-icon name="package" class="gl-text-gray-500 gl-mr-3" />
         <span data-testid="package-type" class="gl-font-weight-bold">{{ packageTypeDisplay }}</span>
       </div>
 
@@ -79,7 +79,7 @@ export default {
       </div>
 
       <div v-if="packagePipeline" class="gl-display-flex gl-align-items-center gl-mr-5">
-        <gl-icon name="review-list" class="gl-text-gray-700 gl-mr-3" />
+        <gl-icon name="review-list" class="gl-text-gray-500 gl-mr-3" />
         <gl-link
           data-testid="pipeline-project"
           :href="packagePipeline.project.web_url"
@@ -94,7 +94,7 @@ export default {
         data-testid="package-ref"
         class="gl-display-flex gl-align-items-center gl-mr-5"
       >
-        <gl-icon name="branch" class="gl-text-gray-700 gl-mr-3" />
+        <gl-icon name="branch" class="gl-text-gray-500 gl-mr-3" />
         <span
           v-gl-tooltip
           class="gl-font-weight-bold text-truncate mw-xs"
@@ -104,7 +104,7 @@ export default {
       </div>
 
       <div class="gl-display-flex gl-align-items-center gl-mr-5">
-        <gl-icon name="disk" class="gl-text-gray-700 gl-mr-3" />
+        <gl-icon name="disk" class="gl-text-gray-500 gl-mr-3" />
         <span data-testid="package-size" class="gl-font-weight-bold">{{ totalSize }}</span>
       </div>
     </div>

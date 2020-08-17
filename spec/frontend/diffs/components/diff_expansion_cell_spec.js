@@ -1,12 +1,12 @@
 import Vue from 'vue';
 import { cloneDeep } from 'lodash';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { getByText } from '@testing-library/dom';
 import { createStore } from '~/mr_notes/stores';
 import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
 import { getPreviousLineIndex } from '~/diffs/store/utils';
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import diffFileMockData from '../mock_data/diff_file';
-import { getByText } from '@testing-library/dom';
 
 const EXPAND_UP_CLASS = '.js-unfold';
 const EXPAND_DOWN_CLASS = '.js-unfold-down';

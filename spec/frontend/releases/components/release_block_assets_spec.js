@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils';
 import { GlCollapse } from '@gitlab/ui';
+import { trimText } from 'helpers/text_helper';
+import { cloneDeep } from 'lodash';
 import ReleaseBlockAssets from '~/releases/components/release_block_assets.vue';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
-import { trimText } from 'helpers/text_helper';
 import { assets } from '../mock_data';
-import { cloneDeep } from 'lodash';
 
 describe('Release block assets', () => {
   let wrapper;

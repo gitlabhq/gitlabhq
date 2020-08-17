@@ -96,7 +96,7 @@ export default {
     </div>
     <div
       v-if="imagesCount"
-      class="gl-display-flex gl-align-items-center gl-mt-1 gl-mb-3 gl-text-gray-700"
+      class="gl-display-flex gl-align-items-center gl-mt-1 gl-mb-3 gl-text-gray-500"
       data-testid="subheader"
     >
       <span class="gl-mr-3" data-testid="images-count">

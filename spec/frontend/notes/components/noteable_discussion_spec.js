@@ -1,4 +1,6 @@
 import { mount, createLocalVue } from '@vue/test-utils';
+import mockDiffFile from 'jest/diffs/mock_data/diff_file';
+import { trimText } from 'helpers/text_helper';
 import createStore from '~/notes/stores';
 import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
@@ -12,8 +14,6 @@ import {
   loggedOutnoteableData,
   userDataMock,
 } from '../mock_data';
-import mockDiffFile from 'jest/diffs/mock_data/diff_file';
-import { trimText } from 'helpers/text_helper';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 

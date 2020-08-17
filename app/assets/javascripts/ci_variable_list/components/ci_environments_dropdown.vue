@@ -6,8 +6,8 @@ import {
   GlSearchBoxByType,
   GlIcon,
 } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
 import { mapGetters } from 'vuex';
+import { __, sprintf } from '~/locale';
 
 export default {
   name: 'CiEnvironmentsDropdown',

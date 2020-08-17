@@ -1,8 +1,9 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
-import { objectToQuery } from '~/lib/utils/url_utility';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
+import { TEST_HOST } from 'helpers/test_constants';
+import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
+import { objectToQuery } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { dashboardEmptyStates, metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
@@ -30,7 +31,6 @@ import {
   dashboardProps,
 } from '../fixture_data';
 import createFlash from '~/flash';
-import { TEST_HOST } from 'helpers/test_constants';
 
 jest.mock('~/flash');
 

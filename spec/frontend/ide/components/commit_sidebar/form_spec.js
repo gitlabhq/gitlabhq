@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { projectData } from 'jest/ide/mock_data';
+import waitForPromises from 'helpers/wait_for_promises';
 import { createStore } from '~/ide/stores';
 import CommitForm from '~/ide/components/commit_sidebar/form.vue';
 import { leftSidebarViews } from '~/ide/constants';
-import waitForPromises from 'helpers/wait_for_promises';
 
 describe('IDE commit form', () => {
   const Component = Vue.extend(CommitForm);

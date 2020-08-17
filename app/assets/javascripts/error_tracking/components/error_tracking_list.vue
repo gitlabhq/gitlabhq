@@ -14,10 +14,10 @@ import {
   GlTooltipDirective,
   GlPagination,
 } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import AccessorUtils from '~/lib/utils/accessor';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
-import { isEmpty } from 'lodash';
 import ErrorTrackingActions from './error_tracking_actions.vue';
 import Tracking from '~/tracking';
 import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '../utils';

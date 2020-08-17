@@ -1,7 +1,7 @@
 <script>
 import dateFormat from 'dateformat';
-import { __, sprintf } from '~/locale';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
+import { __, sprintf } from '~/locale';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
 import StatisticsList from './statistics_list.vue';
 import PipelinesAreaChart from './pipelines_area_chart.vue';

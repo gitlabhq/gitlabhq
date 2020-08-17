@@ -7,11 +7,8 @@ export default {
     BitbucketStatusTable,
     GlButton,
   },
+  inheritAttrs: false,
   props: {
-    providerTitle: {
-      type: String,
-      required: true,
-    },
     reconfigurePath: {
       type: String,
       required: true,
@@ -20,7 +17,7 @@ export default {
 };
 </script>
 <template>
-  <bitbucket-status-table :provider-title="providerTitle">
+  <bitbucket-status-table v-bind="$attrs">
     <template #actions>
       <gl-button variant="info" class="gl-ml-3" data-method="post" :href="reconfigurePath">{{
         __('Reconfigure')

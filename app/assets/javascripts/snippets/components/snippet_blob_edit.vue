@@ -1,7 +1,7 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
 import BlobContentEdit from '~/blob/components/blob_edit_content.vue';
-import { GlLoadingIcon } from '@gitlab/ui';
 import { getBaseURL, joinPaths } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { SNIPPET_BLOB_CONTENT_FETCH_ERROR } from '~/snippets/constants';

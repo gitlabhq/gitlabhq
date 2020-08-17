@@ -1,7 +1,7 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlIcon, GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
 import VueRouter from 'vue-router';
+import Icon from '~/vue_shared/components/icon.vue';
 import Item from '~/design_management_legacy/components/list/item.vue';
 
 const localVue = createLocalVue();

@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import createDefaultClient from '~/lib/graphql';
 import createRouter from './router';
-import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import AlertDetails from './components/alert_details.vue';
 import sidebarStatusQuery from './graphql/queries/sidebar_status.query.graphql';
 

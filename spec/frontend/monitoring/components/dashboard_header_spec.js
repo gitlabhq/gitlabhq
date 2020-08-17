@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlNewDropdownItem, GlSearchBoxByType, GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
-import { GlNewDropdownItem, GlSearchBoxByType, GlLoadingIcon, GlButton } from '@gitlab/ui';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import RefreshButton from '~/monitoring/components/refresh_button.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';

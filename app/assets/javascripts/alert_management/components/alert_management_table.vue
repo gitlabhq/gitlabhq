@@ -12,8 +12,8 @@ import {
   GlSearchBoxByType,
   GlSprintf,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
 import { debounce, trim } from 'lodash';
+import { __, s__ } from '~/locale';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';

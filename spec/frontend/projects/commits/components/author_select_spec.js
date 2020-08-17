@@ -1,14 +1,14 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import * as urlUtility from '~/lib/utils/url_utility';
-import AuthorSelect from '~/projects/commits/components/author_select.vue';
-import { createStore } from '~/projects/commits/store';
 import {
   GlNewDropdown,
   GlNewDropdownHeader,
   GlSearchBoxByType,
   GlNewDropdownItem,
 } from '@gitlab/ui';
+import * as urlUtility from '~/lib/utils/url_utility';
+import AuthorSelect from '~/projects/commits/components/author_select.vue';
+import { createStore } from '~/projects/commits/store';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

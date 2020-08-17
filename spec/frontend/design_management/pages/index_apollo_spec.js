@@ -3,6 +3,7 @@ import { createMockClient } from 'mock-apollo-client';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import VueDraggable from 'vuedraggable';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 import Design from '~/design_management/components/list/item.vue';
 import createRouter from '~/design_management/router';
 import getDesignListQuery from '~/design_management/graphql/queries/get_design_list.query.graphql';
@@ -17,7 +18,6 @@ import {
   reorderedDesigns,
   moveDesignMutationResponseWithErrors,
 } from '../mock_data/apollo_mock';
-import { InMemoryCache } from 'apollo-cache-inmemory';
 
 jest.mock('~/flash.js');
 

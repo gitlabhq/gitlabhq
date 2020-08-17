@@ -1,7 +1,5 @@
 <script>
 import { escape } from 'lodash';
-import { s__, __ } from '../../locale';
-import { APPLICATION_STATUS, INGRESS, LOGGING_MODE, BLOCKING_MODE } from '~/clusters/constants';
 import {
   GlAlert,
   GlSprintf,
@@ -12,8 +10,10 @@ import {
   GlDeprecatedDropdownItem,
   GlIcon,
 } from '@gitlab/ui';
-import eventHub from '~/clusters/event_hub';
 import modSecurityLogo from 'images/cluster_app_logos/gitlab.png';
+import { s__, __ } from '../../locale';
+import { APPLICATION_STATUS, INGRESS, LOGGING_MODE, BLOCKING_MODE } from '~/clusters/constants';
+import eventHub from '~/clusters/event_hub';
 
 const { UPDATING, UNINSTALLING, INSTALLING, INSTALLED, UPDATED } = APPLICATION_STATUS;
 
