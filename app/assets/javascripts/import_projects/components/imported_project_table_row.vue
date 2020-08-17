@@ -18,7 +18,7 @@ export default {
 
   computed: {
     displayFullPath() {
-      return this.project.fullPath.replace(/^\//, '');
+      return this.project.importedProject.fullPath.replace(/^\//, '');
     },
 
     isFinished() {
@@ -29,29 +29,30 @@ export default {
 </script>
 
 <template>
-  <tr class="js-imported-project import-row">
+  <tr class="import-row">
     <td>
       <a
-        :href="project.providerLink"
+        :href="project.importSource.providerLink"
         rel="noreferrer noopener"
         target="_blank"
-        class="js-provider-link"
-      >
-        {{ project.importSource }}
-        <gl-icon v-if="project.providerLink" name="external-link" />
+        data-testid="providerLink"
+        >{{ project.importSource.fullName }}
+        <gl-icon v-if="project.importSource.providerLink" name="external-link" />
       </a>
     </td>
-    <td class="js-full-path">{{ displayFullPath }}</td>
-    <td><import-status :status="project.importStatus" /></td>
+    <td data-testid="fullPath">{{ displayFullPath }}</td>
+    <td>
+      <import-status :status="project.importStatus" />
+    </td>
     <td>
       <a
         v-if="isFinished"
-        class="btn btn-default js-go-to-project"
-        :href="project.fullPath"
+        class="btn btn-default"
+        data-testid="goToProject"
+        :href="project.importedProject.fullPath"
         rel="noreferrer noopener"
         target="_blank"
-      >
-        {{ __('Go to project') }}
+        >{{ __('Go to project') }}
       </a>
     </td>
   </tr>

@@ -1,11 +1,27 @@
 import {
-  namespaceSelectOptions,
+  isLoading,
   isImportingAnyRepo,
-  hasProviderRepos,
   hasIncompatibleRepos,
-  hasImportedProjects,
+  hasImportableRepos,
+  getImportTarget,
 } from '~/import_projects/store/getters';
+import { STATUSES } from '~/import_projects/constants';
 import state from '~/import_projects/store/state';
+
+const IMPORTED_REPO = {
+  importSource: {},
+  importedProject: { fullPath: 'some/path' },
+};
+
+const IMPORTABLE_REPO = {
+  importSource: { id: 'some-id', sanitizedName: 'sanitized' },
+  importedProject: null,
+  importStatus: STATUSES.NONE,
+};
+
+const INCOMPATIBLE_REPO = {
+  importSource: { incompatible: true },
+};
 
 describe('import_projects store getters', () => {
   let localState;
@@ -14,85 +30,87 @@ describe('import_projects store getters', () => {
     localState = state();
   });
 
-  describe('namespaceSelectOptions', () => {
-    const namespaces = [{ fullPath: 'namespace-0' }, { fullPath: 'namespace-1' }];
-    const defaultTargetNamespace = 'current-user';
-
-    it('returns an options array with a "Users" and "Groups" optgroups', () => {
-      localState.namespaces = namespaces;
-      localState.defaultTargetNamespace = defaultTargetNamespace;
-
-      const optionsArray = namespaceSelectOptions(localState);
-      const groupsGroup = optionsArray[0];
-      const usersGroup = optionsArray[1];
-
-      expect(groupsGroup.text).toBe('Groups');
-      expect(usersGroup.text).toBe('Users');
-
-      groupsGroup.children.forEach((child, index) => {
-        expect(child.id).toBe(namespaces[index].fullPath);
-        expect(child.text).toBe(namespaces[index].fullPath);
+  it.each`
+    isLoadingRepos | isLoadingNamespaces | isLoadingValue
+    ${false}       | ${false}            | ${false}
+    ${true}        | ${false}            | ${true}
+    ${false}       | ${true}             | ${true}
+    ${true}        | ${true}             | ${true}
+  `(
+    'isLoading returns $isLoadingValue when isLoadingRepos is $isLoadingRepos and isLoadingNamespaces is $isLoadingNamespaces',
+    ({ isLoadingRepos, isLoadingNamespaces, isLoadingValue }) => {
+      Object.assign(localState, {
+        isLoadingRepos,
+        isLoadingNamespaces,
       });
 
-      expect(usersGroup.children.length).toBe(1);
-      expect(usersGroup.children[0].id).toBe(defaultTargetNamespace);
-      expect(usersGroup.children[0].text).toBe(defaultTargetNamespace);
-    });
-  });
+      expect(isLoading(localState)).toBe(isLoadingValue);
+    },
+  );
 
-  describe('isImportingAnyRepo', () => {
-    it('returns true if there are any reposBeingImported', () => {
-      localState.reposBeingImported = new Array(1);
+  it.each`
+    importStatus           | value
+    ${STATUSES.NONE}       | ${false}
+    ${STATUSES.SCHEDULING} | ${true}
+    ${STATUSES.SCHEDULED}  | ${true}
+    ${STATUSES.STARTED}    | ${true}
+    ${STATUSES.FINISHED}   | ${false}
+  `(
+    'isImportingAnyRepo returns $value when repo with $importStatus status is available',
+    ({ importStatus, value }) => {
+      localState.repositories = [{ importStatus }];
 
-      expect(isImportingAnyRepo(localState)).toBe(true);
-    });
-
-    it('returns false if there are no reposBeingImported', () => {
-      localState.reposBeingImported = [];
-
-      expect(isImportingAnyRepo(localState)).toBe(false);
-    });
-  });
-
-  describe('hasProviderRepos', () => {
-    it('returns true if there are any providerRepos', () => {
-      localState.providerRepos = new Array(1);
-
-      expect(hasProviderRepos(localState)).toBe(true);
-    });
-
-    it('returns false if there are no providerRepos', () => {
-      localState.providerRepos = [];
-
-      expect(hasProviderRepos(localState)).toBe(false);
-    });
-  });
-
-  describe('hasImportedProjects', () => {
-    it('returns true if there are any importedProjects', () => {
-      localState.importedProjects = new Array(1);
-
-      expect(hasImportedProjects(localState)).toBe(true);
-    });
-
-    it('returns false if there are no importedProjects', () => {
-      localState.importedProjects = [];
-
-      expect(hasImportedProjects(localState)).toBe(false);
-    });
-  });
+      expect(isImportingAnyRepo(localState)).toBe(value);
+    },
+  );
 
   describe('hasIncompatibleRepos', () => {
-    it('returns true if there are any incompatibleProjects', () => {
-      localState.incompatibleRepos = new Array(1);
+    it('returns true if there are any incompatible projects', () => {
+      localState.repositories = [IMPORTABLE_REPO, IMPORTED_REPO, INCOMPATIBLE_REPO];
 
       expect(hasIncompatibleRepos(localState)).toBe(true);
     });
 
-    it('returns false if there are no incompatibleProjects', () => {
-      localState.incompatibleRepos = [];
+    it('returns false if there are no incompatible projects', () => {
+      localState.repositories = [IMPORTABLE_REPO, IMPORTED_REPO];
 
       expect(hasIncompatibleRepos(localState)).toBe(false);
+    });
+  });
+
+  describe('hasImportableRepos', () => {
+    it('returns true if there are any importable projects ', () => {
+      localState.repositories = [IMPORTABLE_REPO, IMPORTED_REPO, INCOMPATIBLE_REPO];
+
+      expect(hasImportableRepos(localState)).toBe(true);
+    });
+
+    it('returns false if there are no importable projects', () => {
+      localState.repositories = [IMPORTED_REPO, INCOMPATIBLE_REPO];
+
+      expect(hasImportableRepos(localState)).toBe(false);
+    });
+  });
+
+  describe('getImportTarget', () => {
+    it('returns default value if no custom target available', () => {
+      localState.defaultTargetNamespace = 'default';
+      localState.repositories = [IMPORTABLE_REPO];
+
+      expect(getImportTarget(localState)(IMPORTABLE_REPO.importSource.id)).toStrictEqual({
+        newName: IMPORTABLE_REPO.importSource.sanitizedName,
+        targetNamespace: localState.defaultTargetNamespace,
+      });
+    });
+
+    it('returns custom import target if available', () => {
+      const fakeTarget = { newName: 'something', targetNamespace: 'ns' };
+      localState.repositories = [IMPORTABLE_REPO];
+      localState.customImportTargets[IMPORTABLE_REPO.importSource.id] = fakeTarget;
+
+      expect(getImportTarget(localState)(IMPORTABLE_REPO.importSource.id)).toStrictEqual(
+        fakeTarget,
+      );
     });
   });
 });

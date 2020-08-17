@@ -1,100 +1,100 @@
+import { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { createLocalVue, mount } from '@vue/test-utils';
-import { state, actions, getters, mutations } from '~/import_projects/store';
-import providerRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
-import STATUS_MAP, { STATUSES } from '~/import_projects/constants';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import ProviderRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
+import ImportStatus from '~/import_projects/components/import_status.vue';
+import { STATUSES } from '~/import_projects/constants';
+import Select2Select from '~/vue_shared/components/select2_select.vue';
 
 describe('ProviderRepoTableRow', () => {
-  let vm;
+  let wrapper;
   const fetchImport = jest.fn();
-  const importPath = '/import-path';
-  const defaultTargetNamespace = 'user';
-  const ciCdOnly = true;
+  const setImportTarget = jest.fn();
+  const fakeImportTarget = {
+    targetNamespace: 'target',
+    newName: 'newName',
+  };
+  const ciCdOnly = false;
   const repo = {
-    id: 10,
-    sanitizedName: 'sanitizedName',
-    fullName: 'fullName',
-    providerLink: 'providerLink',
+    importSource: {
+      id: 'remote-1',
+      fullName: 'fullName',
+      providerLink: 'providerLink',
+    },
+    importedProject: {
+      id: 1,
+      fullPath: 'fullPath',
+      importSource: 'importSource',
+    },
+    importStatus: STATUSES.FINISHED,
   };
 
-  function initStore(initialState) {
-    const stubbedActions = { ...actions, fetchImport };
+  const availableNamespaces = [
+    { text: 'Groups', children: [{ id: 'test', text: 'test' }] },
+    { text: 'Users', children: [{ id: 'root', text: 'root' }] },
+  ];
 
+  function initStore(initialState) {
     const store = new Vuex.Store({
-      state: { ...state(), ...initialState },
-      actions: stubbedActions,
-      mutations,
-      getters,
+      state: initialState,
+      getters: {
+        getImportTarget: () => () => fakeImportTarget,
+      },
+      actions: { fetchImport, setImportTarget },
     });
 
     return store;
   }
 
+  const findImportButton = () =>
+    wrapper
+      .findAll('button')
+      .filter(node => node.text() === 'Import')
+      .at(0);
+
   function mountComponent(initialState) {
     const localVue = createLocalVue();
     localVue.use(Vuex);
 
-    const store = initStore({ importPath, defaultTargetNamespace, ciCdOnly, ...initialState });
+    const store = initStore({ ciCdOnly, ...initialState });
 
-    const component = mount(providerRepoTableRow, {
+    wrapper = shallowMount(ProviderRepoTableRow, {
       localVue,
       store,
-      propsData: {
-        repo,
-      },
+      propsData: { repo, availableNamespaces },
     });
-
-    return component.vm;
   }
 
   beforeEach(() => {
-    vm = mountComponent();
+    mountComponent();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders a provider repo table row', () => {
-    const providerLink = vm.$el.querySelector('.js-provider-link');
-    const statusObject = STATUS_MAP[STATUSES.NONE];
+    const providerLink = wrapper.find('[data-testid=providerLink]');
 
-    expect(vm.$el.classList.contains('js-provider-repo')).toBe(true);
-    expect(providerLink.href).toMatch(repo.providerLink);
-    expect(providerLink.textContent).toMatch(repo.fullName);
-    expect(vm.$el.querySelector(`.${statusObject.textClass}`).textContent).toMatch(
-      statusObject.text,
-    );
-
-    expect(vm.$el.querySelector(`.ic-status_${statusObject.icon}`)).not.toBeNull();
-    expect(vm.$el.querySelector('.js-import-button')).not.toBeNull();
+    expect(providerLink.attributes().href).toMatch(repo.importSource.providerLink);
+    expect(providerLink.text()).toMatch(repo.importSource.fullName);
+    expect(wrapper.find(ImportStatus).props().status).toBe(repo.importStatus);
+    expect(wrapper.contains('button')).toBe(true);
   });
 
   it('renders a select2 namespace select', () => {
-    const dropdownTrigger = vm.$el.querySelector('.js-namespace-select');
-
-    expect(dropdownTrigger).not.toBeNull();
-    expect(dropdownTrigger.classList.contains('select2-container')).toBe(true);
-
-    dropdownTrigger.click();
-
-    expect(vm.$el.querySelector('.select2-drop')).not.toBeNull();
+    expect(wrapper.contains(Select2Select)).toBe(true);
+    expect(wrapper.find(Select2Select).props().options.data).toBe(availableNamespaces);
   });
 
-  it('imports repo when clicking import button', () => {
-    vm.$el.querySelector('.js-import-button').click();
+  it('imports repo when clicking import button', async () => {
+    findImportButton().trigger('click');
 
-    return vm.$nextTick().then(() => {
-      const { calls } = fetchImport.mock;
+    await nextTick();
 
-      // Not using .toBeCalledWith because it expects
-      // an unmatchable and undefined 3rd argument.
-      expect(calls.length).toBe(1);
-      expect(calls[0][1]).toEqual({
-        repo,
-        newName: repo.sanitizedName,
-        targetNamespace: defaultTargetNamespace,
-      });
-    });
+    const { calls } = fetchImport.mock;
+
+    expect(calls).toHaveLength(1);
+    expect(calls[0][1]).toBe(repo.importSource.id);
   });
 });

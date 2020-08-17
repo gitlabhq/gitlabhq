@@ -12,6 +12,7 @@ export default () => {
     projectPath,
     newIssuePath,
     incidentTemplateName,
+    incidentType,
     issuePath,
     publishedAvailable,
   } = domEl.dataset;
@@ -25,6 +26,7 @@ export default () => {
     provide: {
       projectPath,
       incidentTemplateName,
+      incidentType,
       newIssuePath,
       issuePath,
       publishedAvailable,

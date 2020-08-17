@@ -90,7 +90,7 @@ class Projects::IssuesController < Projects::ApplicationController
     params[:issue] ||= ActionController::Parameters.new(
       assignee_ids: ""
     )
-    build_params = issue_params.merge(
+    build_params = issue_create_params.merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
       discussion_to_resolve: params[:discussion_to_resolve],
       confidential: !!Gitlab::Utils.to_boolean(params[:issue][:confidential])
@@ -110,7 +110,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    create_params = issue_params.merge(spammable_params).merge(
+    create_params = issue_create_params.merge(spammable_params).merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
       discussion_to_resolve: params[:discussion_to_resolve]
     )
@@ -291,6 +291,16 @@ class Projects::IssuesController < Projects::ApplicationController
       lock_version
       discussion_locked
     ] + [{ label_ids: [], assignee_ids: [], update_task: [:index, :checked, :line_number, :line_source] }]
+  end
+
+  def issue_create_params
+    create_params = %i[
+      issue_type
+    ]
+
+    params.require(:issue).permit(
+      *create_params
+    ).merge(issue_params)
   end
 
   def reorder_params

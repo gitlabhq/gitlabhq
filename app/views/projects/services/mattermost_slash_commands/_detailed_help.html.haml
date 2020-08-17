@@ -1,5 +1,5 @@
-- pretty_name = @project&.full_name || _('<project name>')
-- run_actions_text = s_("ProjectService|Perform common operations on GitLab project: %{project_name}") % { project_name: pretty_name }
+- pretty_name = html_escape(@project&.full_name) || html_escape_once(_('&lt;project name&gt;')).html_safe
+- run_actions_text = html_escape(s_("ProjectService|Perform common operations on GitLab project: %{project_name}")) % { project_name: pretty_name }
 
 %p= s_("ProjectService|To set up this service:")
 %ul.list-unstyled.indent-list
@@ -21,7 +21,7 @@
   .form-group
     = label_tag :display_name, _('Display name'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
-      = text_field_tag :display_name, "GitLab / #{pretty_name}", class: 'form-control form-control-sm', readonly: 'readonly'
+      = text_field_tag :display_name, "GitLab / #{pretty_name}".html_safe, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#display_name', class: 'input-group-text')
 

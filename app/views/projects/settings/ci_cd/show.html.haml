@@ -85,7 +85,7 @@
       %p
         - freeze_period_docs = help_page_path('user/project/releases/index', anchor: 'prevent-unintentional-releases-by-setting-a-deploy-freeze')
         - freeze_period_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: freeze_period_docs }
-        = s_('DeployFreeze|Specify times when deployments are not allowed for an environment. The <code>gitlab-ci.yml</code> file must be updated to make deployment jobs aware of the %{freeze_period_link_start}freeze period%{freeze_period_link_end}.').html_safe % { freeze_period_link_start: freeze_period_link_start, freeze_period_link_end: '</a>'.html_safe }
+        = html_escape(s_('DeployFreeze|Specify times when deployments are not allowed for an environment. The %{filename} file must be updated to make deployment jobs aware of the %{freeze_period_link_start}freeze period%{freeze_period_link_end}.')) % { freeze_period_link_start: freeze_period_link_start, freeze_period_link_end: '</a>'.html_safe, filename: tag.code('gitlab-ci.yml') }
 
         - cron_syntax_url = 'https://crontab.guru/'
         - cron_syntax_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: cron_syntax_url }

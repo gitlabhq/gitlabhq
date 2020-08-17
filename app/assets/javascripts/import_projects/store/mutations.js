@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import * as types from './mutation_types';
+import { STATUSES } from '../constants';
 
 export default {
   [types.SET_FILTER](state, filter) {
@@ -12,48 +13,95 @@ export default {
 
   [types.RECEIVE_REPOS_SUCCESS](
     state,
-    { importedProjects, providerRepos, incompatibleRepos, namespaces },
+    { importedProjects, providerRepos, incompatibleRepos = [] },
   ) {
+    // Normalizing structure to support legacy backend format
+    // See https://gitlab.com/gitlab-org/gitlab/-/issues/27370#note_379034091 for details
+
     state.isLoadingRepos = false;
 
-    state.importedProjects = importedProjects;
-    state.providerRepos = providerRepos;
-    state.incompatibleRepos = incompatibleRepos ?? [];
-    state.namespaces = namespaces;
+    state.repositories = [
+      ...importedProjects.map(({ importSource, providerLink, importStatus, ...project }) => ({
+        importSource: {
+          id: `finished-${project.id}`,
+          fullName: importSource,
+          sanitizedName: project.name,
+          providerLink,
+        },
+        importStatus,
+        importedProject: project,
+      })),
+      ...providerRepos.map(project => ({
+        importSource: project,
+        importStatus: STATUSES.NONE,
+        importedProject: null,
+      })),
+      ...incompatibleRepos.map(project => ({
+        importSource: { ...project, incompatible: true },
+        importStatus: STATUSES.NONE,
+        importedProject: null,
+      })),
+    ];
   },
 
   [types.RECEIVE_REPOS_ERROR](state) {
     state.isLoadingRepos = false;
   },
 
-  [types.REQUEST_IMPORT](state, repoId) {
-    state.reposBeingImported.push(repoId);
+  [types.REQUEST_IMPORT](state, { repoId, importTarget }) {
+    const existingRepo = state.repositories.find(r => r.importSource.id === repoId);
+    existingRepo.importStatus = STATUSES.SCHEDULING;
+    existingRepo.importedProject = {
+      fullPath: `/${importTarget.targetNamespace}/${importTarget.newName}`,
+    };
   },
 
   [types.RECEIVE_IMPORT_SUCCESS](state, { importedProject, repoId }) {
-    const existingRepoIndex = state.reposBeingImported.indexOf(repoId);
-    if (state.reposBeingImported.includes(repoId))
-      state.reposBeingImported.splice(existingRepoIndex, 1);
+    const { importStatus, ...project } = importedProject;
 
-    const providerRepoIndex = state.providerRepos.findIndex(
-      providerRepo => providerRepo.id === repoId,
-    );
-    state.providerRepos.splice(providerRepoIndex, 1);
-    state.importedProjects.unshift(importedProject);
+    const existingRepo = state.repositories.find(r => r.importSource.id === repoId);
+    existingRepo.importStatus = importStatus;
+    existingRepo.importedProject = project;
   },
 
   [types.RECEIVE_IMPORT_ERROR](state, repoId) {
-    const repoIndex = state.reposBeingImported.indexOf(repoId);
-    if (state.reposBeingImported.includes(repoId)) state.reposBeingImported.splice(repoIndex, 1);
+    const existingRepo = state.repositories.find(r => r.importSource.id === repoId);
+    existingRepo.importStatus = STATUSES.NONE;
+    existingRepo.importedProject = null;
   },
 
   [types.RECEIVE_JOBS_SUCCESS](state, updatedProjects) {
     updatedProjects.forEach(updatedProject => {
-      const existingProject = state.importedProjects.find(
-        importedProject => importedProject.id === updatedProject.id,
-      );
-
-      Vue.set(existingProject, 'importStatus', updatedProject.importStatus);
+      const repo = state.repositories.find(p => p.importedProject?.id === updatedProject.id);
+      if (repo) {
+        repo.importStatus = updatedProject.importStatus;
+      }
     });
+  },
+
+  [types.REQUEST_NAMESPACES](state) {
+    state.isLoadingNamespaces = true;
+  },
+
+  [types.RECEIVE_NAMESPACES_SUCCESS](state, namespaces) {
+    state.isLoadingNamespaces = false;
+    state.namespaces = namespaces;
+  },
+
+  [types.RECEIVE_NAMESPACES_ERROR](state) {
+    state.isLoadingNamespaces = false;
+  },
+
+  [types.SET_IMPORT_TARGET](state, { repoId, importTarget }) {
+    const existingRepo = state.repositories.find(r => r.importSource.id === repoId);
+
+    if (
+      importTarget.targetNamespace === state.defaultTargetNamespace &&
+      importTarget.newName === existingRepo.importSource.sanitizedName
+    ) {
+      Vue.delete(state.customImportTargets, repoId);
+    } else {
+      Vue.set(state.customImportTargets, repoId, importTarget);
+    }
   },
 };

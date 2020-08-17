@@ -118,6 +118,46 @@ RSpec.describe NotificationSetting do
         expect(subject.event_enabled?(:foo_event)).to be(false)
       end
     end
+
+    describe 'for failed_pipeline' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:column, :expected) do
+        nil | true
+        true | true
+        false | false
+      end
+
+      with_them do
+        before do
+          subject.update!(failed_pipeline: column)
+        end
+
+        it do
+          expect(subject.event_enabled?(:failed_pipeline)).to eq(expected)
+        end
+      end
+    end
+
+    describe 'for fixed_pipeline' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:column, :expected) do
+        nil | true
+        true | true
+        false | false
+      end
+
+      with_them do
+        before do
+          subject.update!(fixed_pipeline: column)
+        end
+
+        it do
+          expect(subject.event_enabled?(:fixed_pipeline)).to eq(expected)
+        end
+      end
+    end
   end
 
   describe '.email_events' do

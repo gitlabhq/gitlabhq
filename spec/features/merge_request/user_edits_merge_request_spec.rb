@@ -85,13 +85,24 @@ RSpec.describe 'User edits a merge request', :js do
     end
   end
 
-  it 'changes the target branch' do
-    expect(page).to have_content('From master into feature')
+  describe 'changing target branch' do
+    it 'allows user to change target branch' do
+      expect(page).to have_content('From master into feature')
 
-    select2('merge-test', from: '#merge_request_target_branch')
-    click_button('Save changes')
+      select2('merge-test', from: '#merge_request_target_branch')
+      click_button('Save changes')
 
-    expect(page).to have_content("Request to merge #{merge_request.source_branch} into merge-test")
-    expect(page).to have_content("changed target branch from #{merge_request.target_branch} to merge-test")
+      expect(page).to have_content("Request to merge #{merge_request.source_branch} into merge-test")
+      expect(page).to have_content("changed target branch from #{merge_request.target_branch} to merge-test")
+    end
+
+    describe 'merged merge request' do
+      let(:merge_request) { create(:merge_request, source_project: project, target_project: project, state: :merged) }
+
+      it 'does not allow user to change target branch' do
+        expect(page).to have_content('From master into feature')
+        expect(page).not_to have_selector('.select2-container')
+      end
+    end
   end
 end

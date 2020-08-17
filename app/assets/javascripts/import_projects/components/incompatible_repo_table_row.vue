@@ -18,9 +18,9 @@ export default {
 <template>
   <tr class="import-row">
     <td>
-      <a :href="repo.providerLink" rel="noreferrer noopener" target="_blank">
-        {{ repo.fullName }}
-        <gl-icon v-if="repo.providerLink" name="external-link" />
+      <a :href="repo.importSource.providerLink" rel="noreferrer noopener" target="_blank"
+        >{{ repo.importSource.fullName }}
+        <gl-icon v-if="repo.importSource.providerLink" name="external-link" />
       </a>
     </td>
     <td></td>

@@ -469,6 +469,7 @@ TypeScript
 Twilio
 Twitter
 Ubuntu
+unapplied
 unarchive
 unarchived
 unarchives

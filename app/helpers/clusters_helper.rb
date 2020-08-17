@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 module ClustersHelper
-  def has_multiple_clusters?
-    true
-  end
-
   def create_new_cluster_label(provider: nil)
     case provider
     when 'aws'
@@ -31,7 +27,12 @@ module ClustersHelper
   def js_cluster_form_data(cluster, can_edit)
     {
       enabled: cluster.enabled?.to_s,
-      editable: can_edit.to_s
+      editable: can_edit.to_s,
+      environment_scope: cluster.environment_scope,
+      base_domain: cluster.base_domain,
+      application_ingress_external_ip: cluster.application_ingress_external_ip,
+      auto_devops_help_path: help_page_path('topics/autodevops/index'),
+      external_endpoint_help_path: help_page_path('user/clusters/applications.md', anchor: 'pointing-your-dns-at-the-external-endpoint')
     }
   end
 

@@ -97,7 +97,11 @@ class NotificationSetting < ApplicationRecord
   alias_method :fixed_pipeline?, :fixed_pipeline
 
   def event_enabled?(event)
-    respond_to?(event) && !!public_send(event) # rubocop:disable GitlabSecurity/PublicSend
+    # We override these two attributes, so we can't use read_attribute
+    return failed_pipeline if event.to_sym == :failed_pipeline
+    return fixed_pipeline if event.to_sym == :fixed_pipeline
+
+    has_attribute?(event) && !!read_attribute(event)
   end
 
   def owns_notification_email

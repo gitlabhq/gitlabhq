@@ -9,13 +9,19 @@ export default () => {
     return;
   }
 
+  const { autoDevopsHelpPath, externalEndpointHelpPath } = entryPoint.dataset;
+
   // eslint-disable-next-line no-new
   new Vue({
     el: entryPoint,
     store: createStore(entryPoint.dataset),
+    provide: {
+      autoDevopsHelpPath,
+      externalEndpointHelpPath,
+    },
 
     render(createElement) {
-      return createElement(IntegrationForm);
+      return createElement(IntegrationForm, {});
     },
   });
 };

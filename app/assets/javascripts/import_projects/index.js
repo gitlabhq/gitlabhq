@@ -8,22 +8,29 @@ Vue.use(Translate);
 
 export function initStoreFromElement(element) {
   const {
-    reposPath,
-    provider,
+    ciCdOnly,
     canSelectNamespace,
+    provider,
+
+    reposPath,
     jobsPath,
     importPath,
-    ciCdOnly,
+    namespacesPath,
   } = element.dataset;
 
   return createStore({
-    reposPath,
-    provider,
-    jobsPath,
-    importPath,
-    defaultTargetNamespace: gon.current_username,
-    ciCdOnly: parseBoolean(ciCdOnly),
-    canSelectNamespace: parseBoolean(canSelectNamespace),
+    initialState: {
+      defaultTargetNamespace: gon.current_username,
+      ciCdOnly: parseBoolean(ciCdOnly),
+      canSelectNamespace: parseBoolean(canSelectNamespace),
+      provider,
+    },
+    endpoints: {
+      reposPath,
+      jobsPath,
+      importPath,
+      namespacesPath,
+    },
   });
 }
 

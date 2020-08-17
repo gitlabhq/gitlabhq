@@ -4,5 +4,10 @@ export default (initialState = {}) => {
   return {
     enabled: parseBoolean(initialState.enabled),
     editable: parseBoolean(initialState.editable),
+    environmentScope: initialState.environmentScope,
+    baseDomain: initialState.baseDomain,
+    applicationIngressExternalIp: initialState.applicationIngressExternalIp,
+    autoDevopsHelpPath: initialState.autoDevopsHelpPath,
+    externalEndpointHelpPath: initialState.externalEndpointHelpPath,
   };
 };

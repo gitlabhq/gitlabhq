@@ -12,41 +12,76 @@ import {
   RECEIVE_IMPORT_SUCCESS,
   RECEIVE_IMPORT_ERROR,
   RECEIVE_JOBS_SUCCESS,
+  REQUEST_NAMESPACES,
+  RECEIVE_NAMESPACES_SUCCESS,
+  RECEIVE_NAMESPACES_ERROR,
 } from '~/import_projects/store/mutation_types';
-import {
-  fetchRepos,
-  fetchImport,
-  receiveJobsSuccess,
-  fetchJobs,
-  clearJobsEtagPoll,
-  stopJobsPolling,
-} from '~/import_projects/store/actions';
+import actionsFactory from '~/import_projects/store/actions';
+import { getImportTarget } from '~/import_projects/store/getters';
 import state from '~/import_projects/store/state';
+import { STATUSES } from '~/import_projects/constants';
 
 jest.mock('~/flash');
 
+const MOCK_ENDPOINT = `${TEST_HOST}/endpoint.json`;
+
+const {
+  clearJobsEtagPoll,
+  stopJobsPolling,
+  importAll,
+  fetchRepos,
+  fetchImport,
+  fetchJobs,
+  fetchNamespaces,
+} = actionsFactory({
+  endpoints: {
+    reposPath: MOCK_ENDPOINT,
+    importPath: MOCK_ENDPOINT,
+    jobsPath: MOCK_ENDPOINT,
+    namespacesPath: MOCK_ENDPOINT,
+  },
+});
+
 describe('import_projects store actions', () => {
   let localState;
-  const repos = [{ id: 1 }, { id: 2 }];
-  const importPayload = { newName: 'newName', targetNamespace: 'targetNamespace', repo: { id: 1 } };
+  const importRepoId = 1;
+  const otherImportRepoId = 2;
+  const defaultTargetNamespace = 'default';
+  const sanitizedName = 'sanitizedName';
+  const defaultImportTarget = { newName: sanitizedName, targetNamespace: defaultTargetNamespace };
 
   beforeEach(() => {
-    localState = state();
+    localState = {
+      ...state(),
+      defaultTargetNamespace,
+      repositories: [
+        { importSource: { id: importRepoId, sanitizedName }, importStatus: STATUSES.NONE },
+        {
+          importSource: { id: otherImportRepoId, sanitizedName: 's2' },
+          importStatus: STATUSES.NONE,
+        },
+        {
+          importSource: { id: 3, sanitizedName: 's3', incompatible: true },
+          importStatus: STATUSES.NONE,
+        },
+      ],
+    };
+
+    localState.getImportTarget = getImportTarget(localState);
   });
 
   describe('fetchRepos', () => {
     let mock;
-    const payload = { imported_projects: [{}], provider_repos: [{}], namespaces: [{}] };
+    const payload = { imported_projects: [{}], provider_repos: [{}] };
 
     beforeEach(() => {
-      localState.reposPath = `${TEST_HOST}/endpoint.json`;
       mock = new MockAdapter(axios);
     });
 
     afterEach(() => mock.restore());
 
     it('dispatches stopJobsPolling actions and commits REQUEST_REPOS, RECEIVE_REPOS_SUCCESS mutations on a successful request', () => {
-      mock.onGet(`${TEST_HOST}/endpoint.json`).reply(200, payload);
+      mock.onGet(MOCK_ENDPOINT).reply(200, payload);
 
       return testAction(
         fetchRepos,
@@ -64,7 +99,7 @@ describe('import_projects store actions', () => {
     });
 
     it('dispatches stopJobsPolling action and commits REQUEST_REPOS, RECEIVE_REPOS_ERROR mutations on an unsuccessful request', () => {
-      mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
+      mock.onGet(MOCK_ENDPOINT).reply(500);
 
       return testAction(
         fetchRepos,
@@ -104,7 +139,6 @@ describe('import_projects store actions', () => {
     let mock;
 
     beforeEach(() => {
-      localState.importPath = `${TEST_HOST}/endpoint.json`;
       mock = new MockAdapter(axios);
     });
 
@@ -112,15 +146,17 @@ describe('import_projects store actions', () => {
 
     it('commits REQUEST_IMPORT and REQUEST_IMPORT_SUCCESS mutations on a successful request', () => {
       const importedProject = { name: 'imported/project' };
-      const importRepoId = importPayload.repo.id;
-      mock.onPost(`${TEST_HOST}/endpoint.json`).reply(200, importedProject);
+      mock.onPost(MOCK_ENDPOINT).reply(200, importedProject);
 
       return testAction(
         fetchImport,
-        importPayload,
+        importRepoId,
         localState,
         [
-          { type: REQUEST_IMPORT, payload: importRepoId },
+          {
+            type: REQUEST_IMPORT,
+            payload: { repoId: importRepoId, importTarget: defaultImportTarget },
+          },
           {
             type: RECEIVE_IMPORT_SUCCESS,
             payload: {
@@ -134,15 +170,18 @@ describe('import_projects store actions', () => {
     });
 
     it('commits REQUEST_IMPORT and RECEIVE_IMPORT_ERROR and shows generic error message on an unsuccessful request', async () => {
-      mock.onPost(`${TEST_HOST}/endpoint.json`).reply(500);
+      mock.onPost(MOCK_ENDPOINT).reply(500);
 
       await testAction(
         fetchImport,
-        importPayload,
+        importRepoId,
         localState,
         [
-          { type: REQUEST_IMPORT, payload: importPayload.repo.id },
-          { type: RECEIVE_IMPORT_ERROR, payload: importPayload.repo.id },
+          {
+            type: REQUEST_IMPORT,
+            payload: { repoId: importRepoId, importTarget: defaultImportTarget },
+          },
+          { type: RECEIVE_IMPORT_ERROR, payload: importRepoId },
         ],
         [],
       );
@@ -152,15 +191,18 @@ describe('import_projects store actions', () => {
 
     it('commits REQUEST_IMPORT and RECEIVE_IMPORT_ERROR and shows detailed error message on an unsuccessful request with errors fields in response', async () => {
       const ERROR_MESSAGE = 'dummy';
-      mock.onPost(`${TEST_HOST}/endpoint.json`).reply(500, { errors: ERROR_MESSAGE });
+      mock.onPost(MOCK_ENDPOINT).reply(500, { errors: ERROR_MESSAGE });
 
       await testAction(
         fetchImport,
-        importPayload,
+        importRepoId,
         localState,
         [
-          { type: REQUEST_IMPORT, payload: importPayload.repo.id },
-          { type: RECEIVE_IMPORT_ERROR, payload: importPayload.repo.id },
+          {
+            type: REQUEST_IMPORT,
+            payload: { repoId: importRepoId, importTarget: defaultImportTarget },
+          },
+          { type: RECEIVE_IMPORT_ERROR, payload: importRepoId },
         ],
         [],
       );
@@ -169,24 +211,11 @@ describe('import_projects store actions', () => {
     });
   });
 
-  describe('receiveJobsSuccess', () => {
-    it(`commits ${RECEIVE_JOBS_SUCCESS} mutation`, () => {
-      return testAction(
-        receiveJobsSuccess,
-        repos,
-        localState,
-        [{ type: RECEIVE_JOBS_SUCCESS, payload: repos }],
-        [],
-      );
-    });
-  });
-
   describe('fetchJobs', () => {
     let mock;
     const updatedProjects = [{ name: 'imported/project' }, { name: 'provider/repo' }];
 
     beforeEach(() => {
-      localState.jobsPath = `${TEST_HOST}/endpoint.json`;
       mock = new MockAdapter(axios);
     });
 
@@ -198,7 +227,7 @@ describe('import_projects store actions', () => {
     afterEach(() => mock.restore());
 
     it('commits RECEIVE_JOBS_SUCCESS mutation on a successful request', async () => {
-      mock.onGet(`${TEST_HOST}/endpoint.json`).reply(200, updatedProjects);
+      mock.onGet(MOCK_ENDPOINT).reply(200, updatedProjects);
 
       await testAction(
         fetchJobs,
@@ -235,6 +264,64 @@ describe('import_projects store actions', () => {
           [],
         );
       });
+    });
+  });
+
+  describe('fetchNamespaces', () => {
+    let mock;
+    const namespaces = [{ full_name: 'test/ns1' }, { full_name: 'test_ns2' }];
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => mock.restore());
+
+    it('commits REQUEST_NAMESPACES and RECEIVE_NAMESPACES_SUCCESS on success', async () => {
+      mock.onGet(MOCK_ENDPOINT).reply(200, namespaces);
+
+      await testAction(
+        fetchNamespaces,
+        null,
+        localState,
+        [
+          { type: REQUEST_NAMESPACES },
+          {
+            type: RECEIVE_NAMESPACES_SUCCESS,
+            payload: convertObjectPropsToCamelCase(namespaces, { deep: true }),
+          },
+        ],
+        [],
+      );
+    });
+
+    it('commits REQUEST_NAMESPACES and RECEIVE_NAMESPACES_ERROR and shows generic error message on an unsuccessful request', async () => {
+      mock.onGet(MOCK_ENDPOINT).reply(500);
+
+      await testAction(
+        fetchNamespaces,
+        null,
+        localState,
+        [{ type: REQUEST_NAMESPACES }, { type: RECEIVE_NAMESPACES_ERROR }],
+        [],
+      );
+
+      expect(createFlash).toHaveBeenCalledWith('Requesting namespaces failed');
+    });
+  });
+
+  describe('importAll', () => {
+    it('dispatches multiple fetchImport actions', async () => {
+      await testAction(
+        importAll,
+        null,
+        localState,
+        [],
+        [
+          { type: 'fetchImport', payload: importRepoId },
+          { type: 'fetchImport', payload: otherImportRepoId },
+        ],
+      );
     });
   });
 });

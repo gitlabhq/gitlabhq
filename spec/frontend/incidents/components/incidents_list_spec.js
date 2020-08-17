@@ -10,7 +10,7 @@ import {
   GlTabs,
   GlBadge,
 } from '@gitlab/ui';
-import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
+import { visitUrl, joinPaths, mergeUrlParams } from '~/lib/utils/url_utility';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { I18N, INCIDENT_STATUS_TABS } from '~/incidents/constants';
@@ -26,6 +26,7 @@ describe('Incidents List', () => {
   let wrapper;
   const newIssuePath = 'namespace/project/-/issues/new';
   const incidentTemplateName = 'incident';
+  const incidentType = 'incident';
   const incidentsCount = {
     opened: 14,
     closed: 1,
@@ -66,6 +67,7 @@ describe('Incidents List', () => {
         projectPath: '/project/path',
         newIssuePath,
         incidentTemplateName,
+        incidentType,
         issuePath: '/project/isssues',
         publishedAvailable: true,
       },
@@ -167,8 +169,13 @@ describe('Incidents List', () => {
       });
     });
 
-    it('shows the button linking to new incidents page with prefilled incident template', () => {
+    it('shows the button linking to new incidents page with prefilled incident template when clicked', () => {
       expect(findCreateIncidentBtn().exists()).toBe(true);
+      findCreateIncidentBtn().trigger('click');
+      expect(mergeUrlParams).toHaveBeenCalledWith(
+        { issuable_template: incidentTemplateName, 'issue[issue_type]': incidentType },
+        newIssuePath,
+      );
     });
 
     it('sets button loading on click', () => {

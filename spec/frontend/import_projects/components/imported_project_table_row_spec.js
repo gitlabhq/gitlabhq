@@ -1,57 +1,44 @@
-import Vuex from 'vuex';
-import { createLocalVue, mount } from '@vue/test-utils';
-import createStore from '~/import_projects/store';
-import importedProjectTableRow from '~/import_projects/components/imported_project_table_row.vue';
-import STATUS_MAP from '~/import_projects/constants';
+import { mount } from '@vue/test-utils';
+import ImportedProjectTableRow from '~/import_projects/components/imported_project_table_row.vue';
+import ImportStatus from '~/import_projects/components/import_status.vue';
+import { STATUSES } from '~/import_projects/constants';
 
 describe('ImportedProjectTableRow', () => {
-  let vm;
+  let wrapper;
   const project = {
-    id: 1,
-    fullPath: 'fullPath',
-    importStatus: 'finished',
-    providerLink: 'providerLink',
-    importSource: 'importSource',
+    importSource: {
+      fullName: 'fullName',
+      providerLink: 'providerLink',
+    },
+    importedProject: {
+      id: 1,
+      fullPath: 'fullPath',
+      importSource: 'importSource',
+    },
+    importStatus: STATUSES.FINISHED,
   };
 
   function mountComponent() {
-    const localVue = createLocalVue();
-    localVue.use(Vuex);
-
-    const component = mount(importedProjectTableRow, {
-      localVue,
-      store: createStore(),
-      propsData: {
-        project: {
-          ...project,
-        },
-      },
-    });
-
-    return component.vm;
+    wrapper = mount(ImportedProjectTableRow, { propsData: { project } });
   }
 
   beforeEach(() => {
-    vm = mountComponent();
+    mountComponent();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders an imported project table row', () => {
-    const providerLink = vm.$el.querySelector('.js-provider-link');
-    const statusObject = STATUS_MAP[project.importStatus];
+    const providerLink = wrapper.find('[data-testid=providerLink]');
 
-    expect(vm.$el.classList.contains('js-imported-project')).toBe(true);
-    expect(providerLink.href).toMatch(project.providerLink);
-    expect(providerLink.textContent).toMatch(project.importSource);
-    expect(vm.$el.querySelector('.js-full-path').textContent).toMatch(project.fullPath);
-    expect(vm.$el.querySelector(`.${statusObject.textClass}`).textContent).toMatch(
-      statusObject.text,
+    expect(providerLink.attributes().href).toMatch(project.importSource.providerLink);
+    expect(providerLink.text()).toMatch(project.importSource.fullName);
+    expect(wrapper.find('[data-testid=fullPath]').text()).toMatch(project.importedProject.fullPath);
+    expect(wrapper.find(ImportStatus).props().status).toBe(project.importStatus);
+    expect(wrapper.find('[data-testid=goToProject').attributes().href).toMatch(
+      project.importedProject.fullPath,
     );
-
-    expect(vm.$el.querySelector(`.ic-status_${statusObject.icon}`)).not.toBeNull();
-    expect(vm.$el.querySelector('.js-go-to-project').href).toMatch(project.fullPath);
   });
 });

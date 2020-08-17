@@ -733,10 +733,6 @@ module Ci
       end
     end
 
-    def update_legacy_status
-      set_status(latest_builds_status.to_s)
-    end
-
     def protected_ref?
       strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
     end
@@ -1087,12 +1083,6 @@ module Ci
           super
         end
       end
-    end
-
-    def latest_builds_status
-      return 'failed' unless yaml_errors.blank?
-
-      statuses.latest.slow_composite_status(project: project) || 'skipped'
     end
 
     def keep_around_commits

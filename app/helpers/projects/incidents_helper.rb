@@ -6,6 +6,7 @@ module Projects::IncidentsHelper
       'project-path' => project.full_path,
       'new-issue-path' => new_project_issue_path(project),
       'incident-template-name' => 'incident',
+      'incident-type' => 'incident',
       'issue-path' => project_issues_path(project)
     }
   end

@@ -2,16 +2,13 @@ import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
-import { state, getters } from '~/import_projects/store';
-import eventHub from '~/import_projects/event_hub';
+import state from '~/import_projects/store/state';
+import * as getters from '~/import_projects/store/getters';
+import { STATUSES } from '~/import_projects/constants';
 import ImportProjectsTable from '~/import_projects/components/import_projects_table.vue';
 import ImportedProjectTableRow from '~/import_projects/components/imported_project_table_row.vue';
 import ProviderRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
 import IncompatibleRepoTableRow from '~/import_projects/components/incompatible_repo_table_row.vue';
-
-jest.mock('~/import_projects/event_hub', () => ({
-  $emit: jest.fn(),
-}));
 
 describe('ImportProjectsTable', () => {
   let wrapper;
@@ -21,13 +18,6 @@ describe('ImportProjectsTable', () => {
 
   const providerTitle = 'THE PROVIDER';
   const providerRepo = { id: 10, sanitizedName: 'sanitizedName', fullName: 'fullName' };
-  const importedProject = {
-    id: 1,
-    fullPath: 'fullPath',
-    importStatus: 'started',
-    providerLink: 'providerLink',
-    importSource: 'importSource',
-  };
 
   const findImportAllButton = () =>
     wrapper
@@ -35,6 +25,7 @@ describe('ImportProjectsTable', () => {
       .filter(w => w.props().variant === 'success')
       .at(0);
 
+  const importAllFn = jest.fn();
   function createComponent({
     state: initialState,
     getters: customGetters,
@@ -52,8 +43,9 @@ describe('ImportProjectsTable', () => {
       },
       actions: {
         fetchRepos: jest.fn(),
-        fetchReposFiltered: jest.fn(),
         fetchJobs: jest.fn(),
+        fetchNamespaces: jest.fn(),
+        importAll: importAllFn,
         stopJobsPolling: jest.fn(),
         clearJobsEtagPoll: jest.fn(),
         setFilter: jest.fn(),
@@ -79,11 +71,13 @@ describe('ImportProjectsTable', () => {
   });
 
   it('renders a loading icon while repos are loading', () => {
-    createComponent({
-      state: {
-        isLoadingRepos: true,
-      },
-    });
+    createComponent({ state: { isLoadingRepos: true } });
+
+    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+  });
+
+  it('renders a loading icon while namespaces are loading', () => {
+    createComponent({ state: { isLoadingNamespaces: true } });
 
     expect(wrapper.contains(GlLoadingIcon)).toBe(true);
   });
@@ -91,10 +85,16 @@ describe('ImportProjectsTable', () => {
   it('renders a table with imported projects and provider repos', () => {
     createComponent({
       state: {
-        importedProjects: [importedProject],
-        providerRepos: [providerRepo],
-        incompatibleRepos: [{ ...providerRepo, id: 11 }],
-        namespaces: [{ path: 'path' }],
+        namespaces: [{ fullPath: 'path' }],
+        repositories: [
+          { importSource: { id: 1 }, importedProject: null, importStatus: STATUSES.NONE },
+          { importSource: { id: 2 }, importedProject: {}, importStatus: STATUSES.FINISHED },
+          {
+            importSource: { id: 3, incompatible: true },
+            importedProject: {},
+            importStatus: STATUSES.NONE,
+          },
+        ],
       },
     });
 
@@ -133,13 +133,7 @@ describe('ImportProjectsTable', () => {
   );
 
   it('renders an empty state if there are no projects available', () => {
-    createComponent({
-      state: {
-        importedProjects: [],
-        providerRepos: [],
-        incompatibleProjects: [],
-      },
-    });
+    createComponent({ state: { repositories: [] } });
 
     expect(wrapper.contains(ProviderRepoTableRow)).toBe(false);
     expect(wrapper.contains(ImportedProjectTableRow)).toBe(false);
@@ -147,34 +141,29 @@ describe('ImportProjectsTable', () => {
   });
 
   it('sends importAll event when import button is clicked', async () => {
-    createComponent({
-      state: {
-        providerRepos: [providerRepo],
-      },
-    });
+    createComponent({ state: { providerRepos: [providerRepo] } });
 
     findImportAllButton().vm.$emit('click');
     await nextTick();
-    expect(eventHub.$emit).toHaveBeenCalledWith('importAll');
+
+    expect(importAllFn).toHaveBeenCalled();
   });
 
   it('shows loading spinner when import is in progress', () => {
-    createComponent({
-      getters: {
-        isImportingAnyRepo: () => true,
-      },
-    });
+    createComponent({ getters: { isImportingAnyRepo: () => true } });
 
     expect(findImportAllButton().props().loading).toBe(true);
   });
 
   it('renders filtering input field by default', () => {
     createComponent();
+
     expect(findFilterField().exists()).toBe(true);
   });
 
   it('does not render filtering input field when filterable is false', () => {
     createComponent({ filterable: false });
+
     expect(findFilterField().exists()).toBe(false);
   });
 

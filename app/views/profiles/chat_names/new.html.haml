@@ -2,7 +2,7 @@
   = _("Authorization required")
 %main{ :role => "main" }
   %p.h4
-    = _("Authorize <strong>%{user}</strong> to use your account?").html_safe % { user: @chat_name_params[:chat_name] }
+    = html_escape(_("Authorize %{user} to use your account?")) % { user: tag.strong(@chat_name_params[:chat_name]) }
 
   %hr
   .actions

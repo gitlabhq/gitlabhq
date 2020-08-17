@@ -19996,6 +19996,8 @@ CREATE INDEX index_merge_request_metrics_on_pipeline_id ON public.merge_request_
 
 CREATE INDEX index_merge_request_metrics_on_target_project_id ON public.merge_request_metrics USING btree (target_project_id);
 
+CREATE INDEX index_merge_request_metrics_on_target_project_id_merged_at ON public.merge_request_metrics USING btree (target_project_id, merged_at);
+
 CREATE UNIQUE INDEX index_merge_request_user_mentions_on_note_id ON public.merge_request_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
 CREATE INDEX index_merge_requests_closing_issues_on_issue_id ON public.merge_requests_closing_issues USING btree (issue_id);

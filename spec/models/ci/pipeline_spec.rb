@@ -2096,58 +2096,6 @@ RSpec.describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '#update_status' do
-    context 'when pipeline is empty' do
-      it 'updates does not change pipeline status' do
-        expect(pipeline.statuses.latest.slow_composite_status(project: project)).to be_nil
-
-        expect { pipeline.update_legacy_status }
-          .to change { pipeline.reload.status }
-          .from('created')
-          .to('skipped')
-      end
-    end
-
-    context 'when updating status to pending' do
-      before do
-        create(:ci_build, pipeline: pipeline, status: :running)
-      end
-
-      it 'updates pipeline status to running' do
-        expect { pipeline.update_legacy_status }
-          .to change { pipeline.reload.status }
-          .from('created')
-          .to('running')
-      end
-    end
-
-    context 'when updating status to scheduled' do
-      before do
-        create(:ci_build, pipeline: pipeline, status: :scheduled)
-      end
-
-      it 'updates pipeline status to scheduled' do
-        expect { pipeline.update_legacy_status }
-          .to change { pipeline.reload.status }
-          .from('created')
-          .to('scheduled')
-      end
-    end
-
-    context 'when statuses status was not recognized' do
-      before do
-        allow(pipeline)
-          .to receive(:latest_builds_status)
-          .and_return(:unknown)
-      end
-
-      it 'raises an exception' do
-        expect { pipeline.update_legacy_status }
-          .to raise_error(Ci::HasStatus::UnknownStatusError)
-      end
-    end
-  end
-
   describe '#detailed_status' do
     subject { pipeline.detailed_status(user) }
 

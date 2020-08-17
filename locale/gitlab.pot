@@ -1072,9 +1072,6 @@ msgstr ""
 msgid "< 1 hour"
 msgstr ""
 
-msgid "<project name>"
-msgstr ""
-
 msgid "<strong>Deletes</strong> source branch"
 msgstr ""
 
@@ -3554,7 +3551,7 @@ msgstr ""
 msgid "Authorize %{link_to_client} to use your account?"
 msgstr ""
 
-msgid "Authorize <strong>%{user}</strong> to use your account?"
+msgid "Authorize %{user} to use your account?"
 msgstr ""
 
 msgid "Authorize external services to send alerts to GitLab"
@@ -3953,7 +3950,7 @@ msgstr ""
 msgid "Branch %{branchName} was not found in this project's repository."
 msgstr ""
 
-msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
+msgid "Branch %{branch_name} was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
 msgstr ""
 
 msgid "Branch has changed"
@@ -5105,19 +5102,16 @@ msgstr ""
 msgid "Cluster type must be specificed for Stages::ClusterEndpointInserter"
 msgstr ""
 
-msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
-msgstr ""
-
 msgid "ClusterIntegration| This will permanently delete the following resources: <ul> <li>All installed applications and related resources</li> <li>The <code>gitlab-managed-apps</code> namespace</li> <li>Any project namespaces</li> <li><code>clusterroles</code></li> <li><code>clusterrolebindings</code></li> </ul>"
-msgstr ""
-
-msgid "ClusterIntegration| can be used instead of a custom domain."
 msgstr ""
 
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|%{external_ip}.nip.io"
+msgid "ClusterIntegration|%{externalIp}.nip.io"
+msgstr ""
+
+msgid "ClusterIntegration|%{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "ClusterIntegration|%{title} uninstalled successfully."
@@ -5171,7 +5165,7 @@ msgstr ""
 msgid "ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster. %{startLink}More information%{endLink}"
 msgstr ""
 
-msgid "ClusterIntegration|Alternatively"
+msgid "ClusterIntegration|Alternatively, "
 msgstr ""
 
 msgid "ClusterIntegration|Amazon EKS"
@@ -5232,9 +5226,6 @@ msgid "ClusterIntegration|Choose which applications to install on your Kubernete
 msgstr ""
 
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
-msgstr ""
-
-msgid "ClusterIntegration|Choose which of your environments will use this cluster. %{environment_scope_start}More information%{environment_scope_end}"
 msgstr ""
 
 msgid "ClusterIntegration|Clear cluster cache"
@@ -5858,7 +5849,7 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong while updating Knative domain name."
 msgstr ""
 
-msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain."
+msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{linkStart}Auto DevOps.%{linkEnd} The domain should have a wildcard DNS configured matching the domain. "
 msgstr ""
 
 msgid "ClusterIntegration|Subnets"
@@ -5979,6 +5970,9 @@ msgid "ClusterIntegration|Zone"
 msgstr ""
 
 msgid "ClusterIntegration|access to Google Kubernetes Engine"
+msgstr ""
+
+msgid "ClusterIntegration|can be used instead of a custom domain. "
 msgstr ""
 
 msgid "ClusterIntegration|documentation"
@@ -8097,7 +8091,7 @@ msgstr ""
 msgid "DeployFreeze|No deploy freezes exist for this project. To add one, click %{strongStart}Add deploy freeze%{strongEnd}"
 msgstr ""
 
-msgid "DeployFreeze|Specify times when deployments are not allowed for an environment. The <code>gitlab-ci.yml</code> file must be updated to make deployment jobs aware of the %{freeze_period_link_start}freeze period%{freeze_period_link_end}."
+msgid "DeployFreeze|Specify times when deployments are not allowed for an environment. The %{filename} file must be updated to make deployment jobs aware of the %{freeze_period_link_start}freeze period%{freeze_period_link_end}."
 msgstr ""
 
 msgid "DeployFreeze|Time zone"
@@ -9959,7 +9953,7 @@ msgstr ""
 msgid "Exactly one of %{attributes} is required"
 msgstr ""
 
-msgid "Example: <code>192.168.0.0/24</code>. %{read_more_link}."
+msgid "Example: %{ip_address}. %{read_more_link}."
 msgstr ""
 
 msgid "Example: @sub\\.company\\.com$"
@@ -11509,7 +11503,7 @@ msgstr ""
 msgid "GitLabPages|Force HTTPS (requires valid certificates)"
 msgstr ""
 
-msgid "GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project's %{strong_start}Settings > General > Visibility%{strong_end} page."
+msgid "GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project's %{strong_start}Settings &gt; General &gt; Visibility%{strong_end} page."
 msgstr ""
 
 msgid "GitLabPages|It may take up to 30 minutes before the site is available after the first deployment."
@@ -12849,6 +12843,9 @@ msgid "ImportProjects|Importing the project failed"
 msgstr ""
 
 msgid "ImportProjects|Importing the project failed: %{reason}"
+msgstr ""
+
+msgid "ImportProjects|Requesting namespaces failed"
 msgstr ""
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
@@ -14960,6 +14957,9 @@ msgstr ""
 msgid "Merge in progress"
 msgstr ""
 
+msgid "Merge locally"
+msgstr ""
+
 msgid "Merge options"
 msgstr ""
 
@@ -16535,7 +16535,7 @@ msgstr ""
 msgid "Note parameters are invalid: %{errors}"
 msgstr ""
 
-msgid "Note that PostgreSQL %{pg_version_upcoming} will become the minimum required version in GitLab %{gl_version_upcoming} (%{gl_version_upcoming_date}). Please consider upgrading your environment to a supported PostgreSQL version soon, see <a href=\"%{pg_version_upcoming_url}\">the related epic</a> for details."
+msgid "Note that PostgreSQL %{pg_version_upcoming} will become the minimum required version in GitLab %{gl_version_upcoming} (%{gl_version_upcoming_date}). Please consider upgrading your environment to a supported PostgreSQL version soon, see %{pg_version_upcoming_url_open}the related epic%{pg_version_upcoming_url_close} for details."
 msgstr ""
 
 msgid "Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
@@ -20798,7 +20798,13 @@ msgstr ""
 msgid "Resolve all threads in new issue"
 msgstr ""
 
+msgid "Resolve conflicts"
+msgstr ""
+
 msgid "Resolve conflicts on source branch"
+msgstr ""
+
+msgid "Resolve these conflicts or ask someone with write access to this repository to merge it locally."
 msgstr ""
 
 msgid "Resolve thread"
@@ -24144,6 +24150,9 @@ msgstr ""
 msgid "The commit does not exist"
 msgstr ""
 
+msgid "The comparison view may be inaccurate due to merge conflicts."
+msgstr ""
+
 msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 
@@ -24465,6 +24474,9 @@ msgid "The vulnerability is no longer detected. Verify the vulnerability has bee
 msgstr ""
 
 msgid "There are currently no events."
+msgstr ""
+
+msgid "There are merge conflicts"
 msgstr ""
 
 msgid "There are no %{replicableTypeName} to show"
@@ -25684,9 +25696,6 @@ msgid "To-do item successfully marked as done."
 msgstr ""
 
 msgid "Today"
-msgstr ""
-
-msgid "Toggle Kubernetes cluster"
 msgstr ""
 
 msgid "Toggle Markdown preview"
@@ -27810,7 +27819,7 @@ msgstr ""
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr ""
 
-msgid "You are using PostgreSQL %{pg_version_current}, but PostgreSQL %{pg_version_minimum} is required for this version of GitLab. Please upgrade your environment to a supported PostgreSQL version, see %{pg_requirements_url} for details."
+msgid "You are using PostgreSQL %{pg_version_current}, but PostgreSQL %{pg_version_minimum} is required for this version of GitLab. Please upgrade your environment to a supported PostgreSQL version, see %{pg_requirements_url_open}database requirements%{pg_requirements_url_close} for details."
 msgstr ""
 
 msgid "You can %{linkStart}view the blob%{linkEnd} instead."
@@ -27867,13 +27876,13 @@ msgstr ""
 msgid "You can get started by cloning the repository or start adding files to it with one of the following options."
 msgstr ""
 
-msgid "You can invite a new member to <strong>%{project_name}</strong> or invite another group."
+msgid "You can invite a new member to %{project_name} or invite another group."
 msgstr ""
 
-msgid "You can invite a new member to <strong>%{project_name}</strong>."
+msgid "You can invite a new member to %{project_name}."
 msgstr ""
 
-msgid "You can invite another group to <strong>%{project_name}</strong>."
+msgid "You can invite another group to %{project_name}."
 msgstr ""
 
 msgid "You can move around the graph by using the arrow keys."

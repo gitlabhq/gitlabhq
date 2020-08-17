@@ -1,9 +1,10 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { GlLoadingIcon, GlButtonGroup, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlButtonGroup, GlButton, GlAlert } from '@gitlab/ui';
 import Mousetrap from 'mousetrap';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
+import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
@@ -38,6 +39,7 @@ export default {
     PanelResizer,
     GlButtonGroup,
     GlButton,
+    GlAlert,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -133,6 +135,9 @@ export default {
       'startVersion',
       'currentDiffFileId',
       'isTreeLoaded',
+      'conflictResolutionPath',
+      'canMerge',
+      'hasConflicts',
     ]),
     ...mapGetters('diffs', ['isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
@@ -160,6 +165,9 @@ export default {
     },
     isLimitedContainer() {
       return !this.showTreeList && !this.isParallelView && !this.isFluidLayout;
+    },
+    isDiffHead() {
+      return parseBoolean(getParameterByName('diff_head'));
     },
   },
   watch: {
@@ -421,6 +429,49 @@ export default {
         :plain-diff-path="plainDiffPath"
         :email-patch-path="emailPatchPath"
       />
+
+      <div
+        v-if="isDiffHead && hasConflicts"
+        :class="{
+          [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
+        }"
+      >
+        <gl-alert
+          :dismissible="false"
+          :title="__('There are merge conflicts')"
+          variant="warning"
+          class="w-100 mb-3"
+        >
+          <p class="mb-1">
+            {{ __('The comparison view may be inaccurate due to merge conflicts.') }}
+          </p>
+          <p class="mb-0">
+            {{
+              __(
+                'Resolve these conflicts or ask someone with write access to this repository to merge it locally.',
+              )
+            }}
+          </p>
+          <template #actions>
+            <gl-button
+              v-if="conflictResolutionPath"
+              :href="conflictResolutionPath"
+              variant="info"
+              class="mr-3 gl-alert-action"
+            >
+              {{ __('Resolve conflicts') }}
+            </gl-button>
+            <gl-button
+              v-if="canMerge"
+              class="gl-alert-action"
+              data-toggle="modal"
+              data-target="#modal_merge_info"
+            >
+              {{ __('Merge locally') }}
+            </gl-button>
+          </template>
+        </gl-alert>
+      </div>
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"
