@@ -239,9 +239,8 @@ Test:
 
 ## Viewing JUnit test reports on GitLab
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5.
-> - It's deployed behind a feature flag, disabled by default.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-junit-test-reports-feature-core-only). **(CORE ONLY)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5 behind a feature flag (`junit_pipeline_view`), disabled by default.
+> - The feature flag was removed and the feature was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/216478) in GitLab 13.3.
 
 If JUnit XML files are generated and uploaded as part of a pipeline, these reports
 can be viewed inside the pipelines details page. The **Tests** tab on this page will
@@ -253,22 +252,6 @@ You can view all the known test suites and click on each of these to see further
 details, including the cases that make up the suite.
 
 You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a-pipelines-test-report).
-
-### Enabling the JUnit test reports feature **(CORE ONLY)**
-
-This feature comes with the `:junit_pipeline_view` feature flag disabled by default. This
-feature is disabled due to some performance issues with very large data sets.
-When [the performance is improved](https://gitlab.com/groups/gitlab-org/-/epics/2854), the feature will be enabled by default.
-
-To enable this feature, ask a GitLab administrator with [Rails console access](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
-following command:
-
-```ruby
-Feature.enable(:junit_pipeline_view)
-
-# Enable the feature for a specific project, GitLab 13.0 and above only.
-Feature.enable(:junit_pipeline_view, Project.find(<your-project-id-here>))
-```
 
 ## Viewing JUnit screenshots on GitLab
 

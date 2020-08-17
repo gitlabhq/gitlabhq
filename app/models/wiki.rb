@@ -35,6 +35,7 @@ class Wiki
   def initialize(container, user = nil)
     @container = container
     @user = user
+    raise ArgumentError, "user must be a User, got #{user.class}" if user && !user.is_a?(User)
   end
 
   def path

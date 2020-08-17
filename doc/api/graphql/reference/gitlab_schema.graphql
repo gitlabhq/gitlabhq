@@ -1135,42 +1135,47 @@ type BoardEdge {
 
 input BoardEpicIssueInput {
   """
-  Username of a user assigned to issues
+  Filter by assignee username
   """
   assigneeUsername: [String]
 
   """
-  Username of the issues author
+  Filter by author username
   """
   authorUsername: String
 
   """
-  Epic ID applied to issues
+  Filter by epic ID
   """
   epicId: String
 
   """
-  Label applied to issues
+  Filter by label name
   """
   labelName: [String]
 
   """
-  Milestone applied to issues
+  Filter by milestone title
   """
   milestoneTitle: String
 
   """
-  Reaction emoji applied to issues
+  Filter by reaction emoji
   """
   myReactionEmoji: String
 
   """
-  Release applied to issues
+  List of negated params. Warning: this argument is experimental and a subject to change in future
+  """
+  not: NegatedBoardEpicIssueInput
+
+  """
+  Filter by release tag
   """
   releaseTag: String
 
   """
-  Weight applied to issues
+  Filter by weight
   """
   weight: String
 }
@@ -9793,6 +9798,48 @@ type NamespaceIncreaseStorageTemporarilyPayload {
   The namespace after mutation
   """
   namespace: Namespace
+}
+
+input NegatedBoardEpicIssueInput {
+  """
+  Filter by assignee username
+  """
+  assigneeUsername: [String]
+
+  """
+  Filter by author username
+  """
+  authorUsername: String
+
+  """
+  Filter by epic ID
+  """
+  epicId: String
+
+  """
+  Filter by label name
+  """
+  labelName: [String]
+
+  """
+  Filter by milestone title
+  """
+  milestoneTitle: String
+
+  """
+  Filter by reaction emoji
+  """
+  myReactionEmoji: String
+
+  """
+  Filter by release tag
+  """
+  releaseTag: String
+
+  """
+  Filter by weight
+  """
+  weight: String
 }
 
 type Note implements ResolvableInterface {

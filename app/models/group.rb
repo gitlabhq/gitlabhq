@@ -563,6 +563,10 @@ class Group < Namespace
     all_projects.update_all(shared_runners_enabled: false)
   end
 
+  def default_owner
+    owners.first || parent&.default_owner || owner
+  end
+
   private
 
   def update_two_factor_requirement

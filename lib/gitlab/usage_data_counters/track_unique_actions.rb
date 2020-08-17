@@ -27,7 +27,7 @@ module Gitlab
       }).freeze
 
       class << self
-        def track_action(event_action:, event_target:, author_id:, time: Time.zone.now)
+        def track_event(event_action:, event_target:, author_id:, time: Time.zone.now)
           return unless Gitlab::CurrentSettings.usage_ping_enabled
           return unless Feature.enabled?(FEATURE_FLAG)
           return unless valid_target?(event_target)
@@ -40,7 +40,7 @@ module Gitlab
           Gitlab::Redis::HLL.add(key: target_key, value: author_id, expiry: KEY_EXPIRY_LENGTH)
         end
 
-        def count_unique_events(event_action:, date_from:, date_to:)
+        def count_unique(event_action:, date_from:, date_to:)
           keys = (date_from.to_date..date_to.to_date).map { |date| key(event_action, date) }
 
           Gitlab::Redis::HLL.count(keys: keys)

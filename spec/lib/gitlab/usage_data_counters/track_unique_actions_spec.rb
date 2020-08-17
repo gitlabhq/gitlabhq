@@ -7,12 +7,12 @@ RSpec.describe Gitlab::UsageDataCounters::TrackUniqueActions, :clean_gitlab_redi
 
   let(:time) { Time.zone.now }
 
-  def track_action(params)
-    track_unique_events.track_action(params)
+  def track_event(params)
+    track_unique_events.track_event(params)
   end
 
-  def count_unique_events(params)
-    track_unique_events.count_unique_events(params)
+  def count_unique(params)
+    track_unique_events.count_unique(params)
   end
 
   context 'tracking an event' do
@@ -29,28 +29,28 @@ RSpec.describe Gitlab::UsageDataCounters::TrackUniqueActions, :clean_gitlab_redi
             design = Event::TARGET_TYPES[:design]
             wiki = Event::TARGET_TYPES[:wiki]
 
-            expect(track_action(event_action: :pushed, event_target: project, author_id: 1)).to be_truthy
-            expect(track_action(event_action: :pushed, event_target: project, author_id: 1)).to be_truthy
-            expect(track_action(event_action: :pushed, event_target: project, author_id: 2)).to be_truthy
-            expect(track_action(event_action: :pushed, event_target: project, author_id: 3)).to be_truthy
-            expect(track_action(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)).to be_truthy
-            expect(track_action(event_action: :created, event_target: project, author_id: 5, time: time - 3.days)).to be_truthy
+            expect(track_event(event_action: :pushed, event_target: project, author_id: 1)).to be_truthy
+            expect(track_event(event_action: :pushed, event_target: project, author_id: 1)).to be_truthy
+            expect(track_event(event_action: :pushed, event_target: project, author_id: 2)).to be_truthy
+            expect(track_event(event_action: :pushed, event_target: project, author_id: 3)).to be_truthy
+            expect(track_event(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)).to be_truthy
+            expect(track_event(event_action: :created, event_target: project, author_id: 5, time: time - 3.days)).to be_truthy
 
-            expect(track_action(event_action: :destroyed, event_target: design, author_id: 3)).to be_truthy
-            expect(track_action(event_action: :created, event_target: design, author_id: 4)).to be_truthy
-            expect(track_action(event_action: :updated, event_target: design, author_id: 5)).to be_truthy
-            expect(track_action(event_action: :pushed, event_target: design, author_id: 6)).to be_truthy
+            expect(track_event(event_action: :destroyed, event_target: design, author_id: 3)).to be_truthy
+            expect(track_event(event_action: :created, event_target: design, author_id: 4)).to be_truthy
+            expect(track_event(event_action: :updated, event_target: design, author_id: 5)).to be_truthy
+            expect(track_event(event_action: :pushed, event_target: design, author_id: 6)).to be_truthy
 
-            expect(track_action(event_action: :destroyed, event_target: wiki, author_id: 5)).to be_truthy
-            expect(track_action(event_action: :created, event_target: wiki, author_id: 3)).to be_truthy
-            expect(track_action(event_action: :updated, event_target: wiki, author_id: 4)).to be_truthy
-            expect(track_action(event_action: :pushed, event_target: wiki, author_id: 6)).to be_truthy
+            expect(track_event(event_action: :destroyed, event_target: wiki, author_id: 5)).to be_truthy
+            expect(track_event(event_action: :created, event_target: wiki, author_id: 3)).to be_truthy
+            expect(track_event(event_action: :updated, event_target: wiki, author_id: 4)).to be_truthy
+            expect(track_event(event_action: :pushed, event_target: wiki, author_id: 6)).to be_truthy
 
-            expect(count_unique_events(event_action: described_class::PUSH_ACTION, date_from: time, date_to: Date.today)).to eq(3)
-            expect(count_unique_events(event_action: described_class::PUSH_ACTION, date_from: time - 5.days, date_to: Date.tomorrow)).to eq(4)
-            expect(count_unique_events(event_action: described_class::DESIGN_ACTION, date_from: time - 5.days, date_to: Date.today)).to eq(3)
-            expect(count_unique_events(event_action: described_class::WIKI_ACTION, date_from: time - 5.days, date_to: Date.today)).to eq(3)
-            expect(count_unique_events(event_action: described_class::PUSH_ACTION, date_from: time - 5.days, date_to: time - 2.days)).to eq(1)
+            expect(count_unique(event_action: described_class::PUSH_ACTION, date_from: time, date_to: Date.today)).to eq(3)
+            expect(count_unique(event_action: described_class::PUSH_ACTION, date_from: time - 5.days, date_to: Date.tomorrow)).to eq(4)
+            expect(count_unique(event_action: described_class::DESIGN_ACTION, date_from: time - 5.days, date_to: Date.today)).to eq(3)
+            expect(count_unique(event_action: described_class::WIKI_ACTION, date_from: time - 5.days, date_to: Date.today)).to eq(3)
+            expect(count_unique(event_action: described_class::PUSH_ACTION, date_from: time - 5.days, date_to: time - 2.days)).to eq(1)
           end
         end
       end
@@ -73,8 +73,8 @@ RSpec.describe Gitlab::UsageDataCounters::TrackUniqueActions, :clean_gitlab_redi
         end
 
         it 'returns the expected values' do
-          expect(track_action(event_action: action, event_target: target, author_id: 2)).to be_nil
-          expect(count_unique_events(event_action: described_class::PUSH_ACTION, date_from: time, date_to: Date.today)).to eq(0)
+          expect(track_event(event_action: action, event_target: target, author_id: 2)).to be_nil
+          expect(count_unique(event_action: described_class::PUSH_ACTION, date_from: time, date_to: Date.today)).to eq(0)
         end
       end
     end

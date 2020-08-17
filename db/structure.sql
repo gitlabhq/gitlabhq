@@ -19710,6 +19710,8 @@ CREATE INDEX index_geo_upload_deleted_events_on_upload_id ON public.geo_upload_d
 
 CREATE INDEX index_gitlab_subscription_histories_on_gitlab_subscription_id ON public.gitlab_subscription_histories USING btree (gitlab_subscription_id);
 
+CREATE INDEX index_gitlab_subscriptions_on_end_date_and_namespace_id ON public.gitlab_subscriptions USING btree (end_date, namespace_id);
+
 CREATE INDEX index_gitlab_subscriptions_on_hosted_plan_id ON public.gitlab_subscriptions USING btree (hosted_plan_id);
 
 CREATE UNIQUE INDEX index_gitlab_subscriptions_on_namespace_id ON public.gitlab_subscriptions USING btree (namespace_id);

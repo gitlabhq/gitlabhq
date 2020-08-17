@@ -207,7 +207,7 @@ RSpec.describe EventCreateService do
         tracking_params = { event_action: counter_class::WIKI_ACTION, date_from: Date.yesterday, date_to: Date.today }
 
         expect { create_event }
-          .to change { counter_class.count_unique_events(tracking_params) }
+          .to change { counter_class.count_unique(tracking_params) }
           .by(1)
       end
     end
@@ -249,7 +249,7 @@ RSpec.describe EventCreateService do
       tracking_params = { event_action: counter_class::PUSH_ACTION, date_from: Date.yesterday, date_to: Date.today }
 
       expect { subject }
-        .to change { counter_class.count_unique_events(tracking_params) }
+        .to change { counter_class.count_unique(tracking_params) }
         .from(0).to(1)
     end
   end
@@ -273,7 +273,7 @@ RSpec.describe EventCreateService do
       tracking_params = { event_action: counter_class::PUSH_ACTION, date_from: Date.yesterday, date_to: Date.today }
 
       expect { subject }
-        .to change { counter_class.count_unique_events(tracking_params) }
+        .to change { counter_class.count_unique(tracking_params) }
         .from(0).to(1)
     end
   end
@@ -328,7 +328,7 @@ RSpec.describe EventCreateService do
         tracking_params = { event_action: counter_class::DESIGN_ACTION, date_from: Date.yesterday, date_to: Date.today }
 
         expect { result }
-          .to change { counter_class.count_unique_events(tracking_params) }
+          .to change { counter_class.count_unique(tracking_params) }
           .from(0).to(1)
       end
     end
@@ -356,7 +356,7 @@ RSpec.describe EventCreateService do
         tracking_params = { event_action: counter_class::DESIGN_ACTION, date_from: Date.yesterday, date_to: Date.today }
 
         expect { result }
-          .to change { counter_class.count_unique_events(tracking_params) }
+          .to change { counter_class.count_unique(tracking_params) }
           .from(0).to(1)
       end
     end

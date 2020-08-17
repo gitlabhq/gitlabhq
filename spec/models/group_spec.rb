@@ -1541,4 +1541,48 @@ RSpec.describe Group do
       end
     end
   end
+
+  describe '#default_owner' do
+    let(:group) { build(:group) }
+
+    context 'the group has owners' do
+      before do
+        group.add_owner(create(:user))
+        group.add_owner(create(:user))
+      end
+
+      it 'is the first owner' do
+        expect(group.default_owner)
+          .to eq(group.owners.first)
+          .and be_a(User)
+      end
+    end
+
+    context 'the group has a parent' do
+      let(:parent) { build(:group) }
+
+      before do
+        group.parent = parent
+        parent.add_owner(create(:user))
+      end
+
+      it 'is the first owner of the parent' do
+        expect(group.default_owner)
+          .to eq(parent.default_owner)
+          .and be_a(User)
+      end
+    end
+
+    context 'we fallback to group.owner' do
+      before do
+        group.owner = build(:user)
+      end
+
+      it 'is the group.owner' do
+        expect(group.default_owner)
+          .to eq(group.owner)
+          .and be_a(User)
+      end
+    end
+  end
 end

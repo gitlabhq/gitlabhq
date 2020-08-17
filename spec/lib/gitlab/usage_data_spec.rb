@@ -924,14 +924,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         wiki = Event::TARGET_TYPES[:wiki]
         design = Event::TARGET_TYPES[:design]
 
-        counter.track_action(event_action: :pushed, event_target: project, author_id: 1)
-        counter.track_action(event_action: :pushed, event_target: project, author_id: 1)
-        counter.track_action(event_action: :pushed, event_target: project, author_id: 2)
-        counter.track_action(event_action: :pushed, event_target: project, author_id: 3)
-        counter.track_action(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)
-        counter.track_action(event_action: :created, event_target: project, author_id: 5, time: time - 3.days)
-        counter.track_action(event_action: :created, event_target: wiki, author_id: 3)
-        counter.track_action(event_action: :created, event_target: design, author_id: 3)
+        counter.track_event(event_action: :pushed, event_target: project, author_id: 1)
+        counter.track_event(event_action: :pushed, event_target: project, author_id: 1)
+        counter.track_event(event_action: :pushed, event_target: project, author_id: 2)
+        counter.track_event(event_action: :pushed, event_target: project, author_id: 3)
+        counter.track_event(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)
+        counter.track_event(event_action: :created, event_target: project, author_id: 5, time: time - 3.days)
+        counter.track_event(event_action: :created, event_target: wiki, author_id: 3)
+        counter.track_event(event_action: :created, event_target: design, author_id: 3)
       end
 
       it 'returns the distinct count of user actions within the specified time period' do

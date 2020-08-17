@@ -324,6 +324,12 @@ export default {
             </div>
             <div class="gl-pl-2" data-testid="service">{{ alert.service }}</div>
           </div>
+          <div v-if="alert.runbook" class="gl-my-5 gl-display-flex">
+            <div class="bold gl-w-13 gl-text-right gl-pr-3">
+              {{ s__('AlertManagement|Runbook') }}:
+            </div>
+            <div class="gl-pl-2" data-testid="runbook">{{ alert.runbook }}</div>
+          </div>
           <template>
             <div v-if="alert.notes.nodes" class="issuable-discussion py-5">
               <ul class="notes main-notes-list timeline">

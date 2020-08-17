@@ -735,55 +735,36 @@ RSpec.describe API::Ci::Pipelines do
 
       let(:pipeline) { create(:ci_pipeline, project: project) }
 
-      context 'when feature is enabled' do
-        before do
-          stub_feature_flags(junit_pipeline_view: true)
-        end
+      context 'when pipeline does not have a test report' do
+        it 'returns an empty test report' do
+          subject
 
-        context 'when pipeline does not have a test report' do
-          it 'returns an empty test report' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['total_count']).to eq(0)
-          end
-        end
-
-        context 'when pipeline has a test report' do
-          let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
-
-          it 'returns the test report' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['total_count']).to eq(4)
-          end
-        end
-
-        context 'when pipeline has corrupt test reports' do
-          before do
-            job = create(:ci_build, pipeline: pipeline)
-            create(:ci_job_artifact, :junit_with_corrupted_data, job: job, project: project)
-          end
-
-          it 'returns a suite_error' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['test_suites'].first['suite_error']).to eq('JUnit XML parsing failed: 1:1: FATAL: Document is empty')
-          end
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total_count']).to eq(0)
         end
       end
 
-      context 'when feature is disabled' do
-        before do
-          stub_feature_flags(junit_pipeline_view: false)
-        end
+      context 'when pipeline has a test report' do
+        let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
 
-        it 'renders empty response' do
+        it 'returns the test report' do
           subject
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total_count']).to eq(4)
+        end
+      end
+
+      context 'when pipeline has corrupt test reports' do
+        before do
+          create(:ci_build, :broken_test_reports, name: 'rspec', pipeline: pipeline)
+        end
+
+        it 'returns a suite_error' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['test_suites'].first['suite_error']).to eq('JUnit XML parsing failed: 1:1: FATAL: Document is empty')
         end
       end
     end

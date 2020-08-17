@@ -32,6 +32,8 @@ module ResourceAccessTokens
     attr_reader :resource_type, :resource
 
     def feature_enabled?
+      return false if ::Gitlab.com?
+
       ::Feature.enabled?(:resource_access_token, resource, default_enabled: true)
     end
 

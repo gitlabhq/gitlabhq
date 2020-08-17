@@ -1395,6 +1395,16 @@ class Project < ApplicationRecord
     group || namespace.try(:owner)
   end
 
+  def default_owner
+    obj = owner
+
+    if obj.respond_to?(:default_owner)
+      obj.default_owner
+    else
+      obj
+    end
+  end
+
   def to_ability_name
     model_name.singular
   end

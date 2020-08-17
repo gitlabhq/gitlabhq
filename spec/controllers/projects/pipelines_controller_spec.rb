@@ -859,113 +859,88 @@ RSpec.describe Projects::PipelinesController do
       end
     end
 
-    context 'when feature is enabled' do
+    context 'when pipeline does not have a test report' do
+      it 'renders an empty test report' do
+        get_test_report_json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['total_count']).to eq(0)
+      end
+    end
+
+    context 'when pipeline has a test report' do
       before do
-        stub_feature_flags(junit_pipeline_view: project)
+        create(:ci_build, :test_reports, name: 'rspec', pipeline: pipeline)
       end
 
-      context 'when pipeline does not have a test report' do
-        it 'renders an empty test report' do
-          get_test_report_json
+      it 'renders the test report' do
+        get_test_report_json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['total_count']).to eq(4)
+      end
+    end
+
+    context 'when pipeline has a corrupt test report artifact' do
+      before do
+        create(:ci_build, :broken_test_reports, name: 'rspec', pipeline: pipeline)
+
+        get_test_report_json
+      end
+
+      it 'renders the test reports' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['test_suites'].count).to eq(1)
+      end
+
+      it 'returns a suite_error on the suite with corrupted XML' do
+        expect(json_response['test_suites'].first['suite_error']).to eq('JUnit XML parsing failed: 1:1: FATAL: Document is empty')
+      end
+    end
+
+    context 'when junit_pipeline_screenshots_view is enabled' do
+      before do
+        stub_feature_flags(junit_pipeline_screenshots_view: project)
+      end
+
+      context 'when test_report contains attachment and scope is with_attachment as a URL param' do
+        let(:pipeline) { create(:ci_pipeline, :with_test_reports_attachment, project: project) }
+
+        it 'returns a test reports with attachment' do
+          get_test_report_json(scope: 'with_attachment')
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['total_count']).to eq(0)
+          expect(json_response["test_suites"]).to be_present
+          expect(json_response["test_suites"].first["test_cases"].first).to include("attachment_url")
         end
       end
 
-      context 'when pipeline has a test report' do
-        before do
-          create(:ci_build, name: 'rspec', pipeline: pipeline).tap do |build|
-            create(:ci_job_artifact, :junit, job: build)
-          end
-        end
+      context 'when test_report does not contain attachment and scope is with_attachment as a URL param' do
+        let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
 
-        it 'renders the test report' do
-          get_test_report_json
+        it 'returns a test reports with empty values' do
+          get_test_report_json(scope: 'with_attachment')
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['total_count']).to eq(4)
-        end
-      end
-
-      context 'when pipeline has a corrupt test report artifact' do
-        before do
-          create(:ci_build, name: 'rspec', pipeline: pipeline).tap do |build|
-            create(:ci_job_artifact, :junit_with_corrupted_data, job: build)
-          end
-
-          get_test_report_json
-        end
-
-        it 'renders the test reports' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['test_suites'].count).to eq(1)
-        end
-
-        it 'returns a suite_error on the suite with corrupted XML' do
-          expect(json_response['test_suites'].first['suite_error']).to eq('JUnit XML parsing failed: 1:1: FATAL: Document is empty')
-        end
-      end
-
-      context 'when junit_pipeline_screenshots_view is enabled' do
-        before do
-          stub_feature_flags(junit_pipeline_screenshots_view: project)
-        end
-
-        context 'when test_report contains attachment and scope is with_attachment as a URL param' do
-          let(:pipeline) { create(:ci_pipeline, :with_test_reports_attachment, project: project) }
-
-          it 'returns a test reports with attachment' do
-            get_test_report_json(scope: 'with_attachment')
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response["test_suites"]).to be_present
-            expect(json_response["test_suites"].first["test_cases"].first).to include("attachment_url")
-          end
-        end
-
-        context 'when test_report does not contain attachment and scope is with_attachment as a URL param' do
-          let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
-
-          it 'returns a test reports with empty values' do
-            get_test_report_json(scope: 'with_attachment')
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response["test_suites"]).to be_empty
-          end
-        end
-      end
-
-      context 'when junit_pipeline_screenshots_view is disabled' do
-        before do
-          stub_feature_flags(junit_pipeline_screenshots_view: false)
-        end
-
-        context 'when test_report contains attachment and scope is with_attachment as a URL param' do
-          let(:pipeline) { create(:ci_pipeline, :with_test_reports_attachment, project: project) }
-
-          it 'returns a test reports without attachment_url' do
-            get_test_report_json(scope: 'with_attachment')
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response["test_suites"].first["test_cases"].first).not_to include("attachment_url")
-          end
+          expect(json_response["test_suites"]).to be_empty
         end
       end
     end
 
-    context 'when feature is disabled' do
-      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
+    context 'when junit_pipeline_screenshots_view is disabled' do
       before do
-        stub_feature_flags(junit_pipeline_view: false)
+        stub_feature_flags(junit_pipeline_screenshots_view: false)
       end
 
-      it 'renders empty response' do
-        get_test_report_json
+      context 'when test_report contains attachment and scope is with_attachment as a URL param' do
+        let(:pipeline) { create(:ci_pipeline, :with_test_reports_attachment, project: project) }
 
-        expect(response).to have_gitlab_http_status(:no_content)
-        expect(response.body).to be_empty
+        it 'returns a test reports without attachment_url' do
+          get_test_report_json(scope: 'with_attachment')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response["test_suites"].first["test_cases"].first).not_to include("attachment_url")
+        end
       end
     end
 

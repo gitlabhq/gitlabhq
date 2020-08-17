@@ -59,6 +59,10 @@ RSpec.describe TodoService do
 
       should_not_create_todo(user: guest, target: addressed_target_assigned, action: Todo::DIRECTLY_ADDRESSED)
     end
+
+    it 'does not create a todo if already assigned' do
+      should_not_create_any_todo { service.send(described_method, target_assigned, author, [john_doe]) }
+    end
   end
 
   describe 'Issues' do
@@ -573,10 +577,10 @@ RSpec.describe TodoService do
     end
   end
 
-  describe '#reassigned_issuable' do
-    let(:described_method) { :reassigned_issuable }
+  describe '#reassigned_assignable' do
+    let(:described_method) { :reassigned_assignable }
 
-    context 'issuable is a merge request' do
+    context 'assignable is a merge request' do
       it_behaves_like 'reassigned target' do
         let(:target_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
         let(:addressed_target_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
@@ -584,11 +588,19 @@ RSpec.describe TodoService do
       end
     end
 
-    context 'issuable is an issue' do
+    context 'assignable is an issue' do
       it_behaves_like 'reassigned target' do
         let(:target_assigned) { create(:issue, project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
         let(:addressed_target_assigned) { create(:issue, project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
         let(:target_unassigned) { create(:issue, project: project, author: author, assignees: []) }
+      end
+    end
+
+    context 'assignable is an alert' do
+      it_behaves_like 'reassigned target' do
+        let(:target_assigned) { create(:alert_management_alert, project: project, assignees: [john_doe]) }
+        let(:addressed_target_assigned) { create(:alert_management_alert, project: project, assignees: [john_doe]) }
+        let(:target_unassigned) { create(:alert_management_alert, project: project, assignees: []) }
       end
     end
   end
@@ -775,16 +787,6 @@ RSpec.describe TodoService do
         service.new_award_emoji(mr_assigned, john_doe)
 
         expect(todo.reload).to be_done
-      end
-    end
-
-    describe '#assign_alert' do
-      let(:described_method) { :assign_alert }
-
-      it_behaves_like 'reassigned target' do
-        let(:target_assigned) { create(:alert_management_alert, project: project, assignees: [john_doe]) }
-        let(:addressed_target_assigned) { create(:alert_management_alert, project: project, assignees: [john_doe]) }
-        let(:target_unassigned) { create(:alert_management_alert, project: project, assignees: []) }
       end
     end
 

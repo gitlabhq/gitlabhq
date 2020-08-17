@@ -56,7 +56,7 @@ export default {
       return `${this.pipelinePath}/test_report`;
     },
     showViewFullReport() {
-      return Boolean(this.glFeatures.junitPipelineView) && this.pipelinePath.length;
+      return this.pipelinePath.length;
     },
   },
   created() {
@@ -116,6 +116,7 @@ export default {
     <template v-if="showViewFullReport" #actionButtons>
       <gl-button
         :href="testTabURL"
+        target="_blank"
         icon="external-link"
         data-testid="group-test-reports-full-link"
         class="gl-mr-3"

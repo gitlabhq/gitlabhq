@@ -109,7 +109,7 @@ class EventCreateService
   def wiki_event(wiki_page_meta, author, action, fingerprint)
     raise IllegalActionError, action unless Event::WIKI_ACTIONS.include?(action)
 
-    Gitlab::UsageDataCounters::TrackUniqueActions.track_action(event_action: action, event_target: wiki_page_meta.class, author_id: author.id)
+    Gitlab::UsageDataCounters::TrackUniqueActions.track_event(event_action: action, event_target: wiki_page_meta.class, author_id: author.id)
 
     duplicate = Event.for_wiki_meta(wiki_page_meta).for_fingerprint(fingerprint).first
     return duplicate if duplicate.present?
@@ -154,7 +154,7 @@ class EventCreateService
     result = Event.insert_all(attribute_sets, returning: %w[id])
 
     tuples.each do |record, status, _|
-      Gitlab::UsageDataCounters::TrackUniqueActions.track_action(event_action: status, event_target: record.class, author_id: current_user.id)
+      Gitlab::UsageDataCounters::TrackUniqueActions.track_event(event_action: status, event_target: record.class, author_id: current_user.id)
     end
 
     result
@@ -172,7 +172,7 @@ class EventCreateService
       new_event
     end
 
-    Gitlab::UsageDataCounters::TrackUniqueActions.track_action(event_action: :pushed, event_target: Project, author_id: current_user.id)
+    Gitlab::UsageDataCounters::TrackUniqueActions.track_event(event_action: :pushed, event_target: Project, author_id: current_user.id)
 
     Users::LastPushEventService.new(current_user)
       .cache_last_push_event(event)

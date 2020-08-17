@@ -96,12 +96,12 @@ module AlertManagement
       end
 
       def handle_assignement(old_assignees)
-        assign_todo
+        assign_todo(old_assignees)
         add_assignee_system_note(old_assignees)
       end
 
-      def assign_todo
-        todo_service.assign_alert(alert, current_user)
+      def assign_todo(old_assignees)
+        todo_service.reassigned_assignable(alert, current_user, old_assignees)
       end
 
       def add_assignee_system_note(old_assignees)

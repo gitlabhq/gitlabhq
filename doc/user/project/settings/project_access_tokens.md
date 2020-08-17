@@ -5,20 +5,20 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Project access tokens (Alpha) **(CORE ONLY)**
-
-CAUTION: **Warning:**
-This is an [Alpha](https://about.gitlab.com/handbook/product/#alpha) feature, and it is subject to change at any time without
-prior notice.
+# Project access tokens **(CORE ONLY)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2587) in GitLab 13.0.
-> - It's deployed behind a feature flag, disabled by default.
+> - It was [deployed](https://gitlab.com/groups/gitlab-org/-/epics/2587) behind a feature flag, disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/218722) in GitLab 13.3.
 > - It's disabled on GitLab.com.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-project-access-tokens).
+> - It can be enabled or disabled by project.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can [disable it](#enable-or-disable-project-access-tokens).
 
 Project access tokens are scoped to a project and can be used to authenticate with the [GitLab API](../../../api/README.md#personalproject-access-tokens).
 
-You can also use project access tokens with Git to authenticate over HTTP or SSH.
+<!-- Commented out until https://gitlab.com/gitlab-org/gitlab/-/issues/219551 is fixed -->
+<!-- You can also use project access tokens with Git to authenticate over HTTP or SSH. -->
 
 Project access tokens expire on the date you define, at midnight UTC.
 
@@ -78,19 +78,30 @@ the following table.
 
 ### Enable or disable project access tokens
 
-Project access tokens is an [Alpha](https://about.gitlab.com/handbook/product/#alpha) feature and is not recommended for production use.
-It is deployed behind a feature flag that is **disabled by default**.
+Project access tokens are deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it for your instance.
+can disable it for your instance, globally or by project.
 
-To enable it:
+To disable it globally:
+
+```ruby
+Feature.disable(:resource_access_token)
+```
+
+To disable it for a specific project:
+
+```ruby
+Feature.disable(:resource_access_token, project)
+```
+
+To enable it globally:
 
 ```ruby
 Feature.enable(:resource_access_token)
 ```
 
-To disable it:
+To enable it for a specific project:
 
 ```ruby
-Feature.disable(:resource_access_token)
+Feature.enable(:resource_access_token, project)
 ```

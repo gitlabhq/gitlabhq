@@ -607,7 +607,7 @@ module Gitlab
         counter = Gitlab::UsageDataCounters::TrackUniqueActions
 
         project_count = redis_usage_data do
-          counter.count_unique_events(
+          counter.count_unique(
             event_action: Gitlab::UsageDataCounters::TrackUniqueActions::PUSH_ACTION,
             date_from: time_period[:created_at].first,
             date_to: time_period[:created_at].last
@@ -615,7 +615,7 @@ module Gitlab
         end
 
         design_count = redis_usage_data do
-          counter.count_unique_events(
+          counter.count_unique(
             event_action: Gitlab::UsageDataCounters::TrackUniqueActions::DESIGN_ACTION,
             date_from: time_period[:created_at].first,
             date_to: time_period[:created_at].last
@@ -623,7 +623,7 @@ module Gitlab
         end
 
         wiki_count = redis_usage_data do
-          counter.count_unique_events(
+          counter.count_unique(
             event_action: Gitlab::UsageDataCounters::TrackUniqueActions::WIKI_ACTION,
             date_from: time_period[:created_at].first,
             date_to: time_period[:created_at].last

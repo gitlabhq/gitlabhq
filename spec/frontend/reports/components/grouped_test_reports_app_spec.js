@@ -20,10 +20,7 @@ describe('Grouped test reports app', () => {
   let wrapper;
   let mockStore;
 
-  const mountComponent = ({
-    glFeatures = { junitPipelineView: false },
-    props = { pipelinePath },
-  } = {}) => {
+  const mountComponent = ({ props = { pipelinePath } } = {}) => {
     wrapper = mount(Component, {
       store: mockStore,
       localVue,
@@ -34,9 +31,6 @@ describe('Grouped test reports app', () => {
       },
       methods: {
         fetchReports: () => {},
-      },
-      provide: {
-        glFeatures,
       },
     });
   };
@@ -78,28 +72,17 @@ describe('Grouped test reports app', () => {
   });
 
   describe('`View full report` button', () => {
-    it('should not render the full test report link', () => {
-      expect(findFullTestReportLink().exists()).toBe(false);
-    });
+    it('should render the full test report link', () => {
+      const fullTestReportLink = findFullTestReportLink();
 
-    describe('With junitPipelineView feature flag enabled', () => {
-      beforeEach(() => {
-        mountComponent({ glFeatures: { junitPipelineView: true } });
-      });
-
-      it('should render the full test report link', () => {
-        const fullTestReportLink = findFullTestReportLink();
-
-        expect(fullTestReportLink.exists()).toBe(true);
-        expect(pipelinePath).not.toBe('');
-        expect(fullTestReportLink.attributes('href')).toBe(`${pipelinePath}/test_report`);
-      });
+      expect(fullTestReportLink.exists()).toBe(true);
+      expect(pipelinePath).not.toBe('');
+      expect(fullTestReportLink.attributes('href')).toBe(`${pipelinePath}/test_report`);
     });
 
     describe('Without a pipelinePath', () => {
       beforeEach(() => {
         mountComponent({
-          glFeatures: { junitPipelineView: true },
           props: { pipelinePath: '' },
         });
       });

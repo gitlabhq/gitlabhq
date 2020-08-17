@@ -118,6 +118,8 @@ describe('AlertDetails', () => {
         ${'monitoringTool'} | ${undefined}    | ${false}
         ${'service'}        | ${'Prometheus'} | ${true}
         ${'service'}        | ${undefined}    | ${false}
+        ${'runbook'}        | ${undefined}    | ${false}
+        ${'runbook'}        | ${'run.com'}    | ${true}
       `(`$desc`, ({ field, data, isShown }) => {
         beforeEach(() => {
           mountComponent({ data: { alert: { ...mockAlert, [field]: data } } });

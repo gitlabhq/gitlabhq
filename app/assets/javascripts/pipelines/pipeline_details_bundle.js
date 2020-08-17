@@ -93,10 +93,6 @@ const createPipelineHeaderApp = mediator => {
 };
 
 const createTestDetails = () => {
-  if (!window.gon?.features?.junitPipelineView) {
-    return;
-  }
-
   const el = document.querySelector('#js-pipeline-tests-detail');
   const { summaryEndpoint, suiteEndpoint } = el?.dataset || {};
 

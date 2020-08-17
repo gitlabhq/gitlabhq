@@ -103,10 +103,10 @@ Some feature flags can be enabled or disabled on a per project basis:
 Feature.enable(:<feature flag>, Project.find(<project id>))
 ```
 
-For example, to enable the [`:junit_pipeline_view`](../ci/junit_test_reports.md#enabling-the-junit-test-reports-feature-core-only) feature flag for project `1234`:
+For example, to enable the [`:product_analytics`](../operations/product_analytics.md#enable-or-disable-product-analytics) feature flag for project `1234`:
 
 ```ruby
-Feature.enable(:junit_pipeline_view, Project.find(1234))
+Feature.enable(:product_analytics, Project.find(1234))
 ```
 
 `Feature.enable` and `Feature.disable` always return `nil`, this is not an indication that the command failed:
