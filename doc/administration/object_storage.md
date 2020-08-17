@@ -21,6 +21,12 @@ GitLab has been tested on a number of object storage providers:
 - On-premises hardware and appliances from various storage vendors.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
 
+### Known compatibility issues
+
+- Dell EMC ECS: Prior to GitLab 13.3, there is a [known bug in GitLab Workhorse that prevents
+  HTTP Range Requests from working with CI job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/223806).
+  Be sure to upgrade to GitLab v13.3.0 or above if you use S3 storage with this hardware.
+
 ## Configuration guides
 
 There are two ways of specifying object storage configuration in GitLab:
@@ -88,6 +94,11 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
       'aws_access_key_id' => '<AWS_ACCESS_KEY_ID>',
       'aws_secret_access_key' => '<AWS_SECRET_ACCESS_KEY>'
     }
+    # OPTIONAL: The following lines are only needed if server side encryption is required
+    gitlab_rails['object_store']['storage_options'] = {
+      'server_side_encryption' => '<AES256 or aws:kms>',
+      'server_side_encryption_kms_key_id' => '<arn:s3:aws:xxx>'
+    }
     gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<artifacts>'
     gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = '<external-diffs>'
     gitlab_rails['object_store']['objects']['lfs']['bucket'] = '<lfs-objects>'
@@ -123,6 +134,9 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
        aws_access_key_id: <AWS_ACCESS_KEY_ID>
        aws_secret_access_key: <AWS_SECRET_ACCESS_KEY>
        region: <eu-central-1>
+     storage_options:
+       server_side_encryption: <AES256 or aws:kms>
+       server_side_encryption_key_kms_id: <arn:s3:aws:xxx>
      objects:
        artifacts:
          bucket: <artifacts>
@@ -188,7 +202,8 @@ gitlab_rails['object_store']['connection'] = {
 |---------|-------------|
 | `enabled` | Enable/disable object storage |
 | `proxy_download` | Set to `true` to [enable proxying all files served](#proxy-download). Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data |
-| `connection` | Various connection options described below |
+| `connection` | Various [connection options](#connection-settings) described below |
+| `storage_options` | Options to use when saving new objects, such as [server side encryption](#server-side-encryption-headers). Introduced in GitLab 13.3 |
 | `objects` | [Object-specific configuration](#object-specific-configuration)
 
 ### Connection settings
@@ -588,21 +603,46 @@ configuration.
 
 #### Encrypted S3 buckets
 
-> - Introduced in [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) for instance profiles only.
-> - Introduced in [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34460) for static credentials when [consolidated object storage configuration](#consolidated-object-storage-configuration) is used.
+> - Introduced in [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) for instance profiles only and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html).
+> - Introduced in [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34460) for static credentials when [consolidated object storage configuration](#consolidated-object-storage-configuration) and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html) are used.
 
 When configured either with an instance profile or with the consolidated
-object configuration, GitLab Workhorse properly uploads files to S3 buckets
-that have [SSE-S3 or SSE-KMS encryption enabled by
+object configuration, GitLab Workhorse properly uploads files to S3
+buckets that have [SSE-S3 or SSE-KMS encryption enabled by
 default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
-Note that customer master keys (CMKs) and
-SSE-C encryption are [not yet supported since this requires supplying
-keys to the GitLab configuration](https://gitlab.com/gitlab-org/gitlab/-/issues/226006).
+Note that customer master keys (CMKs) and SSE-C encryption are [not
+supported since this requires sending the encryption keys in every request](https://gitlab.com/gitlab-org/gitlab/-/issues/226006).
+
+##### Server-side encryption headers
+
+> Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240).
+
+Setting a default encryption on an S3 bucket is the easiest way to
+enable encryption, but you may want to [set a bucket policy to ensure
+only encrypted objects are uploaded](https://aws.amazon.com/premiumsupport/knowledge-center/s3-bucket-store-kms-encrypted-objects/).
+To do this, you must configure GitLab to send the proper encryption headers
+in the `storage_options` configuration section:
+
+|            Setting                  | Description |
+|-------------------------------------|-------------|
+| `server_side_encryption`            | Encryption mode (AES256 or aws:kms) |
+| `server_side_encryption_kms_key_id` | Amazon Resource Name. Only needed when `aws:kms` is used in `server_side_encryption`. See the [Amazon documentation on using KMS encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html) |
+
+As with the case for default encryption, these options only work when
+the Workhorse S3 client is enabled. One of the following two conditions
+must be fulfilled:
+
+- `use_iam_profile` is `true` in the connection settings.
+- Consolidated object storage settings are in use.
+
+[ETag mismatch errors](#etag-mismatch) will occur if server side
+encryption headers are used without enabling the Workhorse S3 client.
 
 ##### Disabling the feature
 
 The Workhorse S3 client is enabled by default when the
-[`use_iam_profile` configuration option](#iam-permissions) is set to `true`.
+[`use_iam_profile` configuration option](#iam-permissions) is set to `true` or consolidated
+object storage settings are configured.
 
 The feature can be disabled using the `:use_workhorse_s3_client` feature flag. To disable the
 feature, ask a GitLab administrator with

@@ -139,8 +139,6 @@ RSpec.describe Import::BitbucketServerController do
   describe 'GET status' do
     render_views
 
-    let(:repos) { instance_double(BitbucketServer::Collection) }
-
     before do
       allow(controller).to receive(:client).and_return(client)
 
@@ -157,14 +155,14 @@ RSpec.describe Import::BitbucketServerController do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['incompatible_repos'].length).to eq(1)
-      expect(json_response.dig("incompatible_repos", 0, "id")).to eq(@invalid_repo.full_name)
+      expect(json_response.dig("incompatible_repos", 0, "id")).to eq("#{@invalid_repo.project_key}/#{@invalid_repo.slug}")
       expect(json_response['provider_repos'].length).to eq(1)
       expect(json_response.dig("provider_repos", 0, "id")).to eq(@repo.full_name)
     end
 
     it_behaves_like 'import controller status' do
       let(:repo) { @repo }
-      let(:repo_id) { @repo.full_name }
+      let(:repo_id) { "#{@repo.project_key}/#{@repo.slug}" }
       let(:import_source) { @repo.browse_url }
       let(:provider_name) { 'bitbucket_server' }
       let(:client_repos_field) { :repos }

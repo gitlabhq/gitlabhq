@@ -359,7 +359,7 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 
 ### 4. Add the metric definition
 
-When adding, changing, or updating metrics, please update the [Event dictionary Usage Ping table](event_dictionary.md#usage-ping).
+When adding, changing, or updating metrics, please update the [Event Dictionary's **Usage Ping** table](event_dictionary.md).
 
 ### 5. Add new metric to Versions Application
 
