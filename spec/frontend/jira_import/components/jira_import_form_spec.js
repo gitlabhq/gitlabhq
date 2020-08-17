@@ -4,15 +4,20 @@ import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
+import getJiraUserMappingMutation from '~/jira_import/queries/get_jira_user_mapping.mutation.graphql';
+import initiateJiraImportMutation from '~/jira_import/queries/initiate_jira_import.mutation.graphql';
 import {
   imports,
   issuesPath,
   jiraProjects,
+  projectId,
+  projectPath,
   userMappings as defaultUserMappings,
 } from '../mock_data';
 
 describe('JiraImportForm', () => {
   let axiosMock;
+  let mutateSpy;
   let wrapper;
 
   const currentUsername = 'mrgitlab';
@@ -35,35 +40,53 @@ describe('JiraImportForm', () => {
 
   const mountComponent = ({
     isSubmitting = false,
+    loading = false,
+    mutate = mutateSpy,
     selectedProject = 'MTG',
     userMappings = defaultUserMappings,
     mountFunction = shallowMount,
   } = {}) =>
     mountFunction(JiraImportForm, {
       propsData: {
-        isSubmitting,
         issuesPath,
         jiraImports: imports,
         jiraProjects,
-        projectId: '5',
-        userMappings,
+        projectId,
+        projectPath,
       },
       data: () => ({
         isFetching: false,
+        isSubmitting,
         searchTerm: '',
         selectedProject,
         selectState: null,
         users: [],
+        userMappings,
       }),
+      mocks: {
+        $apollo: {
+          loading,
+          mutate,
+        },
+      },
       currentUsername,
     });
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
+    mutateSpy = jest.fn(() =>
+      Promise.resolve({
+        data: {
+          jiraImportStart: { errors: [] },
+          jiraImportUsers: { jiraUsers: [], errors: [] },
+        },
+      }),
+    );
   });
 
   afterEach(() => {
     axiosMock.restore();
+    mutateSpy.mockRestore();
     wrapper.destroy();
     wrapper = null;
   });
@@ -238,15 +261,61 @@ describe('JiraImportForm', () => {
     });
   });
 
-  describe('form', () => {
-    it('emits an "initiateJiraImport" event with the selected dropdown value when submitted', () => {
-      const selectedProject = 'MTG';
+  describe('submitting the form', () => {
+    it('initiates the Jira import mutation with the expected arguments', () => {
+      wrapper = mountComponent();
 
-      wrapper = mountComponent({ selectedProject });
+      const mutationArguments = {
+        mutation: initiateJiraImportMutation,
+        variables: {
+          input: {
+            jiraProjectKey: 'MTG',
+            projectPath,
+            usersMapping: [
+              {
+                jiraAccountId: 'aei23f98f-q23fj98qfj',
+                gitlabId: 15,
+              },
+              {
+                jiraAccountId: 'fu39y8t34w-rq3u289t3h4i',
+                gitlabId: undefined,
+              },
+            ],
+          },
+        },
+      };
 
       wrapper.find('form').trigger('submit');
 
-      expect(wrapper.emitted('initiateJiraImport')[0]).toEqual([selectedProject]);
+      expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining(mutationArguments));
+    });
+  });
+
+  describe('on mount GraphQL user mapping mutation', () => {
+    it('is called with the expected arguments', () => {
+      wrapper = mountComponent();
+
+      const mutationArguments = {
+        mutation: getJiraUserMappingMutation,
+        variables: {
+          input: {
+            projectPath,
+          },
+        },
+      };
+
+      expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining(mutationArguments));
+    });
+
+    describe('when there is an error when called', () => {
+      beforeEach(() => {
+        const mutate = jest.fn(() => Promise.reject());
+        wrapper = mountComponent({ mutate });
+      });
+
+      it('shows error message', () => {
+        expect(getAlert().exists()).toBe(true);
+      });
     });
   });
 });

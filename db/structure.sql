@@ -11353,6 +11353,7 @@ CREATE TABLE public.elastic_reindexing_tasks (
     elastic_task text,
     error_message text,
     documents_count_target integer,
+    delete_original_index_at timestamp with time zone,
     CONSTRAINT check_04151aca42 CHECK ((char_length(index_name_from) <= 255)),
     CONSTRAINT check_7f64acda8e CHECK ((char_length(error_message) <= 255)),
     CONSTRAINT check_85ebff7124 CHECK ((char_length(index_name_to) <= 255)),

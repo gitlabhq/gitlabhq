@@ -720,7 +720,7 @@ POST /projects/:id/issues
 | `title`                                   | string         | yes      | The title of an issue |
 | `description`                             | string         | no       | The description of an issue. Limited to 1,048,576 characters. |
 | `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
-| `assignee_ids`                            | integer array  | no       | The ID of a user to assign issue |
+| `assignee_ids`                            | integer array  | no       | The ID of the user(s) to assign the issue to. |
 | `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue  |
 | `labels`                                  | string         | no       | Comma-separated label names for an issue  |
 | `created_at`                              | string         | no       | Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires admin or project/group owner rights) |

@@ -183,9 +183,6 @@ to grant additional roles to your tracking database user (by default, this is
 - Amazon RDS requires the [`rds_superuser`](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.Roles) role.
 - Azure Database for PostgreSQL requires the [`azure_pg_admin`](https://docs.microsoft.com/en-us/azure/postgresql/howto-create-users#how-to-create-additional-admin-users-in-azure-database-for-postgresql) role.
 
-The tracking database requires an [FDW](https://www.postgresql.org/docs/11/postgres-fdw.html)
-connection with the **secondary** replica database for improved performance.
-
 If you have an external database ready to be used as the tracking database,
 follow the instructions below to use it:
 
@@ -224,7 +221,6 @@ the tracking database on port 5432.
 
    geo_secondary['db_host'] = '<tracking_database_host>'
    geo_secondary['db_port'] = <tracking_database_port>      # change to the correct port
-   geo_secondary['db_fdw'] = true       # enable FDW
    geo_postgresql['enable'] = false     # don't use internal managed instance
    ```
 
@@ -235,49 +231,4 @@ the tracking database on port 5432.
    ```shell
    gitlab-rake geo:db:create
    gitlab-rake geo:db:migrate
-   ```
-
-1. Configure the [PostgreSQL FDW](https://www.postgresql.org/docs/11/postgres-fdw.html)
-   connection and credentials:
-
-   Save the script below in a file, ex. `/tmp/geo_fdw.sh` and modify the connection
-   parameters to match your environment. Execute it to set up the FDW connection.
-
-   ```shell
-   #!/bin/bash
-
-   # Secondary Database connection params:
-   DB_HOST="<public_ip_or_vpc_private_ip>"
-   DB_NAME="gitlabhq_production"
-   DB_USER="gitlab"
-   DB_PASS="<your_password_here>"
-   DB_PORT="5432"
-
-   # Tracking Database connection params:
-   GEO_DB_HOST="<public_ip_or_vpc_private_ip>"
-   GEO_DB_NAME="gitlabhq_geo_production"
-   GEO_DB_USER="gitlab_geo"
-   GEO_DB_PORT="5432"
-
-   query_exec () {
-     gitlab-psql -h $GEO_DB_HOST -U $GEO_DB_USER -d $GEO_DB_NAME -p $GEO_DB_PORT -c "${1}"
-   }
-
-   query_exec "CREATE EXTENSION postgres_fdw;"
-   query_exec "CREATE SERVER gitlab_secondary FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host '${DB_HOST}', dbname '${DB_NAME}', port '${DB_PORT}');"
-   query_exec "CREATE USER MAPPING FOR ${GEO_DB_USER} SERVER gitlab_secondary OPTIONS (user '${DB_USER}', password '${DB_PASS}');"
-   query_exec "CREATE SCHEMA gitlab_secondary;"
-   query_exec "GRANT USAGE ON FOREIGN SERVER gitlab_secondary TO ${GEO_DB_USER};"
-   ```
-
-   NOTE: **Note:**
-   The script template above uses `gitlab-psql` as it's intended to be executed from the Geo machine,
-   but you can change it to `psql` and run it from any machine that has access to the database. We also recommend using
-   `psql` for AWS RDS.
-
-1. Save the file and [restart GitLab](../../restart_gitlab.md#omnibus-gitlab-restart)
-1. Populate the FDW tables:
-
-   ```shell
-   gitlab-rake geo:db:refresh_foreign_tables
    ```

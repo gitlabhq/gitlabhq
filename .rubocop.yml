@@ -339,8 +339,8 @@ Graphql/AuthorizeTypes:
 Graphql/JSONType:
   Enabled: true
   Include:
-    - 'app/graphql/types/**/*'
-    - 'ee/app/graphql/types/**/*'
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
   Exclude:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'

@@ -16,6 +16,10 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
+import { __ } from '~/locale';
+import getJiraUserMappingMutation from '../queries/get_jira_user_mapping.mutation.graphql';
+import initiateJiraImportMutation from '../queries/initiate_jira_import.mutation.graphql';
+import { addInProgressImportToStore } from '../utils/cache_update';
 import {
   debounceWait,
   dropdownLabel,
@@ -47,10 +51,6 @@ export default {
   tableConfig,
   userMappingMessage,
   props: {
-    isSubmitting: {
-      type: Boolean,
-      required: true,
-    },
     issuesPath: {
       type: String,
       required: true,
@@ -67,17 +67,19 @@ export default {
       type: String,
       required: true,
     },
-    userMappings: {
-      type: Array,
+    projectPath: {
+      type: String,
       required: true,
     },
   },
   data() {
     return {
       isFetching: false,
+      isSubmitting: false,
       searchTerm: '',
       selectedProject: undefined,
       selectState: null,
+      userMappings: [],
       users: [],
     };
   },
@@ -106,6 +108,24 @@ export default {
     }, debounceWait),
   },
   mounted() {
+    this.$apollo
+      .mutate({
+        mutation: getJiraUserMappingMutation,
+        variables: {
+          input: {
+            projectPath: this.projectPath,
+          },
+        },
+      })
+      .then(({ data }) => {
+        if (data.jiraImportUsers.errors.length) {
+          this.$emit('error', data.jiraImportUsers.errors.join('. '));
+        } else {
+          this.userMappings = data.jiraImportUsers.jiraUsers;
+        }
+      })
+      .catch(() => this.$emit('error', __('There was an error retrieving the Jira users.')));
+
     this.searchUsers()
       .then(data => {
         this.initialUsers = data;
@@ -138,12 +158,53 @@ export default {
     },
     initiateJiraImport(event) {
       event.preventDefault();
+
       if (this.selectedProject) {
         this.hideValidationError();
-        this.$emit('initiateJiraImport', this.selectedProject);
+
+        this.isSubmitting = true;
+
+        this.$apollo
+          .mutate({
+            mutation: initiateJiraImportMutation,
+            variables: {
+              input: {
+                jiraProjectKey: this.selectedProject,
+                projectPath: this.projectPath,
+                usersMapping: this.userMappings.map(({ gitlabId, jiraAccountId }) => ({
+                  gitlabId,
+                  jiraAccountId,
+                })),
+              },
+            },
+            update: (store, { data }) =>
+              addInProgressImportToStore(store, data.jiraImportStart, this.projectPath),
+          })
+          .then(({ data }) => {
+            if (data.jiraImportStart.errors.length) {
+              this.$emit('error', data.jiraImportStart.errors.join('. '));
+            } else {
+              this.selectedProject = undefined;
+            }
+          })
+          .catch(() => this.$emit('error', __('There was an error importing the Jira project.')))
+          .finally(() => {
+            this.isSubmitting = false;
+          });
       } else {
         this.showValidationError();
       }
+    },
+    updateMapping(jiraAccountId, gitlabId, gitlabUsername) {
+      this.userMappings = this.userMappings.map(userMapping =>
+        userMapping.jiraAccountId === jiraAccountId
+          ? {
+              ...userMapping,
+              gitlabId,
+              gitlabUsername,
+            }
+          : userMapping,
+      );
     },
     hideValidationError() {
       this.selectState = null;
@@ -227,7 +288,7 @@ export default {
               v-for="user in users"
               v-else
               :key="user.id"
-              @click="$emit('updateMapping', data.item.jiraAccountId, user.id, user.username)"
+              @click="updateMapping(data.item.jiraAccountId, user.id, user.username)"
             >
               {{ user.username }} ({{ user.name }})
             </gl-new-dropdown-item>

@@ -11,6 +11,19 @@ Check this document if it includes instructions for the version you are updating
 These steps go together with the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 13.3
+
+In GitLab 13.3, Geo removed the PostgreSQL [Foreign Data Wrapper](https://www.postgresql.org/docs/11/postgres-fdw.html) dependency for the tracking database.
+
+The FDW server, user, and the extension will be removed during the upgrade process on each **secondary** node. The GitLab settings related to the FDW in the `/etc/gitlab/gitlab.rb`  have been deprecated and can be safely removed.
+
+There are some scenarios like using an external PostgreSQL instance for the tracking database where the FDW settings must be removed manually. Enter the PostgreSQL console of that instance and remove them:
+
+```shell
+DROP SERVER gitlab_secondary CASCADE;
+DROP EXTENSION IF EXISTS postgres_fdw;
+```
+
 ## Updating to GitLab 13.0
 
 Upgrading to GitLab 13.0 requires GitLab 12.10 to already be using PostgreSQL

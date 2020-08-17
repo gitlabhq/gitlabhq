@@ -4319,6 +4319,9 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+msgid "Cancel index deletion"
+msgstr ""
+
 msgid "Cancel running"
 msgstr ""
 
@@ -13008,6 +13011,9 @@ msgid "Indent"
 msgstr ""
 
 msgid "Index all projects"
+msgstr ""
+
+msgid "Index deletion is canceled"
 msgstr ""
 
 msgid "Indicates whether this runner can pick jobs without tags"
@@ -26263,6 +26269,9 @@ msgid "Unsupported todo type passed. Supported todo types are: %{todo_types}"
 msgstr ""
 
 msgid "Until"
+msgstr ""
+
+msgid "Unused, previous index '%{index_name}' will be deleted after %{time} automatically."
 msgstr ""
 
 msgid "Unverified"

@@ -1,6 +1,5 @@
 .content-wrapper {
   width: 100%;
-  transition: padding $sidebar-transition-duration;
 
   .container-fluid {
     padding: 0 $gl-padding;
@@ -11,6 +10,10 @@
       border: 0;
     }
   }
+}
+
+.page-initialised  .content-wrapper {
+  transition: padding $sidebar-transition-duration;
 }
 
 .nav-header-btn {

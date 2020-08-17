@@ -156,6 +156,9 @@ function deferredInitialisation() {
   });
 
   loadAwardsHandler();
+
+  // Adding a helper class to activate animations only after all is rendered
+  setTimeout(() => $body.addClass('page-initialised'), 1000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

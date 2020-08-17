@@ -3,6 +3,16 @@ import { IMPORT_STATE } from '~/jira_import/utils/jira_import_utils';
 
 export const fullPath = 'gitlab-org/gitlab-test';
 
+export const issuesPath = 'gitlab-org/gitlab-test/-/issues';
+
+export const illustration = 'illustration.svg';
+
+export const jiraIntegrationPath = 'gitlab-org/gitlab-test/-/services/jira/edit';
+
+export const projectId = '5';
+
+export const projectPath = 'gitlab-org/gitlab-test';
+
 export const queryDetails = {
   query: getJiraImportDetailsQuery,
   variables: {
@@ -70,12 +80,6 @@ export const jiraImportMutationResponse = {
     __typename: 'JiraImportStartPayload',
   },
 };
-
-export const issuesPath = 'gitlab-org/gitlab-test/-/issues';
-
-export const jiraIntegrationPath = 'gitlab-org/gitlab-test/-/services/jira/edit';
-
-export const illustration = 'illustration.svg';
 
 export const jiraProjects = [
   { text: 'My Jira Project (MJP)', value: 'MJP' },

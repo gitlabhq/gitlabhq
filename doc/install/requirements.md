@@ -156,10 +156,6 @@ If you're using [GitLab Geo](../administration/geo/replication/index.md):
 - We strongly recommend running Omnibus-managed instances as they are actively
   developed and tested. We aim to be compatible with most external (not managed
   by Omnibus) databases (for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)) but we don't guarantee compatibility.
-- You must also ensure the `postgres_fdw` extension is loaded into every
-  GitLab database. This extension
-  [can be enabled](https://www.postgresql.org/docs/11/sql-createextension.html)
-  using a PostgreSQL super user.
 
 ## Puma settings
 

@@ -260,10 +260,8 @@ Configure the tracking database.
    geo_postgresql['sql_user_password'] = '<tracking_database_password_md5_hash>'
 
    ##
-   ## Configure FDW connection to the replica database
+   ## Configure PostgreSQL connection to the replica database
    ##
-   geo_secondary['db_fdw'] = true
-   geo_postgresql['fdw_external_password'] = '<replica_database_password_plaintext>'
    geo_postgresql['md5_auth_cidr_addresses'] = ['<replica_database_ip>/32']
    gitlab_rails['db_host'] = '<replica_database_ip>'
 

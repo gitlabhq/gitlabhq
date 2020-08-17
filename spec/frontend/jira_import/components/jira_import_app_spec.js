@@ -1,20 +1,25 @@
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
-import axios from '~/lib/utils/axios_utils';
 import JiraImportApp from '~/jira_import/components/jira_import_app.vue';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
 import JiraImportProgress from '~/jira_import/components/jira_import_progress.vue';
 import JiraImportSetup from '~/jira_import/components/jira_import_setup.vue';
-import initiateJiraImportMutation from '~/jira_import/queries/initiate_jira_import.mutation.graphql';
-import getJiraUserMappingMutation from '~/jira_import/queries/get_jira_user_mapping.mutation.graphql';
-import { imports, issuesPath, jiraIntegrationPath, jiraProjects, userMappings } from '../mock_data';
+import {
+  imports,
+  issuesPath,
+  jiraIntegrationPath,
+  jiraProjects,
+  projectId,
+  projectPath,
+} from '../mock_data';
 
 describe('JiraImportApp', () => {
-  let axiosMock;
-  let mutateSpy;
   let wrapper;
+
+  const inProgressIllustration = 'in-progress-illustration.svg';
+
+  const setupIllustration = 'setup-illustration.svg';
 
   const getFormComponent = () => wrapper.find(JiraImportForm);
 
@@ -32,22 +37,19 @@ describe('JiraImportApp', () => {
     showAlert = false,
     isInProgress = false,
     loading = false,
-    mutate = mutateSpy,
   } = {}) =>
     shallowMount(JiraImportApp, {
       propsData: {
-        inProgressIllustration: 'in-progress-illustration.svg',
+        inProgressIllustration,
         isJiraConfigured,
         issuesPath,
         jiraIntegrationPath,
-        projectId: '5',
-        projectPath: 'gitlab-org/gitlab-test',
-        setupIllustration: 'setup-illustration.svg',
+        projectId,
+        projectPath,
+        setupIllustration,
       },
       data() {
         return {
-          isSubmitting: false,
-          userMappings,
           errorMessage,
           showAlert,
           jiraImportDetails: {
@@ -61,26 +63,11 @@ describe('JiraImportApp', () => {
       mocks: {
         $apollo: {
           loading,
-          mutate,
         },
       },
     });
 
-  beforeEach(() => {
-    axiosMock = new AxiosMockAdapter(axios);
-    mutateSpy = jest.fn(() =>
-      Promise.resolve({
-        data: {
-          jiraImportStart: { errors: [] },
-          jiraImportUsers: { jiraUsers: [], errors: [] },
-        },
-      }),
-    );
-  });
-
   afterEach(() => {
-    axiosMock.restore();
-    mutateSpy.mockRestore();
     wrapper.destroy();
     wrapper = null;
   });
@@ -173,72 +160,79 @@ describe('JiraImportApp', () => {
     });
   });
 
-  describe('import in progress screen', () => {
+  describe('import setup component', () => {
+    beforeEach(() => {
+      wrapper = mountComponent({ isJiraConfigured: false });
+    });
+
+    it('receives the illustration', () => {
+      expect(getSetupComponent().props('illustration')).toBe(setupIllustration);
+    });
+
+    it('receives the path to the Jira integration page', () => {
+      expect(getSetupComponent().props('jiraIntegrationPath')).toBe(jiraIntegrationPath);
+    });
+  });
+
+  describe('import in progress component', () => {
     beforeEach(() => {
       wrapper = mountComponent({ isInProgress: true });
     });
 
-    it('shows the illustration', () => {
-      expect(getProgressComponent().props('illustration')).toBe('in-progress-illustration.svg');
+    it('receives the illustration', () => {
+      expect(getProgressComponent().props('illustration')).toBe(inProgressIllustration);
     });
 
-    it('shows the name of the most recent import initiator', () => {
+    it('receives the name of the most recent import initiator', () => {
       expect(getProgressComponent().props('importInitiator')).toBe('Jane Doe');
     });
 
-    it('shows the name of the most recent imported project', () => {
+    it('receives the name of the most recent imported project', () => {
       expect(getProgressComponent().props('importProject')).toBe('MTG');
     });
 
-    it('shows the time of the most recent import', () => {
+    it('receives the time of the most recent import', () => {
       expect(getProgressComponent().props('importTime')).toBe('2020-04-09T16:17:18+00:00');
     });
 
-    it('has the path to the issues page', () => {
+    it('receives the path to the issues page', () => {
       expect(getProgressComponent().props('issuesPath')).toBe('gitlab-org/gitlab-test/-/issues');
     });
   });
 
-  describe('initiating a Jira import', () => {
-    it('calls the mutation with the expected arguments', () => {
+  describe('import form component', () => {
+    beforeEach(() => {
       wrapper = mountComponent();
-
-      const mutationArguments = {
-        mutation: initiateJiraImportMutation,
-        variables: {
-          input: {
-            jiraProjectKey: 'MTG',
-            projectPath: 'gitlab-org/gitlab-test',
-            usersMapping: [
-              {
-                jiraAccountId: 'aei23f98f-q23fj98qfj',
-                gitlabId: 15,
-              },
-              {
-                jiraAccountId: 'fu39y8t34w-rq3u289t3h4i',
-                gitlabId: undefined,
-              },
-            ],
-          },
-        },
-      };
-
-      getFormComponent().vm.$emit('initiateJiraImport', 'MTG');
-
-      expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining(mutationArguments));
     });
 
-    describe('when there is an error', () => {
-      beforeEach(() => {
-        const mutate = jest.fn(() => Promise.reject());
-        wrapper = mountComponent({ mutate });
+    it('receives the illustration', () => {
+      expect(getFormComponent().props('issuesPath')).toBe(issuesPath);
+    });
 
-        getFormComponent().vm.$emit('initiateJiraImport', 'MTG');
-      });
+    it('receives the name of the most recent import initiator', () => {
+      expect(getFormComponent().props('jiraImports')).toEqual(imports);
+    });
 
-      it('shows alert message with error message', async () => {
-        expect(getAlert().text()).toBe('There was an error importing the Jira project.');
-      });
+    it('receives the name of the most recent imported project', () => {
+      expect(getFormComponent().props('jiraProjects')).toEqual(jiraProjects);
+    });
+
+    it('receives the project ID', () => {
+      expect(getFormComponent().props('projectId')).toBe(projectId);
+    });
+
+    it('receives the project path', () => {
+      expect(getFormComponent().props('projectPath')).toBe(projectPath);
+    });
+
+    it('shows an alert when it emits an error', async () => {
+      expect(getAlert().exists()).toBe(false);
+
+      getFormComponent().vm.$emit('error', 'There was an error');
+
+      await Vue.nextTick();
+
+      expect(getAlert().exists()).toBe(true);
     });
   });
 
@@ -257,42 +251,6 @@ describe('JiraImportApp', () => {
       await Vue.nextTick();
 
       expect(getAlert().exists()).toBe(false);
-    });
-  });
-
-  describe('on mount GraphQL user mapping mutation', () => {
-    it('is called with the expected arguments', () => {
-      wrapper = mountComponent();
-
-      const mutationArguments = {
-        mutation: getJiraUserMappingMutation,
-        variables: {
-          input: {
-            projectPath: 'gitlab-org/gitlab-test',
-          },
-        },
-      };
-
-      expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining(mutationArguments));
-    });
-
-    describe('when Jira is not configured', () => {
-      it('is not called', () => {
-        wrapper = mountComponent({ isJiraConfigured: false });
-
-        expect(mutateSpy).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('when there is an error when called', () => {
-      beforeEach(() => {
-        const mutate = jest.fn(() => Promise.reject());
-        wrapper = mountComponent({ mutate });
-      });
-
-      it('shows error message', () => {
-        expect(getAlert().exists()).toBe(true);
-      });
     });
   });
 });
