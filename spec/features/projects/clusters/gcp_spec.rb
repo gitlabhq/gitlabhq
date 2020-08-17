@@ -205,11 +205,10 @@ RSpec.describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
     let(:admin) { create(:admin) }
 
     before do
-      stub_feature_flags(instance_level_integrations: false)
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
       sign_in(admin)
       gitlab_enable_admin_mode_sign_in(admin)
-      visit integrations_admin_application_settings_path
+      visit general_admin_application_settings_path
     end
 
     it 'user does not see the offer' do

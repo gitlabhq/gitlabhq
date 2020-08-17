@@ -178,7 +178,7 @@ Owners" section:
 
 ```plaintext
 [README Owners]
-README.md @user1 @user 2
+README.md @user1 @user2
 internal/README.md @user2
 ```
 

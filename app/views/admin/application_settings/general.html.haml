@@ -116,11 +116,10 @@
     .settings-content
       #js-maintenance-mode-settings
 
-- if Feature.enabled?(:instance_level_integrations)
-  = render_if_exists 'admin/application_settings/elasticsearch_form'
-  = render 'admin/application_settings/plantuml'
-  = render 'admin/application_settings/sourcegraph'
-  = render_if_exists 'admin/application_settings/slack'
-  = render 'admin/application_settings/third_party_offers'
-  = render 'admin/application_settings/snowplow'
-  = render 'admin/application_settings/eks'
+= render_if_exists 'admin/application_settings/elasticsearch_form'
+= render 'admin/application_settings/plantuml'
+= render 'admin/application_settings/sourcegraph'
+= render_if_exists 'admin/application_settings/slack'
+= render 'admin/application_settings/third_party_offers'
+= render 'admin/application_settings/snowplow'
+= render 'admin/application_settings/eks'

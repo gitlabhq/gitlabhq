@@ -209,8 +209,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
 
     context 'Integrations page' do
       before do
-        stub_feature_flags(instance_level_integrations: false)
-        visit integrations_admin_application_settings_path
+        visit general_admin_application_settings_path
       end
 
       it 'Enable hiding third party offers' do

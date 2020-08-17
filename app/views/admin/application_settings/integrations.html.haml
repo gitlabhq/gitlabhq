@@ -2,29 +2,19 @@
 - page_title _('Integrations')
 - @content_class = 'limit-container-width' unless fluid_layout
 
-- if Feature.enabled?(:instance_level_integrations)
-  - if show_admin_integrations_moved?
-    .gl-alert.gl-alert-info.js-admin-integrations-moved.mt-3{ role: 'alert', data: { feature_id: UserCalloutsHelper::ADMIN_INTEGRATIONS_MOVED, dismiss_endpoint: user_callouts_path } }
-      = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-      %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-        = sprite_icon('close', css_class: 'gl-icon')
-      .gl-alert-body
-        %h4.gl-alert-title= s_('AdminSettings|Some settings have moved')
-        = html_escape_once(s_('AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings &gt; General.')).html_safe
-      .gl-alert-actions
-        = link_to s_('AdminSettings|Go to General Settings'), general_admin_application_settings_path, class: 'btn gl-alert-action btn-info new-gl-button'
+- if show_admin_integrations_moved?
+  .gl-alert.gl-alert-info.js-admin-integrations-moved.mt-3{ role: 'alert', data: { feature_id: UserCalloutsHelper::ADMIN_INTEGRATIONS_MOVED, dismiss_endpoint: user_callouts_path } }
+    = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
+      = sprite_icon('close', css_class: 'gl-icon')
+    .gl-alert-body
+      %h4.gl-alert-title= s_('AdminSettings|Some settings have moved')
+      = html_escape_once(s_('AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings &gt; General.')).html_safe
+    .gl-alert-actions
+      = link_to s_('AdminSettings|Go to General Settings'), general_admin_application_settings_path, class: 'btn gl-alert-action btn-info new-gl-button'
 
-  %h4= s_('AdminSettings|Apply integration settings to all Projects')
-  %p
-    = s_('AdminSettings|Integrations configured here will automatically apply to all projects on this instance.')
-    = link_to _('Learn more'), '#'
-  = render 'shared/integrations/index', integrations: @integrations
-
-- else
-  = render_if_exists 'admin/application_settings/elasticsearch_form'
-  = render 'admin/application_settings/plantuml'
-  = render 'admin/application_settings/sourcegraph'
-  = render_if_exists 'admin/application_settings/slack'
-  = render 'admin/application_settings/third_party_offers'
-  = render 'admin/application_settings/snowplow'
-  = render 'admin/application_settings/eks'
+%h4= s_('AdminSettings|Apply integration settings to all Projects')
+%p
+  = s_('AdminSettings|Integrations configured here will automatically apply to all projects on this instance.')
+  = link_to _('Learn more'), '#'
+= render 'shared/integrations/index', integrations: @integrations

@@ -16,7 +16,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     push_frontend_feature_flag(:ci_instance_variables_ui, default_enabled: true)
   end
 
-  VALID_SETTING_PANELS = %w(general integrations repository
+  VALID_SETTING_PANELS = %w(general repository
                             ci_cd reporting metrics_and_profiling
                             network preferences).freeze
 
@@ -32,12 +32,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def integrations
-    if Feature.enabled?(:instance_level_integrations)
-      @integrations = Service.find_or_initialize_instances.sort_by(&:title)
-    else
-      set_application_setting
-      perform_update if submitted?
-    end
+    @integrations = Service.find_or_initialize_instances.sort_by(&:title)
   end
 
   def update
