@@ -73,3 +73,20 @@ Examples:
 - Finding the text 'def create' inside files with the `.rb` extension: `def create extension:rb`
 - Finding the text `sha` inside files in a folder called `encryption`: `sha path:encryption`
 - Finding any file starting with `hello` containing `world` and with the `.js` extension: `world filename:hello* extension:js`
+
+#### Excluding filters
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31684) in GitLab Starter 13.3.
+
+Filters can be inversed to **filter out** results from the result set, by prefixing the filter name with a `-` (hyphen) character, such as:
+
+- `-filename`
+- `-path`
+- `-extension`
+
+Examples:
+
+- Finding `rails` in all files but `Gemfile.lock`: `rails -filename:Gemfile.lock`
+- Finding `success` in all files excluding `.po|pot` files: `success -filename:*.po*`
+- Finding `import` excluding minified JavaScript (`.min.js`) files: `import -extension:min.js`
+- Finding `docs` for all files outside the `docs/` folder: `docs -path:docs/`

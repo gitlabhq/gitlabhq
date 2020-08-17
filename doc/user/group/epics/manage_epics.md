@@ -151,9 +151,18 @@ The sort option and order is saved and used wherever you browse epics, including
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213068) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0 behind a feature flag, disabled by default.
 > - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/224513) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> - You can [use the Confidentiality option in the epic sidebar](https://gitlab.com/gitlab-org/gitlab/-/issues/197340) in GitLab [Premium](https://about.gitlab.com/pricing/) 13.3 and later.
 
-When you're creating an epic, you can make it confidential by selecting the **Make this epic
-confidential** checkbox.
+If you're working on items that contain private information, you can make an epic confidential.
+
+NOTE: **Note:**
+A confidential epic can only contain confidential issues and confidential child epics.
+
+To make an epic confidential:
+
+- **When creating an epic:** select the checkbox **Make this epic confidential**.
+- **In an existing epic:** in the epic's sidebar, select **Edit** next to **Confidentiality** then
+  select **Turn on**.
 
 ### Disable confidential epics **(PREMIUM ONLY)**
 

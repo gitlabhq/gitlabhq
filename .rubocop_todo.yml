@@ -1324,7 +1324,6 @@ Rails/SaveBang:
     - 'spec/support/shared_examples/models/members_notifications_shared_example.rb'
     - 'spec/support/shared_examples/models/mentionable_shared_examples.rb'
     - 'spec/support/shared_examples/models/project_latest_successful_build_for_shared_examples.rb'
-    - 'spec/support/shared_examples/models/relative_positioning_shared_examples.rb'
     - 'spec/support/shared_examples/models/slack_mattermost_notifications_shared_examples.rb'
     - 'spec/support/shared_examples/models/update_project_statistics_shared_examples.rb'
     - 'spec/support/shared_examples/models/with_uploads_shared_examples.rb'

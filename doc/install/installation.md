@@ -462,7 +462,7 @@ Clone Enterprise Edition:
 
 ```shell
 # Clone GitLab repository
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ee.git -b X-Y-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab.git -b X-Y-stable gitlab
 ```
 
 Make sure to replace `X-Y-stable` with the stable branch that matches the
@@ -521,9 +521,6 @@ sudo -u git -H cp config/puma.rb.example config/puma.rb
 # You should scale Puma workers and threads based on the number of CPU
 # cores you have available. You can get that number via the `nproc` command.
 sudo -u git -H editor config/puma.rb
-
-# Copy the example Rack attack config
-sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 
 # Configure Git global settings for git user
 # 'autocrlf' is needed for the web editor

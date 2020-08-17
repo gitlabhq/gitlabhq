@@ -63,6 +63,27 @@ variables:
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
   DOCKER_VERSION: "19.03.0"
 
+  # Preparing custom clone path to reduce space used by all random forks
+  # on GitLab.com's Shared Runners. Our main forks - especially the security
+  # ones - will have this variable overwritten in the project settings, so that
+  # a security-related code or code using our protected variables will be never
+  # stored on the same path as the community forks.
+  # Part of the solution for the `no space left on device` problem described at
+  # https://gitlab.com/gitlab-org/gitlab/issues/197876.
+  #
+  # For this purpose the https://gitlab.com/gitlab-org-forks group was created
+  # to host a placeholder for the `/builds/gitlab-org-forks` path and ensure
+  # that no legitimate project will ever use it and - by mistake - execute its
+  # job on a shared working directory. It also requires proper configuration of
+  # the Runner that executes the job (which was prepared for our shared runners
+  # by https://ops.gitlab.net/gitlab-cookbooks/chef-repo/-/merge_requests/3977).
+  #
+  # Because of all of that PLEASE DO NOT CHANGE THE PATH.
+  #
+  # For more details and reasoning that brought this change please check
+  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24887
+  GIT_CLONE_PATH: "/builds/gitlab-org-forks/${CI_PROJECT_NAME}"
+
 include:
   - local: .gitlab/ci/build-images.gitlab-ci.yml
   - local: .gitlab/ci/cache-repo.gitlab-ci.yml

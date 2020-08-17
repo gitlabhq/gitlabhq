@@ -809,11 +809,11 @@ There is a [more structured, lower-level troubleshooting document](../administra
 
 ### Known Issues
 
-- **[Elasticsearch `code_analyzer` doesn't account for all code cases](https://gitlab.com/gitlab-org/gitlab/-/issues/10693)**
+- **[Elasticsearch `code_analyzer` doesn't account for all code cases](https://gitlab.com/groups/gitlab-org/-/epics/3621)**
 
-   The `code_analyzer` pattern and filter configuration is being evaluated for improvement. We have noticed [several edge cases](https://gitlab.com/gitlab-org/gitlab/-/issues/10693#note_158382332) that are not returning expected search results due to our pattern and filter configuration.
+   The `code_analyzer` pattern and filter configuration is being evaluated for improvement. We have fixed [most edge cases](https://gitlab.com/groups/gitlab-org/-/epics/3621#note_363429094) that were not returning expected search results due to our pattern and filter configuration.
 
-   An improved strategy for the `code_analyzer` pattern and filters are being discussed in [issue 29443](https://gitlab.com/gitlab-org/gitlab/-/issues/29443).
+   Improvements to the `code_analyzer` pattern and filters is being discussed in [epic 3621](https://gitlab.com/groups/gitlab-org/-/epics/3621).
 
 ### Reverting to basic search
 

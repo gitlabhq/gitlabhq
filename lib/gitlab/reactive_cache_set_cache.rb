@@ -20,7 +20,7 @@ module Gitlab
         keys << cache_key(key)
 
         redis.pipelined do
-          keys.each_slice(1000) { |subset| redis.del(*subset) }
+          keys.each_slice(1000) { |subset| redis.unlink(*subset) }
         end
       end
     end

@@ -236,7 +236,6 @@ RSpec.describe Gitlab::Danger::Helper do
 
       'generator_templates/foo' | [:backend]
       'vendor/languages.yml'    | [:backend]
-      'vendor/licenses.csv'     | [:backend]
       'file_hooks/examples/'    | [:backend]
 
       'Gemfile'        | [:backend]

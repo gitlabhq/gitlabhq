@@ -2,7 +2,14 @@
 
 module Gitlab
   module Database
+    # This class provides a way to automatically execute code that relies on acquiring a database lock in a way
+    # designed to minimize impact on a busy production database.
+    #
+    # A default timing configuration is provided that makes repeated attempts to acquire the necessary lock, with
+    # varying lock_timeout settings, and also serves to limit the maximum number of attempts.
     class WithLockRetries
+      AttemptsExhaustedError = Class.new(StandardError)
+
       NULL_LOGGER = Gitlab::JsonLogger.new('/dev/null')
 
       # Each element of the array represents a retry iteration.
@@ -63,7 +70,17 @@ module Gitlab
         @log_params = { method: 'with_lock_retries', class: klass.to_s }
       end
 
-      def run(&block)
+      # Executes a block of code, retrying it whenever a database lock can't be acquired in time
+      #
+      # When a database lock can't be acquired, ActiveRecord throws ActiveRecord::LockWaitTimeout
+      # exception which we intercept to re-execute the block of code, until it finishes or we reach the
+      # max attempt limit. The default behavior when max attempts have been reached is to make a final attempt with the
+      # lock_timeout disabled, but this can be altered with the raise_on_exhaustion parameter.
+      #
+      # @see DEFAULT_TIMING_CONFIGURATION for the timings used when attempting a retry
+      # @param [Boolean] raise_on_exhaustion whether to raise `AttemptsExhaustedError` when exhausting max attempts
+      # @param [Proc] block of code that will be executed
+      def run(raise_on_exhaustion: false, &block)
         raise 'no block given' unless block_given?
 
         @block = block
@@ -85,6 +102,9 @@ module Gitlab
             retry
           else
             reset_db_settings
+
+            raise AttemptsExhaustedError, 'configured attempts to obtain locks are exhausted' if raise_on_exhaustion
+
             run_block_without_lock_timeout
           end
 

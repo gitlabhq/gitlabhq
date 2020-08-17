@@ -450,7 +450,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_PASSWORD` | string | The password to authenticate to in the website. |
 | `DAST_USERNAME_FIELD` | string | The name of username field at the sign-in HTML form. |
 | `DAST_PASSWORD_FIELD` | string | The name of password field at the sign-in HTML form. |
-| `DAST_MASK_HTTP_HEADERS` | string | Comma-separated list of request and response headers to be masked (introduced in GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
+| `DAST_MASK_HTTP_HEADERS` | string | Comma-separated list of request and response headers to be masked (GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
 | `DAST_AUTH_EXCLUDE_URLS` | URLs | The URLs to skip during the authenticated scan; comma-separated, no spaces in between. Not supported for API scans. |
 | `DAST_FULL_SCAN_ENABLED` | boolean | Set to `true` to run a [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of a [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Default: `false` |
 | `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | boolean | Set to `true` to require [domain validation](#domain-validation) when running DAST full scans. Not supported for API scans. Default: `false` |
@@ -603,27 +603,76 @@ Alternatively, you can use the variable `SECURE_ANALYZERS_PREFIX` to override th
 ## On-Demand Scans
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.2.
-> - It's deployed behind a feature flag, disabled by default.
-> - It's disabled on GitLab.com.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.3.
+> - It's deployed behind a feature flag, enabled by default.
+> - It's enabled on GitLab.com.
 > - It's able to be enabled or disabled per-project.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-on-demand-scans).
 
-Passive DAST scans may be run on demand against a target website, outside the DevOps lifecycle. These scans are
-always associated with the default or `master` branch of your project and the results can be seen in the project dashboard.
+You can run a passive DAST scan against a target website, outside the DevOps lifecycle. These scans
+are always associated with the default branch of your project and the results are available in the
+project dashboard.
+
+### Site profile
+
+An on-demand scan requires a site profile, which includes a profile name and target URL. The profile
+name allows you to describe the site to be scanned. The target URL specifies the URL against which
+the DAST scan is run.
+
+### Run an on-demand scan
 
 NOTE: **Note:**
-You cannot run an on-demand DAST scan against a protected branch unless you have permission to do so. The `master` branch is protected by default. For more details, see [Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
+You must have permission to run an on-demand DAST scan against a protected branch.
+The default branch is automatically protected. For more details, see [Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 
-![DAST On-Demand Scan](img/dast_on_demand_v13_2.png)
+Running an on-demand scan requires an existing site profile. If a site profile for the target URL
+doesn't exist, first [create a site profile](#create-a-site-profile). An on-demand DAST scan has
+a fixed timeout of 60 seconds.
 
-### Enable or disable On-Demand Scans
+- Navigate to your project's home page, then click **On-demand Scans** in the left sidebar.
+- Click **Create new DAST scan**.
+- Select a site profile from the profiles dropdown.
+- Click **Run scan**.
 
-On-Demand Scans is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+#### Create a site profile
+
+- Navigate to your project's home page, then click **On-demand Scans** in the left sidebar.
+- Click **Create new DAST scan**.
+- Click **New Site Profile**.
+- Type in a unique **Profile name** and **Target URL** then click **Save profile**.
+
+#### Delete a site profile
+
+- Navigate to your project's home page, then click **On-demand Scans** in the left sidebar.
+- Click **Create new DAST scan**.
+- Click **Delete** in the matching site profile's row.
+
+### Enable or disable On-demand Scans and site profiles
+
+On-demand Scans with site profiles is enabled by default. You can disable On-demand Scans
+instance-wide, or disable it for specific projects if you prefer. DAST site profiles are not
+available if the On-demand Scans feature is disabled.
+
+Use of On-demand Scans with site profiles requires **both** the following feature flags enabled:
+
+- security_on_demand_scans_feature_flag
+- security_on_demand_scans_site_profiles_feature_flag
+
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it for your instance. On-Demand Scans can be enabled or disabled per-project
+can disable or enable the feature flags.
 
-To enable it:
+#### Enable or disable On-demand Scans
+
+To disable On-demand Scans:
+
+```ruby
+# Instance-wide
+Feature.disable(:security_on_demand_scans_feature_flag)
+# or by project
+Feature.disable(:security_on_demand_scans_feature_flag, Project.find(<project id>))
+```
+
+To enable On-demand Scans:
 
 ```ruby
 # Instance-wide
@@ -632,13 +681,29 @@ Feature.enable(:security_on_demand_scans_feature_flag)
 Feature.enable(:security_on_demand_scans_feature_flag, Project.find(<project id>))
 ```
 
-To disable it:
+#### Enable or disable site profiles
+
+The Site Profiles feature is enabled instance-wide by default. You can disable it instance-wide, or disable it
+for specific projects if you prefer.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can disable or enable the feature flag.
+
+To disable Site Profiles:
 
 ```ruby
 # Instance-wide
-Feature.disable(:security_on_demand_scans_feature_flag)
+Feature.disable(:security_on_demand_scans_site_profiles_feature_flag)
 # or by project
-Feature.disable(:security_on_demand_scans_feature_flag, Project.find(<project id>))
+Feature.disable(:security_on_demand_scans_site_profiles_feature_flag, Project.find(<project id>))
+```
+
+To enable Site Profiles:
+
+```ruby
+# Instance-wide
+Feature.enable(:security_on_demand_scans_site_profiles_feature_flag)
+# or by project
+Feature.enable(:security_on_demand_scans_site_profiles_feature_flag, Project.find(<project id>))
 ```
 
 ## Reports

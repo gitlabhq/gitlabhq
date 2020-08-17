@@ -13,22 +13,44 @@ RSpec.describe Gitlab::FileFinder do
       let(:expected_file_by_content) { 'CHANGELOG' }
     end
 
-    it 'filters by filename' do
-      results = subject.find('files filename:wm.svg')
+    context 'with inclusive filters' do
+      it 'filters by filename' do
+        results = subject.find('files filename:wm.svg')
 
-      expect(results.count).to eq(1)
+        expect(results.count).to eq(1)
+      end
+
+      it 'filters by path' do
+        results = subject.find('white path:images')
+
+        expect(results.count).to eq(1)
+      end
+
+      it 'filters by extension' do
+        results = subject.find('files extension:md')
+
+        expect(results.count).to eq(4)
+      end
     end
 
-    it 'filters by path' do
-      results = subject.find('white path:images')
+    context 'with exclusive filters' do
+      it 'filters by filename' do
+        results = subject.find('files -filename:wm.svg')
 
-      expect(results.count).to eq(1)
-    end
+        expect(results.count).to eq(26)
+      end
 
-    it 'filters by extension' do
-      results = subject.find('files extension:svg')
+      it 'filters by path' do
+        results = subject.find('white -path:images')
 
-      expect(results.count).to eq(1)
+        expect(results.count).to eq(4)
+      end
+
+      it 'filters by extension' do
+        results = subject.find('files -extension:md')
+
+        expect(results.count).to eq(23)
+      end
     end
 
     it 'does not cause N+1 query' do

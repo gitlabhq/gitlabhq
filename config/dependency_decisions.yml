@@ -103,40 +103,12 @@
     :versions: []
     :when: 2016-10-28 11:02:15.540105000 Z
 - - :license
-  - raphael-rails
-  - MIT
-  - :who: Connor Shea
-    :why: https://github.com/mockdeep/raphael-rails/blob/master/license.txt
-    :versions: []
-    :when: 2016-04-17 21:30:07.575392000 Z
-- - :license
-  - rouge
-  - MIT
-  - :who: Connor Shea
-    :why: https://github.com/jneen/rouge/blob/master/LICENSE
-    :versions: []
-    :when: 2016-04-17 21:31:29.490394000 Z
-- - :license
   - pyu-ruby-sasl
   - MIT
   - :who: Connor Shea
     :why: https://github.com/pyu10055/ruby-sasl/blob/master/MIT-LICENSE
     :versions: []
     :when: 2016-04-17 21:41:55.266420000 Z
-- - :license
-  - six
-  - MIT
-  - :who: Connor Shea
-    :why: https://github.com/randx/six/blob/master/LICENSE
-    :versions: []
-    :when: 2016-04-17 21:42:31.420186000 Z
-- - :license
-  - rdoc
-  - ruby
-  - :who: Connor Shea
-    :why: https://github.com/rdoc/rdoc/blob/master/LICENSE.rdoc
-    :versions: []
-    :when: 2016-04-17 21:43:30.480413000 Z
 - - :license
   - expression_parser
   - MIT
@@ -152,13 +124,6 @@
     :versions: []
     :when: 2016-04-17 21:49:10.329759000 Z
 - - :license
-  - eventmachine
-  - ruby
-  - :who: Connor Shea
-    :why: https://github.com/eventmachine/eventmachine/blob/master/LICENSE
-    :versions: []
-    :when: 2016-04-17 21:49:10.329759001 Z
-- - :license
   - unicorn
   - ruby
   - :who: Connor Shea
@@ -173,13 +138,6 @@
     :versions: []
     :when: 2016-05-02 05:45:38.323867000 Z
 - - :license
-  - json
-  - ruby
-  - :who: Connor Shea
-    :why: https://github.com/flori/json/tree/master#license
-    :versions: []
-    :when: 2016-05-02 05:50:07.826564000 Z
-- - :license
   - unf
   - BSD
   - :who: Connor Shea
@@ -193,48 +151,6 @@
     :why: https://github.com/jmcnevin/rubypants/blob/master/LICENSE.rdoc
     :versions: []
     :when: 2016-05-02 05:56:50.696858000 Z
-- - :approve
-  - after
-  - :who: Matt Lee
-    :why: https://github.com/Raynos/after/blob/master/LICENCE
-    :versions: []
-    :when: 2017-01-14 20:00:32.473125000 Z
-- - :approve
-  - amdefine
-  - :who: Matt Lee
-    :why: MIT License
-    :versions: []
-    :when: 2017-01-14 20:08:31.810633000 Z
-- - :approve
-  - base64id
-  - :who: Matt Lee
-    :why: https://github.com/faeldt/base64id/blob/master/LICENSE
-    :versions: []
-    :when: 2017-01-14 20:08:33.174760000 Z
-- - :approve
-  - blob
-  - :who: Matt Lee
-    :why: https://github.com/webmodules/blob/blob/master/LICENSE
-    :versions: []
-    :when: 2017-01-14 20:08:34.564048000 Z
-- - :approve
-  - callsite
-  - :who: Matt Lee
-    :why: https://github.com/tj/callsite/blob/master/LICENSE
-    :versions: []
-    :when: 2017-01-14 20:08:35.976025000 Z
-- - :approve
-  - component-bind
-  - :who: Matt Lee
-    :why: https://github.com/component/bind/blob/master/LICENSE
-    :versions: []
-    :when: 2017-01-14 20:08:37.291219000 Z
-- - :approve
-  - component-inherit
-  - :who: Matt Lee
-    :why: https://github.com/component/inherit/blob/master/LICENSE
-    :versions: []
-    :when: 2017-01-14 20:10:41.804804000 Z
 - - :license
   - fsevents
   - MIT
@@ -243,84 +159,11 @@
     :versions: []
     :when: 2017-01-14 20:50:20.037775000 Z
 - - :approve
-  - indexof
-  - :who: Matt Lee
-    :why: https://github.com/component/indexof/blob/master/LICENSE
-    :versions: []
-    :when: 2017-01-14 20:10:43.209900000 Z
-- - :approve
-  - is-integer
-  - :who: Matt Lee
-    :why: https://github.com/parshap/js-is-integer/blob/master/LICENSE
-    :versions: []
-    :when: 2017-01-14 20:10:44.540916000 Z
-- - :approve
-  - jsonify
-  - :who: Matt Lee
-    :why: Public Domain - no formal license on this one. probably okay as its been
-      the same for along time. would prefer to see CC0
-    :versions: []
-    :when: 2017-01-14 20:10:45.857261000 Z
-- - :approve
-  - object-component
-  - :who: Matt Lee
-    :why: https://github.com/component/object/blob/master/LICENSE
-    :versions: []
-    :when: 2017-01-14 20:10:47.190148000 Z
-- - :approve
-  - optimist
-  - :who: Matt Lee
-    :why: https://github.com/substack/node-optimist/blob/master/LICENSE
-    :versions: []
-    :when: 2017-01-14 20:10:48.563077000 Z
-- - :approve
-  - path-is-inside
-  - :who: Matt Lee
-    :why: https://github.com/domenic/path-is-inside/blob/master/LICENSE.txt
-    :versions: []
-    :when: 2017-01-14 20:10:49.910497000 Z
-- - :approve
-  - rc
-  - :who: Matt Lee
-    :why: https://github.com/dominictarr/rc/blob/master/LICENSE.MIT
-    :versions: []
-    :when: 2017-01-14 20:10:51.244695000 Z
-- - :approve
-  - ripemd160
-  - :who: Matt Lee
-    :why: https://github.com/crypto-browserify/ripemd160/blob/master/LICENSE.md
-    :versions: []
-    :when: 2017-01-14 20:10:52.560282000 Z
-- - :approve
   - select2
   - :who: Matt Lee
     :why: https://github.com/select2/select2/blob/master/LICENSE.md
     :versions: []
     :when: 2017-01-14 20:10:53.909618000 Z
-- - :approve
-  - tweetnacl
-  - :who: Matt Lee
-    :why: https://github.com/dchest/tweetnacl-js/blob/master/LICENSE
-    :versions: []
-    :when: 2017-01-14 20:10:57.812077000 Z
-- - :approve
-  - wordwrap
-  - :who: Mike Greiling
-    :why: https://github.com/substack/node-wordwrap/blob/0.0.3/LICENSE
-    :versions: []
-    :when: 2017-02-08 20:17:13.084968000 Z
-- - :approve
-  - spdx-expression-parse
-  - :who: Mike Greiling
-    :why: https://github.com/kemitchell/spdx-expression-parse.js/blob/v1.0.4/LICENSE
-    :versions: []
-    :when: 2017-02-08 22:33:01.806977000 Z
-- - :approve
-  - spdx-license-ids
-  - :who: Mike Greiling
-    :why: https://github.com/shinnn/spdx-license-ids/blob/v1.2.2/LICENSE
-    :versions: []
-    :when: 2017-02-08 22:35:00.225232000 Z
 - - :approve
   - opener
   - :who: Mike Greiling
@@ -345,67 +188,6 @@
     :why: https://github.com/nodeca/pako/blob/master/LICENSE
     :versions: []
     :when: 2017-04-05 10:43:45.897720000 Z
-- - :approve
-  - caniuse-db
-  - :who: Mike Greiling
-    :why: https://github.com/Fyrd/caniuse/blob/master/LICENSE
-    :versions: []
-    :when: 2017-04-07 16:05:14.185549000 Z
-- - :approve
-  - domelementtype
-  - :who: Mike Greiling
-    :why: https://github.com/fb55/domelementtype/blob/master/LICENSE
-    :versions: []
-    :when: 2017-04-07 16:19:17.992640000 Z
-- - :approve
-  - domhandler
-  - :who: Mike Greiling
-    :why: https://github.com/fb55/domhandler/blob/master/LICENSE
-    :versions: []
-    :when: 2017-04-07 16:19:19.628953000 Z
-- - :approve
-  - domutils
-  - :who: Mike Greiling
-    :why: https://github.com/fb55/domutils/blob/master/LICENSE
-    :versions: []
-    :when: 2017-04-07 16:19:21.159356000 Z
-- - :approve
-  - entities
-  - :who: Mike Greiling
-    :why: https://github.com/fb55/entities/blob/master/LICENSE
-    :versions: []
-    :when: 2017-04-07 16:19:23.900571000 Z
-- - :approve
-  - ansi-html
-  - :who: Mike Greiling
-    :why: https://github.com/Tjatse/ansi-html/blob/master/LICENSE
-    :versions: []
-    :when: 2017-04-10 05:42:12.898178000 Z
-- - :license
-  - map-stream
-  - MIT
-  - :who: Mike Greiling
-    :why: https://github.com/dominictarr/map-stream/blob/master/LICENCE
-    :versions: []
-    :when: 2017-04-10 06:27:52.269085000 Z
-- - :approve
-  - pause-stream
-  - :who: Mike Greiling
-    :why: https://github.com/dominictarr/pause-stream/blob/master/LICENSE
-    :versions: []
-    :when: 2017-04-10 06:28:39.825894000 Z
-- - :approve
-  - undefsafe
-  - :who: Mike Greiling
-    :why: https://github.com/remy/undefsafe/blob/master/LICENSE
-    :versions: []
-    :when: 2017-04-10 06:30:00.002555000 Z
-- - :approve
-  - thunky
-  - :who: Mike Greiling
-    :why: https://github.com/mafintosh/thunky/blob/master/README.md#license
-    :versions: []
-    :when: 2017-08-07 05:56:09.907045000 Z
 - - :whitelist
   - Unlicense
   - :who: Nick Thomas <nick@gitlab.com>
@@ -418,49 +200,6 @@
     :why: https://gitlab.com/gitlab-com/organization/issues/117
     :versions: []
     :when: 2017-09-04 12:59:51.150798717 Z
-- - :approve
-  - console-browserify
-  - :who: Mike Greiling
-    :why: https://github.com/Raynos/console-browserify/blob/f0a8898487e2a47b8a5dc8734b91059fa2825506/LICENCE
-    :versions: []
-    :when: 2017-09-16 05:13:07.073651000 Z
-- - :approve
-  - duplexer
-  - :who: Mike Greiling
-    :why: https://github.com/Raynos/duplexer/blob/master/LICENCE
-    :versions: []
-    :when: 2017-09-16 05:14:15.774643000 Z
-- - :approve
-  - json3
-  - :who: Mike Greiling
-    :why: https://github.com/bestiejs/json3/blob/v3.3.2/LICENSE
-    :versions: []
-    :when: 2017-09-16 05:15:16.273892000 Z
-- - :approve
-  - mime
-  - :who: Mike Greiling
-    :why: https://github.com/broofa/node-mime/blob/v1.3.4/LICENSE
-    :versions: []
-    :when: 2017-09-16 05:16:21.135542000 Z
-- - :approve
-  - querystring-es3
-  - :who: Mike Greiling
-    :why: https://github.com/mike-spainhower/querystring/blob/v0.2.0/License.md
-    :versions: []
-    :when: 2017-09-16 05:17:20.372089000 Z
-- - :approve
-  - utils-merge
-  - :who: Mike Greiling
-    :why: https://github.com/jaredhanson/utils-merge/blob/v1.0.0/LICENSE
-    :versions: []
-    :when: 2017-09-16 05:18:26.193764000 Z
-- - :license
-  - "@gitlab/svgs"
-  - MIT
-  - :who: Tim Zallmann
-    :why: Our own library - GitLab License https://gitlab.com/gitlab-org/gitlab-svgs
-    :versions: []
-    :when: 2017-09-19 14:36:32.795496000 Z
 - - :license
   - pikaday
   - MIT
@@ -468,51 +207,6 @@
     :why: MIT License
     :versions: []
     :when: 2017-10-17 17:46:12.367554000 Z
-- - :license
-  - component-emitter
-  - MIT
-  - :who: Winnie Hellmann
-    :why: package.json does not specify the license (README.md does)
-    :versions:
-    - 1.1.2
-    :when: 2017-11-13 12:23:10.502463000 Z
-- - :license
-  - json-schema
-  - BSD
-  - :who: Winnie Hellmann
-    :why: https://github.com/kriszyp/json-schema/blob/v0.2.3/package.json#L18-L19
-    :versions:
-    - 0.2.3
-    :when: 2017-11-16 12:52:18.286091000 Z
-- - :license
-  - node-forge
-  - New BSD
-  - :who: Winnie Hellmann
-    :why: https://github.com/digitalbazaar/forge/blob/0.6.33/LICENSE
-    :versions:
-    - 0.6.33
-    :when: 2017-11-16 12:56:17.974767000 Z
-- - :license
-  - sntp
-  - BSD
-  - :who: Winnie Hellmann
-    :why: https://github.com/hueniverse/sntp/blob/v1.0.9/package.json#L28-L29
-    :versions:
-    - 1.0.9
-    :when: 2017-11-16 13:02:06.765282000 Z
-- - :license
-  - JSONStream
-  - MIT
-  - :who: Tim Zallmann
-    :why: https://github.com/dominictarr/JSONStream/blob/master/LICENSE.MIT
-    :versions: []
-    :when: 2018-01-17 22:46:12.367554000 Z
-- - :approve
-  - uws
-  - :who: Tim Zallmann
-    :why: zlib license + Development Lib + https://github.com/uNetworking/uWebSockets/blob/master/LICENSE
-    :versions: []
-    :when: 2018-01-17 23:46:12.367554000 Z
 - - :approve
   - atob
   - :who: Mike Greiling
@@ -525,19 +219,6 @@
     :why: https://github.com/mafintosh/cyclist/blob/master/LICENSE
     :versions: []
     :when: 2018-02-20 21:37:43.774978000 Z
-- - :license
-  - bitsyntax
-  - MIT
-  - :who: Mike Greiling
-    :why: https://github.com/squaremo/bitsyntax-js/blob/master/LICENSE-MIT
-    :versions: []
-    :when: 2018-02-20 22:20:25.958123000 Z
-- - :approve
-  - "@webassemblyjs/ieee754"
-  - :who: Mike Greiling
-    :why: https://github.com/xtuc/webassemblyjs/blob/master/LICENSE
-    :versions: []
-    :when: 2018-06-08 05:30:56.764116000 Z
 - - :approve
   - lz-string
   - :who: Phil Hughes
@@ -579,20 +260,6 @@
       in compiled/distributed product so attribution not needed.
     :versions: []
     :when: 2018-10-02 19:23:11.221660000 Z
-- - :approve
-  - node-releases
-  - :who: Mike Greiling
-    :why: CC-BY-4.0 license. Tool only used during build process, code is not present
-      in compiled/distributed product so attribution not needed.
-    :versions: []
-    :when: 2018-10-02 19:23:54.840151000 Z
-- - :license
-  - echarts
-  - Apache 2.0
-  - :who: Adriel Santiago
-    :why: https://github.com/apache/incubator-echarts/blob/master/LICENSE
-    :versions: []
-    :when: 2018-12-07 20:46:12.421256000 Z
 - - :license
   - contracts
   - BSD

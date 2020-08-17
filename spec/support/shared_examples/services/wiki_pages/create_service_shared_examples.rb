@@ -16,8 +16,10 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
   subject(:service) { described_class.new(container: container, current_user: user, params: opts) }
 
   it 'creates wiki page with valid attributes' do
-    page = service.execute
+    response = service.execute
+    page = response.payload[:page]
 
+    expect(response).to be_success
     expect(page).to be_valid
     expect(page).to be_persisted
     expect(page.title).to eq(opts[:title])
@@ -77,7 +79,12 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
     end
 
     it 'reports the error' do
-      expect(service.execute).to be_invalid
+      response = service.execute
+      page = response.payload[:page]
+
+      expect(response).to be_error
+
+      expect(page).to be_invalid
         .and have_attributes(errors: be_present)
     end
   end

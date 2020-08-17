@@ -157,6 +157,23 @@ On Omnibus installations, the settings are prefixed by `lfs_object_store_`:
    This will migrate existing LFS objects to object storage. New LFS objects
    will be forwarded to object storage unless
    `gitlab_rails['lfs_object_store_background_upload']` and `gitlab_rails['lfs_object_store_direct_upload']` is set to `false`.
+1. Optional: Verify all files migrated properly.
+   From [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)
+   (`sudo gitlab-psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
+
+   ```shell
+   gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM lfs_objects;
+
+   total | filesystem | objectstg
+   ------+------------+-----------
+    2409 |          0 |      2409
+   ```
+
+   Verify no files on disk in `artifacts` folder:
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/shared/lfs-objects -type f | grep -v tmp/cache | wc -l
+   ```
 
 ### S3 for installations from source
 
@@ -193,6 +210,22 @@ For source installations the settings are nested under `lfs:` and then
    This will migrate existing LFS objects to object storage. New LFS objects
    will be forwarded to object storage unless `background_upload` and `direct_upload` is set to
    `false`.
+1. Optional: Verify all files migrated properly.
+   From PostgreSQL console (`sudo -u git -H psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
+
+   ```shell
+   gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM lfs_objects;
+
+   total | filesystem | objectstg
+   ------+------------+-----------
+    2409 |          0 |      2409
+   ```
+
+   Verify no files on disk in `artifacts` folder:
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/shared/lfs-objects -type f | grep -v tmp/cache | wc -l
+   ```
 
 ### Migrating back to local storage
 

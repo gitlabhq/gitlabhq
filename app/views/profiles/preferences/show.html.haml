@@ -2,7 +2,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row gl-mt-3 js-preferences-form' } do |f|
-  .col-lg-4.application-theme
+  .col-lg-4.application-theme#navigation-theme
     %h4.gl-mt-0
       = s_('Preferences|Navigation theme')
     %p
@@ -18,7 +18,7 @@
   .col-sm-12
     %hr
 
-  .col-lg-4.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar#syntax-highlighting-theme
     %h4.gl-mt-0
       = s_('Preferences|Syntax highlighting theme')
     %p
@@ -92,7 +92,7 @@
   .col-sm-12
     %hr
 
-  .col-lg-4.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar#localization
     %h4.gl-mt-0
       = _('Localization')
     %p

@@ -111,14 +111,16 @@ module WikiActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def create
-    @page = WikiPages::CreateService.new(container: container, current_user: current_user, params: wiki_params).execute
+    response = WikiPages::CreateService.new(container: container, current_user: current_user, params: wiki_params).execute
+    @page = response.payload[:page]
 
-    if page.persisted?
+    if response.success?
       redirect_to(
         wiki_page_path(wiki, page),
         notice: _('Wiki was successfully updated.')
       )
     else
+      flash[:alert] = response.message
       render 'shared/wikis/edit'
     end
   rescue Gitlab::Git::Wiki::OperationError => e
