@@ -1,6 +1,6 @@
 <script>
 import { isEmpty, omit, throttle } from 'lodash';
-import { GlLink, GlDeprecatedButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlLink, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { s__ } from '~/locale';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
@@ -25,7 +25,6 @@ export default {
     GlAreaChart,
     GlLineChart,
     GlTooltip,
-    GlDeprecatedButton,
     GlChartSeriesLabel,
     GlLink,
     Icon,

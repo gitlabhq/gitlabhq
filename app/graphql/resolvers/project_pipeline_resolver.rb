@@ -10,7 +10,7 @@ module Resolvers
 
     def resolve(iid:)
       BatchLoader::GraphQL.for(iid).batch(key: project) do |iids, loader, args|
-        args[:key].ci_pipelines.for_iid(iids).each { |pl| loader.call(pl.iid.to_s, pl) }
+        args[:key].all_pipelines.for_iid(iids).each { |pl| loader.call(pl.iid.to_s, pl) }
       end
     end
   end

@@ -68,7 +68,7 @@ COMMENT ON FUNCTION public.table_sync_function_2be879775d() IS 'Partitioning mig
 CREATE TABLE public.audit_events_part_5fc467ac26 (
     id bigint NOT NULL,
     author_id integer NOT NULL,
-    type character varying NOT NULL,
+    type character varying,
     entity_id integer NOT NULL,
     entity_type character varying NOT NULL,
     details text,
@@ -9466,7 +9466,7 @@ CREATE TABLE public.ar_internal_metadata (
 CREATE TABLE public.audit_events (
     id integer NOT NULL,
     author_id integer NOT NULL,
-    type character varying NOT NULL,
+    type character varying,
     entity_id integer NOT NULL,
     entity_type character varying NOT NULL,
     details text,

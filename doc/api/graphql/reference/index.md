@@ -1571,6 +1571,7 @@ Information about pagination in a connection.
 | ---   |  ---- | ----------  |
 | `beforeSha` | String | Base SHA of the source branch |
 | `committedAt` | Time | Timestamp of the pipeline's commit |
+| `configSource` | PipelineConfigSourceEnum | Config source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE) |
 | `coverage` | Float | Coverage percentage |
 | `createdAt` | Time! | Timestamp of the pipeline's creation |
 | `detailedStatus` | DetailedStatus! | Detailed status of the pipeline |

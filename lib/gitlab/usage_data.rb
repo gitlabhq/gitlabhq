@@ -306,6 +306,7 @@ module Gitlab
         Gitlab::UsageData::Topology.new.topology_usage_data
       end
 
+      # rubocop: disable UsageData/DistinctCountByLargeForeignKey
       def ingress_modsecurity_usage
         ##
         # This method measures usage of the Modsecurity Web Application Firewall across the entire
@@ -326,6 +327,7 @@ module Gitlab
           ingress_modsecurity_not_installed: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_not_installed), column)
         }
       end
+      # rubocop: enable UsageData/DistinctCountByLargeForeignKey
 
       # rubocop: disable CodeReuse/ActiveRecord
       def container_expiration_policies_usage
@@ -729,9 +731,11 @@ module Gitlab
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
+      # rubocop: disable UsageData/DistinctCountByLargeForeignKey
       def cluster_applications_user_distinct_count(applications, time_period)
         distinct_count(applications.where(time_period).available.joins(:cluster), 'clusters.user_id')
       end
+      # rubocop: enable UsageData/DistinctCountByLargeForeignKey
 
       def clusters_user_distinct_count(clusters, time_period)
         distinct_count(clusters.where(time_period), :user_id)

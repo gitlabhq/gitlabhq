@@ -10262,6 +10262,13 @@ type Pipeline {
   committedAt: Time
 
   """
+  Config source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE,
+  AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE,
+  BRIDGE_SOURCE, PARAMETER_SOURCE)
+  """
+  configSource: PipelineConfigSourceEnum
+
+  """
   Coverage percentage
   """
   coverage: Float
@@ -10351,6 +10358,17 @@ type Pipeline {
   Permissions for the current user on the resource
   """
   userPermissions: PipelinePermissions!
+}
+
+enum PipelineConfigSourceEnum {
+  AUTO_DEVOPS_SOURCE
+  BRIDGE_SOURCE
+  EXTERNAL_PROJECT_SOURCE
+  PARAMETER_SOURCE
+  REMOTE_SOURCE
+  REPOSITORY_SOURCE
+  UNKNOWN_SOURCE
+  WEBIDE_SOURCE
 }
 
 """

@@ -33,4 +33,21 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
   it 'errors when no iid is passed' do
     expect { resolve_pipeline(project, {}) }.to raise_error(ArgumentError)
   end
+
+  context 'when the pipeline is not a ci_config_source' do
+    let(:pipeline) do
+      config_source_value = Ci::PipelineEnums.non_ci_config_source_values.first
+      config_source = Ci::PipelineEnums.config_sources.key(config_source_value)
+
+      create(:ci_pipeline, config_source: config_source, project: project)
+    end
+
+    it 'resolves pipeline for the passed iid' do
+      result = batch_sync do
+        resolve_pipeline(project, { iid: pipeline.iid.to_s })
+      end
+
+      expect(result).to eq(pipeline)
+    end
+  end
 end
