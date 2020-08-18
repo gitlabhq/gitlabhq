@@ -1,38 +1,19 @@
 # frozen_string_literal: true
 
+# This migration is not needed anymore and was disabled, because we're now
+# also backfilling design positions immediately before moving a design.
+#
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39555
 class BackfillDesignsRelativePosition < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  INTERVAL = 2.minutes
-  BATCH_SIZE = 1000
-  MIGRATION = 'BackfillDesignsRelativePosition'
-
-  disable_ddl_transaction!
-
-  class Issue < ActiveRecord::Base
-    include EachBatch
-
-    self.table_name = 'issues'
-
-    has_many :designs
-  end
-
-  class Design < ActiveRecord::Base
-    self.table_name = 'design_management_designs'
-  end
 
   def up
-    issues_with_designs = Issue.where(id: Design.select(:issue_id))
-
-    issues_with_designs.each_batch(of: BATCH_SIZE) do |relation, index|
-      issue_ids = relation.pluck(:id)
-      delay = INTERVAL * index
-
-      migrate_in(delay, MIGRATION, [issue_ids])
-    end
+    # no-op
   end
 
   def down
+    # no-op
   end
 end

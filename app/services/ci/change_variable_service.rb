@@ -20,7 +20,12 @@ module Ci
     private
 
     def variable
-      container.variables.find_by!(params[:variable_params].slice(:key)) # rubocop:disable CodeReuse/ActiveRecord
+      params[:variable] || find_variable
+    end
+
+    def find_variable
+      identifier = params[:variable_params].slice(:id).presence || params[:variable_params].slice(:key)
+      container.variables.find_by!(identifier) # rubocop:disable CodeReuse/ActiveRecord
     end
   end
 end

@@ -74,6 +74,15 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       end
     end
 
+    context 'with conan metadata' do
+      let(:package) { create(:conan_package, project: project) }
+      let(:expected_package_details) { super().merge(conan_metadatum: package.conan_metadatum) }
+
+      it 'returns conan_metadatum' do
+        expect(presenter.detail_view).to eq expected_package_details
+      end
+    end
+
     context 'with composer metadata' do
       let(:package) { create(:composer_package, :with_metadatum, sha: '123', project: project) }
       let(:expected_package_details) { super().merge(composer_metadatum: package.composer_metadatum) }

@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'User uploads new design', :js do
   include DesignManagementTestHelpers
 
-  let_it_be(:project) { create(:project_empty_repo, :public) }
-  let_it_be(:user) { project.owner }
-  let_it_be(:issue) { create(:issue, project: project) }
+  let(:project) { create(:project_empty_repo, :public) }
+  let(:user) { project.owner }
+  let(:issue) { create(:issue, project: project) }
 
   before do
     sign_in(user)
@@ -28,7 +28,7 @@ RSpec.describe 'User uploads new design', :js do
       let(:feature_enabled) { true }
 
       it 'uploads designs' do
-        attach_file(:design_file, logo_fixture, make_visible: true)
+        upload_design(logo_fixture, count: 1)
 
         expect(page).to have_selector('.js-design-list-item', count: 1)
 
@@ -36,9 +36,12 @@ RSpec.describe 'User uploads new design', :js do
           expect(page).to have_content('dk.png')
         end
 
-        attach_file(:design_file, gif_fixture, make_visible: true)
+        upload_design(gif_fixture, count: 2)
 
+        # Known bug in the legacy implementation: new designs are inserted
+        # in the beginning on the frontend.
         expect(page).to have_selector('.js-design-list-item', count: 2)
+        expect(page.all('.js-design-list-item').map(&:text)).to eq(['banana_sample.gif', 'dk.png'])
       end
     end
 
@@ -61,8 +64,8 @@ RSpec.describe 'User uploads new design', :js do
     context "when the feature is available" do
       let(:feature_enabled) { true }
 
-      it 'uploads designs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/225616' do
-        attach_file(:design_file, logo_fixture, make_visible: true)
+      it 'uploads designs' do
+        upload_design(logo_fixture, count: 1)
 
         expect(page).to have_selector('.js-design-list-item', count: 1)
 
@@ -70,9 +73,10 @@ RSpec.describe 'User uploads new design', :js do
           expect(page).to have_content('dk.png')
         end
 
-        attach_file(:design_file, gif_fixture, make_visible: true)
+        upload_design(gif_fixture, count: 2)
 
         expect(page).to have_selector('.js-design-list-item', count: 2)
+        expect(page.all('.js-design-list-item').map(&:text)).to eq(['dk.png', 'banana_sample.gif'])
       end
     end
 
@@ -91,5 +95,13 @@ RSpec.describe 'User uploads new design', :js do
 
   def gif_fixture
     Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+  end
+
+  def upload_design(fixture, count:)
+    attach_file(:design_file, fixture, match: :first, make_visible: true)
+
+    wait_for('designs uploaded') do
+      issue.reload.designs.count == count
+    end
   end
 end

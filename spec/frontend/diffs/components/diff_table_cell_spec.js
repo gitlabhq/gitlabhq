@@ -18,6 +18,12 @@ const TEST_LINE_CODE = 'LC_42';
 const TEST_FILE_HASH = diffFileMockData.file_hash;
 
 describe('DiffTableCell', () => {
+  const symlinkishFileTooltip =
+    'Commenting on symbolic links that replace or are replaced by files is currently not supported.';
+  const realishFileTooltip =
+    'Commenting on files that replace or are replaced by symbolic links is currently not supported.';
+  const otherFileTooltip = 'Add a comment to this line';
+
   let wrapper;
   let line;
   let store;
@@ -67,6 +73,7 @@ describe('DiffTableCell', () => {
   const findTd = () => wrapper.find({ ref: 'td' });
   const findNoteButton = () => wrapper.find({ ref: 'addDiffNoteButton' });
   const findLineNumber = () => wrapper.find({ ref: 'lineNumberRef' });
+  const findTooltip = () => wrapper.find({ ref: 'addNoteTooltip' });
   const findAvatars = () => wrapper.find(DiffGutterAvatars);
 
   describe('td', () => {
@@ -131,6 +138,53 @@ describe('DiffTableCell', () => {
 
         return wrapper.vm.$nextTick().then(() => {
           expect(findNoteButton().isVisible()).toBe(expectation);
+        });
+      },
+    );
+
+    it.each`
+      disabled      | commentsDisabled
+      ${'disabled'} | ${true}
+      ${undefined}  | ${false}
+    `(
+      'has attribute disabled=$disabled when the outer component has prop commentsDisabled=$commentsDisabled',
+      ({ disabled, commentsDisabled }) => {
+        line.commentsDisabled = commentsDisabled;
+
+        createComponent({
+          showCommentButton: true,
+          isHover: true,
+        });
+
+        wrapper.setData({ isCommentButtonRendered: true });
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findNoteButton().attributes('disabled')).toBe(disabled);
+        });
+      },
+    );
+
+    it.each`
+      tooltip                  | commentsDisabled
+      ${symlinkishFileTooltip} | ${{ wasSymbolic: true }}
+      ${symlinkishFileTooltip} | ${{ isSymbolic: true }}
+      ${realishFileTooltip}    | ${{ wasReal: true }}
+      ${realishFileTooltip}    | ${{ isReal: true }}
+      ${otherFileTooltip}      | ${false}
+    `(
+      'has the correct tooltip when commentsDisabled=$commentsDisabled',
+      ({ tooltip, commentsDisabled }) => {
+        line.commentsDisabled = commentsDisabled;
+
+        createComponent({
+          showCommentButton: true,
+          isHover: true,
+        });
+
+        wrapper.setData({ isCommentButtonRendered: true });
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(findTooltip().attributes('title')).toBe(tooltip);
         });
       },
     );

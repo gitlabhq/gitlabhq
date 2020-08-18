@@ -912,45 +912,29 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     let(:time) { Time.zone.now }
 
     before do
-      stub_feature_flags(Gitlab::UsageDataCounters::TrackUniqueActions::FEATURE_FLAG => feature_flag)
+      counter = Gitlab::UsageDataCounters::TrackUniqueActions
+      project = Event::TARGET_TYPES[:project]
+      wiki = Event::TARGET_TYPES[:wiki]
+      design = Event::TARGET_TYPES[:design]
+
+      counter.track_event(event_action: :pushed, event_target: project, author_id: 1)
+      counter.track_event(event_action: :pushed, event_target: project, author_id: 1)
+      counter.track_event(event_action: :pushed, event_target: project, author_id: 2)
+      counter.track_event(event_action: :pushed, event_target: project, author_id: 3)
+      counter.track_event(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)
+      counter.track_event(event_action: :created, event_target: project, author_id: 5, time: time - 3.days)
+      counter.track_event(event_action: :created, event_target: wiki, author_id: 3)
+      counter.track_event(event_action: :created, event_target: design, author_id: 3)
     end
 
-    context 'when the feature flag is enabled' do
-      let(:feature_flag) { true }
-
-      before do
-        counter = Gitlab::UsageDataCounters::TrackUniqueActions
-        project = Event::TARGET_TYPES[:project]
-        wiki = Event::TARGET_TYPES[:wiki]
-        design = Event::TARGET_TYPES[:design]
-
-        counter.track_event(event_action: :pushed, event_target: project, author_id: 1)
-        counter.track_event(event_action: :pushed, event_target: project, author_id: 1)
-        counter.track_event(event_action: :pushed, event_target: project, author_id: 2)
-        counter.track_event(event_action: :pushed, event_target: project, author_id: 3)
-        counter.track_event(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)
-        counter.track_event(event_action: :created, event_target: project, author_id: 5, time: time - 3.days)
-        counter.track_event(event_action: :created, event_target: wiki, author_id: 3)
-        counter.track_event(event_action: :created, event_target: design, author_id: 3)
-      end
-
-      it 'returns the distinct count of user actions within the specified time period' do
-        expect(described_class.action_monthly_active_users(time_period)).to eq(
-          {
-            action_monthly_active_users_design_management: 1,
-            action_monthly_active_users_project_repo: 3,
-            action_monthly_active_users_wiki_repo: 1
-          }
-        )
-      end
-    end
-
-    context 'when the feature flag is disabled' do
-      let(:feature_flag) { false }
-
-      it 'returns an empty hash' do
-        expect(described_class.action_monthly_active_users(time_period)).to eq({})
-      end
+    it 'returns the distinct count of user actions within the specified time period' do
+      expect(described_class.action_monthly_active_users(time_period)).to eq(
+        {
+          action_monthly_active_users_design_management: 1,
+          action_monthly_active_users_project_repo: 3,
+          action_monthly_active_users_wiki_repo: 1
+        }
+      )
     end
   end
 

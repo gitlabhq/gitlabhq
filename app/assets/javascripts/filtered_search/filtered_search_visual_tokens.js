@@ -1,5 +1,5 @@
 import VisualTokenValue from './visual_token_value';
-import { objectToQueryString } from '~/lib/utils/common_utils';
+import { objectToQueryString, spriteIcon } from '~/lib/utils/common_utils';
 import FilteredSearchContainer from './container';
 
 export default class FilteredSearchVisualTokens {
@@ -84,7 +84,7 @@ export default class FilteredSearchVisualTokens {
         <div class="value-container">
           <div class="${capitalizeTokenValue ? 'text-capitalize' : ''} value"></div>
           <div class="remove-token" role="button">
-            <i class="fa fa-close"></i>
+            ${spriteIcon('close', 's16 close-icon')}
           </div>
         </div>
       </div>

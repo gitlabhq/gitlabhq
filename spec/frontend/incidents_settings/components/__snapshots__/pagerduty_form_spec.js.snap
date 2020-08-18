@@ -46,7 +46,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
         class="gl-display-flex gl-justify-content-end"
       >
         <gl-button-stub
-          category="tertiary"
+          category="primary"
           class="gl-mt-3"
           data-testid="webhook-reset-btn"
           icon=""
@@ -80,7 +80,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       class="gl-display-flex gl-justify-content-end"
     >
       <gl-button-stub
-        category="tertiary"
+        category="primary"
         class="js-no-auto-disable"
         icon=""
         size="medium"

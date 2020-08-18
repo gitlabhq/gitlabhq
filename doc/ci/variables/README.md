@@ -760,9 +760,9 @@ Examples:
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
 - `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
 
-The feature is currently deployed behind a feature flag that is **disabled by default**.
+The feature is currently deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to enable it for your instance.
+can opt to disable it for your instance.
 
 To enable it:
 

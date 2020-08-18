@@ -8,6 +8,12 @@ class JiraService < IssueTrackerService
 
   PROJECTS_PER_PAGE = 50
 
+  # TODO: use jira_service.deployment_type enum when https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37003 is merged
+  DEPLOYMENT_TYPES = {
+    server: 'SERVER',
+    cloud: 'CLOUD'
+  }.freeze
+
   validates :url, public_url: true, presence: true, if: :activated?
   validates :api_url, public_url: true, allow_blank: true
   validates :username, presence: true, if: :activated?

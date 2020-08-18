@@ -167,6 +167,7 @@ export default {
     :id="file.file_hash"
     :class="{
       'is-active': currentDiffFileId === file.file_hash,
+      'comments-disabled': Boolean(file.brokenSymlink),
     }"
     :data-path="file.new_path"
     class="diff-file file-holder"

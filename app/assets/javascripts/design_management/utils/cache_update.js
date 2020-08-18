@@ -1,5 +1,6 @@
 /* eslint-disable @gitlab/require-i18n-strings */
 
+import { groupBy } from 'lodash';
 import createFlash from '~/flash';
 import { extractCurrentDiscussion, extractDesign } from './design_management_utils';
 import {
@@ -159,13 +160,11 @@ const updateImageDiffNoteInStore = (store, updateImageDiffNote, query, variables
 const addNewDesignToStore = (store, designManagementUpload, query) => {
   const data = store.readQuery(query);
 
-  const newDesigns = data.project.issue.designCollection.designs.nodes.reduce((acc, design) => {
-    if (!acc.find(d => d.filename === design.filename)) {
-      acc.push(design);
-    }
-
-    return acc;
-  }, designManagementUpload.designs);
+  const currentDesigns = data.project.issue.designCollection.designs.nodes;
+  const existingDesigns = groupBy(currentDesigns, 'filename');
+  const newDesigns = currentDesigns.concat(
+    designManagementUpload.designs.filter(d => !existingDesigns[d.filename]),
+  );
 
   let newVersionNode;
   const findNewVersions = designManagementUpload.designs.find(design => design.versions);

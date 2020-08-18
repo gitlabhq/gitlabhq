@@ -85,7 +85,7 @@ exports[`Alert integration settings form default state should match the default 
       class="gl-display-flex gl-justify-content-end"
     >
       <gl-button-stub
-        category="tertiary"
+        category="primary"
         class="js-no-auto-disable"
         data-qa-selector="save_changes_button"
         icon=""

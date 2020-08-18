@@ -147,7 +147,7 @@ export default {
           slot="image-overlay"
           :discussions="imageDiscussions"
           :file-hash="diffFileHash"
-          :can-comment="getNoteableData.current_user.can_create_note"
+          :can-comment="getNoteableData.current_user.can_create_note && !diffFile.brokenSymlink"
         />
         <div v-if="showNotesContainer" class="note-container">
           <user-avatar-link

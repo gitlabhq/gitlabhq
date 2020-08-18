@@ -56,7 +56,7 @@ exports[`Code navigation popover component renders popover 1`] = `
         class="popover-body border-top"
       >
         <gl-button-stub
-          category="tertiary"
+          category="primary"
           class="w-100"
           data-testid="go-to-definition-btn"
           href="http://gitlab.com/test.js"

@@ -17,6 +17,17 @@ export const Editor = {
       type: String,
     },
   },
+  created() {
+    const mockEditorApi = {
+      eventManager: {
+        addEventType: jest.fn(),
+        listen: jest.fn(),
+        removeEventHandler: jest.fn(),
+      },
+    };
+
+    this.$emit('load', mockEditorApi);
+  },
   render(h) {
     return h('div');
   },

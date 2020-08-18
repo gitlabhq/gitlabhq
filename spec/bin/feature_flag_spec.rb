@@ -8,7 +8,7 @@ RSpec.describe 'bin/feature-flag' do
   using RSpec::Parameterized::TableSyntax
 
   describe FeatureFlagCreator do
-    let(:argv) { %w[feature-flag-name -t development -g group::memory -i https://url] }
+    let(:argv) { %w[feature-flag-name -t development -g group::memory -i https://url -m http://url] }
     let(:options) { FeatureFlagOptionParser.parse(argv) }
     let(:creator) { described_class.new(options) }
     let(:existing_flag) { File.join('config', 'feature_flags', 'development', 'existing-feature-flag.yml') }
@@ -183,15 +183,51 @@ RSpec.describe 'bin/feature-flag' do
       end
     end
 
-    describe '.rollout_issue_url' do
+    describe '.read_introduced_by_url' do
+      let(:url) { 'https://merge-request' }
+
+      it 'reads type from $stdin' do
+        expect($stdin).to receive(:gets).and_return(url)
+        expect do
+          expect(described_class.read_introduced_by_url).to eq('https://merge-request')
+        end.to output(/can you paste the URL here/).to_stdout
+      end
+
+      context 'empty URL given' do
+        let(:url) { '' }
+
+        it 'skips entry' do
+          expect($stdin).to receive(:gets).and_return(url)
+          expect do
+            expect(described_class.read_introduced_by_url).to be_nil
+          end.to output(/can you paste the URL here/).to_stdout
+        end
+      end
+
+      context 'invalid URL given' do
+        let(:url) { 'invalid' }
+
+        it 'shows error message and retries' do
+          expect($stdin).to receive(:gets).and_return(url)
+          expect($stdin).to receive(:gets).and_raise('EOF')
+
+          expect do
+            expect { described_class.read_introduced_by_url }.to raise_error(/EOF/)
+          end.to output(/can you paste the URL here/).to_stdout
+            .and output(/URL needs to start with/).to_stderr
+        end
+      end
+    end
+
+    describe '.read_rollout_issue_url' do
       let(:options) { OpenStruct.new(name: 'foo', type: :development) }
       let(:url) { 'https://issue' }
 
       it 'reads type from $stdin' do
         expect($stdin).to receive(:gets).and_return(url)
         expect do
-          expect(described_class.read_issue_url(options)).to eq('https://issue')
-        end.to output(/Paste URL here/).to_stdout
+          expect(described_class.read_rollout_issue_url(options)).to eq('https://issue')
+        end.to output(/Paste URL of `rollout issue` here/).to_stdout
       end
 
       context 'invalid URL given' do
@@ -202,8 +238,8 @@ RSpec.describe 'bin/feature-flag' do
           expect($stdin).to receive(:gets).and_raise('EOF')
 
           expect do
-            expect { described_class.read_issue_url(options) }.to raise_error(/EOF/)
-          end.to output(/Paste URL here/).to_stdout
+            expect { described_class.read_rollout_issue_url(options) }.to raise_error(/EOF/)
+          end.to output(/Paste URL of `rollout issue` here/).to_stdout
             .and output(/URL needs to start/).to_stderr
         end
       end

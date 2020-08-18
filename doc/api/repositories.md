@@ -199,6 +199,9 @@ authentication if the repository is publicly accessible.
 GET /projects/:id/repository/contributors
 ```
 
+CAUTION: **Deprecation:**
+The `additions` and `deletions` attributes are deprecated [as of GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39653) because they [always return `0`](https://gitlab.com/gitlab-org/gitlab/-/issues/233119).
+
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
@@ -212,14 +215,14 @@ Response:
   "name": "Example User",
   "email": "example@example.com",
   "commits": 117,
-  "additions": 2097,
-  "deletions": 517
+  "additions": 0,
+  "deletions": 0
 }, {
   "name": "Sample User",
   "email": "sample@example.com",
   "commits": 33,
-  "additions": 338,
-  "deletions": 244
+  "additions": 0,
+  "deletions": 0
 }]
 ```
 

@@ -3,16 +3,11 @@ import 'codemirror/lib/codemirror.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
 import AddImageModal from './modals/add_image/add_image_modal.vue';
-import {
-  EDITOR_OPTIONS,
-  EDITOR_TYPES,
-  EDITOR_HEIGHT,
-  EDITOR_PREVIEW_STYLE,
-  CUSTOM_EVENTS,
-} from './constants';
+import { EDITOR_TYPES, EDITOR_HEIGHT, EDITOR_PREVIEW_STYLE, CUSTOM_EVENTS } from './constants';
 
 import {
   registerHTMLToMarkdownRenderer,
+  getEditorOptions,
   addCustomEventListener,
   removeCustomEventListener,
   addImage,
@@ -35,7 +30,7 @@ export default {
     options: {
       type: Object,
       required: false,
-      default: () => EDITOR_OPTIONS,
+      default: () => null,
     },
     initialEditType: {
       type: String,
@@ -65,12 +60,12 @@ export default {
     };
   },
   computed: {
-    editorOptions() {
-      return { ...EDITOR_OPTIONS, ...this.options };
-    },
     editorInstance() {
       return this.$refs.editor;
     },
+  },
+  created() {
+    this.editorOptions = getEditorOptions(this.options);
   },
   beforeDestroy() {
     this.removeListeners();

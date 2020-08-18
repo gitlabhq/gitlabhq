@@ -1,0 +1,5 @@
+---
+title: Fix missing scoped label borders for todos
+merge_request: 39459
+author:
+type: fixed

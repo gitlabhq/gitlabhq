@@ -37,9 +37,11 @@ RSpec.describe DesignManagement::DesignCollection do
 
     it 'inserts the design after any existing designs' do
       design1 = collection.find_or_create_design!(filename: 'design1.jpg')
+      design1.update!(relative_position: 100)
+
       design2 = collection.find_or_create_design!(filename: 'design2.jpg')
 
-      expect(design1.relative_position).to be < design2.relative_position
+      expect(collection.designs.ordered(issue.project)).to eq([design1, design2])
     end
   end
 

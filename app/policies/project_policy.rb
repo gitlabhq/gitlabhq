@@ -103,7 +103,7 @@ class ProjectPolicy < BasePolicy
 
   with_scope :subject
   condition(:moving_designs_disabled) do
-    !::Feature.enabled?(:reorder_designs, @subject)
+    !::Feature.enabled?(:reorder_designs, @subject, default_enabled: true)
   end
 
   with_scope :subject

@@ -53,7 +53,7 @@ RSpec.describe 'Visual tokens', :js do
     end
 
     it 'ends editing mode when document is clicked' do
-      find('#content-body').click
+      find('.js-navbar').click
 
       expect_filtered_search_input_empty
       expect(page).to have_css('#js-dropdown-author', visible: false)
@@ -142,7 +142,7 @@ RSpec.describe 'Visual tokens', :js do
     it 'does not tokenize incomplete token' do
       filtered_search.send_keys('author:=')
 
-      find('body').click
+      find('.js-navbar').click
       token = page.all('.tokens-container .js-visual-token')[1]
 
       expect_filtered_search_input_empty

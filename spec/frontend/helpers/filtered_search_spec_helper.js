@@ -15,7 +15,7 @@ export default class FilteredSearchSpecHelper {
         <div class="value-container">
           <div class="value">${value}</div>
           <div class="remove-token" role="button">
-            <i class="fa fa-close"></i>
+            <svg class="s16 close-icon"></svg>
           </div>
         </div>
       </div>

@@ -21,7 +21,7 @@ module Mutations
             description: "The current state of the collection"
 
       def ready(*)
-        raise ::Gitlab::Graphql::Errors::ResourceNotAvailable unless ::Feature.enabled?(:reorder_designs)
+        raise ::Gitlab::Graphql::Errors::ResourceNotAvailable unless ::Feature.enabled?(:reorder_designs, default_enabled: true)
       end
 
       def resolve(**args)

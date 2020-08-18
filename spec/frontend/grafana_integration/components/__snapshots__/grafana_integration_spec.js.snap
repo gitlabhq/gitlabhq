@@ -17,7 +17,7 @@ exports[`grafana integration component default state to match the default snapsh
     </h3>
      
     <gl-button-stub
-      category="tertiary"
+      category="primary"
       class="js-settings-toggle"
       icon=""
       size="medium"

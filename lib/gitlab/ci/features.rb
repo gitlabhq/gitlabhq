@@ -57,7 +57,7 @@ module Gitlab
       end
 
       def self.ci_if_parenthesis_enabled?
-        ::Feature.enabled?(:ci_if_parenthesis_enabled)
+        ::Feature.enabled?(:ci_if_parenthesis_enabled, default_enabled: true)
       end
 
       def self.allow_to_create_merge_request_pipelines_in_target_project?(target_project)
@@ -65,7 +65,7 @@ module Gitlab
       end
 
       def self.ci_plan_needs_size_limit?(project)
-        ::Feature.enabled?(:ci_plan_needs_size_limit, project)
+        ::Feature.enabled?(:ci_plan_needs_size_limit, project, default_enabled: true)
       end
 
       def self.job_entry_matches_all_keys?

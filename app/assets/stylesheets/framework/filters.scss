@@ -134,20 +134,20 @@
     padding-left: 8px;
     padding-right: 0;
 
-    .fa-close {
+    .close-icon {
       color: $gl-text-color-secondary;
     }
 
-    &:hover .fa-close {
+    &:hover .close-icon {
       color: $gl-text-color;
     }
 
     &.inverted {
-      .fa-close {
+      .close-icon {
         color: $gl-text-color-secondary-inverted;
       }
 
-      &:hover .fa-close {
+      &:hover .close-icon {
         color: $gl-text-color-inverted;
       }
     }

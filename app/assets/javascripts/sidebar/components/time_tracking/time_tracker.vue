@@ -1,4 +1,5 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import TimeTrackingHelpState from './help_state.vue';
 import TimeTrackingCollapsedState from './collapsed_state.vue';
 import TimeTrackingSpentOnlyPane from './spent_only_pane.vue';
@@ -11,6 +12,7 @@ import eventHub from '../../event_hub';
 export default {
   name: 'IssuableTimeTracker',
   components: {
+    GlIcon,
     TimeTrackingCollapsedState,
     TimeTrackingEstimateOnlyPane,
     TimeTrackingSpentOnlyPane,
@@ -111,7 +113,7 @@ export default {
         class="close-help-button float-right"
         @click="toggleHelpState(false)"
       >
-        <i class="fa fa-close" aria-hidden="true"> </i>
+        <gl-icon name="close" />
       </div>
     </div>
     <div class="time-tracking-content hide-collapsed">

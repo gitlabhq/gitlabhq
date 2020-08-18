@@ -480,6 +480,10 @@ export function getDiffPositionByLineCode(diffFiles, useSingleDiffStyle) {
 // This method will check whether the discussion is still applicable
 // to the diff line in question regarding different versions of the MR
 export function isDiscussionApplicableToLine({ discussion, diffPosition, latestDiff }) {
+  if (!diffPosition) {
+    return false;
+  }
+
   const { line_code, ...dp } = diffPosition;
   // Removing `line_range` from diffPosition because the backend does not
   // yet consistently return this property. This check can be removed,

@@ -4,7 +4,6 @@ module Gitlab
   module UsageDataCounters
     module TrackUniqueActions
       KEY_EXPIRY_LENGTH = 29.days
-      FEATURE_FLAG = :track_unique_actions
 
       WIKI_ACTION = :wiki_action
       DESIGN_ACTION = :design_action
@@ -29,7 +28,6 @@ module Gitlab
       class << self
         def track_event(event_action:, event_target:, author_id:, time: Time.zone.now)
           return unless Gitlab::CurrentSettings.usage_ping_enabled
-          return unless Feature.enabled?(FEATURE_FLAG)
           return unless valid_target?(event_target)
           return unless valid_action?(event_action)
 

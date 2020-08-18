@@ -78,19 +78,21 @@ Only feature flags that have a YAML definition file can be used when running the
 ```shell
 $ bin/feature-flag my-feature-flag
 >> Please specify the group introducing feature flag, like `group::apm`:
-
 ?> group::memory
+
+>> If you have MR open, can you paste the URL here? (or enter to skip)
+?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
+
 >> Open this URL and fill the rest of details:
-https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=%5BFeature+flag%5D+Rollout+of+%60my-feature-flag%60&
+https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue%5Btitle%5D=%5BFeature+flag%5D+Rollout+of+%60test-flag%60&issuable_template=Feature+Flag+Roll+Out
 
->> Paste URL here, or enter to skip:
-
-?>
-create config/feature_flags/development/my_feature_flag.yml
+>> Paste URL of `rollout issue` here, or enter to skip:
+?> https://gitlab.com/gitlab-org/gitlab/-/issues/232533
+create config/feature_flags/development/test-flag.yml
 ---
-name: my_feature_flag
-introduced_by_url:
-rollout_issue_url:
+name: test-flag
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/232533
 group: group::memory
 type: development
 default_enabled: false

@@ -604,8 +604,6 @@ module Gitlab
       end
 
       def action_monthly_active_users(time_period)
-        return {} unless Feature.enabled?(Gitlab::UsageDataCounters::TrackUniqueActions::FEATURE_FLAG)
-
         counter = Gitlab::UsageDataCounters::TrackUniqueActions
 
         project_count = redis_usage_data do

@@ -8,7 +8,7 @@
 require 'optparse'
 require 'yaml'
 require 'fileutils'
-require 'cgi'
+require 'uri'
 
 require_relative '../lib/feature/shared' unless defined?(Feature::Shared)
 
@@ -105,10 +105,11 @@ class FeatureFlagOptionParser
     end
 
     def read_group
+      $stdout.puts
       $stdout.puts ">> Please specify the group introducing feature flag, like `group::apm`:"
 
       loop do
-        $stdout.print "\n?> "
+        $stdout.print "?> "
         group = $stdin.gets.strip
         group = nil if group.empty?
         return group if group.nil? || group.start_with?('group::')
@@ -121,6 +122,7 @@ class FeatureFlagOptionParser
       # if there's only one type, do not ask, return
       return TYPES.first.first if TYPES.one?
 
+      $stdout.puts
       $stdout.puts ">> Please specify the type of your feature flag:"
       $stdout.puts
       TYPES.each do |type, data|
@@ -128,7 +130,7 @@ class FeatureFlagOptionParser
       end
 
       loop do
-        $stdout.print "\n?> "
+        $stdout.print "?> "
 
         type = $stdin.gets.strip.to_sym
         return type if TYPES[type]
@@ -137,27 +139,41 @@ class FeatureFlagOptionParser
       end
     end
 
-    def read_issue_url(options)
+    def read_introduced_by_url
+      $stdout.puts
+      $stdout.puts ">> If you have MR open, can you paste the URL here? (or enter to skip)"
+
+      loop do
+        $stdout.print "?> "
+        introduced_by_url = $stdin.gets.strip
+        introduced_by_url = nil if introduced_by_url.empty?
+        return introduced_by_url if introduced_by_url.nil? || introduced_by_url.start_with?('https://')
+
+        $stderr.puts "URL needs to start with https://"
+      end
+    end
+
+    def read_rollout_issue_url(options)
       return unless TYPES.dig(options.type, :rollout_issue)
 
       url = "https://gitlab.com/gitlab-org/gitlab/-/issues/new"
       title = "[Feature flag] Rollout of `#{options.name}`"
-      description = File.read('.gitlab/issue_templates/Feature Flag Roll Out.md')
-      description.sub!(':feature_name', options.name)
 
-      issue_new_url = url + "?" +
-        "issue[title]=" + CGI.escape(title) + "&"
-        # TODO: We should be able to pick `issueable_template`
-        # + "issue[description]=" + CGI.escape(description)
+      params = {
+        'issue[title]' => "[Feature flag] Rollout of `#{options.name}`",
+        'issuable_template' => 'Feature Flag Roll Out',
+      }
+      issue_new_url = url + "?" + URI.encode_www_form(params)
 
+      $stdout.puts
       $stdout.puts ">> Open this URL and fill the rest of details:"
       $stdout.puts issue_new_url
       $stdout.puts
 
-      $stdout.puts ">> Paste URL here, or enter to skip:"
+      $stdout.puts ">> Paste URL of `rollout issue` here, or enter to skip:"
 
       loop do
-        $stdout.print "\n?> "
+        $stdout.print "?> "
         created_url = $stdin.gets.strip
         created_url = nil if created_url.empty?
         return created_url if created_url.nil? || created_url.start_with?('https://')
@@ -185,7 +201,8 @@ class FeatureFlagCreator
     # Read type from $stdin unless is already set
     options.type ||= FeatureFlagOptionParser.read_type
     options.group ||= FeatureFlagOptionParser.read_group
-    options.rollout_issue_url ||= FeatureFlagOptionParser.read_issue_url(options)
+    options.introduced_by_url ||= FeatureFlagOptionParser.read_introduced_by_url
+    options.rollout_issue_url ||= FeatureFlagOptionParser.read_rollout_issue_url(options)
 
     $stdout.puts "\e[32mcreate\e[0m #{file_path}"
     $stdout.puts contents

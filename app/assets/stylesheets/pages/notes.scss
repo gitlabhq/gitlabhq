@@ -820,14 +820,24 @@ $note-form-margin-left: 72px;
   }
 }
 
-.add-diff-note {
-  @include btn-comment-icon;
-  opacity: 0;
+.tooltip-wrapper.add-diff-note {
   margin-left: -52px;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
+}
+
+.note-button.add-diff-note {
+  @include btn-comment-icon;
+  opacity: 0;
+
+  &[disabled] {
+    background: $white;
+    border-color: $gray-200;
+    color: $gl-gray-400;
+    cursor: not-allowed;
+  }
 }
 
 .disabled-comment {
