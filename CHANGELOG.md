@@ -1625,6 +1625,10 @@ entry.
 - Remove removeIssue logic from list model. (nuwe1)
 
 
+## 13.0.14 (2020-08-18)
+
+- No changes.
+
 ## 13.0.13 (2020-08-17)
 
 - No changes.
