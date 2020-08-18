@@ -23,7 +23,9 @@ module Clusters
         @role = create_or_update_role!
 
         Response.new(:ok, credentials)
-      rescue *ERRORS
+      rescue *ERRORS => e
+        Gitlab::ErrorTracking.track_exception(e)
+
         Response.new(:unprocessable_entity, {})
       end
 

@@ -66,10 +66,6 @@ execution time and the error output.
 
 ## How to set it up
 
-NOTE: **Note:**
-For a list of supported languages on JUnit tests, check the
-[Wikipedia article](https://en.wikipedia.org/wiki/JUnit#Ports).
-
 To enable the JUnit reports in merge requests, you need to add
 [`artifacts:reports:junit`](pipelines/job_artifacts.md#artifactsreportsjunit)
 in `.gitlab-ci.yml`, and specify the path(s) of the generated test reports.
@@ -80,9 +76,11 @@ collects the JUnit test report from each job. After each job is executed, the
 XML reports are stored in GitLab as artifacts and their results are shown in the
 merge request widget.
 
+To make the JUnit output files browsable, include them with the
+[`artifacts:paths`](yaml/README.md#artifactspaths) keyword as well, as shown in the [Ruby example](#ruby-example).
+
 NOTE: **Note:**
-If you also want the ability to browse JUnit output files, include the
-[`artifacts:paths`](yaml/README.md#artifactspaths) keyword. An example of this is shown in the Ruby example below.
+You cannot have multiple tests with the same name and class in your JUnit report.
 
 ### Ruby example
 

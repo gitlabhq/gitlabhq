@@ -48,24 +48,25 @@ You need Owner [permissions](../user/permissions.md) to view the group Audit Eve
 To view a group's audit events, navigate to **Group > Settings > Audit Events**.
 From there, you can see the following actions:
 
-- Group name or path changed
-- Group repository size limit changed
-- Group created or deleted
-- Group changed visibility
-- User was added to group and with which [permissions](../user/permissions.md)
-- User sign-in via [Group SAML](../user/group/saml_sso/index.md)
-- Permissions changes of a user assigned to a group
-- Removed user from group
-- Project repository imported into group
+- Group name or path changed.
+- Group repository size limit changed.
+- Group created or deleted.
+- Group changed visibility.
+- User was added to group and with which [permissions](../user/permissions.md).
+- User sign-in via [Group SAML](../user/group/saml_sso/index.md).
+- Permissions changes of a user assigned to a group.
+- Removed user from group.
+- Project repository imported into group.
 - [Project shared with group](../user/project/members/share_project_with_groups.md)
-  and with which [permissions](../user/permissions.md)
-- Removal of a previously shared group with a project
-- LFS enabled or disabled
-- Shared runners minutes limit changed
-- Membership lock enabled or disabled
-- Request access enabled or disabled
-- 2FA enforcement or grace period changed
-- Roles allowed to create project changed
+  and with which [permissions](../user/permissions.md).
+- Removal of a previously shared group with a project.
+- LFS enabled or disabled.
+- Shared runners minutes limit changed.
+- Membership lock enabled or disabled.
+- Request access enabled or disabled.
+- 2FA enforcement or grace period changed.
+- Roles allowed to create project changed.
+- Group CI/CD variable added, removed, or protected status changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.3.
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events-starter)
 
