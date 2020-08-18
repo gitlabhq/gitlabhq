@@ -4,7 +4,11 @@ entry.
 
 ## 13.2.5 (2020-08-17)
 
-- No changes.
+### Security (2 changes)
+
+- Stop deploy token being mis-used as user in ProjectPolicy and GroupPolicy.
+- Project access is checked during deploy token authentication.
+
 
 ## 13.2.4 (2020-08-11)
 

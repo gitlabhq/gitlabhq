@@ -541,7 +541,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
         it 'fails if token is not related to project' do
           another_deploy_token = create(:deploy_token)
-          expect(gl_auth.find_for_git_client(login, another_deploy_token.token, project: project, ip: 'ip'))
+          expect(gl_auth.find_for_git_client(another_deploy_token.username, another_deploy_token.token, project: project, ip: 'ip'))
             .to eq(auth_failure)
         end
 
@@ -565,6 +565,13 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
           auth_success = Gitlab::Auth::Result.new(deploy_token, project_with_group, :deploy_token, [:download_code, :read_container_image])
 
           expect(subject).to eq(auth_success)
+        end
+
+        it 'fails if token is not related to group' do
+          another_deploy_token = create(:deploy_token, :group, read_repository: true)
+
+          expect(gl_auth.find_for_git_client(another_deploy_token.username, another_deploy_token.token, project: project_with_group, ip: 'ip'))
+            .to eq(auth_failure)
         end
       end
 
