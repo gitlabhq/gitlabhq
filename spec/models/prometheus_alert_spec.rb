@@ -50,6 +50,8 @@ RSpec.describe PrometheusAlert do
     it { is_expected.to validate_presence_of(:environment) }
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:prometheus_metric) }
+    it { is_expected.to validate_presence_of(:operator) }
+    it { is_expected.to validate_presence_of(:threshold) }
 
     context 'when environment and metric belongs same project' do
       it { is_expected.to be_valid }

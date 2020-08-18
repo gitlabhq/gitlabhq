@@ -6,20 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Jira integration
 
-GitLab Issues are a powerful tool for discussing ideas and planning and tracking work.
-However, many organizations have been using Jira for these purposes and have
-extensive data and business processes built into it.
+If you need to use Jira to track work that's implemented in GitLab, GitLab's Jira integrations make the process of working across systems more efficent.
 
-While you can always [migrate](../../../user/project/import/jira.md) issues and processes from Jira to GitLab Issues,
-you can also opt to continue using Jira and use it together with GitLab through
-our integration.
+This page is about the GitLab Jira integration, which is available in every GitLab project by default, allowing you to connect it to any Jira instance, whether Cloud or self-managed. To compare features with the complementary Jira Development Panel integration, see [Jira integrations](jira_integrations.md).
 
-For a video demonstration of integration with Jira, watch [GitLab workflow with Jira issues and Jenkins pipelines](https://youtu.be/Jn-_fyra7xQ).
-
-Once you integrate your GitLab project with your Jira instance, you can automatically
-detect and cross-reference activity between the GitLab project and any of your projects
-in Jira. This includes the ability to close or transition Jira issues when the work
-is completed in GitLab.
+After you set up this integration, you can cross-reference activity in the GitLab project with any of your projects in Jira. This includes the ability to close or transition Jira issues when work is completed in GitLab.
 
 Features include:
 
@@ -29,12 +20,14 @@ Features include:
 - **Mention that a commit or MR resolves or closes a specific Jira issue** and when it's merged to the default branch:
   - GitLab's MR displays a note that it closed the Jira issue. Prior to the merge, MRs indicate which issue they will close.
   - The Jira issue shows the activity and is closed or otherwise transitioned as specified in your GitLab settings.
-- **View Jira issues directly in GitLab** **(PREMIUM)**
+- **View a list of Jira issues directly in GitLab** **(PREMIUM)**
 
 For additional features, you can install the [Jira Development Panel integration](../../../integration/jira_development_panel.md). This enables you to:
 
 - In a Jira issue, display relevant GitLab information in the [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/), including related branches, commits, and merge requests.
 - Use Jira [Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html) in GitLab to add Jira comments, log time spent on the issue, or apply any issue transition.
+
+See the [feature comparison](jira_integrations.md#feature-comparison) for more details.
 
 ## Configuration
 

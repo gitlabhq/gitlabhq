@@ -22,7 +22,7 @@ class PrometheusAlert < ApplicationRecord
   after_save :clear_prometheus_adapter_cache!
   after_destroy :clear_prometheus_adapter_cache!
 
-  validates :environment, :project, :prometheus_metric, presence: true
+  validates :environment, :project, :prometheus_metric, :threshold, :operator, presence: true
   validates :runbook_url, length: { maximum: 255 }, allow_blank: true,
             addressable_url: { enforce_sanitization: true, ascii_only: true }
   validate :require_valid_environment_project!

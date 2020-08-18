@@ -314,7 +314,6 @@ the [common `if` clauses for `rules`](#common-if-clauses-for-rules) for more exa
 | `if: '$CI_PIPELINE_SOURCE == "push"'`                | Control when both branch pipelines and tag pipelines run. |
 | `if: $CI_COMMIT_TAG`                                 | Control when tag pipelines run.                           |
 | `if: $CI_COMMIT_BRANCH`                              | Control when branch pipelines run.                        |
-| `if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BEFORE_SHA != "0000000000000000000000000000000000000000"'` | Control when pipelines run for new branches that are created or pushed with no commits. See the [skip job if branch is empty](#skip-job-if-branch-is-empty) example for more details. |
 
 For example, with the following configuration, pipelines run for all `push` events (changes to
 branches and new tags) as long as they *don't* have `-wip` in the commit message. Scheduled
@@ -1368,19 +1367,6 @@ Other commonly used variables for `if` clauses:
   `CUSTOM_VARIABLE` does **not** match a regular expression.
 - `if: '$CUSTOM_VARIABLE == "value1"'`: If the custom variable `CUSTOM_VARIABLE` is
   exactly `value1`.
-
-##### Skip job if branch is empty
-
-A branch has no commits if the value of`$CI_COMMIT_BEFORE_SHA` is
-`0000000000000000000000000000000000000000`. You can use this value to
-avoid running a job on branches with no commits.
-
-To run a job only on branches with commits:
-
-```yaml
-rules:
-  - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BEFORE_SHA != "0000000000000000000000000000000000000000"'
-```
 
 #### `rules:changes`
 

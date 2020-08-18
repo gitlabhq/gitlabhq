@@ -15,7 +15,6 @@
 User-Agent: *
 Disallow: /autocomplete/users
 Disallow: /search
-Disallow: /api
 Disallow: /admin
 Disallow: /profile
 Disallow: /dashboard
