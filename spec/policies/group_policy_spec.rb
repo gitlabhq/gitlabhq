@@ -63,6 +63,24 @@ describe GroupPolicy do
     end
   end
 
+  shared_examples 'deploy token does not get confused with user' do
+    before do
+      deploy_token.update!(id: user_id)
+    end
+
+    let(:deploy_token) { create(:deploy_token) }
+    let(:current_user) { deploy_token }
+
+    it do
+      expect_disallowed(*read_group_permissions)
+      expect_disallowed(*guest_permissions)
+      expect_disallowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
+      expect_disallowed(*maintainer_permissions)
+      expect_disallowed(*owner_permissions)
+    end
+  end
+
   context 'guests' do
     let(:current_user) { guest }
 
@@ -73,6 +91,10 @@ describe GroupPolicy do
       expect_disallowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
+    end
+
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { guest.id }
     end
   end
 
@@ -87,6 +109,10 @@ describe GroupPolicy do
       expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
     end
+
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { reporter.id }
+    end
   end
 
   context 'developer' do
@@ -99,6 +125,10 @@ describe GroupPolicy do
       expect_allowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
+    end
+
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { developer.id }
     end
   end
 
@@ -136,6 +166,10 @@ describe GroupPolicy do
         expect_disallowed(*owner_permissions)
       end
     end
+
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { maintainer.id }
+    end
   end
 
   context 'owner' do
@@ -148,6 +182,10 @@ describe GroupPolicy do
       expect_allowed(*developer_permissions)
       expect_allowed(*maintainer_permissions)
       expect_allowed(*owner_permissions)
+    end
+
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { owner.id }
     end
   end
 
