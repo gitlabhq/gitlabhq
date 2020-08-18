@@ -1,12 +1,12 @@
 <script>
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import UserAvatarLink from './user_avatar_link.vue';
 
 export default {
   components: {
     UserAvatarLink,
-    GlDeprecatedButton,
+    GlButton,
   },
   props: {
     items: {
@@ -82,12 +82,12 @@ export default {
       :img-size="imgSize"
     />
     <template v-if="hasBreakpoint">
-      <gl-deprecated-button v-if="hasHiddenItems" variant="link" @click="expand">
+      <gl-button v-if="hasHiddenItems" variant="link" @click="expand">
         {{ expandText }}
-      </gl-deprecated-button>
-      <gl-deprecated-button v-else variant="link" @click="collapse">
+      </gl-button>
+      <gl-button v-else variant="link" @click="collapse">
         {{ __('show less') }}
-      </gl-deprecated-button>
+      </gl-button>
     </template>
   </div>
 </template>

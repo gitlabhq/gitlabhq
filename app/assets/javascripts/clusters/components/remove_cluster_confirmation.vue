@@ -146,7 +146,7 @@ export default {
         <p>{{ warningMessage }}</p>
         <div v-if="confirmCleanup" v-html="warningToBeRemoved"></div>
         <strong v-html="confirmationTextLabel"></strong>
-        <form ref="form" :action="clusterPath" method="post" class="append-bottom-20">
+        <form ref="form" :action="clusterPath" method="post" class="gl-mb-5">
           <input ref="method" type="hidden" name="_method" value="delete" />
           <input :value="csrfToken" type="hidden" name="authenticity_token" />
           <input ref="cleanup" type="hidden" name="cleanup" value="true" />

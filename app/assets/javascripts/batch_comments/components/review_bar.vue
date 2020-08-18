@@ -1,13 +1,12 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlModal, GlModalDirective, GlButton } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import PreviewDropdown from './preview_dropdown.vue';
 
 export default {
   components: {
-    LoadingButton,
+    GlButton,
     GlModal,
     PreviewDropdown,
   },
@@ -48,12 +47,13 @@ export default {
     <nav class="review-bar-component">
       <div class="review-bar-content qa-review-bar">
         <preview-dropdown />
-        <loading-button
+        <gl-button
           v-gl-modal="$options.modalId"
           :loading="isDiscarding"
-          :label="__('Discard review')"
           class="qa-discard-review float-right"
-        />
+        >
+          {{ __('Discard review') }}
+        </gl-button>
       </div>
     </nav>
     <gl-modal

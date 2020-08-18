@@ -75,10 +75,18 @@ The number of branches or tags supported can be changed via
 
 ## Service templates
 
-Service templates are a way to set predefined values for an integration across
+Service templates are a way to set predefined values for a project integration across
 all new projects on the instance.
 
-Read more about [Service templates in this document](services_templates.md).
+Read more about [Service templates](services_templates.md).
+
+## Project integration management
+
+Project integraton management lets you control integration settings across all projects
+of an instance. On the project level, administrators you can choose whether to inherit the
+instance configuraton or provide custom settings.
+
+Read more about [Project integration management](../../admin_area/settings/project_integration_management.md).
 
 ## Troubleshooting integrations
 

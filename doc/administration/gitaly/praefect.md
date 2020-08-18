@@ -940,19 +940,14 @@ cluster.
 
 ## Distributed reads
 
-> Introduced in GitLab 13.1 in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) with feature flag `gitaly_distributed_reads` set to disabled.
-
 Praefect supports distribution of read operations across Gitaly nodes that are
 configured for the virtual node.
 
-To allow for [performance testing](https://gitlab.com/gitlab-org/quality/performance/-/issues/231),
-distributed reads are currently in
-[beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) and disabled by
-default. To enable distributed reads, the `gitaly_distributed_reads`
-[feature flag](../feature_flags.md) must be enabled in a Ruby console:
+The feature is enabled by default. To disable distributed reads, the `gitaly_distributed_reads`
+[feature flag](../feature_flags.md) must be disabled in a Ruby console:
 
 ```ruby
-Feature.enable(:gitaly_distributed_reads)
+Feature.disable(:gitaly_distributed_reads)
 ```
 
 If enabled, all RPCs marked with `ACCESSOR` option like

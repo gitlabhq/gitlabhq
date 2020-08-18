@@ -57,6 +57,14 @@ RSpec.describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memo
         described_class.new(*service_params).get_dashboard
       end
 
+      it 'tracks panel type' do
+        expect(::Gitlab::Tracking).to receive(:event).with(
+          'MetricsDashboard::Chart', 'chart_rendered', { label: 'Chart Type', value: 'area-chart' }
+        ).at_least(:once)
+
+        described_class.new(*service_params).get_dashboard
+      end
+
       context 'and the dashboard is then deleted' do
         it 'does not return the previously cached dashboard' do
           described_class.new(*service_params).get_dashboard
