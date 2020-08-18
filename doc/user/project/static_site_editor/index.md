@@ -13,6 +13,7 @@ description: "The static site editor enables users to edit content on static web
 > - Support for adding images through the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216640) in GitLab 13.1.
 > - Markdown front matter hidden on the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216834) in GitLab 13.1.
 > - Support for `*.md.erb` files [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223171) in GitLab 13.2.
+> - Non-Markdown content blocks uneditable on the WYSIWYG mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216836) in GitLab 13.3.
 
 DANGER: **Danger:**
 In GitLab 13.0, we [introduced breaking changes](https://gitlab.com/gitlab-org/gitlab/-/issues/213282)
@@ -57,7 +58,7 @@ When you click it, GitLab opens up an editor window from which the content
 can be directly edited. When you're ready, you can submit your changes in a
 click of a button:
 
-![Static Site Editor](img/wysiwyg_editor_v13_0.png)
+![Static Site Editor](img/wysiwyg_editor_v13_3.png)
 
 When an editor submits their changes, in the background, GitLab automatically
 creates a new branch, commits their changes, and opens a merge request. The

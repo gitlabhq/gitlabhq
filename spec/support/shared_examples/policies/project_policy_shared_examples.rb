@@ -86,6 +86,28 @@ RSpec.shared_examples 'project policies as anonymous' do
   end
 end
 
+RSpec.shared_examples 'deploy token does not get confused with user' do
+  before do
+    deploy_token.update!(id: user_id)
+
+    # Project with public builds are available to all
+    project.update!(public_builds: false)
+  end
+
+  let(:deploy_token) { create(:deploy_token) }
+
+  subject { described_class.new(deploy_token, project) }
+
+  it do
+    expect_disallowed(*guest_permissions)
+    expect_disallowed(*reporter_permissions)
+    expect_disallowed(*team_member_reporter_permissions)
+    expect_disallowed(*developer_permissions)
+    expect_disallowed(*maintainer_permissions)
+    expect_disallowed(*owner_permissions)
+  end
+end
+
 RSpec.shared_examples 'project policies as guest' do
   subject { described_class.new(guest, project) }
 
@@ -104,6 +126,10 @@ RSpec.shared_examples 'project policies as guest' do
       expect_disallowed(*owner_permissions)
     end
 
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { guest.id }
+    end
+
     it_behaves_like 'archived project policies' do
       let(:regular_abilities) { guest_permissions }
     end
@@ -117,7 +143,7 @@ RSpec.shared_examples 'project policies as guest' do
 
     context 'when public builds disabled' do
       before do
-        project.update(public_builds: false)
+        project.update!(public_builds: false)
       end
 
       it do
@@ -128,7 +154,7 @@ RSpec.shared_examples 'project policies as guest' do
 
     context 'when builds are disabled' do
       before do
-        project.project_feature.update(builds_access_level: ProjectFeature::DISABLED)
+        project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
       end
 
       it do
@@ -154,6 +180,10 @@ RSpec.shared_examples 'project policies as reporter' do
       expect_disallowed(*owner_permissions)
     end
 
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { reporter.id }
+    end
+
     it_behaves_like 'archived project policies' do
       let(:regular_abilities) { reporter_permissions }
     end
@@ -173,6 +203,10 @@ RSpec.shared_examples 'project policies as developer' do
       expect_allowed(*developer_permissions)
       expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
+    end
+
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { developer.id }
     end
 
     it_behaves_like 'archived project policies' do
@@ -196,6 +230,10 @@ RSpec.shared_examples 'project policies as maintainer' do
       expect_disallowed(*owner_permissions)
     end
 
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { maintainer.id }
+    end
+
     it_behaves_like 'archived project policies' do
       let(:regular_abilities) { maintainer_permissions }
     end
@@ -215,6 +253,10 @@ RSpec.shared_examples 'project policies as owner' do
       expect_allowed(*developer_permissions)
       expect_allowed(*maintainer_permissions)
       expect_allowed(*owner_permissions)
+    end
+
+    it_behaves_like 'deploy token does not get confused with user' do
+      let(:user_id) { owner.id }
     end
 
     it_behaves_like 'archived project policies' do
@@ -238,6 +280,28 @@ RSpec.shared_examples 'project policies as admin with admin mode' do
       expect_allowed(*owner_permissions)
     end
 
+    context 'deploy token does not get confused with user' do
+      before do
+        allow(deploy_token).to receive(:id).and_return(admin.id)
+
+        # Project with public builds are available to all
+        project.update!(public_builds: false)
+      end
+
+      let(:deploy_token) { create(:deploy_token) }
+
+      subject { described_class.new(deploy_token, project) }
+
+      it do
+        expect_disallowed(*guest_permissions)
+        expect_disallowed(*reporter_permissions)
+        expect_disallowed(*team_member_reporter_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*maintainer_permissions)
+        expect_disallowed(*owner_permissions)
+      end
+    end
+
     it_behaves_like 'archived project policies' do
       let(:regular_abilities) { owner_permissions }
     end
@@ -257,5 +321,20 @@ RSpec.shared_examples 'project policies as admin without admin mode' do
     subject { described_class.new(admin, project) }
 
     it { is_expected.to be_banned }
+
+    context 'deploy token does not get confused with user' do
+      before do
+        allow(deploy_token).to receive(:id).and_return(admin.id)
+
+        # Project with public builds are available to all
+        project.update!(public_builds: false)
+      end
+
+      let(:deploy_token) { create(:deploy_token) }
+
+      subject { described_class.new(deploy_token, project) }
+
+      it { is_expected.to be_banned }
+    end
   end
 end

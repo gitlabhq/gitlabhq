@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Recent searches', :js do
   include FilteredSearchHelpers
+  include MobileHelpers
 
   let(:project_1) { create(:project, :public) }
   let(:project_2) { create(:project, :public) }
@@ -103,5 +104,25 @@ RSpec.describe 'Recent searches', :js do
     visit project_issues_path(project_1)
 
     expect(find('.flash-alert')).to have_text('An error occurred while parsing recent searches')
+  end
+
+  context 'on tablet/mobile screen' do
+    it 'shows only the history icon in the dropdown' do
+      resize_screen_sm
+      visit project_issues_path(project_1)
+
+      expect(find('.filtered-search-history-dropdown-wrapper')).to have_selector('svg', visible: true)
+      expect(find('.filtered-search-history-dropdown-wrapper')).to have_selector('span', text: 'Recent searches', visible: false)
+    end
+  end
+
+  context 'on PC screen' do
+    it 'shows only the Recent searches text in the dropdown' do
+      restore_window_size
+      visit project_issues_path(project_1)
+
+      expect(find('.filtered-search-history-dropdown-wrapper')).to have_selector('svg', visible: false)
+      expect(find('.filtered-search-history-dropdown-wrapper')).to have_selector('span', text: 'Recent searches', visible: true)
+    end
   end
 end

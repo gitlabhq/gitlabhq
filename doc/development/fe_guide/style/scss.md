@@ -53,8 +53,8 @@ Examples of component classes that were created using "utility-first" include:
 
 Inspiration:
 
-- <https://tailwindcss.com/docs/utility-first/>
-- <https://tailwindcss.com/docs/extracting-components/>
+- <https://tailwindcss.com/docs/utility-first>
+- <https://tailwindcss.com/docs/extracting-components>
 
 ### Naming
 

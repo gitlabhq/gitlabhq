@@ -233,7 +233,7 @@ The following values configure logging in Gitaly under the `[logging]` section.
 | `format` | string | no | Log format: `text` or `json`. Default: `text`. |
 | `level`  | string | no | Log level: `debug`, `info`, `warn`, `error`, `fatal`, or `panic`. Default: `info`. |
 | `sentry_dsn` | string | no | Sentry DSN for exception monitoring. |
-| `sentry_environment` | string | no | [Sentry Environment](https://docs.sentry.io/enriching-error-data/environments/) for exception monitoring. |
+| `sentry_environment` | string | no | [Sentry Environment](https://docs.sentry.io/product/sentry-basics/environments/) for exception monitoring. |
 | `ruby_sentry_dsn` | string | no | Sentry DSN for `gitaly-ruby` exception monitoring. |
 
 While the main Gitaly application logs go to `stdout`, there are some extra log

@@ -1,0 +1,5 @@
+---
+title: Use more-efficient indexing for the MergeRequestDiff storage migration
+merge_request: 39470
+author:
+type: performance

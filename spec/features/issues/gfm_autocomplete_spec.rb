@@ -504,6 +504,23 @@ RSpec.describe 'GFM autocomplete', :js do
       expect(page).to have_selector('.tribute-container', visible: true)
     end
 
+    it 'opens autocomplete menu for Issues when field starts with text with item escaping HTML characters' do
+      issue_xss_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
+      create(:issue, project: project, title: issue_xss_title)
+
+      page.within '.timeline-content-form' do
+        find('#note-body').native.send_keys('#')
+      end
+
+      wait_for_requests
+
+      expect(page).to have_selector('.tribute-container', visible: true)
+
+      page.within '.tribute-container ul' do
+        expect(page.all('li').first.text).to include(issue_xss_title)
+      end
+    end
+
     it 'opens autocomplete menu for Username when field starts with text with item escaping HTML characters' do
       page.within '.timeline-content-form' do
         find('#note-body').native.send_keys('@ev')

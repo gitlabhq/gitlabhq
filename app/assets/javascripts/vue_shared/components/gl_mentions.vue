@@ -6,6 +6,7 @@ import { spriteIcon } from '~/lib/utils/common_utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 
 const AutoComplete = {
+  Issues: 'issues',
   Labels: 'labels',
   Members: 'members',
 };
@@ -17,6 +18,14 @@ function doesCurrentLineStartWith(searchString, fullText, selectionStart) {
 }
 
 const autoCompleteMap = {
+  [AutoComplete.Issues]: {
+    filterValues() {
+      return this[AutoComplete.Issues];
+    },
+    menuItemTemplate({ original }) {
+      return `<small>${original.reference || original.iid}</small> ${escape(original.title)}`;
+    },
+  },
   [AutoComplete.Labels]: {
     filterValues() {
       const fullText = this.$slots.default?.[0]?.elm?.value;
@@ -106,6 +115,13 @@ export default {
 
     this.tribute = new Tribute({
       collection: [
+        {
+          trigger: '#',
+          lookup: value => value.iid + value.title,
+          menuItemTemplate: autoCompleteMap[AutoComplete.Issues].menuItemTemplate,
+          selectTemplate: ({ original }) => original.reference || `#${original.iid}`,
+          values: this.getValues(AutoComplete.Issues),
+        },
         {
           trigger: '@',
           fillAttr: 'username',

@@ -60,6 +60,9 @@ export default class MergeRequestStore {
     this.rebaseInProgress = data.rebase_in_progress;
     this.mergeRequestDiffsPath = data.diffs_path;
     this.approvalsWidgetType = data.approvals_widget_type;
+    this.projectArchived = data.project_archived;
+    this.branchMissing = data.branch_missing;
+    this.hasConflicts = data.has_conflicts;
 
     if (data.issues_links) {
       const links = data.issues_links;
@@ -90,7 +93,8 @@ export default class MergeRequestStore {
     this.ffOnlyEnabled = data.ff_only_enabled;
     this.shouldBeRebased = Boolean(data.should_be_rebased);
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
-    this.isOpen = data.state === 'opened';
+    this.mergeRequestState = data.state;
+    this.isOpen = this.mergeRequestState === 'opened';
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
     this.isSHAMismatch = this.sha !== data.diff_head_sha;
     this.latestSHA = data.diff_head_sha;
@@ -133,6 +137,10 @@ export default class MergeRequestStore {
     this.mergeCommitPath = data.merge_commit_path;
     this.canPushToSourceBranch = data.can_push_to_source_branch;
 
+    if (data.work_in_progress !== undefined) {
+      this.workInProgress = data.work_in_progress;
+    }
+
     const currentUser = data.current_user;
 
     this.cherryPickInForkPath = currentUser.cherry_pick_in_fork_path;
@@ -143,19 +151,25 @@ export default class MergeRequestStore {
     this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
     this.canRevertInCurrentMR = currentUser.can_revert_on_current_merge_request || false;
 
-    this.setState(data);
+    this.setState();
   }
 
-  setState(data) {
+  setGraphqlData(data) {
+    this.workInProgress = data.workInProgress;
+
+    this.setState();
+  }
+
+  setState() {
     if (this.mergeOngoing) {
       this.state = 'merging';
       return;
     }
 
     if (this.isOpen) {
-      this.state = getStateKey.call(this, data);
+      this.state = getStateKey.call(this);
     } else {
-      switch (data.state) {
+      switch (this.mergeRequestState) {
         case 'merged':
           this.state = 'merged';
           break;

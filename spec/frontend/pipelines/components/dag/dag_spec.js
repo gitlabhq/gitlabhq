@@ -1,8 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import MockAdapter from 'axios-mock-adapter';
-import waitForPromises from 'helpers/wait_for_promises';
 import { GlAlert, GlEmptyState } from '@gitlab/ui';
-import axios from '~/lib/utils/axios_utils';
 import Dag from '~/pipelines/components/dag/dag.vue';
 import DagGraph from '~/pipelines/components/dag/dag_graph.vue';
 import DagAnnotations from '~/pipelines/components/dag/dag_annotations.vue';
@@ -11,13 +8,11 @@ import {
   ADD_NOTE,
   REMOVE_NOTE,
   REPLACE_NOTES,
-  DEFAULT,
   PARSE_FAILURE,
-  LOAD_FAILURE,
   UNSUPPORTED_DATA,
 } from '~/pipelines/components/dag//constants';
 import {
-  mockBaseData,
+  mockParsedGraphQLNodes,
   tooSmallGraph,
   unparseableGraph,
   graphWithoutDependencies,
@@ -27,7 +22,6 @@ import {
 
 describe('Pipeline DAG graph wrapper', () => {
   let wrapper;
-  let mock;
   const getAlert = () => wrapper.find(GlAlert);
   const getAllAlerts = () => wrapper.findAll(GlAlert);
   const getGraph = () => wrapper.find(DagGraph);
@@ -35,45 +29,46 @@ describe('Pipeline DAG graph wrapper', () => {
   const getErrorText = type => wrapper.vm.$options.errorTexts[type];
   const getEmptyState = () => wrapper.find(GlEmptyState);
 
-  const dataPath = '/root/test/pipelines/90/dag.json';
-
-  const createComponent = (propsData = {}, method = shallowMount) => {
+  const createComponent = ({
+    graphData = mockParsedGraphQLNodes,
+    provideOverride = {},
+    method = shallowMount,
+  } = {}) => {
     if (wrapper?.destroy) {
       wrapper.destroy();
     }
 
     wrapper = method(Dag, {
-      propsData: {
+      provide: {
+        pipelineProjectPath: 'root/abc-dag',
+        pipelineIid: '1',
         emptySvgPath: '/my-svg',
         dagDocPath: '/my-doc',
-        ...propsData,
+        ...provideOverride,
       },
       data() {
         return {
+          graphData,
           showFailureAlert: false,
         };
       },
     });
   };
 
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
-  });
-
   afterEach(() => {
-    mock.restore();
     wrapper.destroy();
     wrapper = null;
   });
 
-  describe('when there is no dataUrl', () => {
+  describe('when a query argument is undefined', () => {
     beforeEach(() => {
-      createComponent({ graphUrl: undefined });
+      createComponent({
+        provideOverride: { pipelineProjectPath: undefined },
+        graphData: null,
+      });
     });
 
-    it('shows the DEFAULT alert and not the graph', () => {
-      expect(getAlert().exists()).toBe(true);
-      expect(getAlert().text()).toBe(getErrorText(DEFAULT));
+    it('does not render the graph', async () => {
       expect(getGraph().exists()).toBe(false);
     });
 
@@ -82,36 +77,12 @@ describe('Pipeline DAG graph wrapper', () => {
     });
   });
 
-  describe('when there is a dataUrl', () => {
-    describe('but the data fetch fails', () => {
+  describe('when all query variables are defined', () => {
+    describe('but the parse fails', () => {
       beforeEach(async () => {
-        mock.onGet(dataPath).replyOnce(500);
-        createComponent({ graphUrl: dataPath });
-
-        await wrapper.vm.$nextTick();
-
-        return waitForPromises();
-      });
-
-      it('shows the LOAD_FAILURE alert and not the graph', () => {
-        expect(getAlert().exists()).toBe(true);
-        expect(getAlert().text()).toBe(getErrorText(LOAD_FAILURE));
-        expect(getGraph().exists()).toBe(false);
-      });
-
-      it('does not render the empty state', () => {
-        expect(getEmptyState().exists()).toBe(false);
-      });
-    });
-
-    describe('the data fetch succeeds but the parse fails', () => {
-      beforeEach(async () => {
-        mock.onGet(dataPath).replyOnce(200, unparseableGraph);
-        createComponent({ graphUrl: dataPath });
-
-        await wrapper.vm.$nextTick();
-
-        return waitForPromises();
+        createComponent({
+          graphData: unparseableGraph,
+        });
       });
 
       it('shows the PARSE_FAILURE alert and not the graph', () => {
@@ -125,14 +96,9 @@ describe('Pipeline DAG graph wrapper', () => {
       });
     });
 
-    describe('and the data fetch and parse succeeds', () => {
+    describe('parse succeeds', () => {
       beforeEach(async () => {
-        mock.onGet(dataPath).replyOnce(200, mockBaseData);
-        createComponent({ graphUrl: dataPath }, mount);
-
-        await wrapper.vm.$nextTick();
-
-        return waitForPromises();
+        createComponent({ method: mount });
       });
 
       it('shows the graph', () => {
@@ -144,14 +110,11 @@ describe('Pipeline DAG graph wrapper', () => {
       });
     });
 
-    describe('the data fetch and parse succeeds, but the resulting graph is too small', () => {
+    describe('parse succeeds, but the resulting graph is too small', () => {
       beforeEach(async () => {
-        mock.onGet(dataPath).replyOnce(200, tooSmallGraph);
-        createComponent({ graphUrl: dataPath });
-
-        await wrapper.vm.$nextTick();
-
-        return waitForPromises();
+        createComponent({
+          graphData: tooSmallGraph,
+        });
       });
 
       it('shows the UNSUPPORTED_DATA alert and not the graph', () => {
@@ -165,14 +128,12 @@ describe('Pipeline DAG graph wrapper', () => {
       });
     });
 
-    describe('the data fetch succeeds but the returned data is empty', () => {
+    describe('the returned data is empty', () => {
       beforeEach(async () => {
-        mock.onGet(dataPath).replyOnce(200, graphWithoutDependencies);
-        createComponent({ graphUrl: dataPath }, mount);
-
-        await wrapper.vm.$nextTick();
-
-        return waitForPromises();
+        createComponent({
+          method: mount,
+          graphData: graphWithoutDependencies,
+        });
       });
 
       it('does not render an error alert or the graph', () => {
@@ -188,12 +149,7 @@ describe('Pipeline DAG graph wrapper', () => {
 
   describe('annotations', () => {
     beforeEach(async () => {
-      mock.onGet(dataPath).replyOnce(200, mockBaseData);
-      createComponent({ graphUrl: dataPath }, mount);
-
-      await wrapper.vm.$nextTick();
-
-      return waitForPromises();
+      createComponent();
     });
 
     it('toggles on link mouseover and mouseout', async () => {

@@ -307,23 +307,6 @@
     color: $gl-text-color;
     border-color: $border-color;
   }
-
-  svg {
-    height: 14px;
-    width: 14px;
-    vertical-align: middle;
-    margin-bottom: 4px;
-  }
-
-  .dropdown-toggle-text {
-    display: inline-block;
-    color: inherit;
-
-    .fa {
-      vertical-align: middle;
-      color: inherit;
-    }
-  }
 }
 
 .filtered-search-history-dropdown {

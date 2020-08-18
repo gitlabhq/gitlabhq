@@ -62,7 +62,7 @@ Example of response
   "id": 1,
   "name": "review/fix-foo",
   "slug": "review-fix-foo-dfjre3",
-  "external_url": "https://review-fix-foo-dfjre3.example.gitlab.com"
+  "external_url": "https://review-fix-foo-dfjre3.example.gitlab.com",
   "state": "available",
   "last_deployment": {
     "id": 100,
@@ -78,7 +78,7 @@ Example of response
       "username": "root",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://localhost:3000/root"
-    }
+    },
     "deployable": {
       "id": 710,
       "status": "success",
@@ -107,7 +107,7 @@ Example of response
         "twitter": "",
         "website_url": "",
         "organization": null
-      }
+      },
       "commit": {
         "id": "416d8ea11849050d3d1f5104cf8cf51053e790ab",
         "short_id": "416d8ea1",

@@ -220,6 +220,9 @@ module Gitlab
         return unless token && login
         return if login != token.username
 
+        # Registry access (with jwt) does not have access to project
+        return if project && !token.has_access_to?(project)
+
         scopes = abilities_for_scopes(token.scopes)
 
         if valid_scoped_token?(token, all_available_scopes)

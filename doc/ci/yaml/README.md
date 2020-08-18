@@ -348,7 +348,7 @@ but does allow pipelines in **all** other cases, *including* merge request pipel
 
 As with `rules` defined in jobs, be careful not to use a configuration that allows
 merge request pipelines and branch pipelines to run at the same time, or you could
-have [duplicate pipelines](#differences-between-rules-and-onlyexcept).
+have [duplicate pipelines](#prevent-duplicate-pipelines).
 
 #### `workflow:rules` templates
 
@@ -1218,19 +1218,22 @@ job:
 - In **all other cases**, the job is added to the pipeline, with `when: on_success`.
 
 CAUTION: **Caution:**
-If you use `when: on_success`, `always`, or `delayed` as the final rule, two
+If you use a `when:` clause as the final rule (not including `when: never`), two
 simultaneous pipelines may start. Both push pipelines and merge request pipelines can
 be triggered by the same event (a push to the source branch for an open merge request).
-See the [important differences between `rules` and `only`/`except`](#differences-between-rules-and-onlyexcept)
+See how to [prevent duplicate pipelines](#prevent-duplicate-pipelines)
 for more details.
 
-#### Differences between `rules` and `only`/`except`
+#### Prevent duplicate pipelines
 
-Jobs defined with `only/except` do not trigger merge request pipelines by default.
-You must explicitly add `only: merge_requests`.
+Jobs defined with `rules` can trigger multiple pipelines with the same action. You
+don't have to explicitly configure rules for each type of pipeline to trigger them
+accidentally. Rules that are too loose (allowing too many types of pipelines) could
+cause a second pipeline to run unexpectedly.
 
-Jobs defined with `rules` can trigger all types of pipelines.
-You do not have to explicitly configure each type.
+Some configurations that have the potential to cause duplicate pipelines cause a
+[pipeline warning](../troubleshooting.md#pipeline-warnings) to be displayed.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219431) in GitLab 13.3.
 
 For example:
 
@@ -1246,21 +1249,77 @@ job:
 This job does not run when `$CUSTOM_VARIABLE` is false, but it *does* run in **all**
 other pipelines, including **both** push (branch) and merge request pipelines. With
 this configuration, every push to an open merge request's source branch
-causes duplicated pipelines. Explicitly allowing both push and merge request pipelines
-in the same job could have the same effect.
+causes duplicated pipelines.
 
-We recommend using [`workflow: rules`](#workflowrules) to limit which types of pipelines
-are permitted. Allowing only merge request pipelines, or only branch pipelines,
-eliminates duplicated pipelines. Alternatively, you can rewrite the rules to be
-stricter, or avoid using a final `when` (`always`, `on_success` or `delayed`).
+There are multiple ways to avoid this:
 
-It is not possible to run a job for branch pipelines first, then only for merge request
-pipelines after the merge request is created (skipping the duplicate branch pipeline). See
-the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) for more details.
+- Use [`workflow: rules`](#workflowrules) to specify which types of pipelines
+  can run. To eliminate duplicate pipelines, allow only merge request pipelines
+  or push (branch) pipelines.
 
-Also, we don't recommend mixing `only/except` jobs with `rules` jobs in the same pipeline.
-It may not cause YAML errors, but debugging the exact execution behavior can be complex
-due to the different default behaviors of `only/except` and `rules`.
+- Rewrite the rules to run the job only in very specific cases,
+  and avoid using a final `when:` rule:
+
+  ```yaml
+  job:
+    script: "echo This does NOT create double pipelines!"
+    rules:
+      - if: '$CUSTOM_VARIABLE == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"'
+  ```
+
+You can prevent duplicate pipelines by changing the job rules to avoid either push (branch)
+pipelines or merge request pipelines. However, if you use a `- when: always` rule without
+`workflow: rules`, GitLab still displays a [pipeline warning](../troubleshooting.md#pipeline-warnings).
+
+For example, the following does not trigger double pipelines, but is not recommended
+without `workflow: rules`:
+
+```yaml
+job:
+  script: "echo This does NOT create double pipelines!"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - when: always
+```
+
+Do not include both push and merge request pipelines in the same job:
+
+```yaml
+job:
+  script: "echo This creates double pipelines!"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+```
+
+Also, do not mix `only/except` jobs with `rules` jobs in the same pipeline.
+It may not cause YAML errors, but the different default behaviors of `only/except`
+and `rules` can cause issues that are difficult to troubleshoot:
+
+```yaml
+job-with-no-rules:
+  script: "echo This job runs in branch pipelines."
+
+job-with-rules:
+  script: "echo This job runs in merge request pipelines."
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+```
+
+For every change pushed to the branch, duplicate pipelines run. One
+branch pipeline runs a single job (`job-with-no-rules`), and one merge request pipeline
+runs the other job (`job-with-rules`). Jobs with no rules default
+to [`except: merge_requests`](#onlyexcept-basic), so `job-with-no-rules`
+runs in all cases except merge requests.
+
+It is not possible to define rules based on whether or not a branch has an open
+merge request associated with it. You can't configure a job to be included in:
+
+- Only branch pipelines when the branch doesn't have a merge request associated with it.
+- Only merge request pipelines when the branch has a merge request associated with it.
+
+See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) for more details.
 
 #### `rules:if`
 

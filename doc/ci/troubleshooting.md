@@ -7,6 +7,24 @@ type: reference
 
 # Troubleshooting CI/CD
 
+## Pipeline warnings
+
+Pipeline configuration warnings are shown when you:
+
+- [View pipeline details](pipelines/index.md#view-pipelines).
+- [Validate configuration with the CI Lint tool](yaml/README.md#validate-the-gitlab-ciyml).
+- [Manually run a pipeline](pipelines/index.md#run-a-pipeline-manually).
+
+### "Job may allow multiple pipelines to run for a single action"
+
+When you use [`rules`](yaml/README.md#rules) with a `when:` clause without
+an `if:` clause, multiple pipelines may run. Usually
+this occurs when you push a commit to a branch that has an open merge request associated with it.
+
+To [prevent duplicate pipelines](yaml/README.md#prevent-duplicate-pipelines), use
+[`workflow: rules`](yaml/README.md#workflowrules) or rewrite your rules
+to control which pipelines can run.
+
 ## Merge request pipeline widget
 
 The merge request pipeline widget shows information about the pipeline status in a Merge Request. It's displayed above the [merge request ability to merge widget](#merge-request-ability-to-merge-widget).

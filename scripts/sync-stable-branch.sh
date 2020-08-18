@@ -51,7 +51,8 @@ then
   echo 'Commit not available, triggering a merge train'
 fi
 
-curl -X POST \
+curl -f \
+  -X POST \
   -F token="$MERGE_TRAIN_TRIGGER_TOKEN" \
   -F ref=master \
   -F "variables[MERGE_FOSS]=1" \

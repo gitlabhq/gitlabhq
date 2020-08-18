@@ -44,6 +44,10 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:service_desk_custom_address, @project)
   end
 
+  before_action only: [:edit] do
+    push_frontend_feature_flag(:approval_suggestions, @project)
+  end
+
   layout :determine_layout
 
   def index

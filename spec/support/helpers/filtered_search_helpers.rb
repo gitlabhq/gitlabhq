@@ -13,7 +13,7 @@ module FilteredSearchHelpers
       search = "#{search_term} "
     end
 
-    filtered_search.set(search)
+    filtered_search.set(search, rapid: false)
 
     if submit
       # Wait for the lazy author/assignee tokens that

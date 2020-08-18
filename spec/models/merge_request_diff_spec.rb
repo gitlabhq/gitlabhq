@@ -103,6 +103,8 @@ RSpec.describe MergeRequestDiff do
 
       it 'ignores diffs with 0 files' do
         MergeRequestDiffFile.where(merge_request_diff_id: [closed_recently.id, merged_recently.id]).delete_all
+        closed_recently.update!(files_count: 0)
+        merged_recently.update!(files_count: 0)
 
         is_expected.to contain_exactly(outdated.id, latest.id, closed.id, merged.id)
       end

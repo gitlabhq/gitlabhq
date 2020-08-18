@@ -297,6 +297,9 @@ msgstr[1] ""
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
 
+msgid "%{address} is an invalid IP address range"
+msgstr ""
+
 msgid "%{author_link} wrote:"
 msgstr ""
 
@@ -3125,6 +3128,9 @@ msgid "Apr"
 msgstr ""
 
 msgid "April"
+msgstr ""
+
+msgid "Architecture not found for OS"
 msgstr ""
 
 msgid "Archive"
@@ -13201,6 +13207,9 @@ msgstr ""
 msgid "Invalid Login or password"
 msgstr ""
 
+msgid "Invalid OS"
+msgstr ""
+
 msgid "Invalid URL"
 msgstr ""
 
@@ -15732,6 +15741,12 @@ msgstr ""
 msgid "Missing OAuth configuration for GitHub."
 msgstr ""
 
+msgid "Missing OS"
+msgstr ""
+
+msgid "Missing arch"
+msgstr ""
+
 msgid "Missing commit signatures endpoint!"
 msgstr ""
 
@@ -16452,6 +16467,9 @@ msgid "No repository"
 msgstr ""
 
 msgid "No required pipeline"
+msgstr ""
+
+msgid "No runner executable"
 msgstr ""
 
 msgid "No runners found"
@@ -21486,9 +21504,6 @@ msgstr ""
 msgid "Security Dashboard"
 msgstr ""
 
-msgid "Security Dashboard - Settings"
-msgstr ""
-
 msgid "Security dashboard"
 msgstr ""
 
@@ -21496,6 +21511,18 @@ msgid "Security report is out of date. Please update your branch with the latest
 msgstr ""
 
 msgid "Security report is out of date. Run %{newPipelineLinkStart}a new pipeline%{newPipelineLinkEnd} for the target branch (%{targetBranchName})"
+msgstr ""
+
+msgid "SecurityApprovals|License Scanning must be enabled. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
+msgid "SecurityApprovals|One or more of the security scanners must be enabled. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
+msgid "SecurityApprovals|Requires approval for vulnerabilties of Critical, High, or Unknown severity. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
+msgid "SecurityApprovals|Requires license policy rules for licenses of Allowed, or Denied. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "SecurityConfiguration|An error occurred while creating the merge request."
@@ -22657,6 +22684,9 @@ msgstr ""
 msgid "SnippetsEmptyState|There are no snippets to show."
 msgstr ""
 
+msgid "Snippets|Add another file %{num}/%{total}"
+msgstr ""
+
 msgid "Snippets|Delete file"
 msgstr ""
 
@@ -22664,6 +22694,9 @@ msgid "Snippets|Description (optional)"
 msgstr ""
 
 msgid "Snippets|File"
+msgstr ""
+
+msgid "Snippets|Files"
 msgstr ""
 
 msgid "Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby"

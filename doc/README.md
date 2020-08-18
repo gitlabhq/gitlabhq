@@ -50,7 +50,7 @@ Have a look at some of our most popular topics:
 ## The entire DevOps Lifecycle
 
 GitLab is the first single application for software development, security,
-and operations that enables [Concurrent DevOps](https://about.gitlab.com/concurrent-devops/),
+and operations that enables [Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/),
 making the software lifecycle faster and radically improving the speed of business.
 
 GitLab provides solutions for [each of the stages of the DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/):

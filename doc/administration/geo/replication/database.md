@@ -373,7 +373,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ##
    postgresql['sql_user_password'] = '<md5_hash_of_your_password>'
    gitlab_rails['db_password'] = '<your_password_here>'
-
+   ```
 
    For external PostgreSQL instances, see [additional instructions](external_database.md).
    If you bring a former **primary** node back online to serve as a **secondary** node, then you also need to remove `roles ['geo_primary_role']` or `geo_primary_role['enable'] = true`.

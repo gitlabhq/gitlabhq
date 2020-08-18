@@ -233,4 +233,4 @@ In the same code block, precede each with comments: `# Better` and `# Best`.
 NOTE: **Note:**
 While the bad-then-good approach is acceptable for the GitLab development guidelines, do not use it
 for user documentation. For user documentation, use "Do" and "Don't." For example, see the
-[Pajamas Design System](https://design.gitlab.com/content/punctuation).
+[Pajamas Design System](https://design.gitlab.com/content/punctuation/).

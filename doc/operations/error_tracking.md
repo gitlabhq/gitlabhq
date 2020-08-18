@@ -26,11 +26,13 @@ You will need at least Maintainer [permissions](../user/permissions.md) to enabl
 GitLab provides an easy way to connect Sentry to your project:
 
 1. Sign up to Sentry.io or [deploy your own](#deploying-sentry) Sentry instance.
-1. [Create](https://docs.sentry.io/guides/tutorials/integrate-frontend/create-new-project/) a new Sentry project. For each GitLab project that you want to integrate, we recommend that you create a new Sentry project.
+1. [Create](https://docs.sentry.io/product/sentry-basics/guides/integrate-frontend/create-new-project/) a new Sentry project. For each GitLab project that you want to integrate, we recommend that you create a new Sentry project.
 1. [Find or generate](https://docs.sentry.io/api/auth/) a Sentry auth token for your Sentry project.
    Make sure to give the token at least the following scopes: `event:read` and `project:read`.
-1. Navigate to your project’s **Settings > Operations**.
-1. Ensure that the **Active** checkbox is set.
+1. In GitLab, navigate to your project’s **Operations > Error Tracking** page, and
+   click **Enable Error Tracking**.
+1. Navigate to your project’s **Settings > Operations**. In the **Error Tracking** section,
+   ensure the **Active** checkbox is set.
 1. In the **Sentry API URL** field, enter your Sentry hostname. For example, enter `https://sentry.example.com` if this is the address at which your Sentry instance is available. For the SaaS version of Sentry, the hostname will be `https://sentry.io`.
 1. In the **Auth Token** field, enter the token you previously generated.
 1. Click the **Connect** button to test the connection to Sentry and populate the **Project** dropdown.
@@ -40,7 +42,7 @@ GitLab provides an easy way to connect Sentry to your project:
 
 ### Enabling GitLab issues links
 
-You may also want to enable Sentry's GitLab integration by following the steps in the [Sentry documentation](https://docs.sentry.io/workflow/integrations/gitlab/)
+You may also want to enable Sentry's GitLab integration by following the steps in the [Sentry documentation](https://docs.sentry.io/product/integrations/gitlab/)
 
 ## Error Tracking List
 
@@ -59,7 +61,7 @@ From error list, users can navigate to the error details page by clicking the ti
 This page has:
 
 - A link to the Sentry issue.
-- A link to the GitLab commit if the Sentry [release ID/version](https://docs.sentry.io/workflow/releases/?platform=javascript#configure-sdk) on the Sentry Issue's first release matches a commit SHA in your GitLab hosted project.
+- A link to the GitLab commit if the Sentry [release ID/version](https://docs.sentry.io/product/releases/?platform=javascript#configure-sdk) on the Sentry Issue's first release matches a commit SHA in your GitLab hosted project.
 - Other details about the issue, including a full stack trace.
 - In [GitLab 12.7 and newer](https://gitlab.com/gitlab-org/gitlab/-/issues/36246), language and urgency are displayed.
 

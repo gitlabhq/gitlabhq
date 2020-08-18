@@ -10,7 +10,7 @@ Any frontend engineer can contribute to this dashboard. They can contribute by a
 There are 3 recommended high impact metrics to review on each page:
 
 - [First visual change](https://web.dev/first-meaningful-paint/)
-- [Speed Index](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index)
-- [Visual Complete 95%](https://sites.google.com/a/webpagetest.org/docs/using-webpagetest/metrics/speed-index)
+- [Speed Index](https://github.com/WPO-Foundation/webpagetest-docs/blob/master/user/Metrics/SpeedIndex.md)
+- [Visual Complete 95%](https://github.com/WPO-Foundation/webpagetest-docs/blob/master/user/Metrics/SpeedIndex.md)
 
 For these metrics, lower numbers are better as it means that the website is more performant.

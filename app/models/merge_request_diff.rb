@@ -51,14 +51,16 @@ class MergeRequestDiff < ApplicationRecord
   scope :by_commit_sha, ->(sha) do
     joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
   end
-  scope :has_diff_files, -> { where(id: MergeRequestDiffFile.select(:merge_request_diff_id)) }
 
   scope :by_project_id, -> (project_id) do
     joins(:merge_request).where(merge_requests: { target_project_id: project_id })
   end
 
   scope :recent, -> { order(id: :desc).limit(100) }
-  scope :files_in_database, -> { where(stored_externally: [false, nil]) }
+
+  scope :files_in_database, -> do
+    where(stored_externally: [false, nil]).where(arel_table[:files_count].gt(0))
+  end
 
   scope :not_latest_diffs, -> do
     merge_requests = MergeRequest.arel_table
@@ -115,29 +117,28 @@ class MergeRequestDiff < ApplicationRecord
     end
 
     def ids_for_external_storage_migration_strategy_always(limit:)
-      has_diff_files.files_in_database.limit(limit).pluck(:id)
+      files_in_database.limit(limit).pluck(:id)
     end
 
     def ids_for_external_storage_migration_strategy_outdated(limit:)
       # Outdated is too complex to be a single SQL query, so split into three
       before = EXTERNAL_DIFF_CUTOFF.ago
-      potentials = has_diff_files.files_in_database
 
-      ids = potentials
+      ids = files_in_database
         .old_merged_diffs(before)
         .limit(limit)
         .pluck(:id)
 
       return ids if ids.size >= limit
 
-      ids += potentials
+      ids += files_in_database
         .old_closed_diffs(before)
         .limit(limit - ids.size)
         .pluck(:id)
 
       return ids if ids.size >= limit
 
-      ids + potentials
+      ids + files_in_database
         .not_latest_diffs
         .limit(limit - ids.size)
         .pluck(:id)

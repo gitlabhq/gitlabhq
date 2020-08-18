@@ -1,9 +1,9 @@
 import { createSankey } from '~/pipelines/components/dag/drawing_utils';
 import { parseData } from '~/pipelines/components/dag/parsing_utils';
-import { mockBaseData } from './mock_data';
+import { mockParsedGraphQLNodes } from './mock_data';
 
 describe('DAG visualization drawing utilities', () => {
-  const parsed = parseData(mockBaseData.stages);
+  const parsed = parseData(mockParsedGraphQLNodes);
 
   const layoutSettings = {
     width: 200,

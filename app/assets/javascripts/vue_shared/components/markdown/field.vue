@@ -167,7 +167,7 @@ export default {
     return new GLForm($(this.$refs['gl-form']), {
       emojis: this.enableAutocomplete,
       members: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-      issues: this.enableAutocomplete,
+      issues: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
       mergeRequests: this.enableAutocomplete,
       epics: this.enableAutocomplete,
       milestones: this.enableAutocomplete,

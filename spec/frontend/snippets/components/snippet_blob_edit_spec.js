@@ -1,6 +1,5 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
@@ -8,166 +7,162 @@ import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
 import BlobContentEdit from '~/blob/components/blob_edit_content.vue';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
-
-jest.mock('~/blob/utils', () => jest.fn());
-
-jest.mock('~/lib/utils/url_utility', () => ({
-  getBaseURL: jest.fn().mockReturnValue('foo/'),
-  joinPaths: jest
-    .fn()
-    .mockName('joinPaths')
-    .mockReturnValue('contentApiURL'),
-}));
+import createFlash from '~/flash';
+import { TEST_HOST } from 'helpers/test_constants';
 
 jest.mock('~/flash');
 
-let flashSpy;
+const TEST_ID = 'blob_local_7';
+const TEST_PATH = 'foo/bar/test.md';
+const TEST_RAW_PATH = '/gitlab/raw/path/to/blob/7';
+const TEST_FULL_PATH = joinPaths(TEST_HOST, TEST_RAW_PATH);
+const TEST_CONTENT = 'Lorem ipsum dolar sit amet,\nconsectetur adipiscing elit.';
+
+const TEST_BLOB = {
+  id: TEST_ID,
+  rawPath: TEST_RAW_PATH,
+  path: TEST_PATH,
+  content: '',
+  isLoaded: false,
+};
+
+const TEST_BLOB_LOADED = {
+  ...TEST_BLOB,
+  content: TEST_CONTENT,
+  isLoaded: true,
+};
 
 describe('Snippet Blob Edit component', () => {
   let wrapper;
   let axiosMock;
-  const contentMock = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
-  const pathMock = 'lorem.txt';
-  const rawPathMock = 'foo/bar';
-  const blob = {
-    path: pathMock,
-    content: contentMock,
-    rawPath: rawPathMock,
-  };
-  const findComponent = component => wrapper.find(component);
 
-  function createComponent(props = {}, data = { isContentLoading: false }) {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(SnippetBlobEdit, {
       propsData: {
+        blob: TEST_BLOB,
         ...props,
       },
-      data() {
-        return {
-          ...data,
-        };
-      },
     });
-    flashSpy = jest.spyOn(wrapper.vm, 'flashAPIFailure');
-  }
+  };
+
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findHeader = () => wrapper.find(BlobHeaderEdit);
+  const findContent = () => wrapper.find(BlobContentEdit);
+  const getLastUpdatedArgs = () => {
+    const event = wrapper.emitted()['blob-updated'];
+
+    return event?.[event.length - 1][0];
+  };
 
   beforeEach(() => {
-    // This component generates a random id. Soon this will be abstracted away, but for now let's make this deterministic.
-    // see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38855
-    jest.spyOn(Math, 'random').mockReturnValue(0.04);
-
     axiosMock = new AxiosMockAdapter(axios);
-    createComponent();
+    axiosMock.onGet(TEST_FULL_PATH).reply(200, TEST_CONTENT);
   });
 
   afterEach(() => {
-    axiosMock.restore();
     wrapper.destroy();
+    wrapper = null;
+    axiosMock.restore();
   });
 
-  describe('rendering', () => {
-    it('matches the snapshot', () => {
-      createComponent({ blob });
+  describe('with not loaded blob', () => {
+    beforeEach(async () => {
+      createComponent();
+    });
+
+    it('shows blob header', () => {
+      expect(findHeader().props()).toMatchObject({
+        value: TEST_BLOB.path,
+      });
+      expect(findHeader().attributes('id')).toBe(`${TEST_ID}_file_path`);
+    });
+
+    it('emits delete when deleted', () => {
+      expect(wrapper.emitted().delete).toBeUndefined();
+
+      findHeader().vm.$emit('delete');
+
+      expect(wrapper.emitted().delete).toHaveLength(1);
+    });
+
+    it('emits update when path changes', () => {
+      const newPath = 'new/path.md';
+
+      findHeader().vm.$emit('input', newPath);
+
+      expect(getLastUpdatedArgs()).toEqual({ path: newPath });
+    });
+
+    it('emits update when content is loaded', async () => {
+      await waitForPromises();
+
+      expect(getLastUpdatedArgs()).toEqual({ content: TEST_CONTENT });
+    });
+  });
+
+  describe('with error', () => {
+    beforeEach(() => {
+      axiosMock.reset();
+      axiosMock.onGet(TEST_FULL_PATH).replyOnce(500);
+      createComponent();
+    });
+
+    it('should call flash', async () => {
+      await waitForPromises();
+
+      expect(createFlash).toHaveBeenCalledWith(
+        "Can't fetch content for the blob: Error: Request failed with status code 500",
+      );
+    });
+  });
+
+  describe('with loaded blob', () => {
+    beforeEach(() => {
+      createComponent({ blob: TEST_BLOB_LOADED });
+    });
+
+    it('matches snapshot', () => {
       expect(wrapper.element).toMatchSnapshot();
     });
 
-    it('renders required components', () => {
-      expect(findComponent(BlobHeaderEdit).exists()).toBe(true);
-      expect(findComponent(BlobContentEdit).props()).toEqual({
-        fileGlobalId: expect.any(String),
-        fileName: '',
-        value: '',
-      });
-    });
-
-    it('renders loader if existing blob is supplied but no content is fetched yet', () => {
-      createComponent({ blob }, { isContentLoading: true });
-      expect(wrapper.contains(GlLoadingIcon)).toBe(true);
-      expect(findComponent(BlobContentEdit).exists()).toBe(false);
-    });
-
-    it('does not render loader if when blob is not supplied', () => {
-      createComponent();
-      expect(wrapper.contains(GlLoadingIcon)).toBe(false);
-      expect(findComponent(BlobContentEdit).exists()).toBe(true);
+    it('does not make API request', () => {
+      expect(axiosMock.history.get).toHaveLength(0);
     });
   });
 
-  describe('functionality', () => {
-    it('does not fail without blob', () => {
-      const spy = jest.spyOn(global.console, 'error');
-      createComponent({ blob: undefined });
-
-      expect(spy).not.toHaveBeenCalled();
-      expect(findComponent(BlobContentEdit).exists()).toBe(true);
+  describe.each`
+    props                                                       | showLoading | showContent
+    ${{ blob: TEST_BLOB, canDelete: true, showDelete: true }}   | ${true}     | ${false}
+    ${{ blob: TEST_BLOB, canDelete: false, showDelete: false }} | ${true}     | ${false}
+    ${{ blob: TEST_BLOB_LOADED }}                               | ${false}    | ${true}
+  `('with $props', ({ props, showLoading, showContent }) => {
+    beforeEach(() => {
+      createComponent(props);
     });
 
-    it.each`
-      emitter            | prop
-      ${BlobHeaderEdit}  | ${'filePath'}
-      ${BlobContentEdit} | ${'content'}
-    `('emits "blob-updated" event when the $prop gets changed', ({ emitter, prop }) => {
-      expect(wrapper.emitted('blob-updated')).toBeUndefined();
-      const newValue = 'foo.bar';
-      findComponent(emitter).vm.$emit('input', newValue);
+    it('shows blob header', () => {
+      const { canDelete = true, showDelete = false } = props;
 
-      return nextTick().then(() => {
-        expect(wrapper.emitted('blob-updated')[0]).toEqual([
-          expect.objectContaining({
-            [prop]: newValue,
-          }),
-        ]);
+      expect(findHeader().props()).toMatchObject({
+        canDelete,
+        showDelete,
       });
     });
 
-    describe('fetching blob content', () => {
-      const bootstrapForExistingSnippet = resp => {
-        createComponent({
-          blob: {
-            ...blob,
-            content: '',
-          },
+    it(`handles loading icon (show=${showLoading})`, () => {
+      expect(findLoadingIcon().exists()).toBe(showLoading);
+    });
+
+    it(`handles content (show=${showContent})`, () => {
+      expect(findContent().exists()).toBe(showContent);
+
+      if (showContent) {
+        expect(findContent().props()).toEqual({
+          value: TEST_BLOB_LOADED.content,
+          fileGlobalId: TEST_BLOB_LOADED.id,
+          fileName: TEST_BLOB_LOADED.path,
         });
-
-        if (resp === 500) {
-          axiosMock.onGet('contentApiURL').reply(500);
-        } else {
-          axiosMock.onGet('contentApiURL').reply(200, contentMock);
-        }
-      };
-
-      const bootstrapForNewSnippet = () => {
-        createComponent();
-      };
-
-      it('fetches blob content with the additional query', () => {
-        bootstrapForExistingSnippet();
-
-        return waitForPromises().then(() => {
-          expect(joinPaths).toHaveBeenCalledWith('foo/', rawPathMock);
-          expect(findComponent(BlobHeaderEdit).props('value')).toBe(pathMock);
-          expect(findComponent(BlobContentEdit).props('value')).toBe(contentMock);
-        });
-      });
-
-      it('flashes the error message if fetching content fails', () => {
-        bootstrapForExistingSnippet(500);
-
-        return waitForPromises().then(() => {
-          expect(flashSpy).toHaveBeenCalled();
-          expect(findComponent(BlobContentEdit).props('value')).toBe('');
-        });
-      });
-
-      it('does not fetch content for new snippet', () => {
-        bootstrapForNewSnippet();
-
-        return waitForPromises().then(() => {
-          // we keep using waitForPromises to make sure we do not run failed test
-          expect(findComponent(BlobHeaderEdit).props('value')).toBe('');
-          expect(findComponent(BlobContentEdit).props('value')).toBe('');
-          expect(joinPaths).not.toHaveBeenCalled();
-        });
-      });
+      }
     });
   });
 });

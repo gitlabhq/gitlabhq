@@ -15,7 +15,7 @@ export default {
     canDelete: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
     showDelete: {
       type: Boolean,
