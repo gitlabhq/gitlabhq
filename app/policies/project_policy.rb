@@ -579,8 +579,13 @@ class ProjectPolicy < BasePolicy
 
   private
 
+  def user_is_user?
+    user.is_a?(User)
+  end
+
   def team_member?
     return false if @user.nil?
+    return false unless user_is_user?
 
     greedy_load_subject = false
 
@@ -608,6 +613,7 @@ class ProjectPolicy < BasePolicy
   # rubocop: disable CodeReuse/ActiveRecord
   def project_group_member?
     return false if @user.nil?
+    return false unless user_is_user?
 
     project.group &&
       (
@@ -619,6 +625,7 @@ class ProjectPolicy < BasePolicy
 
   def team_access_level
     return -1 if @user.nil?
+    return -1 unless user_is_user?
 
     lookup_access_level!
   end
