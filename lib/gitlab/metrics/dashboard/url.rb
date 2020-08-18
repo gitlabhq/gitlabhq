@@ -43,6 +43,39 @@ module Gitlab
             end
           end
 
+          # Matches dashboard urls for a metric chart embed
+          # for cluster metrics
+          #
+          # EX - https://<host>/<namespace>/<project>/-/clusters/<cluster_id>/?group=Cluster%20Health&title=Memory%20Usage&y_label=Memory%20(GiB)
+          def clusters_regex
+            strong_memoize(:clusters_regex) do
+              regex_for_project_metrics(
+                %r{
+                  /clusters
+                  /(?<cluster_id>\d+)
+                  /?
+                }x
+              )
+            end
+          end
+
+          # Matches dashboard urls for a metric chart embed
+          # for a specifc firing GitLab alert
+          #
+          # EX - https://<host>/<namespace>/<project>/prometheus/alerts/<alert_id>/metrics_dashboard
+          def alert_regex
+            strong_memoize(:alert_regex) do
+              regex_for_project_metrics(
+                %r{
+                  /prometheus
+                  /alerts
+                  /(?<alert>\d+)
+                  /metrics_dashboard
+                }x
+              )
+            end
+          end
+
           # Parses query params out from full url string into hash.
           #
           # Ex) 'https://<root>/<project>/<environment>/metrics?title=Title&group=Group'
@@ -58,22 +91,6 @@ module Gitlab
           # Builds a metrics dashboard url based on the passed in arguments
           def build_dashboard_url(*args)
             Gitlab::Routing.url_helpers.metrics_dashboard_namespace_project_environment_url(*args)
-          end
-
-          # Matches dashboard urls for a metric chart embed
-          # for cluster metrics
-          #
-          # EX - https://<host>/<namespace>/<project>/-/clusters/<cluster_id>/?group=Cluster%20Health&title=Memory%20Usage&y_label=Memory%20(GiB)
-          def clusters_regex
-            strong_memoize(:clusters_regex) do
-              regex_for_project_metrics(
-                %r{
-                  /clusters
-                  /(?<cluster_id>\d+)
-                  /?
-                }x
-              )
-            end
           end
 
           private
@@ -107,5 +124,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Metrics::Dashboard::Url.extend_if_ee('::EE::Gitlab::Metrics::Dashboard::Url')

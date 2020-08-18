@@ -28,20 +28,28 @@ module API
             present_download_urls(::API::Entities::ConanPackage::ConanRecipeManifest, &:recipe_urls)
           end
 
-          def recipe_upload_urls(file_names)
+          def recipe_upload_urls
             { upload_urls: Hash[
-              file_names.collect do |file_name|
+              file_names.select(&method(:recipe_file?)).map do |file_name|
                 [file_name, recipe_file_upload_url(file_name)]
               end
             ] }
           end
 
-          def package_upload_urls(file_names)
+          def package_upload_urls
             { upload_urls: Hash[
-              file_names.collect do |file_name|
+              file_names.select(&method(:package_file?)).map do |file_name|
                 [file_name, package_file_upload_url(file_name)]
               end
             ] }
+          end
+
+          def recipe_file?(file_name)
+            file_name.in?(::Packages::Conan::FileMetadatum::RECIPE_FILES)
+          end
+
+          def package_file?(file_name)
+            file_name.in?(::Packages::Conan::FileMetadatum::PACKAGE_FILES)
           end
 
           def package_file_upload_url(file_name)
@@ -128,6 +136,14 @@ module API
             if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY && params['file.size'] > 0
               track_event('push_package')
             end
+          end
+
+          def file_names
+            json_payload = Gitlab::Json.parse(request.body.string)
+
+            bad_request!(nil) unless json_payload.is_a?(Hash)
+
+            json_payload.keys
           end
 
           def create_package_file_with_type(file_type, current_package)

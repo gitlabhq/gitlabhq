@@ -7,7 +7,6 @@ class RemoveNotNullConstraintOnTypeFromAuditEvents < ActiveRecord::Migration[6.0
 
   disable_ddl_transaction!
 
-  # rubocop:disable Migration/WithLockRetriesDisallowedMethod
   # To avoid deadlock on audit_event and audit_event_part... since there is a trigger to insert record from audit_events
   # to audit_events_part..., we need to ensure each ALTER TABLE command run in its own transaction.
   def up
@@ -19,7 +18,6 @@ class RemoveNotNullConstraintOnTypeFromAuditEvents < ActiveRecord::Migration[6.0
       change_column_null :audit_events, :type, true
     end
   end
-  # rubocop:enable Migration/WithLockRetriesDisallowedMethod
 
   def down
     # no-op -- null values might be added after this constraint is removed.

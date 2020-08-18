@@ -1,0 +1,5 @@
+---
+title: Fixed discussion not expanding when replying to a collapsed discussion
+merge_request: 39571
+author:
+type: fixed

@@ -168,6 +168,7 @@ The following table depicts the various user permission levels in a project.
 | View Code Review analytics **(STARTER)**          |         | ✓          | ✓           | ✓        | ✓      |
 | View Insights **(ULTIMATE)**                      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View Issues analytics **(PREMIUM)**               | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View Merge Request analytics **(STARTER)**        | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View Repository analytics                         |         | ✓          | ✓           | ✓        | ✓      |
 | View Value Stream analytics                       | ✓       | ✓          | ✓           | ✓        | ✓      |
 

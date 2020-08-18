@@ -3,7 +3,7 @@
 module Gitlab
   module Regex
     module Packages
-      CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt].freeze
+      CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt conan_sources.tgz conan_export.tgz].freeze
       CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
 
       def conan_file_name_regex

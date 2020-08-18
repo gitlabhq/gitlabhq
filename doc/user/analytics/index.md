@@ -38,6 +38,7 @@ The following analytics features are available at the project level:
 - [Code Review](code_review_analytics.md). **(STARTER)**
 - [Insights](../group/insights/index.md). **(ULTIMATE)**
 - [Issues](../group/issues_analytics/index.md). **(PREMIUM)**
+- [Merge Request](merge_request_analytics.md). **(STARTER)**
 - [Repository](repository_analytics.md).
 - [Value Stream](value_stream_analytics.md), enabled with the `cycle_analytics`
   [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development). **(STARTER)**

@@ -18,6 +18,7 @@ module RuboCop
           remove_column
           execute
           change_column_default
+          change_column_null
           remove_foreign_key_if_exists
           remove_foreign_key_without_error
           table_exists?

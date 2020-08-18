@@ -166,6 +166,14 @@
     color: inherit;
   }
 
+  // TODO remove this class once we can generate a correct hover utility from `gitlab/ui`,
+  // see here: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39286#note_396767000
+  .btn-link-hover:hover {
+    * {
+      @include gl-text-blue-800;
+    }
+  }
+
   .issuable-header-text {
     margin-top: 7px;
   }

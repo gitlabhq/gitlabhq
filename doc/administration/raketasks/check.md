@@ -135,3 +135,22 @@ The LDAP check Rake task will test the bind DN and password credentials
 (if configured) and will list a sample of LDAP users. This task is also
 executed as part of the `gitlab:check` task, but can run independently.
 See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.
+
+## Troubleshooting
+
+The following are solutions to problems you might discover using the Rake tasks documented
+above.
+
+### Dangling commits
+
+`gitlab:git:fsck` can find dangling commits. To fix them, try
+[manually triggering housekeeping](../housekeeping.md#manual-housekeeping)
+for the affected project(s).
+
+If the issue persists, try triggering `gc` via the
+[Rails Console](../troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session):
+
+```ruby
+p = Project.find_by_path("project-name")
+Projects::HousekeepingService.new(p, :gc).execute
+```

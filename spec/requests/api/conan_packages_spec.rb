@@ -331,6 +331,18 @@ RSpec.describe API::ConanPackages do
         .and_return(presenter)
     end
 
+    shared_examples 'rejects invalid upload_url params' do
+      context 'with unaccepted json format' do
+        let(:params) { %w[foo bar] }
+
+        it 'returns 400' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+    end
+
     describe 'GET /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel' do
       let(:recipe_path) { package.conan_recipe_path }
 
@@ -418,13 +430,14 @@ RSpec.describe API::ConanPackages do
       let(:recipe_path) { package.conan_recipe_path }
 
       let(:params) do
-        { "conanfile.py": 24,
-          "conanmanifext.txt": 123 }
+        { 'conanfile.py': 24,
+          'conanmanifest.txt': 123 }
       end
 
-      subject { post api("/packages/conan/v1/conans/#{recipe_path}/upload_urls"), params: params, headers: headers }
+      subject { post api("/packages/conan/v1/conans/#{recipe_path}/upload_urls"), params: params.to_json, headers: headers }
 
       it_behaves_like 'rejects invalid recipe'
+      it_behaves_like 'rejects invalid upload_url params'
 
       it 'returns a set of upload urls for the files requested' do
         subject
@@ -436,20 +449,58 @@ RSpec.describe API::ConanPackages do
 
         expect(response.body).to eq(expected_response.to_json)
       end
+
+      context 'with conan_sources and conan_export files' do
+        let(:params) do
+          { 'conan_sources.tgz': 345,
+            'conan_export.tgz': 234,
+            'conanmanifest.txt': 123 }
+        end
+
+        it 'returns upload urls for the additional files' do
+          subject
+
+          expected_response = {
+            'conan_sources.tgz': "#{Settings.gitlab.base_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conan_sources.tgz",
+            'conan_export.tgz':  "#{Settings.gitlab.base_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conan_export.tgz",
+            'conanmanifest.txt': "#{Settings.gitlab.base_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanmanifest.txt"
+          }
+
+          expect(response.body).to eq(expected_response.to_json)
+        end
+      end
+
+      context 'with an invalid file' do
+        let(:params) do
+          { 'invalid_file.txt': 10,
+            'conanmanifest.txt': 123 }
+        end
+
+        it 'does not return the invalid file as an upload_url' do
+          subject
+
+          expected_response = {
+            'conanmanifest.txt': "#{Settings.gitlab.base_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanmanifest.txt"
+          }
+
+          expect(response.body).to eq(expected_response.to_json)
+        end
+      end
     end
 
     describe 'POST /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel/packages/:conan_package_reference/upload_urls' do
       let(:recipe_path) { package.conan_recipe_path }
 
       let(:params) do
-        { "conaninfo.txt": 24,
-          "conanmanifext.txt": 123,
-          "conan_package.tgz": 523 }
+        { 'conaninfo.txt': 24,
+          'conanmanifest.txt': 123,
+          'conan_package.tgz': 523 }
       end
 
-      subject { post api("/packages/conan/v1/conans/#{recipe_path}/packages/123456789/upload_urls"), params: params, headers: headers }
+      subject { post api("/packages/conan/v1/conans/#{recipe_path}/packages/123456789/upload_urls"), params: params.to_json, headers: headers }
 
       it_behaves_like 'rejects invalid recipe'
+      it_behaves_like 'rejects invalid upload_url params'
 
       it 'returns a set of upload urls for the files requested' do
         expected_response = {
@@ -461,6 +512,23 @@ RSpec.describe API::ConanPackages do
         subject
 
         expect(response.body).to eq(expected_response.to_json)
+      end
+
+      context 'with invalid files' do
+        let(:params) do
+          { 'conaninfo.txt': 24,
+            'invalid_file.txt': 10 }
+        end
+
+        it 'returns upload urls only for the valid requested files' do
+          expected_response = {
+            'conaninfo.txt': "#{Settings.gitlab.base_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conaninfo.txt"
+          }
+
+          subject
+
+          expect(response.body).to eq(expected_response.to_json)
+        end
       end
     end
 

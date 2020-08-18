@@ -89,6 +89,23 @@ describe('noteable_discussion component', () => {
         });
     });
 
+    it('should expand discussion', async () => {
+      const expandDiscussion = jest.fn();
+      const discussion = { ...discussionMock };
+      discussion.expanded = false;
+
+      wrapper.setProps({ discussion });
+      wrapper.setMethods({ expandDiscussion });
+
+      await wrapper.vm.$nextTick();
+
+      wrapper.vm.showReplyForm();
+
+      await wrapper.vm.$nextTick();
+
+      expect(expandDiscussion).toHaveBeenCalledWith({ discussionId: discussion.id });
+    });
+
     it('does not render jump to thread button', () => {
       expect(wrapper.find('*[data-original-title="Jump to next unresolved thread"]').exists()).toBe(
         false,

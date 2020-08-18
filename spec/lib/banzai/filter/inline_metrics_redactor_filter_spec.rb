@@ -74,5 +74,20 @@ RSpec.describe Banzai::Filter::InlineMetricsRedactorFilter do
         end
       end
     end
+
+    context 'for an alert embed' do
+      let_it_be(:alert) { create(:prometheus_alert, project: project) }
+      let(:url) do
+        urls.metrics_dashboard_project_prometheus_alert_url(
+          project,
+          alert.prometheus_metric_id,
+          environment_id: alert.environment_id,
+          embedded: true
+        )
+      end
+
+      it_behaves_like 'redacts the embed placeholder'
+      it_behaves_like 'retains the embed placeholder when applicable'
+    end
   end
 end

@@ -149,9 +149,14 @@ export default {
       'removePlaceholderNotes',
       'toggleResolveNote',
       'removeConvertedDiscussion',
+      'expandDiscussion',
     ]),
     showReplyForm() {
       this.isReplying = true;
+
+      if (!this.discussion.expanded) {
+        this.expandDiscussion({ discussionId: this.discussion.id });
+      }
     },
     cancelReplyForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {

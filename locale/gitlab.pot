@@ -5105,6 +5105,12 @@ msgstr ""
 msgid "Cluster type must be specificed for Stages::ClusterEndpointInserter"
 msgstr ""
 
+msgid "ClusterAgent|This feature is only available for premium plans"
+msgstr ""
+
+msgid "ClusterAgent|You have insufficient permissions to create a cluster agent for this project"
+msgstr ""
+
 msgid "ClusterIntegration| This will permanently delete the following resources: <ul> <li>All installed applications and related resources</li> <li>The <code>gitlab-managed-apps</code> namespace</li> <li>Any project namespaces</li> <li><code>clusterroles</code></li> <li><code>clusterrolebindings</code></li> </ul>"
 msgstr ""
 

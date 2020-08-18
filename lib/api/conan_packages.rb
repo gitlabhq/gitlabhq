@@ -189,9 +189,7 @@ module API
           authorize!(:read_package, project)
 
           status 200
-          upload_urls = package_upload_urls(::Packages::Conan::FileMetadatum::PACKAGE_FILES)
-
-          present upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
+          present package_upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
         end
 
         desc 'Recipe Upload Urls' do
@@ -202,9 +200,7 @@ module API
           authorize!(:read_package, project)
 
           status 200
-          upload_urls = recipe_upload_urls(::Packages::Conan::FileMetadatum::RECIPE_FILES)
-
-          present upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
+          present recipe_upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
         end
 
         desc 'Delete Package' do

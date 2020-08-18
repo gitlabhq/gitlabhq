@@ -13,13 +13,14 @@ RSpec.describe SnippetBlobPresenter do
     subject { described_class.new(snippet.blob).rich_data }
 
     context 'with PersonalSnippet' do
-      let(:raw_url) { "http://127.0.0.1:3000/-/snippets/#{snippet.id}/raw" }
-      let(:snippet) { build(:personal_snippet) }
+      let(:snippet) { create(:personal_snippet, :repository) }
 
-      it 'returns nil when the snippet blob is binary' do
-        allow(snippet.blob).to receive(:binary?).and_return(true)
+      context 'when blob is binary' do
+        it 'returns the HTML associated with the binary' do
+          allow(snippet).to receive(:blob).and_return(snippet.repository.blob_at('master', 'files/images/logo-black.png'))
 
-        expect(subject).to be_nil
+          expect(subject).to include('file-content image_file')
+        end
       end
 
       context 'with markdown format' do
@@ -108,7 +109,7 @@ RSpec.describe SnippetBlobPresenter do
     end
   end
 
-  describe '#raw_path' do
+  describe 'route helpers' do
     let_it_be(:project)          { create(:project) }
     let_it_be(:user)             { create(:user) }
     let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
@@ -118,28 +119,62 @@ RSpec.describe SnippetBlobPresenter do
       project.add_developer(user)
     end
 
-    subject { described_class.new(snippet.blobs.first, current_user: user).raw_path }
+    describe '#raw_path' do
+      subject { described_class.new(snippet.blobs.first, current_user: user).raw_path }
 
-    it_behaves_like 'snippet blob raw path'
+      it_behaves_like 'snippet blob raw path'
 
-    context 'with snippet_multiple_files feature disabled' do
-      before do
-        stub_feature_flags(snippet_multiple_files: false)
-      end
+      context 'with snippet_multiple_files feature disabled' do
+        before do
+          stub_feature_flags(snippet_multiple_files: false)
+        end
 
-      context 'with ProjectSnippet' do
-        let(:snippet) { project_snippet }
+        context 'with ProjectSnippet' do
+          let(:snippet) { project_snippet }
 
-        it 'returns the raw path' do
-          expect(subject).to eq "/#{snippet.project.full_path}/-/snippets/#{snippet.id}/raw"
+          it 'returns the raw path' do
+            expect(subject).to eq "/#{snippet.project.full_path}/-/snippets/#{snippet.id}/raw"
+          end
+        end
+
+        context 'with PersonalSnippet' do
+          let(:snippet) { personal_snippet }
+
+          it 'returns the raw path' do
+            expect(subject).to eq "/-/snippets/#{snippet.id}/raw"
+          end
         end
       end
+    end
 
-      context 'with PersonalSnippet' do
-        let(:snippet) { personal_snippet }
+    describe '#raw_url' do
+      subject { described_class.new(snippet.blobs.first, current_user: user).raw_url }
 
-        it 'returns the raw path' do
-          expect(subject).to eq "/-/snippets/#{snippet.id}/raw"
+      before do
+        stub_default_url_options(host: 'test.host')
+      end
+
+      it_behaves_like 'snippet blob raw url'
+
+      context 'with snippet_multiple_files feature disabled' do
+        before do
+          stub_feature_flags(snippet_multiple_files: false)
+        end
+
+        context 'with ProjectSnippet' do
+          let(:snippet) { project_snippet }
+
+          it 'returns the raw project snippet url' do
+            expect(subject).to eq("http://test.host/#{project_snippet.project.full_path}/-/snippets/#{project_snippet.id}/raw")
+          end
+        end
+
+        context 'with PersonalSnippet' do
+          let(:snippet) { personal_snippet }
+
+          it 'returns the raw personal snippet url' do
+            expect(subject).to eq("http://test.host/-/snippets/#{personal_snippet.id}/raw")
+          end
         end
       end
     end

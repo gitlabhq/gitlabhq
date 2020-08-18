@@ -160,15 +160,12 @@
     .loading.hide
       .spinner.spinner-md
 
-  - if profile_tabs.empty?
-    .row
-      .col-12
-        .svg-content
-          = image_tag 'illustrations/profile_private_mode.svg'
-      .col-12.text-center
-        .text-content
-          %h4
-            - if @user.blocked?
-              = s_('UserProfile|This user is blocked')
-            - else
-              = s_('UserProfile|This user has a private profile')
+    - if profile_tabs.empty?
+      .svg-content
+        = image_tag 'illustrations/profile_private_mode.svg'
+      .text-content.text-center
+        %h4
+          - if @user.blocked?
+            = s_('UserProfile|This user is blocked')
+          - else
+            = s_('UserProfile|This user has a private profile')

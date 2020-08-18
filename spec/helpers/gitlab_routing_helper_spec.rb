@@ -224,21 +224,10 @@ RSpec.describe GitlabRoutingHelper do
 
       subject { gitlab_raw_snippet_blob_url(snippet, blob.path, ref, args) }
 
-      context 'for a PersonalSnippet' do
-        let(:snippet) { personal_snippet }
-
-        it { expect(subject).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}") }
-      end
-
-      context 'for a ProjectSnippet' do
-        let(:snippet) { project_snippet }
-
-        it { expect(subject).to eq("http://test.host/#{snippet.project.full_path}/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}") }
-      end
+      it_behaves_like 'snippet blob raw url'
 
       context 'when an argument is set' do
         let(:args) { { inline: true } }
-
         let(:snippet) { personal_snippet }
 
         it { expect(subject).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}?inline=true") }
