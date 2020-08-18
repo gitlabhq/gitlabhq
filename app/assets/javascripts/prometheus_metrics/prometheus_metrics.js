@@ -87,16 +87,15 @@ export default class PrometheusMetrics {
 
     if (totalMonitoredMetrics === 0) {
       const emptyCommonMetricsText = sprintf(
-        s__(
-          'PrometheusService|<p class="text-tertiary">No <a href="%{docsUrl}">common metrics</a> were found</p>',
-        ),
+        s__('PrometheusService|No %{docsUrlStart}common metrics%{docsUrlEnd} were found'),
         {
-          docsUrl: this.helpMetricsPath,
+          docsUrlStart: `<a href="${this.helpMetricsPath}">`,
+          docsUrlEnd: '</a>',
         },
         false,
       );
       this.$monitoredMetricsEmpty.empty();
-      this.$monitoredMetricsEmpty.append(emptyCommonMetricsText);
+      this.$monitoredMetricsEmpty.append(`<p class="text-tertiary">${emptyCommonMetricsText}</p>`);
       this.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
     } else {
       const metricsCountText = sprintf(

@@ -47,7 +47,7 @@ module Gitlab
 
             # We need to remove any newlines since our UrlBlocker does not allow
             # multiline URLs.
-            query.squish
+            query.to_s.squish
           end
         end
       end

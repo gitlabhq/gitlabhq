@@ -2,7 +2,7 @@ import { shallowMount, mount } from '@vue/test-utils';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
-import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
+import { ESC_KEY } from '~/lib/utils/keys';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { dashboardEmptyStates, metricStates } from '~/monitoring/constants';
@@ -561,15 +561,6 @@ describe('Dashboard', () => {
 
       it('restores dashboard from full screen by typing the Escape key', () => {
         mockKeyup(ESC_KEY);
-        expect(store.dispatch).toHaveBeenCalledWith(
-          `monitoringDashboard/clearExpandedPanel`,
-          undefined,
-        );
-      });
-
-      it('restores dashboard from full screen by typing the Escape key on IE11', () => {
-        mockKeyup(ESC_KEY_IE11);
-
         expect(store.dispatch).toHaveBeenCalledWith(
           `monitoringDashboard/clearExpandedPanel`,
           undefined,

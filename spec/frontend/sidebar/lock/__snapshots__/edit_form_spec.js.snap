@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Edit Form Dropdown In issue page when locked the appropriate warning text is rendered 1`] = `
+<div
+  class="dropdown-menu sidebar-item-warning-message"
+  data-testid="warning-text"
+>
+  <p
+    class="text"
+  >
+    <gl-sprintf-stub
+      message="Unlock this %{issuableDisplayName}? %{strongStart}Everyone%{strongEnd} will be able to comment."
+    />
+  </p>
+   
+  <edit-form-buttons-stub
+    islocked="true"
+    issuabledisplayname="issue"
+  />
+</div>
+`;
+
+exports[`Edit Form Dropdown In issue page when unlocked the appropriate warning text is rendered 1`] = `
+<div
+  class="dropdown-menu sidebar-item-warning-message"
+  data-testid="warning-text"
+>
+  <p
+    class="text"
+  >
+    <gl-sprintf-stub
+      message="Lock this %{issuableDisplayName}? Only %{strongStart}project members%{strongEnd} will be able to comment."
+    />
+  </p>
+   
+  <edit-form-buttons-stub
+    issuabledisplayname="issue"
+  />
+</div>
+`;
+
+exports[`Edit Form Dropdown In merge request page when locked the appropriate warning text is rendered 1`] = `
+<div
+  class="dropdown-menu sidebar-item-warning-message"
+  data-testid="warning-text"
+>
+  <p
+    class="text"
+  >
+    <gl-sprintf-stub
+      message="Unlock this %{issuableDisplayName}? %{strongStart}Everyone%{strongEnd} will be able to comment."
+    />
+  </p>
+   
+  <edit-form-buttons-stub
+    islocked="true"
+    issuabledisplayname="merge request"
+  />
+</div>
+`;
+
+exports[`Edit Form Dropdown In merge request page when unlocked the appropriate warning text is rendered 1`] = `
+<div
+  class="dropdown-menu sidebar-item-warning-message"
+  data-testid="warning-text"
+>
+  <p
+    class="text"
+  >
+    <gl-sprintf-stub
+      message="Lock this %{issuableDisplayName}? Only %{strongStart}project members%{strongEnd} will be able to comment."
+    />
+  </p>
+   
+  <edit-form-buttons-stub
+    issuabledisplayname="merge request"
+  />
+</div>
+`;

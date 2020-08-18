@@ -434,6 +434,13 @@ RSpec.describe Notes::CreateService do
             .and change { existing_note.updated_at }
       end
 
+      it 'returns a DiscussionNote with its parent discussion refreshed correctly' do
+        discussion_notes = subject.discussion.notes
+
+        expect(discussion_notes.size).to eq(2)
+        expect(discussion_notes.first).to be_a(DiscussionNote)
+      end
+
       context 'discussion to reply cannot be found' do
         before do
           existing_note.delete

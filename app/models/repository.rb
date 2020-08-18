@@ -220,6 +220,7 @@ class Repository
       prefix_regex.match?(ref)
     end
   end
+  cache_method :has_ambiguous_refs?
 
   def expand_ref(ref)
     if tag_exists?(ref)
@@ -311,12 +312,12 @@ class Repository
   end
 
   def expire_tags_cache
-    expire_method_caches(%i(tag_names tag_count))
+    expire_method_caches(%i(tag_names tag_count has_ambiguous_refs?))
     @tags = nil
   end
 
   def expire_branches_cache
-    expire_method_caches(%i(branch_names merged_branch_names branch_count has_visible_content?))
+    expire_method_caches(%i(branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?))
     @local_branches = nil
     @branch_exists_memo = nil
   end

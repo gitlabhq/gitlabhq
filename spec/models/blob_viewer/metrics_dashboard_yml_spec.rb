@@ -13,11 +13,11 @@ RSpec.describe BlobViewer::MetricsDashboardYml do
   subject(:viewer) { described_class.new(blob) }
 
   context 'when the definition is valid' do
-    let(:data) { File.read(Rails.root.join('config/prometheus/common_metrics.yml')) }
+    let(:data) { fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')}
 
     describe '#valid?' do
       it 'calls prepare! on the viewer' do
-        allow(PerformanceMonitoring::PrometheusDashboard).to receive(:from_json)
+        allow(Gitlab::Metrics::Dashboard::Validator).to receive(:errors)
 
         expect(viewer).to receive(:prepare!)
 
@@ -30,46 +30,44 @@ RSpec.describe BlobViewer::MetricsDashboardYml do
         expect_next_instance_of(::Gitlab::Config::Loader::Yaml, data) do |loader|
           expect(loader).to receive(:load_raw!).and_call_original
         end
-        expect(PerformanceMonitoring::PrometheusDashboard)
-          .to receive(:from_json)
-          .with(yml)
+        expect(Gitlab::Metrics::Dashboard::Validator)
+          .to receive(:errors)
+          .with(yml, dashboard_path: '.gitlab/dashboards/custom-dashboard.yml', project: project)
           .and_call_original
         expect(viewer.valid?).to be_truthy
       end
     end
 
     describe '#errors' do
-      it 'returns nil' do
-        allow(PerformanceMonitoring::PrometheusDashboard).to receive(:from_json)
+      it 'returns empty array' do
+        allow(Gitlab::Metrics::Dashboard::Validator).to receive(:errors).and_return([])
 
-        expect(viewer.errors).to be nil
+        expect(viewer.errors).to eq []
       end
     end
   end
 
   context 'when definition is invalid' do
-    let(:error) { ActiveModel::ValidationError.new(PerformanceMonitoring::PrometheusDashboard.new.tap(&:validate)) }
+    let(:error) { ::Gitlab::Metrics::Dashboard::Validator::Errors::SchemaValidationError.new }
     let(:data) do
       <<~YAML
         dashboard:
       YAML
     end
 
+    before do
+      allow(Gitlab::Metrics::Dashboard::Validator).to receive(:errors).and_return([error])
+    end
+
     describe '#valid?' do
       it 'returns false' do
-        expect(PerformanceMonitoring::PrometheusDashboard)
-          .to receive(:from_json).and_raise(error)
-
-        expect(viewer.valid?).to be_falsey
+        expect(viewer.valid?).to be false
       end
     end
 
     describe '#errors' do
       it 'returns validation errors' do
-        allow(PerformanceMonitoring::PrometheusDashboard)
-          .to receive(:from_json).and_raise(error)
-
-        expect(viewer.errors).to be error.model.errors
+        expect(viewer.errors).to eq [error]
       end
     end
   end
@@ -85,17 +83,14 @@ RSpec.describe BlobViewer::MetricsDashboardYml do
 
     describe '#valid?' do
       it 'returns false' do
-        expect(PerformanceMonitoring::PrometheusDashboard).not_to receive(:from_json)
-        expect(viewer.valid?).to be_falsey
+        expect(Gitlab::Metrics::Dashboard::Validator).not_to receive(:errors)
+        expect(viewer.valid?).to be false
       end
     end
 
     describe '#errors' do
       it 'returns validation errors' do
-        yaml_wrapped_errors = { 'YAML syntax': ["(<unknown>): did not find expected key while parsing a block mapping at line 1 column 1"] }
-
-        expect(viewer.errors).to be_kind_of ActiveModel::Errors
-        expect(viewer.errors.messages).to eql(yaml_wrapped_errors)
+        expect(viewer.errors).to all be_kind_of Gitlab::Config::Loader::FormatError
       end
     end
   end
@@ -113,15 +108,12 @@ RSpec.describe BlobViewer::MetricsDashboardYml do
     end
 
     it 'is invalid' do
-      expect(PerformanceMonitoring::PrometheusDashboard).not_to receive(:from_json)
-      expect(viewer.valid?).to be(false)
+      expect(Gitlab::Metrics::Dashboard::Validator).not_to receive(:errors)
+      expect(viewer.valid?).to be false
     end
 
     it 'returns validation errors' do
-      yaml_wrapped_errors = { 'YAML syntax': ["The parsed YAML is too big"] }
-
-      expect(viewer.errors).to be_kind_of(ActiveModel::Errors)
-      expect(viewer.errors.messages).to eq(yaml_wrapped_errors)
+      expect(viewer.errors).to all be_kind_of Gitlab::Config::Loader::FormatError
     end
   end
 end

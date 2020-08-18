@@ -31146,6 +31146,20 @@
               "deprecationReason": null
             },
             {
+              "name": "user",
+              "description": "Pipeline user",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "userPermissions",
               "description": "Permissions for the current user on the resource",
               "args": [
@@ -48276,6 +48290,20 @@
               "deprecationReason": null
             },
             {
+              "name": "email",
+              "description": "User email",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "groupMemberships",
               "description": "Group memberships of the user",
               "args": [
@@ -48522,6 +48550,20 @@
                   "name": "UserState",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "status",
+              "description": "User status",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserStatus",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -48941,6 +48983,61 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UserStatus",
+          "description": null,
+          "fields": [
+            {
+              "name": "emoji",
+              "description": "String representation of emoji",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "message",
+              "description": "User status message",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "messageHtml",
+              "description": "HTML of the user status message",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
           "possibleTypes": null
         },
         {

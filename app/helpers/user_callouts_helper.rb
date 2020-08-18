@@ -7,6 +7,7 @@ module UserCalloutsHelper
   SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
   TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
   WEBHOOKS_MOVED = 'webhooks_moved'
+  CUSTOMIZE_HOMEPAGE = 'customize_homepage'
 
   def show_admin_integrations_moved?
     !user_dismissed?(ADMIN_INTEGRATIONS_MOVED)
@@ -42,6 +43,10 @@ module UserCalloutsHelper
 
   def show_webhooks_moved_alert?
     !user_dismissed?(WEBHOOKS_MOVED)
+  end
+
+  def show_customize_homepage_banner?(customize_homepage)
+    customize_homepage && !user_dismissed?(CUSTOMIZE_HOMEPAGE)
   end
 
   private

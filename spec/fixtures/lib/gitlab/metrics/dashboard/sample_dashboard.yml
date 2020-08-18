@@ -48,7 +48,7 @@ panel_groups:
     y_label: "y_label"
     metrics:
     - id: metric_a2
-      query_range: 'query'
+      query_range: 2000
       label: Legend Label
       unit: unit
   - title: "Super Chart A1"

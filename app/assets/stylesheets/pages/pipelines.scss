@@ -796,7 +796,7 @@
   &.ci-status-icon-disabled,
   &.ci-status-icon-not-found,
   &.ci-status-icon-manual {
-    @include mini-pipeline-graph-color($white, $gray-500, $gray-800, $gray-900, $gray-950, $black);
+    @include mini-pipeline-graph-color($white, $gray-500, $gray-700, $gray-900, $gray-950, $black);
   }
 
   &.ci-status-icon-created,

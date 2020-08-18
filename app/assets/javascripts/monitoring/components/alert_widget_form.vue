@@ -7,8 +7,8 @@ import {
   GlButtonGroup,
   GlFormGroup,
   GlFormInput,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownItem,
+  GlNewDropdown as GlDropdown,
+  GlNewDropdownItem as GlDropdownItem,
   GlModal,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -40,8 +40,8 @@ export default {
     GlButtonGroup,
     GlFormGroup,
     GlFormInput,
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownItem,
+    GlDropdown,
+    GlDropdownItem,
     GlModal,
     GlLink,
     Icon,
@@ -251,20 +251,20 @@ export default {
         </template>
       </gl-form-group>
       <gl-form-group v-else label-for="alert-query-dropdown" :label="$options.alertQueryText.label">
-        <gl-deprecated-dropdown
+        <gl-dropdown
           id="alert-query-dropdown"
           :text="queryDropdownLabel"
-          toggle-class="dropdown-menu-toggle qa-alert-query-dropdown"
+          toggle-class="dropdown-menu-toggle gl-border-1! qa-alert-query-dropdown"
         >
-          <gl-deprecated-dropdown-item
+          <gl-dropdown-item
             v-for="query in relevantQueries"
             :key="query.metricId"
             data-qa-selector="alert_query_option"
             @click="selectQuery(query.metricId)"
           >
             {{ query.label }}
-          </gl-deprecated-dropdown-item>
-        </gl-deprecated-dropdown>
+          </gl-dropdown-item>
+        </gl-dropdown>
       </gl-form-group>
       <gl-button-group class="mb-3" :label="s__('PrometheusAlerts|Operator')">
         <gl-deprecated-button

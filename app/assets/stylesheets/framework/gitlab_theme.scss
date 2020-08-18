@@ -297,7 +297,7 @@ body {
       $gray-200,
       $gray-300,
       $gray-500,
-      $gray-800,
+      $gray-700,
       $gray-900,
       $white
     );
@@ -306,7 +306,7 @@ body {
   &.ui-light {
     @include gitlab-theme(
       $gray-500,
-      $gray-800,
+      $gray-700,
       $gray-500,
       $gray-500,
       $gray-50,

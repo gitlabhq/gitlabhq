@@ -1,10 +1,12 @@
 <script>
 import editFormButtons from './edit_form_buttons.vue';
-import { __, sprintf } from '../../../locale';
+import { __ } from '../../../locale';
+import { GlSprintf } from '@gitlab/ui';
 
 export default {
   components: {
     editFormButtons,
+    GlSprintf,
   },
   props: {
     confidential: {
@@ -22,25 +24,13 @@ export default {
   },
   computed: {
     confidentialityOnWarning() {
-      const accessLevel = __('at least Reporter access');
-
-      return sprintf(
-        __(
-          'You are going to turn on the confidentiality. This means that only team members with %{accessLevel} are able to see and leave comments on the %{issuableType}.',
-        ),
-        { issuableType: this.issuableType, accessLevel: `<strong>${accessLevel}</strong>` },
-        false,
+      return __(
+        'You are going to turn on the confidentiality. This means that only team members with %{strongStart}at least Reporter access%{strongEnd} are able to see and leave comments on the %{issuableType}.',
       );
     },
     confidentialityOffWarning() {
-      const accessLevel = __('everyone');
-
-      return sprintf(
-        __(
-          'You are going to turn off the confidentiality. This means %{accessLevel} will be able to see and leave a comment on this %{issuableType}.',
-        ),
-        { issuableType: this.issuableType, accessLevel: `<strong>${accessLevel}</strong>` },
-        false,
+      return __(
+        'You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see and leave a comment on this %{issuableType}.',
       );
     },
   },
@@ -51,8 +41,22 @@ export default {
   <div class="dropdown show">
     <div class="dropdown-menu sidebar-item-warning-message">
       <div>
-        <p v-if="!confidential" v-html="confidentialityOnWarning"></p>
-        <p v-else v-html="confidentialityOffWarning"></p>
+        <p v-if="!confidential">
+          <gl-sprintf :message="confidentialityOnWarning">
+            <template #strong="{ content }">
+              <strong>{{ content }}</strong>
+            </template>
+            <template #issuableType>{{ issuableType }}</template>
+          </gl-sprintf>
+        </p>
+        <p v-else>
+          <gl-sprintf :message="confidentialityOffWarning">
+            <template #strong="{ content }">
+              <strong>{{ content }}</strong>
+            </template>
+            <template #issuableType>{{ issuableType }}</template>
+          </gl-sprintf>
+        </p>
         <edit-form-buttons :full-path="fullPath" :confidential="confidential" />
       </div>
     </div>

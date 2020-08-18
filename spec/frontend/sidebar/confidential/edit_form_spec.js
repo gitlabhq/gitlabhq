@@ -23,14 +23,14 @@ describe('Edit Form Dropdown', () => {
   });
 
   describe('when not confidential', () => {
-    it('renders "You are going to turn off the confidentiality." in the ', () => {
+    it('renders "You are going to turn on the confidentiality." in the ', () => {
       createComponent({
         confidential: false,
         toggleForm,
         updateConfidentialAttribute,
       });
 
-      expect(wrapper.find('p').text()).toContain('You are going to turn on the confidentiality.');
+      expect(wrapper.element).toMatchSnapshot();
     });
   });
 
@@ -42,7 +42,7 @@ describe('Edit Form Dropdown', () => {
         updateConfidentialAttribute,
       });
 
-      expect(wrapper.find('p').text()).toContain('You are going to turn off the confidentiality.');
+      expect(wrapper.element).toMatchSnapshot();
     });
   });
 });

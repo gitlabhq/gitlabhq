@@ -54,7 +54,8 @@ module Notes
 
     def when_saved(note)
       if note.part_of_discussion? && note.discussion.can_convert_to_discussion?
-        note.discussion.convert_to_discussion!(save: true)
+        note.discussion.convert_to_discussion!.save
+        note.clear_memoization(:discussion)
       end
 
       todo_service.new_note(note, current_user)

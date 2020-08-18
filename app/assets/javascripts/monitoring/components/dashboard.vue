@@ -7,7 +7,7 @@ import DashboardHeader from './dashboard_header.vue';
 import DashboardPanel from './dashboard_panel.vue';
 import { s__ } from '~/locale';
 import createFlash from '~/flash';
-import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
+import { ESC_KEY } from '~/lib/utils/keys';
 import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -311,7 +311,7 @@ export default {
     },
     onKeyup(event) {
       const { key } = event;
-      if (key === ESC_KEY || key === ESC_KEY_IE11) {
+      if (key === ESC_KEY) {
         this.clearExpandedPanel();
       }
     },

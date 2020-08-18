@@ -16,6 +16,13 @@ module Types
       field :annotations, Types::Metrics::Dashboards::AnnotationType.connection_type, null: true,
             description: 'Annotations added to the dashboard',
             resolver: Resolvers::Metrics::Dashboards::AnnotationResolver
+
+      # In order to maintain backward compatibility we need to return NULL when there are no warnings
+      # and dashboard validation returns an empty array when there are no issues.
+      def schema_validation_warnings
+        warnings = object.schema_validation_warnings
+        warnings unless warnings.empty?
+      end
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

@@ -6,6 +6,7 @@ import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import Badge from './badge.vue';
 import BadgeForm from './badge_form.vue';
 import BadgeList from './badge_list.vue';
+import { GlSprintf } from '@gitlab/ui';
 
 export default {
   name: 'BadgeSettings',
@@ -14,14 +15,15 @@ export default {
     BadgeForm,
     BadgeList,
     GlModal: DeprecatedModal2,
+    GlSprintf,
+  },
+  i18n: {
+    deleteModalText: s__(
+      'Badges|You are going to delete this badge. Deleted badges %{strongStart}cannot%{strongEnd} be restored.',
+    ),
   },
   computed: {
     ...mapState(['badgeInModal', 'isEditing']),
-    deleteModalText() {
-      return s__(
-        'Badges|You are going to delete this badge. Deleted badges <strong>cannot</strong> be restored.',
-      );
-    },
   },
   methods: {
     ...mapActions(['deleteBadge']),
@@ -54,7 +56,13 @@ export default {
           :link-url="badgeInModal ? badgeInModal.renderedLinkUrl : ''"
         />
       </div>
-      <p v-html="deleteModalText"></p>
+      <p>
+        <gl-sprintf :message="$options.i18n.deleteModalText">
+          <template #strong="{ content }">
+            <strong>{{ content }}</strong>
+          </template>
+        </gl-sprintf>
+      </p>
     </gl-modal>
 
     <badge-form v-show="isEditing" :is-editing="true" />

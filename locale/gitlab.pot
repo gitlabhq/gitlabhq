@@ -697,6 +697,9 @@ msgstr ""
 msgid "%{state} epics"
 msgstr ""
 
+msgid "%{strongStart}Deletes%{strongEnd} source branch"
+msgstr ""
+
 msgid "%{strongStart}Note:%{strongEnd} Once a custom stage has been added you can re-order stages by dragging them into the desired position."
 msgstr ""
 
@@ -1073,9 +1076,6 @@ msgid ":%{startLine} to %{endLine}"
 msgstr ""
 
 msgid "< 1 hour"
-msgstr ""
-
-msgid "<strong>Deletes</strong> source branch"
 msgstr ""
 
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
@@ -3761,7 +3761,7 @@ msgstr ""
 msgid "Badges|This project has no badges"
 msgstr ""
 
-msgid "Badges|You are going to delete this badge. Deleted badges <strong>cannot</strong> be restored."
+msgid "Badges|You are going to delete this badge. Deleted badges %{strongStart}cannot%{strongEnd} be restored."
 msgstr ""
 
 msgid "Badges|Your badges"
@@ -5117,9 +5117,6 @@ msgstr ""
 msgid "ClusterAgent|You have insufficient permissions to create a cluster agent for this project"
 msgstr ""
 
-msgid "ClusterIntegration| This will permanently delete the following resources: <ul> <li>All installed applications and related resources</li> <li>The <code>gitlab-managed-apps</code> namespace</li> <li>Any project namespaces</li> <li><code>clusterroles</code></li> <li><code>clusterrolebindings</code></li> </ul>"
-msgstr ""
-
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
@@ -5174,6 +5171,9 @@ msgstr ""
 msgid "ClusterIntegration|All data will be deleted and cannot be restored."
 msgstr ""
 
+msgid "ClusterIntegration|All installed applications and related resources"
+msgstr ""
+
 msgid "ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster."
 msgstr ""
 
@@ -5196,6 +5196,9 @@ msgid "ClusterIntegration|An error occurred while trying to fetch your projects:
 msgstr ""
 
 msgid "ClusterIntegration|An error occurred while trying to fetch zone machine types: %{error}"
+msgstr ""
+
+msgid "ClusterIntegration|Any project namespaces"
 msgstr ""
 
 msgid "ClusterIntegration|Any running pipelines will be canceled."
@@ -5870,6 +5873,9 @@ msgstr ""
 msgid "ClusterIntegration|Subnets"
 msgstr ""
 
+msgid "ClusterIntegration|The %{gitlabNamespace} namespace"
+msgstr ""
+
 msgid "ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provision role, first create one on  %{startAwsLink}Amazon Web Services %{externalLinkIcon}%{endLink} using the above account and external IDs. %{startMoreInfoLink}More information%{endLink}"
 msgstr ""
 
@@ -5909,13 +5915,25 @@ msgstr ""
 msgid "ClusterIntegration|This option will allow you to install applications on RBAC clusters."
 msgstr ""
 
+msgid "ClusterIntegration|This project does not have billing enabled. To create a cluster, %{linkToBillingStart}enable billing%{linkToBillingEnd} and try again."
+msgstr ""
+
+msgid "ClusterIntegration|This will permanently delete the following resources:"
+msgstr ""
+
 msgid "ClusterIntegration|To access your application after deployment, point a wildcard DNS to the Knative Endpoint."
+msgstr ""
+
+msgid "ClusterIntegration|To create a cluster, first create a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|To remove your integration and resources, type %{clusterName} to confirm:"
 msgstr ""
 
 msgid "ClusterIntegration|To remove your integration, type %{clusterName} to confirm:"
+msgstr ""
+
+msgid "ClusterIntegration|To use a new project, first create one on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Uninstall %{appTitle}"
@@ -5940,6 +5958,9 @@ msgid "ClusterIntegration|Validating project billing status"
 msgstr ""
 
 msgid "ClusterIntegration|We could not verify that one of your projects on GCP has billing enabled. Please try again."
+msgstr ""
+
+msgid "ClusterIntegration|We were unable to fetch any projects. Ensure that you have a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
@@ -6373,7 +6394,7 @@ msgstr ""
 msgid "Configure Tracing"
 msgstr ""
 
-msgid "Configure a <code>.gitlab-webide.yml</code> file in the <code>.gitlab</code> directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
+msgid "Configure a %{codeStart}.gitlab-webide.yml%{codeEnd} file in the %{codeStart}.gitlab%{codeEnd} directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
 msgstr ""
 
 msgid "Configure automatic git checks and housekeeping on repositories."
@@ -7429,6 +7450,15 @@ msgstr ""
 msgid "Customize your pipeline configuration."
 msgstr ""
 
+msgid "CustomizeHomepageBanner|Do you want to customize this page?"
+msgstr ""
+
+msgid "CustomizeHomepageBanner|Go to preferences"
+msgstr ""
+
+msgid "CustomizeHomepageBanner|This page shows a list of your projects by default but it can be changed to show projects' activity, groups, your to-do list, assigned issues, assigned merge requests, and more. You can change this under \"Homepage content\" in your preferences"
+msgstr ""
+
 msgid "Cycle Time"
 msgstr ""
 
@@ -8069,8 +8099,8 @@ msgid_plural "Depends on %d merge requests being merged"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Depends on <strong>%d closed</strong> merge request."
-msgid_plural "Depends on <strong>%d closed</strong> merge requests."
+msgid "Depends on %{strongStart}%{closedCount} closed%{strongEnd} merge request."
+msgid_plural "Depends on %{strongStart}%{closedCount} closed%{strongEnd} merge requests."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -11644,7 +11674,7 @@ msgstr ""
 msgid "Go to %{link_to_google_takeout}."
 msgstr ""
 
-msgid "Go to <strong>Issues</strong> > <strong>Boards</strong> to access your personalized learning issue board."
+msgid "Go to %{strongStart}Issues%{strongEnd} &gt; %{strongStart}Boards%{strongEnd} to access your personalized learning issue board."
 msgstr ""
 
 msgid "Go to Webhooks"
@@ -13948,7 +13978,7 @@ msgstr ""
 msgid "Labels can be applied to issues and merge requests."
 msgstr ""
 
-msgid "Labels|<span>Promote label</span> %{labelTitle} <span>to Group Label?</span>"
+msgid "Labels|%{spanStart}Promote label%{spanEnd} %{labelTitle} %{spanStart}to Group Label?%{spanEnd}"
 msgstr ""
 
 msgid "Labels|Promote Label"
@@ -14516,7 +14546,7 @@ msgstr ""
 msgid "Lock the discussion"
 msgstr ""
 
-msgid "Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment."
+msgid "Lock this %{issuableDisplayName}? Only %{strongStart}project members%{strongEnd} will be able to comment."
 msgstr ""
 
 msgid "Lock to current projects"
@@ -19534,9 +19564,6 @@ msgstr ""
 msgid "PrometheusService|%{exporters} with %{metrics} were found"
 msgstr ""
 
-msgid "PrometheusService|<p class=\"text-tertiary\">No <a href=\"%{docsUrl}\">common metrics</a> were found</p>"
-msgstr ""
-
 msgid "PrometheusService|Active"
 msgstr ""
 
@@ -19592,6 +19619,9 @@ msgid "PrometheusService|More information"
 msgstr ""
 
 msgid "PrometheusService|New metric"
+msgstr ""
+
+msgid "PrometheusService|No %{docsUrlStart}common metrics%{docsUrlEnd} were found"
 msgstr ""
 
 msgid "PrometheusService|No custom metrics have been created. Create one using the button above"
@@ -25193,9 +25223,6 @@ msgstr ""
 msgid "This project does not have a wiki homepage yet"
 msgstr ""
 
-msgid "This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target=\"_blank\" rel=\"noopener noreferrer\">enable billing <i class=\"fa fa-external-link\" aria-hidden=\"true\"></i></a> and try again."
-msgstr ""
-
 msgid "This project has no active access tokens."
 msgstr ""
 
@@ -26229,7 +26256,7 @@ msgstr ""
 msgid "Unlock the discussion"
 msgstr ""
 
-msgid "Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment."
+msgid "Unlock this %{issuableDisplayName}? %{strongStart}Everyone%{strongEnd} will be able to comment."
 msgstr ""
 
 msgid "Unlocked"
@@ -27849,10 +27876,10 @@ msgstr ""
 msgid "You are going to transfer %{project_full_name} to another owner. Are you ABSOLUTELY sure?"
 msgstr ""
 
-msgid "You are going to turn off the confidentiality. This means %{accessLevel} will be able to see and leave a comment on this %{issuableType}."
+msgid "You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see and leave a comment on this %{issuableType}."
 msgstr ""
 
-msgid "You are going to turn on the confidentiality. This means that only team members with %{accessLevel} are able to see and leave comments on the %{issuableType}."
+msgid "You are going to turn on the confidentiality. This means that only team members with %{strongStart}at least Reporter access%{strongEnd} are able to see and leave comments on the %{issuableType}."
 msgstr ""
 
 msgid "You are not allowed to push into this branch. Create another branch or open a merge request."
@@ -28580,9 +28607,6 @@ msgstr ""
 msgid "assign yourself"
 msgstr ""
 
-msgid "at least Reporter access"
-msgstr ""
-
 msgid "at risk"
 msgstr ""
 
@@ -28971,9 +28995,6 @@ msgid "error code:"
 msgstr ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
-msgstr ""
-
-msgid "everyone"
 msgstr ""
 
 msgid "exceeds the limit of %{bytes} bytes"
@@ -29938,6 +29959,9 @@ msgid "vulnerability|Add comment"
 msgstr ""
 
 msgid "vulnerability|Add comment & dismiss"
+msgstr ""
+
+msgid "vulnerability|Add comment and dismiss"
 msgstr ""
 
 msgid "vulnerability|Dismiss vulnerability"

@@ -59,6 +59,9 @@ module Gitlab
       },
       contact_sales_btn_in_app: {
         tracking_category: 'Growth::Conversion::Experiment::ContactSalesInApp'
+      },
+      customize_homepage: {
+        tracking_category: 'Growth::Expansion::Experiment::CustomizeHomepage'
       }
     }.freeze
 

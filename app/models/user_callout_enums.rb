@@ -19,7 +19,8 @@ module UserCalloutEnums
       webhooks_moved: 13,
       admin_integrations_moved: 15,
       personal_access_token_expiry: 21, # EE-only
-      suggest_pipeline: 22
+      suggest_pipeline: 22,
+      customize_homepage: 23
     }
   end
 end

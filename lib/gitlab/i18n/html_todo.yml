@@ -76,6 +76,102 @@
     - "< 1 saat"
     - "< 1 Stunde"
     - "< 1시간"
+
+#
+# Strings below are fixed in the source code but the translations are still present in CrowdIn so the
+# locale files will fail the linter. They can be deleted after next CrowdIn sync, likely in:
+# https://gitlab.com/gitlab-org/gitlab/-/issues/226008
+#
+
+"This commit was signed with an <strong>unverified</strong> signature.":
+  plural_id:
+  translations:
+    - "このコミットは<strong>検証されていない</strong> 署名でサインされています。"
+    - "Этот коммит был подписан <strong>непроверенной</strong> подписью."
+    - "此提交使用 <strong>未经验证的</strong> 签名进行签名。"
+    - "Цей коміт підписано <strong>неперевіреним</strong> підписом."
+    - "Esta commit fue firmado con una firma <strong>no verificada</strong>."
+"This commit was signed with a <strong>verified</strong> signature and the committer email is verified to belong to the same user.":
+  plural_id:
+  translations:
+    - "このコミットは <strong>検証済み</strong> の署名でサインされており、このコミッターのメールは同じユーザーのものであることが検証されています。"
+    - "Это коммит был подписан <strong>верифицированной</strong> подписью и коммитер подтвердил, что адрес почты принадлежит ему."
+    - "此提交使用 <strong>已验证</strong> 的签名进行签名，并且已验证提交者的电子邮件属于同一用户。"
+    - "Цей коміт підписано <strong>перевіреним</strong> підписом і адреса електронної пошти комітера гарантовано належить тому самому користувачу."
+    - "Este commit fue firmado con una firma verificada, y <strong>se ha verificado</strong> que la dirección de correo electrónico del committer y la firma pertenecen al mismo usuario."
+"Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}":
+  plural_id:
+  translations:
+    - "分支 <strong>%{branch_name}</strong> 已創建。如需設置自動部署， 請選擇合適的 GitLab CI Yaml 模板併提交更改。%{link_to_autodeploy_doc}"
+    - "O branch <strong>%{branch_name}</strong> foi criado. Para configurar o deploy automático, selecione um modelo de Yaml do GitLab CI e commit suas mudanças. %{link_to_autodeploy_doc}"
+    - "<strong>%{branch_name}</strong> ブランチが作成されました。自動デプロイを設定するには、GitLab CI Yaml テンプレートを選択して、変更をコミットしてください。 %{link_to_autodeploy_doc}"
+    - "La branch <strong>%{branch_name}</strong> è stata creata. Per impostare un rilascio automatico scegli un template CI di Gitlab e committa le tue modifiche %{link_to_autodeploy_doc}"
+    - "O ramo <strong>%{branch_name}</strong> foi criado. Para configurar a implantação automática, seleciona um modelo de Yaml do GitLab CI e envia as tuas alterações. %{link_to_autodeploy_doc}"
+    - "Ветка <strong>%{branch_name}</strong> создана. Для настройки автоматического развертывания выберите YAML-шаблон для GitLab CI и зафиксируйте свои изменения. %{link_to_autodeploy_doc}"
+    - "已创建分支 <strong>%{branch_name}</strong> 。如需设置自动部署， 请选择合适的 GitLab CI Yaml 模板并提交更改。%{link_to_autodeploy_doc}"
+    - "Гілка <strong>%{branch_name}</strong> створена. Для настройки автоматичного розгортання виберіть GitLab CI Yaml-шаблон і закомітьте зміни. %{link_to_autodeploy_doc}"
+    - "Клонът <strong>%{branch_name}</strong> беше създаден. За да настроите автоматичното внедряване, изберете Yaml шаблон за GitLab CI и подайте промените си. %{link_to_autodeploy_doc}"
+    - "Branch <strong>%{branch_name}</strong> wurde erstellt. Um die automatische Bereitstellung einzurichten, wähle eine GitLab CI Yaml Vorlage und committe deine Änderungen. %{link_to_autodeploy_doc}"
+    - "<strong>%{branch_name}</strong> 브랜치가 생성되었습니다. 자동 배포를 설정하려면 GitLab CI Yaml 템플릿을 선택하고 변경 사항을 적용하십시오. %{link_to_autodeploy_doc}"
+    - "La branĉo <strong>%{branch_name}</strong> estis kreita. Por agordi aŭtomatan disponigadon, bonvolu elekti Yaml-ŝablonon por GitLab CI kaj enmeti viajn ŝanĝojn. %{link_to_autodeploy_doc}"
+    - "La branche <strong>%{branch_name}</strong> a été créée. Pour mettre en place le déploiement automatisé, sélectionnez un modèle de fichier YAML pour l’intégration continue (CI) de GitLab, et validez les modifications. %{link_to_autodeploy_doc}"
+    - "La rama <strong>%{branch_name}</strong> fue creada. Para configurar el auto despliegue, escoge una plantilla Yaml para GitLab CI y envía tus cambios. %{link_to_autodeploy_doc}"
+"GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project's %{strong_start}Settings > General > Visibility%{strong_end} page.":
+  plural_id:
+  translations:
+    - "GitLab Pagesはこのプロジェクトでは無効になっています。 プロジェクトの%{strong_start} 設定> 全般> 可視性%{strong_end}ページで有効にできます。"
+    - "GitLab Pages отключены для этого проекта. Вы можете включить в поле %{strong_start}Настройки > Общие > Видимость%{strong_end} вашего проекта."
+    - "此项目禁用GitLab Pages。您可以在您的项目的%{strong_start}设置 > 常规 > 可见性%{strong_end} 页面启用。"
+    - "GitLab Pages вимкнено для цього проєкту. Ви можете їх увімкнути перейшовши на сторінку проєкту %{strong_start}Налаштування > Загальні > Видимість%{strong_end}."
+    - "Las páginas de GitLab están deshabilitadas para este proyecto. Puede habilitarlas en los ajustes %{strong_start} de su proyecto > General > Visibilidad%{strong_end}."
+"You can invite a new member to <strong>%{project_name}</strong> or invite another group.":
+  plural_id:
+  translations:
+    - "新しいメンバーを<strong>%{project_name} </strong>に招待するか、別のグループを招待することができます。"
+    - "Podes convidar um novo para <strong>%{project_name}</strong> ou convidar outro grupo."
+    - "邀请新成员或另一个群组加入<strong>%{project_name}</strong>。"
+    - "Puede invitar a un nuevo miembro a <strong>%{project_name}</strong> o invitar a otro grupo."
+    - "<strong>%{project_name}</strong> projesine yeni bir üye davet edebilir veya başka bir grubu davet edebilirsiniz."
+    - "Вы можете пригласить нового участника в <strong>%{project_name}</strong> или пригласить другую группу."
+    - "Ви можете запросити нового учасника до <strong>%{project_name}</strong> або запросити іншу групу."
+"You can invite a new member to <strong>%{project_name}</strong>.":
+  plural_id:
+  translations:
+    - "新しいメンバーを<strong>%{project_name} </strong>に招待できます。"
+    - "Podes convidar um novo membro para <strong>%{project_name}</strong>."
+    - "邀请新成员加入<strong>%{project_name}</strong>。"
+    - "Puedes invitar a un nuevo miembro a <strong>%{project_name}</strong>."
+    - "<strong>%{project_name}</strong> projesine yeni bir üye davet edebilirsiniz."
+    - "Вы можете пригласить нового участника в <strong>%{project_name}</strong>."
+    - "Ви можете запросити нового учасника до <strong>%{project_name}</strong>."
+"You can invite another group to <strong>%{project_name}</strong>.":
+  plural_id:
+  translations:
+    - "他のグループを<strong>%{project_name} </strong>に招待できます。"
+    - "Podes convidar outro grupo para <strong>%{project_name}</strong>."
+    - "您可以邀请另一个群组加入<strong>%{project_name}</strong>。"
+    - "Ви можете запросити нову групу до <strong>%{project_name}</strong>."
+    - "Puedes invitar a otro grupo a <strong>%{project_name}</strong>."
+"Example: <code>192.168.0.0/24</code>. %{read_more_link}.":
+  plural_id:
+  translations:
+"Note that PostgreSQL %{pg_version_upcoming} will become the minimum required version in GitLab %{gl_version_upcoming} (%{gl_version_upcoming_date}). Please consider upgrading your environment to a supported PostgreSQL version soon, see <a href=\\\"%{pg_version_upcoming_url}\\\">the related epic</a> for details.":
+  plural_id:
+  translations:
+"Authorize <strong>%{user}</strong> to use your account?":
+  plural_id:
+  translations:
+"DeployFreeze|Specify times when deployments are not allowed for an environment. The <code>gitlab-ci.yml</code> file must be updated to make deployment jobs aware of the %{freeze_period_link_start}freeze period%{freeze_period_link_end}.":
+  plural_id:
+  translations:
+"<project name>":
+  translations:
+    - "<название проекта>"
+    - "<project name>"
+    - "<proje adı>"
+    - "<naziv projekta>"
+    - "<ім’я проєкту>"
+    - "<프로젝트 이름>"
 "<strong>Deletes</strong> source branch":
   plural_id:
   translations:
@@ -217,99 +313,3 @@
     - "Vous êtes sur le point de d’activer la confidentialité. Cela signifie que seuls les membres de l’équipe avec <strong>au moins un accès en tant que rapporteur</strong> seront en mesure de voir et de laisser des commentaires sur le ticket."
     - "Va a activar la confidencialidad. Esto significa que solo los miembros del equipo con como mínimo,<strong>acceso como Reporter</strong> podrán ver y dejar comentarios sobre la incidencia."
     - "あなたは非公開設定をオンにしようとしています。これは、最低でも<strong>報告権限</strong>を持ったチームメンバーのみが課題を表示したりコメントを残したりすることができるようになるということです。"
-
-#
-# Strings below are fixed in the source code but the translations are still present in CrowdIn so the
-# locale files will fail the linter. They can be deleted after next CrowdIn sync, likely in:
-# https://gitlab.com/gitlab-org/gitlab/-/issues/226008
-#
-
-"This commit was signed with an <strong>unverified</strong> signature.":
-  plural_id:
-  translations:
-    - "このコミットは<strong>検証されていない</strong> 署名でサインされています。"
-    - "Этот коммит был подписан <strong>непроверенной</strong> подписью."
-    - "此提交使用 <strong>未经验证的</strong> 签名进行签名。"
-    - "Цей коміт підписано <strong>неперевіреним</strong> підписом."
-    - "Esta commit fue firmado con una firma <strong>no verificada</strong>."
-"This commit was signed with a <strong>verified</strong> signature and the committer email is verified to belong to the same user.":
-  plural_id:
-  translations:
-    - "このコミットは <strong>検証済み</strong> の署名でサインされており、このコミッターのメールは同じユーザーのものであることが検証されています。"
-    - "Это коммит был подписан <strong>верифицированной</strong> подписью и коммитер подтвердил, что адрес почты принадлежит ему."
-    - "此提交使用 <strong>已验证</strong> 的签名进行签名，并且已验证提交者的电子邮件属于同一用户。"
-    - "Цей коміт підписано <strong>перевіреним</strong> підписом і адреса електронної пошти комітера гарантовано належить тому самому користувачу."
-    - "Este commit fue firmado con una firma verificada, y <strong>se ha verificado</strong> que la dirección de correo electrónico del committer y la firma pertenecen al mismo usuario."
-"Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}":
-  plural_id:
-  translations:
-    - "分支 <strong>%{branch_name}</strong> 已創建。如需設置自動部署， 請選擇合適的 GitLab CI Yaml 模板併提交更改。%{link_to_autodeploy_doc}"
-    - "O branch <strong>%{branch_name}</strong> foi criado. Para configurar o deploy automático, selecione um modelo de Yaml do GitLab CI e commit suas mudanças. %{link_to_autodeploy_doc}"
-    - "<strong>%{branch_name}</strong> ブランチが作成されました。自動デプロイを設定するには、GitLab CI Yaml テンプレートを選択して、変更をコミットしてください。 %{link_to_autodeploy_doc}"
-    - "La branch <strong>%{branch_name}</strong> è stata creata. Per impostare un rilascio automatico scegli un template CI di Gitlab e committa le tue modifiche %{link_to_autodeploy_doc}"
-    - "O ramo <strong>%{branch_name}</strong> foi criado. Para configurar a implantação automática, seleciona um modelo de Yaml do GitLab CI e envia as tuas alterações. %{link_to_autodeploy_doc}"
-    - "Ветка <strong>%{branch_name}</strong> создана. Для настройки автоматического развертывания выберите YAML-шаблон для GitLab CI и зафиксируйте свои изменения. %{link_to_autodeploy_doc}"
-    - "已创建分支 <strong>%{branch_name}</strong> 。如需设置自动部署， 请选择合适的 GitLab CI Yaml 模板并提交更改。%{link_to_autodeploy_doc}"
-    - "Гілка <strong>%{branch_name}</strong> створена. Для настройки автоматичного розгортання виберіть GitLab CI Yaml-шаблон і закомітьте зміни. %{link_to_autodeploy_doc}"
-    - "Клонът <strong>%{branch_name}</strong> беше създаден. За да настроите автоматичното внедряване, изберете Yaml шаблон за GitLab CI и подайте промените си. %{link_to_autodeploy_doc}"
-    - "Branch <strong>%{branch_name}</strong> wurde erstellt. Um die automatische Bereitstellung einzurichten, wähle eine GitLab CI Yaml Vorlage und committe deine Änderungen. %{link_to_autodeploy_doc}"
-    - "<strong>%{branch_name}</strong> 브랜치가 생성되었습니다. 자동 배포를 설정하려면 GitLab CI Yaml 템플릿을 선택하고 변경 사항을 적용하십시오. %{link_to_autodeploy_doc}"
-    - "La branĉo <strong>%{branch_name}</strong> estis kreita. Por agordi aŭtomatan disponigadon, bonvolu elekti Yaml-ŝablonon por GitLab CI kaj enmeti viajn ŝanĝojn. %{link_to_autodeploy_doc}"
-    - "La branche <strong>%{branch_name}</strong> a été créée. Pour mettre en place le déploiement automatisé, sélectionnez un modèle de fichier YAML pour l’intégration continue (CI) de GitLab, et validez les modifications. %{link_to_autodeploy_doc}"
-    - "La rama <strong>%{branch_name}</strong> fue creada. Para configurar el auto despliegue, escoge una plantilla Yaml para GitLab CI y envía tus cambios. %{link_to_autodeploy_doc}"
-"GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project's %{strong_start}Settings > General > Visibility%{strong_end} page.":
-  plural_id:
-  translations:
-    - "GitLab Pagesはこのプロジェクトでは無効になっています。 プロジェクトの%{strong_start} 設定> 全般> 可視性%{strong_end}ページで有効にできます。"
-    - "GitLab Pages отключены для этого проекта. Вы можете включить в поле %{strong_start}Настройки > Общие > Видимость%{strong_end} вашего проекта."
-    - "此项目禁用GitLab Pages。您可以在您的项目的%{strong_start}设置 > 常规 > 可见性%{strong_end} 页面启用。"
-    - "GitLab Pages вимкнено для цього проєкту. Ви можете їх увімкнути перейшовши на сторінку проєкту %{strong_start}Налаштування > Загальні > Видимість%{strong_end}."
-    - "Las páginas de GitLab están deshabilitadas para este proyecto. Puede habilitarlas en los ajustes %{strong_start} de su proyecto > General > Visibilidad%{strong_end}."
-"You can invite a new member to <strong>%{project_name}</strong> or invite another group.":
-  plural_id:
-  translations:
-    - "新しいメンバーを<strong>%{project_name} </strong>に招待するか、別のグループを招待することができます。"
-    - "Podes convidar um novo para <strong>%{project_name}</strong> ou convidar outro grupo."
-    - "邀请新成员或另一个群组加入<strong>%{project_name}</strong>。"
-    - "Puede invitar a un nuevo miembro a <strong>%{project_name}</strong> o invitar a otro grupo."
-    - "<strong>%{project_name}</strong> projesine yeni bir üye davet edebilir veya başka bir grubu davet edebilirsiniz."
-    - "Вы можете пригласить нового участника в <strong>%{project_name}</strong> или пригласить другую группу."
-    - "Ви можете запросити нового учасника до <strong>%{project_name}</strong> або запросити іншу групу."
-"You can invite a new member to <strong>%{project_name}</strong>.":
-  plural_id:
-  translations:
-    - "新しいメンバーを<strong>%{project_name} </strong>に招待できます。"
-    - "Podes convidar um novo membro para <strong>%{project_name}</strong>."
-    - "邀请新成员加入<strong>%{project_name}</strong>。"
-    - "Puedes invitar a un nuevo miembro a <strong>%{project_name}</strong>."
-    - "<strong>%{project_name}</strong> projesine yeni bir üye davet edebilirsiniz."
-    - "Вы можете пригласить нового участника в <strong>%{project_name}</strong>."
-    - "Ви можете запросити нового учасника до <strong>%{project_name}</strong>."
-"You can invite another group to <strong>%{project_name}</strong>.":
-  plural_id:
-  translations:
-    - "他のグループを<strong>%{project_name} </strong>に招待できます。"
-    - "Podes convidar outro grupo para <strong>%{project_name}</strong>."
-    - "您可以邀请另一个群组加入<strong>%{project_name}</strong>。"
-    - "Ви можете запросити нову групу до <strong>%{project_name}</strong>."
-    - "Puedes invitar a otro grupo a <strong>%{project_name}</strong>."
-"Example: <code>192.168.0.0/24</code>. %{read_more_link}.":
-  plural_id:
-  translations:
-"Note that PostgreSQL %{pg_version_upcoming} will become the minimum required version in GitLab %{gl_version_upcoming} (%{gl_version_upcoming_date}). Please consider upgrading your environment to a supported PostgreSQL version soon, see <a href=\\\"%{pg_version_upcoming_url}\\\">the related epic</a> for details.":
-  plural_id:
-  translations:
-"Authorize <strong>%{user}</strong> to use your account?":
-  plural_id:
-  translations:
-"DeployFreeze|Specify times when deployments are not allowed for an environment. The <code>gitlab-ci.yml</code> file must be updated to make deployment jobs aware of the %{freeze_period_link_start}freeze period%{freeze_period_link_end}.":
-  plural_id:
-  translations:
-"<project name>":
-  translations:
-    - "<название проекта>"
-    - "<project name>"
-    - "<proje adı>"
-    - "<naziv projekta>"
-    - "<ім’я проєкту>"
-    - "<프로젝트 이름>"

@@ -24,8 +24,6 @@ module Gitlab
         end
 
         def create_partitions
-          return unless Feature.enabled?(:postgres_dynamic_partition_creation, default_enabled: true)
-
           Gitlab::AppLogger.info("Checking state of dynamic postgres partitions")
 
           models.each do |model|

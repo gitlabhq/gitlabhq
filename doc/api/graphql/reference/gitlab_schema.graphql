@@ -10423,6 +10423,11 @@ type Pipeline {
   updatedAt: Time!
 
   """
+  Pipeline user
+  """
+  user: User
+
+  """
   Permissions for the current user on the resource
   """
   userPermissions: PipelinePermissions!
@@ -16463,6 +16468,11 @@ type User {
   avatarUrl: String
 
   """
+  User email
+  """
+  email: String
+
+  """
   Group memberships of the user
   """
   groupMemberships(
@@ -16566,6 +16576,11 @@ type User {
   State of the user
   """
   state: UserState!
+
+  """
+  User status
+  """
+  status: UserStatus
 
   """
   Todos of the user
@@ -16703,6 +16718,23 @@ enum UserState {
   The user is no longer active and is unable to use the system
   """
   deactivated
+}
+
+type UserStatus {
+  """
+  String representation of emoji
+  """
+  emoji: String
+
+  """
+  User status message
+  """
+  message: String
+
+  """
+  HTML of the user status message
+  """
+  messageHtml: String
 }
 
 enum VisibilityLevelsEnum {

@@ -10061,7 +10061,7 @@ CREATE TABLE public.ci_pipeline_artifacts (
     pipeline_id bigint NOT NULL,
     project_id bigint NOT NULL,
     size integer NOT NULL,
-    file_store smallint NOT NULL,
+    file_store smallint DEFAULT 1 NOT NULL,
     file_type smallint NOT NULL,
     file_format smallint NOT NULL,
     file text,
@@ -20970,6 +20970,8 @@ CREATE INDEX index_vulnerability_feedback_on_author_id ON public.vulnerability_f
 CREATE INDEX index_vulnerability_feedback_on_comment_author_id ON public.vulnerability_feedback USING btree (comment_author_id);
 
 CREATE INDEX index_vulnerability_feedback_on_issue_id ON public.vulnerability_feedback USING btree (issue_id);
+
+CREATE INDEX index_vulnerability_feedback_on_issue_id_not_null ON public.vulnerability_feedback USING btree (id) WHERE (issue_id IS NOT NULL);
 
 CREATE INDEX index_vulnerability_feedback_on_merge_request_id ON public.vulnerability_feedback USING btree (merge_request_id);
 

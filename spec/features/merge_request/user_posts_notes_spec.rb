@@ -95,20 +95,32 @@ RSpec.describe 'Merge request > User posts notes', :js do
     end
   end
 
-  describe 'reply on a deleted conversation' do
-    before do
-      visit project_merge_request_path(project, merge_request)
-    end
-
-    it 'shows an error message' do
+  describe 'replying to a comment' do
+    it 'makes the discussion resolvable' do
       find('.js-reply-button').click
-      note.delete
 
       page.within('.discussion-reply-holder') do
         fill_in 'note[note]', with: 'A reply'
         click_button 'Add comment now'
-        wait_for_requests
-        expect(page).to have_content('Your comment could not be submitted because discussion to reply to cannot be found')
+
+        expect(page).to have_button('Resolve thread')
+      end
+    end
+
+    context 'when comment is deleted' do
+      before do
+        note.delete
+      end
+
+      it 'shows an error message' do
+        find('.js-reply-button').click
+
+        page.within('.discussion-reply-holder') do
+          fill_in 'note[note]', with: 'A reply'
+          click_button 'Add comment now'
+
+          expect(page).to have_content('Your comment could not be submitted because discussion to reply to cannot be found')
+        end
       end
     end
   end

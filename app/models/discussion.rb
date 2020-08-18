@@ -23,6 +23,7 @@ class Discussion
             :resolved_by_id,
             :system_note_with_references_visible_for?,
             :resource_parent,
+            :save,
 
             to: :first_note
 

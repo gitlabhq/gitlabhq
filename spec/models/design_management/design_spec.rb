@@ -26,7 +26,7 @@ RSpec.describe DesignManagement::Design do
   end
 
   describe 'validations' do
-    subject(:design) { build(:design) }
+    subject(:design) { build(:design, issue: issue) }
 
     it { is_expected.to be_valid }
     it { is_expected.to validate_presence_of(:project) }
@@ -153,7 +153,7 @@ RSpec.describe DesignManagement::Design do
     end
 
     describe '.ordered' do
-      before do
+      before_all do
         design1.update!(relative_position: 2)
         design2.update!(relative_position: 1)
         design3.update!(relative_position: nil)
@@ -219,7 +219,7 @@ RSpec.describe DesignManagement::Design do
   end
 
   describe '#visible_in?' do
-    let_it_be(:issue) { create(:issue) }
+    let_it_be(:issue) { create(:issue, project: issue.project) }
 
     # It is expensive to re-create complex histories, so we do it once, and then
     # assert that we can establish visibility at any given version.
@@ -275,7 +275,7 @@ RSpec.describe DesignManagement::Design do
 
   describe '#status' do
     context 'the design is new' do
-      subject { build(:design) }
+      subject { build(:design, issue: issue) }
 
       it { is_expected.to have_attributes(status: :new) }
     end
@@ -295,7 +295,7 @@ RSpec.describe DesignManagement::Design do
 
   describe '#deleted?' do
     context 'the design is new' do
-      let(:design) { build(:design) }
+      let(:design) { build(:design, issue: issue) }
 
       it 'is falsy' do
         expect(design).not_to be_deleted
@@ -319,7 +319,7 @@ RSpec.describe DesignManagement::Design do
     end
 
     context 'the design has been deleted, but was then re-created' do
-      let(:design) { create(:design, :with_versions, versions_count: 1, deleted: true) }
+      let(:design) { create(:design, :with_versions, issue: issue, versions_count: 1, deleted: true) }
 
       it 'is falsy' do
         restore_designs(design)
@@ -337,7 +337,7 @@ RSpec.describe DesignManagement::Design do
     end
 
     it "is true when there are no versions" do
-      expect(build(:design)).to be_new_design
+      expect(build(:design, issue: issue)).to be_new_design
     end
 
     it 'is false for deleted designs' do
@@ -374,7 +374,7 @@ RSpec.describe DesignManagement::Design do
 
   describe "#full_path" do
     it "builds the full path for a design" do
-      design = build(:design, filename: "hello.jpg")
+      design = build(:design, issue: issue, filename: "hello.jpg")
       expected_path = "#{DesignManagement.designs_directory}/issue-#{design.issue.iid}/hello.jpg"
 
       expect(design.full_path).to eq(expected_path)
@@ -397,15 +397,13 @@ RSpec.describe DesignManagement::Design do
       let(:versions_count) { 1 }
 
       it 'builds diff refs based on the empty tree if there was only one version' do
-        design = create(:design, :with_file, versions_count: 1)
-
         expect(design.diff_refs.base_sha).to eq(Gitlab::Git::BLANK_SHA)
         expect(design.diff_refs.head_sha).to eq(design.diff_refs.head_sha)
       end
     end
 
     it 'has no diff ref if new' do
-      design = build(:design)
+      design = build(:design, issue: issue)
 
       expect(design.diff_refs).to be_nil
     end
@@ -413,7 +411,7 @@ RSpec.describe DesignManagement::Design do
 
   describe '#repository' do
     it 'is a design repository' do
-      design = build(:design)
+      design = build(:design, issue: issue)
 
       expect(design.repository).to be_a(DesignManagement::Repository)
     end
@@ -421,7 +419,7 @@ RSpec.describe DesignManagement::Design do
 
   describe '#note_etag_key' do
     it 'returns a correct etag key' do
-      design = create(:design)
+      design = design1
 
       expect(design.note_etag_key).to eq(
         ::Gitlab::Routing.url_helpers.designs_project_issue_path(design.project, design.issue, { vueroute: design.filename })
@@ -430,47 +428,26 @@ RSpec.describe DesignManagement::Design do
   end
 
   describe '#user_notes_count', :use_clean_rails_memory_store_caching do
-    let_it_be(:design) { create(:design, :with_file) }
-
-    subject { design.user_notes_count }
-
     # Note: Cache invalidation tests are in `design_user_notes_count_service_spec.rb`
-
     it 'returns a count of user-generated notes' do
-      create(:diff_note_on_design, noteable: design)
+      common_attrs = { issue: issue, project: issue.project, author: issue.project.creator }
+      design, second_design = create_list(:design, 2, :with_file, issue: issue)
+      create(:diff_note_on_design, **common_attrs, noteable: design)
+      create(:diff_note_on_design, **common_attrs, system: true, noteable: design)
+      create(:diff_note_on_design, **common_attrs, noteable: second_design)
 
-      is_expected.to eq(1)
-    end
-
-    it 'does not count notes on other designs' do
-      second_design = create(:design, :with_file)
-      create(:diff_note_on_design, noteable: second_design)
-
-      is_expected.to eq(0)
-    end
-
-    it 'does not count system notes' do
-      create(:diff_note_on_design, system: true, noteable: design)
-
-      is_expected.to eq(0)
+      expect(design.user_notes_count).to eq(1)
     end
   end
 
   describe '#after_note_changed' do
-    subject { build(:design) }
+    it 'calls #delete_cache on DesignUserNotesCountService for non-system notes' do
+      design = design1
 
-    it 'calls #delete_cache on DesignUserNotesCountService' do
-      expect_next_instance_of(DesignManagement::DesignUserNotesCountService) do |service|
-        expect(service).to receive(:delete_cache)
-      end
+      expect(design.send(:user_notes_count_service)).to receive(:delete_cache).once
 
-      subject.after_note_changed(build(:note))
-    end
-
-    it 'does not call #delete_cache on DesignUserNotesCountService when passed a system note' do
-      expect(DesignManagement::DesignUserNotesCountService).not_to receive(:new)
-
-      subject.after_note_changed(build(:note, :system))
+      design.after_note_changed(build(:note, project: issue.project))
+      design.after_note_changed(build(:note, :system, project: issue.project))
     end
   end
 
@@ -554,14 +531,14 @@ RSpec.describe DesignManagement::Design do
 
     with_them do
       let(:filename) { "my-file.#{ext}" }
-      let(:design) { build(:design, filename: filename) }
+      let(:design) { build(:design, issue: issue, filename: filename) }
       let(:url) { url_for_design(design) }
       let(:captures) { described_class.link_reference_pattern.match(url)&.named_captures }
 
       it 'matches the URL' do
         expect(captures).to include(
           'url_filename' => filename,
-          'issue' => design.issue.iid.to_s,
+          'issue' => issue.iid.to_s,
           'namespace' => design.project.namespace.to_param,
           'project' => design.project.name
         )

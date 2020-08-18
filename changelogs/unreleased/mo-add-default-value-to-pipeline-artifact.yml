@@ -1,0 +1,5 @@
+---
+title: Add default value for file_store to ci_pipeline_artifacts
+merge_request: 39349
+author:
+type: fixed

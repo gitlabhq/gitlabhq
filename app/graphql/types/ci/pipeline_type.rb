@@ -45,8 +45,9 @@ module Types
             description: 'Stages of the pipeline',
             extras: [:lookahead],
             resolver: Resolvers::Ci::PipelineStagesResolver
-
-      # TODO: Add triggering user as a type
+      field :user, Types::UserType, null: true,
+            description: 'Pipeline user',
+            resolve: -> (pipeline, _args, _context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, pipeline.user_id).find }
     end
   end
 end

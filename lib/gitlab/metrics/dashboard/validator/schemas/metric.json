@@ -9,8 +9,8 @@
 		 },
 		"unit": { "type": "string" },
 		"label": { "type": "string" },
-		"query": { "type": "string" },
-		"query_range": { "type": "string" },
+		"query": { "type": ["string", "number"] },
+		"query_range": { "type": ["string", "number"] },
 		"step": { "type": "number" }
 	}
 }

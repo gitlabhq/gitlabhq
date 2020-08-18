@@ -131,7 +131,7 @@ There are four types of counters which are all found in `usage_data.rb`:
 - **Ordinary Batch Counters:** Simple count of a given ActiveRecord_Relation
 - **Distinct Batch Counters:** Distinct count of a given ActiveRecord_Relation on given column
 - **Alternative Counters:** Used for settings and configurations
-- **Redis Counters:** Used for in-memory counts. This method is being deprecated due to data inaccuracies and will be replaced with a persistent method.
+- **Redis Counters:** Used for in-memory counts.
 
 NOTE: **Note:**
 Only use the provided counter methods. Each counter method contains a built in fail safe to isolate each counter to avoid breaking the entire Usage Ping.
@@ -255,8 +255,6 @@ redis_usage_data do
             date_to: time_period[:created_at].last
           )
 ```
-
-Note that Redis counters are in the [process of being deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/216330) and you should instead try to use Snowplow events instead. We're in the process of building [self-managed event tracking](https://gitlab.com/gitlab-org/telemetry/-/issues/373) and once this is available, we will convert all Redis counters into Snowplow events.
 
 ### Alternative Counters
 

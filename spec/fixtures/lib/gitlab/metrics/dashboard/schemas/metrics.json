@@ -10,8 +10,8 @@
   ],
   "properties": {
     "id": { "type": "string" },
-    "query_range": { "type": "string" },
-    "query": { "type": "string" },
+    "query_range": { "type": ["string", "number"] },
+    "query": { "type": ["string", "number"] },
     "unit": { "type": "string" },
     "label": { "type": "string" },
     "track": { "type": "string" },

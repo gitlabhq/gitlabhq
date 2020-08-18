@@ -1,6 +1,6 @@
 <script>
 import { escape } from 'lodash';
-import { GlModal, GlButton, GlDeprecatedButton, GlFormInput } from '@gitlab/ui';
+import { GlModal, GlButton, GlDeprecatedButton, GlFormInput, GlSprintf } from '@gitlab/ui';
 import SplitButton from '~/vue_shared/components/split_button.vue';
 import { s__, sprintf } from '~/locale';
 import csrf from '~/lib/utils/csrf';
@@ -30,6 +30,7 @@ export default {
     GlButton,
     GlDeprecatedButton,
     GlFormInput,
+    GlSprintf,
   },
   props: {
     clusterPath: {
@@ -66,18 +67,6 @@ export default {
             'ClusterIntegration|You are about to remove your cluster integration and all GitLab-created resources associated with this cluster.',
           )
         : s__('ClusterIntegration|You are about to remove your cluster integration.');
-    },
-    warningToBeRemoved() {
-      return s__(`ClusterIntegration|
-        This will permanently delete the following resources:
-        <ul>
-          <li>All installed applications and related resources</li>
-          <li>The <code>gitlab-managed-apps</code> namespace</li>
-          <li>Any project namespaces</li>
-          <li><code>clusterroles</code></li>
-          <li><code>clusterrolebindings</code></li>
-        </ul>
-      `);
     },
     confirmationTextLabel() {
       return sprintf(
@@ -144,7 +133,27 @@ export default {
     >
       <template>
         <p>{{ warningMessage }}</p>
-        <div v-if="confirmCleanup" v-html="warningToBeRemoved"></div>
+        <div v-if="confirmCleanup">
+          {{ s__('ClusterIntegration|This will permanently delete the following resources:') }}
+          <ul>
+            <li>
+              {{ s__('ClusterIntegration|All installed applications and related resources') }}
+            </li>
+            <li>
+              <gl-sprintf :message="s__('ClusterIntegration|The %{gitlabNamespace} namespace')">
+                <template #gitlabNamespace>
+                  <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
+                  <code>{{ 'gitlab-managed-apps' }}</code>
+                </template>
+              </gl-sprintf>
+            </li>
+            <li>{{ s__('ClusterIntegration|Any project namespaces') }}</li>
+            <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
+            <li><code>clusterroles</code></li>
+            <li><code>clusterrolebindings</code></li>
+            <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
+          </ul>
+        </div>
         <strong v-html="confirmationTextLabel"></strong>
         <form ref="form" :action="clusterPath" method="post" class="gl-mb-5">
           <input ref="method" type="hidden" name="_method" value="delete" />

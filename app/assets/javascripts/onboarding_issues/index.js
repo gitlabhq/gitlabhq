@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { parseBoolean, getCookie, setCookie, removeCookie } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 
 const COOKIE_NAME = 'onboarding_issues_settings';
@@ -94,8 +94,12 @@ export const showLearnGitLabProjectPopover = () => {
   if (!el) return;
 
   const options = {
-    content: __(
-      'Go to <strong>Issues</strong> > <strong>Boards</strong> to access your personalized learning issue board.',
+    content: sprintf(
+      __(
+        'Go to %{strongStart}Issues%{strongEnd} &gt; %{strongStart}Boards%{strongEnd} to access your personalized learning issue board.',
+      ),
+      { strongStart: '<strong>', strongEnd: '</strong>' },
+      false,
     ),
   };
 
@@ -111,8 +115,12 @@ export const showLearnGitLabIssuesPopover = () => {
   if (!el) return;
 
   const options = {
-    content: __(
-      'Go to <strong>Issues</strong> > <strong>Boards</strong> to access your personalized learning issue board.',
+    content: sprintf(
+      __(
+        'Go to %{strongStart}Issues%{strongEnd} &gt; %{strongStart}Boards%{strongEnd} to access your personalized learning issue board.',
+      ),
+      { strongStart: '<strong>', strongEnd: '</strong>' },
+      false,
     ),
   };
 

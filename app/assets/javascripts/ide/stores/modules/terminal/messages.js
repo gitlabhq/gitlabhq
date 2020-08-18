@@ -21,7 +21,7 @@ export const EMPTY_RUNNERS = __(
   'Configure GitLab runners to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}',
 );
 export const ERROR_CONFIG = __(
-  'Configure a <code>.gitlab-webide.yml</code> file in the <code>.gitlab</code> directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}',
+  'Configure a %{codeStart}.gitlab-webide.yml%{codeEnd} file in the %{codeStart}.gitlab%{codeEnd} directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}',
 );
 export const ERROR_PERMISSION = __(
   'You do not have permission to run the Web Terminal. Please contact a project administrator.',
@@ -34,6 +34,8 @@ export const configCheckError = (status, helpUrl) => {
       {
         helpStart: `<a href="${escape(helpUrl)}" target="_blank">`,
         helpEnd: '</a>',
+        codeStart: '<code>',
+        codeEnd: '</code>',
       },
       false,
     );
