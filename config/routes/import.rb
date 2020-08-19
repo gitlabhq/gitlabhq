@@ -71,7 +71,7 @@ namespace :import do
 
   resource :manifest, only: [:create, :new], controller: :manifest do
     get :status
-    get :jobs
+    get :realtime_changes
     post :upload
   end
 

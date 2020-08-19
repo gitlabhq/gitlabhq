@@ -14,6 +14,8 @@ class Import::ProviderRepoSerializer < BaseSerializer
         Import::BitbucketServerProviderRepoEntity
       when :gitlab
         Import::GitlabProviderRepoEntity
+      when :manifest
+        Import::ManifestProviderRepoEntity
       else
         raise NotImplementedError
       end

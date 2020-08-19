@@ -86,15 +86,18 @@ export default {
       </a>
     </td>
     <td class="d-flex flex-wrap flex-lg-nowrap">
-      <select2-select v-model="targetNamespaceSelect" :options="select2Options" />
-      <span class="px-2 import-slash-divider d-flex justify-content-center align-items-center"
-        >/</span
-      >
-      <input
-        v-model="newNameInput"
-        type="text"
-        class="form-control import-project-name-input qa-project-path-field"
-      />
+      <template v-if="repo.target">{{ repo.target }}</template>
+      <template v-else>
+        <select2-select v-model="targetNamespaceSelect" :options="select2Options" />
+        <span class="px-2 import-slash-divider d-flex justify-content-center align-items-center"
+          >/</span
+        >
+        <input
+          v-model="newNameInput"
+          type="text"
+          class="form-control import-project-name-input qa-project-path-field"
+        />
+      </template>
     </td>
     <td>
       <import-status :status="repo.importStatus" />

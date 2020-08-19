@@ -278,7 +278,7 @@ module.exports = {
         monaco: {
           priority: 15,
           name: 'monaco',
-          chunks: 'initial',
+          chunks: 'all',
           test: /[\\/]node_modules[\\/]monaco-editor[\\/]/,
           minChunks: 2,
           reuseExistingChunk: true,

@@ -167,7 +167,7 @@ The following table depicts the various user permission levels in a project.
 | View CI\CD analytics                              |         | ✓          | ✓           | ✓        | ✓      |
 | View Code Review analytics **(STARTER)**          |         | ✓          | ✓           | ✓        | ✓      |
 | View Insights **(ULTIMATE)**                      | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View Issues analytics **(PREMIUM)**               | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View Issue analytics **(PREMIUM)**               | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View Merge Request analytics **(STARTER)**        | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View Repository analytics                         |         | ✓          | ✓           | ✓        | ✓      |
 | View Value Stream analytics                       | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -272,7 +272,7 @@ group.
 | Disable notification emails                            |       |          |           |            | ✓     |
 | View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Insights **(ULTIMATE)**                           | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Issues analytics **(PREMIUM)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Issue analytics **(PREMIUM)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
 | View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Billing **(FREE ONLY)**                           |       |          |           |            | ✓ (4) |

@@ -1,7 +1,7 @@
 <script>
 import {
   GlIcon,
-  GlDeprecatedButton,
+  GlButton,
   GlDeprecatedDropdown,
   GlDeprecatedDropdownItem,
   GlFormGroup,
@@ -28,7 +28,7 @@ const events = {
 export default {
   components: {
     GlIcon,
-    GlDeprecatedButton,
+    GlButton,
     GlDeprecatedDropdown,
     GlDeprecatedDropdownItem,
     GlFormGroup,
@@ -250,10 +250,15 @@ export default {
             />
           </div>
           <gl-form-group>
-            <gl-deprecated-button @click="closeDropdown">{{ __('Cancel') }}</gl-deprecated-button>
-            <gl-deprecated-button variant="success" :disabled="!isValid" @click="setFixedRange()">
+            <gl-button @click="closeDropdown">{{ __('Cancel') }}</gl-button>
+            <gl-button
+              variant="success"
+              category="primary"
+              :disabled="!isValid"
+              @click="setFixedRange()"
+            >
               {{ __('Apply') }}
-            </gl-deprecated-button>
+            </gl-button>
           </gl-form-group>
         </gl-form-group>
         <gl-form-group

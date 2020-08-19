@@ -24,7 +24,7 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js 
     expect(page).to have_content('https://android-review.googlesource.com/platform/build/blueprint')
   end
 
-  it 'imports successfully imports a project', :sidekiq_inline do
+  it 'imports a project successfully', :sidekiq_inline, :js do
     visit new_import_manifest_path
 
     attach_file('manifest', Rails.root.join('spec/fixtures/aosp_manifest.xml'))
@@ -32,7 +32,11 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js 
 
     page.within(second_row) do
       click_on 'Import'
+    end
 
+    wait_for_requests
+
+    page.within(second_row) do
       expect(page).to have_content 'Done'
       expect(page).to have_content("#{group.full_path}/build/blueprint")
     end
@@ -48,6 +52,6 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js 
   end
 
   def second_row
-    page.all('table.import-jobs tbody tr')[1]
+    page.all('table.import-table tbody tr')[1]
   end
 end

@@ -108,15 +108,14 @@ RSpec.describe 'Merge request > User posts notes', :js do
     end
 
     context 'when comment is deleted' do
-      before do
-        note.delete
-      end
-
       it 'shows an error message' do
         find('.js-reply-button').click
 
         page.within('.discussion-reply-holder') do
           fill_in 'note[note]', with: 'A reply'
+
+          note.delete
+
           click_button 'Add comment now'
 
           expect(page).to have_content('Your comment could not be submitted because discussion to reply to cannot be found')

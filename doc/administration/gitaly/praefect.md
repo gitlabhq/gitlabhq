@@ -1004,8 +1004,19 @@ Feature.enable(:gitaly_reference_transactions)
 Feature.disable(:gitaly_reference_transactions_primary_wins)
 ```
 
-To monitor strong consistency, use the `gitaly_praefect_transactions_total` and
-`gitaly_praefect_transactions_delay_seconds` Prometheus counter metrics.
+To monitor strong consistency, you can use the following Prometheus metrics:
+
+- `gitaly_praefect_transactions_total`: Number of transactions created and
+  voted on.
+- `gitaly_praefect_subtransactions_per_transaction_total`: Number of times
+  nodes cast a vote for a single transaction. This can happen multiple times if
+  multiple references are getting updated in a single transaction.
+- `gitaly_praefect_voters_per_transaction_total`: Number of Gitaly nodes taking
+  part in a transaction.
+- `gitaly_praefect_transactions_delay_seconds`: Server-side delay introduced by
+  waiting for the transaction to be committed.
+- `gitaly_hook_transaction_voting_delay_seconds`: Client-side delay introduced
+  by waiting for the transaction to be committed.
 
 ## Automatic failover and leader election
 

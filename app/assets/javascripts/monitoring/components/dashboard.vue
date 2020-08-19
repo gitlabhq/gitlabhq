@@ -2,7 +2,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex';
 import VueDraggable from 'vuedraggable';
 import Mousetrap from 'mousetrap';
-import { GlIcon, GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import DashboardHeader from './dashboard_header.vue';
 import DashboardPanel from './dashboard_panel.vue';
 import { s__ } from '~/locale';
@@ -34,7 +34,6 @@ export default {
     DashboardHeader,
     DashboardPanel,
     Icon,
-    GlIcon,
     GlButton,
     GraphGroup,
     EmptyState,
@@ -389,7 +388,8 @@ export default {
     },
   },
   i18n: {
-    goBackLabel: s__('Metrics|Go back (Esc)'),
+    collapsePanelLabel: s__('Metrics|Collapse panel'),
+    collapsePanelTooltip: s__('Metrics|Collapse panel (Esc)'),
   },
 };
 </script>
@@ -429,14 +429,10 @@ export default {
             ref="goBackBtn"
             v-gl-tooltip
             class="mr-3 my-3"
-            :title="$options.i18n.goBackLabel"
+            :title="$options.i18n.collapsePanelTooltip"
             @click="onGoBack"
           >
-            <gl-icon
-              name="arrow-left"
-              :aria-label="$options.i18n.goBackLabel"
-              class="text-secondary"
-            />
+            {{ $options.i18n.collapsePanelLabel }}
           </gl-button>
         </template>
       </dashboard-panel>

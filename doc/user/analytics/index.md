@@ -24,7 +24,7 @@ The following analytics features are available at the group level:
 
 - [Contribution](../group/contribution_analytics/index.md). **(STARTER)**
 - [Insights](../group/insights/index.md). **(ULTIMATE)**
-- [Issues](../group/issues_analytics/index.md). **(PREMIUM)**
+- [Issue](../group/issues_analytics/index.md). **(PREMIUM)**
 - [Productivity](productivity_analytics.md), enabled with the `productivity_analytics`
   [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-locally-in-development). **(PREMIUM)**
 - [Value Stream](value_stream_analytics.md), enabled with the `cycle_analytics`
@@ -37,7 +37,7 @@ The following analytics features are available at the project level:
 - [CI/CD](../../ci/pipelines/index.md#pipeline-success-and-duration-charts). **(STARTER)**
 - [Code Review](code_review_analytics.md). **(STARTER)**
 - [Insights](../group/insights/index.md). **(ULTIMATE)**
-- [Issues](../group/issues_analytics/index.md). **(PREMIUM)**
+- [Issue](../group/issues_analytics/index.md). **(PREMIUM)**
 - [Merge Request](merge_request_analytics.md). **(STARTER)**
 - [Repository](repository_analytics.md).
 - [Value Stream](value_stream_analytics.md), enabled with the `cycle_analytics`

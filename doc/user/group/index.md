@@ -743,9 +743,9 @@ With [GitLab Contribution Analytics](contribution_analytics/index.md),
 you have an overview of the contributions (pushes, merge requests,
 and issues) performed by your group members.
 
-## Issues analytics **(PREMIUM)**
+## Issue analytics **(PREMIUM)**
 
-With [GitLab Issues Analytics](issues_analytics/index.md), you can see a bar chart of the number of issues created each month in your groups.
+With [GitLab Issue Analytics](issues_analytics/index.md), you can see a bar chart of the number of issues created each month in your groups.
 
 ## Dependency Proxy **(PREMIUM)**
 
