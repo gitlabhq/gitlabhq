@@ -1,0 +1,5 @@
+---
+title: Import the new queries in common_metrics.yml into database
+merge_request: 39475
+author:
+type: changed

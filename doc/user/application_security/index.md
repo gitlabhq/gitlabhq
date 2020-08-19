@@ -321,14 +321,15 @@ Once this group is added to your project, the approval rule is enabled for all m
 
 Any code changes cause the approvals required to reset.
 
-An approval is required when a security report:
+An approval is required when the latest security report in a merge request:
 
-- Contains a new vulnerability of `high`, `critical`, or `unknown` severity, regardless of dismissal.
+- Contains a vulnerability of `high`, `critical`, or `unknown` severity that is not present in the
+  target branch. Note that approval is still required for dismissed vulnerabilities.
 - Is not generated during pipeline execution.
 
-An approval is optional when a security report:
+An approval is optional when the security report:
 
-- Contains no new vulnerabilities.
+- Contains no new vulnerabilities when compared to the target branch.
 - Contains only new vulnerabilities of `low` or `medium` severity.
 
 ## Enabling License Approvals within a project

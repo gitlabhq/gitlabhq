@@ -102,7 +102,7 @@ module IconsHelper
     if value
       icon('circle', class: 'cgreen')
     else
-      icon('power-off', class: 'clgray')
+      sprite_icon('power', css_class: 'clgray')
     end
   end
 
