@@ -35,31 +35,27 @@ exports[`Design management toolbar component renders design and updated data 1`]
     </div>
   </div>
    
-  <div
-    class="gl-display-flex gl-align-items-center"
-  >
-    <pagination-stub
-      class="gl-mr-3 gl-flex-shrink-0"
-      id="1"
-    />
-     
-    <gl-button-stub
-      category="primary"
-      href="/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d"
-      icon="download"
-      size="medium"
-      variant="default"
-    />
-     
-    <delete-button-stub
-      buttoncategory="secondary"
-      buttonclass=""
-      buttonicon="archive"
-      buttonsize="medium"
-      buttonvariant="warning"
-      class="gl-ml-3"
-      hasselecteddesigns="true"
-    />
-  </div>
+  <design-navigation-stub
+    class="ml-auto flex-shrink-0"
+    id="1"
+  />
+   
+  <gl-button-stub
+    category="primary"
+    href="/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d"
+    icon="download"
+    size="medium"
+    variant="default"
+  />
+   
+  <delete-button-stub
+    buttoncategory="secondary"
+    buttonclass=""
+    buttonicon="archive"
+    buttonsize="medium"
+    buttonvariant="warning"
+    class="gl-ml-3"
+    hasselecteddesigns="true"
+  />
 </header>
 `;

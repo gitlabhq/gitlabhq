@@ -44,17 +44,5 @@ RSpec.describe Gitlab::SidekiqVersioning::Middleware do
         expect { call! }.not_to raise_error
       end
     end
-
-    context 'when sidekiq_versioning is disabled' do
-      before do
-        stub_feature_flags(sidekiq_versioning: false)
-      end
-
-      it 'does not set job_version' do
-        expect(worker).not_to receive(:job_version=)
-
-        call!
-      end
-    end
   end
 end

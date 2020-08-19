@@ -1,7 +1,7 @@
 /* global Mousetrap */
 import 'mousetrap';
 import { shallowMount } from '@vue/test-utils';
-import Pagination from '~/design_management/components/toolbar/pagination.vue';
+import DesignNavigation from '~/design_management/components/toolbar/design_navigation.vue';
 import { DESIGN_ROUTE_NAME } from '~/design_management/router/constants';
 
 const push = jest.fn();
@@ -18,7 +18,7 @@ describe('Design management pagination component', () => {
   let wrapper;
 
   function createComponent() {
-    wrapper = shallowMount(Pagination, {
+    wrapper = shallowMount(DesignNavigation, {
       propsData: {
         id: '2',
       },
@@ -41,7 +41,7 @@ describe('Design management pagination component', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('renders pagination buttons', () => {
+  it('renders navigation buttons', () => {
     wrapper.setData({
       designs: [{ id: '1' }, { id: '2' }],
     });

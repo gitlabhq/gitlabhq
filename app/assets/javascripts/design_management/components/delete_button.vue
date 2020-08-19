@@ -95,11 +95,9 @@ export default {
       :category="buttonCategory"
       :size="buttonSize"
       :class="buttonClass"
-      :disabled="isDeleting || !hasSelectedDesigns"
       :loading="loading"
       :icon="buttonIcon"
-    >
-      <slot></slot>
-    </gl-button>
+      :disabled="isDeleting || !hasSelectedDesigns"
+    />
   </div>
 </template>

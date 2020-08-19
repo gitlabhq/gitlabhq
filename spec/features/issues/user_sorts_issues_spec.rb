@@ -16,8 +16,6 @@ RSpec.describe "User sorts issues" do
   let_it_be(:later_due_milestone) { create(:milestone, project: project, due_date: '2013-12-12') }
 
   before do
-    stub_feature_flags(vue_issuables_list: false)
-
     create_list(:award_emoji, 2, :upvote, awardable: issue1)
     create_list(:award_emoji, 2, :downvote, awardable: issue2)
     create(:award_emoji, :downvote, awardable: issue1)
@@ -48,7 +46,7 @@ RSpec.describe "User sorts issues" do
     expect(find('.issues-filters a.is-active')).to have_content('Milestone')
   end
 
-  it "sorts by popularity" do
+  it 'sorts by popularity', :js do
     find('.filter-dropdown-container .dropdown').click
 
     page.within('ul.dropdown-menu.dropdown-menu-right li') do
@@ -70,14 +68,14 @@ RSpec.describe "User sorts issues" do
     end
   end
 
-  it 'sorts by newest' do
+  it 'sorts by newest', :js do
     visit project_issues_path(project, sort: sort_value_created_date)
 
     expect(first_issue).to include('foo')
     expect(last_issue).to include('baz')
   end
 
-  it 'sorts by most recently updated' do
+  it 'sorts by most recently updated', :js do
     issue3.updated_at = Time.now + 100
     issue3.save
     visit project_issues_path(project, sort: sort_value_recently_updated)
@@ -85,7 +83,7 @@ RSpec.describe "User sorts issues" do
     expect(first_issue).to include('baz')
   end
 
-  describe 'sorting by due date' do
+  describe 'sorting by due date', :js do
     before do
       issue1.update(due_date: 1.day.from_now)
       issue2.update(due_date: 6.days.from_now)
@@ -122,7 +120,7 @@ RSpec.describe "User sorts issues" do
     end
   end
 
-  describe 'filtering by due date' do
+  describe 'filtering by due date', :js do
     before do
       issue1.update(due_date: 1.day.from_now)
       issue2.update(due_date: 6.days.from_now)
@@ -205,7 +203,7 @@ RSpec.describe "User sorts issues" do
     end
   end
 
-  describe 'sorting by milestone' do
+  describe 'sorting by milestone', :js do
     before do
       issue1.milestone = newer_due_milestone
       issue1.save
@@ -221,7 +219,7 @@ RSpec.describe "User sorts issues" do
     end
   end
 
-  describe 'combine filter and sort' do
+  describe 'combine filter and sort', :js do
     let(:user2) { create(:user) }
 
     before do

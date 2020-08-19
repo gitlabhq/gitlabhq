@@ -23,7 +23,7 @@ RSpec.describe Analytics::CycleAnalytics::ProjectStage do
 
   context 'relative positioning' do
     it_behaves_like 'a class that supports relative positioning' do
-      let_it_be(:project) { create(:project) }
+      let(:project) { build(:project) }
       let(:factory) { :cycle_analytics_project_stage }
       let(:default_params) { { project: project } }
     end

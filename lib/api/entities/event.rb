@@ -3,6 +3,7 @@
 module API
   module Entities
     class Event < Grape::Entity
+      expose :id
       expose :project_id, :action_name
       expose :target_id, :target_iid, :target_type, :author_id
       expose :target_title

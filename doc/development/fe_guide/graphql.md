@@ -466,6 +466,28 @@ fetchNextPage() {
 Please note we don't have to save `pageInfo` one more time; `fetchMore` triggers a query
 `result` hook as well.
 
+### Managing performance
+
+The Apollo client will batch queries by default. This means that if you have 3 queries defined,
+Apollo will group them into one request, send the single request off to the server and only
+respond once all 3 queries have completed.
+
+If you need to have queries sent as individual requests, additional context can be provided
+to tell Apollo to do this.
+
+```javascript
+export default {
+  apollo: {
+    user: {
+      query: QUERY_IMPORT,
+      context: {
+        isSingleRequest: true,
+      }
+    }
+  },
+};
+```
+
 ### Testing
 
 #### Mocking response as component data

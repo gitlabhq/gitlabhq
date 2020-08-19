@@ -1,14 +1,15 @@
 <script>
 /* global Mousetrap */
 import 'mousetrap';
+import { GlButton, GlButtonGroup } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
-import PaginationButton from './pagination_button.vue';
 import allDesignsMixin from '../../mixins/all_designs';
 import { DESIGN_ROUTE_NAME } from '../../router/constants';
 
 export default {
   components: {
-    PaginationButton,
+    GlButton,
+    GlButtonGroup,
   },
   mixins: [allDesignsMixin],
   props: {
@@ -31,12 +32,12 @@ export default {
       });
     },
     previousDesign() {
-      if (!this.designsCount) return null;
+      if (this.currentIndex === 0) return null;
 
       return this.designs[this.currentIndex - 1];
     },
     nextDesign() {
-      if (!this.designsCount) return null;
+      if (this.currentIndex + 1 === this.designsCount) return null;
 
       return this.designs[this.currentIndex + 1];
     },
@@ -65,19 +66,21 @@ export default {
 <template>
   <div v-if="designsCount" class="d-flex align-items-center">
     {{ paginationText }}
-    <div class="btn-group gl-ml-3">
-      <pagination-button
-        :design="previousDesign"
+    <gl-button-group class="ml-3 mr-3">
+      <gl-button
+        :disabled="!previousDesign"
         :title="s__('DesignManagement|Go to previous design')"
-        icon-name="angle-left"
+        icon="angle-left"
         class="js-previous-design"
+        @click="navigateToDesign(previousDesign)"
       />
-      <pagination-button
-        :design="nextDesign"
+      <gl-button
+        :disabled="!nextDesign"
         :title="s__('DesignManagement|Go to next design')"
-        icon-name="angle-right"
+        icon="angle-right"
         class="js-next-design"
+        @click="navigateToDesign(nextDesign)"
       />
-    </div>
+    </gl-button-group>
   </div>
 </template>

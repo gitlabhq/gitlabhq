@@ -21,7 +21,7 @@ RSpec.describe 'Issue Boards', :js do
   end
 
   context 'un-ordered issues' do
-    let!(:issue4) { create(:labeled_issue, project: project, labels: [label], relative_position: nil) }
+    let!(:issue4) { create(:labeled_issue, project: project, labels: [label]) }
 
     before do
       visit project_board_path(project, board)

@@ -18,7 +18,7 @@ module Gitlab
           def track_panel_type(panel)
             panel_type = panel[:type]
 
-            Gitlab::Tracking.event('MetricsDashboard::Chart', 'chart_rendered', label: 'Chart Type', value: panel_type)
+            Gitlab::Tracking.event('MetricsDashboard::Chart', 'chart_rendered', label: panel_type)
           end
         end
       end

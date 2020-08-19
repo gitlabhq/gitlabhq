@@ -1,0 +1,5 @@
+---
+title: 'Expose ID in Event object returned from the public API.'
+merge_request: 39669
+author: Killian Brackey @kbrackey
+type: changed
