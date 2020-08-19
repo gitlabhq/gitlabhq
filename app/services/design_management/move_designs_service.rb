@@ -39,9 +39,12 @@ module DesignManagement
     delegate :issue, :project, to: :current_design
 
     def move_nulls_to_end
-      current_design.class.move_nulls_to_end(issue.designs)
-      next_design.reset if next_design && next_design.relative_position.nil?
-      previous_design.reset if previous_design && previous_design.relative_position.nil?
+      moved_records = current_design.class.move_nulls_to_end(issue.designs.in_creation_order)
+      return if moved_records == 0
+
+      current_design.reset
+      next_design&.reset
+      previous_design&.reset
     end
 
     def neighbors

@@ -5,9 +5,9 @@ RSpec.describe DesignManagement::SaveDesignsService do
   include DesignManagementTestHelpers
   include ConcurrentHelpers
 
-  let_it_be(:developer) { create(:user) }
+  let_it_be_with_reload(:issue) { create(:issue) }
+  let_it_be(:developer) { create(:user, developer_projects: [issue.project]) }
   let(:project) { issue.project }
-  let(:issue) { create(:issue) }
   let(:user) { developer }
   let(:files) { [rails_sample] }
   let(:design_repository) { ::Gitlab::GlRepository::DESIGN.repository_resolver.call(project) }
@@ -19,8 +19,20 @@ RSpec.describe DesignManagement::SaveDesignsService do
     fixture_file_upload("spec/fixtures/#{filename}")
   end
 
+  def commit_count
+    design_repository.expire_statistics_caches
+    design_repository.expire_root_ref_cache
+    design_repository.commit_count
+  end
+
   before do
-    project.add_developer(developer)
+    if issue.design_collection.repository.exists?
+      issue.design_collection.repository.expire_all_method_caches
+      issue.design_collection.repository.raw.delete_all_refs_except([Gitlab::Git::BLANK_SHA])
+    end
+
+    allow(::DesignManagement::NewVersionWorker)
+      .to receive(:perform_async).with(Integer).and_return(nil)
   end
 
   def run_service(files_to_upload = nil)
@@ -83,24 +95,20 @@ RSpec.describe DesignManagement::SaveDesignsService do
           design_repository.exists?
         end
 
-        it 'creates a design repository when it did not exist' do
-          expect { run_service }.to change { repository_exists }.from(false).to(true)
+        it 'is ensured when the service runs' do
+          run_service
+
+          expect(repository_exists).to be true
         end
       end
 
-      it 'updates the creation count' do
+      it 'creates a commit, an event in the activity stream and updates the creation count' do
         counter = Gitlab::UsageDataCounters::DesignsCounter
-        expect { run_service }.to change { counter.read(:create) }.by(1)
-      end
 
-      it 'creates an event in the activity stream' do
         expect { run_service }
           .to change { Event.count }.by(1)
           .and change { Event.for_design.created_action.count }.by(1)
-      end
-
-      it 'creates a commit in the repository' do
-        run_service
+          .and change { counter.read(:create) }.by(1)
 
         expect(design_repository.commit).to have_attributes(
           author: user,
@@ -109,35 +117,26 @@ RSpec.describe DesignManagement::SaveDesignsService do
       end
 
       it 'can run the same command in parallel' do
-        blocks = Array.new(10).map do
-          unique_files = %w(rails_sample.jpg dk.png)
-                          .map { |name| RenameableUpload.unique_file(name) }
+        parellism = 4
+
+        blocks = Array.new(parellism).map do
+          unique_files = [RenameableUpload.unique_file('rails_sample.jpg')]
 
           -> { run_service(unique_files) }
         end
 
-        expect { run_parallel(blocks) }.to change(DesignManagement::Version, :count).by(10)
+        expect { run_parallel(blocks) }.to change(DesignManagement::Version, :count).by(parellism)
       end
 
-      it 'causes diff_refs not to be nil' do
-        expect(response).to include(
-          designs: all(have_attributes(diff_refs: be_present))
-        )
-      end
+      describe 'the response' do
+        it 'includes designs with the expected properties' do
+          updated_designs = response[:designs]
 
-      it 'creates a design & a version for the filename if it did not exist' do
-        expect(issue.designs.size).to eq(0)
-
-        updated_designs = response[:designs]
-
-        expect(updated_designs.size).to eq(1)
-        expect(updated_designs.first.versions.size).to eq(1)
-      end
-
-      it 'saves the user as the author' do
-        updated_designs = response[:designs]
-
-        expect(updated_designs.first.versions.first.author).to eq(user)
+          expect(updated_designs).to all(have_attributes(diff_refs: be_present))
+          expect(updated_designs.size).to eq(1)
+          expect(updated_designs.first.versions.size).to eq(1)
+          expect(updated_designs.first.versions.first.author).to eq(user)
+        end
       end
 
       describe 'saving the file to LFS' do
@@ -147,14 +146,10 @@ RSpec.describe DesignManagement::SaveDesignsService do
           end
         end
 
-        it 'saves the design to LFS' do
-          expect { run_service }.to change { LfsObject.count }.by(1)
-        end
-
-        it 'saves the repository_type of the LfsObjectsProject as design' do
-          expect do
-            run_service
-          end.to change { project.lfs_objects_projects.count }.from(0).to(1)
+        it 'saves the design to LFS and saves the repository_type of the LfsObjectsProject as design' do
+          expect { run_service }
+            .to change { LfsObject.count }.by(1)
+            .and change { project.lfs_objects_projects.count }.from(0).to(1)
 
           expect(project.lfs_objects_projects.first.repository_type).to eq('design')
         end
@@ -202,12 +197,10 @@ RSpec.describe DesignManagement::SaveDesignsService do
           run_service
         end
 
-        it 'does not create a new version' do
-          expect { run_service }.not_to change { issue.design_versions.count }
-        end
+        it 'does not create a new version, and returns the design in `skipped_designs`' do
+          response = nil
 
-        it 'returns the design in `skipped_designs` instead of `designs`' do
-          response = run_service
+          expect { response = run_service }.not_to change { issue.design_versions.count }
 
           expect(response[:designs]).to be_empty
           expect(response[:skipped_designs].size).to eq(1)
@@ -223,35 +216,20 @@ RSpec.describe DesignManagement::SaveDesignsService do
           touch_files([files.first])
         end
 
-        it 'counts one creation and one update' do
+        it 'has the correct side-effects' do
           counter = Gitlab::UsageDataCounters::DesignsCounter
-          expect { run_service }
-            .to change { counter.read(:create) }.by(1)
-            .and change { counter.read(:update) }.by(1)
-        end
 
-        it 'creates the correct activity stream events' do
+          expect(::DesignManagement::NewVersionWorker)
+            .to receive(:perform_async).once.with(Integer).and_return(nil)
+
           expect { run_service }
             .to change { Event.count }.by(2)
             .and change { Event.for_design.count }.by(2)
             .and change { Event.created_action.count }.by(1)
             .and change { Event.updated_action.count }.by(1)
-        end
-
-        it 'creates a single commit' do
-          commit_count = -> do
-            design_repository.expire_all_method_caches
-            design_repository.commit_count
-          end
-
-          expect { run_service }.to change { commit_count.call }.by(1)
-        end
-
-        it 'enqueues just one new version worker' do
-          expect(::DesignManagement::NewVersionWorker)
-            .to receive(:perform_async).once.with(Integer)
-
-          run_service
+            .and change { counter.read(:create) }.by(1)
+            .and change { counter.read(:update) }.by(1)
+            .and change { commit_count }.by(1)
         end
       end
 
@@ -262,45 +240,28 @@ RSpec.describe DesignManagement::SaveDesignsService do
           expect(response).to include(designs: have_attributes(size: 2), status: :success)
         end
 
-        it 'creates 2 designs with a single version' do
-          expect { run_service }.to change { issue.designs.count }.from(0).to(2)
-
-          expect(DesignManagement::Version.for_designs(issue.designs).size).to eq(1)
-        end
-
-        it 'increments the creation count by 2' do
+        it 'has the correct side-effects', :request_store do
           counter = Gitlab::UsageDataCounters::DesignsCounter
-          expect { run_service }.to change { counter.read(:create) }.by 2
-        end
-
-        it 'enqueues a new version worker' do
-          expect(::DesignManagement::NewVersionWorker)
-            .to receive(:perform_async).once.with(Integer)
-
-          run_service
-        end
-
-        it 'creates a single commit' do
-          commit_count = -> do
-            design_repository.expire_all_method_caches
-            design_repository.commit_count
-          end
-
-          expect { run_service }.to change { commit_count.call }.by(1)
-        end
-
-        it 'only does 5 gitaly calls', :request_store, :sidekiq_might_not_need_inline do
-          allow(::DesignManagement::NewVersionWorker).to receive(:perform_async).with(Integer)
           service = described_class.new(project, user, issue: issue, files: files)
+
           # Some unrelated calls that are usually cached or happen only once
-          service.__send__(:repository).create_if_not_exists
-          service.__send__(:repository).has_visible_content?
+          # We expect:
+          #  - An exists?
+          #  - a check for existing blobs
+          #  - default branch
+          #  - an after_commit callback on LfsObjectsProject
+          design_repository.create_if_not_exists
+          design_repository.has_visible_content?
 
-          request_count = -> { Gitlab::GitalyClient.get_request_count }
+          expect(::DesignManagement::NewVersionWorker)
+            .to receive(:perform_async).once.with(Integer).and_return(nil)
 
-          # An exists?, a check for existing blobs, default branch, an after_commit
-          # callback on LfsObjectsProject
-          expect { service.execute }.to change(&request_count).by(4)
+          expect { service.execute }
+            .to change { issue.designs.count }.from(0).to(2)
+            .and change { DesignManagement::Version.count }.by(1)
+            .and change { counter.read(:create) }.by(2)
+            .and change { Gitlab::GitalyClient.get_request_count }.by(3)
+            .and change { commit_count }.by(1)
         end
 
         context 'when uploading too many files' do
@@ -313,7 +274,7 @@ RSpec.describe DesignManagement::SaveDesignsService do
       end
 
       context 'when the user is not allowed to upload designs' do
-        let(:user) { create(:user) }
+        let(:user) { build_stubbed(:user) }
 
         it_behaves_like 'a service error'
       end

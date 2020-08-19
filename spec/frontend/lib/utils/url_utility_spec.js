@@ -160,6 +160,118 @@ describe('URL utility', () => {
         'https://host/path?op=%2B&foo=bar',
       );
     });
+
+    describe('with spread array option', () => {
+      const spreadArrayOptions = { spreadArrays: true };
+
+      it('maintains multiple values', () => {
+        expect(mergeUrlParams({}, '?array[]=foo&array[]=bar', spreadArrayOptions)).toBe(
+          '?array[]=foo&array[]=bar',
+        );
+      });
+
+      it('overrides multiple values with one', () => {
+        expect(
+          mergeUrlParams({ array: ['baz'] }, '?array[]=foo&array[]=bar', spreadArrayOptions),
+        ).toBe('?array[]=baz');
+      });
+      it('removes existing params', () => {
+        expect(
+          mergeUrlParams({ array: null }, '?array[]=foo&array[]=bar', spreadArrayOptions),
+        ).toBe('');
+      });
+      it('removes existing params and keeps others', () => {
+        expect(
+          mergeUrlParams(
+            { array: null },
+            '?array[]=foo&array[]=bar&other=quis',
+            spreadArrayOptions,
+          ),
+        ).toBe('?other=quis');
+      });
+      it('removes existing params along others', () => {
+        expect(
+          mergeUrlParams(
+            { array: null, other: 'quis' },
+            '?array[]=foo&array[]=bar',
+            spreadArrayOptions,
+          ),
+        ).toBe('?other=quis');
+      });
+      it('handles empty arrays along other parameters', () => {
+        expect(mergeUrlParams({ array: [], other: 'quis' }, '?array=baz', spreadArrayOptions)).toBe(
+          '?array[]=&other=quis',
+        );
+      });
+      it('handles multiple values along other parameters', () => {
+        expect(
+          mergeUrlParams(
+            { array: ['foo', 'bar'], other: 'quis' },
+            '?array=baz',
+            spreadArrayOptions,
+          ),
+        ).toBe('?array[]=foo&array[]=bar&other=quis');
+      });
+      it('handles array values with encoding', () => {
+        expect(
+          mergeUrlParams({ array: ['foo+', 'bar,baz'] }, '?array[]=%2Fbaz', spreadArrayOptions),
+        ).toBe('?array[]=foo%2B&array[]=bar%2Cbaz');
+      });
+      it('handles multiple arrays', () => {
+        expect(
+          mergeUrlParams(
+            { array1: ['foo+', 'bar,baz'], array2: ['quis', 'quux'] },
+            '?array1[]=%2Fbaz',
+            spreadArrayOptions,
+          ),
+        ).toBe('?array1[]=foo%2B&array1[]=bar%2Cbaz&array2[]=quis&array2[]=quux');
+      });
+    });
+
+    describe('without spread array option', () => {
+      it('maintains multiple values', () => {
+        expect(mergeUrlParams({}, '?array=foo%2Cbar')).toBe('?array=foo%2Cbar');
+      });
+      it('overrides multiple values with one', () => {
+        expect(mergeUrlParams({ array: ['baz'] }, '?array=foo%2Cbar')).toBe('?array=baz');
+      });
+      it('removes existing params', () => {
+        expect(mergeUrlParams({ array: null }, '?array=foo%2Cbar')).toBe('');
+      });
+      it('removes existing params and keeps others', () => {
+        expect(mergeUrlParams({ array: null }, '?array=foo&array=bar&other=quis')).toBe(
+          '?other=quis',
+        );
+      });
+      it('removes existing params along others', () => {
+        expect(mergeUrlParams({ array: null, other: 'quis' }, '?array=foo&array=bar')).toBe(
+          '?other=quis',
+        );
+      });
+      it('handles empty arrays along other parameters', () => {
+        expect(mergeUrlParams({ array: [], other: 'quis' }, '?array=baz')).toBe(
+          '?array=&other=quis',
+        );
+      });
+      it('handles multiple values along other parameters', () => {
+        expect(mergeUrlParams({ array: ['foo', 'bar'], other: 'quis' }, '?array=baz')).toBe(
+          '?array=foo%2Cbar&other=quis',
+        );
+      });
+      it('handles array values with encoding', () => {
+        expect(mergeUrlParams({ array: ['foo+', 'bar,baz'] }, '?array=%2Fbaz')).toBe(
+          '?array=foo%2B%2Cbar%2Cbaz',
+        );
+      });
+      it('handles multiple arrays', () => {
+        expect(
+          mergeUrlParams(
+            { array1: ['foo+', 'bar,baz'], array2: ['quis', 'quux'] },
+            '?array1=%2Fbaz',
+          ),
+        ).toBe('?array1=foo%2B%2Cbar%2Cbaz&array2=quis%2Cquux');
+      });
+    });
   });
 
   describe('removeParams', () => {

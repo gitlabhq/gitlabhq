@@ -14556,7 +14556,8 @@ CREATE TABLE public.project_statistics (
     shared_runners_seconds_last_reset timestamp without time zone,
     packages_size bigint DEFAULT 0 NOT NULL,
     wiki_size bigint,
-    snippets_size bigint
+    snippets_size bigint,
+    pipeline_artifacts_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE public.project_statistics_id_seq

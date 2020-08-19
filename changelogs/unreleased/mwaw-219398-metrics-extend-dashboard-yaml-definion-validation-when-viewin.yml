@@ -1,6 +1,0 @@
----
-title: Change metrics dashboard schema validation messages into exhaustive list of
-  all encountered errors.
-merge_request: 38925
-author:
-type: changed

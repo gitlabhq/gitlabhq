@@ -87,9 +87,11 @@ module DesignManagement
         # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17788/diffs#note_230875678
         order(:relative_position, :id)
       else
-        order(:id)
+        in_creation_order
       end
     end
+
+    scope :in_creation_order, -> { reorder(:id) }
 
     scope :with_filename, -> (filenames) { where(filename: filenames) }
     scope :on_issue, ->(issue) { where(issue_id: issue) }
@@ -101,7 +103,7 @@ module DesignManagement
     scope :current, -> { visible_at_version(nil) }
 
     def self.relative_positioning_query_base(design)
-      on_issue(design.issue_id)
+      default_scoped.on_issue(design.issue_id)
     end
 
     def self.relative_positioning_parent_column

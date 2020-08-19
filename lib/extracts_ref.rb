@@ -40,50 +40,11 @@ module ExtractsRef
   # Returns an Array where the first value is the tree-ish and the second is the
   # path
   def extract_ref(id)
-    pair = ['', '']
-
-    return pair unless repository_container
-
-    if id =~ /^(\h{40})(.+)/
-      # If the ref appears to be a SHA, we're done, just split the string
-      pair = $~.captures
-    elsif id.exclude?('/')
-      # If the ID contains no slash, we must have a ref and no path, so
-      # we can skip the Redis calls below
-      pair = [id, '']
-    else
-      # Otherwise, attempt to detect the ref using a list of the repository_container's
-      # branches and tags
-
-      # Append a trailing slash if we only get a ref and no file path
-      unless id.ends_with?('/')
-        id = [id, '/'].join
-      end
-
-      first_path_segment, rest = id.split('/', 2)
-
-      if use_first_path_segment?(first_path_segment)
-        pair = [first_path_segment, rest]
-      else
-        valid_refs = ref_names.select { |v| id.start_with?("#{v}/") }
-
-        if valid_refs.empty?
-          # No exact ref match, so just try our best
-          pair = id.match(%r{([^/]+)(.*)}).captures
-        else
-          # There is a distinct possibility that multiple refs prefix the ID.
-          # Use the longest match to maximize the chance that we have the
-          # right ref.
-          best_match = valid_refs.max_by(&:length)
-          # Partition the string into the ref and the path, ignoring the empty first value
-          pair = id.partition(best_match)[1..-1]
-        end
-      end
-    end
+    pair = extract_raw_ref(id)
 
     [
       pair[0].strip,
-      pair[1].gsub(%r{^/|/$}, '') # Remove leading and trailing slashes from path
+      pair[1].delete_prefix('/').delete_suffix('/')
     ]
   end
 
@@ -116,6 +77,38 @@ module ExtractsRef
   end
 
   private
+
+  def extract_raw_ref(id)
+    return ['', ''] unless repository_container
+
+    # If the ref appears to be a SHA, we're done, just split the string
+    return $~.captures if id =~ /^(\h{40})(.+)/
+
+    # No slash means we must have a ref and no path
+    return [id, ''] unless id.include?('/')
+
+    # Otherwise, attempt to detect the ref using a list of the
+    # repository_container's branches and tags
+
+    # Append a trailing slash if we only get a ref and no file path
+    id = [id, '/'].join unless id.ends_with?('/')
+    first_path_segment, rest = id.split('/', 2)
+
+    return [first_path_segment, rest] if use_first_path_segment?(first_path_segment)
+
+    valid_refs = ref_names.select { |v| id.start_with?("#{v}/") }
+
+    # No exact ref match, so just try our best
+    return id.match(%r{([^/]+)(.*)}).captures if valid_refs.empty?
+
+    # There is a distinct possibility that multiple refs prefix the ID.
+    # Use the longest match to maximize the chance that we have the
+    # right ref.
+    best_match = valid_refs.max_by(&:length)
+
+    # Partition the string into the ref and the path, ignoring the empty first value
+    id.partition(best_match)[1..-1]
+  end
 
   def use_first_path_segment?(ref)
     return false unless ::Feature.enabled?(:extracts_path_optimization)

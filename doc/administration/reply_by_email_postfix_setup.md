@@ -306,7 +306,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
       ```shell
       Trying 123.123.123.123...
-      Connected to mail.example.gitlab.com.
+      Connected to mail.gitlab.example.com.
       Escape character is '^]'.
       - OK [CAPABILITY IMAP4rev1 UIDPLUS CHILDREN NAMESPACE THREAD=ORDEREDSUBJECT THREAD=REFERENCES SORT QUOTA IDLE ACL ACL2=UNION] Courier-IMAP ready. Copyright 1998-2011 Double Precision, Inc.  See COPYING for distribution information.
       ```

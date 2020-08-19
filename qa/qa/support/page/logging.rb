@@ -64,6 +64,12 @@ module QA
           super
         end
 
+        def click_element_coordinates(name)
+          log(%Q(clicking the coordinates of :#{name}))
+
+          super
+        end
+
         def click_element(name, page = nil, **kwargs)
           msg = ["clicking :#{name}"]
           msg << ", expecting to be at #{page.class}" if page

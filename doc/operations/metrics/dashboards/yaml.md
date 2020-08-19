@@ -156,46 +156,21 @@ and files with invalid syntax display **Metrics Dashboard YAML definition is inv
 
 When **Metrics Dashboard YAML definition is invalid** at least one of the following messages is displayed:
 
-1. `[location] is missing required keys: [list of missing keys]` - The entry at
-   `[location]` is missing a key, or a key has been mistyped. This
-   example returns the error `root is missing required keys: panel_groups`:
+1. `dashboard: can't be blank` [learn more](#dashboard-top-level-properties)
+1. `panel_groups: should be an array of panel_groups objects` [learn more](#dashboard-top-level-properties)
+1. `group: can't be blank` [learn more](#panel-group-panel_groups-properties)
+1. `panels: should be an array of panels objects` [learn more](#panel-group-panel_groups-properties)
+1. `title: can't be blank` [learn more](#panel-panels-properties)
+1. `metrics: should be an array of metrics objects` [learn more](#panel-panels-properties)
+1. `query: can't be blank` [learn more](#metrics-metrics-properties)
+1. `query_range: can't be blank` [learn more](#metrics-metrics-properties)
+1. `unit: can't be blank` [learn more](#metrics-metrics-properties)
+1. `YAML syntax: The parsed YAML is too big`
 
-   ```yaml
-   dashboard: Important metrics
-   group_panels:
-     - ...
-   ```
+   This is displayed when the YAML file is larger than 1 MB.
 
-1. `[data] at [location] is not of type: [type]` - The entry at `[location]` contains
-   `[data]` which type does not adhere to required types. This example returns the
-   error `'123' at /panel_groups/0/group is not of type: string`:
+1. `YAML syntax: Invalid configuration format`
 
-   ```yaml
-   dashboard: Environment metrics
-   panel_groups:
-   - group: 123
-     panels:
-     ...
-   ```
-
-1. `[data] at [location] is not one of: [types]` - The entry at `[location]` contains
-   `[data]` which is not included in the list of required values. This example returns
-   the error `'scatterplot-chart' at /panel_groups/0/panels/0/type is not one of: ["area-chart", "line-chart", "anomaly-chart", "bar", "column", "stacked-column", "single-stat", "heatmap"]`:
-
-   ```yaml
-   dashboard: Environment metrics
-   panel_groups:
-   - group: Network
-     panels:
-     - title: Throughput
-       type: scatterplot-chart
-       y_label: Requests / Sec
-     ...
-   ```
-
-1. `metric_id must be unique across a project` - At least two metrics entries have
-   the same `id` attribute, which [must be unique](#metrics-metrics-properties).
-1. `The parsed YAML is too big` - The YAML file is larger than 1 MB.
-1. `Invalid configuration format` - The YAML file is empty or does not contain valid YAML.
+   This is displayed when the YAML file is empty or does not contain valid YAML.
 
 Metrics Dashboard YAML definition validation information is also available as a [GraphQL API field](../../../api/graphql/reference/index.md#metricsdashboard)

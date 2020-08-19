@@ -137,9 +137,10 @@ module RelativePositioning
     #                          If `true`, then all objects with `null` positions are placed _after_
     #                          all siblings with positions. If `false`, all objects with `null`
     #                          positions are placed _before_ all siblings with positions.
+    # @returns [Number] The number of moved records.
     def move_nulls(objects, at_end:)
       objects = objects.reject(&:relative_position)
-      return if objects.empty?
+      return 0 if objects.empty?
 
       representative = objects.first
       number_of_gaps = objects.size + 1 # 1 at left, one between each, and one at right
@@ -186,6 +187,8 @@ module RelativePositioning
           end
         end
       end
+
+      objects.size
     end
   end
 

@@ -17,6 +17,7 @@ module QA
           view 'app/views/projects/settings/_archive.html.haml' do
             element :archive_project_link
             element :unarchive_project_link
+            element :archive_project_content
           end
 
           view 'app/views/projects/_export.html.haml' do
@@ -45,7 +46,7 @@ module QA
             # Retry added here due to seldom seen inconsistent UI state issue:
             # https://gitlab.com/gitlab-org/gitlab/-/issues/231242
             retry_on_exception do
-              click_body
+              click_element_coordinates(:archive_project_content)
               expand_select_list
               # Workaround for a failure to search when there are no spaces around the /
               # https://gitlab.com/gitlab-org/gitlab/-/issues/218965

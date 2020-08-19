@@ -677,22 +677,22 @@ the project.
 
 The following procedure uses these sample project names:
 
-- For the current project: `example.gitlab.com/org/build/sample_project/cr:v2.9.1`
-- For the new project: `example.gitlab.com/new_org/build/new_sample_project/cr:v2.9.1`
+- For the current project: `gitlab.example.com/org/build/sample_project/cr:v2.9.1`
+- For the new project: `gitlab.example.com/new_org/build/new_sample_project/cr:v2.9.1`
 
 Use your own URLs to complete the following steps:
 
 1. Download the Docker images on your computer:
 
    ```shell
-   docker login example.gitlab.com
-   docker pull example.gitlab.com/org/build/sample_project/cr:v2.9.1
+   docker login gitlab.example.com
+   docker pull gitlab.example.com/org/build/sample_project/cr:v2.9.1
    ```
 
 1. Rename the images to match the new project name:
 
    ```shell
-   docker tag example.gitlab.com/org/build/sample_project/cr:v2.9.1 example.gitlab.com/new_org/build/new_sample_project/cr:v2.9.1
+   docker tag gitlab.example.com/org/build/sample_project/cr:v2.9.1 gitlab.example.com/new_org/build/new_sample_project/cr:v2.9.1
    ```
 
 1. Delete the images in both projects by using the [UI](#delete-images) or [API](../../../api/packages.md#delete-a-project-package).
@@ -702,7 +702,7 @@ Use your own URLs to complete the following steps:
 1. Restore the images:
 
    ```shell
-   docker push example.gitlab.com/new_org/build/new_sample_project/cr:v2.9.1
+   docker push gitlab.example.com/new_org/build/new_sample_project/cr:v2.9.1
    ```
 
 Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/18383) for details.

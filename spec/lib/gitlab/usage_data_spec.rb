@@ -942,12 +942,12 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.analytics_unique_visits_data }
 
     it 'returns the number of unique visits to pages with analytics features' do
-      ::Gitlab::Analytics::UniqueVisits::ANALYTICS_IDS.each do |target_id|
+      ::Gitlab::Analytics::UniqueVisits.analytics_ids.each do |target_id|
         expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: target_id).and_return(123)
       end
 
       expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: :analytics).and_return(543)
-      expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: :analytics, weeks: 4).and_return(987)
+      expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: :analytics, start_date: 4.weeks.ago.to_date, end_date: Date.current).and_return(987)
 
       expect(subject).to eq({
         analytics_unique_visits: {
@@ -978,13 +978,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       described_class.clear_memoization(:unique_visit_service)
 
       allow_next_instance_of(::Gitlab::Analytics::UniqueVisits) do |instance|
-        ::Gitlab::Analytics::UniqueVisits::COMPLIANCE_IDS.each do |target_id|
+        ::Gitlab::Analytics::UniqueVisits.compliance_ids.each do |target_id|
           allow(instance).to receive(:unique_visits_for).with(targets: target_id).and_return(123)
         end
 
         allow(instance).to receive(:unique_visits_for).with(targets: :compliance).and_return(543)
 
-        allow(instance).to receive(:unique_visits_for).with(targets: :compliance, weeks: 4).and_return(987)
+        allow(instance).to receive(:unique_visits_for).with(targets: :compliance, start_date: 4.weeks.ago.to_date, end_date: Date.current).and_return(987)
       end
     end
 

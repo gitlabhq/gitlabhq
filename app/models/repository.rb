@@ -314,12 +314,14 @@ class Repository
   def expire_tags_cache
     expire_method_caches(%i(tag_names tag_count has_ambiguous_refs?))
     @tags = nil
+    @tag_names_include = nil
   end
 
   def expire_branches_cache
     expire_method_caches(%i(branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?))
     @local_branches = nil
     @branch_exists_memo = nil
+    @branch_names_include = nil
   end
 
   def expire_statistics_caches

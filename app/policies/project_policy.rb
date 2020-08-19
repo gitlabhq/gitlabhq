@@ -231,6 +231,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_issue
     enable :admin_label
     enable :admin_list
+    enable :admin_issue_link
     enable :read_commit_status
     enable :read_build
     enable :read_container_image
@@ -544,6 +545,7 @@ class ProjectPolicy < BasePolicy
   rule { can?(:read_issue) }.policy do
     enable :read_design
     enable :read_design_activity
+    enable :read_issue_link
   end
 
   # Design abilities could also be prevented in the issue policy.

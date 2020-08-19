@@ -584,21 +584,21 @@ module Gitlab
       end
 
       def analytics_unique_visits_data
-        results = ::Gitlab::Analytics::UniqueVisits::ANALYTICS_IDS.each_with_object({}) do |target_id, hash|
+        results = ::Gitlab::Analytics::UniqueVisits.analytics_ids.each_with_object({}) do |target_id, hash|
           hash[target_id] = redis_usage_data { unique_visit_service.unique_visits_for(targets: target_id) }
         end
         results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics) }
-        results['analytics_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics, weeks: 4) }
+        results['analytics_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics, start_date: 4.weeks.ago.to_date, end_date: Date.current) }
 
         { analytics_unique_visits: results }
       end
 
       def compliance_unique_visits_data
-        results = ::Gitlab::Analytics::UniqueVisits::COMPLIANCE_IDS.each_with_object({}) do |target_id, hash|
+        results = ::Gitlab::Analytics::UniqueVisits.compliance_ids.each_with_object({}) do |target_id, hash|
           hash[target_id] = redis_usage_data { unique_visit_service.unique_visits_for(targets: target_id) }
         end
         results['compliance_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :compliance) }
-        results['compliance_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :compliance, weeks: 4) }
+        results['compliance_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :compliance, start_date: 4.weeks.ago.to_date, end_date: Date.current) }
 
         { compliance_unique_visits: results }
       end

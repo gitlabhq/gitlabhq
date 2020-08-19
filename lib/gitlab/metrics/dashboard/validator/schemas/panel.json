@@ -4,7 +4,7 @@
   "properties": {
     "type": {
       "type": "string",
-      "enum": ["area-chart", "line-chart", "anomaly-chart", "bar", "column", "stacked-column", "single-stat", "heatmap", "gauge"],
+      "enum": ["area-chart", "anomaly-chart", "bar", "column", "stacked-column", "single-stat", "heatmap"],
       "default": "area-chart"
     },
     "title": { "type": "string" },

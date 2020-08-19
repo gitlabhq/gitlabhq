@@ -7,7 +7,7 @@ RSpec.describe 'Getting Metrics Dashboard' do
 
   let_it_be(:current_user) { create(:user) }
   let(:project) { create(:project) }
-  let(:environment) { create(:environment, project: project) }
+  let!(:environment) { create(:environment, project: project) }
 
   let(:query) do
     graphql_query_for(
@@ -67,7 +67,7 @@ RSpec.describe 'Getting Metrics Dashboard' do
         it 'returns metrics dashboard' do
           dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
 
-          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["root is missing required keys: panel_groups"])
+          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["panel_groups: should be an array of panel_groups objects"])
         end
       end
 
@@ -78,7 +78,7 @@ RSpec.describe 'Getting Metrics Dashboard' do
         it 'returns metrics dashboard' do
           dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
 
-          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["root is missing required keys: dashboard, panel_groups"])
+          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["dashboard: can't be blank", "panel_groups: should be an array of panel_groups objects"])
         end
       end
     end

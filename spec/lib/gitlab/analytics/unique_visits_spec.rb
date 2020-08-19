@@ -41,23 +41,23 @@ RSpec.describe Gitlab::Analytics::UniqueVisits, :clean_gitlab_redis_shared_state
       expect(unique_visits.unique_visits_for(targets: target2_id)).to eq(1)
       expect(unique_visits.unique_visits_for(targets: target4_id)).to eq(1)
 
-      expect(unique_visits.unique_visits_for(targets: target2_id, start_week: 15.days.ago)).to eq(1)
+      expect(unique_visits.unique_visits_for(targets: target2_id, start_date: 15.days.ago)).to eq(1)
 
       expect(unique_visits.unique_visits_for(targets: target3_id)).to eq(0)
 
-      expect(unique_visits.unique_visits_for(targets: target5_id, start_week: 15.days.ago)).to eq(2)
+      expect(unique_visits.unique_visits_for(targets: target5_id, start_date: 15.days.ago)).to eq(2)
 
       expect(unique_visits.unique_visits_for(targets: :analytics)).to eq(2)
-      expect(unique_visits.unique_visits_for(targets: :analytics, start_week: 15.days.ago)).to eq(1)
-      expect(unique_visits.unique_visits_for(targets: :analytics, start_week: 30.days.ago)).to eq(0)
+      expect(unique_visits.unique_visits_for(targets: :analytics, start_date: 15.days.ago)).to eq(1)
+      expect(unique_visits.unique_visits_for(targets: :analytics, start_date: 30.days.ago)).to eq(0)
 
-      expect(unique_visits.unique_visits_for(targets: :analytics, weeks: 4)).to eq(2)
+      expect(unique_visits.unique_visits_for(targets: :analytics, start_date: 4.weeks.ago, end_date: Date.current)).to eq(2)
 
       expect(unique_visits.unique_visits_for(targets: :compliance)).to eq(1)
-      expect(unique_visits.unique_visits_for(targets: :compliance, start_week: 15.days.ago)).to eq(2)
-      expect(unique_visits.unique_visits_for(targets: :compliance, start_week: 30.days.ago)).to eq(0)
+      expect(unique_visits.unique_visits_for(targets: :compliance, start_date: 15.days.ago)).to eq(2)
+      expect(unique_visits.unique_visits_for(targets: :compliance, start_date: 30.days.ago)).to eq(0)
 
-      expect(unique_visits.unique_visits_for(targets: :compliance, weeks: 4)).to eq(2)
+      expect(unique_visits.unique_visits_for(targets: :compliance, start_date: 4.weeks.ago, end_date: Date.current)).to eq(2)
     end
 
     it 'sets the keys in Redis to expire automatically after 12 weeks' do
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Analytics::UniqueVisits, :clean_gitlab_redis_shared_state
 
       expect do
         unique_visits.track_visit(visitor1_id, invalid_target_id)
-      end.to raise_error("Invalid target id #{invalid_target_id}")
+      end.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
     end
   end
 end

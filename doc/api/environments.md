@@ -34,7 +34,7 @@ Example response:
     "id": 1,
     "name": "review/fix-foo",
     "slug": "review-fix-foo-dfjre3",
-    "external_url": "https://review-fix-foo-dfjre3.example.gitlab.com",
+    "external_url": "https://review-fix-foo-dfjre3.gitlab.example.com",
     "state": "available"
   }
 ]
@@ -62,7 +62,7 @@ Example of response
   "id": 1,
   "name": "review/fix-foo",
   "slug": "review-fix-foo-dfjre3",
-  "external_url": "https://review-fix-foo-dfjre3.example.gitlab.com",
+  "external_url": "https://review-fix-foo-dfjre3.gitlab.example.com",
   "state": "available",
   "last_deployment": {
     "id": 100,
@@ -164,7 +164,7 @@ POST /projects/:id/environments
 | `external_url` | string  | no     | Place to link to for this environment |
 
 ```shell
-curl --data "name=deploy&external_url=https://deploy.example.gitlab.com" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments"
+curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments"
 ```
 
 Example response:
@@ -174,7 +174,7 @@ Example response:
   "id": 1,
   "name": "deploy",
   "slug": "deploy",
-  "external_url": "https://deploy.example.gitlab.com",
+  "external_url": "https://deploy.gitlab.example.com",
   "state": "available"
 }
 ```
@@ -197,7 +197,7 @@ PUT /projects/:id/environments/:environments_id
 | `external_url`  | string  | no                                | The new `external_url`           |
 
 ```shell
-curl --request PUT --data "name=staging&external_url=https://staging.example.gitlab.com" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
+curl --request PUT --data "name=staging&external_url=https://staging.gitlab.example.com" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
 Example response:
@@ -207,7 +207,7 @@ Example response:
   "id": 1,
   "name": "staging",
   "slug": "staging",
-  "external_url": "https://staging.example.gitlab.com",
+  "external_url": "https://staging.gitlab.example.com",
   "state": "available"
 }
 ```
@@ -253,7 +253,7 @@ Example response:
   "id": 1,
   "name": "deploy",
   "slug": "deploy",
-  "external_url": "https://deploy.example.gitlab.com",
+  "external_url": "https://deploy.gitlab.example.com",
   "state": "stopped"
 }
 ```

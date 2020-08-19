@@ -584,6 +584,10 @@ These attributes define the SAML user. If users can change these attributes, the
 
 Refer to the documentation for your SAML Identity Provider for information on how to fix these attributes.
 
+## Passwords for users created via SAML
+
+The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML.
+
 ## Troubleshooting
 
 You can find the base64-encoded SAML Response in the [`production_json.log`](../administration/logs.md#production_jsonlog).

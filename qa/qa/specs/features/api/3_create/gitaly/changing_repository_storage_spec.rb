@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Changing Gitaly repository storage', :requires_admin do
+    describe 'Changing Gitaly repository storage', :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/236195', type: :investigating } do
       praefect_manager = Service::PraefectManager.new
       praefect_manager.gitlab = 'gitlab'
 

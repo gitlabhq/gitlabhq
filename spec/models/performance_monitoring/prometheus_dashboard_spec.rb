@@ -219,31 +219,20 @@ RSpec.describe PerformanceMonitoring::PrometheusDashboard do
   end
 
   describe '#schema_validation_warnings' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:environment) { create(:environment, project: project) }
-    let(:path) { '.gitlab/dashboards/test.yml' }
-
-    subject(:schema_validation_warnings) { described_class.new(json_content.merge(path: path, environment: environment)).schema_validation_warnings }
-
-    before do
-      allow(Gitlab::Metrics::Dashboard::Finder).to receive(:find_raw).with(project, dashboard_path: path).and_return(json_content)
-    end
-
     context 'when schema is valid' do
       it 'returns nil' do
-        expect(Gitlab::Metrics::Dashboard::Validator).to receive(:errors).with(json_content, dashboard_path: path, project: project).and_return([])
-
-        expect(schema_validation_warnings).to eq []
+        expect(described_class).to receive(:from_json)
+        expect(described_class.new.schema_validation_warnings).to be_nil
       end
     end
 
     context 'when schema is invalid' do
       it 'returns array with errors messages' do
-        error = ::Gitlab::Metrics::Dashboard::Validator::Errors::SchemaValidationError.new
+        instance = described_class.new
+        instance.errors.add(:test, 'test error')
 
-        expect(Gitlab::Metrics::Dashboard::Validator).to receive(:errors).with(json_content, dashboard_path: path, project: project).and_return([error])
-
-        expect(schema_validation_warnings).to eq [error.message]
+        expect(described_class).to receive(:from_json).and_raise(ActiveModel::ValidationError.new(instance))
+        expect(described_class.new.schema_validation_warnings).to eq ['test: test error']
       end
     end
   end

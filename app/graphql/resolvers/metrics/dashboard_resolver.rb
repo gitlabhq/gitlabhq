@@ -14,8 +14,7 @@ module Resolvers
       def resolve(**args)
         return unless environment
 
-        ::PerformanceMonitoring::PrometheusDashboard
-          .find_for(project: environment.project, user: context[:current_user], path: args[:path], options: { environment: environment })
+        ::PerformanceMonitoring::PrometheusDashboard.find_for(project: environment.project, user: context[:current_user], path: args[:path], options: { environment: environment })
       end
     end
   end

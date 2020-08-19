@@ -989,11 +989,10 @@ For more information see similar questions on PostgreSQL issue tracker [here](ht
 
 ### When the secrets file is lost
 
-If you have failed to [back up the secrets file](#storing-configuration-files),
-then users with 2FA enabled will not be able to log into GitLab. In that case,
-you need to [disable 2FA for everyone](../security/two_factor_authentication.md#disabling-2fa-for-everyone).
+If you have failed to [back up the secrets file](#storing-configuration-files), you'll
+need to perform a number of steps to get GitLab working properly again.
 
-The secrets file is also responsible for storing the encryption key for several
+The secrets file is responsible for storing the encryption key for several
 columns containing sensitive information. If the key is lost, GitLab will be
 unable to decrypt those columns. This will break a wide range of functionality,
 including (but not restricted to):
@@ -1012,17 +1011,28 @@ experience some unexpected behavior such as:
 - Stuck jobs.
 - 500 errors.
 
-You can check whether you have undecryptable values in the database using
-the [Secrets Doctor Rake task](../administration/raketasks/doctor.md).
-
 In this case, you are required to reset all the tokens for CI/CD variables
 and Runner Authentication, which is described in more detail below. After
 resetting the tokens, you should be able to visit your project and the jobs
-will have started running again.
+will have started running again. Use the information in the following sections at your own risk.
+
+#### Check for undecryptable values
+
+You can check whether you have undecryptable values in the database using
+the [Secrets Doctor Rake task](../administration/raketasks/doctor.md).
+
+#### Take a backup
+
+You will need to directly modify GitLab data to work around your lost secrets file.
 
 CAUTION: **Warning:**
-Use the following commands at your own risk, and make sure you've taken a
-backup beforehand.
+Make sure you've taken a backup beforehand, particularly a full database backup.
+
+#### Disable user two-factor authentication (2FA)
+
+Users with 2FA enabled will not be able to log into GitLab. In that case,
+you need to [disable 2FA for everyone](../security/two_factor_authentication.md#disabling-2fa-for-everyone)
+and then users will have to reactivate 2FA from scratch.
 
 #### Reset CI/CD variables
 
@@ -1118,6 +1128,35 @@ backup beforehand.
 A similar strategy can be employed for the remaining features - by removing the
 data that cannot be decrypted, GitLab can be brought back into working order,
 and the lost data can be manually replaced.
+
+#### Fix project integrations
+
+If you've lost your secrets, the
+[projects' integrations settings pages](../user/project/integrations/index.md)
+are probably generating 500 errors.
+
+The fix is to truncate the `web_hooks` table:
+
+1. Enter the DB console:
+
+   For Omnibus GitLab packages:
+
+   ```shell
+   sudo gitlab-rails dbconsole
+   ```
+
+   For installations from source:
+
+   ```shell
+   sudo -u git -H bundle exec rails dbconsole -e production
+   ```
+
+1. Truncate the table
+
+   ```sql
+   -- truncate web_hooks table
+   TRUNCATE web_hooks CASCADE;
+   ```
 
 ### Container Registry push failures after restoring from a backup
 

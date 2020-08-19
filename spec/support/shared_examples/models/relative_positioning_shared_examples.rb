@@ -24,7 +24,7 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       item3.update!(relative_position: nil)
 
       items = [item1, item2, item3]
-      described_class.move_nulls_to_end(items)
+      expect(described_class.move_nulls_to_end(items)).to be(2)
 
       expect(items.sort_by(&:relative_position)).to eq(items)
       expect(item1.relative_position).to be(1000)
@@ -53,9 +53,8 @@ RSpec.shared_examples 'a class that supports relative positioning' do
     it 'does not perform any moves if all items have their relative_position set' do
       item1.update!(relative_position: 1)
 
-      expect do
-        described_class.move_nulls_to_end([item1])
-      end.not_to change { item1.reset.relative_position }
+      expect(described_class.move_nulls_to_start([item1])).to be(0)
+      expect(item1.reload.relative_position).to be(1)
     end
 
     it 'manages to move nulls to the end even if there is a sequence at the end' do
@@ -97,7 +96,7 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       item3.update!(relative_position: 1000)
 
       items = [item1, item2, item3]
-      described_class.move_nulls_to_start(items)
+      expect(described_class.move_nulls_to_start(items)).to be(2)
       items.map(&:reload)
 
       expect(items.sort_by(&:relative_position)).to eq(items)
@@ -128,10 +127,8 @@ RSpec.shared_examples 'a class that supports relative positioning' do
     it 'does not perform any moves if all items have their relative_position set' do
       item1.update!(relative_position: 1)
 
-      described_class.move_nulls_to_start([item1])
-      item1.reload
-
-      expect(item1.relative_position).to be(1)
+      expect(described_class.move_nulls_to_start([item1])).to be(0)
+      expect(item1.reload.relative_position).to be(1)
     end
   end
 

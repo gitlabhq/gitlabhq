@@ -44,10 +44,6 @@ module QA
         wait_for_requests
       end
 
-      def click_body
-        page.find("body").click
-      end
-
       def wait_until(max_duration: 60, sleep_interval: 0.1, reload: true, raise_on_failure: true)
         Support::Waiter.wait_until(max_duration: max_duration, sleep_interval: sleep_interval, raise_on_failure: raise_on_failure) do
           yield || (reload && refresh && false)
@@ -143,6 +139,15 @@ module QA
 
           !find_element(name).checked?
         end
+      end
+
+      # Use this to simulate moving the pointer to an element's coordinate
+      # and sending a click event.
+      # This is a helpful workaround when there is a transparent element overlapping
+      # the target element and so, normal `click_element` on target would raise
+      # Selenium::WebDriver::Error::ElementClickInterceptedError
+      def click_element_coordinates(name)
+        page.driver.browser.action.move_to(find_element(name).native).click.perform
       end
 
       # replace with (..., page = self.class)

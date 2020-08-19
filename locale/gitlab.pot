@@ -6931,6 +6931,9 @@ msgstr ""
 msgid "Copy the code below to implement tracking in your application:"
 msgstr ""
 
+msgid "Copy to clipboard"
+msgstr ""
+
 msgid "Copy token"
 msgstr ""
 
