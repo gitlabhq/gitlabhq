@@ -66,10 +66,16 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
     subject { create(:ci_pipeline_artifact) }
 
     context 'when existing object has local store' do
-      it 'is stored locally' do
-        expect(subject.file_store).to be(ObjectStorage::Store::LOCAL)
-        expect(subject.file).to be_file_storage
-        expect(subject.file.object_store).to eq(ObjectStorage::Store::LOCAL)
+      it_behaves_like 'mounted file in local store'
+    end
+
+    context 'when direct upload is enabled' do
+      before do
+        stub_artifacts_object_storage(Ci::PipelineArtifactUploader, direct_upload: true)
+      end
+
+      context 'when file is stored' do
+        it_behaves_like 'mounted file in object store'
       end
     end
   end

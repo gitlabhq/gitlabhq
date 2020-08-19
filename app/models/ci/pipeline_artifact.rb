@@ -6,6 +6,7 @@ module Ci
   class PipelineArtifact < ApplicationRecord
     extend Gitlab::Ci::Model
     include Artifactable
+    include FileStoreMounter
 
     FILE_STORE_SUPPORTED = [
       ObjectStorage::Store::LOCAL,
@@ -22,9 +23,8 @@ module Ci
     validates :size, presence: true, numericality: { less_than_or_equal_to: FILE_SIZE_LIMIT }
     validates :file_type, presence: true
 
-    mount_uploader :file, Ci::PipelineArtifactUploader
+    mount_file_store_uploader Ci::PipelineArtifactUploader
     before_save :set_size, if: :file_changed?
-    after_save :update_file_store, if: :saved_change_to_file?
 
     enum file_type: {
       code_coverage: 1
@@ -32,12 +32,6 @@ module Ci
 
     def set_size
       self.size = file.size
-    end
-
-    def update_file_store
-      # The file.object_store is set during `uploader.store!`
-      # which happens after object is inserted/updated
-      self.update_column(:file_store, file.object_store)
     end
   end
 end
