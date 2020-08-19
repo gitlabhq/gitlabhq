@@ -7807,6 +7807,16 @@ type Iteration {
   iid: ID!
 
   """
+  Web path of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts
+  """
+  scopedPath: String
+
+  """
+  Web URL of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts
+  """
+  scopedUrl: String
+
+  """
   Timestamp of the iteration start date
   """
   startDate: Time

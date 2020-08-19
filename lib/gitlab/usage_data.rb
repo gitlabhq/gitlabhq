@@ -58,7 +58,7 @@ module Gitlab
       end
 
       def recorded_at
-        Time.now
+        Time.current
       end
 
       # rubocop: disable Metrics/AbcSize

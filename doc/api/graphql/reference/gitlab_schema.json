@@ -21512,6 +21512,34 @@
               "deprecationReason": null
             },
             {
+              "name": "scopedPath",
+              "description": "Web path of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "scopedUrl",
+              "description": "Web URL of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "startDate",
               "description": "Timestamp of the iteration start date",
               "args": [

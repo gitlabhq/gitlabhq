@@ -404,6 +404,12 @@ RSpec.describe API::Issues do
           travel_back
         end
 
+        it 'returns them all when argument is empty' do
+          get api('/issues?due_date=', user)
+
+          expect_paginated_array_response(issue5.id, issue4.id, issue3.id, issue2.id, issue.id, closed_issue.id)
+        end
+
         it 'returns issues without due date' do
           get api('/issues?due_date=0', user)
 

@@ -470,8 +470,10 @@ Rails/TimeZone:
   Include:
     - 'app/controllers/**/*'
     - 'app/services/**/*'
+    - 'lib/**/*'
     - 'spec/controllers/**/*'
     - 'spec/services/**/*'
+    - 'spec/lib/**/*'
     - 'ee/app/controllers/**/*'
     - 'ee/app/services/**/*'
     - 'ee/spec/controllers/**/*'
@@ -484,7 +486,8 @@ Rails/TimeZone:
     - 'spec/workers/**/*'
     - 'ee/app/workers/**/*'
     - 'ee/spec/workers/**/*'
-
+    - 'ee/lib/**/*'
+    - 'ee/spec/lib/**/*'
 
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:

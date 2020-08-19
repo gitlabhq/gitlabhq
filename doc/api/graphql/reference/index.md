@@ -1191,6 +1191,8 @@ Represents an iteration object.
 | `dueDate` | Time | Timestamp of the iteration due date |
 | `id` | ID! | ID of the iteration |
 | `iid` | ID! | Internal ID of the iteration |
+| `scopedPath` | String | Web path of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts |
+| `scopedUrl` | String | Web URL of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts |
 | `startDate` | Time | Timestamp of the iteration start date |
 | `state` | IterationState! | State of the iteration |
 | `title` | String! | Title of the iteration |

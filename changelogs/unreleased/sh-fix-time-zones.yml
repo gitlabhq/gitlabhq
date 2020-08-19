@@ -1,0 +1,5 @@
+---
+title: Fix time zone config not respected in multi-threaded servers
+merge_request: 39778
+author:
+type: fixed

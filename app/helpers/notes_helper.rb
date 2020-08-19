@@ -57,12 +57,14 @@ module NotesHelper
   def add_diff_note_button(line_code, position, line_type)
     return if @diff_notes_disabled
 
-    button_tag '',
-      class: 'add-diff-note js-add-diff-note-button',
-      type: 'submit', name: 'button',
-      data: diff_view_line_data(line_code, position, line_type),
-      title: _('Add a comment to this line') do
-      sprite_icon('comment', size: 12)
+    content_tag(:span, class: 'add-diff-note tooltip-wrapper') do
+      button_tag '',
+        class: 'note-button add-diff-note js-add-diff-note-button',
+        type: 'submit', name: 'button',
+        data: diff_view_line_data(line_code, position, line_type),
+        title: _('Add a comment to this line') do
+          sprite_icon('comment', size: 12)
+        end
     end
   end
 

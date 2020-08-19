@@ -305,12 +305,16 @@ We use the [AsyncEmitter](https://github.com/snowplow/snowplow/wiki/Ruby-Tracker
 
 There are several tools for developing and testing Snowplow Event
 
-| Testing Tool                                 | Frontend Tracking  | Backend Tracking    | Local Development Environment | Production Environment |
-|----------------------------------------------|--------------------|---------------------|-------------------------------|------------------------|
-| Snowplow Analytics Debugger Chrome Extension | **{check-circle}** | **{dotted-circle}** | **{check-circle}**            | **{check-circle}**     |
-| Snowplow Inspector Chrome Extension          | **{check-circle}** | **{dotted-circle}** | **{check-circle}**            | **{check-circle}**     |
-| Snowplow Micro                               | **{check-circle}** | **{check-circle}**  | **{check-circle}**            | **{dotted-circle}**    |
-| Snowplow Mini                                | **{check-circle}** | **{check-circle}**  | **{dotted-circle}**           | **{check-circle}**     |
+| Testing Tool                                 | Frontend Tracking  | Backend Tracking    | Local Development Environment | Production Environment | Production Environment |
+|----------------------------------------------|--------------------|---------------------|-------------------------------|------------------------|------------------------|
+| Snowplow Analytics Debugger Chrome Extension | **{check-circle}** | **{dotted-circle}** | **{check-circle}**            | **{check-circle}**     | **{check-circle}**     |
+| Snowplow Inspector Chrome Extension          | **{check-circle}** | **{dotted-circle}** | **{check-circle}**            | **{check-circle}**     | **{check-circle}**     |
+| Snowplow Micro                               | **{check-circle}** | **{check-circle}**  | **{check-circle}**            | **{dotted-circle}**    | **{dotted-circle}**    |
+| Snowplow Mini                                | **{check-circle}** | **{check-circle}**  | **{dotted-circle}**           | **{status_preparing}** | **{status_preparing}** |
+
+**Legend**
+
+**{check-circle}** Available, **{status_preparing}** In progress, **{dotted-circle}** Not Planned
 
 ### Snowplow Analytics Debugger Chrome Extension
 
