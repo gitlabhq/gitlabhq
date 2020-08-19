@@ -35,7 +35,9 @@ export const i18n = {
   testAlertSuccess: s__(
     'AlertSettings|Test alert sent successfully. If you have made other changes, please save them now.',
   ),
-  authKeyRest: s__('AlertSettings|Authorization key has been successfully reset'),
+  authKeyRest: s__(
+    'AlertSettings|Authorization key has been successfully reset. Please save your changes now.',
+  ),
 };
 
 export const serviceOptions = [

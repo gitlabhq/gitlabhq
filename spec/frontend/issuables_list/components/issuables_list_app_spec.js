@@ -21,7 +21,7 @@ jest.mock('~/lib/utils/common_utils', () => ({
 const TEST_LOCATION = `${TEST_HOST}/issues`;
 const TEST_ENDPOINT = '/issues';
 const TEST_CREATE_ISSUES_PATH = '/createIssue';
-const TEST_EMPTY_SVG_PATH = '/emptySvg';
+const TEST_SVG_PATH = '/emptySvg';
 
 const setUrl = query => {
   window.location.href = `${TEST_LOCATION}${query}`;
@@ -48,11 +48,15 @@ describe('Issuables list component', () => {
   };
 
   const factory = (props = { sortKey: 'priority' }) => {
+    const emptyStateMeta = {
+      createIssuePath: TEST_CREATE_ISSUES_PATH,
+      svgPath: TEST_SVG_PATH,
+    };
+
     wrapper = shallowMount(IssuablesListApp, {
       propsData: {
         endpoint: TEST_ENDPOINT,
-        createIssuePath: TEST_CREATE_ISSUES_PATH,
-        emptySvgPath: TEST_EMPTY_SVG_PATH,
+        emptyStateMeta,
         ...props,
       },
     });
@@ -117,9 +121,10 @@ describe('Issuables list component', () => {
       expect(wrapper.vm).toMatchObject({
         // Props
         canBulkEdit: false,
-        createIssuePath: TEST_CREATE_ISSUES_PATH,
-        emptySvgPath: TEST_EMPTY_SVG_PATH,
-
+        emptyStateMeta: {
+          createIssuePath: TEST_CREATE_ISSUES_PATH,
+          svgPath: TEST_SVG_PATH,
+        },
         // Data
         filters: {
           state: 'opened',

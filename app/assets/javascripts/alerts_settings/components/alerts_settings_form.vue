@@ -51,52 +51,26 @@ export default {
     'gl-modal': GlModalDirective,
   },
   mixins: [glFeatureFlagsMixin()],
-  props: {
-    prometheus: {
-      type: Object,
-      required: true,
-      validator: ({ activated }) => {
-        return activated !== undefined;
-      },
-    },
-    generic: {
-      type: Object,
-      required: true,
-      validator: ({ formPath }) => {
-        return formPath !== undefined;
-      },
-    },
-    opsgenie: {
-      type: Object,
-      required: true,
-    },
-  },
+  inject: ['prometheus', 'generic', 'opsgenie'],
   data() {
     return {
-      activated: {
-        generic: this.generic.activated,
-        prometheus: this.prometheus.activated,
-        opsgenie: this.opsgenie?.activated,
-      },
       loading: false,
-      authorizationKey: {
-        generic: this.generic.initialAuthorizationKey,
-        prometheus: this.prometheus.prometheusAuthorizationKey,
-      },
       selectedEndpoint: serviceOptions[0].value,
       options: serviceOptions,
-      targetUrl: null,
+      active: false,
+      authKey: '',
+      targetUrl: '',
       feedback: {
         variant: 'danger',
-        feedbackMessage: null,
+        feedbackMessage: '',
         isFeedbackDismissed: false,
       },
-      serverError: null,
       testAlert: {
         json: null,
         error: null,
       },
       canSaveForm: false,
+      serverError: null,
     };
   },
   computed: {
@@ -123,24 +97,24 @@ export default {
         case 'generic': {
           return {
             url: this.generic.url,
-            authKey: this.authorizationKey.generic,
-            active: this.activated.generic,
-            resetKey: this.resetGenericKey.bind(this),
+            authKey: this.generic.authorizationKey,
+            activated: this.generic.activated,
+            resetKey: this.resetKey.bind(this),
           };
         }
         case 'prometheus': {
           return {
             url: this.prometheus.prometheusUrl,
-            authKey: this.authorizationKey.prometheus,
-            active: this.activated.prometheus,
-            resetKey: this.resetPrometheusKey.bind(this),
+            authKey: this.prometheus.authorizationKey,
+            activated: this.prometheus.activated,
+            resetKey: this.resetKey.bind(this, 'prometheus'),
             targetUrl: this.prometheus.prometheusApiUrl,
           };
         }
         case 'opsgenie': {
           return {
             targetUrl: this.opsgenie.opsgenieMvcTargetUrl,
-            active: this.activated.opsgenie,
+            activated: this.opsgenie.activated,
           };
         }
         default: {
@@ -164,7 +138,7 @@ export default {
       return this.testAlert.error === null;
     },
     canTestAlert() {
-      return this.selectedService.active && this.testAlert.json !== null;
+      return this.active && this.testAlert.json !== null;
     },
     canSaveConfig() {
       return !this.loading && this.canSaveForm;
@@ -187,19 +161,21 @@ export default {
   },
   mounted() {
     if (
-      this.activated.prometheus ||
-      this.activated.generic ||
+      this.prometheus.activated ||
+      this.generic.activated ||
       !this.opsgenie.opsgenieMvcIsAvailable
     ) {
       this.removeOpsGenieOption();
-    } else if (this.activated.opsgenie) {
+    } else if (this.opsgenie.activated) {
       this.setOpsgenieAsDefault();
     }
+    this.active = this.selectedService.activated;
+    this.authKey = this.selectedService.authKey ?? '';
   },
   methods: {
-    createUserErrorMessage(errors) {
+    createUserErrorMessage(errors = { error: [''] }) {
       // eslint-disable-next-line prefer-destructuring
-      this.serverError = Object.values(errors)[0][0];
+      this.serverError = errors.error[0];
     },
     setOpsgenieAsDefault() {
       this.options = this.options.map(el => {
@@ -224,41 +200,38 @@ export default {
     resetFormValues() {
       this.testAlert.json = null;
       this.targetUrl = this.selectedService.targetUrl;
+      this.active = this.selectedService.activated;
     },
     dismissFeedback() {
       this.serverError = null;
       this.feedback = { ...this.feedback, feedbackMessage: null };
       this.isFeedbackDismissed = false;
     },
-    resetGenericKey() {
-      return service
-        .updateGenericKey({ endpoint: this.generic.formPath, params: { service: { token: '' } } })
+    resetKey(key) {
+      const fn = key === 'prometheus' ? this.resetPrometheusKey() : this.resetGenericKey();
+
+      return fn
         .then(({ data: { token } }) => {
-          this.authorizationKey.generic = token;
+          this.authKey = token;
           this.setFeedback({ feedbackMessage: this.$options.i18n.authKeyRest, variant: 'success' });
         })
         .catch(() => {
           this.setFeedback({ feedbackMessage: this.$options.i18n.errorKeyMsg, variant: 'danger' });
         });
     },
+    resetGenericKey() {
+      this.dismissFeedback();
+      return service.updateGenericKey({
+        endpoint: this.generic.formPath,
+        params: { service: { token: '' } },
+      });
+    },
     resetPrometheusKey() {
-      return service
-        .updatePrometheusKey({ endpoint: this.prometheus.prometheusResetKeyPath })
-        .then(({ data: { token } }) => {
-          this.authorizationKey.prometheus = token;
-          this.setFeedback({ feedbackMessage: this.$options.i18n.authKeyRest, variant: 'success' });
-        })
-        .catch(() => {
-          this.setFeedback({ feedbackMessage: this.$options.i18n.errorKeyMsg, variant: 'danger' });
-        });
+      return service.updatePrometheusKey({ endpoint: this.prometheus.prometheusResetKeyPath });
     },
     toggleService(value) {
       this.canSaveForm = true;
-      if (this.isPrometheus) {
-        this.activated.prometheus = value;
-      } else {
-        this.activated[this.selectedEndpoint] = value;
-      }
+      this.active = value;
     },
     toggle(value) {
       return this.isPrometheus ? this.togglePrometheusActive(value) : this.toggleActivated(value);
@@ -273,7 +246,7 @@ export default {
             : { service: { active: value } },
         })
         .then(() => {
-          this.activated[this.selectedEndpoint] = value;
+          this.active = value;
           this.toggleSuccess(value);
 
           if (!this.isOpsgenie && value) {
@@ -316,7 +289,7 @@ export default {
           },
         })
         .then(() => {
-          this.activated.prometheus = value;
+          this.active = value;
           this.toggleSuccess(value);
           this.removeOpsGenieOption();
         })
@@ -358,6 +331,7 @@ export default {
     },
     validateTestAlert() {
       this.loading = true;
+      this.dismissFeedback();
       this.validateJson();
       return service
         .updateTestAlert({
@@ -382,7 +356,8 @@ export default {
         });
     },
     onSubmit() {
-      this.toggle(this.selectedService.active);
+      this.dismissFeedback();
+      this.toggle(this.active);
     },
     onReset() {
       this.testAlert.json = null;
@@ -391,7 +366,7 @@ export default {
 
       if (this.canSaveForm) {
         this.canSaveForm = false;
-        this.activated[this.selectedEndpoint] = this[this.selectedEndpoint].activated;
+        this.active = this.selectedService.activated;
       }
     },
   },
@@ -409,7 +384,7 @@ export default {
         variant="danger"
         category="primary"
         class="gl-display-block gl-mt-3"
-        @click="toggle(selectedService.active)"
+        @click="toggle(active)"
       >
         {{ __('Save anyway') }}
       </gl-button>
@@ -457,7 +432,7 @@ export default {
           id="activated"
           :disabled-input="loading"
           :is-loading="loading"
-          :value="selectedService.active"
+          :value="active"
           @change="toggleService"
         />
       </gl-form-group>
@@ -472,7 +447,7 @@ export default {
           v-model="targetUrl"
           type="url"
           :placeholder="baseUrlPlaceholder"
-          :disabled="!selectedService.active"
+          :disabled="!active"
         />
         <span class="gl-text-gray-200">
           {{ $options.i18n.apiBaseUrlHelpText }}
@@ -498,28 +473,18 @@ export default {
           label-for="authorization-key"
           label-class="label-bold"
         >
-          <gl-form-input-group
-            id="authorization-key"
-            class="gl-mb-2"
-            readonly
-            :value="selectedService.authKey"
-          >
+          <gl-form-input-group id="authorization-key" class="gl-mb-2" readonly :value="authKey">
             <template #append>
               <clipboard-button
-                :text="selectedService.authKey || ''"
+                :text="authKey"
                 :title="$options.i18n.copyToClipboard"
                 class="gl-m-0!"
               />
             </template>
           </gl-form-input-group>
-          <div class="gl-display-flex gl-justify-content-end">
-            <gl-button
-              v-gl-modal.authKeyModal
-              :disabled="!selectedService.active"
-              class="gl-mt-3"
-              >{{ $options.i18n.resetKey }}</gl-button
-            >
-          </div>
+          <gl-button v-gl-modal.authKeyModal :disabled="!active" class="gl-mt-3">{{
+            $options.i18n.resetKey
+          }}</gl-button>
           <gl-modal
             modal-id="authKeyModal"
             :title="$options.i18n.resetKey"
@@ -539,7 +504,7 @@ export default {
           <gl-form-textarea
             id="alert-json"
             v-model.trim="testAlert.json"
-            :disabled="!selectedService.active"
+            :disabled="!active"
             :state="jsonIsValid"
             :placeholder="$options.i18n.alertJsonPlaceholder"
             rows="6"

@@ -418,24 +418,6 @@ module Ci
       false
     end
 
-    def legacy_stages_using_sql
-      # TODO, this needs refactoring, see gitlab-foss#26481.
-      stages_query = statuses
-        .group('stage').select(:stage).order('max(stage_idx)')
-
-      status_sql = statuses.latest.where('stage=sg.stage').legacy_status_sql
-
-      warnings_sql = statuses.latest.select('COUNT(*)')
-        .where('stage=sg.stage').failed_but_allowed.to_sql
-
-      stages_with_statuses = CommitStatus.from(stages_query, :sg)
-        .pluck('sg.stage', Arel.sql(status_sql), Arel.sql("(#{warnings_sql})"))
-
-      stages_with_statuses.map do |stage|
-        Ci::LegacyStage.new(self, Hash[%i[name status warnings].zip(stage)])
-      end
-    end
-
     def legacy_stages_using_composite_status
       stages = latest_statuses_ordered_by_stage.group_by(&:stage)
 
@@ -456,11 +438,7 @@ module Ci
 
     # TODO: Remove usage of this method in templates
     def legacy_stages
-      if ::Gitlab::Ci::Features.composite_status?(project)
-        legacy_stages_using_composite_status
-      else
-        legacy_stages_using_sql
-      end
+      legacy_stages_using_composite_status
     end
 
     def valid_commit_sha

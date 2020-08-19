@@ -1,12 +1,12 @@
 <script>
 import { mapState, mapActions } from 'vuex';
+import { GlSprintf } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import Badge from './badge.vue';
 import BadgeForm from './badge_form.vue';
 import BadgeList from './badge_list.vue';
-import { GlSprintf } from '@gitlab/ui';
 
 export default {
   name: 'BadgeSettings',

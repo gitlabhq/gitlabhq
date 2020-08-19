@@ -1,7 +1,7 @@
 <script>
+import { GlSprintf } from '@gitlab/ui';
 import tooltip from '../../vue_shared/directives/tooltip';
 import { __ } from '../../locale';
-import { GlSprintf } from '@gitlab/ui';
 
 export default {
   i18n: {

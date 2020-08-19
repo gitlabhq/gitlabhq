@@ -1,11 +1,11 @@
 <script>
+import { GlSprintf } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import { s__, sprintf } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
-import { GlSprintf } from '@gitlab/ui';
 
 export default {
   components: {

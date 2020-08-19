@@ -9,6 +9,7 @@ import {
   GlTab,
   GlTabs,
   GlBadge,
+  GlEmptyState,
 } from '@gitlab/ui';
 import { visitUrl, joinPaths, mergeUrlParams } from '~/lib/utils/url_utility';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
@@ -25,6 +26,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 describe('Incidents List', () => {
   let wrapper;
   const newIssuePath = 'namespace/project/-/issues/new';
+  const emptyListSvgPath = '/assets/empty.svg';
   const incidentTemplateName = 'incident';
   const incidentType = 'incident';
   const incidentsCount = {
@@ -48,6 +50,7 @@ describe('Incidents List', () => {
   const findStatusFilterTabs = () => wrapper.findAll(GlTab);
   const findStatusFilterBadge = () => wrapper.findAll(GlBadge);
   const findStatusTabs = () => wrapper.find(GlTabs);
+  const findEmptyState = () => wrapper.find(GlEmptyState);
 
   function mountComponent({ data = { incidents: [], incidentsCount: {} }, loading = false }) {
     wrapper = mount(IncidentsList, {
@@ -70,6 +73,7 @@ describe('Incidents List', () => {
         incidentType,
         issuePath: '/project/isssues',
         publishedAvailable: true,
+        emptyListSvgPath,
       },
       stubs: {
         GlButton: true,
@@ -97,7 +101,7 @@ describe('Incidents List', () => {
       data: { incidents: { list: [] }, incidentsCount: {} },
       loading: false,
     });
-    expect(findTable().text()).toContain(I18N.noIncidents);
+    expect(findEmptyState().exists()).toBe(true);
   });
 
   it('shows error state', () => {
@@ -164,7 +168,7 @@ describe('Incidents List', () => {
   describe('Create Incident', () => {
     beforeEach(() => {
       mountComponent({
-        data: { incidents: { list: [] }, incidentsCount: {} },
+        data: { incidents: { list: mockIncidents }, incidentsCount: {} },
         loading: false,
       });
     });

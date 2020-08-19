@@ -2,13 +2,13 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
+import { TEST_HOST } from 'helpers/test_constants';
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
 import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
 import BlobContentEdit from '~/blob/components/blob_edit_content.vue';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import createFlash from '~/flash';
-import { TEST_HOST } from 'helpers/test_constants';
 
 jest.mock('~/flash');
 

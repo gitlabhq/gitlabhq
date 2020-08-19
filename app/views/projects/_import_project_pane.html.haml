@@ -46,7 +46,7 @@
       - if fogbugz_import_enabled?
         %div
           = link_to new_import_fogbugz_path, class: 'btn import_fogbugz', **tracking_attrs(track_label, 'click_button', 'fogbugz') do
-            = icon('bug', text: 'Fogbugz')
+            = icon('bug', text: 'FogBugz')
 
       - if gitea_import_enabled?
         %div

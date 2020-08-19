@@ -16,6 +16,7 @@ export default () => {
     enableAlertManagementPath,
     emptyAlertSvgPath,
     populatingAlertsHelpUrl,
+    alertsHelpUrl,
     opsgenieMvcTargetUrl,
   } = domEl.dataset;
   let { alertManagementEnabled, userCanEnableAlertManagement, opsgenieMvcEnabled } = domEl.dataset;
@@ -39,6 +40,12 @@ export default () => {
         },
       },
     ),
+  });
+
+  apolloProvider.clients.defaultClient.cache.writeData({
+    data: {
+      alertsHelpUrl,
+    },
   });
 
   return new Vue({

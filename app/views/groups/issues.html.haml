@@ -25,7 +25,7 @@
   - if Feature.enabled?(:vue_issuables_list, @group)
     .js-issuables-list{ data: { endpoint: expose_url(api_v4_groups_issues_path(id: @group.id)),
       'can-bulk-edit': @can_bulk_update.to_json,
-      'empty-svg-path': image_path('illustrations/issues.svg'),
+      'empty-state-meta': { svg_path: image_path('illustrations/issues.svg') },
       'sort-key': @sort } }
   - else
     = render 'shared/issues'

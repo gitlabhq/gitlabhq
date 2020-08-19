@@ -18,10 +18,6 @@ module Gitlab
         ::Feature.enabled?(:ci_instance_variables_ui, default_enabled: true)
       end
 
-      def self.composite_status?(project)
-        ::Feature.enabled?(:ci_composite_status, project, default_enabled: true)
-      end
-
       def self.pipeline_latest?
         ::Feature.enabled?(:ci_pipeline_latest, default_enabled: true)
       end

@@ -3,17 +3,68 @@
 require 'spec_helper'
 
 RSpec.describe API::ProjectMilestones do
-  let(:user) { create(:user) }
-  let!(:project) { create(:project, namespace: user.namespace ) }
-  let!(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
-  let!(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, namespace: user.namespace ) }
+  let_it_be(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
+  let_it_be(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
+  let_it_be(:route) { "/projects/#{project.id}/milestones" }
 
   before do
     project.add_developer(user)
   end
 
-  it_behaves_like 'group and project milestones', "/projects/:id/milestones" do
-    let(:route) { "/projects/#{project.id}/milestones" }
+  it_behaves_like 'group and project milestones', "/projects/:id/milestones"
+
+  describe 'GET /projects/:id/milestones' do
+    context 'when include_parent_milestones is true' do
+      let_it_be(:ancestor_group) { create(:group, :private) }
+      let_it_be(:group) { create(:group, :private, parent: ancestor_group) }
+      let_it_be(:ancestor_group_milestone) { create(:milestone, group: ancestor_group) }
+      let_it_be(:group_milestone) { create(:milestone, group: group) }
+      let(:params) { { include_parent_milestones: true } }
+
+      shared_examples 'listing all milestones' do
+        it 'returns correct list of milestones' do
+          get api(route, user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.size).to eq(milestones.size)
+          expect(json_response.map { |entry| entry["id"] }).to eq(milestones.map(&:id))
+        end
+      end
+
+      context 'when project parent is a namespace' do
+        it_behaves_like 'listing all milestones' do
+          let(:milestones) { [milestone, closed_milestone] }
+        end
+      end
+
+      context 'when project parent is a group' do
+        let(:milestones) { [group_milestone, ancestor_group_milestone, milestone, closed_milestone] }
+
+        before_all do
+          project.update(namespace: group)
+        end
+
+        it_behaves_like 'listing all milestones'
+
+        context 'when iids param is present' do
+          let(:params) { { include_parent_milestones: true, iids: [group_milestone.iid] } }
+
+          it_behaves_like 'listing all milestones'
+        end
+
+        context 'when user is not a member of the private project' do
+          let(:external_user) { create(:user) }
+
+          it 'returns a 404 error' do
+            get api(route, external_user), params: params
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/milestones/:milestone_id' do

@@ -113,8 +113,8 @@ export default {
       errored: false,
       sidebarStatus: false,
       isErrorDismissed: false,
-      createIssueError: '',
-      issueCreationInProgress: false,
+      createIncidentError: '',
+      incidentCreationInProgress: false,
       sidebarErrorMessage: '',
     };
   },
@@ -172,8 +172,8 @@ export default {
       this.errored = true;
       this.sidebarErrorMessage = errorMessage;
     },
-    createIssue() {
-      this.issueCreationInProgress = true;
+    createIncident() {
+      this.incidentCreationInProgress = true;
 
       this.$apollo
         .mutate({
@@ -185,18 +185,18 @@ export default {
         })
         .then(({ data: { createAlertIssue: { errors, issue } } }) => {
           if (errors?.length) {
-            [this.createIssueError] = errors;
-            this.issueCreationInProgress = false;
+            [this.createIncidentError] = errors;
+            this.incidentCreationInProgress = false;
           } else if (issue) {
-            visitUrl(this.issuePath(issue.iid));
+            visitUrl(this.incidentPath(issue.iid));
           }
         })
         .catch(error => {
-          this.createIssueError = error;
-          this.issueCreationInProgress = false;
+          this.createIncidentError = error;
+          this.incidentCreationInProgress = false;
         });
     },
-    issuePath(issueId) {
+    incidentPath(issueId) {
       return joinPaths(this.projectIssuesPath, issueId);
     },
     trackPageViews() {
@@ -213,12 +213,12 @@ export default {
       <p v-html="sidebarErrorMessage || $options.i18n.errorMsg"></p>
     </gl-alert>
     <gl-alert
-      v-if="createIssueError"
+      v-if="createIncidentError"
       variant="danger"
-      data-testid="issueCreationError"
-      @dismiss="createIssueError = null"
+      data-testid="incidentCreationError"
+      @dismiss="createIncidentError = null"
     >
-      {{ createIssueError }}
+      {{ createIncidentError }}
     </gl-alert>
     <div v-if="loading"><gl-loading-icon size="lg" class="gl-mt-5" /></div>
     <div
@@ -244,24 +244,24 @@ export default {
         </div>
         <gl-button
           v-if="alert.issueIid"
-          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-issue-button"
-          data-testid="viewIssueBtn"
-          :href="issuePath(alert.issueIid)"
+          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-incident-button"
+          data-testid="viewIncidentBtn"
+          :href="incidentPath(alert.issueIid)"
           category="primary"
           variant="success"
         >
-          {{ s__('AlertManagement|View issue') }}
+          {{ s__('AlertManagement|View incident') }}
         </gl-button>
         <gl-button
           v-else
-          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-issue-button"
-          data-testid="createIssueBtn"
-          :loading="issueCreationInProgress"
+          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-incident-button"
+          data-testid="createIncidentBtn"
+          :loading="incidentCreationInProgress"
           category="primary"
           variant="success"
-          @click="createIssue()"
+          @click="createIncident()"
         >
-          {{ s__('AlertManagement|Create issue') }}
+          {{ s__('AlertManagement|Create incident') }}
         </gl-button>
         <gl-button
           :aria-label="__('Toggle sidebar')"

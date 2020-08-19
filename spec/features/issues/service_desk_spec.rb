@@ -7,8 +7,6 @@ RSpec.describe 'Service Desk Issue Tracker', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(vue_issuables_list: false)
-
     allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
     allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
 
@@ -78,11 +76,9 @@ RSpec.describe 'Service Desk Issue Tracker', :js do
     context 'when service desk has been activated' do
       context 'when there are no issues' do
         describe 'service desk info content' do
-          before do
-            visit service_desk_project_issues_path(project)
-          end
-
           it 'displays the large info box, documentation, and the address' do
+            visit service_desk_project_issues_path(project)
+
             aggregate_failures do
               expect(page).to have_css('.empty-state')
               expect(page).to have_link('Read more', href: help_page_path('user/project/service_desk'))

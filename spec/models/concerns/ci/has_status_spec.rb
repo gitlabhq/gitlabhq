@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::HasStatus do
-  describe '.slow_composite_status' do
+  describe '.composite_status' do
     using RSpec::Parameterized::TableSyntax
 
-    subject { CommitStatus.slow_composite_status(project: nil) }
+    subject { CommitStatus.composite_status }
 
     shared_examples 'build status summary' do
       context 'all successful' do
@@ -184,26 +184,16 @@ RSpec.describe Ci::HasStatus do
       end
     end
 
-    where(:ci_composite_status) do
-      [false, true]
+    context 'ci build statuses' do
+      let(:type) { :ci_build }
+
+      it_behaves_like 'build status summary'
     end
 
-    with_them do
-      before do
-        stub_feature_flags(ci_composite_status: ci_composite_status)
-      end
+    context 'generic commit statuses' do
+      let(:type) { :generic_commit_status }
 
-      context 'ci build statuses' do
-        let(:type) { :ci_build }
-
-        it_behaves_like 'build status summary'
-      end
-
-      context 'generic commit statuses' do
-        let(:type) { :generic_commit_status }
-
-        it_behaves_like 'build status summary'
-      end
+      it_behaves_like 'build status summary'
     end
   end
 
@@ -398,14 +388,6 @@ RSpec.describe Ci::HasStatus do
 
         it { is_expected.to be_falsy }
       end
-    end
-  end
-
-  describe '.legacy_status_sql' do
-    subject { Ci::Build.legacy_status_sql }
-
-    it 'returns SQL' do
-      puts subject
     end
   end
 end

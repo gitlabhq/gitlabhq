@@ -15,6 +15,7 @@ export default () => {
     incidentType,
     issuePath,
     publishedAvailable,
+    emptyListSvgPath,
   } = domEl.dataset;
 
   const apolloProvider = new VueApollo({
@@ -30,6 +31,7 @@ export default () => {
       newIssuePath,
       issuePath,
       publishedAvailable,
+      emptyListSvgPath,
     },
     apolloProvider,
     components: {

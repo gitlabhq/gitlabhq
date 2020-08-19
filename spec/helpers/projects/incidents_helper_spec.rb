@@ -19,7 +19,8 @@ RSpec.describe Projects::IncidentsHelper do
         'new-issue-path' => new_issue_path,
         'incident-template-name' => 'incident',
         'incident-type' => 'incident',
-        'issue-path' => issue_path
+        'issue-path' => issue_path,
+        'empty-list-svg-path' => match_asset_path('/assets/illustrations/incident-empty-state.svg')
       )
     end
   end

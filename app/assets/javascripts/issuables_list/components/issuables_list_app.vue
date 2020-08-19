@@ -1,6 +1,11 @@
 <script>
 import { toNumber, omit } from 'lodash';
-import { GlEmptyState, GlPagination, GlSkeletonLoading } from '@gitlab/ui';
+import {
+  GlEmptyState,
+  GlPagination,
+  GlSkeletonLoading,
+  GlSafeHtmlDirective as SafeHtml,
+} from '@gitlab/ui';
 import flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import {
@@ -23,9 +28,13 @@ import {
 } from '../constants';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import issueableEventHub from '../eventhub';
+import { emptyStateHelper } from '../service_desk_helper';
 
 export default {
   LOADING_LIST_ITEMS_LENGTH,
+  directives: {
+    SafeHtml,
+  },
   components: {
     GlEmptyState,
     GlPagination,
@@ -39,15 +48,9 @@ export default {
       required: false,
       default: false,
     },
-    createIssuePath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    emptySvgPath: {
-      type: String,
-      required: false,
-      default: '',
+    emptyStateMeta: {
+      type: Object,
+      required: true,
     },
     endpoint: {
       type: String,
@@ -94,28 +97,40 @@ export default {
     emptyState() {
       if (this.issuables.length) {
         return {}; // Empty state shouldn't be shown here
-      } else if (this.hasFilters) {
+      }
+
+      if (this.isServiceDesk) {
+        return emptyStateHelper(this.emptyStateMeta);
+      }
+
+      if (this.hasFilters) {
         return {
           title: __('Sorry, your filter produced no results'),
+          svgPath: this.emptyStateMeta.svgPath,
           description: __('To widen your search, change or remove filters above'),
-          primaryLink: this.createIssuePath,
+          primaryLink: this.emptyStateMeta.createIssuePath,
           primaryText: __('New issue'),
         };
-      } else if (this.filters.state === 'opened') {
+      }
+
+      if (this.filters.state === 'opened') {
         return {
           title: __('There are no open issues'),
+          svgPath: this.emptyStateMeta.svgPath,
           description: __('To keep this project going, create a new issue'),
-          primaryLink: this.createIssuePath,
+          primaryLink: this.emptyStateMeta.createIssuePath,
           primaryText: __('New issue'),
         };
       } else if (this.filters.state === 'closed') {
         return {
           title: __('There are no closed issues'),
+          svgPath: this.emptyStateMeta.svgPath,
         };
       }
 
       return {
         title: __('There are no issues to show'),
+        svgPath: this.emptyStateMeta.svgPath,
         description: __(
           'The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project.',
         ),
@@ -156,6 +171,9 @@ export default {
         prevPage: this.paginationPrev,
         nextPage: this.paginationNext,
       };
+    },
+    isServiceDesk() {
+      return this.type === 'service_desk';
     },
     isJira() {
       return this.type === 'jira';
@@ -394,10 +412,13 @@ export default {
     <gl-empty-state
       v-else
       :title="emptyState.title"
-      :description="emptyState.description"
-      :svg-path="emptySvgPath"
+      :svg-path="emptyState.svgPath"
       :primary-button-link="emptyState.primaryLink"
       :primary-button-text="emptyState.primaryText"
-    />
+    >
+      <template #description>
+        <div v-safe-html="emptyState.description"></div>
+      </template>
+    </gl-empty-state>
   </div>
 </template>

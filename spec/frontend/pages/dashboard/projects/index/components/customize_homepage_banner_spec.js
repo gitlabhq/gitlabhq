@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import CustomizeHomepageBanner from '~/pages/dashboard/projects/index/components/customize_homepage_banner.vue';
 import { GlBanner } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import CustomizeHomepageBanner from '~/pages/dashboard/projects/index/components/customize_homepage_banner.vue';
 import axios from '~/lib/utils/axios_utils';
 
 const svgPath = '/illustrations/background';

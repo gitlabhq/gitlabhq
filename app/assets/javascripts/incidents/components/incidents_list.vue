@@ -14,6 +14,7 @@ import {
   GlTabs,
   GlTab,
   GlBadge,
+  GlEmptyState,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -80,6 +81,7 @@ export default {
     GlTab,
     PublishedCell: () => import('ee_component/incidents/components/published_cell.vue'),
     GlBadge,
+    GlEmptyState,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -91,6 +93,7 @@ export default {
     'incidentType',
     'issuePath',
     'publishedAvailable',
+    'emptyListSvgPath',
   ],
   apollo: {
     incidents: {
@@ -149,7 +152,7 @@ export default {
   },
   computed: {
     showErrorMsg() {
-      return this.errored && !this.isErrorAlertDismissed && this.incidentsCount?.all === 0;
+      return this.errored && !this.isErrorAlertDismissed;
     },
     loading() {
       return this.$apollo.queries.incidents.loading;
@@ -201,6 +204,9 @@ export default {
             ],
           ]
         : this.$options.fields;
+    },
+    isEmpty() {
+      return !this.incidents.list?.length;
     },
   },
   methods: {
@@ -273,6 +279,7 @@ export default {
       </gl-tabs>
 
       <gl-button
+        v-if="!isEmpty"
         class="gl-my-3 gl-mr-5 create-incident-button"
         data-testid="createIncidentBtn"
         data-qa-selector="create_incident_button"
@@ -373,7 +380,17 @@ export default {
       </template>
 
       <template #empty>
-        {{ $options.i18n.noIncidents }}
+        <gl-empty-state
+          v-if="!errored"
+          :title="$options.i18n.emptyState.title"
+          :svg-path="emptyListSvgPath"
+          :description="$options.i18n.emptyState.description"
+          :primary-button-link="newIncidentPath"
+          :primary-button-text="$options.i18n.createIncidentBtnLabel"
+        />
+        <span v-else>
+          {{ $options.i18n.noIncidents }}
+        </span>
       </template>
     </gl-table>
 

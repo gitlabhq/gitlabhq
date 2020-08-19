@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { s__ } from '~/locale';
 import { GlSprintf, GlLink } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 import gkeDropdownMixin from './gke_dropdown_mixin';
 
