@@ -5,13 +5,6 @@ module Gitlab
     module NetworkPolicyCommon
       DISABLED_BY_LABEL = :'network-policy.gitlab.com/disabled_by'
 
-      def generate
-        ::Kubeclient::Resource.new.tap do |resource|
-          resource.metadata = metadata
-          resource.spec = spec
-        end
-      end
-
       def as_json(opts = nil)
         {
           name: name,
@@ -56,6 +49,7 @@ module Gitlab
       def metadata
         meta = { name: name, namespace: namespace }
         meta[:labels] = labels if labels
+        meta[:resourceVersion] = resource_version if defined?(resource_version)
         meta
       end
 

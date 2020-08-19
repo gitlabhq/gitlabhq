@@ -4,6 +4,7 @@ import { mapActions } from 'vuex';
 
 import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
+import BoardContent from 'ee_else_ce/boards/components/board_content.vue';
 import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
@@ -18,7 +19,6 @@ import {
 } from 'ee_else_ce/boards/ee_functions';
 
 import VueApollo from 'vue-apollo';
-import BoardContent from '~/boards/components/board_content.vue';
 import createDefaultClient from '~/lib/graphql';
 import Flash from '~/flash';
 import { __ } from '~/locale';

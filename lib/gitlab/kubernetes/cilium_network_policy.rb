@@ -2,23 +2,28 @@
 
 module Gitlab
   module Kubernetes
-    class NetworkPolicy
+    class CiliumNetworkPolicy
       include NetworkPolicyCommon
       extend ::Gitlab::Utils::Override
 
-      def initialize(name:, namespace:, selector:, ingress:, labels: nil, creation_timestamp: nil, policy_types: ["Ingress"], egress: nil)
+      API_VERSION = "cilium.io/v2"
+      KIND = 'CiliumNetworkPolicy'
+
+      def initialize(name:, namespace:, selector:, ingress:, resource_version:, labels: nil, creation_timestamp: nil, egress: nil)
         @name = name
         @namespace = namespace
         @labels = labels
         @creation_timestamp = creation_timestamp
         @selector = selector
-        @policy_types = policy_types
+        @resource_version = resource_version
         @ingress = ingress
         @egress = egress
       end
 
       def generate
         ::Kubeclient::Resource.new.tap do |resource|
+          resource.kind = KIND
+          resource.apiVersion = API_VERSION
           resource.metadata = metadata
           resource.spec = spec
         end
@@ -35,9 +40,9 @@ module Gitlab
         self.new(
           name: metadata[:name],
           namespace: metadata[:namespace],
+          resource_version: metadata[:resourceVersion],
           labels: metadata[:labels],
-          selector: spec[:podSelector],
-          policy_types: spec[:policyTypes],
+          selector: spec[:endpointSelector],
           ingress: spec[:ingress],
           egress: spec[:egress]
         )
@@ -54,10 +59,10 @@ module Gitlab
         self.new(
           name: metadata[:name],
           namespace: metadata[:namespace],
+          resource_version: metadata[:resourceVersion],
           labels: metadata[:labels]&.to_h,
           creation_timestamp: metadata[:creationTimestamp],
-          selector: spec[:podSelector],
-          policy_types: spec[:policyTypes],
+          selector: spec[:endpointSelector],
           ingress: spec[:ingress],
           egress: spec[:egress]
         )
@@ -65,7 +70,7 @@ module Gitlab
 
       private
 
-      attr_reader :name, :namespace, :labels, :creation_timestamp, :policy_types, :ingress, :egress
+      attr_reader :name, :namespace, :labels, :creation_timestamp, :resource_version, :ingress, :egress
 
       def selector
         @selector ||= {}
@@ -74,8 +79,7 @@ module Gitlab
       override :spec
       def spec
         {
-          podSelector: selector,
-          policyTypes: policy_types,
+          endpointSelector: selector,
           ingress: ingress,
           egress: egress
         }

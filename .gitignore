@@ -77,7 +77,6 @@ eslint-report.html
 /locale/**/LC_MESSAGES
 /locale/**/*.time_stamp
 /.rspec
-/.gitlab_pages_secret
 /.gitlab_smime_key
 /.gitlab_smime_cert
 package-lock.json

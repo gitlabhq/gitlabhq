@@ -68,7 +68,7 @@
     .btn-group.table-action-buttons
       .btn-group
         = link_to edit_group_runner_path(@group, runner), class: 'btn btn-default has-tooltip', title: _('Edit'), ref: 'tooltip', aria: { label: _('Edit') }, data: { placement: 'top', container: 'body'} do
-          = icon('pencil')
+          = sprite_icon('pencil')
       .btn-group
         - if runner.active?
           = link_to pause_group_runner_path(@group, runner), method: :post, class: 'btn btn-default has-tooltip', title: _('Pause'), ref: 'tooltip', aria: { label: _('Pause') }, data: { placement: 'top', container: 'body', confirm: _('Are you sure?') } do
