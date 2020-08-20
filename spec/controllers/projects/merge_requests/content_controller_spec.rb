@@ -48,6 +48,8 @@ RSpec.describe Projects::MergeRequests::ContentController do
         expect(merge_request).to receive(:check_mergeability)
 
         do_request(:widget)
+
+        expect(response.headers['Poll-Interval']).to eq('10000')
       end
 
       context 'merged merge request' do
@@ -59,6 +61,7 @@ RSpec.describe Projects::MergeRequests::ContentController do
           do_request(:widget)
 
           expect(response).to match_response_schema('entities/merge_request_poll_widget')
+          expect(response.headers['Poll-Interval']).to eq('300000')
         end
       end
     end

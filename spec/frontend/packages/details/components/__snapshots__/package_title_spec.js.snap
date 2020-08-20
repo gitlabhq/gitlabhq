@@ -59,19 +59,6 @@ exports[`PackageTitle renders with tags 1`] = `
     <div
       class="gl-display-flex gl-align-items-center gl-mr-5"
     >
-      <package-tags-stub
-        tagdisplaylimit="1"
-        tags="[object Object],[object Object],[object Object],[object Object]"
-      />
-    </div>
-     
-    <!---->
-     
-    <!---->
-     
-    <div
-      class="gl-display-flex gl-align-items-center gl-mr-5"
-    >
       <gl-icon-stub
         class="gl-text-gray-500 gl-mr-3"
         name="disk"
@@ -84,6 +71,20 @@ exports[`PackageTitle renders with tags 1`] = `
       >
         300 bytes
       </span>
+    </div>
+     
+    <!---->
+     
+    <!---->
+     
+    <div
+      class="gl-display-flex gl-align-items-center gl-mr-5"
+    >
+      <package-tags-stub
+        hidelabel="true"
+        tagdisplaylimit="2"
+        tags="[object Object],[object Object],[object Object],[object Object]"
+      />
     </div>
   </div>
 </div>
@@ -145,12 +146,6 @@ exports[`PackageTitle renders without tags 1`] = `
       </span>
     </div>
      
-    <!---->
-     
-    <!---->
-     
-    <!---->
-     
     <div
       class="gl-display-flex gl-align-items-center gl-mr-5"
     >
@@ -167,6 +162,12 @@ exports[`PackageTitle renders without tags 1`] = `
         300 bytes
       </span>
     </div>
+     
+    <!---->
+     
+    <!---->
+     
+    <!---->
   </div>
 </div>
 `;

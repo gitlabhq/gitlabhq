@@ -221,7 +221,7 @@ export default {
             :title="__('Go full screen')"
             type="button"
           >
-            <icon name="screen-full" />
+            <icon name="maximize" />
           </button>
         </div>
       </li>

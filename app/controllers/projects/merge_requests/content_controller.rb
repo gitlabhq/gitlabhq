@@ -10,6 +10,9 @@ class Projects::MergeRequests::ContentController < Projects::MergeRequests::Appl
   before_action :set_polling_header
   around_action :allow_gitaly_ref_name_caching
 
+  FAST_POLLING_INTERVAL = 10.seconds.in_milliseconds
+  SLOW_POLLING_INTERVAL = 5.minutes.in_milliseconds
+
   def widget
     respond_to do |format|
       format.json do
@@ -29,7 +32,8 @@ class Projects::MergeRequests::ContentController < Projects::MergeRequests::Appl
   private
 
   def set_polling_header
-    Gitlab::PollingInterval.set_header(response, interval: 10_000)
+    interval = merge_request.open? ? FAST_POLLING_INTERVAL : SLOW_POLLING_INTERVAL
+    Gitlab::PollingInterval.set_header(response, interval: interval)
   end
 
   def serializer(entity)

@@ -254,7 +254,7 @@ export default {
           href="#"
           :aria-label="__('Leave zen mode')"
         >
-          <icon :size="16" name="screen-normal" />
+          <icon :size="16" name="minimize" />
         </a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"

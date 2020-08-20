@@ -60,14 +60,28 @@ RSpec.describe GraphqlController do
       it 'updates the users last_activity_on field' do
         expect { post :execute }.to change { user.reload.last_activity_on }
       end
+
+      it "sets context's sessionless value as false" do
+        post :execute
+
+        expect(assigns(:context)[:is_sessionless_user]).to be false
+      end
     end
 
     context 'when user uses an API token' do
       let(:user) { create(:user, last_activity_on: Date.yesterday) }
       let(:token) { create(:personal_access_token, user: user, scopes: [:api]) }
 
+      subject { post :execute, params: { access_token: token.token } }
+
       it 'updates the users last_activity_on field' do
-        expect { post :execute, params: { access_token: token.token } }.to change { user.reload.last_activity_on }
+        expect { subject }.to change { user.reload.last_activity_on }
+      end
+
+      it "sets context's sessionless value as true" do
+        subject
+
+        expect(assigns(:context)[:is_sessionless_user]).to be true
       end
     end
 
@@ -76,6 +90,12 @@ RSpec.describe GraphqlController do
         post :execute
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it "sets context's sessionless value as false" do
+        post :execute
+
+        expect(assigns(:context)[:is_sessionless_user]).to be false
       end
     end
   end

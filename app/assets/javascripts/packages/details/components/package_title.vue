@@ -74,8 +74,9 @@ export default {
         <span data-testid="package-type" class="gl-font-weight-bold">{{ packageTypeDisplay }}</span>
       </div>
 
-      <div v-if="hasTagsToDisplay" class="gl-display-flex gl-align-items-center gl-mr-5">
-        <package-tags :tag-display-limit="1" :tags="packageEntity.tags" />
+      <div class="gl-display-flex gl-align-items-center gl-mr-5">
+        <gl-icon name="disk" class="gl-text-gray-500 gl-mr-3" />
+        <span data-testid="package-size" class="gl-font-weight-bold">{{ totalSize }}</span>
       </div>
 
       <div v-if="packagePipeline" class="gl-display-flex gl-align-items-center gl-mr-5">
@@ -103,9 +104,8 @@ export default {
         >
       </div>
 
-      <div class="gl-display-flex gl-align-items-center gl-mr-5">
-        <gl-icon name="disk" class="gl-text-gray-500 gl-mr-3" />
-        <span data-testid="package-size" class="gl-font-weight-bold">{{ totalSize }}</span>
+      <div v-if="hasTagsToDisplay" class="gl-display-flex gl-align-items-center gl-mr-5">
+        <package-tags :tag-display-limit="2" :tags="packageEntity.tags" hide-label />
       </div>
     </div>
   </div>

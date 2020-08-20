@@ -78,6 +78,10 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 1. GitLab 10.4 and up only: Do the following to make sure the `gitlab` database user has a password defined:
 
+   NOTE: **Note:**
+   Until FDW settings are removed in GitLab version 14.0, avoid using single or double quotes in the
+   password for PostgreSQL as that will lead to errors when reconfiguring.
+
    Generate a MD5 hash of the desired password:
 
    ```shell

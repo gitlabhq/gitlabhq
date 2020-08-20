@@ -64,7 +64,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
             href="#"
           >
             <icon-stub
-              name="screen-normal"
+              name="minimize"
               size="16"
             />
           </a>

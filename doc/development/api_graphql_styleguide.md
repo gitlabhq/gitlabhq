@@ -14,7 +14,7 @@ which is exposed as an API endpoint at `/api/graphql`.
 
 In March 2019, Nick Thomas hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
 on GitLab's [GraphQL API](../api/graphql/index.md) to share his domain specific knowledge
-with anyone who may work in this part of the code base in the future. You can find the
+with anyone who may work in this part of the codebase in the future. You can find the
 [recording on YouTube](https://www.youtube.com/watch?v=-9L_1MWrjkg), and the slides on
 [Google Slides](https://docs.google.com/presentation/d/1qOTxpkTdHIp1CRjuTvO-aXg0_rUtzE3ETfLUdnBB5uQ/edit)
 and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/8e78ea7f326b2ef649e7d7d569c26d56/GraphQL_Deep_Dive__Create_.pdf).
@@ -33,7 +33,7 @@ Authentication happens through the `GraphqlController`, right now this
 uses the same authentication as the Rails application. So the session
 can be shared.
 
-It is also possible to add a `private_token` to the querystring, or
+It's also possible to add a `private_token` to the query string, or
 add a `HTTP_PRIVATE_TOKEN` header.
 
 ## Global IDs
@@ -75,7 +75,7 @@ The `iid`, `title` and `description` are _scalar_ GraphQL types.
 
 When exposing a model through the GraphQL API, we do so by creating a
 new type in `app/graphql/types`. You can also declare custom GraphQL data types
-for scalar data types (e.g. `TimeType`).
+for scalar data types (for example `TimeType`).
 
 When exposing properties in a type, make sure to keep the logic inside
 the definition as minimal as possible. Instead, consider moving any
@@ -759,6 +759,44 @@ to advertise the need for lookahead:
 
 For an example of real world use, please
 see [`ResolvesMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/resolves_merge_requests.rb).
+
+## Pass a parent object into a child Presenter
+
+Sometimes you need to access the resolved query parent in a child context to compute fields. Usually the parent is only
+available in the `Resolver` class as `parent`.
+
+To find the parent object in your `Presenter` class:
+
+1. Add the parent object to the GraphQL `context` from within your resolver's `resolve` method:
+
+   ```ruby
+     def resolve(**args)
+       context[:parent_object] = parent
+     end
+   ```
+
+1. Declare that your fields require the `parent` field context. For example:
+
+   ```ruby
+     # in ChildType
+     field :computed_field, SomeType, null: true,
+           method: :my_computing_method,
+           extras: [:parent], # Necessary
+           description: 'My field description'
+   ```
+
+1. Declare your field's method in your Presenter class and have it accept the `parent` keyword argument.
+This argument contains the parent **GraphQL context**, so you have to access the parent object with
+`parent[:parent_object]` or whatever key you used in your `Resolver`:
+
+   ```ruby
+     # in ChildPresenter
+     def my_computing_method(parent:)
+       # do something with `parent[:parent_object]` here
+     end
+   ```
+
+For an example of real-world use, check [this MR that added `scopedPath` and `scopedUrl` to `IterationPresenter`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39543)
 
 ## Mutations
 

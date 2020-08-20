@@ -17,6 +17,10 @@ module Mutations
       context[:current_user]
     end
 
+    def api_user?
+      context[:is_sessionless_user]
+    end
+
     # Returns Array of errors on an ActiveRecord object
     def errors_on_object(record)
       record.errors.full_messages
