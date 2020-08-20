@@ -2,7 +2,7 @@ import { ApolloMutation } from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SnippetEditApp from '~/snippets/components/edit.vue';
 import SnippetDescriptionEdit from '~/snippets/components/snippet_description_edit.vue';

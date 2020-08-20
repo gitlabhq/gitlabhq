@@ -4,7 +4,7 @@ import '~/behaviors/markdown/render_gfm';
 import { unescape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { stripHtml } from '~/lib/utils/text_utility';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import GLForm from '~/gl_form';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';

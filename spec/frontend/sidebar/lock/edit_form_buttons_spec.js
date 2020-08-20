@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
 import EditFormButtons from '~/sidebar/components/lock/edit_form_buttons.vue';
 import eventHub from '~/sidebar/event_hub';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import createStore from '~/notes/stores';
 import { createStore as createMrStore } from '~/mr_notes/stores';
 import { ISSUABLE_TYPE_ISSUE, ISSUABLE_TYPE_MR } from './constants';

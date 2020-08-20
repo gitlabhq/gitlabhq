@@ -1,5 +1,5 @@
 import Api from '~/api';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { FETCH_PACKAGE_VERSIONS_ERROR } from '../constants';
 import * as types from './mutation_types';
 

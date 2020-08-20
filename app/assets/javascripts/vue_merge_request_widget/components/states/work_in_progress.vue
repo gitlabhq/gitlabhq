@@ -2,7 +2,7 @@
 import $ from 'jquery';
 import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import getStateQuery from '../../queries/get_state.query.graphql';

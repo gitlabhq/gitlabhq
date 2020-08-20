@@ -46,6 +46,19 @@ import { normalizeHeaders } from './common_utils';
  * 4. If HTTP response is 200, we poll.
  * 5. If HTTP response is different from 200, we stop polling.
  *
+ * @example
+ * // With initial delay (for, for example, reducing unnecessary requests)
+ *
+ * const poll = new Poll({
+ *  resource: this.service,
+ *  method: 'fetchNotes',
+ *  successCallback: () => {},
+ *  errorCallback: () => {},
+ * });
+ *
+ * // Performs the first request in 2.5s and then uses the `Poll-Interval` header.
+ * poll.makeDelayedRequest(2500);
+ *
  */
 export default class Poll {
   constructor(options = {}) {
@@ -72,6 +85,10 @@ export default class Poll {
       }, pollInterval);
     }
     this.options.successCallback(response);
+  }
+
+  makeDelayedRequest(delay = 0) {
+    this.timeoutID = setTimeout(() => this.makeRequest(), delay);
   }
 
   makeRequest() {

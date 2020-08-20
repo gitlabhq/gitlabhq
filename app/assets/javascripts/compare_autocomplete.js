@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
-import flash from './flash';
+import { deprecatedCreateFlash as flash } from './flash';
 import { capitalizeFirstCharacter } from './lib/utils/text_utility';
 
 export default function initCompareAutocomplete(limitTo = null, clickHandler = () => {}) {

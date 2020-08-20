@@ -22,7 +22,7 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import syntaxHighlight from '~/syntax_highlight';
 import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
-import Flash from './flash';
+import { deprecatedCreateFlash as Flash } from './flash';
 import { defaultAutocompleteConfig } from './gfm_auto_complete';
 import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';

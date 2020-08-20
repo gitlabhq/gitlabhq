@@ -1,7 +1,7 @@
 /* eslint-disable @gitlab/require-i18n-strings */
 
 import { groupBy } from 'lodash';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { extractCurrentDiscussion, extractDesign } from './design_management_utils';
 import {
   ADD_IMAGE_DIFF_NOTE_ERROR,

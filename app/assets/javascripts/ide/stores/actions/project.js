@@ -1,5 +1,5 @@
 import { escape } from 'lodash';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __, sprintf } from '~/locale';
 import service from '../../services';
 import api from '../../../api';

@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
-import flash from './flash';
+import { deprecatedCreateFlash as flash } from './flash';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
 import IssuablesHelper from './helpers/issuables_helper';
 import { joinPaths } from '~/lib/utils/url_utility';

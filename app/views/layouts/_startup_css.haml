@@ -1,7 +1,4 @@
 - return unless use_startup_css?
 
-= javascript_tag nonce: true do
-  :plain
-    document.querySelectorAll('link[media="print"]').forEach(linkTag => {
-      linkTag.addEventListener('load', function() {this.media='all'}, {once: true});
-    })
+%style{ type: "text/css" }
+  = Rails.application.assets_manifest.find_sources('startup/startup-general.css').first.to_s.html_safe

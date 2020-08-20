@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import '~/gl_dropdown';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import Api from '~/api';
 import { __ } from '~/locale';
 import Project from '~/pages/projects/project';

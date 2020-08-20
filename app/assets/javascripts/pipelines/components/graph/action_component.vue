@@ -3,7 +3,7 @@ import { GlTooltipDirective, GlButton, GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { dasherize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Icon from '~/vue_shared/components/icon.vue';
 
 /**

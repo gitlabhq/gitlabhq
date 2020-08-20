@@ -8,7 +8,7 @@ import simplePoll from '~/lib/utils/simple_poll';
 import { __, sprintf } from '~/locale';
 import MergeRequest from '../../../merge_request';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import Flash from '../../../flash';
+import { deprecatedCreateFlash as Flash } from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
 import SquashBeforeMerge from './squash_before_merge.vue';

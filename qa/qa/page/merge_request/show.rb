@@ -7,10 +7,6 @@ module QA
         include Page::Component::Note
         include Page::Component::Issuable::Sidebar
 
-        view 'app/assets/javascripts/mr_tabs_popover/components/popover.vue' do
-          element :dismiss_popover_button
-        end
-
         view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_header.vue' do
           element :dropdown_toggle
           element :download_email_patches

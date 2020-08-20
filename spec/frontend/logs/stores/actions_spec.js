@@ -17,7 +17,7 @@ import {
 import { defaultTimeRange } from '~/vue_shared/constants';
 
 import axios from '~/lib/utils/axios_utils';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 
 import {
   mockPodName,

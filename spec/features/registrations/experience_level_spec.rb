@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Experience level screen' do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :unconfirmed) }
   let_it_be(:group) { create(:group) }
 
   before do
@@ -31,5 +31,15 @@ RSpec.describe 'Experience level screen' do
     is_expected.to have_content('Experienced')
     is_expected.to have_content('I’m familiar with the basics of project management and DevOps')
     is_expected.to have_content('Show me more advanced stuff')
+  end
+
+  it 'does not display any flash messages' do
+    is_expected.not_to have_selector('.flash-container')
+    is_expected.not_to have_content("Please check your email (#{user.email}) to verify that you own this address and unlock the power of CI/CD")
+  end
+
+  it 'does not include the footer links' do
+    is_expected.not_to have_link('Help')
+    is_expected.not_to have_link('About GitLab')
   end
 end

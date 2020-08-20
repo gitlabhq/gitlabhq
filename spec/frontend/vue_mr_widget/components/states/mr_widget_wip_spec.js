@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import WorkInProgress from '~/vue_merge_request_widget/components/states/work_in_progress.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash');
 

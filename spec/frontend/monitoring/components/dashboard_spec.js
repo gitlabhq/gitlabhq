@@ -30,7 +30,7 @@ import {
   metricsDashboardPanelCount,
   dashboardProps,
 } from '../fixture_data';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash');
 

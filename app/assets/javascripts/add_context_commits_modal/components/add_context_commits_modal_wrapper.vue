@@ -4,7 +4,7 @@ import { GlModal, GlTabs, GlTab, GlSearchBoxByType, GlSprintf } from '@gitlab/ui
 import ReviewTabContainer from '~/add_context_commits_modal/components/review_tab_container.vue';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import {
   findCommitIndex,
   setCommitStatus,

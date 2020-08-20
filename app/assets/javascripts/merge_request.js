@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import TaskList from './task_list';
 import MergeRequestTabs from './merge_request_tabs';
 import IssuablesHelper from './helpers/issuables_helper';

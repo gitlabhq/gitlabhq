@@ -4,7 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 
 import { mockAuthorToken, mockAuthors } from '../mock_data';

@@ -1,4 +1,4 @@
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import * as types from './mutation_types';

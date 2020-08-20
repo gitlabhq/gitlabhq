@@ -5,7 +5,7 @@ import Activities from '~/activities';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import { __ } from '~/locale';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import ActivityCalendar from './activity_calendar';
 import UserOverviewBlock from './user_overview_block';
 

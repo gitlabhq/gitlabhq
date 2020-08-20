@@ -3,7 +3,7 @@ import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import axios from '~/lib/utils/axios_utils';
 import TaskList from '../../task_list';
-import Flash from '../../flash';
+import { deprecatedCreateFlash as Flash } from '../../flash';
 import Poll from '../../lib/utils/poll';
 import * as types from './mutation_types';
 import * as utils from './utils';

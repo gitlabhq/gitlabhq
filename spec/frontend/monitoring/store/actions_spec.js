@@ -5,7 +5,7 @@ import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import * as commonUtils from '~/lib/utils/common_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { defaultTimeRange } from '~/vue_shared/constants';
 import * as getters from '~/monitoring/stores/getters';
 import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';

@@ -5,7 +5,7 @@ import * as actions from '~/pipelines/stores/test_reports/actions';
 import * as types from '~/pipelines/stores/test_reports/mutation_types';
 import { TEST_HOST } from '../../../helpers/test_constants';
 import testAction from '../../../helpers/vuex_action_helper';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash.js');
 

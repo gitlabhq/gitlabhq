@@ -4,7 +4,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import EditFormButtons from '~/sidebar/components/confidential/edit_form_buttons.vue';
 import eventHub from '~/sidebar/event_hub';
 import createStore from '~/notes/stores';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 
 jest.mock('~/sidebar/event_hub', () => ({ $emit: jest.fn() }));
 jest.mock('~/flash');

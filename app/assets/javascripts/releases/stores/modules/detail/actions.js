@@ -1,6 +1,6 @@
 import * as types from './mutation_types';
 import api from '~/api';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { releaseToApiJson, apiJsonToRelease } from '~/releases/util';

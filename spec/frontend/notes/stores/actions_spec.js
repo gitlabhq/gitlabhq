@@ -1,7 +1,7 @@
 import { TEST_HOST } from 'spec/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Api from '~/api';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import * as actions from '~/notes/stores/actions';
 import * as mutationTypes from '~/notes/stores/mutation_types';
 import * as notesConstants from '~/notes/constants';

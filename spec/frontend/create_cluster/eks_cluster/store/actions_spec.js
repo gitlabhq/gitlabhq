@@ -23,7 +23,7 @@ import {
   CREATE_CLUSTER_ERROR,
 } from '~/create_cluster/eks_cluster/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash');
 

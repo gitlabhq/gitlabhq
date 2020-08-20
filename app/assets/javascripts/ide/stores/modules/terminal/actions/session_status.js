@@ -1,5 +1,5 @@
 import axios from '~/lib/utils/axios_utils';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import * as types from '../mutation_types';
 import * as messages from '../messages';
 import { isEndingStatus } from '../utils';

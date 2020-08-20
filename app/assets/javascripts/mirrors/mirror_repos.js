@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { debounce } from 'lodash';
 import { __ } from '~/locale';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import SSHMirror from './ssh_mirror';
 

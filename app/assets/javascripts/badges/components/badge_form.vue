@@ -2,7 +2,7 @@
 import { escape, debounce } from 'lodash';
 import { mapActions, mapState } from 'vuex';
 import { GlLoadingIcon, GlFormInput, GlFormGroup } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import createEmptyBadge from '../empty_badge';

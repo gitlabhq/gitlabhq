@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { GlLoadingIcon } from '@gitlab/ui';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { s__, __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';

@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import DesignDropzone from '~/design_management_legacy/components/upload/design_dropzone.vue';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash');
 

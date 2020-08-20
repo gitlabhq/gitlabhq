@@ -4,7 +4,7 @@ import FilteredSearchContainer from '~/filtered_search/container';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import UsersCache from '~/lib/utils/users_cache';
 import { __ } from '~/locale';
 import * as Emoji from '~/emoji';

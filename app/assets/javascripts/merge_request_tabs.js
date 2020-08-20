@@ -5,7 +5,7 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Cookies from 'js-cookie';
 import createEventHub from '~/helpers/event_hub_factory';
 import axios from './lib/utils/axios_utils';
-import flash from './flash';
+import { deprecatedCreateFlash as flash } from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import {

@@ -6,7 +6,7 @@ import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import DashboardHeader from './dashboard_header.vue';
 import DashboardPanel from './dashboard_panel.vue';
 import { s__ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';

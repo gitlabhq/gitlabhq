@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import * as types from './mutation_types';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
 
 export const fetchSummary = ({ state, commit, dispatch }) => {

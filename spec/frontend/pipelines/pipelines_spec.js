@@ -8,9 +8,9 @@ import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.
 import Store from '~/pipelines/stores/pipelines_store';
 import { pipelineWithStages, stageReply, users, mockSearch, branches } from './mock_data';
 import { RAW_TEXT_WARNING } from '~/pipelines/constants';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
-jest.mock('~/flash', () => jest.fn());
+jest.mock('~/flash');
 
 describe('Pipelines', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';

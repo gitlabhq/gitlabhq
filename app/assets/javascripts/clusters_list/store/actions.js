@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import Poll from '~/lib/utils/poll';
 import axios from '~/lib/utils/axios_utils';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 import { MAX_REQUESTS } from '../constants';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';

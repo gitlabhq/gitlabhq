@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
 import { escape, find, countBy } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import { n__, s__, __ } from '~/locale';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVEL_NONE } from './constants';
 

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
-import flash from '../flash';
+import { deprecatedCreateFlash as flash } from '../flash';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import TimezoneDropdown, {
   formatTimezone,

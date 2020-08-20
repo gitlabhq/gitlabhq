@@ -9,7 +9,7 @@ import createRouter from '~/design_management/router';
 import getDesignListQuery from '~/design_management/graphql/queries/get_design_list.query.graphql';
 import permissionsQuery from '~/design_management/graphql/queries/design_permissions.query.graphql';
 import moveDesignMutation from '~/design_management/graphql/mutations/move_design.mutation.graphql';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Index from '~/design_management/pages/index.vue';
 import {
   designListQueryResponse,
@@ -19,7 +19,7 @@ import {
   moveDesignMutationResponseWithErrors,
 } from '../mock_data/apollo_mock';
 
-jest.mock('~/flash.js');
+jest.mock('~/flash');
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);

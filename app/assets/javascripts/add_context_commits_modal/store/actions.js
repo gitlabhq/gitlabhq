@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
 import Api from '~/api';
 import * as types from './mutation_types';

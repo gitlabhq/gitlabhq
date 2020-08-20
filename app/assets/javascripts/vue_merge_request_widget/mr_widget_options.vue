@@ -7,7 +7,7 @@ import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
-import createFlash from '../flash';
+import { deprecatedCreateFlash as createFlash } from '../flash';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import Loading from './components/loading.vue';
 import WidgetHeader from './components/mr_widget_header.vue';

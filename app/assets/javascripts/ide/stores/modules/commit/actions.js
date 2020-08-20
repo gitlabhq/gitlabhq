@@ -1,5 +1,5 @@
 import { sprintf, __ } from '~/locale';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
 import * as rootTypes from '../../mutation_types';
 import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';

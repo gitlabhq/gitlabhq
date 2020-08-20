@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Api from '~/api';
 
-import Flash from '../flash';
+import { deprecatedCreateFlash as Flash } from '../flash';
 import FileTemplateTypeSelector from './template_selectors/type_selector';
 import BlobCiYamlSelector from './template_selectors/ci_yaml_selector';
 import DockerfileSelector from './template_selectors/dockerfile_selector';

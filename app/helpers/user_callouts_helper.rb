@@ -37,10 +37,6 @@ module UserCalloutsHelper
     !user_dismissed?(SUGGEST_POPOVER_DISMISSED)
   end
 
-  def show_tabs_feature_highlight?
-    current_user && !user_dismissed?(TABS_POSITION_HIGHLIGHT) && !Rails.env.test?
-  end
-
   def show_webhooks_moved_alert?
     !user_dismissed?(WEBHOOKS_MOVED)
   end

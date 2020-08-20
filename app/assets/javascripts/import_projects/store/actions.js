@@ -8,7 +8,7 @@ import {
 } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
 import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 

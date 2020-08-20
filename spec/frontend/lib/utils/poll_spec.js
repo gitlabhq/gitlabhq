@@ -128,6 +128,35 @@ describe('Poll', () => {
     });
   });
 
+  describe('with delayed initial request', () => {
+    it('delays the first request', async done => {
+      mockServiceCall({ status: 200, headers: { 'poll-interval': 1 } });
+
+      const Polling = new Poll({
+        resource: service,
+        method: 'fetch',
+        data: { page: 1 },
+        successCallback: callbacks.success,
+        errorCallback: callbacks.error,
+      });
+
+      Polling.makeDelayedRequest(1);
+
+      expect(Polling.timeoutID).toBeTruthy();
+
+      waitForAllCallsToFinish(2, () => {
+        Polling.stop();
+
+        expect(service.fetch.mock.calls).toHaveLength(2);
+        expect(service.fetch).toHaveBeenCalledWith({ page: 1 });
+        expect(callbacks.success).toHaveBeenCalled();
+        expect(callbacks.error).not.toHaveBeenCalled();
+
+        done();
+      });
+    });
+  });
+
   describe('stop', () => {
     it('stops polling when method is called', done => {
       mockServiceCall({ status: 200, headers: { 'poll-interval': 1 } });

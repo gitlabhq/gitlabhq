@@ -1,6 +1,6 @@
 import Visibility from 'visibilityjs';
 import PipelineStore from './stores/pipeline_store';
-import Flash from '../flash';
+import { deprecatedCreateFlash as Flash } from '../flash';
 import Poll from '../lib/utils/poll';
 import { __ } from '../locale';
 import PipelineService from './services/pipeline_service';

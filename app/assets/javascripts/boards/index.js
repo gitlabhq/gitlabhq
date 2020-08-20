@@ -20,7 +20,7 @@ import {
 import VueApollo from 'vue-apollo';
 import BoardContent from '~/boards/components/board_content.vue';
 import createDefaultClient from '~/lib/graphql';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import { __ } from '~/locale';
 import './models/label';
 import './models/assignee';

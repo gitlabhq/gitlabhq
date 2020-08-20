@@ -170,12 +170,6 @@ module MergeRequestsHelper
       current_user.fork_of(project)
     end
   end
-
-  def mr_tabs_position_enabled?
-    strong_memoize(:mr_tabs_position_enabled) do
-      Feature.enabled?(:mr_tabs_position, @project, default_enabled: true)
-    end
-  end
 end
 
 MergeRequestsHelper.prepend_if_ee('EE::MergeRequestsHelper')

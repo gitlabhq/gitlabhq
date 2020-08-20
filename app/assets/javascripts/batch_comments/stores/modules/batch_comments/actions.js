@@ -1,4 +1,4 @@
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import service from '../../../services/drafts_service';

@@ -4,11 +4,11 @@ import { GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import ForkGroupsList from '~/pages/projects/forks/new/components/fork_groups_list.vue';
 import ForkGroupsListItem from '~/pages/projects/forks/new/components/fork_groups_list_item.vue';
 
-jest.mock('~/flash', () => jest.fn());
+jest.mock('~/flash');
 
 describe('Fork groups list component', () => {
   let wrapper;

@@ -1,6 +1,6 @@
 <script>
 import footerEEMixin from 'ee_else_ce/boards/mixins/modal_footer';
-import Flash from '../../../flash';
+import { deprecatedCreateFlash as Flash } from '../../../flash';
 import { __, n__ } from '../../../locale';
 import ListsDropdown from './lists_dropdown.vue';
 import ModalStore from '../../stores/modal_store';

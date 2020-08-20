@@ -11,7 +11,7 @@ import {
 import { intersection, debounce } from 'lodash';
 import { __, sprintf } from '~/locale';
 import Api from '~/api';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 export default {
   components: {

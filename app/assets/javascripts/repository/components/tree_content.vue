@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '../../locale';
 import FileTable from './table/index.vue';
 import getRefMixin from '../mixins/get_ref';

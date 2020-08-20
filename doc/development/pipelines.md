@@ -585,7 +585,7 @@ that are scoped to a single [configuration parameter](../ci/yaml/README.md#confi
 | `.static-analysis-cache` | Allows a job to use a default `cache` definition suitable for static analysis tasks. |
 | `.yarn-cache` | Allows a job to use a default `cache` definition suitable for frontend jobs that do a `yarn install`. |
 | `.assets-compile-cache` | Allows a job to use a default `cache` definition suitable for frontend jobs that compile assets. |
-| `.use-pg11` | Allows a job to use the `postgres:11.6` and `redis:alpine` services. |
+| `.use-pg11` | Allows a job to use the `postgres:11.6` and `redis:4.0-alpine` services. |
 | `.use-pg11-ee` | Same as `.use-pg11` but also use the `docker.elastic.co/elasticsearch/elasticsearch:6.4.2` services. |
 | `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
 | `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` environment variable. |

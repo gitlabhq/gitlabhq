@@ -155,6 +155,12 @@ Use:
 GitLab will use a commit that is currently on the HEAD of the branch when
 creating a downstream pipeline.
 
+NOTE: **Note:**
+Pipelines triggered on a protected branch in a downstream project use the [permissions](../user/permissions.md)
+of the user that ran the trigger job in the upstream project. If the user does not
+have permission to run CI/CD pipelines against the protected branch, the pipeline fails. See
+[pipeline security for protected branches](pipelines/index.md#pipeline-security-on-protected-branches).
+
 ### Passing variables to a downstream pipeline
 
 Sometimes you might want to pass variables to a downstream pipeline.

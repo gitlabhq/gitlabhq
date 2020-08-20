@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { ERROR_MSG } from './constants';
 
 export default class IncidentsSettingsService {

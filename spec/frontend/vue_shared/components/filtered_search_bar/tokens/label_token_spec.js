@@ -8,7 +8,7 @@ import {
 } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 import axios from '~/lib/utils/axios_utils';
 
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 
 import { mockLabelToken } from '../mock_data';

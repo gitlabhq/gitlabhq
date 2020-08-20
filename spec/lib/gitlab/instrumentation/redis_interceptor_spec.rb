@@ -25,8 +25,8 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
       # Exercise counting of a bulk reply
       [[:set, 'foo', 'bar' * 100]] | [:get, 'foo'] | 3 + 3 | 3 * 100
 
-      # Nested array response: ['123456-89', ['foo', 'bar']]
-      [[:xadd, 'mystream', '123456-89', 'foo', 'bar']] | [:xrange, 'mystream', '-', '+'] | 6 + 8 + 1 + 1 | 9 + 3 + 3
+      # Nested array response: [['foo', 0], ['bar', 1]]
+      [[:zadd, 'myset', 0, 'foo'], [:zadd, 'myset', 1, 'bar']] | [:zrange, 'myset', 0, -1, 'withscores'] | 6 + 5 + 1 + 2 + 10 | 3 + 1 + 3 + 1
     end
 
     with_them do

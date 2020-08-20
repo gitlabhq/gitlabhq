@@ -6,7 +6,7 @@ import * as actions from '~/releases/stores/modules/detail/actions';
 import * as types from '~/releases/stores/modules/detail/mutation_types';
 import { release as originalRelease } from '../../../mock_data';
 import createState from '~/releases/stores/modules/detail/state';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 import api from '~/api';
@@ -14,7 +14,7 @@ import httpStatus from '~/lib/utils/http_status';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
 import { releaseToApiJson, apiJsonToRelease } from '~/releases/util';
 
-jest.mock('~/flash', () => jest.fn());
+jest.mock('~/flash');
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),

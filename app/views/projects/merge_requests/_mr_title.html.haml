@@ -7,7 +7,7 @@
   .alert.alert-danger
     The source project of this merge request has been removed.
 
-.detail-page-header{ class: ("border-bottom-0 pt-0 pb-0" if mr_tabs_position_enabled?) }
+.detail-page-header.border-bottom-0.pt-0.pb-0
   .detail-page-header-body
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
       = sprite_icon(state_icon_name, css_class: 'd-block d-sm-none')

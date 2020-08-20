@@ -59,9 +59,9 @@ import * as utils from '~/diffs/store/utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { diffMetadata } from '../mock_data/diff_metadata';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
-jest.mock('~/flash', () => jest.fn());
+jest.mock('~/flash');
 
 describe('DiffsStoreActions', () => {
   useLocalStorageSpy();

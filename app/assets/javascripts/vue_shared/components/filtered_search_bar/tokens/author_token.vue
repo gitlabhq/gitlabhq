@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 
 import { ANY_AUTHOR, DEBOUNCE_DELAY } from '../constants';

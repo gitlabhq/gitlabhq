@@ -13,7 +13,7 @@ import {
   UPDATE_IMAGE_DIFF_NOTE_ERROR,
 } from '~/design_management_legacy/utils/error_messages';
 import design from '../mock_data/design';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash.js');
 

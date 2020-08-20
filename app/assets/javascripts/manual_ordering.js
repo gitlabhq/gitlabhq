@@ -1,6 +1,6 @@
 import Sortable from 'sortablejs';
 import { s__ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import {
   getBoardSortableDefaultOptions,
   sortableStart,

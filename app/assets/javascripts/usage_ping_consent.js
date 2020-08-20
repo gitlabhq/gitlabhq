@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
-import Flash, { hideFlash } from './flash';
+import { deprecatedCreateFlash as Flash, hideFlash } from './flash';
 import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
 

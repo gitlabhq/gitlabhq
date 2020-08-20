@@ -4,7 +4,7 @@ import { GlToast } from '@gitlab/ui';
 import AccessorUtilities from '~/lib/utils/accessor';
 import PersistentUserCallout from '../persistent_user_callout';
 import { s__, sprintf } from '../locale';
-import Flash from '../flash';
+import { deprecatedCreateFlash as Flash } from '../flash';
 import Poll from '../lib/utils/poll';
 import initSettingsPanels from '../settings_panels';
 import eventHub from './event_hub';

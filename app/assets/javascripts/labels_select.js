@@ -8,7 +8,7 @@ import { sprintf, s__, __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import CreateLabelDropdown from './create_label';
-import flash from './flash';
+import { deprecatedCreateFlash as flash } from './flash';
 import ModalStore from './boards/stores/modal_store';
 import boardsStore from './boards/stores/boards_store';
 import { isScopedLabel } from '~/lib/utils/common_utils';

@@ -12,7 +12,7 @@ import {
   GlDeprecatedDropdownItem,
   GlDeprecatedDropdownDivider,
 } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __, sprintf, n__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';

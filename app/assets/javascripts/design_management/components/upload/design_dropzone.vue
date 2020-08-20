@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import uploadDesignMutation from '../../graphql/mutations/upload_design.mutation.graphql';
 import { UPLOAD_DESIGN_INVALID_FILETYPE_ERROR } from '../../utils/error_messages';
 import { isValidDesignFile } from '../../utils/design_management_utils';

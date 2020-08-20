@@ -6,7 +6,7 @@ import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
 import boardsStore from '../stores/boards_store';
 import { sprintf, __ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import {
   getBoardSortableDefaultOptions,
   sortableStart,

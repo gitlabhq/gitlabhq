@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import {
   gqClient,

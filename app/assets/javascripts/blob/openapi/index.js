@@ -1,5 +1,5 @@
 import { SwaggerUIBundle } from 'swagger-ui-dist';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 
 export default () => {

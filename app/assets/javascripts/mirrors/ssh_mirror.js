@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { escape } from 'lodash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import { backOff } from '~/lib/utils/common_utils';
 import AUTH_METHOD from './constants';
 

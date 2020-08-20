@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import Flash from '../../../flash';
+import { deprecatedCreateFlash as Flash } from '../../../flash';
 import { __ } from '../../../locale';
 import boardsStore from '../../stores/boards_store';
 

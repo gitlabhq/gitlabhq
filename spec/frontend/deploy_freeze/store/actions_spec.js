@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import getInitialState from '~/deploy_freeze/store/state';
 import * as actions from '~/deploy_freeze/store/actions';
 import * as types from '~/deploy_freeze/store/mutation_types';

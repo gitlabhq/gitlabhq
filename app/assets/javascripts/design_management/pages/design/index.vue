@@ -2,7 +2,7 @@
 import Mousetrap from 'mousetrap';
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import allVersionsMixin from '../../mixins/all_versions';
 import Toolbar from '../../components/toolbar/index.vue';

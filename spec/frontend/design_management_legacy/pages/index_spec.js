@@ -12,7 +12,7 @@ import {
   EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE,
   EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE,
 } from '~/design_management_legacy/utils/error_messages';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import createRouter from '~/design_management_legacy/router';
 import * as utils from '~/design_management_legacy/utils/design_management_utils';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management_legacy/constants';

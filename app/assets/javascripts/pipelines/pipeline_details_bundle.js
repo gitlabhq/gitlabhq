@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import Translate from '~/vue_shared/translate';
 import { __ } from '~/locale';
 import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility';

@@ -2,7 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import * as actions from '~/packages/list/stores/actions';
 import * as types from '~/packages/list/stores/mutation_types';
 import { MISSING_DELETE_PATH_ERROR, DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/list/constants';

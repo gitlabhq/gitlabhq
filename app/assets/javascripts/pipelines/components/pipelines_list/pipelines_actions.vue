@@ -1,7 +1,7 @@
 <script>
 import { GlDeprecatedButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { s__, __, sprintf } from '~/locale';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import Icon from '~/vue_shared/components/icon.vue';

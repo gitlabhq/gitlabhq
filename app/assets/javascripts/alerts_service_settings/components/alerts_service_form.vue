@@ -12,7 +12,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 export default {
   i18n: {

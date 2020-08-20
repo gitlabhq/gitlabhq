@@ -17,20 +17,12 @@
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
-
-    - unless mr_tabs_position_enabled?
-      = render "projects/merge_requests/widget"
-      = render "projects/merge_requests/awards_block"
-
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
       .merge-request-tabs-container
         %ul.merge-request-tabs.nav-tabs.nav.nav-links
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", qa_selector: "notes_tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
-              - if mr_tabs_position_enabled?
-                = _("Overview")
-              - else
-                = _("Discussion")
+              = _("Overview")
               %span.badge.badge-pill= @merge_request.related_notes.user.count
           - if @merge_request.source_project
             = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab" do
@@ -46,11 +38,7 @@
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               %span.badge.badge-pill= @merge_request.diff_size
-            - if mr_tabs_position_enabled? && show_tabs_feature_highlight?
-              .js-tabs-feature-highlight{ data: { dismiss_endpoint: user_callouts_path, feature_id: UserCalloutsHelper::TABS_POSITION_HIGHLIGHT } }
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
-          - unless mr_tabs_position_enabled?
-            = render "projects/merge_requests/discussion_filter"
           #js-vue-discussion-counter
 
     .tab-content#diff-notes-app
@@ -62,12 +50,11 @@
           %section.col-md-12
             %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
             .issuable-discussion.js-vue-notes-event
-              - if mr_tabs_position_enabled?
-                - if @merge_request.description.present?
-                  .detail-page-description
-                    = render "projects/merge_requests/description"
-                = render "projects/merge_requests/widget"
-                = render "projects/merge_requests/awards_block"
+              - if @merge_request.description.present?
+                .detail-page-description
+                  = render "projects/merge_requests/description"
+              = render "projects/merge_requests/widget"
+              = render "projects/merge_requests/awards_block"
               #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,
                 noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
                 noteable_type: 'MergeRequest',

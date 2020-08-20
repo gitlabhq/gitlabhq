@@ -10,7 +10,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
 import {

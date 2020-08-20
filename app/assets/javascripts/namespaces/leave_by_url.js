@@ -1,4 +1,4 @@
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import { __, sprintf } from '~/locale';
 import { getParameterByName } from '~/lib/utils/common_utils';
 

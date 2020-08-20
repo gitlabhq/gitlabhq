@@ -9,7 +9,7 @@ import { timezones } from '~/monitoring/format_date';
 import store from '~/operation_settings/store';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/flash');

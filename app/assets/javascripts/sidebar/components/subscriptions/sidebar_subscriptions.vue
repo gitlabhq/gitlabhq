@@ -1,6 +1,6 @@
 <script>
 import Store from '../../stores/sidebar_store';
-import Flash from '../../../flash';
+import { deprecatedCreateFlash as Flash } from '../../../flash';
 import { __ } from '../../../locale';
 import subscriptions from './subscriptions.vue';
 

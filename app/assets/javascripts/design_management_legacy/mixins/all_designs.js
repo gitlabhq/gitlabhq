@@ -1,5 +1,5 @@
 import { propertyOf } from 'lodash';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
 import getDesignListQuery from '../graphql/queries/get_design_list.query.graphql';
 import { extractNodes } from '../utils/design_management_utils';

@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { GlSprintf } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import Badge from './badge.vue';

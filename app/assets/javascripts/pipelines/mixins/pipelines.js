@@ -1,7 +1,7 @@
 import Visibility from 'visibilityjs';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Poll from '~/lib/utils/poll';
 import EmptyState from '../components/pipelines_list/empty_state.vue';
 import SvgBlankState from '../components/pipelines_list/blank_state.vue';

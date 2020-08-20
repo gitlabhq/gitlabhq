@@ -1,7 +1,7 @@
 import { parseBoolean } from './lib/utils/common_utils';
 import axios from './lib/utils/axios_utils';
 import { __ } from './locale';
-import Flash from './flash';
+import { deprecatedCreateFlash as Flash } from './flash';
 
 const DEFERRED_LINK_CLASS = 'deferred-link';
 

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { once } from 'lodash';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __, sprintf } from '~/locale';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the

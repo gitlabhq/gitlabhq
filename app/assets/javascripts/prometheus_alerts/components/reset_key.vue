@@ -3,7 +3,7 @@ import { GlButton, GlFormGroup, GlFormInput, GlModal, GlModalDirective } from '@
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 export default {
   copyToClipboard: __('Copy'),

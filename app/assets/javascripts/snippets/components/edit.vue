@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import { __, sprintf } from '~/locale';
 import TitleField from '~/vue_shared/components/form/title.vue';
 import { redirectTo } from '~/lib/utils/url_utility';

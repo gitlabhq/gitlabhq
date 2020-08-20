@@ -1,6 +1,6 @@
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 
 const DEFAULT_PER_PAGE = 20;

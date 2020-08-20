@@ -2,7 +2,7 @@ import { debounce } from 'lodash';
 import InputValidator from '~/validators/input_validator';
 
 import axios from '~/lib/utils/axios_utils';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 
 const debounceTimeoutDuration = 1000;

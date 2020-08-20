@@ -3,7 +3,7 @@ import testAction from 'helpers/vuex_action_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as Sentry from '@sentry/browser';
 import Poll from '~/lib/utils/poll';
-import flashError from '~/flash';
+import { deprecatedCreateFlash as flashError } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { apiData } from '../mock_data';
 import { MAX_REQUESTS } from '~/clusters_list/constants';

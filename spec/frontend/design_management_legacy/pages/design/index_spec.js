@@ -2,7 +2,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueRouter from 'vue-router';
 import { GlAlert } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import DesignIndex from '~/design_management_legacy/pages/design/index.vue';
 import DesignSidebar from '~/design_management_legacy/components/design_sidebar.vue';
 import DesignPresentation from '~/design_management_legacy/components/design_presentation.vue';

@@ -1,7 +1,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
-import Flash from '../../flash';
+import { deprecatedCreateFlash as Flash } from '../../flash';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import noteableNote from './noteable_note.vue';

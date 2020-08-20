@@ -1,7 +1,7 @@
 import initProjectVisibilitySelector from '../../../project_visibility';
 import initProjectNew from '../../../projects/project_new';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Tracking from '~/tracking';
 
 document.addEventListener('DOMContentLoaded', () => {
