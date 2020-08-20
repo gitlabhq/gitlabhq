@@ -13,9 +13,9 @@ describe('DateTimePicker', () => {
 
   const dropdownToggle = () => wrapper.find('.dropdown-toggle');
   const dropdownMenu = () => wrapper.find('.dropdown-menu');
+  const cancelButton = () => wrapper.find('[data-testid="cancelButton"]');
   const applyButtonElement = () => wrapper.find('button.btn-success').element;
   const findQuickRangeItems = () => wrapper.findAll('.dropdown-item');
-  const cancelButtonElement = () => wrapper.find('button.btn-secondary').element;
 
   const createComponent = props => {
     wrapper = mount(DateTimePicker, {
@@ -260,7 +260,7 @@ describe('DateTimePicker', () => {
       dropdownToggle().trigger('click');
 
       return wrapper.vm.$nextTick(() => {
-        cancelButtonElement().click();
+        cancelButton().trigger('click');
 
         return wrapper.vm.$nextTick(() => {
           expect(dropdownMenu().classes('show')).toBe(false);

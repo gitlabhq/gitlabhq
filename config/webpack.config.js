@@ -267,6 +267,8 @@ module.exports = {
     runtimeChunk: 'single',
     splitChunks: {
       maxInitialRequests: 20,
+      // In order to prevent firewalls tripping up: https://gitlab.com/gitlab-org/gitlab/-/issues/22648
+      automaticNameDelimiter: '-',
       cacheGroups: {
         default: false,
         common: () => ({

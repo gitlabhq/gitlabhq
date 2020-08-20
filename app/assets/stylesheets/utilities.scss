@@ -14,12 +14,6 @@
     #{'.text-#{$variant}-#{$suffix}'} {
       color: $color;
     }
-
-    #{'.hover-text-#{$variant}-#{$suffix}'} {
-      &:hover {
-        color: $color;
-      }
-    }
   }
 }
 

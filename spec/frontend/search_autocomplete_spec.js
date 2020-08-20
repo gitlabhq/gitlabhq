@@ -3,6 +3,7 @@
 import $ from 'jquery';
 import '~/gl_dropdown';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import initSearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
@@ -274,11 +275,32 @@ describe('Search autocomplete dropdown', () => {
   });
 
   describe('enableAutocomplete', () => {
+    let toggleSpy;
+    let trackingSpy;
+
+    beforeEach(() => {
+      toggleSpy = jest.spyOn(widget.dropdownToggle, 'dropdown');
+      trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
+      document.body.dataset.page = 'some:page'; // default tracking for category
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
     it('should open the Dropdown', () => {
-      const toggleSpy = jest.spyOn(widget.dropdownToggle, 'dropdown');
       widget.enableAutocomplete();
 
       expect(toggleSpy).toHaveBeenCalledWith('toggle');
+    });
+
+    it('should track the opening', () => {
+      widget.enableAutocomplete();
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_search_bar', {
+        label: 'main_navigation',
+        property: 'navigation',
+      });
     });
   });
 });

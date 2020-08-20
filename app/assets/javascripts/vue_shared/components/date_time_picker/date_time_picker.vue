@@ -213,6 +213,7 @@ export default {
     class="d-inline-block"
   >
     <gl-deprecated-dropdown
+      ref="dropdown"
       :text="timeWindowText"
       v-bind="$attrs"
       class="date-time-picker w-100"
@@ -250,7 +251,9 @@ export default {
             />
           </div>
           <gl-form-group>
-            <gl-button @click="closeDropdown">{{ __('Cancel') }}</gl-button>
+            <gl-button data-testid="cancelButton" @click="closeDropdown">{{
+              __('Cancel')
+            }}</gl-button>
             <gl-button
               variant="success"
               category="primary"

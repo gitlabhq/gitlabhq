@@ -14,12 +14,14 @@ behavior, such as a crash. Such behavior indicates a bug that you should address
 
 We recommend that you use fuzz testing in addition to the other security scanners in [GitLab Secure](../index.md)
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/README.md),
-you can run your coverage guided fuzz tests as part your CI/CD workflow. You can take advantage of
-Coverage Guided Fuzzing by including the CI job in your existing `.gitlab-ci.yml` file.
+you can run your coverage-guided fuzz tests as part your CI/CD workflow. You can take advantage of
+coverage-guided fuzzing by including the CI job in your existing `.gitlab-ci.yml` file.
 
 ## Supported fuzzing engines and languages
 
-GitLab supports these languages through the fuzzing engine listed for each. We currently provide a Docker image for apps written in Go, but you can test the other languages below by providing a Docker image with the fuzz engine to run your app.
+GitLab supports these languages through the fuzzing engine listed for each. We currently provide a
+Docker image for apps written in Go, but you can test the other languages below by providing a
+Docker image with the fuzz engine to run your app.
 
 | Language | Fuzzing Engine | Example |
 |----------|----------------|---------|
@@ -65,8 +67,8 @@ The `my_fuzz_target` job (the separate job for your fuzz target) does the follow
 
 The `gitlab-cov-fuzz` is a command-line tool that runs the instrumented application. It parses and
 analyzes the exception information that the fuzzer outputs. It also downloads the [corpus](#glossary)
-and crash events from previous pipelines automatically. This helps your fuzz targets build on the progress of
-previous fuzzing jobs. The parsed crash events and data are written to
+and crash events from previous pipelines automatically. This helps your fuzz targets build on the
+progress of previous fuzzing jobs. The parsed crash events and data are written to
 `gl-coverage-fuzzing-report.json`.
 
 ### Artifacts
@@ -125,7 +127,7 @@ The `gitlab-cov-fuzz` tool emits a JSON report file. For more information, see t
 You can download the JSON report file from the CI pipelines page. For more information, see
 [Downloading artifacts](../../../ci/pipelines/job_artifacts.md#downloading-artifacts).
 
-Here's an example Coverage Fuzzing report:
+Here's an example coverage fuzzing report:
 
 ```json-doc
 {

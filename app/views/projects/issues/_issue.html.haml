@@ -6,7 +6,7 @@
         = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected-issuable"
     .issuable-info-container
       .issuable-main-info
-        .issue-title.title.d-flex.align-items-center
+        .issue-title.title
           %span.issue-title-text.js-onboarding-issue-item{ dir: "auto" }
             - if issue.confidential?
               %span.has-tooltip{ title: _('Confidential') }

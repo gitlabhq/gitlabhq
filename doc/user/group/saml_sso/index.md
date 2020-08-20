@@ -18,6 +18,8 @@ If you follow our guidance to automate user provisioning using [SCIM](scim_setup
 User synchronization of SAML SSO groups is supported through [SCIM](scim_setup.md). SCIM supports adding and removing users from the GitLab group.
 For example, if you remove a user from the SCIM app, SCIM removes that same user from the GitLab group.
 
+SAML SSO is not supported at the subgroup level, 
+
 ## Configuring your Identity Provider
 
 1. Navigate to the group and click **Settings > SAML SSO**.

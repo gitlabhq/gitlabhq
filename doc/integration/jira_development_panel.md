@@ -32,6 +32,9 @@ This differs from the [Jira integration](../user/project/integrations/jira.md), 
 
 ## Configuration
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Agile Management - GitLab-Jira Development Panel Integration](https://www.youtube.com/watch?v=VjVTOmMl85M&feature=youtu.be).
+
 - If you're using GitLab.com and Jira Cloud, the recommended method to enable this integration is to install the [GitLab for Jira app](#gitlab-for-jira-app) from the Atlassian Marketplace, which offers a real-time sync between GitLab and Jira.
 - If you're using self-managed GitLab, self-managed Jira, or both, configure the integration using [Jira's DVCS Connector](#jira-dvcs-configuration), which syncs data hourly.
 

@@ -31,6 +31,9 @@ See the [feature comparison](jira_integrations.md#feature-comparison) for more d
 
 ## Configuration
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Agile Management - GitLab-Jira Basic Integration](https://www.youtube.com/watch?v=fWvwkx5_00E&feature=youtu.be).
+
 Each GitLab project can be configured to connect to an entire Jira instance. That
 means one GitLab project can interact with _all_ Jira projects in that instance, once
 configured. Therefore, you will not have to explicitly associate

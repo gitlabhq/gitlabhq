@@ -132,10 +132,10 @@ ul.content-list {
 
     a {
       color: $gl-text-color;
-    }
 
-    .member-group-link {
-      color: $blue-600;
+      &.inline-link {
+        color: $blue-600;
+      }
     }
 
     .description {

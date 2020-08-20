@@ -194,6 +194,43 @@ RSpec.describe Gitlab::Auth::OAuth::User do
         end
       end
 
+      context "with auto_link_user disabled (default)" do
+        before do
+          stub_omniauth_config(auto_link_user: false)
+        end
+
+        include_examples "to verify compliance with allow_single_sign_on"
+      end
+
+      context "with auto_link_user enabled" do
+        before do
+          stub_omniauth_config(auto_link_user: true)
+        end
+
+        context "and a current GitLab user with a matching email" do
+          let!(:existing_user) { create(:user, email: 'john@mail.com', username: 'john') }
+
+          it "adds the OmniAuth identity to the GitLab user account" do
+            oauth_user.save
+
+            expect(gl_user).to be_valid
+            expect(gl_user.username).to eql 'john'
+            expect(gl_user.email).to eql 'john@mail.com'
+            expect(gl_user.identities.length).to be 1
+            identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+            expect(identities_as_hash).to match_array(
+              [
+                { provider: 'twitter', extern_uid: uid }
+              ]
+            )
+          end
+        end
+
+        context "and no current GitLab user with a matching email" do
+          include_examples "to verify compliance with allow_single_sign_on"
+        end
+      end
+
       context "with auto_link_ldap_user disabled (default)" do
         before do
           stub_omniauth_config(auto_link_ldap_user: false)
@@ -230,39 +267,56 @@ RSpec.describe Gitlab::Auth::OAuth::User do
             end
 
             context "and no account for the LDAP user" do
-              before do
-                allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
+              context 'when the LDAP user is found by UID' do
+                before do
+                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
 
-                oauth_user.save
+                  oauth_user.save
+                end
+
+                it "creates a user with dual LDAP and omniauth identities" do
+                  expect(gl_user).to be_valid
+                  expect(gl_user.username).to eql uid
+                  expect(gl_user.name).to eql 'John Doe'
+                  expect(gl_user.email).to eql 'johndoe@example.com'
+                  expect(gl_user.identities.length).to be 2
+                  identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                  expect(identities_as_hash).to match_array(
+                    [
+                      { provider: 'ldapmain', extern_uid: dn },
+                      { provider: 'twitter', extern_uid: uid }
+                    ]
+                  )
+                end
+
+                it "has name and email set as synced" do
+                  expect(gl_user.user_synced_attributes_metadata.name_synced).to be_truthy
+                  expect(gl_user.user_synced_attributes_metadata.email_synced).to be_truthy
+                end
+
+                it "has name and email set as read-only" do
+                  expect(gl_user.read_only_attribute?(:name)).to be_truthy
+                  expect(gl_user.read_only_attribute?(:email)).to be_truthy
+                end
+
+                it "has synced attributes provider set to ldapmain" do
+                  expect(gl_user.user_synced_attributes_metadata.provider).to eql 'ldapmain'
+                end
               end
 
-              it "creates a user with dual LDAP and omniauth identities" do
-                expect(gl_user).to be_valid
-                expect(gl_user.username).to eql uid
-                expect(gl_user.name).to eql 'John Doe'
-                expect(gl_user.email).to eql 'johndoe@example.com'
-                expect(gl_user.identities.length).to be 2
-                identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array(
-                  [
-                    { provider: 'ldapmain', extern_uid: dn },
-                    { provider: 'twitter', extern_uid: uid }
-                  ]
-                )
-              end
+              context 'when the LDAP user is found by email address' do
+                before do
+                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(nil)
+                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_email).with(uid, any_args).and_return(nil)
+                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_email).with(info_hash[:email], any_args).and_return(ldap_user)
 
-              it "has name and email set as synced" do
-                expect(gl_user.user_synced_attributes_metadata.name_synced).to be_truthy
-                expect(gl_user.user_synced_attributes_metadata.email_synced).to be_truthy
-              end
+                  oauth_user.save
+                end
 
-              it "has name and email set as read-only" do
-                expect(gl_user.read_only_attribute?(:name)).to be_truthy
-                expect(gl_user.read_only_attribute?(:email)).to be_truthy
-              end
-
-              it "has synced attributes provider set to ldapmain" do
-                expect(gl_user.user_synced_attributes_metadata.provider).to eql 'ldapmain'
+                it 'creates the LDAP identity' do
+                  identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                  expect(identities_as_hash).to include({ provider: 'ldapmain', extern_uid: dn })
+                end
               end
             end
 
@@ -361,6 +415,90 @@ RSpec.describe Gitlab::Auth::OAuth::User do
             end
 
             include_examples "to verify compliance with allow_single_sign_on"
+          end
+        end
+      end
+
+      context "with both auto_link_user and auto_link_ldap_user enabled" do
+        before do
+          stub_omniauth_config(auto_link_user: true, auto_link_ldap_user: true)
+        end
+
+        context "and at least one LDAP provider is defined" do
+          before do
+            stub_ldap_config(providers: %w(ldapmain))
+          end
+
+          context "and a corresponding LDAP person" do
+            before do
+              allow(ldap_user).to receive_messages(
+                uid: uid,
+                username: uid,
+                name: 'John Doe',
+                email: ['john@mail.com'],
+                dn: dn
+              )
+            end
+
+            context "and no account for the LDAP user" do
+              before do
+                allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
+
+                oauth_user.save
+              end
+
+              it "creates a user with dual LDAP and omniauth identities" do
+                expect(gl_user).to be_valid
+                expect(gl_user.username).to eql uid
+                expect(gl_user.name).to eql 'John Doe'
+                expect(gl_user.email).to eql 'john@mail.com'
+                expect(gl_user.identities.length).to be 2
+                identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                expect(identities_as_hash).to match_array(
+                  [
+                    { provider: 'ldapmain', extern_uid: dn },
+                    { provider: 'twitter', extern_uid: uid }
+                  ]
+                )
+              end
+
+              it "has name and email set as synced" do
+                expect(gl_user.user_synced_attributes_metadata.name_synced).to be_truthy
+                expect(gl_user.user_synced_attributes_metadata.email_synced).to be_truthy
+              end
+
+              it "has name and email set as read-only" do
+                expect(gl_user.read_only_attribute?(:name)).to be_truthy
+                expect(gl_user.read_only_attribute?(:email)).to be_truthy
+              end
+
+              it "has synced attributes provider set to ldapmain" do
+                expect(gl_user.user_synced_attributes_metadata.provider).to eql 'ldapmain'
+              end
+            end
+
+            context "and LDAP user has an account already" do
+              let!(:existing_user) { create(:omniauth_user, name: 'John Doe', email: 'john@mail.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
+
+              it "adds the omniauth identity to the LDAP account" do
+                allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
+
+                oauth_user.save
+
+                expect(gl_user).to be_valid
+                expect(gl_user.username).to eql 'john'
+                expect(gl_user.name).to eql 'John Doe'
+                expect(gl_user.email).to eql 'john@mail.com'
+                expect(gl_user.identities.length).to be 2
+                identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+                expect(identities_as_hash).to match_array(
+                  [
+                    { provider: 'ldapmain', extern_uid: dn },
+                    { provider: 'twitter', extern_uid: uid }
+                  ]
+                )
+              end
+            end
           end
         end
       end
@@ -791,7 +929,7 @@ RSpec.describe Gitlab::Auth::OAuth::User do
     end
   end
 
-  describe '.find_by_uid_and_provider' do
+  describe '._uid_and_provider' do
     let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     it 'normalizes extern_uid' do
