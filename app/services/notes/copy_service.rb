@@ -13,7 +13,6 @@ module Notes
       @from_noteable = from_noteable
       @to_noteable = to_noteable
       @from_project = from_noteable.project
-      @to_project = to_noteable.project
       @new_discussion_ids = {}
     end
 
@@ -27,8 +26,7 @@ module Notes
 
     private
 
-    attr_reader :from_noteable, :to_noteable, :from_project, :to_project,
-                :current_user, :new_discussion_ids
+    attr_reader :from_noteable, :to_noteable, :from_project, :current_user, :new_discussion_ids
 
     def copy_note(note)
       new_note = note.dup
@@ -40,7 +38,7 @@ module Notes
 
     def params_from_note(note, new_note)
       new_discussion_ids[note.discussion_id] ||= Discussion.discussion_id(new_note)
-      rewritten_note = MarkdownContentRewriterService.new(current_user, note.note, from_project, to_project).execute
+      rewritten_note = MarkdownContentRewriterService.new(current_user, note.note, from_project, to_noteable.resource_parent).execute
 
       new_params = {
         project: to_noteable.project,

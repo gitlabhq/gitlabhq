@@ -1172,7 +1172,7 @@ The source must be on a later version than the target storage.
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml reconcile -virtual <virtual-storage> -reference <up-to-date-storage> -target <outdated-storage> -f
 ```
 
-Refer to [Backend Node Recovery](#backend-node-recovery) section for more details on the `reconcile` sub-command.
+Refer to [Gitaly node recovery](#gitaly-node-recovery) section for more details on the `reconcile` sub-command.
 
 ### Enable writes or accept data loss
 
@@ -1199,14 +1199,15 @@ CAUTION: **Caution:**
 `accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
 [recovery efforts](#recover-missing-data) must be performed before using it.
 
-## Backend Node Recovery
+## Gitaly node recovery
 
-When a Praefect backend node fails and is no longer able to
-replicate changes, the backend node will start to drift from the primary. If
-that node eventually recovers, it will need to be reconciled with the current
-primary. The primary node is considered the single source of truth for the
-state of a shard. The Praefect `reconcile` sub-command allows for the manual
-reconciliation between a backend node and the current primary.
+When a secondary Gitaly node fails and is no longer able to replicate changes, it starts
+to drift from the primary Gitaly node. If the failed Gitaly node eventually recovers,
+it needs to be reconciled with the primary Gitaly node. The primary Gitaly node is considered
+the single source of truth for the state of a shard.
+
+The Praefect `reconcile` sub-command allows for the manual reconciliation between a secondary
+Gitaly node and the current primary Gitaly node.
 
 Run the following command on the Praefect server after all placeholders
 (`<virtual-storage>` and `<target-storage>`) have been replaced:
@@ -1215,8 +1216,8 @@ Run the following command on the Praefect server after all placeholders
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml reconcile -virtual <virtual-storage> -target <target-storage>
 ```
 
-- Replace the placeholder `<virtual-storage>` with the virtual storage containing the backend node storage to be checked.
-- Replace the placeholder `<target-storage>` with the backend storage name.
+- Replace the placeholder `<virtual-storage>` with the virtual storage containing the Gitaly node storage to be checked.
+- Replace the placeholder `<target-storage>` with the Gitaly storage name.
 
 The command will return a list of repositories that were found to be
 inconsistent against the current primary. Each of these inconsistencies will

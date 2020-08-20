@@ -44,7 +44,7 @@ module Issuable
           current_user,
           original_entity.description,
           original_entity.project,
-          new_entity.project
+          new_parent
         ).execute
 
         new_entity.update!(description: rewritten_description)
@@ -69,7 +69,7 @@ module Issuable
       end
 
       def new_parent
-        new_entity.project || new_entity.group
+        new_entity.resource_parent
       end
 
       def group

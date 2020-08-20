@@ -3,12 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe MarkdownContentRewriterService do
-  describe '#execute' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:source_parent) { create(:project, :public) }
-    let_it_be(:target_parent) { create(:project, :public) }
-    let(:content) { 'My content' }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:source_parent) { create(:project, :public) }
+  let_it_be(:target_parent) { create(:project, :public) }
+  let(:content) { 'My content' }
 
+  describe '#initialize' do
+    it 'raises an error if source_parent is not a Project' do
+      expect do
+        described_class.new(user, content, create(:group), target_parent)
+      end.to raise_error(ArgumentError, 'The rewriter classes require that `source_parent` is a `Project`')
+    end
+  end
+
+  describe '#execute' do
     subject { described_class.new(user, content, source_parent, target_parent).execute }
 
     it 'calls the rewriter classes successfully', :aggregate_failures do

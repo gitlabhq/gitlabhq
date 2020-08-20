@@ -34,11 +34,11 @@ module ObjectStorage
     end
 
     def use_iam_profile?
-      credentials.fetch(:use_iam_profile, false)
+      Gitlab::Utils.to_boolean(credentials[:use_iam_profile], default: false)
     end
 
     def use_path_style?
-      credentials.fetch(:path_style, false)
+      Gitlab::Utils.to_boolean(credentials[:path_style], default: false)
     end
 
     def server_side_encryption
