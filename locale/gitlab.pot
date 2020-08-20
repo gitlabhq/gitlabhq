@@ -1410,12 +1410,6 @@ msgstr[1] ""
 msgid "Add %{linkStart}assets%{linkEnd} to your Release. GitLab automatically includes read-only assets, like source code and release evidence."
 msgstr ""
 
-msgid "Add .gitlab-ci.yml to enable or configure SAST"
-msgstr ""
-
-msgid "Add .gitlab-ci.yml to enable or configure SAST security scanning using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
-msgstr ""
-
 msgid "Add CHANGELOG"
 msgstr ""
 
@@ -22200,6 +22194,12 @@ msgstr ""
 msgid "Set %{epic_ref} as the parent epic."
 msgstr ""
 
+msgid "Set .gitlab-ci.yml to enable or configure SAST"
+msgstr ""
+
+msgid "Set .gitlab-ci.yml to enable or configure SAST security scanning using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
+msgstr ""
+
 msgid "Set a default template for issue descriptions."
 msgstr ""
 
@@ -24830,6 +24830,9 @@ msgstr ""
 msgid "There was an error while fetching the table data."
 msgstr ""
 
+msgid "There was an error while fetching value stream analytics %{requestTypeName} data."
+msgstr ""
+
 msgid "There was an error while fetching value stream analytics data."
 msgstr ""
 
@@ -24837,12 +24840,6 @@ msgid "There was an error while fetching value stream analytics duration data."
 msgstr ""
 
 msgid "There was an error while fetching value stream analytics duration median data."
-msgstr ""
-
-msgid "There was an error while fetching value stream analytics recent activity data."
-msgstr ""
-
-msgid "There was an error while fetching value stream analytics time summary data."
 msgstr ""
 
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
@@ -29728,6 +29725,9 @@ msgstr ""
 msgid "quick actions"
 msgstr ""
 
+msgid "recent activity"
+msgstr ""
+
 msgid "register"
 msgstr ""
 
@@ -29890,6 +29890,9 @@ msgid "the following issue(s)"
 msgstr ""
 
 msgid "this document"
+msgstr ""
+
+msgid "time summary"
 msgstr ""
 
 msgid "to help your contributors communicate effectively!"

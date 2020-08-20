@@ -13750,6 +13750,11 @@ type SastCiConfigurationEntity {
   ): SastCiConfigurationOptionsEntityConnection
 
   """
+  Size of the UI component.
+  """
+  size: SastUiComponentSize
+
+  """
   Type of the field value.
   """
   type: String
@@ -13843,6 +13848,15 @@ type SastCiConfigurationOptionsEntityEdge {
   The item at the end of the edge.
   """
   node: SastCiConfigurationOptionsEntity
+}
+
+"""
+Size of UI component in SAST configuration page
+"""
+enum SastUiComponentSize {
+  LARGE
+  MEDIUM
+  SMALL
 }
 
 """

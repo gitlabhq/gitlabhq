@@ -62,8 +62,16 @@ module ObjectStorage
     end
 
     def workhorse_client_hash
-      return {} unless config.aws?
+      if config.aws?
+        workhorse_aws_hash
+      elsif config.azure?
+        workhorse_azure_hash
+      else
+        {}
+      end
+    end
 
+    def workhorse_aws_hash
       {
         UseWorkhorseClient: use_workhorse_s3_client?,
         RemoteTempObjectID: object_name,
@@ -78,6 +86,21 @@ module ObjectStorage
             ServerSideEncryption: config.server_side_encryption,
             SSEKMSKeyID: config.server_side_encryption_kms_key_id
           }.compact
+        }
+      }
+    end
+
+    def workhorse_azure_hash
+      {
+        # Azure requires Workhorse client because direct uploads can't
+        # use pre-signed URLs without buffering the whole file to disk.
+        UseWorkhorseClient: true,
+        RemoteTempObjectID: object_name,
+        ObjectStorage: {
+          Provider: 'AzureRM',
+          GoCloudConfig: {
+            URL: "azblob://#{bucket_name}"
+          }
         }
       }
     end

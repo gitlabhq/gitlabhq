@@ -1948,6 +1948,7 @@ Represents an entity in SAST CI configuration
 | `description` | String | Entity description that is displayed on the form. |
 | `field` | String | CI keyword of entity. |
 | `label` | String | Label for entity used in the form. |
+| `size` | SastUiComponentSize | Size of the UI component. |
 | `type` | String | Type of the field value. |
 | `value` | String | Current value of the entity. |
 

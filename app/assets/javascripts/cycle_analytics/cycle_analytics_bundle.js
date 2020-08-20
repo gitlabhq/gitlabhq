@@ -2,7 +2,6 @@ import $ from 'jquery';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
-import filterMixins from 'ee_else_ce/analytics/cycle_analytics/mixins/filter_mixins';
 import Flash from '../flash';
 import { __ } from '~/locale';
 import Translate from '../vue_shared/translate';
@@ -45,7 +44,6 @@ export default () => {
         import('ee_component/analytics/shared/components/date_range_dropdown.vue'),
       'stage-nav-item': stageNavItem,
     },
-    mixins: [filterMixins],
     data() {
       return {
         store: CycleAnalyticsStore,

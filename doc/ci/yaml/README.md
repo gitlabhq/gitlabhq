@@ -926,14 +926,14 @@ For example, the following are equivalent configuration:
   ```
 
 NOTE: **Note:**
-A pipeline won't be created if it only contains jobs in `.pre` or `.post` stages.
+A pipeline is not created if all jobs are in `.pre` or `.post` stages.
 
 ### `extends`
 
 > Introduced in GitLab 11.3.
 
-`extends` defines entry names that a job that uses `extends` is going to
-inherit from.
+`extends` defines entry names that a job that uses `extends`
+inherits from.
 
 It's an alternative to using [YAML anchors](#anchors) and is a little
 more flexible and readable:
@@ -955,12 +955,12 @@ rspec:
 ```
 
 In the example above, the `rspec` job inherits from the `.tests` template job.
-GitLab will perform a reverse deep merge based on the keys. GitLab will:
+GitLab performs a reverse deep merge based on the keys. GitLab:
 
-- Merge the `rspec` contents into `.tests` recursively.
-- Not merge the values of the keys.
+- Merges the `rspec` contents into `.tests` recursively.
+- Doesn't merge the values of the keys.
 
-This results in the following `rspec` job:
+The result is this `rspec` job:
 
 ```yaml
 rspec:
@@ -981,8 +981,8 @@ If you do want to include the `rake test`, see [`before_script` and `after_scrip
 `.tests` in this example is a [hidden job](#hide-jobs), but it's
 possible to inherit from regular jobs as well.
 
-`extends` supports multi-level inheritance, however it's not recommended to
-use more than three levels. The maximum nesting level that is supported is 10.
+`extends` supports multi-level inheritance. You should avoid using more than 3 levels,
+but you can use as many as ten.
 The following example has two levels of inheritance:
 
 ```yaml
@@ -1016,7 +1016,7 @@ In GitLab 12.0 and later, it's also possible to use multiple parents for
 
 `extends` is able to merge hashes but not arrays.
 The algorithm used for merge is "closest scope wins", so
-keys from the last member will always override anything defined on other
+keys from the last member always override anything defined on other
 levels. For example:
 
 ```yaml
@@ -1098,7 +1098,7 @@ useTemplate:
   extends: .template
 ```
 
-This will run a job called `useTemplate` that runs `echo Hello!` as defined in
+This example runs a job called `useTemplate` that runs `echo Hello!` as defined in
 the `.template` job, and uses the `alpine` Docker image as defined in the local job.
 
 ### `rules`
@@ -1113,8 +1113,8 @@ If included, the job also has [certain attributes](#rules-attributes)
 added to it.
 
 CAUTION: **Caution:**
-`rules` can't be used in combination with [`only/except`](#onlyexcept-basic) because it is a replacement for
-that functionality. If you attempt to do this, the linter returns a
+`rules` replaces [`only/except`](#onlyexcept-basic) and can't be used in conjunction with it.
+If you attempt to use both keywords in the same job, the linter returns a
 `key may not be used with rules` error.
 
 #### Rules attributes
@@ -1466,7 +1466,7 @@ use `when: never`.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24021) in GitLab 12.4.
 
-`exists` accepts an array of paths and will match if any of these paths exist
+`exists` accepts an array of paths and matches if any of these paths exist
 as files in the repository.
 
 For example:
@@ -1494,7 +1494,7 @@ job:
 
 NOTE: **Note:**
 For performance reasons, using `exists` with patterns is limited to 10000
-checks. After the 10000th check, rules with patterned globs will always match.
+checks. After the 10000th check, rules with patterned globs always match.
 
 #### `rules:allow_failure`
 
@@ -1517,18 +1517,18 @@ job:
       allow_failure: true
 ```
 
-In this example, if the first rule matches, then the job will have `when: manual` and `allow_failure: true`.
+In this example, if the first rule matches, then the job has `when: manual` and `allow_failure: true`.
 
 #### Complex rule clauses
 
-To conjoin `if`, `changes`, and `exists` clauses with an AND, use them in the
+To conjoin `if`, `changes`, and `exists` clauses with an `AND`, use them in the
 same rule.
 
 In the following example:
 
-- We run the job manually if `Dockerfile` or any file in `docker/scripts/`
-  has changed AND `$VAR == "string value"`.
-- Otherwise, the job won't be included in the pipeline.
+- If the dockerfile or any file in `/docker/scripts` has changed, and var=blah,
+  then the job runs manually
+- Otherwise, the job isn't included in the pipeline.
 
 ```yaml
 docker build:

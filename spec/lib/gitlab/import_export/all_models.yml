@@ -12,6 +12,7 @@ issues:
 - resource_weight_events
 - resource_milestone_events
 - resource_state_events
+- resource_iteration_events
 - sent_notifications
 - sentry_issue
 - label_links

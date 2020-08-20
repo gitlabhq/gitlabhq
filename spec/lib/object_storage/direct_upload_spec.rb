@@ -105,7 +105,7 @@ RSpec.describe ObjectStorage::DirectUpload do
     end
   end
 
-  describe '#to_hash' do
+  describe '#to_hash', :aggregate_failures do
     subject { direct_upload.to_hash }
 
     shared_examples 'a valid S3 upload' do
@@ -197,6 +197,21 @@ RSpec.describe ObjectStorage::DirectUpload do
 
       it 'does not set Workhorse client data' do
         expect(subject.keys).not_to include(:UseWorkhorseClient, :RemoteTempObjectID, :ObjectStorage)
+      end
+    end
+
+    shared_examples 'a valid AzureRM upload' do
+      before do
+        require 'fog/azurerm'
+      end
+
+      it_behaves_like 'a valid upload'
+
+      it 'enables the Workhorse client' do
+        expect(subject[:UseWorkhorseClient]).to be true
+        expect(subject[:RemoteTempObjectID]).to eq(object_name)
+        expect(subject[:ObjectStorage][:Provider]).to eq('AzureRM')
+        expect(subject[:ObjectStorage][:GoCloudConfig]).to eq({ URL: "azblob://#{bucket_name}" })
       end
     end
 
@@ -367,6 +382,32 @@ RSpec.describe ObjectStorage::DirectUpload do
         let(:has_length) { false }
 
         it_behaves_like 'a valid Google upload'
+        it_behaves_like 'a valid upload without multipart data'
+      end
+    end
+
+    context 'when AzureRM is used' do
+      let(:credentials) do
+        {
+          provider: 'AzureRM',
+          azure_storage_account_name: 'azuretest',
+          azure_storage_access_key: 'ABCD1234'
+        }
+      end
+
+      let(:storage_url) { 'https://azuretest.blob.core.windows.net' }
+
+      context 'when length is known' do
+        let(:has_length) { true }
+
+        it_behaves_like 'a valid AzureRM upload'
+        it_behaves_like 'a valid upload without multipart data'
+      end
+
+      context 'when length is unknown' do
+        let(:has_length) { false }
+
+        it_behaves_like 'a valid AzureRM upload'
         it_behaves_like 'a valid upload without multipart data'
       end
     end

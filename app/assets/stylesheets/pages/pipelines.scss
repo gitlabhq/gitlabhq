@@ -673,11 +673,10 @@
       border-radius: 100%;
       display: block;
       padding: 0;
-      line-height: initial;
+      line-height: 0;
 
       svg {
         fill: $gl-text-color-secondary;
-        vertical-align: initial;
       }
 
       .spinner {

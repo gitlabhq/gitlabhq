@@ -40152,6 +40152,20 @@
               "deprecationReason": null
             },
             {
+              "name": "size",
+              "description": "Size of the UI component.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "SastUiComponentSize",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "type",
               "description": "Type of the field value.",
               "args": [
@@ -40450,6 +40464,35 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "SastUiComponentSize",
+          "description": "Size of UI component in SAST configuration page",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SMALL",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MEDIUM",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LARGE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

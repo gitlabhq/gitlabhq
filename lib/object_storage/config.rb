@@ -58,6 +58,10 @@ module ObjectStorage
       provider == 'Google'
     end
 
+    def azure?
+      provider == 'AzureRM'
+    end
+
     def fog_attributes
       @fog_attributes ||= begin
         return {} unless enabled? && aws?

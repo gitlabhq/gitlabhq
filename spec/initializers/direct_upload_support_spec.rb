@@ -8,7 +8,7 @@ RSpec.describe 'Direct upload support' do
   end
 
   where(:config_name) do
-    %w(lfs artifacts uploads)
+    %w(artifacts lfs uploads)
   end
 
   with_them do
@@ -52,11 +52,19 @@ RSpec.describe 'Direct upload support' do
           end
         end
 
+        context 'when provider is AzureRM' do
+          let(:provider) { 'AzureRM' }
+
+          it 'succeeds' do
+            expect { subject }.not_to raise_error
+          end
+        end
+
         context 'when connection is empty' do
           let(:connection) { nil }
 
           it 'raises an error' do
-            expect { subject }.to raise_error "No provider configured for '#{config_name}'. Only Google, AWS are supported."
+            expect { subject }.to raise_error "No provider configured for '#{config_name}'. Only Google, AWS, and AzureRM are supported."
           end
         end
 
