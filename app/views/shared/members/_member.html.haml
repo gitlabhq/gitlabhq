@@ -33,7 +33,7 @@
 
         - if source.instance_of?(Group) && source != @group
           &middot;
-          = link_to source.full_name, source, class: "gl-display-inline-block inline-link"
+          = link_to source.full_name, source, class: "member-group-link"
 
         .cgray
           - if member.request?

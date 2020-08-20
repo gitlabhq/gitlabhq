@@ -12587,9 +12587,6 @@ msgstr ""
 msgid "How many users will be evaluating the trial?"
 msgstr ""
 
-msgid "How to upgrade"
-msgstr ""
-
 msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
 msgstr ""
 
