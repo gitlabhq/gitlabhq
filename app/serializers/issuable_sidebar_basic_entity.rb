@@ -103,6 +103,8 @@ class IssuableSidebarBasicEntity < Grape::Entity
     issuable.project.emails_disabled?
   end
 
+  expose :supports_time_tracking?, as: :supports_time_tracking
+
   private
 
   def current_user

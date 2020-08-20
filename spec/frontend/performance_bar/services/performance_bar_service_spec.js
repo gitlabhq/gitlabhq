@@ -8,19 +8,13 @@ describe('PerformanceBarService', () => {
       }
 
       it('returns false when the request URL is the peek URL', () => {
-        expect(
-          fireCallback({ headers: { 'x-request-id': '123' }, url: '/peek' }, '/peek'),
-        ).toBeFalsy();
+        expect(fireCallback({ headers: { 'x-request-id': '123' }, url: '/peek' }, '/peek')).toBe(
+          false,
+        );
       });
 
       it('returns false when there is no request ID', () => {
-        expect(fireCallback({ headers: {}, url: '/request' }, '/peek')).toBeFalsy();
-      });
-
-      it('returns false when the request is an API request', () => {
-        expect(
-          fireCallback({ headers: { 'x-request-id': '123' }, url: '/api/' }, '/peek'),
-        ).toBeFalsy();
+        expect(fireCallback({ headers: {}, url: '/request' }, '/peek')).toBe(false);
       });
 
       it('returns false when the response is from the cache', () => {
@@ -29,13 +23,19 @@ describe('PerformanceBarService', () => {
             { headers: { 'x-request-id': '123', 'x-gitlab-from-cache': 'true' }, url: '/request' },
             '/peek',
           ),
-        ).toBeFalsy();
+        ).toBe(false);
       });
 
-      it('returns true when all conditions are met', () => {
-        expect(
-          fireCallback({ headers: { 'x-request-id': '123' }, url: '/request' }, '/peek'),
-        ).toBeTruthy();
+      it('returns true when the request is an API request', () => {
+        expect(fireCallback({ headers: { 'x-request-id': '123' }, url: '/api/' }, '/peek')).toBe(
+          true,
+        );
+      });
+
+      it('returns true for all other requests', () => {
+        expect(fireCallback({ headers: { 'x-request-id': '123' }, url: '/request' }, '/peek')).toBe(
+          true,
+        );
       });
     });
 

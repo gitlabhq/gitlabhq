@@ -14,6 +14,7 @@ describe('Snippet header component', () => {
 
   let errorMsg;
   let err;
+  const originalRelativeUrlRoot = gon.relative_url_root;
 
   function createComponent({
     loading = false,
@@ -50,6 +51,7 @@ describe('Snippet header component', () => {
   }
 
   beforeEach(() => {
+    gon.relative_url_root = '/foo/';
     snippet = {
       id: 'gid://gitlab/PersonalSnippet/50',
       title: 'The property of Thor',
@@ -86,6 +88,7 @@ describe('Snippet header component', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    gon.relative_url_root = originalRelativeUrlRoot;
   });
 
   it('renders itself', () => {
@@ -213,7 +216,7 @@ describe('Snippet header component', () => {
       it('redirects to dashboard/snippets for personal snippet', () => {
         return createDeleteSnippet().then(() => {
           expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
-          expect(window.location.pathname).toBe('dashboard/snippets');
+          expect(window.location.pathname).toBe(`${gon.relative_url_root}dashboard/snippets`);
         });
       });
 

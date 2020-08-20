@@ -62,11 +62,11 @@ include:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.17.0"
 ```
 
-### Ignore warning and continue deploying
+#### Ignore warning and continue deploying
 
 If you are certain that the new chart version is safe to be deployed,
-you can add the `AUTO_DEVOPS_ALLOW_TO_FORCE_DEPLOY_V<N>` [environment variable](customize.md#build-and-deployment)
+you can add the `AUTO_DEVOPS_FORCE_DEPLOY_V<N>` [environment variable](customize.md#build-and-deployment)
 to force the deployment to continue, where `<N>` is the major version.
 
 For example, if you want to deploy the v2.0.0 chart on a deployment that previously
-used the v0.17.0 chart, add `AUTO_DEVOPS_ALLOW_TO_FORCE_DEPLOY_V2`.
+used the v0.17.0 chart, add `AUTO_DEVOPS_FORCE_DEPLOY_V2`.

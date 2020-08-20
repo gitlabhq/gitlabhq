@@ -604,27 +604,27 @@ module Gitlab
       end
 
       def action_monthly_active_users(time_period)
-        counter = Gitlab::UsageDataCounters::TrackUniqueActions
+        counter = Gitlab::UsageDataCounters::TrackUniqueEvents
 
         project_count = redis_usage_data do
-          counter.count_unique(
-            event_action: Gitlab::UsageDataCounters::TrackUniqueActions::PUSH_ACTION,
+          counter.count_unique_events(
+            event_action: Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION,
             date_from: time_period[:created_at].first,
             date_to: time_period[:created_at].last
           )
         end
 
         design_count = redis_usage_data do
-          counter.count_unique(
-            event_action: Gitlab::UsageDataCounters::TrackUniqueActions::DESIGN_ACTION,
+          counter.count_unique_events(
+            event_action: Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION,
             date_from: time_period[:created_at].first,
             date_to: time_period[:created_at].last
           )
         end
 
         wiki_count = redis_usage_data do
-          counter.count_unique(
-            event_action: Gitlab::UsageDataCounters::TrackUniqueActions::WIKI_ACTION,
+          counter.count_unique_events(
+            event_action: Gitlab::UsageDataCounters::TrackUniqueEvents::WIKI_ACTION,
             date_from: time_period[:created_at].first,
             date_to: time_period[:created_at].last
           )

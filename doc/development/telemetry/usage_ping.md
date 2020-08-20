@@ -236,7 +236,7 @@ Recommendations:
 
 Examples of implementation:
 
-- [`Gitlab::UsageDataCounters::TrackUniqueActions`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/track_unique_actions.rb)
+- [`Gitlab::UsageDataCounters::TrackUniqueEvents`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/track_unique_actions.rb)
 - [`Gitlab::Analytics::UniqueVisits`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/analytics/unique_visits.rb)
 
 Example of usage:
@@ -247,10 +247,10 @@ redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
 redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
 
 # Redis HLL counter
-counter = Gitlab::UsageDataCounters::TrackUniqueActions
+counter = Gitlab::UsageDataCounters::TrackUniqueEvents
 redis_usage_data do
           counter.count_unique_events(
-            event_action: Gitlab::UsageDataCounters::TrackUniqueActions::PUSH_ACTION,
+            event_action: Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION,
             date_from: time_period[:created_at].first,
             date_to: time_period[:created_at].last
           )

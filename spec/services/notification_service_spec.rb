@@ -272,6 +272,16 @@ RSpec.describe NotificationService, :mailer do
     end
   end
 
+  describe '#disabled_two_factor' do
+    let_it_be(:user) { create(:user) }
+
+    subject { notification.disabled_two_factor(user) }
+
+    it 'sends email to the user' do
+      expect { subject }.to have_enqueued_email(user, mail: 'disabled_two_factor_email')
+    end
+  end
+
   describe 'Notes' do
     context 'issue note' do
       let(:project) { create(:project, :private) }

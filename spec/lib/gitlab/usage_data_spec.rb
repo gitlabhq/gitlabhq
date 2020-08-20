@@ -912,7 +912,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     let(:time) { Time.zone.now }
 
     before do
-      counter = Gitlab::UsageDataCounters::TrackUniqueActions
+      counter = Gitlab::UsageDataCounters::TrackUniqueEvents
       project = Event::TARGET_TYPES[:project]
       wiki = Event::TARGET_TYPES[:wiki]
       design = Event::TARGET_TYPES[:design]

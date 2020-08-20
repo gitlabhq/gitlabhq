@@ -177,6 +177,27 @@ module EmailsHelper
     strip_tags(render_message(:footer_message, style: ''))
   end
 
+  def say_hi(user)
+    _('Hi %{username}!') % { username: sanitize_name(user.name) }
+  end
+
+  def two_factor_authentication_disabled_text
+    _('Two-factor authentication has been disabled for your GitLab account.')
+  end
+
+  def re_enable_two_factor_authentication_text(format: nil)
+    url = profile_two_factor_auth_url
+
+    case format
+    when :html
+      settings_link_to = link_to(_('two-factor authentication settings'), url, target: :_blank, rel: 'noopener noreferrer').html_safe
+      _("If you want to re-enable two-factor authentication, visit the %{settings_link_to} page.").html_safe % { settings_link_to: settings_link_to }
+    else
+      _('If you want to re-enable two-factor authentication, visit %{two_factor_link}') %
+        { two_factor_link: url }
+    end
+  end
+
   private
 
   def show_footer?

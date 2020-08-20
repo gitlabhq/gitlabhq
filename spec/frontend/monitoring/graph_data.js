@@ -246,3 +246,16 @@ export const gaugeChartGraphData = (panelOptions = {}) => {
     ],
   });
 };
+
+/**
+ * Generates stacked mock graph data according to options
+ *
+ * @param {Object} panelOptions - Panel options as in YML.
+ * @param {Object} dataOptions
+ */
+export const stackedColumnGraphData = (panelOptions = {}, dataOptions = {}) => {
+  return {
+    ...timeSeriesGraphData(panelOptions, dataOptions),
+    type: panelTypes.STACKED_COLUMN,
+  };
+};

@@ -42,7 +42,7 @@ describe('Design management design presentation component', () => {
     wrapper.element.scrollTo = jest.fn();
   }
 
-  const findOverlayCommentButton = () => wrapper.find('.image-diff-overlay-add-comment');
+  const findOverlayCommentButton = () => wrapper.find('[data-qa-selector="design_image_button"]');
 
   /**
    * Spy on $refs and mock given values

@@ -97,7 +97,7 @@ export default {
           text: __('New snippet'),
           href: this.snippet.project
             ? `${this.snippet.project.webUrl}/-/snippets/new`
-            : '/-/snippets/new',
+            : `${gon.relative_url_root}-/snippets/new`,
           variant: 'success',
           category: 'secondary',
           cssClass: 'ml-2',
@@ -137,7 +137,7 @@ export default {
     redirectToSnippets() {
       window.location.pathname = this.snippet.project
         ? `${this.snippet.project.fullPath}/-/snippets`
-        : 'dashboard/snippets';
+        : `${gon.relative_url_root}dashboard/snippets`;
     },
     closeDeleteModal() {
       this.$refs.deleteModal.hide();

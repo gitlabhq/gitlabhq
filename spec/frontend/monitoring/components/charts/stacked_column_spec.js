@@ -3,13 +3,15 @@ import timezoneMock from 'timezone-mock';
 import { cloneDeep } from 'lodash';
 import { GlStackedColumnChart, GlChartLegend } from '@gitlab/ui/dist/charts';
 import StackedColumnChart from '~/monitoring/components/charts/stacked_column.vue';
-import { stackedColumnMockedData } from '../../mock_data';
+import { stackedColumnGraphData } from '../../graph_data';
 
 jest.mock('~/lib/utils/icon_utils', () => ({
   getSvgIconPathContent: jest.fn().mockImplementation(icon => Promise.resolve(`${icon}-content`)),
 }));
 
 describe('Stacked column chart component', () => {
+  const stackedColumnMockedData = stackedColumnGraphData();
+
   let wrapper;
 
   const findChart = () => wrapper.find(GlStackedColumnChart);
@@ -63,9 +65,9 @@ describe('Stacked column chart component', () => {
       const groupBy = findChart().props('groupBy');
 
       expect(groupBy).toEqual([
-        '2020-01-30T12:00:00.000Z',
-        '2020-01-30T12:01:00.000Z',
-        '2020-01-30T12:02:00.000Z',
+        '2015-07-01T20:10:50.000Z',
+        '2015-07-01T20:12:50.000Z',
+        '2015-07-01T20:14:50.000Z',
       ]);
     });
 

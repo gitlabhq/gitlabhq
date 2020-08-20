@@ -32,10 +32,9 @@ export default class PerformanceBarService {
     // Get the request URL from response.config for Axios, and response for
     // Vue Resource.
     const requestUrl = (response.config || response).url;
-    const apiRequest = requestUrl && requestUrl.match(/^\/api\//);
     const cachedResponse =
       response.headers && parseBoolean(response.headers['x-gitlab-from-cache']);
-    const fireCallback = requestUrl !== peekUrl && requestId && !apiRequest && !cachedResponse;
+    const fireCallback = requestUrl !== peekUrl && Boolean(requestId) && !cachedResponse;
 
     return [fireCallback, requestId, requestUrl];
   }

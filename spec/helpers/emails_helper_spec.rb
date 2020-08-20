@@ -31,7 +31,7 @@ RSpec.describe EmailsHelper do
 
         context "and format is unknown" do
           it "returns plain text" do
-            expect(helper.closure_reason_text(merge_request, format: :text)).to eq("via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
+            expect(helper.closure_reason_text(merge_request, format: 'unknown')).to eq("via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
           end
         end
       end
@@ -106,6 +106,41 @@ RSpec.describe EmailsHelper do
 
       it 'returns name as it is when it does not contain a URL' do
         expect(sanitize_name('Foo Bar')).to eq('Foo Bar')
+      end
+    end
+  end
+
+  describe '#say_hi' do
+    let(:user) { create(:user, name: 'John') }
+
+    it 'returns the greeting message for the given user' do
+      expect(say_hi(user)).to eq('Hi John!')
+    end
+  end
+
+  describe '#two_factor_authentication_disabled_text' do
+    it 'returns the message that 2FA is disabled' do
+      expect(two_factor_authentication_disabled_text).to eq(
+        _('Two-factor authentication has been disabled for your GitLab account.')
+      )
+    end
+  end
+
+  describe '#re_enable_two_factor_authentication_text' do
+    context 'format is html' do
+      it 'returns HTML' do
+        expect(re_enable_two_factor_authentication_text(format: :html)).to eq(
+          "If you want to re-enable two-factor authentication, visit the " \
+          "#{link_to('two-factor authentication settings', profile_two_factor_auth_url, target: :_blank, rel: 'noopener noreferrer')} page."
+        )
+      end
+    end
+
+    context 'format is not specified' do
+      it 'returns text' do
+        expect(re_enable_two_factor_authentication_text).to eq(
+          "If you want to re-enable two-factor authentication, visit #{profile_two_factor_auth_url}"
+        )
       end
     end
   end

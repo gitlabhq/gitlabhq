@@ -55,12 +55,13 @@
             = dropdown_tag('Milestone', options: { title: _('Assign milestone'), toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: _('Search milestones'), data: { show_no: true, field_name: "#{issuable_type}[milestone_id]", project_id: issuable_sidebar[:project_id], issuable_id: issuable_sidebar[:id], milestones: issuable_sidebar[:project_milestones_path], ability_name: issuable_type, issue_update: issuable_sidebar[:issuable_json_path], use_id: true, default_no: true, selected: milestone[:title], null_default: true, display: 'static' }})
           - if @project.group.present?
             = render_if_exists 'shared/issuable/iteration_select', { can_edit: can_edit_issuable, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type }
-        #issuable-time-tracker.block
-          // Fallback while content is loading
-          .title.hide-collapsed
-            = _('Time tracking')
-            = icon('spinner spin', 'aria-hidden': 'true')
 
+        - if issuable_sidebar[:supports_time_tracking]
+          #issuable-time-tracker.block
+            // Fallback while content is loading
+            .title.hide-collapsed
+              = _('Time tracking')
+              = icon('spinner spin', 'aria-hidden': 'true')
         - if issuable_sidebar.has_key?(:due_date)
           .block.due_date
             .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 'true', boundary: 'viewport' }, title: sidebar_due_date_tooltip_label(issuable_sidebar[:due_date]) }

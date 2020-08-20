@@ -88,7 +88,9 @@ export default {
     },
     cancelButtonHref() {
       if (this.newSnippet) {
-        return this.projectPath ? `/${this.projectPath}/-/snippets` : `/-/snippets`;
+        return this.projectPath
+          ? `${gon.relative_url_root}${this.projectPath}/-/snippets`
+          : `${gon.relative_url_root}-/snippets`;
       }
       return this.snippet.webUrl;
     },

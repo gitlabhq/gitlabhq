@@ -111,10 +111,14 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def disable_two_factor
-    update_user { |user| user.disable_two_factor! }
+    result = TwoFactor::DestroyService.new(current_user, user: user).execute
 
-    redirect_to admin_user_path(user),
-      notice: _('Two-factor Authentication has been disabled for this user')
+    if result[:status] == :success
+      redirect_to admin_user_path(user),
+        notice: _('Two-factor authentication has been disabled for this user')
+    else
+      redirect_to admin_user_path(user), alert: result[:message]
+    end
   end
 
   def create

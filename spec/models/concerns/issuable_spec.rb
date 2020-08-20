@@ -824,4 +824,40 @@ RSpec.describe Issuable do
       it_behaves_like 'matches_cross_reference_regex? fails fast'
     end
   end
+
+  describe '#supports_time_tracking?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:issuable_type, :supports_time_tracking) do
+      :issue         | true
+      :incident      | false
+      :merge_request | true
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { issuable.supports_time_tracking? }
+
+      it { is_expected.to eq(supports_time_tracking) }
+    end
+  end
+
+  describe '#incident?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:issuable_type, :incident) do
+      :issue         | false
+      :incident      | true
+      :merge_request | false
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { issuable.incident? }
+
+      it { is_expected.to eq(incident) }
+    end
+  end
 end

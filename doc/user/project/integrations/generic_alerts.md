@@ -48,6 +48,7 @@ You can customize the payload by sending the following parameters. All fields ot
 | `hosts` | String or Array | One or more hosts, as to where this incident occurred. |
 | `severity` | String | The severity of the alert. Must be one of `critical`, `high`, `medium`, `low`, `info`, `unknown`. Default is `critical`. |
 | `fingerprint` | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. |
+| `gitlab_environment_name` | String | The name of the associated GitLab [environment](../../../ci/environments/index.md). This can be used to associate your alert to your environment. |
 
 You can also add custom fields to the alert's payload. The values of extra parameters
 are not limited to primitive types, such as strings or numbers, but can be a nested

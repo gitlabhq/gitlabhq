@@ -181,6 +181,14 @@ module Issuable
       false
     end
 
+    def supports_time_tracking?
+      is_a?(TimeTrackable) && !incident?
+    end
+
+    def incident?
+      is_a?(Issue) && super
+    end
+
     private
 
     def description_max_length_for_new_records_is_valid

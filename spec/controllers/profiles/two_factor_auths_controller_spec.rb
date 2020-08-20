@@ -107,18 +107,46 @@ RSpec.describe Profiles::TwoFactorAuthsController do
   end
 
   describe 'DELETE destroy' do
-    let(:user) { create(:user, :two_factor) }
+    subject { delete :destroy }
 
-    it 'disables two factor' do
-      expect(user).to receive(:disable_two_factor!)
+    context 'for a user that has 2FA enabled' do
+      let(:user) { create(:user, :two_factor) }
 
-      delete :destroy
+      it 'disables two factor' do
+        subject
+
+        expect(user.reload.two_factor_enabled?).to eq(false)
+      end
+
+      it 'redirects to profile_account_path' do
+        subject
+
+        expect(response).to redirect_to(profile_account_path)
+      end
+
+      it 'displays a notice on success' do
+        subject
+
+        expect(flash[:notice])
+          .to eq _('Two-factor authentication has been disabled successfully!')
+      end
     end
 
-    it 'redirects to profile_account_path' do
-      delete :destroy
+    context 'for a user that does not have 2FA enabled' do
+      let(:user) { create(:user) }
 
-      expect(response).to redirect_to(profile_account_path)
+      it 'redirects to profile_account_path' do
+        subject
+
+        expect(response).to redirect_to(profile_account_path)
+      end
+
+      it 'displays an alert on failure' do
+        subject
+
+        expect(flash[:alert])
+          .to eq _('Two-factor authentication is not enabled for this user')
+      end
     end
   end
 end

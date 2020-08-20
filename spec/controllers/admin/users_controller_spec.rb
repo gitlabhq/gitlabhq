@@ -218,28 +218,44 @@ RSpec.describe Admin::UsersController do
   end
 
   describe 'PATCH disable_two_factor' do
-    it 'disables 2FA for the user' do
-      expect(user).to receive(:disable_two_factor!)
-      allow(subject).to receive(:user).and_return(user)
+    subject { patch :disable_two_factor, params: { id: user.to_param } }
 
-      go
+    context 'for a user that has 2FA enabled' do
+      let(:user) { create(:user, :two_factor) }
+
+      it 'disables 2FA for the user' do
+        subject
+
+        expect(user.reload.two_factor_enabled?).to eq(false)
+      end
+
+      it 'redirects back' do
+        subject
+
+        expect(response).to redirect_to(admin_user_path(user))
+      end
+
+      it 'displays a notice on success' do
+        subject
+
+        expect(flash[:notice])
+          .to eq _('Two-factor authentication has been disabled for this user')
+      end
     end
 
-    it 'redirects back' do
-      go
+    context 'for a user that does not have 2FA enabled' do
+      it 'redirects back' do
+        subject
 
-      expect(response).to redirect_to(admin_user_path(user))
-    end
+        expect(response).to redirect_to(admin_user_path(user))
+      end
 
-    it 'displays an alert' do
-      go
+      it 'displays an alert on failure' do
+        subject
 
-      expect(flash[:notice])
-        .to eq _('Two-factor Authentication has been disabled for this user')
-    end
-
-    def go
-      patch :disable_two_factor, params: { id: user.to_param }
+        expect(flash[:alert])
+          .to eq _('Two-factor authentication is not enabled for this user')
+      end
     end
   end
 

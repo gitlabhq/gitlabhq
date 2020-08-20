@@ -124,6 +124,18 @@ RSpec.describe Gitlab::Alerting::NotificationPayloadParser do
       end
     end
 
+    context 'with environment' do
+      let(:environment) { create(:environment, project: project) }
+
+      before do
+        payload[:gitlab_environment_name] = environment.name
+      end
+
+      it 'sets the environment ' do
+        expect(subject.dig('annotations', 'environment')).to eq(environment)
+      end
+    end
+
     context 'when payload attributes have blank lines' do
       let(:payload) do
         {

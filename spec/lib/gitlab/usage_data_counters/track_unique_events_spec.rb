@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::UsageDataCounters::TrackUniqueActions, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::UsageDataCounters::TrackUniqueEvents, :clean_gitlab_redis_shared_state do
   subject(:track_unique_events) { described_class }
 
   let(:time) { Time.zone.now }
@@ -12,7 +12,7 @@ RSpec.describe Gitlab::UsageDataCounters::TrackUniqueActions, :clean_gitlab_redi
   end
 
   def count_unique(params)
-    track_unique_events.count_unique(params)
+    track_unique_events.count_unique_events(params)
   end
 
   context 'tracking an event' do

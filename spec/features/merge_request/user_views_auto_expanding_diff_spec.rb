@@ -27,9 +27,10 @@ RSpec.describe 'User views diffs file-by-file', :js do
     page.within('#diffs') do
       expect(page).not_to have_content('This diff is collapsed')
 
-      click_button 'Next'
+      find('.page-link.next-page-item').click
 
       expect(page).not_to have_content('This diff is collapsed')
+      expect(page).to have_selector('.diff-file .file-title', text: 'large_diff_renamed.md')
     end
   end
 end

@@ -55,7 +55,8 @@ module Gitlab
           'service' => payload[:service],
           'hosts' => hosts.presence,
           'severity' => severity,
-          'fingerprint' => fingerprint
+          'fingerprint' => fingerprint,
+          'environment' => environment
         }
       end
 
@@ -71,6 +72,16 @@ module Gitlab
         Time.parse(payload[:start_time].to_s).rfc3339
       rescue ArgumentError
         current_time
+      end
+
+      def environment
+        environment_name = payload[:gitlab_environment_name]
+
+        return unless environment_name
+
+        EnvironmentsFinder.new(project, nil, { name: environment_name })
+          .find
+          &.first
       end
 
       def secondary_params

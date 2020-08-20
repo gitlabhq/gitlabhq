@@ -2,7 +2,7 @@
 
 module Gitlab
   module UsageDataCounters
-    module TrackUniqueActions
+    module TrackUniqueEvents
       KEY_EXPIRY_LENGTH = 29.days
 
       WIKI_ACTION = :wiki_action
@@ -38,7 +38,7 @@ module Gitlab
           Gitlab::Redis::HLL.add(key: target_key, value: author_id, expiry: KEY_EXPIRY_LENGTH)
         end
 
-        def count_unique(event_action:, date_from:, date_to:)
+        def count_unique_events(event_action:, date_from:, date_to:)
           keys = (date_from.to_date..date_to.to_date).map { |date| key(event_action, date) }
 
           Gitlab::Redis::HLL.count(keys: keys)

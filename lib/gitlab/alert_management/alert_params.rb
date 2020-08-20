@@ -21,7 +21,8 @@ module Gitlab
           payload: payload,
           started_at: parsed_payload['startsAt'],
           severity: annotations[:severity],
-          fingerprint: annotations[:fingerprint]
+          fingerprint: annotations[:fingerprint],
+          environment: annotations[:environment]
         }
       end
 

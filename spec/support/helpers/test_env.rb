@@ -260,6 +260,7 @@ module TestEnv
     listen_addr = [host, port].join(':')
 
     workhorse_pid = spawn(
+      { 'PATH' => "#{ENV['PATH']}:#{workhorse_dir}" },
       File.join(workhorse_dir, 'gitlab-workhorse'),
       '-authSocket', upstream,
       '-documentRoot', Rails.root.join('public').to_s,

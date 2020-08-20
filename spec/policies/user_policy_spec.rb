@@ -82,4 +82,24 @@ RSpec.describe UserPolicy do
   describe "updating a user" do
     it_behaves_like 'changing a user', :update_user
   end
+
+  describe 'disabling two-factor authentication' do
+    context 'disabling their own two-factor authentication' do
+      let(:user) { current_user }
+
+      it { is_expected.to be_allowed(:disable_two_factor) }
+    end
+
+    context 'disabling the two-factor authentication of another user' do
+      context 'when the executor is an admin', :enable_admin_mode do
+        let(:current_user) { create(:user, :admin) }
+
+        it { is_expected.to be_allowed(:disable_two_factor) }
+      end
+
+      context 'when the executor is not an admin' do
+        it { is_expected.not_to be_allowed(:disable_two_factor) }
+      end
+    end
+  end
 end

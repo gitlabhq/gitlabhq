@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'spec/test_constants';
 import Mousetrap from 'mousetrap';
@@ -843,13 +843,16 @@ describe('diffs/components/app', () => {
     });
 
     describe('pagination', () => {
+      const fileByFileNav = () => wrapper.find('[data-testid="file-by-file-navigation"]');
+      const paginator = () => fileByFileNav().find(GlPagination);
+
       it('sets previous button as disabled', () => {
         createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
           state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
         });
 
-        expect(wrapper.find('[data-testid="singleFilePrevious"]').props('disabled')).toBe(true);
-        expect(wrapper.find('[data-testid="singleFileNext"]').props('disabled')).toBe(false);
+        expect(paginator().attributes('prevpage')).toBe(undefined);
+        expect(paginator().attributes('nextpage')).toBe('2');
       });
 
       it('sets next button as disabled', () => {
@@ -858,17 +861,26 @@ describe('diffs/components/app', () => {
           state.diffs.currentDiffFileId = '312';
         });
 
-        expect(wrapper.find('[data-testid="singleFilePrevious"]').props('disabled')).toBe(false);
-        expect(wrapper.find('[data-testid="singleFileNext"]').props('disabled')).toBe(true);
+        expect(paginator().attributes('prevpage')).toBe('1');
+        expect(paginator().attributes('nextpage')).toBe(undefined);
+      });
+
+      it("doesn't display when there's fewer than 2 files", () => {
+        createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+          state.diffs.diffFiles.push({ file_hash: '123' });
+          state.diffs.currentDiffFileId = '123';
+        });
+
+        expect(fileByFileNav().exists()).toBe(false);
       });
 
       it.each`
-        currentDiffFileId | button                  | index
-        ${'123'}          | ${'singleFileNext'}     | ${1}
-        ${'312'}          | ${'singleFilePrevious'} | ${0}
+        currentDiffFileId | targetFile
+        ${'123'}          | ${2}
+        ${'312'}          | ${1}
       `(
-        'it calls navigateToDiffFileIndex with $index when $button is clicked',
-        ({ currentDiffFileId, button, index }) => {
+        'it calls navigateToDiffFileIndex with $index when $link is clicked',
+        async ({ currentDiffFileId, targetFile }) => {
           createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
             state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
             state.diffs.currentDiffFileId = currentDiffFileId;
@@ -876,11 +888,11 @@ describe('diffs/components/app', () => {
 
           jest.spyOn(wrapper.vm, 'navigateToDiffFileIndex');
 
-          wrapper.find(`[data-testid="${button}"]`).vm.$emit('click');
+          paginator().vm.$emit('input', targetFile);
 
-          return wrapper.vm.$nextTick().then(() => {
-            expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(index);
-          });
+          await wrapper.vm.$nextTick();
+
+          expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
         },
       );
     });

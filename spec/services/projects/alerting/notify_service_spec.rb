@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Alerting::NotifyService do
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:project, reload: true) { create(:project, :repository) }
 
   before do
     # We use `let_it_be(:project)` so we make sure to clear caches
@@ -54,6 +54,7 @@ RSpec.describe Projects::Alerting::NotifyService do
     let(:starts_at) { Time.current.change(usec: 0) }
     let(:fingerprint) { 'testing' }
     let(:service) { described_class.new(project, nil, payload) }
+    let(:environment) { create(:environment, project: project) }
     let(:payload_raw) do
       {
         title: 'alert title',
@@ -63,7 +64,8 @@ RSpec.describe Projects::Alerting::NotifyService do
         service: 'GitLab Test Suite',
         description: 'Very detailed description',
         hosts: ['1.1.1.1', '2.2.2.2'],
-        fingerprint: fingerprint
+        fingerprint: fingerprint,
+        gitlab_environment_name: environment.name
       }.with_indifferent_access
     end
 
@@ -105,9 +107,9 @@ RSpec.describe Projects::Alerting::NotifyService do
                 monitoring_tool: payload_raw.fetch(:monitoring_tool),
                 service: payload_raw.fetch(:service),
                 fingerprint: Digest::SHA1.hexdigest(fingerprint),
+                environment_id: environment.id,
                 ended_at: nil,
-                prometheus_alert_id: nil,
-                environment_id: nil
+                prometheus_alert_id: nil
               )
             end
           end

@@ -11,7 +11,6 @@ describe('Design overlay component', () => {
 
   const mockDimensions = { width: 100, height: 100 };
 
-  const findOverlay = () => wrapper.find('.image-diff-overlay');
   const findAllNotes = () => wrapper.findAll('.js-image-badge');
   const findCommentBadge = () => wrapper.find('.comment-indicator');
   const findFirstBadge = () => findAllNotes().at(0);
@@ -56,9 +55,7 @@ describe('Design overlay component', () => {
   it('should have correct inline style', () => {
     createComponent();
 
-    expect(wrapper.find('.image-diff-overlay').attributes().style).toBe(
-      'width: 100px; height: 100px; top: 0px; left: 0px;',
-    );
+    expect(wrapper.attributes().style).toBe('width: 100px; height: 100px; top: 0px; left: 0px;');
   });
 
   it('should emit `openCommentForm` when clicking on overlay', () => {
@@ -69,7 +66,7 @@ describe('Design overlay component', () => {
     };
 
     wrapper
-      .find('.image-diff-overlay-add-comment')
+      .find('[data-qa-selector="design_image_button"]')
       .trigger('mouseup', { offsetX: newCoordinates.x, offsetY: newCoordinates.y });
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.emitted('openCommentForm')).toEqual([
@@ -309,7 +306,7 @@ describe('Design overlay component', () => {
 
       it.each`
         element            | getElementFunc      | event
-        ${'overlay'}       | ${findOverlay}      | ${'mouseleave'}
+        ${'overlay'}       | ${() => wrapper}    | ${'mouseleave'}
         ${'comment badge'} | ${findCommentBadge} | ${'mouseup'}
       `(
         'should emit `openCommentForm` event when $event fired on $element element',

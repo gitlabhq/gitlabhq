@@ -72,6 +72,16 @@ module Emails
         end
       end
     end
+
+    def disabled_two_factor_email(user)
+      return unless user
+
+      @user = user
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        mail(to: @user.notification_email, subject: subject(_("Two-factor authentication disabled")))
+      end
+    end
   end
 end
 

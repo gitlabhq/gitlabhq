@@ -73,9 +73,13 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def destroy
-    current_user.disable_two_factor!
+    result = TwoFactor::DestroyService.new(current_user, user: current_user).execute
 
-    redirect_to profile_account_path, status: :found
+    if result[:status] == :success
+      redirect_to profile_account_path, status: :found, notice: s_('Two-factor authentication has been disabled successfully!')
+    else
+      redirect_to profile_account_path, status: :found, alert: result[:message]
+    end
   end
 
   def skip
