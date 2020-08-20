@@ -43,7 +43,7 @@ module QA
         end
       end
 
-      it 'user transfers a project between groups' do
+      it 'user transfers a project between groups', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/406' do
         Page::File::Show.perform(&:go_to_general_settings)
 
         Page::Project::Settings::Main.perform(&:expand_advanced_settings)

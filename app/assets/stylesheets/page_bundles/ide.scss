@@ -1080,7 +1080,7 @@ $ide-commit-header-height: 48px;
   max-width: 24px;
   padding: 0;
   margin: 0 ($grid-size / 2);
-  color: var(--ide-text-color-secondary, $gl-gray-light);
+  color: var(--ide-text-color-secondary, $gray-600);
 
   &:first-child {
     margin-left: 0;

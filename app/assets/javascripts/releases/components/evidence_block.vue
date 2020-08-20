@@ -80,9 +80,7 @@ export default {
             <span class="js-short monospace">{{ shortSha(index) }}</span>
           </template>
           <template #expanded>
-            <span class="js-expanded monospace gl-pl-1-deprecated-no-really-do-not-use-me">{{
-              sha(index)
-            }}</span>
+            <span class="js-expanded monospace gl-pl-2">{{ sha(index) }}</span>
           </template>
         </expand-button>
         <clipboard-button

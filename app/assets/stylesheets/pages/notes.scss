@@ -186,8 +186,8 @@ $note-form-margin-left: 72px;
       padding: $gl-padding;
 
       .dummy-avatar {
-        background-color: $gl-gray-100;
-        border: 1px solid darken($gl-gray-100, 25%);
+        background-color: $gray-100;
+        border: 1px solid darken($gray-100, 25%);
       }
 
       .note-headline-light,
@@ -835,7 +835,7 @@ $note-form-margin-left: 72px;
   &[disabled] {
     background: $white;
     border-color: $gray-200;
-    color: $gl-gray-400;
+    color: $gray-300;
     cursor: not-allowed;
   }
 }

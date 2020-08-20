@@ -17,7 +17,7 @@
 }
 
 .line-number {
-  color: $gl-gray-500;
+  color: $gray-500;
   padding: 0 $gl-padding-8;
   min-width: $job-line-number-width;
   margin-left: -$job-line-number-margin;
@@ -28,7 +28,7 @@
   &:active,
   &:visited {
     text-decoration: underline;
-    color: $gl-gray-500;
+    color: $gray-500;
   }
 }
 
@@ -43,7 +43,7 @@
 }
 
 .log-duration-badge {
-  background: $gl-gray-400;
+  background: $gray-300;
 }
 
 .loader-animation {

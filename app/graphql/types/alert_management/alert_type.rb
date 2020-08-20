@@ -120,6 +120,10 @@ module Types
       def notes
         object.ordered_notes
       end
+
+      def runbook
+        object.parsed_payload.runbook
+      end
     end
   end
 end

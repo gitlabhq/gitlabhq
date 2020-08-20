@@ -74,7 +74,7 @@
 
 .hint {
   font-style: italic;
-  color: $gl-gray-200;
+  color: $gray-200;
 }
 
 .light { color: $gl-text-color; }
@@ -162,13 +162,13 @@ table {
 .loading {
   margin: 20px auto;
   height: 40px;
-  color: $gl-gray-700;
+  color: $gray-700;
   font-size: 32px;
   text-align: center;
 }
 
 p.time {
-  color: $gl-gray-200;
+  color: $gray-200;
   font-size: 90%;
   margin: 30px 3px 3px 2px;
 }
@@ -246,7 +246,7 @@ li.note {
 
 .gitlab-promo {
   a {
-    color: $gl-gray-350;
+    color: $gray-300;
     margin-right: 30px;
   }
 }
@@ -454,35 +454,6 @@ img.emoji {
   }
 }
 
-/** COMMON SPACING CLASSES **/
-/**
-  🚨 Do not use these classes — they are deprecated and being removed. 🚨
-  See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
-
-  Instead, if you need a spacing class, please use one from Gitlab UI —
-  https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss — which uses the following scale.
-    $gl-spacing-scale-0: 0;
-    $gl-spacing-scale-1: 2px;
-    $gl-spacing-scale-2: 4px;
-    $gl-spacing-scale-3: 8px;
-    $gl-spacing-scale-4: 12px;
-    $gl-spacing-scale-5: 16px;
-    $gl-spacing-scale-6: 24px;
-    $gl-spacing-scale-7: 32px;
-    $gl-spacing-scale-8: 40px;
-    $gl-spacing-scale-9: 48px;
-    $gl-spacing-scale-10: 56px;
-    $gl-spacing-scale-11: 64px;
-    $gl-spacing-scale-12: 80px;
-    $gl-spacing-scale-13: 96px;
-**/
-@each $index, $padding in $spacing-scale {
-  #{'.gl-p-#{$index}-deprecated-no-really-do-not-use-me'} { padding: $padding; }
-  #{'.gl-pl-#{$index}-deprecated-no-really-do-not-use-me'} { padding-left: $padding; }
-  #{'.gl-pr-#{$index}-deprecated-no-really-do-not-use-me'} { padding-right: $padding; }
-  #{'.gl-pt-#{$index}-deprecated-no-really-do-not-use-me'} { padding-top: $padding; }
-  #{'.gl-pb-#{$index}-deprecated-no-really-do-not-use-me'} { padding-bottom: $padding; }
-}
 
 /**
  * Removes browser specific clear icon from input fields in

@@ -88,6 +88,8 @@ an email notifying the user to download the file, uploading the exported file to
 
 `_links` are only present when export has finished.
 
+`created_at` is the project create timestamp, not the export start time.
+
 ```json
 {
   "id": 1,

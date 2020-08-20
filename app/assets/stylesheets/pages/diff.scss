@@ -102,7 +102,7 @@
 
     .file-mode-changed {
       padding: 10px;
-      color: $gl-gray-500;
+      color: $gray-500;
     }
 
     .suppressed-container {
@@ -181,7 +181,7 @@
 
       .swipe-wrap {
         overflow: hidden;
-        border-right: 1px solid $gl-gray-400;
+        border-right: 1px solid $gray-300;
         position: absolute;
         display: block;
         top: 13px;
@@ -190,7 +190,7 @@
         &.left-oriented {
           /* only for commit view (different swipe viewer) */
           border-right: 0;
-          border-left: 1px solid $gl-gray-400;
+          border-left: 1px solid $gray-300;
         }
       }
 

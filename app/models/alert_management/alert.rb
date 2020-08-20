@@ -11,6 +11,7 @@ module AlertManagement
     include Noteable
     include Gitlab::SQL::Pattern
     include Presentable
+    include Gitlab::Utils::StrongMemoize
 
     STATUSES = {
       triggered: 0,
@@ -118,7 +119,7 @@ module AlertManagement
     end
 
     delegate :iid, to: :issue, prefix: true, allow_nil: true
-    delegate :metrics_dashboard_url, :runbook, :details_url, to: :present
+    delegate :metrics_dashboard_url, :details_url, to: :present
 
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_status, -> (status) { where(status: status) }
@@ -195,6 +196,14 @@ module AlertManagement
       return unless project.has_active_services?(:alert_hooks)
 
       project.execute_services(hook_data, :alert_hooks)
+    end
+
+    # Representation of the alert's payload. Avoid accessing
+    # #payload attribute directly.
+    def parsed_payload
+      strong_memoize(:parsed_payload) do
+        Gitlab::AlertManagement::Payload.parse(project, payload, monitoring_tool: monitoring_tool)
+      end
     end
 
     def present

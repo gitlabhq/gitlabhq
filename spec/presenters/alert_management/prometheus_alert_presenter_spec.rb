@@ -69,17 +69,4 @@ RSpec.describe AlertManagement::PrometheusAlertPresenter do
       it { is_expected.to eq(dashboard_url_for_alert) }
     end
   end
-
-  describe '#runbook' do
-    subject { presenter.runbook }
-
-    it { is_expected.to be_nil }
-
-    context 'with runbook in payload' do
-      let(:expected_runbook) { 'https://awesome-runbook.com' }
-      let(:payload) { { 'annotations' => { 'runbook' => expected_runbook } } }
-
-      it { is_expected.to eq(expected_runbook) }
-    end
-  end
 end

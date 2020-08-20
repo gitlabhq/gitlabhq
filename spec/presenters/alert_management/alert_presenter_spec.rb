@@ -9,8 +9,7 @@ RSpec.describe AlertManagement::AlertPresenter do
     {
       'title' => 'Alert title',
       'start_time' => '2020-04-27T10:10:22.265949279Z',
-      'custom' => { 'param' => 73 },
-      'runbook' => 'https://runbook.com'
+      'custom' => { 'param' => 73 }
     }
   end
 
@@ -40,8 +39,7 @@ RSpec.describe AlertManagement::AlertPresenter do
 
           #### Alert Details
 
-          **custom.param:** 73#{markdown_line_break}
-          **runbook:** https://runbook.com
+          **custom.param:** 73
         MARKDOWN
       )
     end
@@ -50,12 +48,6 @@ RSpec.describe AlertManagement::AlertPresenter do
   describe '#metrics_dashboard_url' do
     it 'is not defined' do
       expect(presenter.metrics_dashboard_url).to be_nil
-    end
-  end
-
-  describe '#runbook' do
-    it 'shows the runbook from the payload' do
-      expect(presenter.runbook).to eq('https://runbook.com')
     end
   end
 

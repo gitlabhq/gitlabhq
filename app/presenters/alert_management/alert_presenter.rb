@@ -38,12 +38,6 @@ module AlertManagement
       MARKDOWN
     end
 
-    def runbook
-      strong_memoize(:runbook) do
-        payload&.dig('runbook')
-      end
-    end
-
     def metrics_dashboard_url; end
 
     def details_url

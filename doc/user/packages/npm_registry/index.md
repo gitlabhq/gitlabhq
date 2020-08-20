@@ -377,6 +377,7 @@ NPM_TOKEN=<your_token> npm install
 ### `npm install` returns `npm ERR! 403 Forbidden`
 
 - Check that your token is not expired and has appropriate permissions.
+- Check that [your token does not begin with `-`](https://gitlab.com/gitlab-org/gitlab/-/issues/235473).
 - Check if you have attempted to publish a package with a name that already exists within a given scope.
 - Ensure the scoped packages URL includes a trailing slash:
   - Correct: `//gitlab.com/api/v4/packages/npm/`

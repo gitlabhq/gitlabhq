@@ -353,7 +353,7 @@
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;
-  color: $gl-gray-700;
+  color: $gray-700;
 }
 
 .transfer-project .select2-container {
@@ -429,7 +429,7 @@
 
   > li + li::before {
     padding: 0 3px;
-    color: $gl-gray-400;
+    color: $gray-300;
   }
 
   a {
@@ -1444,7 +1444,7 @@ pre.light-well {
 
 .project-filters {
   .btn svg {
-    color: $gl-gray-700;
+    color: $gray-700;
   }
 
   .button-filter-group {
