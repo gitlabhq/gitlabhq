@@ -164,9 +164,8 @@
     right: 8px;
   }
 
-  .ic-chevron-down {
+  .dropdown-menu-toggle-icon {
     position: absolute;
-    top: $gl-padding-8;
     right: $gl-padding-8;
     color: $gray-darkest;
   }
@@ -627,7 +626,7 @@
 
   .fa,
   .input-icon,
-  .ic-search {
+  .dropdown-input-search {
     position: absolute;
     top: $gl-padding-8;
     right: 20px;

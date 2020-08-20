@@ -144,16 +144,16 @@ describe('Environment', () => {
     });
 
     it('should open a closed folder', () => {
-      expect(wrapper.find('.folder-icon.ic-chevron-right').exists()).toBe(false);
+      expect(wrapper.find('.folder-icon[data-testid="chevron-right-icon"]').exists()).toBe(false);
     });
 
     it('should close an opened folder', () => {
-      expect(wrapper.find('.folder-icon.ic-chevron-down').exists()).toBe(true);
+      expect(wrapper.find('.folder-icon[data-testid="chevron-down-icon"]').exists()).toBe(true);
 
       // close folder
       wrapper.find('.folder-name').trigger('click');
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.folder-icon.ic-chevron-down').exists()).toBe(false);
+        expect(wrapper.find('.folder-icon[data-testid="chevron-down-icon"]').exists()).toBe(false);
       });
     });
 

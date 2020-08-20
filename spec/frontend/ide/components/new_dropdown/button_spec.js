@@ -28,7 +28,7 @@ describe('IDE new entry dropdown button component', () => {
   });
 
   it('renders icon', () => {
-    expect(vm.$el.querySelector('.ic-doc-new')).not.toBe(null);
+    expect(vm.$el.querySelector('[data-testid="doc-new-icon"]')).not.toBe(null);
   });
 
   it('emits click event', () => {

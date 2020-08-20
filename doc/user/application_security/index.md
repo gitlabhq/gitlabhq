@@ -121,7 +121,7 @@ information with several options:
 - [Solution](#solutions-for-vulnerabilities-auto-remediation): For some vulnerabilities,
   a solution is provided for how to fix the vulnerability.
 
-![Interacting with security reports](img/interacting_with_vulnerability_v13_0.png)
+![Interacting with security reports](img/interacting_with_vulnerability_v13_3.png)
 
 ### View details of a DAST vulnerability
 
@@ -198,9 +198,10 @@ Pressing the "Dismiss Selected" button will dismiss all the selected vulnerabili
 
 ### Creating an issue for a vulnerability
 
-You can create an issue for a vulnerability by selecting the **Create issue**
-button from within the vulnerability modal, or by using the action buttons to the right of
-a vulnerability row in the group security dashboard.
+You can create an issue for a vulnerability by visiting the vulnerability's page and clicking
+**Create issue**, which you can find in the **Related issues** section.
+
+![Create issue from vulnerability](img/create_issue_from_vulnerability_v13_3.png)
 
 This creates a [confidential issue](../project/issues/confidential_issues.md) in the project the
 vulnerability came from, and pre-populates it with some useful information taken from the vulnerability

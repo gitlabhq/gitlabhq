@@ -49,7 +49,7 @@ download all the advertised refs.
 1. Clone a fresh copy of the repository using `--bare` and `--mirror`:
 
    ```shell
-   git clone --bare --mirror https://example.gitlab.com/my/project.git
+   git clone --bare --mirror https://gitlab.example.com/my/project.git
    ```
 
 1. Using `git filter-repo`, purge any files from the history of your repository.

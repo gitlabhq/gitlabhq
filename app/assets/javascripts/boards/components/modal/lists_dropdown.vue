@@ -29,7 +29,7 @@ export default {
   <div class="dropdown inline">
     <button class="dropdown-menu-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
       <span :style="{ backgroundColor: selected.label.color }" class="dropdown-label-box"> </span>
-      {{ selected.title }} <icon name="chevron-down" />
+      {{ selected.title }} <icon name="chevron-down" class="dropdown-menu-toggle-icon" />
     </button>
     <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up">
       <ul>

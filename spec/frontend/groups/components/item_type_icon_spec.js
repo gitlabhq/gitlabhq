@@ -27,12 +27,12 @@ describe('ItemTypeIconComponent', () => {
 
       vm = createComponent(ITEM_TYPE.GROUP, true);
 
-      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('folder-open');
+      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('folder-open-icon');
       vm.$destroy();
 
       vm = createComponent(ITEM_TYPE.GROUP);
 
-      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('folder');
+      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('folder-o-icon');
       vm.$destroy();
     });
 
@@ -41,12 +41,12 @@ describe('ItemTypeIconComponent', () => {
 
       vm = createComponent(ITEM_TYPE.PROJECT);
 
-      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('bookmark');
+      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('bookmark-icon');
       vm.$destroy();
 
       vm = createComponent(ITEM_TYPE.GROUP);
 
-      expect(vm.$el.querySelector('use').getAttribute('xlink:href')).not.toContain('bookmark');
+      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).not.toBe('bookmark-icon');
       vm.$destroy();
     });
   });

@@ -39,7 +39,7 @@ describe('IDE NavDropdown', () => {
     });
   };
 
-  const findIcon = name => wrapper.find(`.ic-${name}`);
+  const findIcon = name => wrapper.find(`[data-testid="${name}-icon"]`);
   const findMRIcon = () => findIcon('merge-request');
   const findNavForm = () => wrapper.find('.ide-nav-form');
   const showDropdown = () => {

@@ -54,7 +54,8 @@ When the project access token is [revoked](#revoking-a-project-access-token) the
 records will be moved to a system-wide user with the username "Ghost User". For more information,
 see [Associated Records](../../profile/account/delete_account.md#associated-records).
 
-Project bot users are a [GitLab-created service account](../../../subscriptions/index.md#self-managed) and do not count as a licensed seat.
+Project bot users are a [GitLab-created service account](../../../subscriptions/index.md#self-managed), but count as a licensed seat.
+These users will not count against your licensed seat in the future when [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/223695) is resolved.
 
 ## Revoking a project access token
 

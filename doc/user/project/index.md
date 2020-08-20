@@ -318,7 +318,7 @@ through Git.
 For example:
 
 ```plaintext
-machine example.gitlab.com
+machine gitlab.example.com
 login <gitlab_user_name>
 password <personal_access_token>
 ```

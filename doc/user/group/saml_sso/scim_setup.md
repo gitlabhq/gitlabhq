@@ -236,7 +236,7 @@ Alternatively, the [SCIM API](../../../api/scim.md#get-a-list-of-saml-users) can
 For example:
 
 ```shell
-curl 'https://example.gitlab.com/api/scim/v2/groups/GROUP_NAME/Users?startIndex=1"' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+curl 'https://gitlab.example.com/api/scim/v2/groups/GROUP_NAME/Users?startIndex=1"' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 
 To see how this compares to the value returned as the SAML NameId, you can have the user use a [SAML Tracer](index.md#saml-debugging-tools).

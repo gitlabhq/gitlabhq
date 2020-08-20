@@ -105,7 +105,7 @@ export default {
         data-toggle="dropdown"
         aria-expanded="false"
       >
-        {{ selectedProjectName }} <icon name="chevron-down" />
+        {{ selectedProjectName }} <icon name="chevron-down" class="dropdown-menu-toggle-icon" />
       </button>
       <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
         <div class="dropdown-title">{{ __('Projects') }}</div>

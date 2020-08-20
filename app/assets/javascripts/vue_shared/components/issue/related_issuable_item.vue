@@ -29,6 +29,16 @@ export default {
       required: false,
       default: false,
     },
+    isLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    lockedMessage: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     stateTitle() {
@@ -156,8 +166,17 @@ export default {
       </div>
     </div>
 
+    <span
+      v-if="isLocked"
+      ref="lockIcon"
+      v-gl-tooltip
+      class="gl-px-3 gl-display-inline-block gl-cursor-not-allowed"
+      :title="lockedMessage"
+    >
+      <gl-icon name="lock" />
+    </span>
     <button
-      v-if="canRemove"
+      v-else-if="canRemove"
       ref="removeButton"
       v-gl-tooltip
       :disabled="removeDisabled"
@@ -168,7 +187,7 @@ export default {
       :aria-label="__('Remove')"
       @click="onRemoveRequest"
     >
-      <icon :size="16" class="btn-item-remove-icon" name="close" />
+      <gl-icon class="btn-item-remove-icon" name="close" />
     </button>
   </div>
 </template>

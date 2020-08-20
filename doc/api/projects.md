@@ -22,7 +22,7 @@ Values for the project visibility level are:
 
 ## Project merge method
 
-There are currently three options for `merge_method` to choose from:
+There are three options for `merge_method` to choose from:
 
 - `merge`:
   A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
@@ -44,28 +44,28 @@ GET /projects
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `archived`                    | boolean  | no | Limit by archived status |
-| `visibility`                  | string   | no | Limit by visibility `public`, `internal`, or `private` |
-| `order_by`                    | string   | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. `repository_size`, `storage_size`, or `wiki_size` fields are only allowed for admins. Default is `created_at` |
-| `sort`                        | string   | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
-| `search`                      | string   | no | Return list of projects matching the search criteria |
-| `search_namespaces`           | boolean  | no | Include ancestor namespaces when matching search criteria. Default is `false` |
-| `simple`                      | boolean  | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
-| `owned`                       | boolean  | no | Limit by projects explicitly owned by the current user |
-| `membership`                  | boolean  | no | Limit by projects that the current user is a member of |
-| `starred`                     | boolean  | no | Limit by projects starred by the current user |
-| `statistics`                  | boolean  | no | Include project statistics |
-| `with_custom_attributes`      | boolean  | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
-| `with_issues_enabled`         | boolean  | no | Limit by enabled issues feature |
-| `with_merge_requests_enabled` | boolean  | no | Limit by enabled merge requests feature |
-| `with_programming_language`   | string   | no | Limit by projects which use the given programming language |
-| `wiki_checksum_failed`        | boolean  | no | **(PREMIUM)** Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
-| `repository_checksum_failed`  | boolean  | no | **(PREMIUM)** Limit projects where the repository checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
-| `min_access_level`            | integer  | no | Limit by current user minimal [access level](members.md#valid-access-levels) |
 | `id_after`                    | integer  | no | Limit results to projects with IDs greater than the specified ID |
 | `id_before`                   | integer  | no | Limit results to projects with IDs less than the specified ID |
 | `last_activity_after`         | datetime | no | Limit results to projects with last_activity after specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
 | `last_activity_before`        | datetime | no | Limit results to projects with last_activity before specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
+| `membership`                  | boolean  | no | Limit by projects that the current user is a member of |
+| `min_access_level`            | integer  | no | Limit by current user minimal [access level](members.md#valid-access-levels) |
+| `order_by`                    | string   | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. `repository_size`, `storage_size`, or `wiki_size` fields are only allowed for admins. Default is `created_at` |
+| `owned`                       | boolean  | no | Limit by projects explicitly owned by the current user |
+| `repository_checksum_failed`  | boolean  | no | **(PREMIUM)** Limit projects where the repository checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
 | `repository_storage`          | string   | no | Limit results to projects stored on repository_storage. Available for admins only. |
+| `search_namespaces`           | boolean  | no | Include ancestor namespaces when matching search criteria. Default is `false` |
+| `search`                      | string   | no | Return list of projects matching the search criteria |
+| `simple`                      | boolean  | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
+| `sort`                        | string   | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `starred`                     | boolean  | no | Limit by projects starred by the current user |
+| `statistics`                  | boolean  | no | Include project statistics |
+| `visibility`                  | string   | no | Limit by visibility `public`, `internal`, or `private` |
+| `wiki_checksum_failed`        | boolean  | no | **(PREMIUM)** Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
+| `with_custom_attributes`      | boolean  | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `with_issues_enabled`         | boolean  | no | Limit by enabled issues feature |
+| `with_merge_requests_enabled` | boolean  | no | Limit by enabled merge requests feature |
+| `with_programming_language`   | string   | no | Limit by projects which use the given programming language |
 
 NOTE: **Note:**
 This endpoint supports [keyset pagination](README.md#keyset-based-pagination) for selected `order_by` options.
@@ -295,9 +295,10 @@ When the user is authenticated and `simple` is not set this returns something li
 ```
 
 NOTE: **Note:**
-For users on GitLab [Silver, Premium, or higher](https://about.gitlab.com/pricing/) the `marked_for_deletion_at` attribute has been deprecated and will be removed in API v5 in favor of the `marked_for_deletion_on` attribute.
+For users on GitLab [Silver, Premium, or higher](https://about.gitlab.com/pricing/) the `marked_for_deletion_at`
+attribute has been deprecated and will be removed in API v5 in favor of the `marked_for_deletion_on` attribute.
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) can also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -319,9 +320,9 @@ GET /projects?custom_attributes[key]=value&custom_attributes[other_key]=other_va
 
 ### Pagination limits
 
-From GitLab 13.0, [offset-based pagination](README.md#offset-based-pagination) will be
+In GitLab 13.0 and later, [offset-based pagination](README.md#offset-based-pagination) is
 [limited to 50,000 records](https://gitlab.com/gitlab-org/gitlab/-/issues/34565).
-[Keyset pagination](README.md#keyset-based-pagination) will be required to retrieve projects
+[Keyset pagination](README.md#keyset-based-pagination) is required to retrieve projects
 beyond this limit.
 
 Note that keyset pagination only supports `order_by=id`. Other sorting options are not available.
@@ -918,7 +919,7 @@ GET /projects/:id
 }
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) can also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -933,7 +934,7 @@ the `approvals_before_merge` parameter:
 **Note**: The `web_url` and `avatar_url` attributes on `namespace` were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27427) in GitLab 11.11.
 
 If the project is a fork, and you provide a valid token to authenticate, the
-`forked_from_project` field will appear in the response.
+`forked_from_project` field appears in the response.
 
 ```json
 {
@@ -1031,7 +1032,7 @@ POST /projects
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `name` | string | yes if path is not provided | The name of the new project. Equals path if not provided. |
-| `path` | string | yes if name is not provided | Repository name for new project. Generated based on name if not provided (generated lowercased with dashes). |
+| `path` | string | yes if name is not provided | Repository name for new project. Generated based on name if not provided (generated as lowercase with dashes). |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
@@ -1072,7 +1073,7 @@ POST /projects
 | `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
 | `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
 | `build_coverage_regex` | string | no | Test coverage parsing |
-| `ci_config_path` | string | no | The path to CI config file |
+| `ci_config_path` | string | no | The path to CI configuration file |
 | `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
@@ -1144,7 +1145,7 @@ POST /projects/user/:user_id
 | `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
 | `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
 | `build_coverage_regex` | string | no | Test coverage parsing |
-| `ci_config_path` | string | no | The path to CI config file |
+| `ci_config_path` | string | no | The path to CI configuration file |
 | `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
@@ -1215,7 +1216,7 @@ PUT /projects/:id
 | `build_timeout` | integer | no | The maximum amount of time in minutes that a job is able run (in seconds) |
 | `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
 | `build_coverage_regex` | string | no | Test coverage parsing |
-| `ci_config_path` | string | no | The path to CI config file |
+| `ci_config_path` | string | no | The path to CI configuration file |
 | `ci_default_git_depth` | integer | no | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#git-shallow-clone) |
 | `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
@@ -1240,7 +1241,7 @@ where `password` is a public access key with the `api` scope enabled.
 Forks a project into the user namespace of the authenticated user or the one provided.
 
 The forking operation for a project is asynchronous and is completed in a
-background job. The request will return immediately. To determine whether the
+background job. The request returns immediately. To determine whether the
 fork of the project has completed, query the `import_status` for the new project.
 
 ```plaintext
@@ -1250,11 +1251,11 @@ POST /projects/:id/fork
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `namespace` | integer/string | no | (deprecated) The ID or path of the namespace that the project will be forked to |
-| `namespace_id` | integer | no | The ID of the namespace that the project will be forked to |
-| `namespace_path` | string | no | The path of the namespace that the project will be forked to |
-| `path` | string | no | The path that will be assigned to the resultant project after forking |
-| `name` | string | no | The name that will be assigned to the resultant project after forking |
+| `namespace` | integer/string | no | (deprecated) The ID or path of the namespace that the project is forked to |
+| `namespace_id` | integer | no | The ID of the namespace that the project is forked to |
+| `namespace_path` | string | no | The path of the namespace that the project is forked to |
+| `path` | string | no | The path assigned to the resultant project after forking |
+| `name` | string | no | The name assigned to the resultant project after forking |
 
 ## List Forks of a project
 
@@ -1614,8 +1615,8 @@ Example response:
 
 ## Archive a project
 
-Archives the project if the user is either admin or the project owner of this project. This action is
-idempotent, thus archiving an already archived project will not change the project.
+Archives the project if the user is either an administrator or the owner of this project. This action is
+idempotent, thus archiving an already archived project does not change the project.
 
 ```plaintext
 POST /projects/:id/archive
@@ -1724,8 +1725,8 @@ Example response:
 
 ## Unarchive a project
 
-Unarchives the project if the user is either admin or the project owner of this project. This action is
-idempotent, thus unarchiving a non-archived project will not change the project.
+Unarchives the project if the user is either an administrator or the owner of this project. This action is
+idempotent, thus unarchiving a non-archived project does not change the project.
 
 ```plaintext
 POST /projects/:id/unarchive
@@ -1880,12 +1881,12 @@ POST /projects/:id/uploads
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `file` | string | yes | The file to be uploaded |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
-To upload a file from your filesystem, use the `--form` argument. This causes
+To upload a file from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`.
-The `file=` parameter must point to a file on your filesystem and be preceded
+The `file=` parameter must point to a file on your file system and be preceded
 by `@`. For example:
 
 ```shell
@@ -1917,10 +1918,10 @@ POST /projects/:id/share
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `group_id` | integer | yes | The ID of the group to share with |
-| `group_access` | integer | yes | The [access level](members.md#valid-access-levels) to grant the group |
 | `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
+| `group_access` | integer | yes | The [access level](members.md#valid-access-levels) to grant the group |
+| `group_id` | integer | yes | The ID of the group to share with |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ## Delete a shared project link within a group
 
@@ -1932,8 +1933,8 @@ DELETE /projects/:id/share/:group_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
@@ -1966,8 +1967,8 @@ GET /projects/:id/hooks/:hook_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `hook_id` | integer | yes | The ID of a project hook |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```json
 {
@@ -2001,22 +2002,22 @@ POST /projects/:id/hooks
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `url` | string | yes | The hook URL |
-| `push_events` | boolean | no | Trigger hook on push events |
-| `push_events_branch_filter` | string | no | Trigger hook on push events for matching branches only |
-| `issues_events` | boolean | no | Trigger hook on issues events |
 | `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
-| `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
-| `tag_push_events` | boolean | no | Trigger hook on tag push events |
-| `note_events` | boolean | no | Trigger hook on note events |
 | `confidential_note_events` | boolean | no | Trigger hook on confidential note events |
-| `job_events` | boolean | no | Trigger hook on job events |
-| `pipeline_events` | boolean | no | Trigger hook on pipeline events |
-| `wiki_page_events` | boolean | no | Trigger hook on wiki events |
 | `deployment_events` | boolean | no | Trigger hook on deployment events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
-| `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `issues_events` | boolean | no | Trigger hook on issues events |
+| `job_events` | boolean | no | Trigger hook on job events |
+| `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
+| `note_events` | boolean | no | Trigger hook on note events |
+| `pipeline_events` | boolean | no | Trigger hook on pipeline events |
+| `push_events_branch_filter` | string | no | Trigger hook on push events for matching branches only |
+| `push_events` | boolean | no | Trigger hook on push events |
+| `tag_push_events` | boolean | no | Trigger hook on tag push events |
+| `token` | string | no | Secret token to validate received payloads; this is not returned in the response |
+| `url` | string | yes | The hook URL |
+| `wiki_page_events` | boolean | no | Trigger hook on wiki events |
 
 ### Edit project hook
 
@@ -2028,23 +2029,23 @@ PUT /projects/:id/hooks/:hook_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `hook_id` | integer | yes | The ID of the project hook |
-| `url` | string | yes | The hook URL |
-| `push_events` | boolean | no | Trigger hook on push events |
-| `push_events_branch_filter` | string | no | Trigger hook on push events for matching branches only |
-| `issues_events` | boolean | no | Trigger hook on issues events |
 | `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
-| `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
-| `tag_push_events` | boolean | no | Trigger hook on tag push events |
-| `note_events` | boolean | no | Trigger hook on note events |
 | `confidential_note_events` | boolean | no | Trigger hook on confidential note events |
-| `job_events` | boolean | no | Trigger hook on job events |
-| `pipeline_events` | boolean | no | Trigger hook on pipeline events |
-| `wiki_events` | boolean | no | Trigger hook on wiki events |
 | `deployment_events` | boolean | no | Trigger hook on deployment events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
-| `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
+| `hook_id` | integer | yes | The ID of the project hook |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `issues_events` | boolean | no | Trigger hook on issues events |
+| `job_events` | boolean | no | Trigger hook on job events |
+| `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
+| `note_events` | boolean | no | Trigger hook on note events |
+| `pipeline_events` | boolean | no | Trigger hook on pipeline events |
+| `push_events_branch_filter` | string | no | Trigger hook on push events for matching branches only |
+| `push_events` | boolean | no | Trigger hook on push events |
+| `tag_push_events` | boolean | no | Trigger hook on tag push events |
+| `token` | string | no | Secret token to validate received payloads; this is not returned in the response |
+| `url` | string | yes | The hook URL |
+| `wiki_events` | boolean | no | Trigger hook on wiki events |
 
 ### Delete project hook
 
@@ -2057,11 +2058,11 @@ DELETE /projects/:id/hooks/:hook_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `hook_id` | integer | yes | The ID of the project hook |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 Note the JSON response differs if the hook is available or not. If the project hook
-is available before it is returned in the JSON response or an empty response is returned.
+is available before it's returned in the JSON response or an empty response is returned.
 
 ## Fork relationship
 
@@ -2075,8 +2076,8 @@ POST /projects/:id/fork/:forked_from_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `forked_from_id` | ID | yes | The ID of the project that was forked from |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ### Delete an existing forked from relationship
 
@@ -2100,15 +2101,15 @@ GET /projects
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `search` | string | yes | A string contained in the project name |
 | `order_by` | string | no | Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields |
+| `search` | string | yes | A string contained in the project name |
 | `sort` | string | no | Return requests sorted in `asc` or `desc` order |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?search=test"
 ```
 
-## Start the Housekeeping task for a Project
+## Start the Housekeeping task for a project
 
 > Introduced in GitLab 9.0.
 
@@ -2153,7 +2154,7 @@ GET /projects/:id/push_rule
 }
 ```
 
-Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) can also see
 the `commit_committer_check` and `reject_unsigned_commits` parameters:
 
 ```json
@@ -2176,18 +2177,18 @@ POST /projects/:id/push_rule
 
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                          | integer/string | yes      | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `author_email_regex` **(STARTER)**            | string         | no       | All commit author emails must match this, for example `@my-company.com$` |
+| `branch_name_regex` **(STARTER)**             | string         | no       | All branch names must match this, for example `(feature|hotfix)\/*` |
+| `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `commit_message_negative_regex` **(STARTER)** | string         | no       | No commit message is allowed to match this, for example `ssh\:\/\/` |
+| `commit_message_regex` **(STARTER)**          | string         | no       | All commit messages must match this, for example `Fixed \d+\..*` |
 | `deny_delete_tag` **(STARTER)**               | boolean        | no       | Deny deleting a tag |
+| `file_name_regex` **(STARTER)**               | string         | no       | All committed filenames must **not** match this, for example `(jar|exe)$` |
+| `id`                                          | integer/string | yes      | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) |
 | `member_check` **(STARTER)**                  | boolean        | no       | Restrict commits by author (email) to existing GitLab users |
 | `prevent_secrets` **(STARTER)**               | boolean        | no       | GitLab will reject any files that are likely to contain secrets |
-| `commit_message_regex` **(STARTER)**          | string         | no       | All commit messages must match this, e.g. `Fixed \d+\..*` |
-| `commit_message_negative_regex` **(STARTER)** | string         | no       | No commit message is allowed to match this, e.g. `ssh\:\/\/` |
-| `branch_name_regex` **(STARTER)**             | string         | no       | All branch names must match this, e.g. `(feature|hotfix)\/*` |
-| `author_email_regex` **(STARTER)**            | string         | no       | All commit author emails must match this, e.g. `@my-company.com$` |
-| `file_name_regex` **(STARTER)**               | string         | no       | All committed filenames must **not** match this, e.g. `(jar|exe)$` |
-| `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) |
-| `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
-| `reject_unsigned_commits` **(PREMIUM)**        | boolean        | no       | Reject commit when it is not signed through GPG. |
+| `reject_unsigned_commits` **(PREMIUM)**        | boolean        | no       | Reject commit when it's not signed through GPG. |
 
 ### Edit project push rule
 
@@ -2199,17 +2200,17 @@ PUT /projects/:id/push_rule
 
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                          | integer/string | yes      | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `author_email_regex` **(STARTER)**            | string         | no       | All commit author emails must match this, for example `@my-company.com$` |
+| `branch_name_regex` **(STARTER)**             | string         | no       | All branch names must match this, for example `(feature|hotfix)\/*` |
+| `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `commit_message_negative_regex` **(STARTER)** | string         | no       | No commit message is allowed to match this, for example `ssh\:\/\/` |
+| `commit_message_regex` **(STARTER)**          | string         | no       | All commit messages must match this, for example `Fixed \d+\..*` |
 | `deny_delete_tag` **(STARTER)**               | boolean        | no       | Deny deleting a tag |
+| `file_name_regex` **(STARTER)**               | string         | no       | All committed filenames must **not** match this, for example `(jar|exe)$` |
+| `id`                                          | integer/string | yes      | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) |
 | `member_check` **(STARTER)**                  | boolean        | no       | Restrict commits by author (email) to existing GitLab users |
 | `prevent_secrets` **(STARTER)**               | boolean        | no       | GitLab will reject any files that are likely to contain secrets |
-| `commit_message_regex` **(STARTER)**          | string         | no       | All commit messages must match this, e.g. `Fixed \d+\..*` |
-| `commit_message_negative_regex` **(STARTER)** | string         | no       | No commit message is allowed to match this, e.g. `ssh\:\/\/` |
-| `branch_name_regex` **(STARTER)**             | string         | no       | All branch names must match this, e.g. `(feature|hotfix)\/*` |
-| `author_email_regex` **(STARTER)**            | string         | no       | All commit author emails must match this, e.g. `@my-company.com$` |
-| `file_name_regex` **(STARTER)**               | string         | no       | All committed filenames must **not** match this, e.g. `(jar|exe)$` |
-| `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) |
-| `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
 | `reject_unsigned_commits` **(PREMIUM)**        | boolean        | no       | Reject commits when they are not GPG signed. |
 
 ### Delete project push rule

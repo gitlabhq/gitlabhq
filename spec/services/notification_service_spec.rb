@@ -292,87 +292,6 @@ RSpec.describe NotificationService, :mailer do
 
       subject { notification.new_note(note) }
 
-      before do
-        build_team(project)
-        project.add_maintainer(issue.author)
-        project.add_maintainer(assignee)
-        project.add_maintainer(author)
-
-        @u_custom_off = create_user_with_notification(:custom, 'custom_off')
-        project.add_guest(@u_custom_off)
-
-        create(
-          :note_on_issue,
-          author: @u_custom_off,
-          noteable: issue,
-          project_id: issue.project_id,
-          note: 'i think @subscribed_participant should see this'
-        )
-
-        update_custom_notification(:new_note, @u_guest_custom, resource: project)
-        update_custom_notification(:new_note, @u_custom_global)
-      end
-
-      describe '#new_note' do
-        context do
-          before do
-            add_users(project)
-            add_user_subscriptions(issue)
-            reset_delivered_emails!
-          end
-
-          it 'sends emails to recipients' do
-            subject
-
-            expect_delivery_jobs_count(10)
-            expect_enqueud_email(@u_watcher.id, note.id, nil, mail: "note_issue_email")
-            expect_enqueud_email(note.noteable.author.id, note.id, nil, mail: "note_issue_email")
-            expect_enqueud_email(note.noteable.assignees.first.id, note.id, nil, mail: "note_issue_email")
-            expect_enqueud_email(@u_custom_global.id, note.id, nil, mail: "note_issue_email")
-            expect_enqueud_email(@u_mentioned.id, note.id, "mentioned", mail: "note_issue_email")
-            expect_enqueud_email(@subscriber.id, note.id, "subscribed", mail: "note_issue_email")
-            expect_enqueud_email(@watcher_and_subscriber.id, note.id, "subscribed", mail: "note_issue_email")
-            expect_enqueud_email(@subscribed_participant.id, note.id, "subscribed", mail: "note_issue_email")
-            expect_enqueud_email(@u_custom_off.id, note.id, nil, mail: "note_issue_email")
-            expect_enqueud_email(@unsubscribed_mentioned.id, note.id, "mentioned", mail: "note_issue_email")
-          end
-
-          it "emails the note author if they've opted into notifications about their activity", :deliver_mails_inline do
-            note.author.notified_of_own_activity = true
-
-            notification.new_note(note)
-
-            should_email(note.author)
-            expect(find_email_for(note.author)).to have_header('X-GitLab-NotificationReason', 'own_activity')
-          end
-
-          it_behaves_like 'project emails are disabled', check_delivery_jobs_queue: true do
-            let(:notification_target)  { note }
-            let(:notification_trigger) { notification.new_note(note) }
-          end
-        end
-
-        it 'filters out "mentioned in" notes' do
-          mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
-          reset_delivered_emails!
-
-          notification.new_note(mentioned_note)
-
-          expect_no_delivery_jobs
-        end
-
-        context 'participating' do
-          context 'by note' do
-            before do
-              note.author = @u_lazy_participant
-              note.save
-            end
-
-            it { expect { subject }.not_to have_enqueued_email(@u_lazy_participant.id, note.id, mail: "note_issue_email") }
-          end
-        end
-      end
-
       context 'on service desk issue' do
         before do
           allow(Notify).to receive(:service_desk_new_note_email)
@@ -446,64 +365,148 @@ RSpec.describe NotificationService, :mailer do
         end
       end
 
-      describe 'new note on issue in project that belongs to a group' do
+      describe '#new_note' do
         before do
-          note.project.namespace_id = group.id
-          group.add_user(@u_watcher, GroupMember::MAINTAINER)
-          group.add_user(@u_custom_global, GroupMember::MAINTAINER)
-          note.project.save
+          build_team(project)
+          project.add_maintainer(issue.author)
+          project.add_maintainer(assignee)
+          project.add_maintainer(author)
 
-          @u_watcher.notification_settings_for(note.project).participating!
-          @u_watcher.notification_settings_for(group).global!
+          @u_custom_off = create_user_with_notification(:custom, 'custom_off')
+          project.add_guest(@u_custom_off)
+
+          create(
+            :note_on_issue,
+            author: @u_custom_off,
+            noteable: issue,
+            project_id: issue.project_id,
+            note: 'i think @subscribed_participant should see this'
+          )
+
+          update_custom_notification(:new_note, @u_guest_custom, resource: project)
           update_custom_notification(:new_note, @u_custom_global)
-          reset_delivered_emails!
         end
 
-        shared_examples 'new note notifications' do
-          it 'sends notifications', :deliver_mails_inline do
+        context 'with users' do
+          before do
+            add_users(project)
+            add_user_subscriptions(issue)
+            reset_delivered_emails!
+          end
+
+          it 'sends emails to recipients' do
+            subject
+
+            expect_delivery_jobs_count(10)
+            expect_enqueud_email(@u_watcher.id, note.id, nil, mail: "note_issue_email")
+            expect_enqueud_email(note.noteable.author.id, note.id, nil, mail: "note_issue_email")
+            expect_enqueud_email(note.noteable.assignees.first.id, note.id, nil, mail: "note_issue_email")
+            expect_enqueud_email(@u_custom_global.id, note.id, nil, mail: "note_issue_email")
+            expect_enqueud_email(@u_mentioned.id, note.id, "mentioned", mail: "note_issue_email")
+            expect_enqueud_email(@subscriber.id, note.id, "subscribed", mail: "note_issue_email")
+            expect_enqueud_email(@watcher_and_subscriber.id, note.id, "subscribed", mail: "note_issue_email")
+            expect_enqueud_email(@subscribed_participant.id, note.id, "subscribed", mail: "note_issue_email")
+            expect_enqueud_email(@u_custom_off.id, note.id, nil, mail: "note_issue_email")
+            expect_enqueud_email(@unsubscribed_mentioned.id, note.id, "mentioned", mail: "note_issue_email")
+          end
+
+          it "emails the note author if they've opted into notifications about their activity", :deliver_mails_inline do
+            note.author.notified_of_own_activity = true
+
             notification.new_note(note)
 
-            should_email(note.noteable.author)
-            should_email(note.noteable.assignees.first)
-            should_email(@u_mentioned)
-            should_email(@u_custom_global)
-            should_not_email(@u_guest_custom)
-            should_not_email(@u_guest_watcher)
-            should_not_email(@u_watcher)
-            should_not_email(note.author)
-            should_not_email(@u_participating)
-            should_not_email(@u_disabled)
-            should_not_email(@u_lazy_participant)
+            should_email(note.author)
+            expect(find_email_for(note.author)).to have_header('X-GitLab-NotificationReason', 'own_activity')
+          end
 
-            expect(find_email_for(@u_mentioned)).to have_header('X-GitLab-NotificationReason', 'mentioned')
-            expect(find_email_for(@u_custom_global)).to have_header('X-GitLab-NotificationReason', '')
+          it_behaves_like 'project emails are disabled', check_delivery_jobs_queue: true do
+            let(:notification_target)  { note }
+            let(:notification_trigger) { notification.new_note(note) }
           end
         end
 
-        let(:group) { create(:group) }
+        it 'filters out "mentioned in" notes' do
+          mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
+          reset_delivered_emails!
 
-        it_behaves_like 'new note notifications'
+          notification.new_note(mentioned_note)
 
-        it_behaves_like 'project emails are disabled', check_delivery_jobs_queue: true do
-          let(:notification_target)  { note }
-          let(:notification_trigger) { notification.new_note(note) }
+          expect_no_delivery_jobs
         end
 
-        context 'which is a subgroup' do
-          let!(:parent) { create(:group) }
-          let!(:group) { create(:group, parent: parent) }
+        context 'participating' do
+          context 'by note' do
+            before do
+              note.author = @u_lazy_participant
+              note.save
+            end
 
-          it_behaves_like 'new note notifications'
+            it { expect { subject }.not_to have_enqueued_email(@u_lazy_participant.id, note.id, mail: "note_issue_email") }
+          end
+        end
 
-          it 'overrides child objects with global level' do
-            user = create(:user)
-            parent.add_developer(user)
-            user.notification_settings_for(parent).watch!
+        context 'in project that belongs to a group' do
+          let_it_be(:parent_group) { create(:group) }
+
+          before do
+            note.project.namespace_id = group.id
+            group.add_user(@u_watcher, GroupMember::MAINTAINER)
+            group.add_user(@u_custom_global, GroupMember::MAINTAINER)
+            note.project.save
+
+            @u_watcher.notification_settings_for(note.project).participating!
+            @u_watcher.notification_settings_for(group).global!
+            update_custom_notification(:new_note, @u_custom_global)
             reset_delivered_emails!
+          end
 
-            notification.new_note(note)
+          shared_examples 'new note notifications' do
+            it 'sends notifications', :deliver_mails_inline do
+              notification.new_note(note)
 
-            expect_enqueud_email(user.id, note.id, nil, mail: "note_issue_email")
+              should_email(note.noteable.author)
+              should_email(note.noteable.assignees.first)
+              should_email(@u_mentioned)
+              should_email(@u_custom_global)
+              should_not_email(@u_guest_custom)
+              should_not_email(@u_guest_watcher)
+              should_not_email(@u_watcher)
+              should_not_email(note.author)
+              should_not_email(@u_participating)
+              should_not_email(@u_disabled)
+              should_not_email(@u_lazy_participant)
+
+              expect(find_email_for(@u_mentioned)).to have_header('X-GitLab-NotificationReason', 'mentioned')
+              expect(find_email_for(@u_custom_global)).to have_header('X-GitLab-NotificationReason', '')
+            end
+          end
+
+          context 'which is a top-level group' do
+            let!(:group) { parent_group }
+
+            it_behaves_like 'new note notifications'
+
+            it_behaves_like 'project emails are disabled', check_delivery_jobs_queue: true do
+              let(:notification_target)  { note }
+              let(:notification_trigger) { notification.new_note(note) }
+            end
+          end
+
+          context 'which is a subgroup' do
+            let!(:group) { create(:group, parent: parent_group) }
+
+            it_behaves_like 'new note notifications'
+
+            it 'overrides child objects with global level' do
+              user = create(:user)
+              parent_group.add_developer(user)
+              user.notification_settings_for(parent_group).watch!
+              reset_delivered_emails!
+
+              notification.new_note(note)
+
+              expect_enqueud_email(user.id, note.id, nil, mail: "note_issue_email")
+            end
           end
         end
       end

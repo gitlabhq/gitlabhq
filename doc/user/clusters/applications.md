@@ -894,7 +894,7 @@ GitLab Runner is installed into the `gitlab-managed-apps` namespace of your clus
 
 In order for GitLab Runner to function, you **must** specify the following:
 
-- `gitlabUrl` - the GitLab server full URL (for example, `https://example.gitlab.com`) to register the Runner against.
+- `gitlabUrl` - the GitLab server full URL (for example, `https://gitlab.example.com`) to register the Runner against.
 - `runnerRegistrationToken` - The registration token for adding new Runners to GitLab. This must be
   [retrieved from your GitLab instance](../../ci/runners/README.md).
 

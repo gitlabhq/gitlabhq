@@ -512,6 +512,14 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       expect(new_item.relative_position).to be < item2.relative_position
     end
 
+    it 'positions the item at MIN_POSITION when there is only one space left' do
+      item2.update!(relative_position: RelativePositioning::MIN_POSITION + 1)
+
+      new_item.move_to_start
+
+      expect(new_item.relative_position).to eq RelativePositioning::MIN_POSITION
+    end
+
     it 'rebalances when there is already an item at the MIN_POSITION' do
       item2.update!(relative_position: RelativePositioning::MIN_POSITION)
 
@@ -547,6 +555,14 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       new_item.move_to_end
 
       expect(new_item.relative_position).to be > item2.relative_position
+    end
+
+    it 'positions the item at MAX_POSITION when there is only one space left' do
+      item2.update!(relative_position: RelativePositioning::MAX_POSITION - 1)
+
+      new_item.move_to_end
+
+      expect(new_item.relative_position).to eq RelativePositioning::MAX_POSITION
     end
 
     it 'rebalances when there is already an item at the MAX_POSITION' do

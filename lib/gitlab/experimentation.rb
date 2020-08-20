@@ -78,7 +78,7 @@ module Gitlab
 
       included do
         before_action :set_experimentation_subject_id_cookie, unless: :dnt_enabled?
-        helper_method :experiment_enabled?
+        helper_method :experiment_enabled?, :experiment_tracking_category_and_group
       end
 
       def set_experimentation_subject_id_cookie
@@ -118,6 +118,10 @@ module Gitlab
         ::Experiment.add_user(experiment_key, tracking_group(experiment_key), current_user)
       end
 
+      def experiment_tracking_category_and_group(experiment_key)
+        "#{tracking_category(experiment_key)}:#{tracking_group(experiment_key, '_group')}"
+      end
+
       private
 
       def dnt_enabled?
@@ -144,7 +148,7 @@ module Gitlab
         {
           category: tracking_category(experiment_key),
           action: action,
-          property: "#{tracking_group(experiment_key)}_group",
+          property: tracking_group(experiment_key, "_group"),
           label: experimentation_subject_id,
           value: value
         }.compact
@@ -154,10 +158,12 @@ module Gitlab
         Experimentation.experiment(experiment_key).tracking_category
       end
 
-      def tracking_group(experiment_key)
+      def tracking_group(experiment_key, suffix = nil)
         return unless Experimentation.enabled?(experiment_key)
 
-        experiment_enabled?(experiment_key) ? GROUP_EXPERIMENTAL : GROUP_CONTROL
+        group = experiment_enabled?(experiment_key) ? GROUP_EXPERIMENTAL : GROUP_CONTROL
+
+        suffix ? "#{group}#{suffix}" : group
       end
 
       def forced_enabled?(experiment_key)

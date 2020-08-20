@@ -9,8 +9,8 @@ export default {
     }
 
     const iconReferences = [].slice.apply(element.querySelectorAll('svg use'));
-    const matchingIcon = iconReferences.find(reference =>
-      reference.getAttribute('xlink:href').endsWith(`#${iconName}`),
+    const matchingIcon = iconReferences.find(
+      reference => reference.parentNode.getAttribute('data-testid') === `${iconName}-icon`,
     );
 
     const pass = Boolean(matchingIcon);
@@ -22,7 +22,7 @@ export default {
       message = `${element.outerHTML} does not contain the sprite icon "${iconName}"!`;
 
       const existingIcons = iconReferences.map(reference => {
-        const iconUrl = reference.getAttribute('xlink:href');
+        const iconUrl = reference.getAttribute('href');
         return `"${iconUrl.replace(/^.+#/, '')}"`;
       });
       if (existingIcons.length > 0) {

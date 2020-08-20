@@ -21693,6 +21693,9 @@ msgstr ""
 msgid "SecurityReports|Issue Created"
 msgstr ""
 
+msgid "SecurityReports|Issues created from a vulnerability cannot be removed."
+msgstr ""
+
 msgid "SecurityReports|Learn more about setting up your dashboard"
 msgstr ""
 

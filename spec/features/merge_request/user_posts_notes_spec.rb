@@ -82,7 +82,7 @@ RSpec.describe 'Merge request > User posts notes', :js do
       it 'shows a reply button' do
         reply_button = find('.js-reply-button', match: :first)
 
-        expect(reply_button).to have_selector('.ic-comment')
+        expect(reply_button).to have_selector('[data-testid="comment-icon"]')
       end
 
       it 'shows reply placeholder when clicking reply button' do

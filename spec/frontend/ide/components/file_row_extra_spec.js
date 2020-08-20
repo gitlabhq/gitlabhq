@@ -153,14 +153,14 @@ describe('IDE extra file row component', () => {
 
   describe('merge request icon', () => {
     it('hides when not a merge request change', () => {
-      expect(vm.$el.querySelector('.ic-git-merge')).toBe(null);
+      expect(vm.$el.querySelector('[data-testid="git-merge-icon"]')).toBe(null);
     });
 
     it('shows when a merge request change', done => {
       vm.file.mrChange = true;
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.ic-git-merge')).not.toBe(null);
+        expect(vm.$el.querySelector('[data-testid="git-merge-icon"]')).not.toBe(null);
 
         done();
       });

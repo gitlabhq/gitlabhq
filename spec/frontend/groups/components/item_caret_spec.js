@@ -27,12 +27,12 @@ describe('ItemCaretComponent', () => {
 
     it('should render caret down icon if `isGroupOpen` prop is `true`', () => {
       vm = createComponent(true);
-      expect(vm.$el.querySelector('svg use').getAttribute('xlink:href')).toContain('angle-down');
+      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('angle-down-icon');
     });
 
     it('should render caret right icon if `isGroupOpen` prop is `false`', () => {
       vm = createComponent();
-      expect(vm.$el.querySelector('svg use').getAttribute('xlink:href')).toContain('angle-right');
+      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('angle-right-icon');
     });
   });
 });

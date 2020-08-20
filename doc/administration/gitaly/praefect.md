@@ -677,7 +677,7 @@ documentation](index.md#configure-gitaly-servers).
 
    # Configure the gitlab-shell API callback URL. Without this, `git push` will
    # fail. This can be your front door GitLab URL or an internal load balancer.
-   # Examples: 'https://example.gitlab.com', 'http://1.2.3.4'
+   # Examples: 'https://gitlab.example.com', 'http://1.2.3.4'
    gitlab_rails['internal_api_url'] = 'http://GITLAB_HOST'
    ```
 

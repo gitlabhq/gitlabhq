@@ -33,7 +33,7 @@ describe('IDE merge request item', () => {
       store,
     });
   };
-  const findIcon = () => wrapper.find('.ic-mobile-issue-close');
+  const findIcon = () => wrapper.find('[data-testid="mobile-issue-close-icon"]');
 
   beforeEach(() => {
     store = createStore();

@@ -297,13 +297,13 @@ module RelativePositioning
 
     if max_pos.nil?
       self.relative_position = START_POSITION
-    elsif gap_too_small?(max_pos, MAX_POSITION)
+    elsif gap_too_small?(max_pos, MAX_POSITION + 1)
       max = relative_siblings.order(Gitlab::Database.nulls_last_order('relative_position', 'DESC')).first
       max.move_sequence_before(true)
       max.reset
-      self.relative_position = self.class.position_between(max.relative_position, MAX_POSITION)
+      self.relative_position = self.class.position_between(max.relative_position, MAX_POSITION + 1)
     else
-      self.relative_position = self.class.position_between(max_pos, MAX_POSITION)
+      self.relative_position = self.class.position_between(max_pos, MAX_POSITION + 1)
     end
   end
 
@@ -312,13 +312,13 @@ module RelativePositioning
 
     if min_pos.nil?
       self.relative_position = START_POSITION
-    elsif gap_too_small?(min_pos, MIN_POSITION)
+    elsif gap_too_small?(min_pos, MIN_POSITION - 1)
       min = relative_siblings.order(Gitlab::Database.nulls_last_order('relative_position', 'ASC')).first
       min.move_sequence_after(true)
       min.reset
-      self.relative_position = self.class.position_between(MIN_POSITION, min.relative_position)
+      self.relative_position = self.class.position_between(MIN_POSITION - 1, min.relative_position)
     else
-      self.relative_position = self.class.position_between(MIN_POSITION, min_pos)
+      self.relative_position = self.class.position_between(MIN_POSITION - 1, min_pos)
     end
   end
 
